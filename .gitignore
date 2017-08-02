@@ -1,0 +1,11 @@
+*.pyc
+*~
+test
+.com_settings
+_com_settings
+valtest
+*.grf
+*.npz
+*.dic
+*.val
+*.str
