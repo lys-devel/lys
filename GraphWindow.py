@@ -13,7 +13,7 @@ from matplotlib.widgets import RectangleSelector
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import lines, markers
+from matplotlib import lines, markers, ticker
 class Axis(Enum):
     BottomLeft=1
     TopLeft=2
@@ -232,11 +232,13 @@ class FigureCanvasBase(FigureCanvas):
         self.fig=Figure(dpi=dpi)
         super().__init__(self.fig)
         self.axes = self.fig.add_subplot(111)
+        self.axes.minorticks_on()
         self.axes_tx=None
         self.axes_ty=None
         self.axes_txy=None
         self._Datalist=[]
         self.__listener=[]
+        self.__lisaxis=[]
 
         Wave.AddWaveModificationListener(self)
     def OnWaveModified(self,wave):
@@ -256,15 +258,42 @@ class FigureCanvasBase(FigureCanvas):
             super().draw()
         except Exception:
             pass
-    def Append(self,wave,axis=Axis.BottomLeft,id=None,appearance=None,offset=(0,0,0,0)):
+    def addAxisChangeListener(self,listener):
+        self.__lisaxis.append(weakref.ref(listener))
+    def __emitAxisChanged(self,axis):
+        for l in self.__lisaxis:
+            if l() is not None:
+                l().OnAxisChanged(axis)
+            else:
+                self.__lisaxis.remove(l)
+    def __getAxes(self,axis):
         if axis==Axis.BottomLeft:
-            ax=self.axes
+            return self.axes
         if axis==Axis.TopLeft:
-            ax=self.axes_ty=self.axes.twiny()
+            if self.axes_ty is None:
+                self.axes_ty=self.axes.twiny()
+                self.axes_ty.spines['left'].set_visible(False)
+                self.axes_ty.spines['right'].set_visible(False)
+                self.axes_ty.minorticks_on()
+                self.__emitAxisChanged('Top')
+            return self.axes_ty
         if axis==Axis.BottomRight:
-            ax=self.axes_tx=self.axes.twinx()
+            if self.axes_tx is None:
+                self.axes_tx=self.axes.twinx()
+                self.axes_tx.spines['top'].set_visible(False)
+                self.axes_tx.spines['bottom'].set_visible(False)
+                self.axes_tx.minorticks_on()
+                self.__emitAxisChanged('Right')
+            return self.axes_tx
         if axis==Axis.TopRight:
-            ax=self.axes_txy=self.axes.twinx().twiny()
+            if self.axes_txy is None:
+                self.axes_txy=self.axes.twinx().twiny()
+                self.__emitAxisChanged('Right')
+                self.__emitAxisChanged('Top')
+                self.axes_txy.minorticks_on()
+            return self.axes_txy
+    def Append(self,wave,axis=Axis.BottomLeft,id=None,appearance=None,offset=(0,0,0,0)):
+        ax=self.__getAxes(axis)
         if isinstance(wave,Wave):
             wav=wave
         else:
@@ -847,7 +876,7 @@ class _AxisTab(QWidget):
         self._initlayout(canvas)
     def _initlayout(self,canvas):
         layout=QVBoxLayout(self)
-        layout.addWidget(AxisSelectionWidget(canvas,True))
+        layout.addWidget(AxisSelectionWidget(canvas))
         tab=QTabWidget()
         tab.addTab(AxisAndTickBox(canvas),'Main')
         layout.addWidget(tab)

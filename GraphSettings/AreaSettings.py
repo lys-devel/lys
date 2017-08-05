@@ -124,7 +124,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
         self.__haxis2='Bottom'
         self.__listener=[]
         self.addMarginAdjustedListener(self)
-        self.addAxisChangeListener(self)
+        self.addAxisRangeChangeListener(self)
 
     def SaveAsDictionary(self,dictionary,path):
         super().SaveAsDictionary(dictionary,path)
@@ -345,7 +345,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
             else:
                 self.__listener.remove(l)
 
-    def OnAxisChanged(self):
+    def OnAxisRangeChanged(self):
         self.setSizeByArray([self.__wmode,self.__wvalue,self.__waxis1,self.__waxis2],'Width')
         self.setSizeByArray([self.__hmode,self.__hvalue,self.__haxis1,self.__haxis2],'Height')
 class ResizeBox(QGroupBox):

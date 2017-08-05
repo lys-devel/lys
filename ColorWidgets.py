@@ -20,9 +20,9 @@ class ColorSelection(QPushButton):
     def setColor(self,color):
         if isinstance(color,tuple):
             if len(color)==4:
-                self.__color="rgba"+str((color[0]*256,color[1]*256,color[2]*256,color[3]))
+                self.__color="rgba"+str((color[0]*255,color[1]*255,color[2]*255,color[3]))
             if len(color)==3:
-                self.__color="rgba"+str((color[0]*256,color[1]*256,color[2]*256,1))
+                self.__color="rgba"+str((color[0]*255,color[1]*255,color[2]*255,1))
         else:
             self.__color=color
         self.setStyleSheet("background-color:"+self.__color)
