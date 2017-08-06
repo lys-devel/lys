@@ -852,7 +852,7 @@ class ModifyWindow(QMainWindow):
         self._tab.addTab(_AxisTab(canvas),"Axis")
         self._tab.addTab(_LineTab(canvas),"Lines")
         self._tab.addTab(_ImageTab(canvas),"Images")
-        self._tab.addTab(_AnnotationTab(canvas),"Annotations")
+        self._tab.addTab(_AnnotationTab(canvas),"Annot.")
         self._tab.addTab(_TestTab(canvas),"Test")
         self.setCentralWidget(self._tab)
 
@@ -879,6 +879,7 @@ class _AxisTab(QWidget):
         layout.addWidget(AxisSelectionWidget(canvas))
         tab=QTabWidget()
         tab.addTab(AxisAndTickBox(canvas),'Main')
+        tab.addTab(AxisAndTickLabelBox(canvas),'Label')
         layout.addWidget(tab)
 
         self.setLayout(layout)

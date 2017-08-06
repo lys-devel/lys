@@ -11,7 +11,7 @@ from PyQt5.QtWidgets import *
 from matplotlib import colors
 from GraphWindow import *
 
-class MarginAdjustableCanvas(TickAdjustableCanvas):
+class MarginAdjustableCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.__listener=[]

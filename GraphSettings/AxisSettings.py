@@ -7,6 +7,8 @@ from enum import Enum
 from ExtendType import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
+import matplotlib as mpl
+import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -912,3 +914,331 @@ class AxisAndTickBox(QWidget):
         layout.addLayout(layout_h1)
         layout.addWidget(TickAdjustBox(canvas))
         self.setLayout(layout)
+
+class FontSelectableCanvas(TickAdjustableCanvas):
+    class FontInfo(object):
+        def __init__(self,family,size=10,color='black'):
+            self.family=family
+            self.size=size
+            self.color=color
+    def __init__(self,dpi=100):
+        super().__init__(dpi=dpi)
+        self.__font={}
+        self.__font['Default']=FontSelectableCanvas.FontInfo(fm.FontProperties(family=mpl.rcParams['font.family']).get_name())
+        self.__listener=[]
+    def SaveAsDictionary(self,dictionary,path):
+        super().SaveAsDictionary(dictionary,path)
+        dictionary['Font']={}
+        for name in self.__font.keys():
+            dictionary['Font'][name]=[self.__font[name].family,self.__font[name].size,self.__font[name].color]
+    def LoadFromDictionary(self,dictionary,path):
+        super().LoadFromDictionary(dictionary,path)
+        if 'Font' in dictionary:
+            dic=dictionary['Font']
+            for d in dic.keys():
+                self.__font[d]=FontSelectableCanvas.FontInfo(dic[d][0],dic[d][1],dic[d][2])
+    def addFontChangeListener(self,listener):
+        self.__listener.append(weakref.ref(listener))
+    def _emit(self,name,type):
+        for l in self.__listener:
+            if l() is None:
+                self.__listener.remove(l)
+            else:
+                l().OnFontChanged(name,type)
+    def getFontFamily(self,name='Default'):
+        if name in self.__font:
+            return self.__font[name].family
+        else:
+            return self.__font['Default'].family
+    def setFontFamily(self,family,name='Default'):
+        self.__font[name].family=family
+        self._emit(name,'family')
+    def getFontSize(self,name='Default'):
+        if name in self.__font:
+            return self.__font[name].size
+        else:
+            return self.__font['Default'].size
+    def setFontSize(self,size,name='Default'):
+        self.__font[name].size=size
+        self._emit(name,'size')
+    def getFontColor(self,name='Default'):
+        if name in self.__font:
+            return self.__font[name].color
+        else:
+            return self.__font['Default'].color
+    def setFontColor(self,color,name='Default'):
+        self.__font[name].color=color
+        self._emit(name,'color')
+class FontSelectBox(QGroupBox):
+    def __init__(self,canvas,name='Default'):
+        super().__init__(name+' Font')
+        self.canvas=canvas
+        self.__flg=False
+        self.__name=name
+        self.__initlayout()
+        self.__loadstate()
+    def __initlayout(self):
+        layout=QVBoxLayout()
+        l=QHBoxLayout()
+        self.__font=QComboBox()
+        fonts = fm.findSystemFonts()
+        self.__fonts=[]
+        d=self.canvas.getFontFamily(self.__name)
+        self.__fonts.append(d)
+        self.__font.addItem(d)
+        for f in fonts:
+            n=fm.FontProperties(fname=f).get_name()
+            if not n in self.__fonts:
+                self.__font.addItem(n)
+                self.__fonts.append(n)
+        self.__fonts=sorted(self.__fonts)
+        self.__font.model().sort(0)
+        self.__font.activated.connect(self.__fontChanged)
+        layout.addWidget(self.__font)
+        l.addWidget(QLabel('Size'))
+        self.__size=QDoubleSpinBox()
+        self.__size.valueChanged.connect(self.__sizeChanged)
+        l.addWidget(self.__size)
+        l.addWidget(QLabel('Color'))
+        self.__color=ColorSelection()
+        self.__color.colorChanged.connect(self.__colorChanged)
+        l.addWidget(self.__color)
+        layout.addLayout(l)
+        self.setLayout(layout)
+    def __loadstate(self):
+        self.__flg=True
+        font=self.canvas.getFontFamily(self.__name)
+        if font in self.__fonts:
+            self.__font.setCurrentIndex(self.__fonts.index(font))
+        self.__size.setValue(self.canvas.getFontSize(self.__name))
+        self.__color.setColor(self.canvas.getFontColor(self.__name))
+        self.__flg=False
+    def __fontChanged(self):
+        if self.__flg:
+            return
+        self.canvas.setFontFamily(self.__font.currentText(),self.__name)
+    def __sizeChanged(self):
+        if self.__flg:
+            return
+        self.canvas.setFontSize(self.__size.value(),self.__name)
+    def __colorChanged(self):
+        if self.__flg:
+            return
+        self.canvas.setFontColor(self.__color.getColor(),self.__name)
+
+class AxisLabelAdjustableCanvas(FontSelectableCanvas):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self.addFontChangeListener(self)
+    def SaveAsDictionary(self,dictionary,path):
+        super().SaveAsDictionary(dictionary,path)
+        dic={}
+        for l in ['Left','Right','Top','Bottom']:
+            if self.axisIsValid(l):
+                dic[l+"_label_on"]=self.getAxisLabelVisible(l)
+                dic[l+"_label"]=self.getAxisLabel(l)
+                dic[l+"_family"]=self.getAxisLabelFamily(l)
+                dic[l+"_size"]=self.getAxisLabelSize(l)
+                dic[l+"_color"]=self.getAxisLabelColor(l)
+                dic[l+"_pos"]=self.getAxisLabelCoords(l)
+        dictionary['LabelSetting']=dic
+    def LoadFromDictionary(self,dictionary,path):
+        super().LoadFromDictionary(dictionary,path)
+        if 'LabelSetting' in dictionary:
+            dic=dictionary['LabelSetting']
+            print(dic)
+            for l in ['Left','Right','Top','Bottom']:
+                if self.axisIsValid(l):
+                    self.setAxisLabelVisible(l,dic[l+"_label_on"])
+                    self.setAxisLabel(l,dic[l+'_label'])
+                    self.setAxisLabelFamily(l,dic[l+"_family"])
+                    self.setAxisLabelSize(l,dic[l+"_size"])
+                    self.setAxisLabelColor(l,dic[l+"_color"])
+                    self.setAxisLabelCoords(l,dic[l+"_pos"])
+    def OnFontChanged(self,name,type):
+        for axis in ['Left','Right','Top','Bottom']:
+            if self.axisIsValid(axis):
+                if type=='family':
+                    self.setAxisLabelFamily(axis,self.getFontFamily('Axis'))
+                if type=='size':
+                    self.setAxisLabelSize(axis,self.getFontSize('Axis'))
+                if type=='color':
+                    self.setAxisLabelColor(axis,self.getFontColor('Axis'))
+    def setAxisLabel(self,axis,text):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            axes.get_yaxis().get_label().set_text(text)
+        else:
+            axes.get_xaxis().get_label().set_text(text)
+        self.draw()
+    def getAxisLabel(self,axis):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            return axes.get_ylabel()
+        else:
+            return axes.get_xlabel()
+    def setAxisLabelFamily(self,axis,family):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            axes.get_yaxis().get_label().set_family(family)
+        else:
+            axes.get_xaxis().get_label().set_family(family)
+        self.draw()
+    def getAxisLabelFamily(self,axis):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            return axes.get_yaxis().get_label().get_family()
+        else:
+            return axes.get_xaxis().get_label().get_family()
+        self.draw()
+    def setAxisLabelSize(self,axis,size):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            axes.get_yaxis().get_label().set_size(size)
+        else:
+            axes.get_xaxis().get_label().set_size(size)
+        self.draw()
+    def getAxisLabelSize(self,axis):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            return axes.get_yaxis().get_label().get_size()
+        else:
+            return axes.get_xaxis().get_label().get_size()
+    def setAxisLabelColor(self,axis,color):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            axes.get_yaxis().get_label().set_color(color)
+        else:
+            axes.get_xaxis().get_label().set_color(color)
+        self.draw()
+    def getAxisLabelColor(self,axis):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            return axes.get_yaxis().get_label().get_color()
+        else:
+            return axes.get_xaxis().get_label().get_color()
+    def setAxisLabelVisible(self,axis,b):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            axes.get_yaxis().get_label().set_visible(b)
+        else:
+            axes.get_xaxis().get_label().set_visible(b)
+        self.draw()
+    def getAxisLabelVisible(self,axis):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            return axes.get_yaxis().get_label().get_visible()
+        else:
+            return axes.get_xaxis().get_label().get_visible()
+    def setAxisLabelCoords(self,axis,pos):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            axes.get_yaxis().set_label_coords(pos,0.5)
+        else:
+            axes.get_xaxis().set_label_coords(0.5,pos)
+        self.draw()
+    def getAxisLabelCoords(self,axis):
+        axes=self.getAxes(axis)
+        if axes is None:
+            return
+        if axis in ['Left','Right']:
+            pos=axes.get_yaxis().get_label().get_position()
+            if pos[0]>1:
+                return axes.transAxes.inverted().transform(pos)[0]
+            else:
+                return pos[0]
+        else:
+            pos=axes.get_xaxis().get_label().get_position()
+            if pos[1]>1:
+                return axes.transAxes.inverted().transform(pos)[1]
+            else:
+                return pos[1]
+class AxisLabelAdjustBox(QGroupBox):
+    def __init__(self,canvas):
+        super().__init__("Axis Label")
+        self.__flg=False
+        self.canvas=canvas
+        self.__initlayout()
+        self.__loadstate()
+        self.canvas.addAxisSelectedListener(self)
+    def __getAxes(self):
+        if self.__all.isChecked():
+            return ['Left','Right','Bottom','Top']
+        else:
+            return [self.canvas.getSelectedAxis()]
+    def __initlayout(self):
+        l=QVBoxLayout()
+        lay=QHBoxLayout()
+        self.__all=QCheckBox('All axes')
+        lay.addWidget(self.__all)
+        self.__on=QCheckBox('Put label')
+        self.__on.stateChanged.connect(self.__visible)
+        lay.addWidget(self.__on)
+        lay.addWidget(QLabel('Position'))
+        self.__pos=QDoubleSpinBox()
+        self.__pos.setRange(-10,10)
+        self.__pos.setSingleStep(0.02)
+        self.__pos.valueChanged.connect(self.__posChanged)
+        lay.addWidget(self.__pos)
+        l.addLayout(lay)
+        self.__label=QTextEdit()
+        self.__label.textChanged.connect(self.__labelChanged)
+        l.addWidget(self.__label)
+        self.setLayout(l)
+    def __loadstate(self):
+        self.__flg=True
+        axis=self.canvas.getSelectedAxis()
+        self.__on.setChecked(self.canvas.getAxisLabelVisible(axis))
+        self.__label.setPlainText(self.canvas.getAxisLabel(axis))
+        self.__pos.setValue(self.canvas.getAxisLabelCoords(axis))
+        self.__flg=False
+    def OnAxisSelected(self,axis):
+        self.__loadstate()
+    def __labelChanged(self):
+        if self.__flg:
+            return
+        axis=self.canvas.getSelectedAxis()
+        self.canvas.setAxisLabel(axis,self.__label.toPlainText())
+    def __visible(self):
+        if self.__flg:
+            return
+        for axis in self.__getAxes():
+            self.canvas.setAxisLabelVisible(axis,self.__on.isChecked())
+    def __posChanged(self):
+        if self.__flg:
+            return
+        for axis in self.__getAxes():
+            self.canvas.setAxisLabelCoords(axis,self.__pos.value())
+
+class AxisAndTickLabelBox(QWidget):
+    def __init__(self,canvas):
+        super().__init__()
+        layout=QVBoxLayout(self)
+        layout.addWidget(FontSelectBox(canvas))
+        layout.addWidget(AxisLabelAdjustBox(canvas))
+        self.setLayout(layout)
+
+class AxisSettingCanvas(AxisLabelAdjustableCanvas):
+    pass
