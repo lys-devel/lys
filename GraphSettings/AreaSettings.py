@@ -535,3 +535,6 @@ class ResizeBox(QGroupBox):
         layout_h.addWidget(gw)
         layout_h.addWidget(gh)
         self.setLayout(layout_h)
+
+class AreaSettingCanvas(ResizableCanvas):
+    pass

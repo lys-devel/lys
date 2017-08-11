@@ -266,6 +266,8 @@ class FigureCanvasBase(FigureCanvas):
                 l().OnAxisChanged(axis)
             else:
                 self.__lisaxis.remove(l)
+    def _getAxesFrom(self,axis):
+        return self.__getAxes(axis)
     def __getAxes(self,axis):
         if axis==Axis.BottomLeft:
             return self.axes
@@ -722,9 +724,10 @@ from GraphSettings.LineSettings import *
 from GraphSettings.ImageSettings import *
 from GraphSettings.AxisSettings import *
 from GraphSettings.AreaSettings import *
+from GraphSettings.Annotation import *
 
-BaseClass=ResizableCanvas
-InheritedClass=ResizableCanvas
+BaseClass=AnnotationSettingCanvas
+InheritedClass=AnnotationSettingCanvas
 import Test_Takahashi
 # FigureCanvas inherits QWidget
 class ExtendCanvas(InheritedClass):
@@ -752,7 +755,7 @@ class ExtendCanvas(InheritedClass):
         if self.IsRangeSelected():
             menulabels = ['Expand', 'Horizontal Expand', 'Vertical Expand', 'Shrink', 'Horizontal Shrink', 'Vertical Shrink']
         else:
-            menulabels = ['Modify Graph','Auto scale axes']
+            menulabels = ['Modify Graph','Auto scale axes','Add annotation']
         actionlist = []
         for label in menulabels:
             actionlist.append( menu.addAction( label ) )
@@ -777,6 +780,8 @@ class ExtendCanvas(InheritedClass):
                 self.draw()
             if action.text() in ['Modify Graph']:
                 print('dummy: please make modification graph')
+            if action.text()=='Add annotation':
+                self.addAnnotation('test')
     def __ExpandAndShrink(self, mode,ax,flg_x=True,flg_y=True):
         if ax==None:
             return -1
@@ -880,6 +885,7 @@ class _AxisTab(QWidget):
         tab=QTabWidget()
         tab.addTab(AxisAndTickBox(canvas),'Main')
         tab.addTab(AxisAndTickLabelBox(canvas),'Label')
+        tab.addTab(AxisFontBox(canvas),'Font')
         layout.addWidget(tab)
 
         self.setLayout(layout)
@@ -917,8 +923,11 @@ class _AnnotationTab(QWidget):
         self.canvas=canvas
         self._initlayout(canvas)
     def _initlayout(self,canvas):
-        self.layout=QVBoxLayout(self)
-        self.setLayout(self.layout)
+        layout=QVBoxLayout(self)
+        tab=QTabWidget()
+        tab.addTab(AnnotationBox(canvas),'Text')
+        layout.addWidget(tab)
+        self.setLayout(layout)
 class _TestTab(QWidget):
     def __init__(self,canvas):
         super().__init__()
