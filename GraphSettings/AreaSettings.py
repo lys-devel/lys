@@ -369,6 +369,7 @@ class ResizeBox(QGroupBox):
             tmp=QHBoxLayout()
             self.spin1 = QDoubleSpinBox()
             self.spin1.valueChanged.connect(self.__Changed)
+            self.spin1.setDecimals(5)
             self.lab1=QLabel(' * Height')
             tmp.addWidget(self.spin1)
             tmp.addWidget(self.lab1)
