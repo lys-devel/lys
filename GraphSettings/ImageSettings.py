@@ -10,6 +10,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import colors
 from GraphWindow import *
+from GraphSettings.LineSettings import *
 
 class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def __init__(self,dpi):

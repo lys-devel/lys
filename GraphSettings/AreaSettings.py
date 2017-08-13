@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import random, weakref, gc, sys, os
+import random, weakref, gc, sys, os, math
 from ColorWidgets import *
 import numpy as np
 from ExtendType import *
@@ -10,6 +10,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import colors
 from GraphWindow import *
+from GraphSettings.AxisSettings import *
 
 class MarginAdjustableCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):
@@ -191,7 +192,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
         hr=1/(1-(m[2]+(1-m[3])))
         return (wr,hr)
     def _adjust(self):
-        self.adjustSize()
+        self.resize(self.fig.get_figwidth()*100,self.fig.get_figheight()*100)
         par=self.parentWidget()
         if isinstance(par,SizeAdjustableWindow):
             par.adjustSize()
@@ -251,7 +252,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
     def _setAbsWid(self,width):
         self.axes.set_aspect('auto')
         rat=self.getMarginRatio()
-        self.fig.set_figwidth(width*unit*rat[0])
+        self.fig.set_figwidth(round(width*unit*rat[0]*100)/100)
         par=self.parentWidget()
         if isinstance(par,SizeAdjustableWindow):
             par.setWidth(0)
@@ -262,7 +263,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
     def _setAbsHei(self,height):
         self.axes.set_aspect('auto')
         rat=self.getMarginRatio()
-        self.fig.set_figheight(height*unit*rat[1])
+        self.fig.set_figheight(round(height*unit*rat[1]*100)/100)
         par=self.parentWidget()
         if isinstance(par,SizeAdjustableWindow):
             par.setHeight(0)

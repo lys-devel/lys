@@ -15,6 +15,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import lines, markers, ticker
 from GraphWindow import *
+from GraphSettings.ImageSettings import *
 
 class RangeSelectableCanvas(ImageColorAdjustableCanvas):
     def __init__(self,dpi=100):

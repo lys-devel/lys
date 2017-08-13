@@ -15,6 +15,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import lines, markers
 from GraphWindow import *
+from GraphSettings.CanvasBase import *
 
 class LineColorAdjustableCanvas(OffsetAdjustableCanvas):
     def __init__(self,dpi):

@@ -12,6 +12,7 @@ from matplotlib import colors, patches
 from matplotlib.patches import BoxStyle
 import matplotlib
 from GraphWindow import *
+from GraphSettings.AreaSettings import *
 
 class AnnotationData(object):
     def __init__(self,obj,idn,appearance):
@@ -664,15 +665,10 @@ class AnnotationBox(QWidget):
         tab.addTab(AnnotationEditBox(canvas),'Text')
         tab.addTab(AnnotationMoveBox(canvas),'Position')
         tab.addTab(AnnotationBoxAdjustBox(canvas),'Box')
-        self._test=QPushButton('Test')
-        self._test.clicked.connect(self.test)
-        layout.addWidget(self._test)
+
         layout.addWidget(tab)
         self.setLayout(layout)
-    def test(self):
-        a=self.canvas.axes.legend()
-        print(a)
-        self.canvas.draw()
+
 
 class AnnotationSettingCanvas(AnnotationBoxAdjustableCanvas):
     pass
