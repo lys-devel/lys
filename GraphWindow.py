@@ -20,7 +20,7 @@ class Axis(Enum):
     BottomRight=3
     TopRight=4
 
-class SizeAdjustableWindow(QMainWindow):
+class SizeAdjustableWindow(QMdiSubWindow):
     def __init__(self):
         super().__init__()
         #Mode
@@ -86,6 +86,7 @@ class AttachableWindow(SizeAdjustableWindow):
         return super().closeEvent(event)
 class AutoSavedWindow(AttachableWindow, AutoSaved):
     __list=[]
+    mdimain=None
     @classmethod
     def CloseAllWindows(cls):
         for g in cls.__list:
@@ -164,7 +165,11 @@ class Graph(AutoSavedWindow):
     def _init(self):
         self._mod=None
         self.canvas=ExtendCanvas()
-        self.setCentralWidget(self.canvas)
+        if AutoSavedWindow.mdimain is not None:
+            AutoSavedWindow.mdimain.addSubWindow(self)
+            self.setWidget(self.canvas)
+        else:
+            self.setCentralWidget(self.canvas)
     def closeEvent(self,event):
         self.canvas.fig.canvas=None
         super().closeEvent(event)
@@ -172,6 +177,9 @@ class Graph(AutoSavedWindow):
         self.canvas.Append(wave,axis)
     def Make_ModifyWindow(self):
         self._mod=ModifyWindow(self.canvas,self)
+        if AutoSavedWindow.mdimain is not None:
+            AutoSavedWindow.mdimain.addSubWindow(self._mod)
+        self._mod.show()
         self._mod.attachTo()
     def sizeHint(self):
         return QSize(self.canvas.width(),self.canvas.height())
@@ -827,7 +835,7 @@ class ExtendCanvas(InheritedClass):
         self.fig.patch.set_alpha(alpha)
         self.draw()
 
-class ModifyWindow(QMainWindow):
+class ModifyWindow(QMdiSubWindow):
     def __init__(self, canvas, parent=None):
         QMainWindow.__init__(self)
         self._initlayout(canvas,parent)
@@ -835,7 +843,6 @@ class ModifyWindow(QMainWindow):
         self.show()
         self.canvas=canvas
         self._parent=parent
-
         if parent is not None:
             self._parent.moved.connect(self.attachTo)
             self._parent.resized.connect(self.attachTo)
@@ -859,7 +866,7 @@ class ModifyWindow(QMainWindow):
         self._tab.addTab(_ImageTab(canvas),"Images")
         self._tab.addTab(_AnnotationTab(canvas),"Annot.")
         self._tab.addTab(_TestTab(canvas),"Test")
-        self.setCentralWidget(self._tab)
+        self.setWidget(self._tab)
 
 class _AreaTab(QWidget):
     def __init__(self,canvas):

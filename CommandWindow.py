@@ -29,7 +29,6 @@ class Logger( object ):
             self.out.write( message )
     def flush(self):
         pass
-
 class CommandLineEdit(QLineEdit):
     def __init__(self,shell):
         QLineEdit.__init__(self)
@@ -83,7 +82,6 @@ class CommandLineEdit(QLineEdit):
         self.shell.SendCommand(txt)
         self.clear()
         self.__logn=0
-
 class ColoredFileSystemModel(ExtendFileSystemModel):
     def __init__(self):
         super().__init__()
@@ -113,15 +111,13 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
             return QColor(200,200,200)
         return super().data(index,role)
 
-class CommandWindow(QMainWindow):
+class CommandWindow(QMdiSubWindow):
     def __init__(self, shell, parent=None):
         super(CommandWindow, self).__init__(parent)
         self.setWindowTitle("Command Window")
-
         self.__shell=shell
 
         self.__CreateLayout()
-        self.__CreateMenu()
         sys.stdout = Logger(self.output, sys.stdout)
         sys.stderr = Logger(self.output, sys.stderr, QColor(255,0,0))
 
@@ -147,7 +143,7 @@ class CommandWindow(QMainWindow):
             if w.find("./.com_settings/.graphs")>-1:
                 g.Disconnect()
                 remove(w)
-    def __saveData(self):
+    def saveData(self):
         self.__clog.data=self.output.toPlainText()
         self.__clog.Save()
         self.__log2.data=str(self.__shell.GetCommandLog())
@@ -163,20 +159,8 @@ class CommandWindow(QMainWindow):
             names.append('./'+os.path.relpath(w.FileName(),self._savepath).replace('\\','/'))
         with open(self._savepath+'/.com_settings/winlist.log','w') as f:
             f.write(str(names))
-    def __CreateMenu(self):
-        menu=self.menuBar()
-        fil=menu.addMenu('&File')
-
-        ex=QAction('&Exit',self,triggered=exit)
-
-        fil.addAction(ex)
-
     def closeEvent(self,event):
-        self.__saveData()
-        AutoSavedWindow.CloseAllWindows()
-        AnalysisWindow.CloseAllWindows()
-        PreviewWindow.CloseAllWindows()
-        event.accept()
+        event.ignore()
     def __CreateLayout(self):
         layout=QVBoxLayout()
         self.input=CommandLineEdit(self.__shell)
@@ -198,7 +182,7 @@ class CommandWindow(QMainWindow):
         layout_h.addWidget(self.__tree)
         layout_h.addWidget(wid)
 
-        self.setCentralWidget(layout_h)
+        self.setWidget(layout_h)
     def __treeContextMenu(self,tree):
         cd=QAction('Set Current Directory',self,triggered=self.__setCurrentDirectory)
         ld=QAction('Load',self,triggered=self.__load)
