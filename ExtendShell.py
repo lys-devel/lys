@@ -41,6 +41,7 @@ class ExtendShell(object):
 
     def CommandWindow(self):
         self.__com=CommandWindow(self)
+        return self.__com
 
     def __GetValidName(self,name):
         flg=True

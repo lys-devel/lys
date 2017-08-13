@@ -324,7 +324,7 @@ class FigureCanvasBase(FigureCanvas):
             xdata*=offset[2]
         if not offset[3]==0:
             ydata*=offset[3]
-        line, = ax.plot(xdata,ydata)
+        line, = ax.plot(xdata,ydata,label=wav.Name())
         if ID is None:
             id=5000+len(self.getLines())
         else:

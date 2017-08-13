@@ -657,14 +657,22 @@ class AnnotationBoxAdjustBox(QWidget):
 class AnnotationBox(QWidget):
     def __init__(self,canvas):
         super().__init__()
+        self.canvas=canvas
         layout=QVBoxLayout()
         layout.addWidget(AnnotationSelectionBox(canvas))
         tab=QTabWidget()
         tab.addTab(AnnotationEditBox(canvas),'Text')
         tab.addTab(AnnotationMoveBox(canvas),'Position')
         tab.addTab(AnnotationBoxAdjustBox(canvas),'Box')
+        self._test=QPushButton('Test')
+        self._test.clicked.connect(self.test)
+        layout.addWidget(self._test)
         layout.addWidget(tab)
         self.setLayout(layout)
+    def test(self):
+        a=self.canvas.axes.legend()
+        print(a)
+        self.canvas.draw()
 
 class AnnotationSettingCanvas(AnnotationBoxAdjustableCanvas):
     pass
