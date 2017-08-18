@@ -3,11 +3,11 @@
 
 import sys, os
 import rlcompleter
-from ExtendType import *
-from ExtendWidgets import *
-from GraphWindow import *
-from AnalysisWindow import AnalysisWindow
-from UDAnalysis.UltrafastDiffractionAnalysis import UDAnalysis
+from .ExtendType import *
+from .ExtendWidgets import *
+from .GraphWindow import *
+from .AnalysisWindow import AnalysisWindow
+from .UDAnalysis.UltrafastDiffractionAnalysis import UDAnalysis
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *

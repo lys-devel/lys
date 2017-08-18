@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 import random, weakref, gc, sys, os
 from collections import namedtuple
-from ColorWidgets import *
 import numpy as np
 from enum import Enum
-from ExtendType import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
 import matplotlib as mpl
@@ -14,8 +12,11 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import lines, markers, ticker
-from GraphWindow import *
-from GraphSettings.ImageSettings import *
+
+from ExtendAnalysis.ExtendType import *
+from ExtendAnalysis.ColorWidgets import *
+from ExtendAnalysis.GraphWindow import *
+from .ImageSettings import *
 
 class RangeSelectableCanvas(ImageColorAdjustableCanvas):
     def __init__(self,dpi=100):

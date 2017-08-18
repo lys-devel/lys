@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 import random, weakref, gc, sys, os
 from collections import namedtuple
-from ColorWidgets import *
 import numpy as np
 from enum import Enum
-from ExtendType import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
 import matplotlib.pyplot as plt
@@ -14,7 +12,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import lines, markers, ticker
-from GraphWindow import *
+
+from ExtendAnalysis.ExtendType import *
+from ExtendAnalysis.ColorWidgets import *
+from ExtendAnalysis.GraphWindow import *
 
 class WaveData(object):
     def __init__(self,wave,obj,axis,idn,appearance,offset=(0,0,0,0)):

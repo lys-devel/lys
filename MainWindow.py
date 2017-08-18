@@ -1,12 +1,12 @@
 from PyQt5.QtWidgets import *
-from ExtendAnalysis import *
+from .ExtendShell import ExtendShell
+from .GraphWindow import AutoSavedWindow, PreviewWindow
+from .AnalysisWindow import AnalysisWindow
 
 class MainWindow(QMainWindow):
     _actions={"File":{"Exit":exit}}
     _instance=None
     def __init__(self):
-        from ExtendAnalysis.ExtendShell import ExtendShell
-        from GraphWindow import AutoSavedWindow
         super().__init__()
         MainWindow._instance=self
         self.area=QMdiArea()
@@ -25,9 +25,6 @@ class MainWindow(QMainWindow):
                 item=menu.addMenu(key)
                 self.__createMenu(item,actions[key])
     def closeEvent(self,event):
-        from ExtendShell import ExtendShell
-        from GraphWindow import AutoSavedWindow, PreviewWindow
-        from AnalysisWindow import AnalysisWindow
         self.com.saveData()
         AutoSavedWindow.CloseAllWindows()
         AnalysisWindow.CloseAllWindows()

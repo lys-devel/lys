@@ -1,8 +1,9 @@
 import cmd, os
-from ExtendAnalysis import LoadFile
-from ExtendAnalysis import Wave
-from CommandWindow import CommandWindow
-from GraphWindow import *
+
+from . import LoadFile
+from . import Wave
+from .CommandWindow import CommandWindow
+from .GraphWindow import *
 
 class ExtendShell(object):
     def __init__(self,home=None):

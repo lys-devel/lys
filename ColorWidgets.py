@@ -1,10 +1,12 @@
 import numpy as np
 from matplotlib.figure import Figure, SubplotParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib import cm
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import cm
+
+#Before import this file, be sure that QGuiApplication instance is initialized.
 
 class ColorSelection(QPushButton):
     colorChanged=pyqtSignal()

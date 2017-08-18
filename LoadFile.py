@@ -1,6 +1,5 @@
 import os,sys
-from ExtendType import *
-from GraphWindow import Graph
+from .GraphWindow import Graph
 
 def load(name):
     try:

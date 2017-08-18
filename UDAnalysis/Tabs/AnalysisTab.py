@@ -1,8 +1,8 @@
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from GraphWindow import *
-from ExtendWidgets import *
+from ExtendAnalysis.GraphWindow import *
+from ExtendAnalysis.ExtendWidgets import *
 
 class AnalysisTab(QWidget):
     def __init__(self,parent):

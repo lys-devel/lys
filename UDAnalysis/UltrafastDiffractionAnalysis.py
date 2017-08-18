@@ -1,9 +1,9 @@
 import os
-from AnalysisWindow import AnalysisWindow
-from ExtendType import *
-from UDAnalysis.Tabs.LoadTab import *
-from UDAnalysis.Tabs.AnalysisTab import *
-from UDAnalysis.Instruments import UED_Ishizaka
+from ExtendAnalysis.AnalysisWindow import AnalysisWindow
+from ExtendAnalysis.ExtendType import *
+from .Tabs.LoadTab import *
+from .Tabs.AnalysisTab import *
+from .Instruments import UED_Ishizaka
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *

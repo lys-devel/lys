@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 import random, weakref, gc, sys, os, math
-from ColorWidgets import *
 import numpy as np
-from ExtendType import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import colors
-from GraphWindow import *
-from GraphSettings.AxisSettings import *
+
+from ExtendAnalysis.ExtendType import *
+from ExtendAnalysis.ColorWidgets import *
+from ExtendAnalysis.GraphWindow import *
+from .AxisSettings import *
 
 class MarginAdjustableCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import random, weakref, gc, sys, os
-from ColorWidgets import *
+from ExtendAnalysis import *
+from ExtendAnalysis.ColorWidgets import *
 import numpy as np
-from ExtendType import *
+from ExtendAnalysis.ExtendType import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
 from PyQt5.QtCore import *
@@ -11,8 +12,9 @@ from PyQt5.QtWidgets import *
 from matplotlib import colors, patches
 from matplotlib.patches import BoxStyle
 import matplotlib
-from GraphWindow import *
-from GraphSettings.AreaSettings import *
+
+from ExtendAnalysis.GraphWindow import *
+from .AreaSettings import *
 
 class AnnotationData(object):
     def __init__(self,obj,idn,appearance):

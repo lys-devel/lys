@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 import random, weakref, gc, sys, os
 from collections import namedtuple
-from ExtendAnalysis.ColorWidgets import ColorSelection, ColorMapSelection
 import numpy as np
 from enum import Enum
-from ExtendType import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
 import matplotlib.pyplot as plt
@@ -14,6 +12,10 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import lines, markers, ticker
+
+from .ExtendType import *
+from .ColorWidgets import *
+
 class Axis(Enum):
     BottomLeft=1
     TopLeft=2
@@ -223,7 +225,7 @@ class PreviewWindow(AttachableWindow):
         elif mode==1:
             self.setWidget(self.main)
 
-from GraphSettings.Annotation import *
+from .GraphSettings.Annotation import *
 class ExtendCanvas(AnnotationSettingCanvas):
     def __GlobalToAxis(self, x, y, ax):
         loc=self.__GlobalToRatio(x,y,ax)

@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from GraphWindow import PreviewWindow
+#from GraphWindow import PreviewWindow
 
 class AnalysisWindow(QMainWindow):
     __list=[]
