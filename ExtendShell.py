@@ -1,5 +1,6 @@
-import cmd, os, LoadFile
-from ExtendType import *
+import cmd, os
+from ExtendAnalysis import LoadFile
+from ExtendAnalysis import Wave
 from CommandWindow import CommandWindow
 from GraphWindow import *
 

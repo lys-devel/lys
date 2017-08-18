@@ -1,6 +1,6 @@
 import os,sys
 from ExtendType import *
-from GraphWindow import Graph
+from GraphWindow import Graph, PreviewWindow
 import LoadFile
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -95,6 +95,13 @@ class _FileSystemViewBase(object):
         for p in self.selectedPaths():
             w=Wave(p)
             g.Append(w)
+    def Action_Preview(self):
+        return QAction('Preview',self,triggered=self.__preview)
+    def __preview(self):
+        list=[]
+        for p in self.selectedPaths():
+            list.append(Wave(p))
+        PreviewWindow(list)
     def Action_Edit(self):
         return QAction('Edit',self,triggered=print)
     def Action_Print(self):

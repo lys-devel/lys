@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import random, weakref, gc, sys, os
 from collections import namedtuple
-from ColorWidgets import *
+from ExtendAnalysis.ColorWidgets import ColorSelection, ColorMapSelection
 import numpy as np
 from enum import Enum
 from ExtendType import *
@@ -177,22 +177,21 @@ class Graph(AutoSavedWindow):
             AutoSavedWindow.mdimain.addSubWindow(self._mod)
         self._mod.show()
         self._mod.attachTo()
-class PreviewWindow(QMainWindow):
+class PreviewWindow(AttachableWindow):
     instance=None
     @classmethod
     def CloseAllWindows(cls):
         if not cls.instance is None:
             cls.instance.close()
-    def __new__(cls,*list):
+    def __new__(cls,list):
         if cls.instance is None:
             return QMainWindow.__new__(cls)
         else:
             return cls.instance
-
-    def __init__(self,*list):
+    def __init__(self,list):
         if PreviewWindow.instance is None:
             PreviewWindow.instance=self
-            QMainWindow.__init__(self)
+            super().__init__()
             self.setWindowTitle("Preview Window")
             self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
             self.updateGeometry()
@@ -200,14 +199,17 @@ class PreviewWindow(QMainWindow):
             self.main=ExtendCanvas()
             self.bottom=ExtendCanvas()
             self._setLayout(2)
+            if AutoSavedWindow.mdimain is not None:
+                AutoSavedWindow.mdimain.addSubWindow(self)
         else:
             self.main.Clear()
             self.left.Clear()
             self.bottom.Clear()
+        n=1
         for l in list:
             self.main.Append(l)
+            n=max(n,l.data.ndim)
         self.show()
-
     def _setLayout(self,mode):
         if mode==2:
             layout=QGridLayout()
@@ -217,9 +219,9 @@ class PreviewWindow(QMainWindow):
             layout.addWidget(self.bottom,1,1)
             wid=QWidget(self)
             wid.setLayout(layout)
-            self.setCentralWidget(wid)
+            self.setWidget(wid)
         elif mode==1:
-            self.setCentralWidget(self.main)
+            self.setWidget(self.main)
 
 from GraphSettings.Annotation import *
 class ExtendCanvas(AnnotationSettingCanvas):
