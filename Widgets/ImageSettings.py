@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import *
 from matplotlib import colors
 
 from ExtendAnalysis.ExtendType import *
-from ExtendAnalysis.ColorWidgets import *
+from .ColorWidgets import *
 from ExtendAnalysis.GraphWindow import *
 from .LineSettings import *
 

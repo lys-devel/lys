@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import *
 from matplotlib import colors
 
 from ExtendAnalysis.ExtendType import *
-from ExtendAnalysis.ColorWidgets import *
+from .ColorWidgets import *
 from ExtendAnalysis.GraphWindow import *
 from .AxisSettings import *
 
@@ -126,7 +126,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
         self.__haxis2='Bottom'
         self.__listener=[]
         self.addMarginAdjustedListener(self)
-        self.addAxisRangeChangeListener(self)
+        self.addAxisRangeChangeListener(self.OnAxisRangeChanged)
 
     def SaveAsDictionary(self,dictionary,path):
         super().SaveAsDictionary(dictionary,path)

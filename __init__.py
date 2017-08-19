@@ -1,3 +1,4 @@
 from .ExtendType import *
-from .GraphWindow import *
 from .LoadFile import *
+from .AnalysisWindow import *
+from .GraphWindow import *

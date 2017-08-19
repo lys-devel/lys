@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 import os, sys, shutil, weakref
 import numpy as np
+import scipy.ndimage
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 
 def mkdir(name):
     try:
@@ -134,8 +137,11 @@ class AutoSaved(object):
     def FileName(self):
         return self.__file
     def Name(self):
-        nam,ext=os.path.splitext(os.path.basename(self.FileName()))
-        return nam
+        if self.FileName() is None:
+            return "untitled"
+        else:
+            nam,ext=os.path.splitext(os.path.basename(self.FileName()))
+            return nam
     def __del__(self):
         if self.__finalizer.alive:
             self.__finalizer()
@@ -183,7 +189,6 @@ class Wave(AutoSaved):
     @classmethod
     def AddWaveModificationListener(cls, listener):
         cls.__waveModListener.append(weakref.ref(listener))
-
     @classmethod
     def _EmitWaveModified(cls,wave):
         for l in cls.__waveModListener:
@@ -199,7 +204,19 @@ class Wave(AutoSaved):
                 Wave._EmitWaveModified(self)
         else:
             super().__setattr__(key,value)
-
+    def __getattribute__(self,key):
+        if key=='x' or key=='y' or key=='z':
+            val=super().__getattribute__(key)
+            if val.ndim==0:
+                index=['x','y','z'].index(key)
+                if self.data.ndim>index:
+                    return np.arange(self.data.shape[index])
+                else:
+                    return val
+            else:
+                return val
+        else:
+            return super().__getattribute__(key)
     def _init(self):
         self._emitflg=False
         self.data=[0]
@@ -223,6 +240,17 @@ class Wave(AutoSaved):
         self.y=target.y
         self.z=target.z
         self.note=target.note
+
+    def slice(self,pos1,pos2,axis='x'):
+        index=['x','y'].index(axis)
+        size=pos2[index]-pos1[index]
+        x,y=np.linspace(pos1[0], pos2[0], size), np.linspace(pos1[1], pos2[1], size)
+        res=scipy.ndimage.map_coordinates(self.data, np.vstack((x,y)))
+        w=Wave()
+        w.data=res
+        w.x=self.x[pos1[index]:pos2[index]]
+        return w
+
 class String(AutoSaved):
     def _init(self):
         self.data=""
@@ -257,5 +285,130 @@ class Dict(AutoSaved):
         return key in self.data
     def __len__(self):
         return len(self.data)
+
+class SizeAdjustableWindow(QMdiSubWindow):
+    def __init__(self):
+        super().__init__()
+        #Mode
+        #0 : Auto
+        #1 : heightForWidth
+        #2 : widthForHeight
+        self.__mode=0
+        self.__aspect=0
+        self.setWidth(0)
+        self.setHeight(0)
+    def setWidth(self,val):
+        if self.__mode==2:
+            self.__mode=0
+        if val==0:
+            self.setMinimumWidth(85)
+            self.setMaximumWidth(100000)
+        else:
+            self.setMinimumWidth(val)
+            self.setMaximumWidth(val)
+    def setHeight(self,val):
+        if self.__mode==1:
+            self.__mode=0
+        if val==0:
+            self.setMinimumHeight(85)
+            self.setMaximumHeight(100000)
+        else:
+            self.setMinimumHeight(val)
+            self.setMaximumHeight(val)
+    def setHeightForWidth(self,val):
+        self.__mode=1
+        self.__aspect=val
+    def setWidthForHeight(self,val):
+        self.__mode=2
+        self.__aspect=val
+    def resizeEvent(self,event):
+        self._resizeEvent(event.size())
+        return super().resizeEvent(event)
+    def _resizeEvent(self,size):
+        if self.__mode==1:
+            self.setMinimumHeight(size.width()*self.__aspect)
+            self.setMaximumHeight(size.width()*self.__aspect)
+        elif self.__mode==2:
+            self.setMinimumWidth(size.height()*self.__aspect)
+            self.setMaximumWidth(size.height()*self.__aspect)
+
+class AttachableWindow(SizeAdjustableWindow):
+    resized=pyqtSignal()
+    moved=pyqtSignal()
+    closed=pyqtSignal()
+    def __init__(self):
+        super().__init__()
+    def resizeEvent(self,event):
+        self.resized.emit()
+        return super().resizeEvent(event)
+    def moveEvent(self,event):
+        self.moved.emit()
+        return super().moveEvent(event)
+    def closeEvent(self,event):
+        self.closed.emit()
+        return super().closeEvent(event)
+
+class AutoSavedWindow(AttachableWindow, AutoSaved):
+    __list=[]
+    mdimain=None
+    @classmethod
+    def CloseAllWindows(cls):
+        for g in cls.__list:
+            g.close()
+    @classmethod
+    def _AddWindow(cls,win):
+        cls.__list.append(win)
+    @classmethod
+    def _RemoveWindow(cls,win):
+        cls.__list.remove(win)
+    @classmethod
+    def _Contains(cls,win):
+        return win in cls.__list
+    @classmethod
+    def DisconnectedWindows(cls):
+        res=[]
+        for g in cls.__list:
+            if not g.IsConnected():
+                res.append(g)
+        return res
+    @classmethod
+    def AllWindows(cls):
+        return cls.__list
+
+    def __new__(cls, file=None,title=None):
+        return AutoSaved.__new__(cls,file,AttachableWindow)
+    def __init__(self, file=None, title=None):
+        AutoSaved.__init__(self,file,AttachableWindow)
+        AutoSavedWindow._AddWindow(self)
+        if title is not None:
+            self.setWindowTitle(title)
+        self.updateGeometry()
+        self.show()
+    def __setattr__(self,key,value):
+        object.__setattr__(self,key,value)
+    def closeEvent(self,event):
+        if self.IsConnected() or self.isHidden():
+            self.Save()
+        else:
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Warning)
+            msg.setText("This window is not saved. Do you really want to close it?")
+            msg.setWindowTitle("Caution")
+            msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            ok = msg.exec_()
+            if ok==QMessageBox.Cancel:
+                event.ignore()
+                return
+        AutoSavedWindow._RemoveWindow(self)
+        self.Disconnect()
+        event.accept()
+        return AttachableWindow.closeEvent(self,event)
+    def hide(self):
+        sys.stderr.write('This window cannot be hidden.\n')
+    def show(self):
+        if AutoSavedWindow._Contains(self):
+            super().show()
+        else:
+            sys.stderr.write('This window is already closed.\n')
 __home=os.getcwd()
 __CDChangeListener=[]

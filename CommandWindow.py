@@ -1,13 +1,10 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
 import sys, os
 import rlcompleter
 from .ExtendType import *
-from .ExtendWidgets import *
+from .Widgets.ExtendWidgets import *
 from .GraphWindow import *
-from .AnalysisWindow import AnalysisWindow
-from .UDAnalysis.UltrafastDiffractionAnalysis import UDAnalysis
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -186,9 +183,8 @@ class CommandWindow(QMdiSubWindow):
     def __treeContextMenu(self,tree):
         cd=QAction('Set Current Directory',self,triggered=self.__setCurrentDirectory)
         ld=QAction('Load',self,triggered=self.__load)
-        ud=QAction('Open by UDAnalysis',self,triggered=self.__openUD)
         menu={}
-        menu['dir']=[cd,tree.Action_NewDirectory(),tree.Action_Delete(),ud]
+        menu['dir']=[cd,tree.Action_NewDirectory(),tree.Action_Delete()]
         menu['mix']=[ld,tree.Action_Delete()]
         menu['other']=[ld,tree.Action_Delete(),tree.Action_Print()]
         menu['.npz']=[tree.Action_Preview(),tree.Action_Display(),tree.Action_Edit(),ld,tree.Action_Print(),tree.Action_Delete()]
@@ -196,8 +192,6 @@ class CommandWindow(QMdiSubWindow):
 
     def __setCurrentDirectory(self):
         cd(self.__tree.selectedPaths()[0])
-    def __openUD(self):
-        ud=UDAnalysis(self.__tree.selectedPaths()[0])
     def __load(self):
         for p in self.__tree.selectedPaths():
             self.__shell.Load(p)

@@ -1,28 +1,26 @@
 #!/usr/bin/env python
-import random, weakref, gc, sys, os
-from collections import namedtuple
+import random, weakref, sys, os
 import numpy as np
 from enum import Enum
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
 import matplotlib as mpl
 import matplotlib.font_manager as fm
-import matplotlib.pyplot as plt
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import lines, markers, ticker
 
-from ExtendAnalysis.ExtendType import *
-from ExtendAnalysis.ColorWidgets import *
-from ExtendAnalysis.GraphWindow import *
+from ExtendAnalysis import *
+from .ColorWidgets import *
 from .ImageSettings import *
 
 class RangeSelectableCanvas(ImageColorAdjustableCanvas):
     def __init__(self,dpi=100):
         super().__init__(dpi)
         self.rect = Rectangle((0,0), 0, 0, color='orange', alpha=0.5)
-        self.axes.add_patch(self.rect)
+        patch=self.axes.add_patch(self.rect)
+        patch.set_zorder(20000)
         self.Selection=False
 
         self.mpl_connect('button_press_event',self.OnMouseDown)
@@ -120,6 +118,8 @@ class AxisSelectionWidget(QComboBox):
         super().__init__()
         self.canvas=canvas
         self.canvas.addAxisChangeListener(self)
+        self.canvas.addAxisSelectedListener(self)
+        self.flg=False
         self.__setItem()
         self.activated.connect(self._activated)
     def __setItem(self):
@@ -130,10 +130,18 @@ class AxisSelectionWidget(QComboBox):
         if self.canvas.axisIsValid('Top'):
             self.addItem('Top')
     def _activated(self):
+        self.flg=True
         self.canvas.setSelectedAxis(self.currentText())
+        self.flg=False
     def OnAxisChanged(self,axis):
         self.clear()
         self.__setItem()
+    def OnAxisSelected(self,axis):
+        if self.flg:
+            return
+        else:
+            Items = [self.itemText(i) for i in range(self.count())]
+            self.setCurrentIndex(Items.index(axis))
 
 class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
     def __init__(self, dpi=100):
@@ -185,11 +193,11 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
             return axes.get_xlim()
 
     def addAxisRangeChangeListener(self,listener):
-        self.__listener.append(weakref.ref(listener))
+        self.__listener.append(weakref.WeakMethod(listener))
     def _emitAxisRangeChanged(self):
         for l in self.__listener:
             if l() is not None:
-                l().OnAxisRangeChanged()
+                l()()
             else:
                 self.__listener.remove(l)
 
@@ -213,6 +221,90 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
             return axes.get_autoscaley_on()
         if ax in ['Top','Bottom']:
             return axes.get_autoscalex_on()
+class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+    def __GlobalToAxis(self, x, y, ax):
+        loc=self.__GlobalToRatio(x,y,ax)
+        xlim=ax.get_xlim()
+        ylim=ax.get_ylim()
+        x_ax=xlim[0]+(xlim[1]-xlim[0])*loc[0]
+        y_ax=ylim[0]+(ylim[1]-ylim[0])*loc[1]
+        return [x_ax,y_ax]
+    def __GlobalToRatio(self, x, y, ax):
+        ran=ax.get_position()
+        x_loc=(x - ran.x0 * self.width())/((ran.x1 - ran.x0)*self.width())
+        y_loc=(y - ran.y0 * self.height())/((ran.y1 - ran.y0)*self.height())
+        return [x_loc,y_loc]
+    def __ExpandAndShrink(self,mode,axis):
+        if not self.axisIsValid(axis):
+            return
+        ax=self.getAxes(axis)
+        pos=self.__GlobalToAxis(self.rect_pos_start[0],self.rect_pos_start[1],ax)
+        pos2=self.__GlobalToAxis(self.rect_pos_end[0],self.rect_pos_end[1],ax)
+        width=pos2[0]-pos[0]
+        height=pos2[1]-pos[1]
+        xlim=ax.get_xlim()
+        ylim=ax.get_ylim()
+
+        if axis in ['Bottom', 'Top']:
+            if mode in ['Expand','Horizontal Expand']:
+                minVal=min(pos[0], pos[0]+width)
+                maxVal=max(pos[0], pos[0]+width)
+                self.setAxisRange([minVal,maxVal],axis)
+            if mode in ['Shrink','Horizontal Shrink']:
+                ratio=abs((xlim[1]-xlim[0])/width)
+                a=min(pos[0], pos[0]+width)
+                b=max(pos[0], pos[0]+width)
+                minVal=xlim[0]-ratio*(a-xlim[0])
+                maxVal=xlim[1]+ratio*(xlim[1]-b)
+                self.setAxisRange([minVal,maxVal],axis)
+        else:
+            if mode in ['Vertical Expand', 'Expand']:
+                minVal=min(pos[1], pos[1]+height)
+                maxVal=max(pos[1], pos[1]+height)
+                self.setAxisRange([minVal,maxVal],axis)
+            if mode in ['Shrink','Vertical Shrink']:
+                ratio=abs((ylim[1]-ylim[0])/height)
+                a=min(pos[1], pos[1]+height)
+                b=max(pos[1], pos[1]+height)
+                minVal=ylim[0]-ratio*(a-ylim[0])
+                maxVal=ylim[1]+ratio*(ylim[1]-b)
+                self.setAxisRange([minVal,maxVal],axis)
+    def constructContextMenu(self):
+        menu = super().constructContextMenu()
+        menu.addAction(QAction('Auto scale axes',self,triggered=self.__auto))
+        if self.IsRangeSelected():
+            menu.addAction(QAction('Expand',self,triggered=self.__expand))
+            menu.addAction(QAction('Horizontal Expand',self,triggered=self.__expandh))
+            menu.addAction(QAction('Vertical Expand',self,triggered=self.__expandv))
+            menu.addAction(QAction('Shrink',self,triggered=self.__shrink))
+            menu.addAction(QAction('Horizontal Shrink',self,triggered=self.__shrinkh))
+            menu.addAction(QAction('Vertical Shrink',self,triggered=self.__shrinkv))
+        return menu
+    def __expand(self):
+        self.__exec('Expand')
+    def __expandh(self):
+        self.__exec('Horizontal Expand')
+    def __expandv(self):
+        self.__exec('Vertical Expand')
+    def __shrink(self):
+        self.__exec('Shrink')
+    def __shrinkh(self):
+        self.__exec('Horizontal Shrink')
+    def __shrinkv(self):
+        self.__exec('Vertical Shrink')
+    def __exec(self,text):
+        for axis in ['Left','Right','Top','Bottom']:
+            self.__ExpandAndShrink(text,axis)
+        self.ClearSelectedRange()
+        self.draw()
+    def __auto(self):
+        for axis in ['Left','Right','Bottom','Top']:
+            self.setAutoScaleAxis(axis)
+        self.ClearSelectedRange()
+        self.draw()
+
 class AxisRangeAdjustBox(QGroupBox):
     def __init__(self,canvas):
         super().__init__('Axis Range')
@@ -220,7 +312,7 @@ class AxisRangeAdjustBox(QGroupBox):
         self.__initlayout()
         self.__loadstate(canvas)
         self.canvas.addAxisSelectedListener(self)
-        self.canvas.addAxisRangeChangeListener(self)
+        self.canvas.addAxisRangeChangeListener(self.OnAxisRangeChanged)
     def __initlayout(self):
         layout=QVBoxLayout()
 
@@ -285,7 +377,7 @@ class AxisRangeAdjustBox(QGroupBox):
         ma=self.__spin2.value()
         self.canvas.setAxisRange([mi,ma],self.canvas.getSelectedAxis())
 
-class AxisRangeScrollableCanvas(AxisRangeAdjustableCanvas):
+class AxisRangeScrollableCanvas(AxisRangeRightClickCanvas):
     def __init__(self,dpi=100):
         super().__init__(dpi)
         self.mpl_connect('scroll_event',self.onScroll)
@@ -356,13 +448,12 @@ class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
         super().__init__(dpi=dpi)
         self.addAxisChangeListener(self)
     def OnAxisChanged(self,axis):
-        return
         if self.axisIsValid('Right'):
-            self.setMirrorAxis('Left','Off')
-            self.setMirrorAxis('Right','Off')
+            self.setMirrorAxis('Left',False)
+            self.setMirrorAxis('Right',False)
         if self.axisIsValid('Top'):
-            self.setMirrorAxis('Bottom','Off')
-            self.setMirrorAxis('Top','Off')
+            self.setMirrorAxis('Bottom',False)
+            self.setMirrorAxis('Top',False)
         self._emitAxisSelected()
     def SaveAsDictionary(self,dictionary,path):
         super().SaveAsDictionary(dictionary,path)

@@ -1,7 +1,7 @@
 import os,sys
-from .ExtendType import *
-from .GraphWindow import Graph, PreviewWindow
-from . import LoadFile
+from ExtendAnalysis.ExtendType import *
+from ExtendAnalysis.GraphWindow import Graph, PreviewWindow
+from ExtendAnalysis import LoadFile
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
