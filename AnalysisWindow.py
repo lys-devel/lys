@@ -1,21 +1,13 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-#from GraphWindow import PreviewWindow
-
-class AnalysisWindow(QMainWindow):
-    __list=[]
-    @classmethod
-    def CloseAllWindows(cls):
-        for g in cls.__list:
-            g.close()
-
-    def __init__(self,title,proj):
+from .ExtendType import ExtendMdiSubWindow
+class AnalysisWindow(ExtendMdiSubWindow):
+    def __init__(self,title,proj=None):
         super().__init__()
-        AnalysisWindow.__list.append(self)
         self.setWindowTitle(title)
         self.__proj=proj
-        self.__initMenuBar()
+        #self.__initMenuBar()
         self.show()
 
     def __initMenuBar(self):
@@ -27,9 +19,6 @@ class AnalysisWindow(QMainWindow):
         grf=menu.addMenu('&Graph')
         self.__prev=QAction('Auto Preview',self,checkable=True)
         grf.addAction(self.__prev)
-
-    def __del__(self):
-        AnalysisWindow.__list.remove(self)
     def showPreview(self,wave):
         if self.__prev.isChecked():
             PreviewWindow(wave)

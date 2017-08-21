@@ -11,7 +11,7 @@ from matplotlib import colors
 from ExtendAnalysis.ExtendType import *
 from .ColorWidgets import *
 from ExtendAnalysis.GraphWindow import *
-from .AxisSettings import *
+from .AxisLabelSettings import *
 
 class MarginAdjustableCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):

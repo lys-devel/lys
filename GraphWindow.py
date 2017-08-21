@@ -24,12 +24,9 @@ class Graph(AutoSavedWindow):
     def _init(self):
         self._mod=None
         self.canvas=ExtendCanvas()
+        self.resize(200,200)
         self.canvas.setModificationFunction(self.Make_ModifyWindow)
-        if AutoSavedWindow.mdimain is not None:
-            AutoSavedWindow.mdimain.addSubWindow(self)
-            self.setWidget(self.canvas)
-        else:
-            self.setCentralWidget(self.canvas)
+        self.setWidget(self.canvas)
     def closeEvent(self,event):
         self.canvas.fig.canvas=None
         super().closeEvent(event)
@@ -37,17 +34,11 @@ class Graph(AutoSavedWindow):
         self.canvas.Append(wave,axis)
     def Make_ModifyWindow(self,tab='Area'):
         self._mod=ModifyWindow(self.canvas,self)
-        if AutoSavedWindow.mdimain is not None:
-            AutoSavedWindow.mdimain.addSubWindow(self._mod)
         self._mod.selectTab(tab)
         self._mod.show()
         self._mod.attachTo()
-class PreviewWindow(AttachableWindow):
+class PreviewWindow(ExtendMdiSubWindow):
     instance=None
-    @classmethod
-    def CloseAllWindows(cls):
-        if not cls.instance is None:
-            cls.instance.close()
     def __new__(cls,list):
         if cls.instance is None:
             return QMainWindow.__new__(cls)
@@ -59,11 +50,10 @@ class PreviewWindow(AttachableWindow):
             super().__init__()
             self.setWindowTitle("Preview Window")
             self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+            self.resize(500,500)
             self.updateGeometry()
             self.__initcanvas()
             self.__initlayout()
-            if AutoSavedWindow.mdimain is not None:
-                AutoSavedWindow.mdimain.addSubWindow(self)
         else:
             self.main.Clear()
             self.left.Clear()
@@ -123,22 +113,16 @@ class PreviewWindow(AttachableWindow):
             self.bottom.hide()
     def Make_ModifyWindow_c(self,tab='Axis'):
         self._mod=ModifyWindow(self.main,self,showArea=False)
-        if AutoSavedWindow.mdimain is not None:
-            AutoSavedWindow.mdimain.addSubWindow(self._mod)
         self._mod.selectTab(tab)
         self._mod.show()
         self._mod.attachTo()
     def Make_ModifyWindow_b(self,tab='Axis'):
         self._mod=ModifyWindow(self.bottom,self,showArea=False)
-        if AutoSavedWindow.mdimain is not None:
-            AutoSavedWindow.mdimain.addSubWindow(self._mod)
         self._mod.selectTab(tab)
         self._mod.show()
         self._mod.attachTo()
     def Make_ModifyWindow_l(self,tab='Axis'):
         self._mod=ModifyWindow(self.left,self,showArea=False)
-        if AutoSavedWindow.mdimain is not None:
-            AutoSavedWindow.mdimain.addSubWindow(self._mod)
         self._mod.selectTab(tab)
         self._mod.show()
         self._mod.attachTo()
@@ -179,10 +163,10 @@ class PreviewWindow(AttachableWindow):
         for i in [1,2,3]:
             res=self.main.getAnchorInfo(i)
             if res is None:
-                return
+                continue
             w=res[0]
             if w is None:
-                return
+                continue
             if w.wave.data.ndim==2:
                 p=self.__posToPoint(w.wave,res[1])
                 slicex=w.wave.slice((0,p[1]),(w.wave.data.shape[0],p[1]),axis='x')
@@ -195,13 +179,14 @@ class PreviewWindow(AttachableWindow):
                 self.left.setDataColor(self.main.getAnchorColor(i),id1)
                 self.bottom.setDataColor(self.main.getAnchorColor(i),id2)
 
-class ModifyWindow(QMdiSubWindow):
+class ModifyWindow(ExtendMdiSubWindow):
     instance=None
     def __init__(self, canvas, parent=None, showArea=True):
         super().__init__()
         if ModifyWindow.instance is not None:
             ModifyWindow.instance.close()
         self._initlayout(canvas,parent,showArea)
+        self.adjustSize()
         self.updateGeometry()
         self.show()
         self.canvas=canvas

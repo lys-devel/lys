@@ -5,12 +5,14 @@ import scipy.ndimage
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
+__home=os.getcwd()
+__CDChangeListener=[]
+
 def mkdir(name):
     try:
         os.makedirs(name)
     except Exception:
         pass
-
 def copy(name,name_to):
     try:
         if os.path.isdir(name):
@@ -66,6 +68,8 @@ def cd(direct=None):
     os.chdir(direct)
     for listener in __CDChangeListener:
         listener.OnCDChanged(pwd())
+def home():
+    return __home
 def addCDChangeListener(listener):
     __CDChangeListener.append(listener)
     listener.OnCDChanged(pwd())
@@ -286,7 +290,36 @@ class Dict(AutoSaved):
     def __len__(self):
         return len(self.data)
 
-class SizeAdjustableWindow(QMdiSubWindow):
+class ExtendMdiSubWindowBase(QMdiSubWindow):
+    mdimain=None
+    __wins=[]
+    def __init__(self):
+        super().__init__()
+        ExtendMdiSubWindow._AddWindow(self)
+    @classmethod
+    def CloseAllWindows(cls):
+        for g in cls.__wins:
+            g.close()
+    @classmethod
+    def _AddWindow(cls,win):
+        cls.__wins.append(win)
+        if cls.mdimain is not None:
+            cls.mdimain.addSubWindow(win)
+    @classmethod
+    def _RemoveWindow(cls,win):
+        cls.__wins.remove(win)
+    @classmethod
+    def _Contains(cls,win):
+        return win in cls.__wins
+    @classmethod
+    def AllWindows(cls):
+        return cls.__wins
+    def closeEvent(self,event):
+        ExtendMdiSubWindowBase._RemoveWindow(self)
+    def hideEvent(self,event):
+        event.accept()
+        self.close()
+class SizeAdjustableWindow(ExtendMdiSubWindowBase):
     def __init__(self):
         super().__init__()
         #Mode
@@ -331,7 +364,6 @@ class SizeAdjustableWindow(QMdiSubWindow):
         elif self.__mode==2:
             self.setMinimumWidth(size.height()*self.__aspect)
             self.setMaximumWidth(size.height()*self.__aspect)
-
 class AttachableWindow(SizeAdjustableWindow):
     resized=pyqtSignal()
     moved=pyqtSignal()
@@ -347,14 +379,11 @@ class AttachableWindow(SizeAdjustableWindow):
     def closeEvent(self,event):
         self.closed.emit()
         return super().closeEvent(event)
+class ExtendMdiSubWindow(AttachableWindow):
+    pass
 
-class AutoSavedWindow(AttachableWindow, AutoSaved):
+class AutoSavedWindow(ExtendMdiSubWindow, AutoSaved):
     __list=[]
-    mdimain=None
-    @classmethod
-    def CloseAllWindows(cls):
-        for g in cls.__list:
-            g.close()
     @classmethod
     def _AddWindow(cls,win):
         cls.__list.append(win)
@@ -376,9 +405,9 @@ class AutoSavedWindow(AttachableWindow, AutoSaved):
         return cls.__list
 
     def __new__(cls, file=None,title=None):
-        return AutoSaved.__new__(cls,file,AttachableWindow)
+        return AutoSaved.__new__(cls,file,ExtendMdiSubWindow)
     def __init__(self, file=None, title=None):
-        AutoSaved.__init__(self,file,AttachableWindow)
+        AutoSaved.__init__(self,file,ExtendMdiSubWindow)
         AutoSavedWindow._AddWindow(self)
         if title is not None:
             self.setWindowTitle(title)
@@ -402,7 +431,7 @@ class AutoSavedWindow(AttachableWindow, AutoSaved):
         AutoSavedWindow._RemoveWindow(self)
         self.Disconnect()
         event.accept()
-        return AttachableWindow.closeEvent(self,event)
+        return ExtendMdiSubWindow.closeEvent(self,event)
     def hide(self):
         sys.stderr.write('This window cannot be hidden.\n')
     def show(self):
@@ -410,5 +439,3 @@ class AutoSavedWindow(AttachableWindow, AutoSaved):
             super().show()
         else:
             sys.stderr.write('This window is already closed.\n')
-__home=os.getcwd()
-__CDChangeListener=[]

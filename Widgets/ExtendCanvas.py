@@ -60,8 +60,6 @@ class ExtendCanvas(AnchorSettingCanvas):
         self.modf=func
     def buildContextMenu(self):
         menu = super().constructContextMenu()
-        if self.modf is not None:
-            menu.addAction(QAction('Modify Graph',self,triggered=self.modf))
         action = menu.exec_(QCursor.pos())
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_G:
