@@ -4,13 +4,14 @@ from enum import Enum
 from PyQt5.QtGui import *
 
 from .AnchorSettings import *
+
 class ExtendCanvas(AnchorSettingCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.setFocusPolicy(Qt.StrongFocus)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
-        self.modf=None
+        self.modf=weakref.WeakMethod(self.defModFunc)
     def __findAxis(self,axis):
         axes=axis.axes
         xy=isinstance(axis,XAxis)
@@ -38,30 +39,39 @@ class ExtendCanvas(AnchorSettingCanvas):
         if event.dblclick:
             axis=self.getPickedAxis()
             if axis is not None:
-                self.modf(self,'Axis')
+                self.modf()(self,'Axis')
                 self.setSelectedAxis(self.__findAxis(axis))
                 return super().OnMouseDown(event)
             line=self.getPickedLine()
             if line is not None:
-                self.modf(self,'Lines')
+                self.modf()(self,'Lines')
                 w=self.getWaveDataFromArtist(line)
                 self.setSelectedIndexes(1,w.id)
                 return super().OnMouseDown(event)
             image=self.getPickedImage()
             if image is not None:
-                self.modf(self,'Images')
+                self.modf()(self,'Images')
                 w=self.getWaveDataFromArtist(image)
                 self.setSelectedIndexes(2,w.id)
                 return super().OnMouseDown(event)
-            self.modf(self)
+            self.modf()(self)
         else:
             return super().OnMouseDown(event)
     def setModificationFunction(self,func):
-        self.modf=func
+        self.modf=weakref.WeakMethod(func)
     def buildContextMenu(self):
         menu = super().constructContextMenu()
         action = menu.exec_(QCursor.pos())
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_G:
-            if self.modf is not None:
-                self.modf(self)
+            if self.modf() is not None:
+                self.modf()(self)
+    def defModFunc(self,canvas,tab='Axis'):
+        from ExtendAnalysis.ModifyWindow import ModifyWindow
+        parent=self.parentWidget()
+        while(parent is not None):
+            if isinstance(parent,ExtendMdiSubWindow):
+                mod=ModifyWindow(self,parent,showArea=False)
+                mod.selectTab(tab)
+                break
+            parent=parent.parentWidget()

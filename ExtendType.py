@@ -91,7 +91,8 @@ class _DataManager(object):
 
     @classmethod
     def _FinalizeObject(cls,obj):
-        obj()._Clear()
+        if obj() is not None:
+            obj()._Clear()
     @classmethod
     def _Append(cls,file,data):
         if cls.IsUsed(file):
@@ -291,34 +292,7 @@ class Dict(AutoSaved):
         return len(self.data)
 
 class ExtendMdiSubWindowBase(QMdiSubWindow):
-    mdimain=None
-    __wins=[]
-    def __init__(self):
-        super().__init__()
-        ExtendMdiSubWindow._AddWindow(self)
-    @classmethod
-    def CloseAllWindows(cls):
-        for g in cls.__wins:
-            g.close()
-    @classmethod
-    def _AddWindow(cls,win):
-        cls.__wins.append(win)
-        if cls.mdimain is not None:
-            cls.mdimain.addSubWindow(win)
-    @classmethod
-    def _RemoveWindow(cls,win):
-        cls.__wins.remove(win)
-    @classmethod
-    def _Contains(cls,win):
-        return win in cls.__wins
-    @classmethod
-    def AllWindows(cls):
-        return cls.__wins
-    def closeEvent(self,event):
-        ExtendMdiSubWindowBase._RemoveWindow(self)
-    def hideEvent(self,event):
-        event.accept()
-        self.close()
+    pass
 class SizeAdjustableWindow(ExtendMdiSubWindowBase):
     def __init__(self):
         super().__init__()
@@ -380,15 +354,43 @@ class AttachableWindow(SizeAdjustableWindow):
         self.closed.emit()
         return super().closeEvent(event)
 class ExtendMdiSubWindow(AttachableWindow):
-    pass
+    mdimain=None
+    __wins=[]
+    def __init__(self):
+        super().__init__()
+        print('init')
+        ExtendMdiSubWindow._AddWindow(self)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+    @classmethod
+    def CloseAllWindows(cls):
+        for g in cls.__wins:
+            g.close()
+    @classmethod
+    def _AddWindow(cls,win):
+        cls.__wins.append(win)
+        if cls.mdimain is not None:
+            cls.mdimain.addSubWindow(win)
+    @classmethod
+    def _RemoveWindow(cls,win):
+        cls.__wins.remove(win)
+        cls.mdimain.removeSubWindow(win)
+    @classmethod
+    def _Contains(cls,win):
+        return win in cls.__wins
+    @classmethod
+    def AllWindows(cls):
+        return cls.__wins
+    def closeEvent(self,event):
+        ExtendMdiSubWindow._RemoveWindow(self)
+        super().closeEvent(event)
 
 class AutoSavedWindow(ExtendMdiSubWindow, AutoSaved):
     __list=[]
     @classmethod
-    def _AddWindow(cls,win):
+    def _AddAutoWindow(cls,win):
         cls.__list.append(win)
     @classmethod
-    def _RemoveWindow(cls,win):
+    def _RemoveAutoWindow(cls,win):
         cls.__list.remove(win)
     @classmethod
     def _Contains(cls,win):
@@ -400,15 +402,12 @@ class AutoSavedWindow(ExtendMdiSubWindow, AutoSaved):
             if not g.IsConnected():
                 res.append(g)
         return res
-    @classmethod
-    def AllWindows(cls):
-        return cls.__list
 
     def __new__(cls, file=None,title=None):
         return AutoSaved.__new__(cls,file,ExtendMdiSubWindow)
     def __init__(self, file=None, title=None):
         AutoSaved.__init__(self,file,ExtendMdiSubWindow)
-        AutoSavedWindow._AddWindow(self)
+        AutoSavedWindow._AddAutoWindow(self)
         if title is not None:
             self.setWindowTitle(title)
         self.updateGeometry()
@@ -428,14 +427,6 @@ class AutoSavedWindow(ExtendMdiSubWindow, AutoSaved):
             if ok==QMessageBox.Cancel:
                 event.ignore()
                 return
-        AutoSavedWindow._RemoveWindow(self)
+        AutoSavedWindow._RemoveAutoWindow(self)
         self.Disconnect()
-        event.accept()
-        return super(ExtendMdiSubWindow,self).closeEvent(event)
-    def hide(self):
-        sys.stderr.write('This window cannot be hidden.\n')
-    def show(self):
-        if AutoSavedWindow._Contains(self):
-            super().show()
-        else:
-            sys.stderr.write('This window is already closed.\n')
+        return ExtendMdiSubWindow.closeEvent(self,event)
