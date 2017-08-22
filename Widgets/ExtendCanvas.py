@@ -38,22 +38,22 @@ class ExtendCanvas(AnchorSettingCanvas):
         if event.dblclick:
             axis=self.getPickedAxis()
             if axis is not None:
-                self.modf('Axis')
+                self.modf(self,'Axis')
                 self.setSelectedAxis(self.__findAxis(axis))
                 return super().OnMouseDown(event)
             line=self.getPickedLine()
             if line is not None:
-                self.modf('Lines')
+                self.modf(self,'Lines')
                 w=self.getWaveDataFromArtist(line)
                 self.setSelectedIndexes(1,w.id)
                 return super().OnMouseDown(event)
             image=self.getPickedImage()
             if image is not None:
-                self.modf('Images')
+                self.modf(self,'Images')
                 w=self.getWaveDataFromArtist(image)
                 self.setSelectedIndexes(2,w.id)
                 return super().OnMouseDown(event)
-            self.modf()
+            self.modf(self)
         else:
             return super().OnMouseDown(event)
     def setModificationFunction(self,func):
@@ -64,4 +64,4 @@ class ExtendCanvas(AnchorSettingCanvas):
     def keyPressEvent(self, e):
         if e.key() == Qt.Key_G:
             if self.modf is not None:
-                self.modf()
+                self.modf(self)

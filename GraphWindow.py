@@ -32,11 +32,9 @@ class Graph(AutoSavedWindow):
         super().closeEvent(event)
     def Append(self,wave,axis=Axis.BottomLeft):
         self.canvas.Append(wave,axis)
-    def Make_ModifyWindow(self,tab='Area'):
-        self._mod=ModifyWindow(self.canvas,self)
+    def Make_ModifyWindow(self,canvas,tab='Area'):
+        self._mod=ModifyWindow(canvas,self)
         self._mod.selectTab(tab)
-        self._mod.show()
-        self._mod.attachTo()
 class PreviewWindow(ExtendMdiSubWindow):
     instance=None
     def __new__(cls,list):
@@ -68,16 +66,16 @@ class PreviewWindow(ExtendMdiSubWindow):
         self.show()
     def __initcanvas(self):
         self.left=ExtendCanvas()
-        self.left.setModificationFunction(self.Make_ModifyWindow_l)
+        self.left.setModificationFunction(self.Make_ModifyWindow)
         self.left.addAxisRangeChangeListener(self.axis_l)
 
         self.main=ExtendCanvas()
-        self.main.setModificationFunction(self.Make_ModifyWindow_c)
+        self.main.setModificationFunction(self.Make_ModifyWindow)
         self.main.addAxisRangeChangeListener(self.axis_c)
         self.main.addAnchorChangedListener(self.OnAnchorChanged)
 
         self.bottom=ExtendCanvas()
-        self.bottom.setModificationFunction(self.Make_ModifyWindow_b)
+        self.bottom.setModificationFunction(self.Make_ModifyWindow)
         self.bottom.addAxisRangeChangeListener(self.axis_b)
 
         self.axisflg=False
@@ -111,21 +109,9 @@ class PreviewWindow(ExtendMdiSubWindow):
             self.gl.setColumnStretch(1, 6)
             self.left.hide()
             self.bottom.hide()
-    def Make_ModifyWindow_c(self,tab='Axis'):
-        self._mod=ModifyWindow(self.main,self,showArea=False)
+    def Make_ModifyWindow(self,canvas,tab='Axis'):
+        self._mod=ModifyWindow(canvas,self,showArea=False)
         self._mod.selectTab(tab)
-        self._mod.show()
-        self._mod.attachTo()
-    def Make_ModifyWindow_b(self,tab='Axis'):
-        self._mod=ModifyWindow(self.bottom,self,showArea=False)
-        self._mod.selectTab(tab)
-        self._mod.show()
-        self._mod.attachTo()
-    def Make_ModifyWindow_l(self,tab='Axis'):
-        self._mod=ModifyWindow(self.left,self,showArea=False)
-        self._mod.selectTab(tab)
-        self._mod.show()
-        self._mod.attachTo()
     def axis_l(self):
         if self.axisflg:
             return
@@ -191,10 +177,11 @@ class ModifyWindow(ExtendMdiSubWindow):
         self.show()
         self.canvas=canvas
         self._parent=parent
-        if parent is not None:
+        if isinstance(parent,ExtendMdiSubWindow):
             self._parent.moved.connect(self.attachTo)
             self._parent.resized.connect(self.attachTo)
             self._parent.closed.connect(self.close)
+        self.attachTo()
         ModifyWindow.instance=self
     def closeEvent(self,event):
         if self._parent is not None:
