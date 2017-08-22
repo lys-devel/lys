@@ -24,9 +24,6 @@ class PicableCanvas(AnnotationSettingCanvas):
         self.selLine=None
         self.selImage=None
         self.selAxis=None
-    def OnMouseUp(self,event):
-        super().OnMouseUp(event)
-        self._resetSelection()
     def OnMouseDown(self,event):
         super().OnMouseDown(event)
         if not self.__pick:
@@ -36,7 +33,7 @@ class PicableCanvas(AnnotationSettingCanvas):
         self.__pick=True
         if isinstance(event.artist,XAxis) or isinstance(event.artist,YAxis):
             self.selAxis=event.artist
-        if isinstance(event.artist,Line2D):
+        elif isinstance(event.artist,Line2D):
             if event.artist.get_zorder() < 0:
                 self.selLine=event.artist
         elif isinstance(event.artist,AxesImage):

@@ -431,7 +431,7 @@ class AutoSavedWindow(ExtendMdiSubWindow, AutoSaved):
         AutoSavedWindow._RemoveWindow(self)
         self.Disconnect()
         event.accept()
-        return ExtendMdiSubWindow.closeEvent(self,event)
+        return super(ExtendMdiSubWindow,self).closeEvent(event)
     def hide(self):
         sys.stderr.write('This window cannot be hidden.\n')
     def show(self):

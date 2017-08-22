@@ -40,19 +40,19 @@ class ExtendCanvas(AnchorSettingCanvas):
             if axis is not None:
                 self.modf('Axis')
                 self.setSelectedAxis(self.__findAxis(axis))
-                return
+                return super().OnMouseDown(event)
             line=self.getPickedLine()
             if line is not None:
                 self.modf('Lines')
                 w=self.getWaveDataFromArtist(line)
                 self.setSelectedIndexes(1,w.id)
-                return
+                return super().OnMouseDown(event)
             image=self.getPickedImage()
             if image is not None:
                 self.modf('Images')
                 w=self.getWaveDataFromArtist(image)
                 self.setSelectedIndexes(2,w.id)
-                return
+                return super().OnMouseDown(event)
             self.modf()
         else:
             return super().OnMouseDown(event)

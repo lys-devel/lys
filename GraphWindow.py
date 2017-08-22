@@ -199,6 +199,9 @@ class ModifyWindow(ExtendMdiSubWindow):
     def closeEvent(self,event):
         if self._parent is not None:
             self._parent._mod=None
+            self._parent.moved.disconnect(self.attachTo)
+            self._parent.resized.disconnect(self.attachTo)
+            self._parent.closed.disconnect(self.close)
         super().closeEvent(event)
     def attachTo(self):
         if self._parent is not None:
