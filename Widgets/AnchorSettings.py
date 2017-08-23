@@ -158,6 +158,5 @@ class AnchorCanvas(PicableCanvas):
     def __remc(self):
         self.__rem(3)
 
-
 class AnchorSettingCanvas(AnchorCanvas):
     pass

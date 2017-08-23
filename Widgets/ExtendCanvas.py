@@ -3,9 +3,9 @@ import random, sys, os
 from enum import Enum
 from PyQt5.QtGui import *
 
-from .AnchorSettings import *
+from .SaveSettings import *
 
-class ExtendCanvas(AnchorSettingCanvas):
+class ExtendCanvas(SaveSettingCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.setFocusPolicy(Qt.StrongFocus)

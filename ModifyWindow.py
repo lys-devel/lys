@@ -46,6 +46,7 @@ class ModifyWindow(ExtendMdiSubWindow):
         self._tab.addTab(_LineTab(canvas),"Lines")
         self._tab.addTab(_ImageTab(canvas),"Images")
         self._tab.addTab(_AnnotationTab(canvas),"Annot.")
+        self._tab.addTab(SaveBox(canvas),'Save')
         self.__list.append('Axis')
         self.__list.append('Lines')
         self.__list.append('Images')

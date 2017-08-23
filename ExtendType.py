@@ -358,7 +358,6 @@ class ExtendMdiSubWindow(AttachableWindow):
     __wins=[]
     def __init__(self):
         super().__init__()
-        print('init')
         ExtendMdiSubWindow._AddWindow(self)
         self.setAttribute(Qt.WA_DeleteOnClose)
     @classmethod
@@ -402,6 +401,9 @@ class AutoSavedWindow(ExtendMdiSubWindow, AutoSaved):
             if not g.IsConnected():
                 res.append(g)
         return res
+    @classmethod
+    def AllWindows(cls):
+        return cls.__list
 
     def __new__(cls, file=None,title=None):
         return AutoSaved.__new__(cls,file,ExtendMdiSubWindow)
