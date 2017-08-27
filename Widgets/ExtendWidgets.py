@@ -95,6 +95,15 @@ class _FileSystemViewBase(object):
         for p in self.selectedPaths():
             w=Wave(p)
             g.Append(w)
+    def Action_Append(self):
+        return QAction('Append',self,triggered=self.__append)
+    def __append(self):
+        g=Graph.active()
+        if g is None:
+            return
+        for p in self.selectedPaths():
+            w=Wave(p)
+            g.Append(w)
     def Action_Preview(self):
         return QAction('Preview',self,triggered=self.__preview)
     def __preview(self):

@@ -187,7 +187,7 @@ class CommandWindow(QMdiSubWindow):
         menu['dir']=[cd,tree.Action_NewDirectory(),tree.Action_Delete()]
         menu['mix']=[ld,tree.Action_Delete()]
         menu['other']=[ld,tree.Action_Delete(),tree.Action_Print()]
-        menu['.npz']=[tree.Action_Preview(),tree.Action_Display(),tree.Action_Edit(),ld,tree.Action_Print(),tree.Action_Delete()]
+        menu['.npz']=[tree.Action_Display(),tree.Action_Append(),tree.Action_Preview(),tree.Action_Edit(),ld,tree.Action_Print(),tree.Action_Delete()]
         tree.SetContextMenuActions(menu)
 
     def __setCurrentDirectory(self):

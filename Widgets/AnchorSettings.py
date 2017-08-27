@@ -6,6 +6,7 @@ from matplotlib import patches
 from matplotlib.axis import XAxis,YAxis
 from matplotlib.lines import Line2D
 from matplotlib.image import AxesImage
+from matplotlib.text import Text
 from .Annotation import *
 
 class AnchorData(object):
@@ -25,6 +26,10 @@ class PicableCanvas(AnnotationSettingCanvas):
         self.selImage=None
         self.selAxis=None
         self.selAnnot=None
+    def OnMouseUp(self,event):
+        super().OnMouseUp(event)
+        self._resetSelection()
+        self.__pick=False
     def OnMouseDown(self,event):
         super().OnMouseDown(event)
         if not self.__pick:

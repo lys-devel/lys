@@ -94,6 +94,15 @@ class ExtendCommand(cmd.Cmd):
             g.Append(w)
         except Exception:
             g.Append(arg)
+    def do_append(self,arg):
+        g=Graph.active()
+        if g is None:
+            return
+        try:
+            w=eval(arg,globals())
+            g.Append(w)
+        except Exception:
+            g.Append(arg)
     def do_preview(self,arg):
         lis=arg.split(" ")
         lis2=[]
@@ -102,5 +111,4 @@ class ExtendCommand(cmd.Cmd):
                 lis2.append(eval(l))
             except Exception:
                 lis2.append(l)
-        print(*lis2)
         PreviewWindow(*lis2)

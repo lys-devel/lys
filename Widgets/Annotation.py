@@ -75,7 +75,7 @@ class AnnotatableCanvas(AreaSettingCanvas):
         self.loadAnnotAppearance()
     def addAnnotation(self,text,axis=Axis.BottomLeft,appearance=None,id=None):
         axes=self._getAxesFrom(axis)
-        a=axes.text(0.5,0.5,text,transform=axes.transAxes)
+        a=axes.text(0.5,0.5,text,transform=axes.transAxes,picker=True)
         if id is None:
             ids=10000+len(self.__list)
         else:
@@ -114,11 +114,18 @@ class AnnotatableCanvas(AreaSettingCanvas):
     def getSelectedAnnotations(self):
         return self.__sel
     def setSelectedAnnotations(self,indexes):
-        self.__sel=indexes
+        if hasattr(indexes, '__iter__'):
+            self.__sel=indexes
+        else:
+            self.__sel=[indexes]
         self._emitAnnotationSelected()
     def getAnnotationFromIndexes(self,indexes):
         res=[]
-        for i in indexes:
+        if hasattr(indexes, '__iter__'):
+            list=indexes
+        else:
+            list=[indexes]
+        for i in list:
             for d in self.__list:
                 if d.id==i:
                     res.append(d)
@@ -242,8 +249,10 @@ class AnnotationSelectionBox(QTreeView):
         self._loadstate()
         self.canvas.addAnnotationChangeListener(self)
         self.canvas.addAnnotationEditedListener(self)
+        self.canvas.addAnnotationSelectedListener(self)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
+        self.flg=False
     def __initlayout(self):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QAbstractItemView.InternalMove)
@@ -251,6 +260,27 @@ class AnnotationSelectionBox(QTreeView):
         self.__model=AnnotationSelectionBox._Model(self.canvas)
         self.setModel(self.__model)
         self.selectionModel().selectionChanged.connect(self.OnSelected)
+    def OnAnnotationSelected(self):
+        if self.flg:
+            return
+        self.flg=True
+        indexes=self.canvas.getSelectedAnnotations()
+        list=self.canvas.getAnnotations()
+        selm=self.selectionModel()
+        for i in range(len(list)):
+            index0=self.__model.index(len(list)-i-1,0)
+            index1=self.__model.index(len(list)-i-1,1)
+            index2=self.__model.index(len(list)-i-1,2)
+            id=float(self.__model.itemFromIndex(index2).text())
+            if id in indexes:
+                selm.select(index0,QItemSelectionModel.Select)
+                selm.select(index1,QItemSelectionModel.Select)
+                selm.select(index2,QItemSelectionModel.Select)
+            else:
+                selm.select(index0,QItemSelectionModel.Deselect)
+                selm.select(index1,QItemSelectionModel.Deselect)
+                selm.select(index2,QItemSelectionModel.Deselect)
+        self.flg=False
     def _loadstate(self):
         list=self.canvas.getAnnotations()
         self.__model.clear()
@@ -261,12 +291,16 @@ class AnnotationSelectionBox(QTreeView):
             self.__model.setItem(len(list)-i,2,QStandardItem(str(l.id)))
             i+=1
     def OnSelected(self):
+        if self.flg:
+            return
+        self.flg=True
         indexes=self.selectedIndexes()
         ids=[]
         for i in indexes:
             if i.column()==2:
                 ids.append(int(self.__model.itemFromIndex(i).text()))
         self.canvas.setSelectedAnnotations(ids)
+        self.flg=False
     def OnAnnotationChanged(self):
         self._loadstate()
     def OnAnnotationEdited(self):
@@ -423,6 +457,7 @@ class AnnotationMovableCanvas(AnnotationEditableCanvas):
         list=self.getAnnotationFromIndexes(indexes)
         for l in list:
             l.obj.set_position(xy)
+        self._emitAnnotationSelected()
         self.draw()
     def getAnnotPosition(self,indexes):
         res=[]

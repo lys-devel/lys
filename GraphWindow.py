@@ -8,6 +8,16 @@ from .Widgets.ExtendCanvas import *
 from .ModifyWindow import ModifyWindow
 
 class Graph(AutoSavedWindow):
+    @classmethod
+    def active(cls,n=0):
+        list=cls.mdimain.subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        m=0
+        for l in reversed(list):
+            if isinstance(l,Graph):
+                if m==n:
+                    return l
+                else:
+                    m+=1
     def _save(self,file):
         d={}
         self.canvas.SaveAsDictionary(d,os.path.dirname(file))

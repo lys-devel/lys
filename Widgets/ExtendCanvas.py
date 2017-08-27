@@ -12,6 +12,9 @@ class ExtendCanvas(SaveSettingCanvas):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.modf=weakref.WeakMethod(self.defModFunc)
+        self.moveText=False
+        self.textPosStart=None
+        self.cursorPosStart=None
     def __findAxis(self,axis):
         axes=axis.axes
         xy=isinstance(axis,XAxis)
@@ -35,8 +38,40 @@ class ExtendCanvas(SaveSettingCanvas):
                 return 'Top'
             else:
                 return 'Right'
+    def __GlobalToAxis(self, x, y, ax):
+        loc=self.__GlobalToRatio(x,y,ax)
+        xlim=ax.get_xlim()
+        ylim=ax.get_ylim()
+        x_ax=xlim[0]+(xlim[1]-xlim[0])*loc[0]
+        y_ax=ylim[0]+(ylim[1]-ylim[0])*loc[1]
+        return [x_ax,y_ax]
+    def __GlobalToRatio(self, x, y, ax):
+        ran=ax.get_position()
+        x_loc=(x - ran.x0 * self.width())/((ran.x1 - ran.x0)*self.width())
+        y_loc=(y - ran.y0 * self.height())/((ran.y1 - ran.y0)*self.height())
+        return [x_loc,y_loc]
+    def OnMouseUp(self, event):
+        if self.moveText == True and event.button == 1:
+            self.moveText=False
+        return super().OnMouseUp(event)
+    def OnMouseMove(self, event):
+        if self.moveText == True:
+            mode=self.getAnnotPositionMode(self.annotindex)[0]
+            if mode == 'Absolute':
+                d=self.__GlobalToRatio(event.x,event.y,self.axes)
+            elif mode=='Relative':
+                d=self.__GlobalToAxis(event.x,event.y,self.axes)
+            self.setAnnotPosition(self.annotindex,(self.textPosStart[0]+d[0]-self.cursorPosStart[0],self.textPosStart[1]+d[1]-self.cursorPosStart[1]))
+            self.draw()
+        else:
+            return super().OnMouseMove(event)
     def OnMouseDown(self, event):
         if event.dblclick:
+            self.annot=self.getPickedAnnotation()
+            if self.annot is not None:
+                self.modf()(self,'Annot.')
+                self.setSelectedAnnotations(self.annot.get_zorder())
+                return super().OnMouseDown(event)
             axis=self.getPickedAxis()
             if axis is not None:
                 self.modf()(self,'Axis')
@@ -55,6 +90,20 @@ class ExtendCanvas(SaveSettingCanvas):
                 self.setSelectedIndexes(2,w.id)
                 return super().OnMouseDown(event)
             self.modf()(self)
+        elif event.button ==1:
+            self.annot=self.getPickedAnnotation()
+            if self.annot is not None:
+                self.annotindex=self.annot.get_zorder()
+                self.moveText=True
+                mode=self.getAnnotPositionMode(self.annotindex)[0]
+                if mode == 'Absolute':
+                    self.cursorPosStart=self.__GlobalToRatio(event.x,event.y,self.axes)
+                elif mode=='Relative':
+                    self.cursorPosStart=self.__GlobalToAxis(event.x,event.y,self.axes)
+                self.textPosStart=self.getAnnotPosition(self.annotindex)[0]
+                return
+            else:
+                return super().OnMouseDown(event)
         else:
             return super().OnMouseDown(event)
     def setModificationFunction(self,func):

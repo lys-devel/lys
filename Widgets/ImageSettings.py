@@ -172,7 +172,6 @@ class ImagePlaneAdjustableCanvas(ImageColorAdjustableCanvas):
         data.zindex=zindex
         self.OnWaveModified(data.wave)
         self.setSelectedIndexes(2,data.id)
-
 class ImagePlaneAdjustBox(QWidget):
     def __init__(self,canvas):
         super().__init__()
