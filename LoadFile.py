@@ -1,4 +1,5 @@
 import os,sys
+from .ExtendType import *
 from .GraphWindow import Graph
 
 def load(name):
@@ -10,6 +11,7 @@ def load(name):
 
 def __loadNpz(name):
     nam,ext=os.path.splitext(os.path.basename(name))
+    print(name)
     return Wave(name)
 
 def __loadStr(name):

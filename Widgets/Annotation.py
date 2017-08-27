@@ -196,13 +196,12 @@ class AnnotationHidableCanvas(AnnotatableCanvas):
         self.draw()
 class AnnotationSelectionBox(QTreeView):
     class _Model(QStandardItemModel):
-        def __init__(self,parent,canvas):
+        def __init__(self,canvas):
             super().__init__(0,3)
             self.setHeaderData(0,Qt.Horizontal,'Line')
             self.setHeaderData(1,Qt.Horizontal,'Axis')
             self.setHeaderData(2,Qt.Horizontal,'Zorder')
             self.canvas=canvas
-            self.parent=parent
         def clear(self):
             super().clear()
             self.setColumnCount(3)
@@ -234,7 +233,7 @@ class AnnotationSelectionBox(QTreeView):
                     self.canvas.moveAnnotation(f,self.item(row,2).text())
             else:
                 self.canvas.moveAnnotation(f,self.item(self.itemFromIndex(parent).row(),2).text())
-            self.parent._loadstate()
+            self.canvas._emitAnnotationChanged()
             return False
     def __init__(self,canvas):
         super().__init__()
@@ -249,7 +248,7 @@ class AnnotationSelectionBox(QTreeView):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setDropIndicatorShown(True)
-        self.__model=AnnotationSelectionBox._Model(self,self.canvas)
+        self.__model=AnnotationSelectionBox._Model(self.canvas)
         self.setModel(self.__model)
         self.selectionModel().selectionChanged.connect(self.OnSelected)
     def _loadstate(self):

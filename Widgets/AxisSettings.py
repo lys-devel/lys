@@ -15,7 +15,7 @@ from ExtendAnalysis import *
 from .ColorWidgets import *
 from .ImageSettings import *
 
-class RangeSelectableCanvas(ImageColorAdjustableCanvas):
+class RangeSelectableCanvas(ImageSettingCanvas):
     def __init__(self,dpi=100):
         super().__init__(dpi)
         self.rect = Rectangle((0,0), 0, 0, color='orange', alpha=0.5)

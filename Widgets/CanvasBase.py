@@ -15,13 +15,14 @@ class Axis(Enum):
     BottomRight=3
     TopRight=4
 class WaveData(object):
-    def __init__(self,wave,obj,axis,idn,appearance,offset=(0,0,0,0)):
+    def __init__(self,wave,obj,axis,idn,appearance,offset=(0,0,0,0),zindex=0):
         self.wave=wave
         self.obj=obj
         self.axis=axis
         self.id=idn
         self.appearance=appearance
         self.offset=offset
+        self.zindex=zindex
 class FigureCanvasBase(FigureCanvas):
     def __init__(self, dpi=100):
         self.fig=Figure(dpi=dpi)
@@ -36,6 +37,7 @@ class FigureCanvasBase(FigureCanvas):
         self._Datalist=[]
         self.__listener=[]
         self.__lisaxis=[]
+        self.drawflg=True
 
         Wave.AddWaveModificationListener(self)
 
@@ -46,12 +48,16 @@ class FigureCanvasBase(FigureCanvas):
             if wave==d.wave:
                 d.obj.remove()
                 self._Datalist.remove(d)
-                self._Append(wave,d.axis,d.id,appearance=d.appearance,offset=d.offset)
+                self._Append(wave,d.axis,d.id,appearance=d.appearance,offset=d.offset,zindex=d.zindex)
                 flg=True
         self.loadAppearance()
         if(flg):
             self.draw()
+    def EnableDraw(self,b):
+        self.drawflg=b
     def draw(self):
+        if not self.drawflg:
+            return
         try:
             super().draw()
         except Exception:
@@ -98,21 +104,23 @@ class FigureCanvasBase(FigureCanvas):
                 self.axes_txy.yaxis.set_picker(15)
                 self.axes_txy.minorticks_on()
             return self.axes_txy
-    def Append(self,wave,axis=Axis.BottomLeft,id=None,appearance=None,offset=(0,0,0,0)):
+    def Append(self,wave,axis=Axis.BottomLeft,id=None,appearance=None,offset=(0,0,0,0),zindex=0):
         ax=self.__getAxes(axis)
         if isinstance(wave,Wave):
             wav=wave
         else:
             wav=Wave(wave)
         if appearance is None:
-            return self._Append(wav,ax,id,{},offset)
+            return self._Append(wav,ax,id,{},offset,zindex)
         else:
-            return self._Append(wav,ax,id,appearance,offset)
-    def _Append(self,wav,ax,id,appearance,offset):
+            return self._Append(wav,ax,id,appearance,offset,zindex)
+    def _Append(self,wav,ax,id,appearance,offset,zindex=0):
         if wav.data.ndim==1:
             id=self._Append1D(wav,ax,id,appearance,offset)
         if wav.data.ndim==2:
             id=self._Append2D(wav,ax,id,appearance,offset)
+        if wav.data.ndim==3:
+            id=self._Append3D(wav,ax,id,appearance,offset,zindex)
         self._emitDataChanged()
         self.draw()
         return id
@@ -168,6 +176,25 @@ class FigureCanvasBase(FigureCanvas):
         im.set_zorder(id)
         self._Datalist.insert(id+5000,WaveData(wav,im,ax,id,appearance,offset))
         return id
+    def _Append3D(self,wav,ax,ID,appearance,offset,z):
+        xstart=wav.x[0]+offset[0]
+        xend=wav.x[len(wav.x)-1]+offset[0]
+        ystart=wav.y[0]+offset[1]
+        yend=wav.y[len(wav.y)-1]+offset[1]
+        if not offset[2]==0:
+            xstart*=offset[2]
+            xend*=offset[2]
+        if not offset[3]==0:
+            ystart*=offset[3]
+            yend*=offset[3]
+        im=ax.imshow(wav.getSlicedImage(z),aspect='auto',extent=(xstart,xend,ystart,yend),picker=True)
+        if ID is None:
+            id=-5000+len(self.getImages())
+        else:
+            id=ID
+        im.set_zorder(id)
+        self._Datalist.insert(id+5000,WaveData(wav,im,ax,id,appearance,offset,z))
+        return id
 
     def Remove(self,indexes):
         for i in indexes:
@@ -196,7 +223,9 @@ class FigureCanvasBase(FigureCanvas):
             return self._Datalist
         res=[]
         for d in self._Datalist:
-            if d.wave.data.ndim==dim:
+            if d.wave.data.ndim==1 and dim==1:
+                res.append(d)
+            if d.wave.data.ndim>=2 and dim==2:
                 res.append(d)
         return res
     def getLines(self):
@@ -225,6 +254,7 @@ class FigureCanvasBase(FigureCanvas):
             dic[i]['Axis']=axis
             dic[i]['Appearance']=str(data.appearance)
             dic[i]['Offset']=str(data.offset)
+            dic[i]['ZIndex']=str(data.zindex)
             i+=1
         dictionary['Datalist']=dic
     def LoadFromDictionary(self,dictionary,path):
@@ -250,9 +280,11 @@ class FigureCanvasBase(FigureCanvas):
                     ap={}
                 if 'Offset' in dic[i]:
                     offset=eval(dic[i]['Offset'])
+                if 'ZIndex' in dic[i]:
+                    zi=eval(dic[i]['ZIndex'])
                 else:
                     offset=(0,0,0,0)
-                self.Append(p,axis,appearance=ap,offset=offset)
+                self.Append(p,axis,appearance=ap,offset=offset,zindex=zi)
                 i+=1
         self.loadAppearance()
         cd(sdir)
@@ -332,18 +364,17 @@ class DataSelectableCanvas(FigureCanvasBase):
             else:
                 self._Datalist.insert(0,item_n)
         self._reorder()
-
+        self._emitDataChanged()
     def addDataSelectionListener(self,listener):
         self.__listener.append(weakref.ref(listener))
 class DataSelectionBox(QTreeView):
     class _Model(QStandardItemModel):
-        def __init__(self,parent,canvas):
+        def __init__(self,canvas):
             super().__init__(0,3)
             self.setHeaderData(0,Qt.Horizontal,'Line')
             self.setHeaderData(1,Qt.Horizontal,'Axis')
             self.setHeaderData(2,Qt.Horizontal,'Zorder')
             self.canvas=canvas
-            self.parent=parent
         def clear(self):
             super().clear()
             self.setColumnCount(3)
@@ -375,22 +406,21 @@ class DataSelectionBox(QTreeView):
                     self.canvas.moveItem(f,self.item(row,2).text())
             else:
                 self.canvas.moveItem(f,self.item(self.itemFromIndex(parent).row(),2).text())
-            self.parent._loadstate()
             return False
     def __init__(self,canvas,dim):
         super().__init__()
         self.canvas=canvas
         self.__dim=dim
-        canvas.addDataChangeListener(self)
-        canvas.addDataSelectionListener(self)
         self.__initlayout()
         self.flg=False
         self._loadstate()
+        canvas.addDataChangeListener(self)
+        canvas.addDataSelectionListener(self)
     def __initlayout(self):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setDropIndicatorShown(True)
-        self.__model=DataSelectionBox._Model(self,self.canvas)
+        self.__model=DataSelectionBox._Model(self.canvas)
         self.setModel(self.__model)
         self.selectionModel().selectionChanged.connect(self.OnSelected)
     def OnDataSelected(self):
@@ -500,6 +530,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         elif action.text() == 'Edit':
             print('Edit is not implemented yet.')
         elif action.text() == 'Display':
+            from ExtendAnalysis.GraphWindow import Graph
             g=Graph()
             data=self.canvas.getDataFromIndexes(self.__dim,list)
             for d in data:

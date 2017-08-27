@@ -14,8 +14,6 @@ from ExtendAnalysis.GraphWindow import *
 from .LineSettings import *
 
 class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
-    def __init__(self,dpi):
-        super().__init__(dpi)
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getImages()
@@ -167,3 +165,66 @@ class ImageColorAdjustBox(QWidget):
             indexes=self.canvas.getSelectedIndexes(2)
             self.canvas.setColormap(self.__cmap.currentColor(),indexes)
             self.__changerange()
+
+class ImagePlaneAdjustableCanvas(ImageColorAdjustableCanvas):
+    def setIndex(self,indexes,zindex):
+        data=self.getDataFromIndexes(2,indexes)[0]
+        data.zindex=zindex
+        self.OnWaveModified(data.wave)
+        self.setSelectedIndexes(2,data.id)
+
+class ImagePlaneAdjustBox(QWidget):
+    def __init__(self,canvas):
+        super().__init__()
+        self.canvas=canvas
+        canvas.addDataSelectionListener(self)
+        self.__initlayout()
+        self.__flg=False
+        self.index=None
+        self.zaxis=None
+    def __initlayout(self):
+        layout=QVBoxLayout()
+        l_h1=QHBoxLayout()
+        self.__spin1=QSpinBox()
+        self.__spin2=QDoubleSpinBox()
+        l_h1.addWidget(QLabel('z index'))
+        l_h1.addWidget(self.__spin1)
+        l_h1.addWidget(QLabel('z value'))
+        l_h1.addWidget(self.__spin2)
+        layout.addLayout(l_h1)
+        self.__slider=QSlider(Qt.Horizontal)
+        self.__slider.setRange(0,100)
+        layout.addWidget(self.__slider)
+        self.__slider.valueChanged.connect(self.__spin1.setValue)
+        self.__spin1.valueChanged.connect(self._setPlane)
+        self.setLayout(layout)
+    def OnDataSelected(self):
+        self.__flg=True
+        indexes=self.canvas.getSelectedIndexes(2)
+        if not len(indexes)==0:
+            data=self.canvas.getDataFromIndexes(2,indexes)
+            data_3d=[]
+            for d in data:
+                if d.wave.data.ndim>=3:
+                    data_3d.append(d)
+            if not len(data_3d)==0:
+                zaxis=data_3d[0].wave.z
+                self.index=data_3d[0].id
+                self.__spin1.setRange(0,len(zaxis)-1)
+                self.__slider.setRange(0,len(zaxis)-1)
+                self.zaxis=zaxis
+                zindex=data_3d[0].zindex
+                self.__spin1.setValue(zindex)
+        self.__flg=False
+    def _setPlane(self):
+        indexes=self.canvas.getSelectedIndexes(2)
+        zval=self.__spin1.value()
+        self.__spin2.setValue(self.zaxis[zval])
+        self.__slider.setValue(zval)
+        if self.__flg:
+            return
+        if not len(indexes)==0:
+            self.canvas.setIndex(self.index,zval)
+
+class ImageSettingCanvas(ImagePlaneAdjustableCanvas):
+    pass

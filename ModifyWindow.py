@@ -108,6 +108,7 @@ class _ImageTab(QWidget):
         layout.addWidget(RightClickableSelectionBox(canvas,2))
         tab=QTabWidget()
         tab.addTab(ImageColorAdjustBox(canvas),'Color')
+        tab.addTab(ImagePlaneAdjustBox(canvas),'Slice')
         tab.addTab(OffsetAdjustBox(canvas,2),'Offset')
         layout.addWidget(tab)
         self.setLayout(layout)

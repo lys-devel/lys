@@ -24,6 +24,7 @@ class PicableCanvas(AnnotationSettingCanvas):
         self.selLine=None
         self.selImage=None
         self.selAxis=None
+        self.selAnnot=None
     def OnMouseDown(self,event):
         super().OnMouseDown(event)
         if not self.__pick:
@@ -31,7 +32,9 @@ class PicableCanvas(AnnotationSettingCanvas):
         self.__pick=False
     def OnPick(self,event):
         self.__pick=True
-        if isinstance(event.artist,XAxis) or isinstance(event.artist,YAxis):
+        if isinstance(event.artist,Text):
+            self.selAnnot=event.artist
+        elif isinstance(event.artist,XAxis) or isinstance(event.artist,YAxis):
             self.selAxis=event.artist
         elif isinstance(event.artist,Line2D):
             if event.artist.get_zorder() < 0:
@@ -45,6 +48,8 @@ class PicableCanvas(AnnotationSettingCanvas):
         return self.selImage
     def getPickedAxis(self):
         return self.selAxis
+    def getPickedAnnotation(self):
+        return self.selAnnot
 class AnchorCanvas(PicableCanvas):
     anchorChanged=pyqtSignal()
     def __init__(self,dpi=100):

@@ -29,6 +29,11 @@ class SaveSettingCanvas(AnchorSettingCanvas):
         data=buf.read()
         buf.close()
         return data
+    def keyPressEvent(self, e):
+        super().keyPressEvent(e)
+        if e.modifiers() == Qt.ControlModifier:
+            if e.key() == Qt.Key_C:
+                self.CopyToClipboard()
 
 class SaveBox(QWidget):
     def __init__(self,canvas):

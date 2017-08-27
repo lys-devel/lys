@@ -63,6 +63,7 @@ class ExtendCanvas(SaveSettingCanvas):
         menu = super().constructContextMenu()
         action = menu.exec_(QCursor.pos())
     def keyPressEvent(self, e):
+        super().keyPressEvent(e)
         if e.key() == Qt.Key_G:
             if self.modf() is not None:
                 self.modf()(self)

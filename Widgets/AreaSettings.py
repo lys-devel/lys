@@ -359,7 +359,7 @@ class ResizeBox(QGroupBox):
             self._initlayout(canvas)
             self.__loadstate()
         def setPartner(self,partner):
-            self._partner=partner
+            self._partner=weakref.ref(partner)
         def _initlayout(self,canvas):
             layout=QVBoxLayout()
 
@@ -467,7 +467,7 @@ class ResizeBox(QGroupBox):
                 self.canvas.setSizeByArray([type,val,axis1,axis2],'Height')
 
         def _setPartnerComboBox(self,type):
-            part=self._partner
+            part=self._partner()
             val=part.cw.currentIndex()
             part.cw.clear()
             if type in ['Auto','Absolute','Per Unit']:

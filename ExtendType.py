@@ -226,6 +226,7 @@ class Wave(AutoSaved):
         self._emitflg=False
         self.data=[0]
         self.x=self.y=self.z=None
+        self.image=None
         self.note=""
         self._emitflg=True
     def _load(self,file):
@@ -245,7 +246,6 @@ class Wave(AutoSaved):
         self.y=target.y
         self.z=target.z
         self.note=target.note
-
     def slice(self,pos1,pos2,axis='x'):
         index=['x','y'].index(axis)
         size=pos2[index]-pos1[index]
@@ -255,6 +255,8 @@ class Wave(AutoSaved):
         w.data=res
         w.x=self.x[pos1[index]:pos2[index]]
         return w
+    def getSlicedImage(self,zindex):
+        return self.data[:,:,zindex]
 
 class String(AutoSaved):
     def _init(self):
