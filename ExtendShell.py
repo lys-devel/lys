@@ -56,7 +56,7 @@ class ExtendShell(object):
         return name+str(number)
     def Load(self,name):
         nam,ext=os.path.splitext(os.path.basename(name))
-        nam=self.__GetValidName(nam)
+        nam=self.__GetValidName(nam).replace(" ","_")
         exec(nam+'=LoadFile.load(\''+name+'\')',globals())
         print(nam+' is loaded from '+ext+' file')
         return eval(nam,globals())

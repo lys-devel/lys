@@ -7,6 +7,7 @@ class MainWindow(QMainWindow):
     _instance=None
     def __init__(self):
         super().__init__()
+        self.setWindowTitle('Analysis Program Lys')
         MainWindow._instance=self
         self.area=QMdiArea()
         self.setCentralWidget(self.area)

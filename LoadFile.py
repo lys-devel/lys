@@ -1,17 +1,23 @@
 import os,sys
+from PIL import Image
+import numpy as np
 from .ExtendType import *
 from .GraphWindow import Graph
 
 def load(name):
     try:
-        path,ext=os.path.splitext(name)
-        return dic[ext](name)
+        if os.path.isfile(name):
+            path,ext=os.path.splitext(name)
+            return dic[ext](name)
     except Exception:
         sys.stderr.write('Error: Cannot load.\n')
 
+def save(name,nameAs):
+    data=load(name)
+    data.Save(nameAs)
+
 def __loadNpz(name):
     nam,ext=os.path.splitext(os.path.basename(name))
-    print(name)
     return Wave(name)
 
 def __loadStr(name):
@@ -29,6 +35,12 @@ def __loadDic(name):
 def __loadGraph(name):
     nam,ext=os.path.splitext(os.path.basename(name))
     return Graph(name)
+
+def __loadImage(name):
+    im=Image.open(name)
+    w=Wave()
+    w.data=np.array(im)
+    return w
 
 def addFileLoader(type, func):
     dic[type]=func
@@ -48,4 +60,4 @@ def __loadPxt(name):
         w.z=wav.axis[2]
     return w
 
-dic=dict(zip(['.npz','.str','.val','.dic','.pxt','.grf'],[__loadNpz,__loadStr,__loadVal,__loadDic,__loadPxt,__loadGraph]))
+dic=dict(zip(['.npz','.str','.val','.dic','.pxt','.grf','.tif'],[__loadNpz,__loadStr,__loadVal,__loadDic,__loadPxt,__loadGraph,__loadImage]))

@@ -302,10 +302,10 @@ class FigureCanvasBase(FigureCanvas):
         n2=0
         for d in self._Datalist:
             if d.wave.data.ndim==1:
-                d.id=5000+n1
+                d.id=-2000+n1
                 n1+=1
             if d.wave.data.ndim==2:
-                d.id=2000+n2
+                d.id=-5000+n2
                 n2+=1
             d.obj.set_zorder(d.id)
         self.draw()

@@ -4,7 +4,6 @@ import numpy as np
 import scipy.ndimage
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-
 __home=os.getcwd()
 __CDChangeListener=[]
 
