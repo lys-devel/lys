@@ -83,7 +83,7 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
     def __init__(self):
         super().__init__()
         self.__list=[]
-        self.setNameFilters(['*.npz','*.str','*.val','*.dic','*.grf','*.pxt','*.tif'])
+        self.setNameFilters(['*.npz','*.str','*.val','*.dic','*.grf','*.pxt','*.tif','*.png','*.jpg'])
         self.setNameFilterDisables(False)
 
     def OnCDChanged(self,cd):
