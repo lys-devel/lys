@@ -60,4 +60,4 @@ def __loadPxt(name):
         w.z=wav.axis[2]
     return w
 
-dic=dict(zip(['.npz','.str','.val','.dic','.pxt','.grf','.tif'],[__loadNpz,__loadStr,__loadVal,__loadDic,__loadPxt,__loadGraph,__loadImage]))
+dic=dict(zip(['.npz','.str','.val','.dic','.pxt','.grf','.tif','.jpg','.png'],[__loadNpz,__loadStr,__loadVal,__loadDic,__loadPxt,__loadGraph,__loadImage,__loadImage,__loadImage]))
