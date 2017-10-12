@@ -42,9 +42,6 @@ def __loadImage(name):
     w.data=np.array(im)
     return w
 
-def addFileLoader(type, func):
-    dic[type]=func
-
 def __loadPxt(name):
     import igor.packed, igor.igorpy
     nam,ext=os.path.splitext(os.path.basename(name))
@@ -60,4 +57,28 @@ def __loadPxt(name):
         w.z=wav.axis[2]
     return w
 
-dic=dict(zip(['.npz','.str','.val','.dic','.pxt','.grf','.tif','.jpg','.png'],[__loadNpz,__loadStr,__loadVal,__loadDic,__loadPxt,__loadGraph,__loadImage,__loadImage,__loadImage]))
+def __loadDm3(name):
+    import dm3_lib as dm3
+    data = dm3.DM3(name)
+    w=Wave()
+    w.data=data.imagedata
+    w.x=np.arange(0,data.pxsize[0]*w.data.shape[0])
+    if w.data.ndim>=2:
+        w.y=np.arange(0,data.pxsize[0]*w.data.shape[1])
+    w.note={}
+    w.note['unit']=data.pxsize[1]
+    w.note['specimen']=data.info['specimen'].decode()
+    w.note['date']=data.info['acq_date'].decode()
+    w.note['mag']=float(data.info['mag'].decode())
+    w.note['time']=data.info['acq_time'].decode()
+    w.note['voltage']=float(data.info['hv'].decode())
+    w.note['mode']=data.info['mode'].decode()
+    return w
+
+def addFileLoader(type, func):
+    dic[type]=func
+
+def getExtentions():
+    return dic.keys()
+
+dic=dict(zip(['.npz','.str','.val','.dic','.pxt','.grf','.tif','.jpg','.png','.dm3'],[__loadNpz,__loadStr,__loadVal,__loadDic,__loadPxt,__loadGraph,__loadImage,__loadImage,__loadImage,__loadDm3]))

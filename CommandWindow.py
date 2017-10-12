@@ -83,7 +83,10 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
     def __init__(self):
         super().__init__()
         self.__list=[]
-        self.setNameFilters(['*.npz','*.str','*.val','*.dic','*.grf','*.pxt','*.tif','*.png','*.jpg'])
+        exts=[]
+        for ext in LoadFile.getExtentions():
+            exts.append('*'+ext)
+        self.setNameFilters(exts)
         self.setNameFilterDisables(False)
 
     def OnCDChanged(self,cd):
