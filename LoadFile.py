@@ -1,5 +1,4 @@
 import os,sys
-from PIL import Image
 import numpy as np
 from .ExtendType import *
 from .GraphWindow import Graph
@@ -37,6 +36,7 @@ def __loadGraph(name):
     return Graph(name)
 
 def __loadImage(name):
+    from PIL import Image
     im=Image.open(name)
     w=Wave()
     w.data=np.array(im)

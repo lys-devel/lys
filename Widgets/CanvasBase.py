@@ -37,6 +37,7 @@ class FigureCanvasBase(FigureCanvas):
         self._Datalist=[]
         self.__listener=[]
         self.__lisaxis=[]
+        self.__lisdraw=[]
         self.drawflg=True
 
         Wave.AddWaveModificationListener(self)
@@ -60,10 +61,19 @@ class FigureCanvasBase(FigureCanvas):
             return
         try:
             super().draw()
+            self.__emitAfterDraw()
         except Exception:
             pass
     def addAxisChangeListener(self,listener):
         self.__lisaxis.append(weakref.ref(listener))
+    def addAfterDrawListener(self,listener):
+        self.__lisdraw.append(weakref.ref(listener))
+    def __emitAfterDraw(self):
+        for l in self.__lisdraw:
+            if l() is not None:
+                l().OnAfterDraw()
+            else:
+                self.__lisdraw.remove(l)
     def __emitAxisChanged(self,axis):
         for l in self.__lisaxis:
             if l() is not None:
@@ -452,6 +462,7 @@ class DataSelectionBox(QTreeView):
             self.__model.setItem(len(list)-i,1,QStandardItem(self.canvas.axesName(l.axis)))
             self.__model.setItem(len(list)-i,2,QStandardItem(str(l.id)))
             i+=1
+        self.OnDataSelected()
     def OnSelected(self):
         self.flg=True
         indexes=self.selectedIndexes()

@@ -211,14 +211,24 @@ class Wave(AutoSaved):
     def __getattribute__(self,key):
         if key=='x' or key=='y' or key=='z':
             val=super().__getattribute__(key)
-            if val.ndim==0:
-                index=['x','y','z'].index(key)
+            index=['x','y','z'].index(key)
+            if self.data.ndim<=index:
+                return None
+            elif val.ndim==0:
                 if self.data.ndim>index:
                     return np.arange(self.data.shape[index])
                 else:
                     return val
             else:
-                return val
+                if self.data.shape[index]==val.shape[0]:
+                    return val
+                else:
+                    res=np.empty((self.data.shape[index]))
+                    for i in range(self.data.shape[index]):
+                        res[i]=np.NaN
+                    for i in range(min(self.data.shape[index],val.shape[0])):
+                        res[i]=val[i]
+                    return res
         else:
             return super().__getattribute__(key)
     def _init(self):
