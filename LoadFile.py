@@ -62,9 +62,9 @@ def __loadDm3(name):
     data = dm3.DM3(name)
     w=Wave()
     w.data=data.imagedata
-    w.x=np.arange(0,data.pxsize[0]*w.data.shape[0])
+    w.x=np.arange(0,data.pxsize[0]*w.data.shape[0],data.pxsize[0])
     if w.data.ndim>=2:
-        w.y=np.arange(0,data.pxsize[0]*w.data.shape[1])
+        w.y=np.arange(0,data.pxsize[0]*w.data.shape[1],data.pxsize[0])
     w.note={}
     w.note['unit']=data.pxsize[1]
     w.note['specimen']=data.info['specimen'].decode()
