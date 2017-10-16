@@ -1,6 +1,6 @@
 import os,sys
 from ExtendAnalysis.ExtendType import *
-from ExtendAnalysis.GraphWindow import Graph, PreviewWindow
+from ExtendAnalysis.GraphWindow import Graph, PreviewWindow, Table
 from ExtendAnalysis import LoadFile
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -112,7 +112,13 @@ class _FileSystemViewBase(object):
             list.append(Wave(p))
         PreviewWindow(list)
     def Action_Edit(self):
-        return QAction('Edit',self,triggered=print)
+        return QAction('Edit',self,triggered=self.__edit)
+    def __edit(self):
+        t=Table()
+        for p in self.selectedPaths():
+            w=Wave(p)
+            print(t)
+            t.Append(w)
     def Action_Print(self):
         return QAction('Print',self,triggered=self.__print)
     def __print(self):

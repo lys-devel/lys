@@ -178,10 +178,12 @@ class PreviewWindow(ExtendMdiSubWindow):
                 self.left.setDataColor(self.main.getAnchorColor(i),id1)
                 self.bottom.setDataColor(self.main.getAnchorColor(i),id2)
 class Table(ExtendMdiSubWindow):
-    def __init__(self,wave):
+    def __init__(self,wave=None):
         super().__init__()
         self.setWindowTitle("Table Window")
         self.resize(400,400)
         self._etable=ExtendTable(wave)
         self.setWidget(self._etable)
         self.show()
+    def Append(self,wave):
+        self._etable.Append(wave)
