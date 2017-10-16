@@ -5,6 +5,7 @@ from PyQt5.QtGui import *
 
 from .ExtendType import *
 from .Widgets.ExtendCanvas import *
+from .Widgets.ExtendTable import *
 from .ModifyWindow import ModifyWindow
 
 class Graph(AutoSavedWindow):
@@ -176,3 +177,11 @@ class PreviewWindow(ExtendMdiSubWindow):
                 id2=self.bottom.Append(slicex)
                 self.left.setDataColor(self.main.getAnchorColor(i),id1)
                 self.bottom.setDataColor(self.main.getAnchorColor(i),id2)
+class Table(ExtendMdiSubWindow):
+    def __init__(self,wave):
+        super().__init__()
+        self.setWindowTitle("Table Window")
+        self.resize(400,400)
+        self._etable=ExtendTable(wave)
+        self.setWidget(self._etable)
+        self.show()
