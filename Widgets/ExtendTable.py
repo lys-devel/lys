@@ -24,7 +24,7 @@ class ExtendTable(QTableView):
                 return
             elif array.ndim==1:
                 self.setRowCount(array.shape[0])
-                self.setColumnCount(0)
+                self.setColumnCount(1)
             else:
                 self.setRowCount(array.shape[0])
                 self.setColumnCount(array.shape[1])
@@ -45,6 +45,7 @@ class ExtendTable(QTableView):
                 self._wave.data[item.row()]=float(item.text())
             else:
                 self._wave.data[item.row()][item.column()]=float(item.text())
+            self._wave.update()
     def clear(self):
         self._model.clear()
         self._wave=None

@@ -249,6 +249,8 @@ class Wave(AutoSaved):
         self._emitflg=True
     def _save(self,file):
         np.savez(file, data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
+    def update(self):
+        Wave._EmitWaveModified(self)
     def _overwrite(self,target):
         self.data=target.data
         self.x=target.x
