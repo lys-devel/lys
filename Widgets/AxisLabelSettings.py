@@ -15,8 +15,8 @@ from ExtendAnalysis import *
 from .ColorWidgets import *
 from .AxisSettings import *
 
-
 class FontInfo(object):
+    _fonts=None
     def __init__(self,family,size=10,color='black'):
         self.family=str(family)
         self.size=size
@@ -30,6 +30,17 @@ class FontInfo(object):
     @classmethod
     def FromDict(cls,dic):
         return FontInfo(dic['family'],dic['size'],dic['color'])
+    @classmethod
+    def loadFonts(cls):
+        if cls._fonts is not None:
+            return
+        fonts = fm.findSystemFonts()
+        cls._fonts=[]
+        for f in fonts:
+            n=fm.FontProperties(fname=f).get_name()
+            if not n in cls._fonts:
+                cls._fonts.append(n)
+            cls._fonts=sorted(cls._fonts)
 
 class FontSelectableCanvas(TickAdjustableCanvas):
     def __init__(self,dpi=100):
@@ -91,6 +102,7 @@ class FontSelectBox(QGroupBox):
         canvas.addFont(name)
         self.__flg=False
         self.__name=name
+        FontInfo.loadFonts()
         self.__initlayout()
         self.__loadstate()
         self.canvas.addFontChangeListener(self)
@@ -101,19 +113,12 @@ class FontSelectBox(QGroupBox):
         layout=QVBoxLayout()
         l=QHBoxLayout()
         self.__font=QComboBox()
-        fonts = fm.findSystemFonts()
-        self.__fonts=[]
         font=self.canvas.getFont(self.__name)
         d=font.family
-        self.__fonts.append(d)
-        self.__font.addItem(d)
-        for f in fonts:
-            n=fm.FontProperties(fname=f).get_name()
-            if not n in self.__fonts:
-                self.__font.addItem(n)
-                self.__fonts.append(n)
-        self.__fonts=sorted(self.__fonts)
-        self.__font.model().sort(0)
+        for f in FontInfo._fonts:
+            self.__font.addItem(f)
+        if not d in FontInfo._fonts:
+            self.__font.addItem(d)
         self.__font.activated.connect(self.__fontChanged)
         layout.addWidget(self.__font)
         self.__def=QCheckBox('Use default')
@@ -133,8 +138,8 @@ class FontSelectBox(QGroupBox):
     def __loadstate(self):
         self.__flg=True
         font=self.canvas.getFont(self.__name)
-        if font.family in self.__fonts:
-            self.__font.setCurrentIndex(self.__fonts.index(font.family))
+        if font.family in FontInfo._fonts:
+            self.__font.setCurrentIndex(FontInfo._fonts.index(font.family))
         self.__size.setValue(font.size)
         self.__color.setColor(font.color)
         self.__def.setChecked(self.canvas.getFontDefault(self.__name))
@@ -155,6 +160,7 @@ class FontSelectWidget(QGroupBox):
         super().__init__('Font')
         self.canvas=canvas
         self.__name=name
+        FontInfo.loadFonts()
         self.__initlayout()
         self.setFont(self.canvas.getFont(self.__name))
         self.setFontDefault(True)
@@ -166,19 +172,13 @@ class FontSelectWidget(QGroupBox):
         layout=QVBoxLayout()
         l=QHBoxLayout()
         self.__font=QComboBox()
-        fonts = fm.findSystemFonts()
-        self.__fonts=[]
+
+        for f in FontInfo._fonts:
+            self.__font.addItem(f)
         font=self.canvas.getFont(self.__name)
         d=font.family
-        self.__fonts.append(d)
-        self.__font.addItem(d)
-        for f in fonts:
-            n=fm.FontProperties(fname=f).get_name()
-            if not n in self.__fonts:
-                self.__font.addItem(n)
-                self.__fonts.append(n)
-        self.__fonts=sorted(self.__fonts)
-        self.__font.model().sort(0)
+        if not d in FontInfo._fonts:
+            self.__font.addItem(d)
         self.__font.activated.connect(self.__Changed)
         layout.addWidget(self.__font)
         self.__def=QCheckBox('Use default')
@@ -199,8 +199,8 @@ class FontSelectWidget(QGroupBox):
             return self.canvas.getFont(self.__name)
         return FontInfo(self.__font.currentText(),self.__size.value(),self.__color.getColor())
     def setFont(self,font):
-        if font.family in self.__fonts:
-            self.__font.setCurrentIndex(self.__fonts.index(font.family))
+        if font.family in FontInfo._fonts:
+            self.__font.setCurrentIndex(FontInfo._fonts.index(font.family))
             self.__size.setValue(font.size)
             self.__color.setColor(font.color)
     def setFontDefault(self,b):

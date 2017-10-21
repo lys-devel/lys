@@ -699,7 +699,6 @@ class AnnotationBox(QWidget):
         tab.addTab(AnnotationEditBox(canvas),'Text')
         tab.addTab(AnnotationMoveBox(canvas),'Position')
         tab.addTab(AnnotationBoxAdjustBox(canvas),'Box')
-
         layout.addWidget(tab)
         self.setLayout(layout)
 
