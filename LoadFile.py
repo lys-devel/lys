@@ -3,11 +3,13 @@ import numpy as np
 from .ExtendType import *
 from .GraphWindow import Graph
 
-def load(name):
+def load(name,load=True):
     try:
         if os.path.isfile(name):
             path,ext=os.path.splitext(name)
-            return dic[ext](name)
+            res=dic[ext](name)
+            if load:
+                return res
     except Exception:
         sys.stderr.write('Error: Cannot load.\n')
 

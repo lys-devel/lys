@@ -7,6 +7,7 @@ from .SaveSettings import *
 
 class ExtendCanvas(SaveSettingCanvas):
     def __init__(self, dpi=100):
+        self.EnableDraw(False)
         super().__init__(dpi=dpi)
         self.setFocusPolicy(Qt.StrongFocus)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -15,6 +16,7 @@ class ExtendCanvas(SaveSettingCanvas):
         self.moveText=False
         self.textPosStart=None
         self.cursorPosStart=None
+        self.EnableDraw(True)
     def __findAxis(self,axis):
         axes=axis.axes
         xy=isinstance(axis,XAxis)

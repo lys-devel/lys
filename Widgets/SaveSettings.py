@@ -4,8 +4,6 @@ from PyQt5.QtGui import *
 from .AnchorSettings import *
 
 class SaveSettingCanvas(AnchorSettingCanvas):
-    def __init__(self,dpi=100):
-        super().__init__(dpi)
     def Save(self,path,format):
         self.fig.savefig(path,transparent=True,format=format)
     def CopyToClipboard(self):

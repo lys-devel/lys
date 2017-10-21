@@ -19,8 +19,6 @@ from ExtendAnalysis.GraphWindow import *
 from .CanvasBase import *
 
 class LineColorAdjustableCanvas(OffsetAdjustableCanvas):
-    def __init__(self,dpi):
-        super().__init__(dpi)
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getLines()
@@ -69,8 +67,6 @@ class LineColorAdjustBox(ColorSelection):
         self.setColor(cols[0])
 
 class LineStyleAdjustableCanvas(LineColorAdjustableCanvas):
-    def __init__(self,dpi):
-        super().__init__(dpi)
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getLines()
@@ -151,8 +147,6 @@ class LineStyleAdjustBox(QGroupBox):
         self.__spin1.setValue(wids[0])
 
 class MarkerStyleAdjustableCanvas(LineStyleAdjustableCanvas):
-    def __init__(self,dpi):
-        super().__init__(dpi)
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getLines()

@@ -31,10 +31,10 @@ class Graph(AutoSavedWindow):
         with open(file,'r') as f:
             d=eval(f.read())
         self.move(d['Graph']['Position_x'],d['Graph']['Position_y'])
+        tmp=self.canvas.IsDrawEnabled()
         self.canvas.EnableDraw(False)
         self.canvas.LoadFromDictionary(d,os.path.dirname(file))
         self.canvas.EnableDraw(True)
-        self.canvas.draw()
     def _init(self):
         self.canvas=ExtendCanvas()
         self.resize(200,200)

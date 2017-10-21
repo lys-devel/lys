@@ -448,16 +448,14 @@ class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
         if axes is None:
             return
         if axis in ['Left','Right']:
-            ticks=axes.get_yaxis().get_major_ticks()
+            for tick in axes.get_xticklabels():
+                tick.set_fontname(font.family)
+            axis='x'
         else:
-            ticks=axes.get_xaxis().get_major_ticks()
-        for tick in ticks:
-            tick.label1.set_family(font.family)
-            tick.label2.set_family(font.family)
-            tick.label1.set_size(font.size)
-            tick.label2.set_size(font.size)
-            tick.label1.set_color(font.color)
-            tick.label2.set_color(font.color)
+            for tick in axes.get_yticklabels():
+                tick.set_fontname(font.family)
+            axis='y'
+        axes.tick_params(which='major',labelsize=font.size,color=font.color,axis=axis)
         self.draw()
     def getTickLabelFont(self,axis):
         axes=self.getAxes(axis)

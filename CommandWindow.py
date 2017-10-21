@@ -143,6 +143,7 @@ class CommandWindow(QMdiSubWindow):
             if w.find("./.com_settings/.graphs")>-1:
                 g.Disconnect()
                 remove(w)
+
     def saveData(self):
         self.__clog.data=self.output.toPlainText()
         self.__clog.Save()
@@ -151,7 +152,10 @@ class CommandWindow(QMdiSubWindow):
         wins=AutoSavedWindow.DisconnectedWindows()
         i=0
         for w in wins:
-            w.Save(self._savepath+"/.com_settings/.graphs/graph"+str(i)+".grf")
+            try:
+                w.Save(self._savepath+"/.com_settings/.graphs/graph"+str(i)+".grf")
+            except:
+                print('Error in saving graph!')
             i+=1
         names=[]
         wins=AutoSavedWindow.AllWindows()

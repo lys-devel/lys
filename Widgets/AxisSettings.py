@@ -222,8 +222,6 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
         if ax in ['Top','Bottom']:
             return axes.get_autoscalex_on()
 class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
     def __GlobalToAxis(self, x, y, ax):
         loc=self.__GlobalToRatio(x,y,ax)
         xlim=ax.get_xlim()

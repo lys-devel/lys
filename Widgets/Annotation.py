@@ -434,8 +434,6 @@ class AnnotationEditBox(QWidget):
         self.__loadstate()
 
 class AnnotationMovableCanvas(AnnotationEditableCanvas):
-    def __init__(self,dpi):
-        super().__init__(dpi)
     def saveAnnotAppearance(self):
         super().saveAnnotAppearance()
         data=self.getAnnotations()
@@ -704,7 +702,6 @@ class AnnotationBox(QWidget):
 
         layout.addWidget(tab)
         self.setLayout(layout)
-
 
 class AnnotationSettingCanvas(AnnotationBoxAdjustableCanvas):
     pass

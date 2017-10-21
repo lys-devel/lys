@@ -27,7 +27,7 @@ class FigureCanvasBase(FigureCanvas):
     def __init__(self, dpi=100):
         self.fig=Figure(dpi=dpi)
         super().__init__(self.fig)
-        self.axes = self.fig.add_subplot(111)
+        self.axes = self.fig.add_subplot(111)#TODO #This line takes 0.3s for each image.
         self.axes.minorticks_on()
         self.axes.xaxis.set_picker(15)
         self.axes.yaxis.set_picker(15)
@@ -38,7 +38,7 @@ class FigureCanvasBase(FigureCanvas):
         self.__listener=[]
         self.__lisaxis=[]
         self.__lisdraw=[]
-        self.drawflg=True
+        self.drawflg=False
 
         Wave.AddWaveModificationListener(self)
 
@@ -54,11 +54,14 @@ class FigureCanvasBase(FigureCanvas):
         self.loadAppearance()
         if(flg):
             self.draw()
+    def IsDrawEnabled(self):
+        return self.drawflg
     def EnableDraw(self,b):
         self.drawflg=b
     def draw(self):
-        if not self.drawflg:
-            return
+        if self.drawflg is not None:
+            if not self.drawflg:
+                return
         try:
             super().draw()
             self.__emitAfterDraw()
@@ -478,8 +481,6 @@ class DataSelectionBox(QTreeView):
         return QSize(150,100)
 
 class DataHidableCanvas(DataSelectableCanvas):
-    def __init__(self,dpi):
-        super().__init__(dpi)
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getWaveData()
@@ -550,8 +551,6 @@ class RightClickableSelectionBox(DataSelectionBox):
             self.canvas.Remove(list)
 
 class OffsetAdjustableCanvas(DataHidableCanvas):
-    def __init__(self,dpi):
-        super().__init__(dpi)
     def setOffset(self,offset,indexes):
         data=self.getDataFromIndexes(None,indexes)
         for d in data:
