@@ -309,19 +309,17 @@ class ExtendMdiSubWindowBase(QMdiSubWindow):
 class SizeAdjustableWindow(ExtendMdiSubWindowBase):
     def __init__(self):
         super().__init__()
-        #Mode
-        #0 : Auto
-        #1 : heightForWidth
-        #2 : widthForHeight
+        #Mode #0 : Auto, 1 : heightForWidth, 2 : widthForHeight
         self.__mode=0
         self.__aspect=0
         self.setWidth(0)
         self.setHeight(0)
+        self.setSizePolicy(QSizePolicy.Fixed,QSizePolicy.Fixed)
     def setWidth(self,val):
         if self.__mode==2:
             self.__mode=0
         if val==0:
-            self.setMinimumWidth(85)
+            self.setMinimumWidth(35)
             self.setMaximumWidth(100000)
         else:
             self.setMinimumWidth(val)
@@ -330,27 +328,12 @@ class SizeAdjustableWindow(ExtendMdiSubWindowBase):
         if self.__mode==1:
             self.__mode=0
         if val==0:
-            self.setMinimumHeight(85)
+            self.setMinimumHeight(35)
             self.setMaximumHeight(100000)
         else:
             self.setMinimumHeight(val)
             self.setMaximumHeight(val)
-    def setHeightForWidth(self,val):
-        self.__mode=1
-        self.__aspect=val
-    def setWidthForHeight(self,val):
-        self.__mode=2
-        self.__aspect=val
-    def resizeEvent(self,event):
-        self._resizeEvent(event.size())
-        return super().resizeEvent(event)
-    def _resizeEvent(self,size):
-        if self.__mode==1:
-            self.setMinimumHeight(size.width()*self.__aspect)
-            self.setMaximumHeight(size.width()*self.__aspect)
-        elif self.__mode==2:
-            self.setMinimumWidth(size.height()*self.__aspect)
-            self.setMaximumWidth(size.height()*self.__aspect)
+
 class AttachableWindow(SizeAdjustableWindow):
     resized=pyqtSignal()
     moved=pyqtSignal()

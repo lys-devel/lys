@@ -28,8 +28,6 @@ class MarginAdjustableCanvas(AxisSettingCanvas):
             self.setMargin(left=m[0],right=m[1],bottom=m[2],top=m[3])
 
     def setMargin(self,left=0, right=0, bottom=0, top=0):
-        import time
-        start=time.time()
         l=left
         r=right
         t=top
@@ -114,7 +112,7 @@ class MarginAdjustBox(QGroupBox):
         lv.addLayout(lh2)
         self.setLayout(lv)
 
-unit=0.393701#inch->cm
+unit=0.3937007874#inch->cm
 class ResizableCanvas(MarginAdjustableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
@@ -191,29 +189,36 @@ class ResizableCanvas(MarginAdjustableCanvas):
                 self.setHeightPlan(self.__hvalue,self.__haxis1,self.__haxis2)
     def getMarginRatio(self):
         m=self.getActualMargin()
-        wr=1/(1-(m[0]+(1-m[1])))
-        hr=1/(1-(m[2]+(1-m[3])))
+        wr=1/(m[1]-m[0])
+        hr=1/(m[3]-m[2])
         return (wr,hr)
     def _adjust(self):
-        self.resize(self.fig.get_figwidth()*100,self.fig.get_figheight()*100)
         par=self.parentWidget()
+        self.resize(self.fig.get_figwidth()*100,self.fig.get_figheight()*100)
         if isinstance(par,SizeAdjustableWindow):
             par.adjustSize()
         self.draw()
 
-    def setAutoWidth(self):
-        self.axes.set_aspect('auto')
-        self.__wmode='Auto'
+    def _unfixAxis(self,axis):
         par=self.parentWidget()
-        if isinstance(par,SizeAdjustableWindow):
-            par.setWidth(0)
+        if axis=='Width':
+            param=self.getSizeParams('Height')
+            if isinstance(par,SizeAdjustableWindow):
+                par.setWidth(0)
+        else:
+            param=self.getSizeParams('Width')
+            if isinstance(par,SizeAdjustableWindow):
+                par.setHeight(0)
+        if not (param[0]=='Plan' or param[0]=='Aspect'):
+            self.axes.set_aspect('auto')
+
+    def setAutoWidth(self):
+        self.__wmode='Auto'
+        self._unfixAxis('Width')
         self._emitResizeEvent()
     def setAutoHeight(self):
-        self.axes.set_aspect('auto')
         self.__hmode='Auto'
-        par=self.parentWidget()
-        if isinstance(par,SizeAdjustableWindow):
-            par.setHeight(0)
+        self._unfixAxis('Height')
         self._emitResizeEvent()
     def setAutoSize(self):
         self.setAutoWidth()
@@ -253,28 +258,54 @@ class ResizableCanvas(MarginAdjustableCanvas):
         self._setAbsHei(value*abs(ran[1]-ran[0]))
 
     def _setAbsWid(self,width):
-        self.axes.set_aspect('auto')
-        rat=self.getMarginRatio()
-        self.fig.set_figwidth(round(width*unit*rat[0]*100)/100)
         par=self.parentWidget()
+        param=self.getSizeParams('Height')
+        if not (param[0]=='Aspect' or param[0]=='Plan'):
+            self.axes.set_aspect('auto')
+        rat=self.getMarginRatio()
+        self.fig.set_figwidth(width*unit*rat[0])
+        if param[0]=='Aspect' or param[0]=='Plan':
+            ran1=self.getAxisRange('Bottom')
+            ran2=self.getAxisRange('Left')
+            self.fig.set_figheight(self.axes.get_aspect()*(rat[1]/rat[0])*abs(ran2[1]-ran2[0])/abs(ran1[1]-ran1[0])*self.fig.get_figwidth())
+            if isinstance(par,SizeAdjustableWindow):
+                par.setHeight(0)
         if isinstance(par,SizeAdjustableWindow):
             par.setWidth(0)
         self._adjust()
         if isinstance(par,SizeAdjustableWindow):
             par.setWidth(par.width())
+            if param[0]=='Aspect' or param[0]=='Plan':
+                par.setHeight(par.height())
         self._emitResizeEvent()
     def _setAbsHei(self,height):
-        self.axes.set_aspect('auto')
-        rat=self.getMarginRatio()
-        self.fig.set_figheight(round(height*unit*rat[1]*100)/100)
         par=self.parentWidget()
+        param=self.getSizeParams('Width')
+        if not (param[0]=='Aspect' or param[0]=='Plan'):
+            self.axes.set_aspect('auto')
+        rat=self.getMarginRatio()
+        self.fig.set_figheight(height*unit*rat[1])
+        if param[0]=='Aspect' or param[0]=='Plan':
+            ran1=self.getAxisRange('Bottom')
+            ran2=self.getAxisRange('Left')
+            self.fig.set_figwidth(1/self.axes.get_aspect()*(rat[0]/rat[1])*abs(ran1[1]-ran1[0])/abs(ran2[1]-ran2[0])*self.fig.get_figheight())
+            if isinstance(par,SizeAdjustableWindow):
+                par.setWidth(0)
         if isinstance(par,SizeAdjustableWindow):
             par.setHeight(0)
         self._adjust()
         if isinstance(par,SizeAdjustableWindow):
             par.setHeight(par.height())
+            if param[0]=='Aspect' or param[0]=='Plan':
+                par.setWidth(par.width())
         self._emitResizeEvent()
-
+    def parentResized(self):
+        wp=self.getSizeParams('Width')
+        hp=self.getSizeParams('Height')
+        if (wp[0]=='Aspect' or wp[0]=='Plan') and hp[0]=='Auto':
+            self.setSizeByArray(wp,'Width')
+        if (hp[0]=='Aspect' or hp[0]=='Plan') and wp[0]=='Auto':
+            self.setSizeByArray(hp,'Height')
     def setWidthForHeight(self,aspect):
         if aspect==0:
             return
@@ -310,23 +341,29 @@ class ResizableCanvas(MarginAdjustableCanvas):
         self._heightForWidth(aspect*abs(ran1[1]-ran1[0])/abs(ran2[1]-ran2[0]))
 
     def _widthForHeight(self,aspect):
+        self._unfixAxis('Width')
+        rat=self.getMarginRatio()
         ran1=self.getAxisRange('Bottom')
         ran2=self.getAxisRange('Left')
         self.axes.set_aspect(1/aspect*abs(ran1[1]-ran1[0])/abs(ran2[1]-ran2[0]))
-        rat=self.getMarginRatio()
-        par=self.parentWidget()
-        if isinstance(par,SizeAdjustableWindow):
-            par.setWidthForHeight(aspect*(rat[0]/rat[1]))
+        param=self.getSizeParams('Height')
+        if param[0]=='Auto':
+            self.fig.set_figwidth(self.fig.get_figheight()*rat[0]/rat[1])
+        if param[0]=='Absolute' or param[0]=='Per Unit':
+            self.setSizeByArray(param,'Height')
         self._adjust()
         self._emitResizeEvent()
     def _heightForWidth(self,aspect):
+        self._unfixAxis('Height')
+        rat=self.getMarginRatio()
         ran1=self.getAxisRange('Left')
         ran2=self.getAxisRange('Bottom')
         self.axes.set_aspect(aspect*abs(ran2[1]-ran2[0])/abs(ran1[1]-ran1[0]))
-        rat=self.getMarginRatio()
-        par=self.parentWidget()
-        if isinstance(par,SizeAdjustableWindow):
-            par.setHeightForWidth(aspect*(rat[1]/rat[0]))
+        param=self.getSizeParams('Width')
+        if param[0]=='Auto':
+            self.fig.set_figheight(self.fig.get_figwidth()*rat[1]/rat[0])
+        if param[0]=='Absolute' or param[0]=='Per Unit':
+            self.setSizeByArray(param,'Width')
         self._adjust()
         self._emitResizeEvent()
     def getSize(self):

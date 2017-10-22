@@ -40,6 +40,7 @@ class Graph(AutoSavedWindow):
         self.resize(200,200)
         self.canvas.setModificationFunction(self.Make_ModifyWindow)
         self.setWidget(self.canvas)
+        self.resized.connect(self.canvas.parentResized)
     def closeEvent(self,event):
         self.canvas.fig.canvas=None
         super().closeEvent(event)

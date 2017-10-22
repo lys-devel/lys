@@ -540,7 +540,11 @@ class RightClickableSelectionBox(DataSelectionBox):
         elif action.text() == 'Hide':
             self.canvas.hideData(self.__dim,list)
         elif action.text() == 'Edit':
-            print('Edit is not implemented yet.')
+            from ExtendAnalysis.GraphWindow import Table
+            t=Table()
+            data=self.canvas.getDataFromIndexes(self.__dim,list)
+            for d in data:
+                t.Append(d.wave)
         elif action.text() == 'Display':
             from ExtendAnalysis.GraphWindow import Graph
             g=Graph()
