@@ -269,6 +269,19 @@ class Wave(AutoSaved):
     def getSlicedImage(self,zindex):
         return self.data[:,:,zindex]
 
+    def integrate(self,*args):
+        dim=len(args)
+        if not dim==self.data.ndim:
+            return 0
+        if dim==1:
+            return self.__integrate1D(args[0])
+        if dim==2:
+            return self.__integrate2D(args[0],args[1])
+    def __integrate1D(self,range):
+        return self.data[range[0]:range[1]+1].sum()
+    def __integrate2D(self,range1,range2):
+        return self.data[range1[0]:range1[1]+1,range2[0]:range2[1]+1].sum()
+
 class String(AutoSaved):
     def _init(self):
         self.data=""
