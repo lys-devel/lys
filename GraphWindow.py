@@ -80,6 +80,10 @@ class PreviewWindow(ExtendMdiSubWindow):
             lists=list
         else:
             lists=[list]
+        if not len(lists)==0:
+            self.wave=lists[0]
+        else:
+            self.wave=None
         for l in lists:
             self.main.Append(l)
             n=max(n,l.data.ndim)
@@ -178,6 +182,15 @@ class PreviewWindow(ExtendMdiSubWindow):
                 id2=self.bottom.Append(slicex)
                 self.left.setDataColor(self.main.getAnchorColor(i),id1)
                 self.bottom.setDataColor(self.main.getAnchorColor(i),id2)
+    @classmethod
+    def SelectedArea(cls):
+        if not cls.__checkInstance():
+            return None
+        obj=cls.instance()
+        if obj.wave==None:
+            return None
+        pt=obj.main.SelectedRange()
+        return (obj.wave.posToPoint(pt[0]),obj.wave.posToPoint(pt[1]))
 class Table(ExtendMdiSubWindow):
     def __init__(self,wave=None):
         super().__init__()

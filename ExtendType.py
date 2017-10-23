@@ -277,6 +277,14 @@ class Wave(AutoSaved):
             return self.__integrate1D(args[0])
         if dim==2:
             return self.__integrate2D(args[0],args[1])
+    def posToPoint(self,pos):
+        x0=self.x[0]
+        x1=self.x[len(self.x)-1]
+        y0=self.y[0]
+        y1=self.y[len(self.y)-1]
+        wx=(x1-x0)/self.data.shape[0]
+        wy=(y1-y0)/self.data.shape[1]
+        return (round((pos[0]-x0-wx/2)/wx),round((pos[1]-y0-wy/2)/wy))
     def __integrate1D(self,range):
         return self.data[range[0]:range[1]+1].sum()
     def __integrate2D(self,range1,range2):

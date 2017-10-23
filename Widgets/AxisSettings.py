@@ -64,7 +64,9 @@ class RangeSelectableCanvas(ImageSettingCanvas):
         self.rect.set_width(0)
         self.rect.set_height(0)
     def SelectedRange(self):
-        return (self.rect_pos_start,self.rect_pos_end)
+        start=self.__GlobalToAxis(self.rect_pos_start[0],self.rect_pos_start[1],self.axes)
+        end=self.__GlobalToAxis(self.rect_pos_end[0],self.rect_pos_end[1],self.axes)
+        return (start,end)
 
 class AxisSelectableCanvas(RangeSelectableCanvas):
     def __init__(self, dpi=100):
