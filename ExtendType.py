@@ -280,8 +280,7 @@ class Wave(AutoSaved):
     def __integrate1D(self,range):
         return self.data[range[0]:range[1]+1].sum()
     def __integrate2D(self,range1,range2):
-        return self.data[range1[0]:range1[1]+1,range2[0]:range2[1]+1].sum()
-
+        return self.data[int(range1[0]):int(range1[1])+1,int(range2[0]):int(range2[1])+1].sum()
 class String(AutoSaved):
     def _init(self):
         self.data=""
@@ -295,7 +294,6 @@ class String(AutoSaved):
     def _load(self,file):
         with open(file,'r') as f:
             self.data=f.read()
-
 class Variable(AutoSaved):
     def _init(self):
         self.data=0
@@ -312,6 +310,19 @@ class Dict(AutoSaved):
         self.Save()
     def __missing__(self,key):
         return None
+    def __contains__(self,key):
+        return key in self.data
+    def __len__(self):
+        return len(self.data)
+
+class List(AutoSaved):
+    def _init(self):
+        self.data=[]
+    def __getitem__(self,key):
+        return self.data[key]
+    def __setitem__(self,key,value):
+        self.data[key]=value
+        self.Save()
     def __contains__(self,key):
         return key in self.data
     def __len__(self):
