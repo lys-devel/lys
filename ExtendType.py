@@ -290,7 +290,7 @@ class Wave(AutoSaved):
     def __average1D(self,range):
         return self.data[range[0]:range[1]+1].sum()/(range[1]-range[0]+1)
     def __average2D(self,range1,range2):
-        return self.data[int(range2[0]):int(range2[1])+1,int(range1[0]):int(range1[1])+1].sum()/(range1[1]-range1[0]+1)*(range2[1]-range2[0]+1)
+        return self.data[int(range2[0]):int(range2[1])+1,int(range1[0]):int(range1[1])+1].sum()/(range1[1]-range1[0]+1)/(range2[1]-range2[0]+1)
 class String(AutoSaved):
     def _init(self):
         self.data=""
