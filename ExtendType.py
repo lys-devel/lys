@@ -271,14 +271,14 @@ class Wave(AutoSaved):
     def getSlicedImage(self,zindex):
         return self.data[:,:,zindex]
 
-    def integrate(self,*args):
+    def average(self,*args):
         dim=len(args)
         if not dim==self.data.ndim:
             return 0
         if dim==1:
-            return self.__integrate1D(args[0])
+            return self.__average1D(args[0])
         if dim==2:
-            return self.__integrate2D(args[0],args[1])
+            return self.__average2D(args[0],args[1])
     def posToPoint(self,pos):
         x0=self.x[0]
         x1=self.x[len(self.x)-1]
@@ -287,10 +287,10 @@ class Wave(AutoSaved):
         dx=(x1-x0+1)/self.data.shape[1]
         dy=(y1-y0+1)/self.data.shape[0]
         return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
-    def __integrate1D(self,range):
-        return self.data[range[0]:range[1]+1].sum()
-    def __integrate2D(self,range1,range2):
-        return self.data[int(range2[0]):int(range2[1])+1,int(range1[0]):int(range1[1])+1].sum()
+    def __average1D(self,range):
+        return self.data[range[0]:range[1]+1].sum()/(range[1]-range[0]+1)
+    def __average2D(self,range1,range2):
+        return self.data[int(range2[0]):int(range2[1])+1,int(range1[0]):int(range1[1])+1].sum()/(range1[1]-range1[0]+1)*(range2[1]-range2[0]+1)
 class String(AutoSaved):
     def _init(self):
         self.data=""
