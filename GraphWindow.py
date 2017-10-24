@@ -153,14 +153,6 @@ class PreviewWindow(ExtendMdiSubWindow):
         range=self.main.getAxisRange('Bottom')
         self.bottom.setAxisRange(range,'Bottom')
         self.axisflg=False
-    def __posToPoint(self,wave,pos):
-        x0=wave.x[0]
-        x1=wave.x[len(wave.x)-1]
-        y0=wave.y[0]
-        y1=wave.y[len(wave.y)-1]
-        wx=(x1-x0)/wave.data.shape[0]
-        wy=(y1-y0)/wave.data.shape[1]
-        return (round((pos[0]-x0-wx/2)/wx),round((pos[1]-y0-wy/2)/wy))
     def OnAnchorChanged(self):
         self.left.Clear()
         self.bottom.Clear()
@@ -172,12 +164,13 @@ class PreviewWindow(ExtendMdiSubWindow):
             if w is None:
                 continue
             if w.wave.data.ndim==2:
-                p=self.__posToPoint(w.wave,res[1])
-                slicex=w.wave.slice((0,p[1]),(w.wave.data.shape[0],p[1]),axis='x')
-                slicey=w.wave.slice((p[0],0),(p[0],w.wave.data.shape[1]),axis='y')
-                data=slicey.data
-                slicey.data=slicey.x
-                slicey.x=data
+                p=w.wave.posToPoint(res[1])
+                slicex=Wave()
+                slicex.data=w.wave.data[p[1],:]
+                slicex.x=w.wave.x
+                slicey=Wave()
+                slicey.data=w.wave.y
+                slicey.x=w.wave.data[:,p[0]]
                 id1=self.left.Append(slicey)
                 id2=self.bottom.Append(slicex)
                 self.left.setDataColor(self.main.getAnchorColor(i),id1)

@@ -159,29 +159,25 @@ class FigureCanvasBase(FigureCanvas):
         self._Datalist.insert(id+2000,WaveData(wav,line,ax,id,appearance,offset))
         return id
     def _Append2D(self,wav,ax,ID,appearance,offset):
-        if wav.x.ndim==0:
-            xstart=0
-            xend=len(wav.data)
-        else:
-            xstart=wav.x[0]
-            xend=wav.x[len(wav.x)-1]
-        if wav.y.ndim==0:
-            ystart=0
-            yend=len(wav.data[0])
-        else:
-            ystart=wav.y[0]
-            yend=wav.y[len(wav.y)-1]
-        xstart=xstart+offset[0]
-        xend=xend+offset[0]
-        ystart=ystart+offset[1]
-        yend=yend+offset[1]
+        xstart=wav.x[0]
+        xend=wav.x[len(wav.x)-1]
+        ystart=wav.y[0]
+        yend=wav.y[len(wav.y)-1]
+
         if not offset[2]==0:
             xstart*=offset[2]
             xend*=offset[2]
         if not offset[3]==0:
             ystart*=offset[3]
             yend*=offset[3]
-        im=ax.imshow(wav.data,aspect='auto',extent=(xstart,xend,ystart,yend),picker=True)
+        xstart=xstart+offset[0]
+        xend=xend+offset[0]
+        ystart=ystart+offset[1]
+        yend=yend+offset[1]
+
+        dx=(xend-xstart+1)/wav.data.shape[1]
+        dy=(yend-ystart+1)/wav.data.shape[0]
+        im=ax.imshow(wav.data,aspect='auto',extent=(xstart-dx/2,xend+dx/2,yend+dy/2,ystart-dy/2),picker=True)
         if ID is None:
             id=-5000+len(self.getImages())
         else:

@@ -212,21 +212,22 @@ class Wave(AutoSaved):
         if key=='x' or key=='y' or key=='z':
             val=super().__getattribute__(key)
             index=['x','y','z'].index(key)
+            dim=self.data.ndim-index-1
             if self.data.ndim<=index:
                 return None
             elif val.ndim==0:
                 if self.data.ndim>index:
-                    return np.arange(self.data.shape[index])
+                    return np.arange(self.data.shape[dim])
                 else:
                     return val
             else:
-                if self.data.shape[index]==val.shape[0]:
+                if self.data.shape[dim]==val.shape[0]:
                     return val
                 else:
-                    res=np.empty((self.data.shape[index]))
-                    for i in range(self.data.shape[index]):
+                    res=np.empty((self.data.shape[dim]))
+                    for i in range(self.data.shape[dim]):
                         res[i]=np.NaN
-                    for i in range(min(self.data.shape[index],val.shape[0])):
+                    for i in range(min(self.data.shape[dim],val.shape[0])):
                         res[i]=val[i]
                     return res
         else:
@@ -258,6 +259,7 @@ class Wave(AutoSaved):
         self.z=target.z
         self.note=target.note
     def slice(self,pos1,pos2,axis='x'):
+        print(pos1,pos2)
         index=['x','y'].index(axis)
         size=pos2[index]-pos1[index]
         x,y=np.linspace(pos1[0], pos2[0], size), np.linspace(pos1[1], pos2[1], size)
@@ -282,13 +284,13 @@ class Wave(AutoSaved):
         x1=self.x[len(self.x)-1]
         y0=self.y[0]
         y1=self.y[len(self.y)-1]
-        wx=(x1-x0)/self.data.shape[0]
-        wy=(y1-y0)/self.data.shape[1]
-        return (round((pos[0]-x0-wx/2)/wx),round((pos[1]-y0-wy/2)/wy))
+        dx=(x1-x0+1)/self.data.shape[1]
+        dy=(y1-y0+1)/self.data.shape[0]
+        return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
     def __integrate1D(self,range):
         return self.data[range[0]:range[1]+1].sum()
     def __integrate2D(self,range1,range2):
-        return self.data[int(range1[0]):int(range1[1])+1,int(range2[0]):int(range2[1])+1].sum()
+        return self.data[int(range2[0]):int(range2[1])+1,int(range1[0]):int(range1[1])+1].sum()
 class String(AutoSaved):
     def _init(self):
         self.data=""
