@@ -41,6 +41,7 @@ class RangeSelectableCanvas(ImageSettingCanvas):
     def OnMouseDown(self, event):
         if event.button == 1:
             self.Selection=True
+            self.__saved = self.copy_from_bbox(self.axes.bbox)
             self.rect_pos_start=[event.x,event.y]
             ax=self.__GlobalToAxis(event.x,event.y,self.axes)
             self.rect.set_xy(ax)
@@ -57,7 +58,10 @@ class RangeSelectableCanvas(ImageSettingCanvas):
             ax=self.__GlobalToAxis(event.x,event.y,self.axes)
             self.rect.set_width(ax[0]-self.rect.xy[0])
             self.rect.set_height(ax[1]-self.rect.xy[1])
-            self.draw()
+            self.restore_region(self.__saved)
+            self.axes.draw_artist(self.rect)
+            self.blit(self.axes.bbox)
+            self.flush_events()
     def IsRangeSelected(self):
         return not self.rect.get_width()==0
     def ClearSelectedRange(self):

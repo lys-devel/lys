@@ -6,7 +6,7 @@ from matplotlib.figure import Figure, SubplotParams
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-
+from matplotlib import colors
 from ExtendAnalysis import *
 
 class Axis(Enum):
@@ -24,6 +24,7 @@ class WaveData(object):
         self.offset=offset
         self.zindex=zindex
 class FigureCanvasBase(FigureCanvas):
+    waveAppended=pyqtSignal(int)
     def __init__(self, dpi=100):
         self.fig=Figure(dpi=dpi)
         super().__init__(self.fig)
@@ -135,6 +136,7 @@ class FigureCanvasBase(FigureCanvas):
         if wav.data.ndim==3:
             id=self._Append3D(wav,ax,id,appearance,offset,zindex)
         self._emitDataChanged()
+        self.waveAppended.emit(id)
         self.draw()
         return id
     def _Append1D(self,wav,ax,ID,appearance,offset):
@@ -183,7 +185,8 @@ class FigureCanvasBase(FigureCanvas):
         else:
             id=ID
         im.set_zorder(id)
-        self._Datalist.insert(id+5000,WaveData(wav,im,ax,id,appearance,offset))
+        d=WaveData(wav,im,ax,id,appearance,offset)
+        self._Datalist.insert(id+5000,d)
         return id
     def _Append3D(self,wav,ax,ID,appearance,offset,z):
         xstart=wav.x[0]+offset[0]

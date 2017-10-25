@@ -14,6 +14,17 @@ from ExtendAnalysis.GraphWindow import *
 from .LineSettings import *
 
 class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
+    def __init__(self,dpi=100):
+        super().__init__(dpi=dpi)
+        self.waveAppended.connect(self.autoColorRange)
+    def autoColorRange(self,indexes):
+        data=self.getDataFromIndexes(2,indexes)
+        for d in data:
+            m=d.wave.average()
+            v=np.sqrt(d.wave.var())*3
+            norm=colors.Normalize(vmin=m-v,vmax=m+v)
+            d.obj.set_norm(norm)
+        self.draw()
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getImages()
@@ -130,8 +141,8 @@ class ImageColorAdjustBox(QWidget):
         layout=QVBoxLayout()
         self.__cmap=ColormapSelection()
         self.__cmap.colorChanged.connect(self.__changeColormap)
-        self.__start=ImageColorAdjustBox._rangeWidget("First",33.33)
-        self.__end=ImageColorAdjustBox._rangeWidget("Last",66.66)
+        self.__start=ImageColorAdjustBox._rangeWidget("First",20)
+        self.__end=ImageColorAdjustBox._rangeWidget("Last",80)
         self.__start.valueChanged.connect(self.__changerange)
         self.__end.valueChanged.connect(self.__changerange)
         layout.addWidget(self.__cmap)

@@ -271,8 +271,14 @@ class Wave(AutoSaved):
     def getSlicedImage(self,zindex):
         return self.data[:,:,zindex]
 
+    def var(self,*args):
+        dim=len(args)
+        if len(args)==0:
+            return self.data.var()
     def average(self,*args):
         dim=len(args)
+        if len(args)==0:
+            return self.data.mean()
         if not dim==self.data.ndim:
             return 0
         if dim==1:
