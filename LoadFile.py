@@ -5,9 +5,12 @@ from .GraphWindow import Graph
 
 def load(name,load=True):
     try:
-        if os.path.isfile(name):
+        if os.path.isdir(name):
+            mkdir(pwd()+'/'+os.path.basename(name))
+            __loadFolder(name,pwd()+'/'+os.path.basename(name))
+        elif os.path.isfile(name):
             path,ext=os.path.splitext(name)
-            res=dic[ext](name)
+            res=dic[ext](os.path.abspath(name))
             if load:
                 return res
     except Exception:
@@ -16,6 +19,28 @@ def load(name,load=True):
 def save(name,nameAs):
     data=load(name)
     data.Save(nameAs)
+
+def __loadFolder(name, path):
+    files=os.listdir(name)
+    for file in files:
+        if os.path.isdir(name+'/'+file):
+            mkdir(path+'/'+file)
+            __loadFolder(name+'/'+file,path+'/'+file)
+        elif os.path.isfile(name+'/'+file):
+            nam,ext=os.path.splitext(file)
+            data=load(os.path.abspath(name+'/'+file))
+            if isinstance(data,Wave):
+                data.Save(path+'/'+nam+'.npz')
+            if isinstance(data,Graph):
+                data.Save(path+'/'+nam+'.grf')
+            if isinstance(data,String):
+                data.Save(path+'/'+nam+'.str')
+            if isinstance(data,Variable):
+                data.Save(path+'/'+nam+'.val')
+            if isinstance(data,Dict):
+                data.Save(path+'/'+nam+'.dic')
+            if isinstance(data,List):
+                data.Save(path+'/'+nam+'.lst')
 
 def __loadNpz(name):
     nam,ext=os.path.splitext(os.path.basename(name))

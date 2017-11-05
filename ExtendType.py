@@ -102,7 +102,10 @@ class _DataManager(object):
         del cls.__dic[os.path.abspath(file)]
     @classmethod
     def _GetData(cls,file):
-        return cls.__dic[os.path.abspath(file)]()
+        res=cls.__dic[os.path.abspath(file)]()
+        if res is None:
+            cls._Remove(file)
+            return res
 
 class AutoSaved(object):
     def _load(self,file):
@@ -118,12 +121,13 @@ class AutoSaved(object):
 
     def __new__(cls,file=None,BaseClass=None):
         if _DataManager.IsUsed(file):
-            return _DataManager._GetData(file)
+            res=_DataManager._GetData(file)
+            if res is not None:
+                return res
+        if BaseClass is None:
+            return super().__new__(cls)
         else:
-            if BaseClass is None:
-                return super().__new__(cls)
-            else:
-                return BaseClass.__new__(cls)
+            return BaseClass.__new__(cls)
 
     def __init__(self,file=None,BaseClass=None):
         try:
