@@ -8,6 +8,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import colors
 from ExtendAnalysis import *
+from ExtendAnalysis import LoadFile
 
 class Axis(Enum):
     BottomLeft=1
@@ -123,7 +124,7 @@ class FigureCanvasBase(FigureCanvas):
         if isinstance(wave,Wave):
             wav=wave
         else:
-            wav=Wave(wave)
+            wav=LoadFile.load(wave)
         if appearance is None:
             return self._Append(wav,ax,id,{},offset,zindex)
         else:

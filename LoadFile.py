@@ -11,6 +11,7 @@ def load(name,load=True):
         elif os.path.isfile(name):
             path,ext=os.path.splitext(name)
             res=dic[ext](os.path.abspath(name))
+            res.setLoadFile(name)
             if load:
                 return res
     except Exception:

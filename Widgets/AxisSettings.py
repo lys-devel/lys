@@ -643,6 +643,10 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.__data={}
+        self.setTickDirection('Left','in')
+        self.setTickDirection('Bottom','in')
+        self.setTickVisible('Left',False,which='minor')
+        self.setTickVisible('Bottom',False,which='minor')
     def SaveAsDictionary(self,dictionary,path):
         super().SaveAsDictionary(dictionary,path)
         dic={}

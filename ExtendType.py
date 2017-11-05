@@ -135,6 +135,7 @@ class AutoSaved(object):
         except Exception:
             self.__loadFlg=True
             self.__file=file
+            self.__loadFile=None
             if BaseClass is not None:
                 BaseClass.__init__(self)
             self._init()
@@ -143,7 +144,9 @@ class AutoSaved(object):
             self.__finalizer=weakref.finalize(self,_DataManager._FinalizeObject,weakref.ref(self))
             self.__loadFlg=False
     def FileName(self):
-        return self.__file
+        if self.__file is not None:
+            return self.__file
+        return self.__loadFile
     def Name(self):
         if self.FileName() is None:
             return "untitled"
@@ -190,6 +193,8 @@ class AutoSaved(object):
         super().__setattr__(key,value)
         if not self.__loadFlg and not key =='_AutoSaved__loadFlg':
             self.Save()
+    def setLoadFile(self,file):
+        self.__loadFile=os.path.abspath(file)
 
 class Wave(AutoSaved):
     __waveModListener=[]
