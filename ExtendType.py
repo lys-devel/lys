@@ -80,7 +80,15 @@ class _DataManager(object):
     def IsUsed(cls,file):
         if file is None:
             return False
-        return os.path.abspath(file) in cls.__dic
+        if os.path.abspath(file) in cls.__dic:
+            obj=cls.__dic[os.path.abspath(file)]()
+            if obj is None:
+                cls._Remove(os.path.abspath(file))
+                return False
+            else:
+                return True
+        else:
+            return False
 
     @classmethod
     def OnMoveFile(cls,file,file_to):
@@ -105,7 +113,7 @@ class _DataManager(object):
         res=cls.__dic[os.path.abspath(file)]()
         if res is None:
             cls._Remove(file)
-            return res
+        return res
 
 class AutoSaved(object):
     def _load(self,file):
