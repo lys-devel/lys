@@ -292,6 +292,9 @@ class Wave(AutoSaved):
         dim=len(args)
         if len(args)==0:
             return self.data.var()
+    def smooth(self,repeat,vec=[1/3,1/3,1/3]):
+        for i in range(repeat):
+            self.data=np.convolve(self.data,vec,mode='same')
     def average(self,*args):
         dim=len(args)
         if len(args)==0:
