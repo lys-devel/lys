@@ -255,7 +255,11 @@ class FigureCanvasBase(FigureCanvas):
         self.saveAppearance()
         for data in self._Datalist:
             dic[i]={}
-            dic[i]['File']=os.path.relpath(data.wave.FileName(),path).replace('\\','/')
+            fname=data.wave.FileName()
+            if fname is not None:
+                dic[i]['File']=os.path.relpath(data.wave.FileName(),path).replace('\\','/')
+            else:
+                dic[i]['File']=None
             if data.axis==self.axes:
                 axis=1
             if data.axis==self.axes_ty:
@@ -278,6 +282,9 @@ class FigureCanvasBase(FigureCanvas):
             dic=dictionary['Datalist']
             while i in dic:
                 p=dic[i]['File']
+                if p is None:
+                    i+=1
+                    continue
                 axis=dic[i]['Axis']
                 if axis==1:
                     axis=Axis.BottomLeft

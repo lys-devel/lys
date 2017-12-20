@@ -110,6 +110,7 @@ class _ImageTab(QWidget):
         tab.addTab(ImageColorAdjustBox(canvas),'Color')
         tab.addTab(ImagePlaneAdjustBox(canvas),'Slice')
         tab.addTab(OffsetAdjustBox(canvas,2),'Offset')
+        tab.addTab(AnimationBox(canvas),'Animation')
         layout.addWidget(tab)
         self.setLayout(layout)
 class _AnnotationTab(QWidget):

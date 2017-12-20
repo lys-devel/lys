@@ -3,6 +3,7 @@ import random, weakref, gc, sys, os, math
 import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
+import matplotlib.animation as animation
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -236,5 +237,36 @@ class ImagePlaneAdjustBox(QWidget):
         if not len(indexes)==0:
             self.canvas.setIndex(self.index,zval)
 
-class ImageSettingCanvas(ImagePlaneAdjustableCanvas):
+class ImageAnimationCanvas(ImagePlaneAdjustableCanvas):
+    def addImage(self):
+        for i in range(1):
+            w=Wave()
+            w.data=np.random.rand(30,30)
+            self.Append(w)
+    def StartAnimation(self):
+        ims=[]
+        lis=self.getWaveData(2)
+        for l in lis:
+            ims.append([l.obj])
+        self.ani=animation.ArtistAnimation(self.fig,ims)
+    def StopAnimation(self):
+        self.ani.event_source.stop()
+class AnimationBox(QWidget):
+    def __init__(self,canvas):
+        super().__init__()
+        self.canvas=canvas
+        self.__initlayout()
+    def __initlayout(self):
+        layout=QVBoxLayout()
+        l_h1=QHBoxLayout()
+        self.__start=QPushButton('Start')
+        self.__start.clicked.connect(self.canvas.StartAnimation)
+        self.__stop=QPushButton('Stop')
+        self.__stop.clicked.connect(self.canvas.StopAnimation)
+        l_h1.addWidget(self.__start)
+        l_h1.addWidget(self.__stop)
+        layout.addLayout(l_h1)
+        self.setLayout(layout)
+
+class ImageSettingCanvas(ImageAnimationCanvas):
     pass

@@ -142,7 +142,7 @@ class CommandWindow(QMdiSubWindow):
             g=LoadFile.load(w)
             if w.find("./.com_settings/.graphs")>-1:
                 g.Disconnect()
-                remove(w)
+                #remove(w)
 
     def saveData(self):
         self.__clog.data=self.output.toPlainText()
