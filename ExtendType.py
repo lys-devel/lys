@@ -310,8 +310,8 @@ class Wave(AutoSaved):
         x1=self.x[len(self.x)-1]
         y0=self.y[0]
         y1=self.y[len(self.y)-1]
-        dx=(x1-x0+1)/self.data.shape[1]
-        dy=(y1-y0+1)/self.data.shape[0]
+        dx=(x1-x0)/(self.data.shape[1]-1)
+        dy=(y1-y0)/(self.data.shape[0]-1)
         return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
     def __average1D(self,range):
         return self.data[range[0]:range[1]+1].sum()/(range[1]-range[0]+1)
