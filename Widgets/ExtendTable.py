@@ -46,6 +46,10 @@ class ExtendTable(QTableView):
             else:
                 self._wave.data[item.row()][item.column()]=float(item.text())
             self._wave.update()
+    def setData(self,value,row,column):
+        super().setData(value,row,column)
+        if self._wave is not None:
+            self._wave.data[row][column]=value
     def clear(self):
         self._model.clear()
         self._wave=None
