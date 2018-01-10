@@ -292,9 +292,22 @@ class Wave(AutoSaved):
         dim=len(args)
         if len(args)==0:
             return self.data.var()
-    def smooth(self,repeat,vec=[1/3,1/3,1/3]):
-        for i in range(repeat):
-            self.data=np.convolve(self.data,vec,mode='same')
+    def smooth(self,cutoff):#cutoff is from 0 to 1 (relative to nikist frequency)
+        b, a = scipy.signal.butter(1,cutoff)
+        w=Wave()
+        w.data=self.data
+        for i in range(0,self.data.ndim):
+            w.data=scipy.signal.filtfilt(b,a,w.data,axis=i)
+        return w
+    def differentiate(self):
+        w=Wave()
+        w.data=self.data
+        w.x=self.x
+        w.y=self.y
+        for i in range(0,w.data.ndim):
+            w.data=np.gradient(self.data)[i]
+        return w
+
     def average(self,*args):
         dim=len(args)
         if len(args)==0:
