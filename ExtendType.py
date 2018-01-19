@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 __home=os.getcwd()
 __CDChangeListener=[]
+sys.path.append(__home)
 
 def mkdir(name):
     try:
