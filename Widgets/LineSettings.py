@@ -17,6 +17,7 @@ from ExtendAnalysis.ExtendType import *
 from .ColorWidgets import *
 from ExtendAnalysis.GraphWindow import *
 from .CanvasBase import *
+from .CanvasBase import _saveCanvas
 
 class LineColorAdjustableCanvas(OffsetAdjustableCanvas):
     def saveAppearance(self):
@@ -24,6 +25,7 @@ class LineColorAdjustableCanvas(OffsetAdjustableCanvas):
         data=self.getLines()
         for d in data:
             d.appearance['LineColor']=d.obj.get_color()
+    @_saveCanvas
     def setDataColor(self,color,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
@@ -73,6 +75,7 @@ class LineStyleAdjustableCanvas(LineColorAdjustableCanvas):
         for d in data:
             d.appearance['LineStyle']=d.obj.get_linestyle()
             d.appearance['LineWidth']=d.obj.get_linewidth()
+    @_saveCanvas
     def setLineStyle(self,style,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
@@ -85,6 +88,7 @@ class LineStyleAdjustableCanvas(LineColorAdjustableCanvas):
         for d in data:
             res.append(d.obj.get_linestyle().replace('-.','dashdot').replace('--','dashed').replace('-','solid').replace(':','dotted'))
         return res
+    @_saveCanvas
     def setLineWidth(self,width,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
@@ -155,6 +159,7 @@ class MarkerStyleAdjustableCanvas(LineStyleAdjustableCanvas):
             d.appearance['MarkerSize']=d.obj.get_markersize()
             d.appearance['MarkerThick']=d.obj.get_markeredgewidth()
             d.appearance['MarkerFilling']=d.obj.get_fillstyle()
+    @_saveCanvas
     def setMarker(self,marker,indexes):
         dummy=lines.Line2D([0,1],[0,1])
         key=list(dummy.markers.keys())
@@ -171,6 +176,7 @@ class MarkerStyleAdjustableCanvas(LineStyleAdjustableCanvas):
         for d in data:
             res.append(dummy.markers[d.obj.get_marker()])
         return res
+    @_saveCanvas
     def setMarkerSize(self,size,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
@@ -182,6 +188,7 @@ class MarkerStyleAdjustableCanvas(LineStyleAdjustableCanvas):
         for d in data:
             res.append(d.obj.get_markersize())
         return res
+    @_saveCanvas
     def setMarkerThick(self,size,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
@@ -193,6 +200,7 @@ class MarkerStyleAdjustableCanvas(LineStyleAdjustableCanvas):
         for d in data:
             res.append(d.obj.get_markeredgewidth())
         return res
+    @_saveCanvas
     def setMarkerFilling(self,type,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:

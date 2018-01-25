@@ -10,6 +10,13 @@ from matplotlib import colors
 from ExtendAnalysis import *
 from ExtendAnalysis import LoadFile
 
+def _saveCanvas(func):
+    import functools
+    @functools.wraps(func)
+    def wrapper(*args,**kwargs):
+        func(*args,**kwargs)
+        args[0].Save()
+    return wrapper
 class Axis(Enum):
     BottomLeft=1
     TopLeft=2
@@ -41,9 +48,15 @@ class FigureCanvasBase(FigureCanvas):
         self.__lisaxis=[]
         self.__lisdraw=[]
         self.drawflg=False
+        self.__loadFlg=False
+        self.savef=None
 
         Wave.AddWaveModificationListener(self)
-
+    def setSaveFunction(self,func):
+        self.savef=weakref.WeakMethod(func)
+    def Save(self):
+        if (not self.__loadFlg) and (self.savef is not None):
+            self.savef()()
     def OnWaveModified(self,wave):
         flg=False
         self.saveAppearance()
@@ -119,6 +132,7 @@ class FigureCanvasBase(FigureCanvas):
                 self.axes_txy.yaxis.set_picker(15)
                 self.axes_txy.minorticks_on()
             return self.axes_txy
+    @_saveCanvas
     def Append(self,wave,axis=Axis.BottomLeft,id=None,appearance=None,offset=(0,0,0,0),zindex=0):
         ax=self.__getAxes(axis)
         if isinstance(wave,Wave):
@@ -208,7 +222,7 @@ class FigureCanvasBase(FigureCanvas):
         im.set_zorder(id)
         self._Datalist.insert(id+5000,WaveData(wav,im,ax,id,appearance,offset,z))
         return id
-
+    @_saveCanvas
     def Remove(self,indexes):
         for i in indexes:
             for d in self._Datalist:
@@ -217,6 +231,7 @@ class FigureCanvasBase(FigureCanvas):
                     self._Datalist.remove(d)
         self._emitDataChanged()
         self.draw()
+    @_saveCanvas
     def Clear(self):
         for d in self._Datalist:
             d.obj.remove()
@@ -275,6 +290,7 @@ class FigureCanvasBase(FigureCanvas):
             i+=1
         dictionary['Datalist']=dic
     def LoadFromDictionary(self,dictionary,path):
+        self.__loadFlg=True
         i=0
         sdir=pwd()
         cd(path)
@@ -307,6 +323,7 @@ class FigureCanvasBase(FigureCanvas):
                 self.Append(p,axis,appearance=ap,offset=offset,zindex=zi)
                 i+=1
         self.loadAppearance()
+        self.__loadFlg=False
         cd(sdir)
     def axesName(self,axes):
         if axes==self.axes:
@@ -373,6 +390,7 @@ class DataSelectableCanvas(FigureCanvasBase):
             if d.id==id:
                 res=self._Datalist.index(d)
         return res
+    @_saveCanvas
     def moveItem(self,list,target=None):
         tar=eval(str(target))
         for l in list:
@@ -499,11 +517,13 @@ class DataHidableCanvas(DataSelectableCanvas):
         for d in data:
             if 'Visible' in d.appearance:
                 d.obj.set_visible(d.appearance['Visible'])
+    @_saveCanvas
     def hideData(self,dim,indexes):
         dat=self.getDataFromIndexes(dim,indexes)
         for d in dat:
             d.obj.set_visible(False)
         self.draw()
+    @_saveCanvas
     def showData(self,dim,indexes):
         dat=self.getDataFromIndexes(dim,indexes)
         for d in dat:
@@ -562,6 +582,7 @@ class RightClickableSelectionBox(DataSelectionBox):
             self.canvas.Remove(list)
 
 class OffsetAdjustableCanvas(DataHidableCanvas):
+    @_saveCanvas
     def setOffset(self,offset,indexes):
         data=self.getDataFromIndexes(None,indexes)
         for d in data:

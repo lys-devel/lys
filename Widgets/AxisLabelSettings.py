@@ -14,6 +14,7 @@ from matplotlib import lines, markers, ticker
 from ExtendAnalysis import *
 from .ColorWidgets import *
 from .AxisSettings import *
+from .CanvasBase import _saveCanvas
 
 class FontInfo(object):
     _fonts=None
@@ -75,6 +76,7 @@ class FontSelectableCanvas(TickAdjustableCanvas):
                 self.__listener.remove(l)
             else:
                 l().OnFontChanged(name)
+    @_saveCanvas
     def addFont(self,name):
         if not name in self.__font:
             self.__font[name]=FontInfo(self.__font['Default'].family)
@@ -84,9 +86,11 @@ class FontSelectableCanvas(TickAdjustableCanvas):
             if not self.__def[name]:
                 return self.__font[name]
         return self.__font['Default']
+    @_saveCanvas
     def setFont(self,font,name='Default'):
         self.__font[name]=font
         self._emit(name)
+    @_saveCanvas
     def setFontDefault(self,b,name):
         self.__def[name]=b
         self._emit(name)
@@ -240,6 +244,7 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
         for axis in ['Left','Right','Top','Bottom']:
             if self.axisIsValid(axis):
                 self.setAxisLabelFont(axis,self.getFont('Axis'))
+    @_saveCanvas
     def setAxisLabel(self,axis,text):
         axes=self.getAxes(axis)
         if axes is None:
@@ -257,6 +262,7 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
             return axes.get_ylabel()
         else:
             return axes.get_xlabel()
+    @_saveCanvas
     def setAxisLabelFont(self,axis,font):
         axes=self.getAxes(axis)
         if axes is None:
@@ -279,6 +285,7 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
         else:
             label=axes.get_xaxis().get_label()
         return FontInfo(label.get_family()[0],label.get_size(),label.get_color())
+    @_saveCanvas
     def setAxisLabelVisible(self,axis,b):
         axes=self.getAxes(axis)
         if axes is None:
@@ -296,6 +303,7 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
             return axes.get_yaxis().get_label().get_visible()
         else:
             return axes.get_xaxis().get_label().get_visible()
+    @_saveCanvas
     def setAxisLabelCoords(self,axis,pos):
         axes=self.getAxes(axis)
         if axes is None:
@@ -406,6 +414,7 @@ class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
         for axis in ['Left','Right','Top','Bottom']:
             if self.axisIsValid(axis):
                 self.setTickLabelFont(axis,self.getFont('Tick'))
+    @_saveCanvas
     def setTickLabelVisible(self,axis,tf,mirror=False,which='both'):
         axes=self.getAxes(axis)
         if axes is None:
@@ -443,6 +452,7 @@ class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
                 return tick.label1On
             else:
                 return tick.label2On
+    @_saveCanvas
     def setTickLabelFont(self,axis,font):
         axes=self.getAxes(axis)
         if axes is None:

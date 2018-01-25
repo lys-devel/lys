@@ -19,6 +19,10 @@ class Graph(AutoSavedWindow):
                     return l
                 else:
                     m+=1
+    def _prefix(self):
+        return 'graph'
+    def _suffix(self):
+        return '.grf'
     def _save(self,file):
         d={}
         self.canvas.SaveAsDictionary(d,os.path.dirname(file))
@@ -39,6 +43,7 @@ class Graph(AutoSavedWindow):
         self.canvas=ExtendCanvas()
         self.resize(200,200)
         self.canvas.setModificationFunction(self.Make_ModifyWindow)
+        self.canvas.setSaveFunction(self.Save)
         self.setWidget(self.canvas)
         self.resized.connect(self.canvas.parentResized)
     def closeEvent(self,event):

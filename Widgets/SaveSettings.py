@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 from .AnchorSettings import *
 
 class SaveSettingCanvas(AnchorSettingCanvas):
-    def Save(self,path,format):
+    def SaveFigure(self,path,format):
         self.fig.savefig(path,transparent=True,format=format)
     def CopyToClipboard(self):
         clipboard=QApplication.clipboard()
@@ -62,4 +62,4 @@ class SaveBox(QWidget):
             savename+=ext
         else:
             savename=name+ext+exts[filters.index(res[1])]
-        self.canvas.Save(savename,exts[filters.index(res[1])].replace('.',''))
+        self.canvas.SaveFigure(savename,exts[filters.index(res[1])].replace('.',''))

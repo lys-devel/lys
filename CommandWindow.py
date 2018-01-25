@@ -129,40 +129,18 @@ class CommandWindow(QMdiSubWindow):
     def __loadData(self):
         mkdir(".com_settings")
         self._savepath=os.path.abspath("./")
-        self.__clog=String("./.com_settings/commandlog.log")
+        self.__clog=String(".lys/commandlog.log")
         self.output.setPlainText(self.__clog.data)
-        self.__log2=String("./.com_settings/commandlog2.log")
+        self.__log2=String(".lys/commandlog2.log")
         if not len(self.__log2.data)==0:
             self.__shell.SetCommandLog(eval(self.__log2.data))
-        wins=[]
-        if os.path.exists('./.com_settings/winlist.log'):
-            with open('./.com_settings/winlist.log','r') as f:
-                wins=eval(f.read())
-        for w in wins:
-            g=LoadFile.load(w)
-            if w.find("./.com_settings/.graphs")>-1:
-                g.Disconnect()
-                #remove(w)
+        AutoSavedWindow.RestoreAllWindows()
 
     def saveData(self):
         self.__clog.data=self.output.toPlainText()
         self.__clog.Save()
         self.__log2.data=str(self.__shell.GetCommandLog())
-        mkdir(self._savepath+"/.com_settings/.graphs")
-        wins=AutoSavedWindow.DisconnectedWindows()
-        i=0
-        for w in wins:
-            try:
-                w.Save(self._savepath+"/.com_settings/.graphs/graph"+str(i)+".grf")
-            except:
-                print('Error in saving graph!')
-            i+=1
-        names=[]
-        wins=AutoSavedWindow.AllWindows()
-        for w in wins:
-            names.append('./'+os.path.relpath(w.FileName(),self._savepath).replace('\\','/'))
-        with open(self._savepath+'/.com_settings/winlist.log','w') as f:
-            f.write(str(names))
+        AutoSavedWindow.StoreAllWindows()
     def closeEvent(self,event):
         event.ignore()
     def __CreateLayout(self):

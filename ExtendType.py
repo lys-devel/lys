@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, sys, shutil, weakref
+import os, sys, shutil, weakref, logging
 import numpy as np
 import scipy.ndimage
 from PyQt5.QtWidgets import *
@@ -111,6 +111,12 @@ class _DataManager(object):
         del cls.__dic[os.path.abspath(file)]
     @classmethod
     def _GetData(cls,file):
+        try:
+            abs=os.path.abspath(file)
+        except:
+            return None
+        if not abs in cls.__dic:
+            return None
         res=cls.__dic[os.path.abspath(file)]()
         if res is None:
             cls._Remove(file)
@@ -373,6 +379,12 @@ class List(AutoSaved):
     def __setitem__(self,key,value):
         self.data[key]=value
         self.Save()
+    def append(self,value):
+        self.data.append(value)
+        self.Save()
+    def remove(self,value):
+        self.data.remove(value)
+        self.Save()
     def __contains__(self,key):
         return key in self.data
     def __len__(self):
@@ -426,10 +438,15 @@ class AttachableWindow(SizeAdjustableWindow):
 class ExtendMdiSubWindow(AttachableWindow):
     mdimain=None
     __wins=[]
-    def __init__(self):
+    def __init__(self, title=None):
+        logging.debug('[ExtendMdiSubWindow] __init__')
         super().__init__()
         ExtendMdiSubWindow._AddWindow(self)
         self.setAttribute(Qt.WA_DeleteOnClose)
+        if title is not None:
+            self.setWindowTitle(title)
+        self.updateGeometry()
+        self.show()
     @classmethod
     def CloseAllWindows(cls):
         for g in cls.__wins:
@@ -453,43 +470,104 @@ class ExtendMdiSubWindow(AttachableWindow):
         ExtendMdiSubWindow._RemoveWindow(self)
         super().closeEvent(event)
 
-class AutoSavedWindow(ExtendMdiSubWindow, AutoSaved):
-    __list=[]
+class AutoSavedWindow(ExtendMdiSubWindow):
+    __list=List(home()+'/.lys/winlist.lst')
+    _isclosed=False
     @classmethod
     def _AddAutoWindow(cls,win):
-        cls.__list.append(win)
+        if not win.FileName() in cls.__list.data:
+            cls.__list.append(win.FileName())
     @classmethod
     def _RemoveAutoWindow(cls,win):
-        cls.__list.remove(win)
+        if win.FileName() in cls.__list.data:
+            cls.__list.remove(win.FileName())
     @classmethod
-    def _Contains(cls,win):
-        return win in cls.__list
+    def RestoreAllWindows(cls):
+        from . import LoadFile
+        mkdir(home()+'/.lys/wins')
+        for path in cls.__list.data:
+            try:
+                w=LoadFile.load(path)
+                if path.find(home()+'/.lys/wins') > -1:
+                    w.Disconnect()
+            except:
+                pass
     @classmethod
-    def DisconnectedWindows(cls):
-        res=[]
-        for g in cls.__list:
-            if not g.IsConnected():
-                res.append(g)
-        return res
+    def StoreAllWindows(cls):
+        cls._isclosed=True
+        for w in cls.AllWindows():
+            w.close()
+        cls._isclosed=False
     @classmethod
-    def AllWindows(cls):
-        return cls.__list
-
-    def __new__(cls, file=None,title=None):
-        return AutoSaved.__new__(cls,file,ExtendMdiSubWindow)
+    def _IsClosed(cls):
+        return cls._isclosed
+    def NewTmpFilePath(self):
+        mkdir(home()+'/.lys/wins')
+        for i in range(1000):
+            path=home()+'/.lys/wins/'+self._prefix()+str(i).zfill(3)+self._suffix()
+            if not _DataManager.IsUsed(path):
+                return path
+        print('Too many windows.')
+    def __new__(cls, file=None, title=None):
+        logging.debug('[AutoSavedWindow] __new__ called.')
+        res=_DataManager._GetData(file)
+        if res is not None:
+            logging.debug('[AutoSavedWindow] found loaded window.')
+            return res
+        return super().__new__(cls)
     def __init__(self, file=None, title=None):
-        AutoSaved.__init__(self,file,ExtendMdiSubWindow)
-        AutoSavedWindow._AddAutoWindow(self)
-        if title is not None:
-            self.setWindowTitle(title)
-        self.updateGeometry()
-        self.show()
-    def __setattr__(self,key,value):
-        object.__setattr__(self,key,value)
-    def closeEvent(self,event):
-        if self.IsConnected() or self.isHidden():
+        logging.debug('[AutoSavedWindow] __init__ called.')
+        try:
+            self.__file
+        except Exception:
+            logging.debug('[AutoSavedWindow] new window will be created.')
+            if file is None:
+                logging.debug('[AutoSavedWindow] file is None. New temporary window is created.')
+                self.__isTmp=True
+                self.__file=self.NewTmpFilePath()
+            else:
+                logging.debug('[AutoSavedWindow] file is ' + file + '.')
+                self.__isTmp=False
+                self.__file=file
+            if title is not None:
+                super().__init__(title)
+            else:
+                super().__init__(self.Name())
+            self._init()
+            self.__Load(self.__file)
             self.Save()
+            AutoSavedWindow._AddAutoWindow(self)
+    def setLoadFile(self,file):
+        self.__loadFile=os.path.abspath(file)
+    def __Load(self,file):
+        logging.debug('[AutoSavedWindow] __Load called.')
+        if _DataManager.IsUsed(file):
+            print('Error: This file is already loaded.\n')
         else:
+            if file is not None:
+                self.__file=os.path.abspath(file)
+                _DataManager._Append(self.__file,self)
+            if os.path.exists(self.__file):
+                self._load(self.__file)
+
+    def FileName(self):
+        return self.__file
+    def Name(self):
+        nam,ext=os.path.splitext(os.path.basename(self.FileName()))
+        return nam
+    def IsConnected(self):
+        return not self.__isTmp
+    def Disconnect(self):
+        self.__isTmp=True
+    def Save(self,file=None):
+        if file is not None:
+            self._save(file)
+            self.__isTmp=False
+        else:
+            self._save(self.__file)
+
+    def closeEvent(self,event):
+        if (not AutoSavedWindow._IsClosed()) and (not self.IsConnected()):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
             msg.setText("This window is not saved. Do you really want to close it?")
@@ -499,6 +577,9 @@ class AutoSavedWindow(ExtendMdiSubWindow, AutoSaved):
             if ok==QMessageBox.Cancel:
                 event.ignore()
                 return
-        AutoSavedWindow._RemoveAutoWindow(self)
-        self.Disconnect()
-        return ExtendMdiSubWindow.closeEvent(self,event)
+        _DataManager._Remove(self.__file)
+        if not AutoSavedWindow._IsClosed():
+            AutoSavedWindow._RemoveAutoWindow(self)
+            if not self.IsConnected():
+                remove(self.__file)
+        return super().closeEvent(event)

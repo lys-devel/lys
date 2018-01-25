@@ -13,6 +13,7 @@ from matplotlib import lines, markers, ticker
 
 from ExtendAnalysis import *
 from .ColorWidgets import *
+from .CanvasBase import _saveCanvas
 from .ImageSettings import *
 
 class RangeSelectableCanvas(ImageSettingCanvas):
@@ -176,7 +177,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
                         self.setAutoScaleAxis(l)
                     else:
                         self.setAxisRange(dic[l],l)
-
+    @_saveCanvas
     def setAxisRange(self,range,axis):
         ax=axis
         axes=self.getAxes(axis)
@@ -188,6 +189,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
             axes.set_xlim(range)
         self._emitAxisRangeChanged()
         self.draw()
+
     def getAxisRange(self,axis):
         ax=axis
         axes=self.getAxes(axis)
@@ -206,7 +208,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
                 l()()
             else:
                 self.__listener.remove(l)
-
+    @_saveCanvas
     def setAutoScaleAxis(self,axis):
         ax=axis
         axes=self.getAxes(axis=ax)
@@ -299,11 +301,13 @@ class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
         self.__exec('Horizontal Shrink')
     def __shrinkv(self):
         self.__exec('Vertical Shrink')
+    @_saveCanvas
     def __exec(self,text):
         for axis in ['Left','Right','Top','Bottom']:
             self.__ExpandAndShrink(text,axis)
         self.ClearSelectedRange()
         self.draw()
+    @_saveCanvas
     def __auto(self):
         for axis in ['Left','Right','Bottom','Top']:
             self.setAutoScaleAxis(axis)
@@ -486,7 +490,7 @@ class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
                     self.setMirrorAxis(l,dic[l+"_mirror"])
                     self.setAxisColor(l,dic[l+"_color"])
                     self.setAxisThick(l,dic[l+"_thick"])
-
+    @_saveCanvas
     def setAxisMode(self,axis,mod):
         axes=self.getAxes(axis)
         if axes is None:
@@ -503,6 +507,7 @@ class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
             return axes.get_yscale()
         else:
             return axes.get_xscale()
+    @_saveCanvas
     def setAxisThick(self,axis,thick):
         axes=self.getAxes(axis)
         if axes is None:
@@ -513,6 +518,7 @@ class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
     def getAxisThick(self,axis):
         axes=self.getAxes(axis)
         return axes.spines[axis.lower()].get_linewidth()
+    @_saveCanvas
     def setAxisColor(self,axis,color):
         axes=self.getAxes(axis)
         if axes is None:
@@ -528,6 +534,7 @@ class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
         axes=self.getAxes(axis)
         color=axes.spines[axis.lower()].get_edgecolor()
         return color
+    @_saveCanvas
     def setMirrorAxis(self,axis,value):
         axes=self.getAxes(axis)
         if axes is None:
@@ -681,6 +688,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
                     self.setTickWidth(l,dic[l+"_tickwid2"],which='minor')
                     self.setAutoLocator(l,dic[l+"_ticknum2"],which='minor')
                     self.setTickDirection(l,dic[l+"_tickdir"])
+    @_saveCanvas
     def setAutoLocator(self,axis,n,which='major'):
         axs=self.getAxes(axis)
         if axs is None:
@@ -712,6 +720,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
             return 0
         else:
             return l()[1]-l()[0]
+    @_saveCanvas
     def setTickDirection(self,axis,direction):
         axes=self.getAxes(axis)
         if axes==None:
@@ -733,6 +742,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         elif axis=='Top':
             list=[3,2,'|']
         return data[list.index(marker)]
+    @_saveCanvas
     def setTickWidth(self,axis,value,which='major'):
         axes=self.getAxes(axis)
         if axes is None:
@@ -744,6 +754,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         self.draw()
     def getTickWidth(self,axis,which='major'):
         return self._getTickLine(axis,which).get_markeredgewidth()
+    @_saveCanvas
     def setTickLength(self,axis,value,which='major'):
         axes=self.getAxes(axis)
         if axes is None:
@@ -769,6 +780,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
             return tick.tick1line
         else:
             return tick.tick2line
+    @_saveCanvas
     def setTickVisible(self,axis,tf,mirror=False,which='both'):
         axes=self.getAxes(axis)
         if axes==None:

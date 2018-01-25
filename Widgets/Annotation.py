@@ -15,6 +15,7 @@ from ExtendAnalysis import *
 from ExtendAnalysis.GraphWindow import *
 from .ColorWidgets import *
 from .AreaSettings import *
+from .CanvasBase import _saveCanvas
 
 class AnnotationData(object):
     def __init__(self,obj,idn,appearance):
@@ -73,6 +74,7 @@ class AnnotatableCanvas(AreaSettingCanvas):
                 self.addAnnotation(t,axis,appearance=appearance)
                 i+=1
         self.loadAnnotAppearance()
+    @_saveCanvas
     def addAnnotation(self,text,axis=Axis.BottomLeft,appearance=None,id=None):
         axes=self._getAxesFrom(axis)
         a=axes.text(0.5,0.5,text,transform=axes.transAxes,picker=True)
@@ -87,6 +89,7 @@ class AnnotatableCanvas(AreaSettingCanvas):
             self.__list.insert(ids-10000,AnnotationData(a,ids,appearance))
         self._emitAnnotationChanged()
         self.draw()
+    @_saveCanvas
     def removeAnnotation(self,indexes):
         for i in indexes:
             for d in self.__list:
@@ -96,6 +99,7 @@ class AnnotatableCanvas(AreaSettingCanvas):
         self._reorderAnnotation()
         self._emitAnnotationChanged()
         self.draw()
+    @_saveCanvas
     def setAnnotationText(self,indexes,txt):
         list=self.getAnnotationFromIndexes(indexes)
         for l in list:
@@ -143,6 +147,7 @@ class AnnotatableCanvas(AreaSettingCanvas):
             if d.obj.get_zorder()==id:
                 res=self.__list.index(d)
         return res
+    @_saveCanvas
     def moveAnnotation(self,list,target=None):
         tar=eval(str(target))
         for l in list:
@@ -191,11 +196,13 @@ class AnnotationHidableCanvas(AnnotatableCanvas):
         for d in data:
             if 'Visible' in d.appearance:
                 d.obj.set_visible(d.appearance['Visible'])
+    @_saveCanvas
     def hideAnnotation(self,indexes):
         dat=self.getAnnotationFromIndexes(indexes)
         for d in dat:
             d.obj.set_visible(False)
         self.draw()
+    @_saveCanvas
     def showAnnotation(self,indexes):
         dat=self.getAnnotationFromIndexes(indexes)
         for d in dat:
@@ -360,6 +367,7 @@ class AnnotationEditableCanvas(AnnotationHidableCanvas):
         annot.obj.set_size(f.size)
         annot.obj.set_color(f.color)
         annot.appearance['Font']=f.ToDict()
+    @_saveCanvas
     def setAnnotationFont(self,indexes,font='Default',default=False):
         list=self.getAnnotationFromIndexes(indexes)
         for l in list:
@@ -451,6 +459,7 @@ class AnnotationMovableCanvas(AnnotationEditableCanvas):
             if 'PositionMode' in d.appearance:
                 self.setAnnotPositionMode([d.id],d.appearance['PositionMode'])
                 self.setAnnotPosition([d.id],d.appearance['Position'])
+    @_saveCanvas
     def setAnnotPosition(self,indexes,xy):
         list=self.getAnnotationFromIndexes(indexes)
         for l in list:
@@ -463,6 +472,7 @@ class AnnotationMovableCanvas(AnnotationEditableCanvas):
         for l in list:
             res.append(l.obj.get_position())
         return res
+    @_saveCanvas
     def setAnnotPositionMode(self,indexes,mode):
         list=self.getAnnotationFromIndexes(indexes)
         for l in list:
@@ -552,6 +562,7 @@ class AnnotationBoxAdjustableCanvas(AnnotationMovableCanvas):
                 self.setAnnotBoxStyle([d.id],d.appearance['BoxStyle'])
                 self.setAnnotBoxColor([d.id],d.appearance['BoxFaceColor'])
                 self.setAnnotBoxEdgeColor([d.id],d.appearance['BoxEdgeColor'])
+    @_saveCanvas
     def setAnnotBoxStyle(self,indexes,style):
         list=self.getAnnotationFromIndexes(indexes)
         for l in list:
@@ -599,6 +610,7 @@ class AnnotationBoxAdjustableCanvas(AnnotationMovableCanvas):
                 res.append(self._checkBoxStyle(box.get_boxstyle()))
                 continue
         return res
+    @_saveCanvas
     def setAnnotBoxColor(self,indexes,color):
         list=self.getAnnotationFromIndexes(indexes)
         for l in list:
@@ -616,6 +628,7 @@ class AnnotationBoxAdjustableCanvas(AnnotationMovableCanvas):
             else:
                 res.append(box.get_facecolor())
         return res
+    @_saveCanvas
     def setAnnotBoxEdgeColor(self,indexes,color):
         list=self.getAnnotationFromIndexes(indexes)
         for l in list:
