@@ -14,7 +14,6 @@ def _saveCanvas(func):
     import functools
     @functools.wraps(func)
     def wrapper(*args,**kwargs):
-        print(func,args,kwargs)
         func(*args,**kwargs)
         args[0].Save()
     return wrapper
