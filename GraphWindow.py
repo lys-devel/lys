@@ -93,7 +93,7 @@ class PreviewWindow(ExtendMdiSubWindow):
             self.main.Append(l)
             n=max(n,l.data.ndim)
         self.dim=n
-        self._setLayout(n)
+        self._setLayout(1)
         self.axis_c()
         self.show()
     def __initcanvas(self):
@@ -161,6 +161,7 @@ class PreviewWindow(ExtendMdiSubWindow):
     def OnAnchorChanged(self):
         self.left.Clear()
         self.bottom.Clear()
+        flg=False
         for i in [1,2,3]:
             res=self.main.getAnchorInfo(i)
             if res is None:
@@ -169,6 +170,7 @@ class PreviewWindow(ExtendMdiSubWindow):
             if w is None:
                 continue
             if w.wave.data.ndim==2:
+                flg=True
                 p=w.wave.posToPoint(res[1])
                 slicex=Wave()
                 slicex.data=w.wave.data[p[1],:]
@@ -180,6 +182,10 @@ class PreviewWindow(ExtendMdiSubWindow):
                 id2=self.bottom.Append(slicex)
                 self.left.setDataColor(self.main.getAnchorColor(i),id1)
                 self.bottom.setDataColor(self.main.getAnchorColor(i),id2)
+        if flg:
+            self._setLayout(2)
+        else:
+            self._setLayout(1)
     @classmethod
     def SelectedArea(cls):
         if not cls.__checkInstance():
