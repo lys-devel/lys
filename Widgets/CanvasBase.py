@@ -14,6 +14,7 @@ def _saveCanvas(func):
     import functools
     @functools.wraps(func)
     def wrapper(*args,**kwargs):
+        print(func,args,kwargs)
         func(*args,**kwargs)
         args[0].Save()
     return wrapper
@@ -56,8 +57,10 @@ class FigureCanvasBase(FigureCanvas):
     def Save(self):
         if (not self.__loadFlg) and (self.savef is not None):
             self.savef()()
+    @_saveCanvas
     def OnWaveModified(self,wave):
         flg=False
+        self.__loadFlg=True
         self.saveAppearance()
         for d in self._Datalist:
             if wave==d.wave:
@@ -68,6 +71,7 @@ class FigureCanvasBase(FigureCanvas):
         self.loadAppearance()
         if(flg):
             self.draw()
+        self.__loadFlg=False
     def IsDrawEnabled(self):
         return self.drawflg
     def EnableDraw(self,b):

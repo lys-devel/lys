@@ -242,6 +242,7 @@ class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
         x_loc=(x - ran.x0 * self.width())/((ran.x1 - ran.x0)*self.width())
         y_loc=(y - ran.y0 * self.height())/((ran.y1 - ran.y0)*self.height())
         return [x_loc,y_loc]
+    @_saveCanvas
     def __ExpandAndShrink(self,mode,axis):
         if not self.axisIsValid(axis):
             return
@@ -301,13 +302,11 @@ class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
         self.__exec('Horizontal Shrink')
     def __shrinkv(self):
         self.__exec('Vertical Shrink')
-    @_saveCanvas
     def __exec(self,text):
         for axis in ['Left','Right','Top','Bottom']:
             self.__ExpandAndShrink(text,axis)
         self.ClearSelectedRange()
         self.draw()
-    @_saveCanvas
     def __auto(self):
         for axis in ['Left','Right','Bottom','Top']:
             self.setAutoScaleAxis(axis)
