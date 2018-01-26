@@ -14,8 +14,9 @@ def _saveCanvas(func):
     import functools
     @functools.wraps(func)
     def wrapper(*args,**kwargs):
-        func(*args,**kwargs)
+        res=func(*args,**kwargs)
         args[0].Save()
+        return res
     return wrapper
 class Axis(Enum):
     BottomLeft=1
@@ -148,17 +149,17 @@ class FigureCanvasBase(FigureCanvas):
     @_saveCanvas
     def _Append(self,wav,ax,id,appearance,offset,zindex=0, reuse=False):
         if wav.data.ndim==1:
-            id=self._Append1D(wav,ax,id,appearance,offset)
+            ids=self._Append1D(wav,ax,id,appearance,offset)
         if wav.data.ndim==2:
-            id=self._Append2D(wav,ax,id,appearance,offset)
+            ids=self._Append2D(wav,ax,id,appearance,offset)
         if wav.data.ndim==3:
-            id=self._Append3D(wav,ax,id,appearance,offset,zindex)
+            ids=self._Append3D(wav,ax,id,appearance,offset,zindex)
         if not reuse:
             wav.addWaveModifiedListener(self.OnWaveModified)
         self._emitDataChanged()
-        self.waveAppended.emit(id)
+        self.waveAppended.emit(ids)
         self.draw()
-        return id
+        return ids
     def _Append1D(self,wav,ax,ID,appearance,offset):
         if wav.x.ndim==0:
             xdata=np.arange(len(wav.data))
