@@ -51,7 +51,6 @@ class FigureCanvasBase(FigureCanvas):
         self.__loadFlg=False
         self.savef=None
 
-        Wave.AddWaveModificationListener(self)
     def setSaveFunction(self,func):
         self.savef=weakref.WeakMethod(func)
     def Save(self):
@@ -64,7 +63,7 @@ class FigureCanvasBase(FigureCanvas):
             if wave==d.wave:
                 d.obj.remove()
                 self._Datalist.remove(d)
-                self._Append(wave,d.axis,d.id,appearance=d.appearance,offset=d.offset,zindex=d.zindex)
+                self._Append(wave,d.axis,d.id,appearance=d.appearance,offset=d.offset,zindex=d.zindex,reuse=True)
                 flg=True
         self.loadAppearance()
         if(flg):
@@ -132,7 +131,7 @@ class FigureCanvasBase(FigureCanvas):
                 self.axes_txy.yaxis.set_picker(15)
                 self.axes_txy.minorticks_on()
             return self.axes_txy
-    @_saveCanvas
+
     def Append(self,wave,axis=Axis.BottomLeft,id=None,appearance=None,offset=(0,0,0,0),zindex=0):
         ax=self.__getAxes(axis)
         if isinstance(wave,Wave):
@@ -143,13 +142,16 @@ class FigureCanvasBase(FigureCanvas):
             return self._Append(wav,ax,id,{},offset,zindex)
         else:
             return self._Append(wav,ax,id,appearance,offset,zindex)
-    def _Append(self,wav,ax,id,appearance,offset,zindex=0):
+    @_saveCanvas
+    def _Append(self,wav,ax,id,appearance,offset,zindex=0, reuse=False):
         if wav.data.ndim==1:
             id=self._Append1D(wav,ax,id,appearance,offset)
         if wav.data.ndim==2:
             id=self._Append2D(wav,ax,id,appearance,offset)
         if wav.data.ndim==3:
             id=self._Append3D(wav,ax,id,appearance,offset,zindex)
+        if not reuse:
+            wav.addWaveModifiedListener(self.OnWaveModified)
         self._emitDataChanged()
         self.waveAppended.emit(id)
         self.draw()
@@ -228,6 +230,7 @@ class FigureCanvasBase(FigureCanvas):
             for d in self._Datalist:
                 if i==d.id:
                     d.obj.remove()
+                    #d.wave.waveModified.Disconnect(self.OnWaveModified)
                     self._Datalist.remove(d)
         self._emitDataChanged()
         self.draw()

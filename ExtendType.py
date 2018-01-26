@@ -2,8 +2,10 @@
 import os, sys, shutil, weakref, logging
 import numpy as np
 import scipy.ndimage
+import scipy.signal
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 __home=os.getcwd()
 __CDChangeListener=[]
 sys.path.append(__home)
@@ -212,24 +214,11 @@ class AutoSaved(object):
         self.__loadFile=os.path.abspath(file)
 
 class Wave(AutoSaved):
-    __waveModListener=[]
-
-    @classmethod
-    def AddWaveModificationListener(cls, listener):
-        cls.__waveModListener.append(weakref.ref(listener))
-    @classmethod
-    def _EmitWaveModified(cls,wave):
-        for l in cls.__waveModListener:
-            if l() is not None:
-                l().OnWaveModified(wave)
-            else:
-                cls.__waveModListener.remove(l)
-
     def __setattr__(self,key,value):
         if key=='x' or key=='y' or key=='z' or key=='data':
             super().__setattr__(key,np.array(value))
             if self._emitflg:
-                Wave._EmitWaveModified(self)
+                self._EmitWaveModified()
         else:
             super().__setattr__(key,value)
     def __getattribute__(self,key):
@@ -263,6 +252,15 @@ class Wave(AutoSaved):
         self.image=None
         self.note=""
         self._emitflg=True
+        self.__waveModListener=[]
+    def addWaveModifiedListener(self,method):
+        self.__waveModListener.append(weakref.WeakMethod(method))
+    def _EmitWaveModified(self):
+        for m in self.__waveModListener:
+            if m() is None:
+                self.__waveModListener.remove(m)
+            else:
+                m()(self)
     def _load(self,file):
         tmp=np.load(file)
         self._emitflg=False
