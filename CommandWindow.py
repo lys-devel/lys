@@ -82,33 +82,18 @@ class CommandLineEdit(QLineEdit):
 class ColoredFileSystemModel(ExtendFileSystemModel):
     def __init__(self):
         super().__init__()
-        self.__list=[]
-        exts=[]
         for ext in LoadFile.getExtentions():
-            exts.append('*'+ext)
-        self.setNameFilters(exts)
-        self.setNameFilterDisables(False)
-
-    def OnCDChanged(self,cd):
-        self.__icd=self.index(cd)
-        i=self.index(cd)
-        list_old=self.__list
-        self.__list=[]
-        while i.isValid():
-            self.__list.append(i)
-            i=self.parent(i)
-        for index in self.__list:
-            self.dataChanged.emit(index,index,[Qt.FontRole,Qt.BackgroundRole])
-        for index in list_old:
-            self.dataChanged.emit(index,index,[Qt.FontRole,Qt.BackgroundRole])
+            self.AddAcceptedFilter('*'+ext)
 
     def data(self,index,role=Qt.DisplayRole):
-        if index in self.__list and role==Qt.FontRole:
-            font=QFont()
-            font.setBold(True)
-            return font
-        if index==self.__icd and role==Qt.BackgroundRole:
-            return QColor(200,200,200)
+        if role==Qt.FontRole:
+            if pwd().find(self.filePath(index)) > -1:
+                font=QFont()
+                font.setBold(True)
+                return font
+        if role==Qt.BackgroundRole:
+            if pwd()==self.filePath(index):
+                return QColor(200,200,200)
         return super().data(index,role)
 
 class CommandWindow(QMdiSubWindow):
@@ -120,8 +105,6 @@ class CommandWindow(QMdiSubWindow):
         self.__CreateLayout()
         sys.stdout = Logger(self.output, sys.stdout)
         sys.stderr = Logger(self.output, sys.stderr, QColor(255,0,0))
-
-        addCDChangeListener(self.__dirmodel)
 
         self.__loadData()
         self.show()
@@ -135,7 +118,6 @@ class CommandWindow(QMdiSubWindow):
         if not len(self.__log2.data)==0:
             self.__shell.SetCommandLog(eval(self.__log2.data))
         AutoSavedWindow.RestoreAllWindows()
-
     def saveData(self):
         self.__clog.data=self.output.toPlainText()
         self.__clog.Save()
@@ -157,15 +139,14 @@ class CommandWindow(QMdiSubWindow):
 
         layout_h=QSplitter(Qt.Horizontal)
         self.__dirmodel = ColoredFileSystemModel()
-        self.__tree=FileSystemView(self,self.__dirmodel)
-        self.__tree.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.__treeContextMenu(self.__tree)
-        self.__tree.SetPath(pwd())
-        layout_h.addWidget(self.__tree)
+        self.view=FileSystemView(self,self.__dirmodel)
+        self.__viewContextMenu(self.view)
+        self.view.SetPath(pwd())
+        layout_h.addWidget(self.view)
         layout_h.addWidget(wid)
 
         self.setWidget(layout_h)
-    def __treeContextMenu(self,tree):
+    def __viewContextMenu(self,tree):
         cd=QAction('Set Current Directory',self,triggered=self.__setCurrentDirectory)
         ld=QAction('Load',self,triggered=self.__load)
         menu={}
@@ -176,7 +157,7 @@ class CommandWindow(QMdiSubWindow):
         tree.SetContextMenuActions(menu)
 
     def __setCurrentDirectory(self):
-        cd(self.__tree.selectedPaths()[0])
+        cd(self.view.selectedPaths()[0])
     def __load(self):
-        for p in self.__tree.selectedPaths():
+        for p in self.view.selectedPaths():
             self.__shell.Load(p)

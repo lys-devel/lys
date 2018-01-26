@@ -1,4 +1,4 @@
-import os,sys
+import os,sys, fnmatch
 from ExtendAnalysis.ExtendType import *
 from ExtendAnalysis.GraphWindow import Graph, PreviewWindow, Table
 from ExtendAnalysis import LoadFile
@@ -6,21 +6,45 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-class ExtendFileSystemModel(QFileSystemModel):
-    def __init__(self):
+class ExtendFileSystemModel(QSortFilterProxyModel):
+    def __init__(self,model=QFileSystemModel()):
         super().__init__()
-        self.setReadOnly(True)
+        self.mod=model
+        self.setSourceModel(self.mod)
+        self._exclude=[]
+        self._include=[]
+    def setRootPath(self,path):
+        self.mod.setRootPath(path)
+    def indexFromPath(self,path):
+        return self.mapFromSource(self.mod.index(path))
+    def AddAcceptedFilter(self,filter):
+        self._include.append(filter)
+    def AddExcludedFilter(self,filter):
+        self._exclude.append(filter)
+    def filterAcceptsRow(self,row,parent):
+        index=self.mod.index(row, 0, parent)
+        name=self.mod.data(index,Qt.DisplayRole)
+        for inc in self._include:
+            if fnmatch.fnmatch(name,inc):
+                return True
+        for exc in self._exclude:
+            if fnmatch.fnmatch(name,exc):
+                return False
+        return super().filterAcceptsRow(row,parent)
 
-class _FileSystemViewBase(object):
-    def __init__(self,super=QTreeView,parent=None,model=None,path=''):
+    def isDir(self,index):
+        return self.mod.isDir(self.mapToSource(index))
+    def filePath(self,index):
+        return self.mod.filePath(self.mapToSource(index))
+    def parent(self,index):
+        return self.mapFromSource(self.mod.parent(self.mapToSource(index)))
+class _FileSystemViewBase(QWidget):
+    def __init__(self,view,parent=None,model=ExtendFileSystemModel(),path=''):
         super().__init__()
         self._path=path
-        self.__super=super
-        if model is None:
-            self.Model=ExtendFileSystemModel()
-        else:
-            self.Model=model
-        self.setModel(self.Model)
+        self.__view=view
+        self.Model=model
+        self.__view.setModel(self.Model)
         self.__actions={}
     def SetContextMenuActions(self,dict):
         self.__actions=dict
@@ -40,10 +64,10 @@ class _FileSystemViewBase(object):
     def SetPath(self,path):
         self._path=path
         self.Model.setRootPath(path)
-        self.__super.setRootIndex(self,self.Model.index(path))
+        self.__view.setRootIndex(self.Model.indexFromPath(path))
 
     def currentPath(self):
-        return self.Model.filePath(self.currentIndex())
+        return self.Model.filePath(self.tree.currentIndex())
     def selectedPaths(self):
         list=self.selectedIndexes()
         res=[]
@@ -126,19 +150,26 @@ class _FileSystemViewBase(object):
             w=LoadFile.load(p)
             print(w)
 
-class FileSystemView(QTreeView,_FileSystemViewBase):
+class FileSystemView(_FileSystemViewBase):
     def __init__(self,parent=None,model=None,path=''):
-        QTreeView.__init__(self,parent=parent)
-        _FileSystemViewBase.__init__(self,QTreeView,parent,model,path)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self._buildContextMenu)
-        self.setColumnHidden(3,True)
-        self.setColumnHidden(2,True)
-        self.setColumnHidden(1,True)
+        layout=QVBoxLayout()
+        self.tree=QTreeView(parent=parent)
+        super().__init__(self.tree,parent,model,path)
+        self.tree.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.tree.customContextMenuRequested.connect(self._buildContextMenu)
+        self.tree.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.tree.setColumnHidden(3,True)
+        self.tree.setColumnHidden(2,True)
+        self.tree.setColumnHidden(1,True)
+        layout.addWidget(self.tree)
+        self.edit=QLineEdit()
+        layout.addWidget(self.edit)
+        self.setLayout(layout)
+
     def selectedIndexes(self):
-        indexes=QTreeView.selectedIndexes(self)
+        indexes=self.tree.selectedIndexes()
         if len(indexes)==0:
-            indexes.append(self.Model.index(self._path))
+            indexes.append(self.Model.indexFromPath(self._path))
         return indexes
 class FileSystemList(QListView,_FileSystemViewBase):
     def __init__(self,parent=None,model=None,path=''):
