@@ -43,8 +43,7 @@ def move(name,name_to):
         else:
             if not os.path.exists(name_to):
                 shutil.move(name,name_to)
-
-                OnMoveFile(name,name_to)
+                ExtendObject.OnMoveFile(name,name_to)
             else:
                 sys.stderr.write('Error: Cannot move. This file exists.\n')
     except Exception:
@@ -57,7 +56,7 @@ def remove(name):
                 remove(name+'/'+item)
             os.rmdir(name)
         else:
-            if not ExtendObject.IsUsed(os.path.abspath(name)):
+            if ExtendObject._GetData(os.path.abspath(name)) is None:
                 os.remove(name)
             else:
                 sys.stderr.write('Error: Cannot remove. This file is in use.\n')
@@ -179,8 +178,12 @@ class AutoSaved(object):
         if not key=='obj':
             if self.obj is not None:
                 if key in self.obj._vallist():
+                    import time
+                    print('start')
+                    t=time.time()
                     res=self.obj.__setattr__(key,np.array(value))
                     self.Save()
+                    print('end',time.time()-t)
                     return res
         super().__setattr__(key,value)
     def __getattribute__(self,key):
@@ -241,6 +244,8 @@ class AutoSaved(object):
             if m() is None:
                 self.__modListener.remove(m)
             else:
+                import time
+                t=time.time()
                 m()(self)
 class Wave(AutoSaved):
     class _wavedata(ExtendObject):
@@ -257,7 +262,6 @@ class Wave(AutoSaved):
             return ['data','x','y','z','note']
     def _newobj(self,file):
         return self._wavedata(file)
-
     def __getattribute__(self,key):
         if key=='x' or key=='y' or key=='z':
             val=super().__getattribute__(key)
