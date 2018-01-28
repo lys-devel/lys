@@ -61,6 +61,7 @@ class FigureCanvasBase(FigureCanvas):
     def OnWaveModified(self,wave):
         flg=False
         self.__loadFlg=True
+        self.EnableDraw(False)
         self.saveAppearance()
         for d in self._Datalist:
             if wave==d.wave:
@@ -69,20 +70,7 @@ class FigureCanvasBase(FigureCanvas):
                 self._Append(wave,d.axis,d.id,appearance=d.appearance,offset=d.offset,zindex=d.zindex,reuse=True)
                 flg=True
         self.loadAppearance()
-        if(flg):
-            self.draw()
-        self.__loadFlg=False
-    def ReplaceWave(self,from_w,to_w):#should be tested
-        flg=False
-        self.__loadFlg=True
-        self.saveAppearance()
-        for d in self._Datalist:
-            if from_w==d.wave:
-                d.obj.remove()
-                self._Datalist.remove(d)
-                self._Append(to_w,d.axis,d.id,appearance=d.appearance,offset=d.offset,zindex=d.zindex,reuse=True)
-                flg=True
-        self.loadAppearance()
+        self.EnableDraw(True)
         if(flg):
             self.draw()
         self.__loadFlg=False

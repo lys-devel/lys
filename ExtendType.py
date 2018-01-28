@@ -178,12 +178,8 @@ class AutoSaved(object):
         if not key=='obj':
             if self.obj is not None:
                 if key in self.obj._vallist():
-                    import time
-                    print('start')
-                    t=time.time()
-                    res=self.obj.__setattr__(key,np.array(value))
+                    res=self.obj.__setattr__(key,value)
                     self.Save()
-                    print('end',time.time()-t)
                     return res
         super().__setattr__(key,value)
     def __getattribute__(self,key):
@@ -249,6 +245,12 @@ class AutoSaved(object):
                 m()(self)
 class Wave(AutoSaved):
     class _wavedata(ExtendObject):
+        def _init(self):
+            self.data=[]
+            self.x=None
+            self.y=None
+            self.z=None
+            self.note=None
         def _load(self,file):
             tmp=np.load(file)
             self.data=tmp['data']
@@ -260,6 +262,11 @@ class Wave(AutoSaved):
             np.savez(file, data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
         def _vallist(self):
             return ['data','x','y','z','note']
+        def __setattr__(self,key,value):
+            if key in ['data','x','y','z']:
+                super().__setattr__(key,np.array(value))
+            else:
+                super().__setattr__(key,value)
     def _newobj(self,file):
         return self._wavedata(file)
     def __getattribute__(self,key):
