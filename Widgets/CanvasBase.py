@@ -230,11 +230,14 @@ class FigureCanvasBase(FigureCanvas):
         return id
     @_saveCanvas
     def Remove(self,indexes):
-        for i in indexes:
+        if hasattr(indexes, '__iter__'):
+            list=indexes
+        else:
+            list=[indexes]
+        for i in list:
             for d in self._Datalist:
                 if i==d.id:
                     d.obj.remove()
-                    #d.wave.waveModified.Disconnect(self.OnWaveModified)
                     self._Datalist.remove(d)
         self._emitDataChanged()
         self.draw()
@@ -561,7 +564,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         self.__dim=dim
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
-        menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Edit']
+        menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Edit', 'Print']
         actionlist = []
         for label in menulabels:
             actionlist.append(menu.addAction(label))
@@ -587,6 +590,10 @@ class RightClickableSelectionBox(DataSelectionBox):
                 g.Append(d.wave)
         elif action.text() == 'Remove':
             self.canvas.Remove(list)
+        elif action.text() == 'Print':
+            data=self.canvas.getDataFromIndexes(self.__dim,list)
+            for d in data:
+                print(d.wave.FileName())
 
 class OffsetAdjustableCanvas(DataHidableCanvas):
     @_saveCanvas

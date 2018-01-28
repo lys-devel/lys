@@ -7,6 +7,7 @@ from .ExtendType import *
 from .Widgets.ExtendCanvas import *
 from .Widgets.ExtendTable import *
 from .ModifyWindow import ModifyWindow
+from .FittingWindow import FittingWindow
 
 class Graph(AutoSavedWindow):
     @classmethod
@@ -42,18 +43,25 @@ class Graph(AutoSavedWindow):
     def _init(self):
         self.canvas=ExtendCanvas()
         self.resize(200,200)
-        self.canvas.setModificationFunction(self.Make_ModifyWindow)
+        self.canvas.keyPressed.connect(self.keyPress)
         self.canvas.setSaveFunction(self.Save)
         self.setWidget(self.canvas)
         self.resized.connect(self.canvas.parentResized)
+    def keyPress(self, e):
+        if e.key() == Qt.Key_G:
+            ModifyWindow(self.canvas,self)
+        if e.key() == Qt.Key_F:
+            wavelis=[]
+            for d in self.canvas.getLines():
+                if d.wave.FileName is not None:
+                    wavelis.append(d.wave)
+            FittingWindow(self,wavelis,self.canvas)
     def closeEvent(self,event):
         self.canvas.fig.canvas=None
         super().closeEvent(event)
     def Append(self,wave,axis=Axis.BottomLeft):
         self.canvas.Append(wave,axis)
-    def Make_ModifyWindow(self,canvas,tab='Area'):
-        mod=ModifyWindow(canvas,self)
-        mod.selectTab(tab)
+
 class PreviewWindow(ExtendMdiSubWindow):
     instance=None
     def __new__(cls,list):

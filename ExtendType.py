@@ -273,7 +273,7 @@ class Wave(AutoSaved):
     def _save(self,file):
         np.savez(file, data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
     def update(self):
-        Wave._EmitWaveModified(self)
+        self._EmitWaveModified(self)
     def _overwrite(self,target):
         self.data=target.data
         self.x=target.x
@@ -331,6 +331,13 @@ class Wave(AutoSaved):
         dx=(x1-x0)/(self.data.shape[1]-1)
         dy=(y1-y0)/(self.data.shape[0]-1)
         return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
+    def copy(self):
+        w=Wave()
+        w.data=self.data
+        w.x=self.x
+        w.y=self.y
+        w.z=self.z
+        w.note=self.note
     def __average1D(self,range):
         return self.data[range[0]:range[1]+1].sum()/(range[1]-range[0]+1)
     def __average2D(self,range1,range2):

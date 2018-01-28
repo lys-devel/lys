@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 from .SaveSettings import *
 
 class ExtendCanvas(SaveSettingCanvas):
+    keyPressed=pyqtSignal(QKeyEvent)
     def __init__(self, dpi=100):
         self.EnableDraw(False)
         super().__init__(dpi=dpi)
@@ -108,22 +109,19 @@ class ExtendCanvas(SaveSettingCanvas):
                 return super().OnMouseDown(event)
         else:
             return super().OnMouseDown(event)
-    def setModificationFunction(self,func):
-        self.modf=weakref.WeakMethod(func)
     def buildContextMenu(self):
         menu = super().constructContextMenu()
         action = menu.exec_(QCursor.pos())
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
-        if e.key() == Qt.Key_G:
-            if self.modf() is not None:
-                self.modf()(self)
+        self.keyPressed.emit(e)
     def defModFunc(self,canvas,tab='Axis'):
         from ExtendAnalysis.ModifyWindow import ModifyWindow
+        from ExtendAnalysis.GraphWindow import Graph
         parent=self.parentWidget()
         while(parent is not None):
             if isinstance(parent,ExtendMdiSubWindow):
-                mod=ModifyWindow(self,parent,showArea=False)
+                mod=ModifyWindow(self,parent,showArea=isinstance(parent,Graph))
                 mod.selectTab(tab)
                 break
             parent=parent.parentWidget()
