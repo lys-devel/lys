@@ -72,6 +72,20 @@ class FigureCanvasBase(FigureCanvas):
         if(flg):
             self.draw()
         self.__loadFlg=False
+    def ReplaceWave(self,from_w,to_w):#should be tested
+        flg=False
+        self.__loadFlg=True
+        self.saveAppearance()
+        for d in self._Datalist:
+            if from_w==d.wave:
+                d.obj.remove()
+                self._Datalist.remove(d)
+                self._Append(to_w,d.axis,d.id,appearance=d.appearance,offset=d.offset,zindex=d.zindex,reuse=True)
+                flg=True
+        self.loadAppearance()
+        if(flg):
+            self.draw()
+        self.__loadFlg=False
     def IsDrawEnabled(self):
         return self.drawflg
     def EnableDraw(self,b):
@@ -155,7 +169,7 @@ class FigureCanvasBase(FigureCanvas):
         if wav.data.ndim==3:
             ids=self._Append3D(wav,ax,id,appearance,offset,zindex)
         if not reuse:
-            wav.addWaveModifiedListener(self.OnWaveModified)
+            wav.addModifiedListener(self.OnWaveModified)
         self._emitDataChanged()
         self.waveAppended.emit(ids)
         self.draw()

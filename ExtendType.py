@@ -43,7 +43,8 @@ def move(name,name_to):
         else:
             if not os.path.exists(name_to):
                 shutil.move(name,name_to)
-                _DataManager.OnMoveFile(name,name_to)
+
+                OnMoveFile(name,name_to)
             else:
                 sys.stderr.write('Error: Cannot move. This file exists.\n')
     except Exception:
@@ -56,7 +57,7 @@ def remove(name):
                 remove(name+'/'+item)
             os.rmdir(name)
         else:
-            if not _DataManager.IsUsed(os.path.abspath(name)):
+            if not ExtendObject.IsUsed(os.path.abspath(name)):
                 os.remove(name)
             else:
                 sys.stderr.write('Error: Cannot remove. This file is in use.\n')
@@ -76,41 +77,16 @@ def addCDChangeListener(listener):
     __CDChangeListener.append(listener)
     listener.OnCDChanged(pwd())
 
-class _DataManager(object):
+class ExtendObject(object):
     __dic={}
-
-    @classmethod
-    def IsUsed(cls,file):
-        if file is None:
-            return False
-        if os.path.abspath(file) in cls.__dic:
-            obj=cls.__dic[os.path.abspath(file)]()
-            if obj is None:
-                cls._Remove(os.path.abspath(file))
-                return False
-            else:
-                return True
-        else:
-            return False
-
-    @classmethod
+    @classmethod#TODO
     def OnMoveFile(cls,file,file_to):
         if cls.IsUsed(os.path.abspath(file)):
             cls.__dic[os.path.abspath(file)]()._Connect(os.path.abspath(file_to))
             cls._Remove(file)
-
-    @classmethod
-    def _FinalizeObject(cls,obj):
-        if obj() is not None:
-            obj()._Clear()
     @classmethod
     def _Append(cls,file,data):
-        if cls.IsUsed(file):
-            cls.__dic[os.path.abspath(file)]().Disconnect()
         cls.__dic[os.path.abspath(file)]=weakref.ref(data)
-    @classmethod
-    def _Remove(cls,file):
-        del cls.__dic[os.path.abspath(file)]
     @classmethod
     def _GetData(cls,file):
         try:
@@ -119,47 +95,132 @@ class _DataManager(object):
             return None
         if not abs in cls.__dic:
             return None
-        res=cls.__dic[os.path.abspath(file)]()
+        res=cls.__dic[abs]()
         if res is None:
-            cls._Remove(file)
+            del cls.__dic[abs]
         return res
 
-class AutoSaved(object):
+    def __init__(self,file):
+        self.__file=file
+        self.__init(file)
+        if file is not None:
+            ExtendObject._Append(file,self)
+        self.__listener=[]
+    def addDataChangedListener(self,listener):
+        self.__listener.append(weakref.WeakMethod(listener))
+    def removeDataChangedListener(self,listener):
+        for l in self.__listener:
+            if l()==listener:
+                self.__listener.remove(l)
+    def _emitDataChanged(self):
+        for l in self.__listener:
+            if l() is None:
+                self.__listener.remove(l)
+            else:
+                l()()
+    def Save(self,file):
+        obj=ExtendObject._GetData(file)
+        if obj is None:
+            ExtendObject._Append(file,self)
+            self._save(file)
+            self._emitDataChanged()
+            return self
+        elif obj==self:
+            self._save(file)
+            self._emitDataChanged()
+            return self
+        else:
+            obj.__overwrite(file,self)
+            obj._emitDataChanged()
+            return obj
+    def __overwrite(self,file,target):
+        for key in self._vallist():
+            self.__setattr__(key,target.__getattribute__(key))
+        self._save(file)
+    def __init(self,file):
+        if file is None:
+            self._init()
+        else:
+            if not os.path.exists(os.path.abspath(file)):
+                self._init()
+            else:
+                self._load(file)
+
+    def _init(self):
+        for l in self._vallist():
+            self.__setattr__(l,None)
     def _load(self,file):
         with open(file,'r') as f:
             self.data=eval(f.read())
     def _save(self,file):
         with open(file,'w') as f:
             f.write(str(self.data))
-    def _overrite(self,target):
-        self.data=target.data
-    def _init(self):
-        pass
+    def _vallist(self):
+        return ['data']
 
-    def __new__(cls,file=None,BaseClass=None):
-        if _DataManager.IsUsed(file):
-            res=_DataManager._GetData(file)
-            if res is not None:
-                return res
-        if BaseClass is None:
-            return super().__new__(cls)
+class AutoSaved(object):
+    def _newobj(self,file):
+        return ExtendObject(file)
+
+    def __init__(self,file=None):
+        self.obj=None
+        self.__file=file
+        self.__loadFile=None
+        self.__modListener=[]
+        res=ExtendObject._GetData(file)
+        if res is None:
+            self.obj=self._newobj(file)
+            self.Save()
         else:
-            return BaseClass.__new__(cls)
+            self.obj=res
+        self.obj.addDataChangedListener(self._EmitModified)
 
-    def __init__(self,file=None,BaseClass=None):
-        try:
-            self.__file
-        except Exception:
-            self.__loadFlg=True
-            self.__file=file
-            self.__loadFile=None
-            if BaseClass is not None:
-                BaseClass.__init__(self)
-            self._init()
-            if file is not None:
-                self.__Load(file)
-            self.__finalizer=weakref.finalize(self,_DataManager._FinalizeObject,weakref.ref(self))
-            self.__loadFlg=False
+    def __setattr__(self,key,value):
+        if not key=='obj':
+            if self.obj is not None:
+                if key in self.obj._vallist():
+                    res=self.obj.__setattr__(key,np.array(value))
+                    self.Save()
+                    return res
+        super().__setattr__(key,value)
+    def __getattribute__(self,key):
+        if key=='obj':
+            return super().__getattribute__(key)
+        if self.obj is not None:
+            if key in self.obj._vallist():
+                return self.obj.__getattribute__(key)
+        return super().__getattribute__(key)
+
+    def Save(self,file=None):
+        if file is not None:
+            newfile=os.path.abspath(file)
+            if not self.__file==newfile:
+                if self.__file is not None:
+                    self.Disconnect()
+                self.__file=newfile
+        if self.__file is not None:
+            tmp=self.obj.Save(self.__file)
+            if not tmp==self.obj:
+                self.obj.removeDataChangedListener(self._EmitModified)
+                tmp.addDataChangedListener(self._EmitModified)
+                self.obj=tmp
+                self._EmitModified()
+            return True
+        else:
+            self._EmitModified()
+            return False
+    def Disconnect(self):
+        newobj=self._newobj(None)
+        for key in newobj._vallist():
+            newobj.__setattr__(key,self.obj.__getattribute__(key))
+        self.obj.removeDataChangedListener(self._EmitModified)
+        newobj.addDataChangedListener(self._EmitModified)
+        self.obj=newobj
+        self._EmitModified()
+        self.__file=None
+
+    def setLoadFile(self,file):
+        self.__loadFile=os.path.abspath(file)
     def FileName(self):
         if self.__file is not None:
             return self.__file
@@ -170,57 +231,33 @@ class AutoSaved(object):
         else:
             nam,ext=os.path.splitext(os.path.basename(self.FileName()))
             return nam
-    def __del__(self):
-        if self.__finalizer.alive:
-            self.__finalizer()
-    def _Clear(self):
-        self.Save()
-        self.Disconnect()
-    def _Connect(self,file):
-        if file is None:
-            return
-        self.__file=os.path.abspath(file)
-        _DataManager._Append(self.__file,self)
     def IsConnected(self):
         return self.__file is not None
-    def Disconnect(self):
-        if _DataManager.IsUsed(self.__file):
-            _DataManager._Remove(self.__file)
-        self.__file=None
-    def __Load(self,file):
-        if _DataManager.IsUsed(file):
-            print('Error: This file is already loaded.\n')
-        else:
-            self._Connect(file)
-            if os.path.exists(self.__file):
-                self._load(self.__file)
-    def Save(self,file=None):
-        if _DataManager.IsUsed(file):
-            return False
-        self._Connect(file)
-        if self.__file is not None:
-            self._save(self.__file)
-        return True
-    def Overwrite(self,target):
-        self.__loadFlg=True
-        self._overwrite(target)
-        self.__loadFlg=False
-        self.Save()
-    def __setattr__(self,key,value):
-        super().__setattr__(key,value)
-        if not self.__loadFlg and not key =='_AutoSaved__loadFlg':
-            self.Save()
-    def setLoadFile(self,file):
-        self.__loadFile=os.path.abspath(file)
 
+    def addModifiedListener(self,method):
+        self.__modListener.append(weakref.WeakMethod(method))
+    def _EmitModified(self):
+        for m in self.__modListener:
+            if m() is None:
+                self.__modListener.remove(m)
+            else:
+                m()(self)
 class Wave(AutoSaved):
-    def __setattr__(self,key,value):
-        if key=='x' or key=='y' or key=='z' or key=='data':
-            super().__setattr__(key,np.array(value))
-            if self._emitflg:
-                self._EmitWaveModified()
-        else:
-            super().__setattr__(key,value)
+    class _wavedata(ExtendObject):
+        def _load(self,file):
+            tmp=np.load(file)
+            self.data=tmp['data']
+            self.x=tmp['x']
+            self.y=tmp['y']
+            self.z=tmp['z']
+            self.note=tmp['note']
+        def _save(self,file):
+            np.savez(file, data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
+        def _vallist(self):
+            return ['data','x','y','z','note']
+    def _newobj(self,file):
+        return self._wavedata(file)
+
     def __getattribute__(self,key):
         if key=='x' or key=='y' or key=='z':
             val=super().__getattribute__(key)
@@ -245,43 +282,8 @@ class Wave(AutoSaved):
                     return res
         else:
             return super().__getattribute__(key)
-    def _init(self):
-        self._emitflg=False
-        self.data=[0]
-        self.x=self.y=self.z=None
-        self.image=None
-        self.note=""
-        self._emitflg=True
-        self.__waveModListener=[]
-    def addWaveModifiedListener(self,method):
-        self.__waveModListener.append(weakref.WeakMethod(method))
-    def _EmitWaveModified(self):
-        for m in self.__waveModListener:
-            if m() is None:
-                self.__waveModListener.remove(m)
-            else:
-                m()(self)
-    def _load(self,file):
-        tmp=np.load(file)
-        self._emitflg=False
-        self.data=tmp['data']
-        self.x=tmp['x']
-        self.y=tmp['y']
-        self.z=tmp['z']
-        self.note=tmp['note']
-        self._emitflg=True
-    def _save(self,file):
-        np.savez(file, data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
-    def update(self):
-        self._EmitWaveModified(self)
-    def _overwrite(self,target):
-        self.data=target.data
-        self.x=target.x
-        self.y=target.y
-        self.z=target.z
-        self.note=target.note
+
     def slice(self,pos1,pos2,axis='x'):
-        print(pos1,pos2)
         index=['x','y'].index(axis)
         size=pos2[index]-pos1[index]
         x,y=np.linspace(pos1[0], pos2[0], size), np.linspace(pos1[1], pos2[1], size)
@@ -343,24 +345,32 @@ class Wave(AutoSaved):
     def __average2D(self,range1,range2):
         return self.data[int(range2[0]):int(range2[1])+1,int(range1[0]):int(range1[1])+1].sum()/(range1[1]-range1[0]+1)/(range2[1]-range2[0]+1)
 class String(AutoSaved):
-    def _init(self):
-        self.data=""
-
+    class _stringdata(ExtendObject):
+        def _load(self,file):
+            with open(file,'r') as f:
+                self.data=f.read()
+        def _init(self):
+            self.data=''
+    def _newobj(self,file):
+        return self._stringdata(file)
     def __setattr__(self,key,value):
         if key=='data':
             super().__setattr__(key,str(value))
         else:
             super().__setattr__(key,value)
 
-    def _load(self,file):
-        with open(file,'r') as f:
-            self.data=f.read()
 class Variable(AutoSaved):
-    def _init(self):
-        self.data=0
+    class _valdata(ExtendObject):
+        def _init(self):
+            self.data=0
+    def _newobj(self,file):
+        return self._valdata(file)
 class Dict(AutoSaved):
-    def _init(self):
-        self.data={}
+    class _dicdata(ExtendObject):
+        def _init(self):
+            self.data={}
+    def _newobj(self,file):
+        return self._dicdata(file)
     def __getitem__(self,key):
         return self.data[key]
     def __setitem__(self,key,value):
@@ -377,8 +387,11 @@ class Dict(AutoSaved):
         return len(self.data)
 
 class List(AutoSaved):
-    def _init(self):
-        self.data=[]
+    class _listdata(ExtendObject):
+        def _init(self):
+            self.data=[]
+    def _newobj(self,file):
+        return self._listdata(file)
     def __getitem__(self,key):
         return self.data[key]
     def __setitem__(self,key,value):
@@ -478,6 +491,10 @@ class ExtendMdiSubWindow(AttachableWindow):
 class AutoSavedWindow(ExtendMdiSubWindow):
     __list=List(home()+'/.lys/winlist.lst')
     _isclosed=False
+    _restore=False
+    @classmethod
+    def _IsUsed(cls,path):
+        return path in cls.__list.data
     @classmethod
     def _AddAutoWindow(cls,win):
         if not win.FileName() in cls.__list.data:
@@ -489,6 +506,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     @classmethod
     def RestoreAllWindows(cls):
         from . import LoadFile
+        cls._restore=True
         mkdir(home()+'/.lys/wins')
         for path in cls.__list.data:
             try:
@@ -497,6 +515,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
                     w.Disconnect()
             except:
                 pass
+        cls._restore=False
     @classmethod
     def StoreAllWindows(cls):
         cls._isclosed=True
@@ -506,19 +525,22 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     @classmethod
     def _IsClosed(cls):
         return cls._isclosed
+    def _onRestore(cls):
+        return cls._restore
     def NewTmpFilePath(self):
         mkdir(home()+'/.lys/wins')
         for i in range(1000):
             path=home()+'/.lys/wins/'+self._prefix()+str(i).zfill(3)+self._suffix()
-            if not _DataManager.IsUsed(path):
+            if not AutoSavedWindow._IsUsed(path):
                 return path
         print('Too many windows.')
     def __new__(cls, file=None, title=None):
         logging.debug('[AutoSavedWindow] __new__ called.')
-        res=_DataManager._GetData(file)
-        if res is not None:
+        if cls._restore:
+            return super().__new__(cls)
+        if AutoSavedWindow._IsUsed(file):
             logging.debug('[AutoSavedWindow] found loaded window.')
-            return res
+            return None
         return super().__new__(cls)
     def __init__(self, file=None, title=None):
         logging.debug('[AutoSavedWindow] __init__ called.')
@@ -546,14 +568,10 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         self.__loadFile=os.path.abspath(file)
     def __Load(self,file):
         logging.debug('[AutoSavedWindow] __Load called.')
-        if _DataManager.IsUsed(file):
-            print('Error: This file is already loaded.\n')
-        else:
-            if file is not None:
-                self.__file=os.path.abspath(file)
-                _DataManager._Append(self.__file,self)
-            if os.path.exists(self.__file):
-                self._load(self.__file)
+        if file is not None:
+            self.__file=os.path.abspath(file)
+        if os.path.exists(self.__file):
+            self._load(self.__file)
 
     def FileName(self):
         return self.__file
@@ -582,7 +600,6 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             if ok==QMessageBox.Cancel:
                 event.ignore()
                 return
-        _DataManager._Remove(self.__file)
         if not AutoSavedWindow._IsClosed():
             AutoSavedWindow._RemoveAutoWindow(self)
             if not self.IsConnected():
