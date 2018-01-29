@@ -1,6 +1,7 @@
 from inspect import signature
 import numpy as np
 from scipy import ndimage
+from collections import OrderedDict
 
 class function(object):
     def func(self,x,*p):
@@ -27,16 +28,25 @@ class const(function):
 class linear(function):
     def func(self,x,a,b):
         return a*x+b
-
 class step(function):
     def func(self,x,position,height):
-        np.heaviside(x-position,0.5)*height
+        return np.heaviside(x-position,0.5)*height
+class cos(function):
+    def func(self,x,position,height,frequency,phase):
+        return np.cos(frequency*(x-position)+phase)*height
+class exp(function):
+    def func(self,x,position,height,a):
+        return np.exp(a*(x-position))*height
+class doubleExp(function):
+    def func(self,x,position,height,a):
+        return np.exp(a*(x-position)**2)*height
+
 class GaussConvolved(function):
     def __init__(self, f):
         self.f=f
     def func(self,x,*p):
-        res=self.f.func(x,*p[len(p)-2])
-        res=ndimage.gaussian_filter(res, sigma=p[len(p)-1]/np.sqrt(8*np.ln(2)))
+        res=self.f.func(x,*p[:len(p)-1])
+        res=ndimage.gaussian_filter(res, sigma=p[len(p)-1]/np.sqrt(8*np.log(2)))
         return res
     def nparam(self):
         return self.f.nparam()+1
@@ -44,7 +54,14 @@ class GaussConvolved(function):
         res=self.f.params()
         res.append('Resolution')
         return res
-ListOfFunctions={"Const" : const(), "Linear" : linear(), 'Step' : step()}
+ListOfFunctions=OrderedDict()
+ListOfFunctions["Const"]=const()
+ListOfFunctions["Linear"]=linear()
+ListOfFunctions["Step"]=step()
+ListOfFunctions["Cos"]=cos()
+ListOfFunctions["Exp"]=exp()
+ListOfFunctions["DoubleExp"]=doubleExp()
+ListOfFunctions["Error"]=GaussConvolved(step())
 def findFuncByInstance(instance):
     for key in ListOfFunctions.keys():
         if ListOfFunctions[key]==instance:
