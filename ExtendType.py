@@ -118,6 +118,8 @@ class ExtendObject(object):
             else:
                 l()()
     def Save(self,file):
+        abspath=os.path.abspath(file)
+        mkdir(os.path.dirname(abspath))
         obj=ExtendObject._GetData(file)
         if obj is None:
             ExtendObject._Append(file,self)
@@ -173,7 +175,8 @@ class AutoSaved(object):
         else:
             self.obj=res
         self.obj.addDataChangedListener(self._EmitModified)
-
+    def __del__(self):
+        self.Save()
     def __setattr__(self,key,value):
         if not key=='obj':
             if self.obj is not None:
