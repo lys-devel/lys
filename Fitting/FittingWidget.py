@@ -58,7 +58,8 @@ class FittingWidget(QWidget):
         vbox1=QVBoxLayout()
         self._target=QComboBox()
         for w in wavelist:
-            self._target.addItem(os.path.relpath(w.FileName(),home()))
+            if w.FileName() is not None:
+                self._target.addItem(os.path.relpath(w.FileName(),home()))
         self._tree=FittingTree()
         self._tree.updated.connect(self.update)
         self._tree.peakAdded.connect(self.OnPeakAdded)
@@ -71,7 +72,7 @@ class FittingWidget(QWidget):
         self.load=QPushButton('Load',clicked=self.__load)
         self.path=QLineEdit()
         if path is None:
-            self.path.setText(os.path.relpath(pwd()+'/'+w.Name(),home()))
+            self.__setName()
         else:
             self.path.setText(os.path.relpath(path,home()))
         hbox2.addWidget(self.save)
@@ -92,7 +93,12 @@ class FittingWidget(QWidget):
             vbox1.addLayout(hbox1)
         vbox1.addWidget(self._tree)
         vbox1.addWidget(self._exec)
+        self._target.currentIndexChanged.connect(self.__setName)
         self.setLayout(vbox1)
+    def __setName(self):
+        self.wave=Wave(home()+'/'+self._target.currentText())
+        if self.wave.Name() is not None:
+            self.path.setText(os.path.relpath(pwd()+'/Fit/'+self.wave.Name(),home()))
     def __totadd(self):
         if self.canvas is not None:
             if self.tot.isChecked():
