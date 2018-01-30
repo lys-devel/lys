@@ -179,6 +179,7 @@ class FittingTree(QTreeView):
             self.value.setDecimals(8)
             self.value.setMinimum(-np.inf)
             self.value.setMaximum(np.inf)
+            self.value.setValue(1)
             self.value.valueChanged.connect(self.update)
             tree.setIndexWidget(child2.index(),self.value)
             self.min1=QStandardItem('min')
@@ -208,7 +209,7 @@ class FittingTree(QTreeView):
             max=np.inf
             if not self.child1.checkState()==Qt.Checked:
                 min=self.getGuess()
-                max=self.getGuess()*1.0000000001
+                max=self.getGuess()
             else:
                 if self.min1.checkState()==Qt.Checked:
                     min=self.minval.value()

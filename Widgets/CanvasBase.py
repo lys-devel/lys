@@ -84,6 +84,7 @@ class FigureCanvasBase(FigureCanvas):
                 return
         try:
             super().draw()
+            super().flush_events()
             self.__emitAfterDraw()
         except Exception:
             pass

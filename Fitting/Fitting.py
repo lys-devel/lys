@@ -12,6 +12,15 @@ class Fitting(object):
             return self.f1.func(x,*p[:self.f1.nparam()])+self.f2.func(x,*p[self.f1.nparam():])
         def nparam(self):
             return self.f1.nparam()+self.f2.nparam()
+    class funcFix(function):
+        def __init__(self,f,n,value):
+            self.f=f
+            self.n=n
+            self.value=value
+        def func(self,x,*p):
+            return self.f.func(x,*p[:self.n],self.value,*p[self.n+1:])
+        def nparam(self):
+            return self.f.nparam()-1
     def __init__(self):
         self.func=none()
     def addFunction(self,f):
@@ -26,7 +35,22 @@ class Fitting(object):
         if bounds is None:
             res, tmp = optimize.curve_fit(self.func.func,xdata,ydata,estimation)
         else:
-            res, tmp = optimize.curve_fit(self.func.func,xdata,ydata,estimation,bounds=bounds)
+            fixed=[]
+            b_low=[]
+            b_high=[]
+            for i in range(len(bounds[0])):
+                if bounds[0][i]==bounds[1][i]:
+                    fixed.append(i)
+                else:
+                    b_low.append(bounds[0][i])
+                    b_high.append(bounds[1][i])
+            f=self.func
+            for i in fixed:
+                f=self.funcFix(f,i,bounds[0][i])
+            res, tmp = optimize.curve_fit(f.func,xdata,ydata,estimation,bounds=(b_low,b_high))
+            for i in fixed:
+                np.insert(res,i,bounds[0][i])
+        print(res)
         return res, tmp
 
 if __name__ == '__main__':

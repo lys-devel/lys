@@ -38,9 +38,11 @@ class exp(function):
     def func(self,x,position,height,a):
         return np.exp(a*(x-position))*height
 class doubleExp(function):
-    def func(self,x,position,height,a):
-        return np.exp(a*(x-position)**2)*height
-
+    def func(self,x,position,height,a,b):
+        return height*np.heaviside(x-position,0.5)*(1-np.exp(-((x-position)/a)**2))*np.exp(-(x-position)/b)
+class relaxOscillation(function):
+    def func(self,x,position,height,frequency,phase,offset,relax):
+        return height*np.heaviside(x-position,0.5)*np.exp(-(x-position)/relax)*(offset+np.cos(frequency*(x-position)+phase*np.pi/180))
 class GaussConvolved(function):
     def __init__(self, f):
         self.f=f
@@ -61,6 +63,7 @@ ListOfFunctions["Step"]=step()
 ListOfFunctions["Cos"]=cos()
 ListOfFunctions["Exp"]=exp()
 ListOfFunctions["DoubleExp"]=doubleExp()
+ListOfFunctions["relaxOsci"]=relaxOscillation()
 ListOfFunctions["Error"]=GaussConvolved(step())
 def findFuncByInstance(instance):
     for key in ListOfFunctions.keys():
