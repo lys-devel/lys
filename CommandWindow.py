@@ -2,6 +2,11 @@
 # -*- coding: utf-8 -*-
 import sys, os
 import rlcompleter
+from importlib import import_module, reload
+from pathlib import Path
+from watchdog.events import FileSystemEvent, PatternMatchingEventHandler
+from watchdog.observers import Observer
+
 from .ExtendType import *
 from .Widgets.ExtendWidgets import *
 from .GraphWindow import *
@@ -84,6 +89,7 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
         super().__init__()
         for ext in LoadFile.getExtentions():
             self.AddAcceptedFilter('*'+ext)
+        self.AddAcceptedFilter('*.py')
 
     def data(self,index,role=Qt.DisplayRole):
         if role==Qt.FontRole:
@@ -95,6 +101,53 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
             if pwd()==self.filePath(index):
                 return QColor(200,200,200)
         return super().data(index,role)
+
+class PluginManager:
+    class Handler(PatternMatchingEventHandler):
+        def __init__(self, manager: 'PluginManager', *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.manager = manager
+        def on_created(self, event: FileSystemEvent):
+            if event.src_path.endswith('.py'):
+                self.manager.load_plugin(Path(event.src_path))
+        def on_modified(self, event):
+            if event.src_path.endswith('.py'):
+                self.manager.load_plugin(Path(event.src_path))
+    def __init__(self, path: str, shell):
+        self.plugins = {}
+        self.path = path
+        self.observer = Observer()
+        self.shell=shell
+        sys.path.append(self.path)
+    def start(self):
+        self.scan_plugin()
+        self.observer.schedule(self.Handler(self, patterns='*.py'), self.path)
+        self.observer.start()
+    def stop(self):
+        self.observer.stop()
+        self.observer.join()
+    def scan_plugin(self):
+        for file_path in Path(self.path).glob('*.py'):
+            self.load_plugin(file_path)
+    def load_plugin(self, file_path):
+        module_name = file_path.stem
+        if module_name not in self.plugins:
+            if module_name.startswith('.'):
+                return
+            try:
+                self.shell.SendCommand('from importlib import import_module, reload',False)
+                self.plugins[module_name] = import_module(module_name)
+                self.shell.SendCommand('from '+module_name+' import *')
+                #print('{}.py has been loaded.'.format(module_name))
+            except:
+                print('Error on loading {}.py.'.format(module_name))
+        else:
+            try:
+                self.plugins[module_name]=reload(self.plugins[module_name])
+                self.shell.SendCommand('from '+module_name+' import *',False)
+                #print('{}.py has been reloaded.'.format(module_name))
+            except:
+                print('Error on reloading {}.py.'.format(module_name))
 
 class CommandWindow(QMdiSubWindow):
     def __init__(self, shell, parent=None):
@@ -110,13 +163,18 @@ class CommandWindow(QMdiSubWindow):
         self.show()
 
     def __loadData(self):
-        mkdir(".com_settings")
         self._savepath=os.path.abspath("./")
         self.__clog=String(".lys/commandlog.log")
         self.output.setPlainText(self.__clog.data)
         self.__log2=String(".lys/commandlog2.log")
         if not len(self.__log2.data)==0:
             self.__shell.SetCommandLog(eval(self.__log2.data))
+        if not os.path.exists('proc.py'):
+            with open("proc.py", "w") as file:
+                file.write("from ExtendAnalysis import *")
+        print('Welcome to Analysis program lys. Loading .py files...')
+        m=PluginManager(home(),self.__shell)
+        m.start()
         AutoSavedWindow.RestoreAllWindows()
     def saveData(self):
         self.__clog.data=self.output.toPlainText()
@@ -149,11 +207,13 @@ class CommandWindow(QMdiSubWindow):
     def __viewContextMenu(self,tree):
         cd=QAction('Set Current Directory',self,triggered=self.__setCurrentDirectory)
         ld=QAction('Load',self,triggered=self.__load)
+        op=QAction('Open', self, triggered=self.__openpy)
         menu={}
         menu['dir']=[cd,tree.Action_NewDirectory(),tree.Action_Delete()]
         menu['mix']=[ld,tree.Action_Delete()]
         menu['other']=[ld,tree.Action_Delete(),tree.Action_Print()]
         menu['.npz']=[tree.Action_Display(),tree.Action_Append(),tree.Action_Preview(),tree.Action_Edit(),ld,tree.Action_Print(),tree.Action_Delete()]
+        menu['.py']=[op,tree.Action_Delete()]
         tree.SetContextMenuActions(menu)
 
     def __setCurrentDirectory(self):
@@ -161,3 +221,6 @@ class CommandWindow(QMdiSubWindow):
     def __load(self):
         for p in self.view.selectedPaths():
             self.__shell.Load(p)
+    def __openpy(self):
+        for p in self.view.selectedPaths():
+            print(p)

@@ -586,7 +586,6 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             self.__file=os.path.abspath(file)
         if os.path.exists(self.__file):
             self._load(self.__file)
-
     def FileName(self):
         return self.__file
     def Name(self):
@@ -599,7 +598,12 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     def Save(self,file=None):
         if file is not None:
             self._save(file)
+            AutoSavedWindow._RemoveAutoWindow(self)
+            self.__file=os.path.abspath(file)
             self.__isTmp=False
+            title=os.path.basename(file)
+            self.setWindowTitle(title)
+            AutoSavedWindow._AddAutoWindow(self)
         else:
             self._save(self.__file)
 

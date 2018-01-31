@@ -56,6 +56,12 @@ class Graph(AutoSavedWindow):
                 if d.wave.FileName is not None:
                     wavelis.append(d.wave)
             FittingWindow(self,wavelis,self.canvas)
+        if e.key() == Qt.Key_S:
+            text, ok = QInputDialog.getText(self, '---Save Dialog---', 'Enter graph name:')
+            if not text.endswith('.grf'):
+                text+='.grf'
+            if ok:
+                self.Save(text)
     def closeEvent(self,event):
         self.canvas.fig.canvas=None
         super().closeEvent(event)

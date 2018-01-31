@@ -24,13 +24,17 @@ class ExtendFileSystemModel(QSortFilterProxyModel):
     def filterAcceptsRow(self,row,parent):
         index=self.mod.index(row, 0, parent)
         name=self.mod.data(index,Qt.DisplayRole)
-        for inc in self._include:
-            if fnmatch.fnmatch(name,inc):
-                return True
         for exc in self._exclude:
             if fnmatch.fnmatch(name,exc):
                 return False
-        return super().filterAcceptsRow(row,parent)
+        if self.mod.isDir(index):
+            return True
+        if len(self._include)==0:
+            return super().filterAcceptsRow(row,parent)
+        for inc in self._include:
+            if fnmatch.fnmatch(name,inc):
+                return True
+        return False
 
     def isDir(self,index):
         return self.mod.isDir(self.mapToSource(index))

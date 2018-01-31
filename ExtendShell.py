@@ -3,15 +3,16 @@ import cmd, os
 from . import LoadFile
 from . import Wave
 from .CommandWindow import CommandWindow
-from .GraphWindow import *
+from .GraphWindow import Graph,PreviewWindow
 
 class ExtendShell(object):
     def __init__(self,home=None):
         self.__comlog=[]
         self.__ecom=ExtendCommand(self)
 
-    def SendCommand(self,txt):
-        print(">",txt)
+    def SendCommand(self,txt,message=True):
+        if message:
+            print(">",txt)
         if not len(txt)==0:
             self.__comlog.append(txt)
         if txt=="cd":
