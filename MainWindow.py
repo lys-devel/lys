@@ -26,7 +26,9 @@ class MainWindow(QMainWindow):
                 item=menu.addMenu(key)
                 self.__createMenu(item,actions[key])
     def closeEvent(self,event):
-        self.com.saveData()
+        if not self.com.saveData():
+            event.ignore()
+            return
         ExtendMdiSubWindow.CloseAllWindows()
         event.accept()
 

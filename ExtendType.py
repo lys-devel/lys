@@ -533,10 +533,6 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     @classmethod
     def StoreAllWindows(cls):
         cls._isclosed=True
-        wins=cls.AllWindows()
-        for i in range(len(wins)-1,-1,-1):
-            wins[i].close()
-        cls._isclosed=False
     @classmethod
     def _IsClosed(cls):
         return cls._isclosed
