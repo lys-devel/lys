@@ -533,8 +533,9 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     @classmethod
     def StoreAllWindows(cls):
         cls._isclosed=True
-        for w in cls.AllWindows():
-            w.close()
+        wins=cls.AllWindows()
+        for i in range(len(wins)-1,-1,-1):
+            wins[i].close()
         cls._isclosed=False
     @classmethod
     def _IsClosed(cls):
@@ -574,18 +575,15 @@ class AutoSavedWindow(ExtendMdiSubWindow):
                 super().__init__(title)
             else:
                 super().__init__(self.Name())
-            self._init()
-            self.__Load(self.__file)
-            self.Save()
+            if file is not None:
+                self.__file=os.path.abspath(file)
+            if os.path.exists(self.__file):
+                self._init(self.__file)
+            else:
+                self._init()
             AutoSavedWindow._AddAutoWindow(self)
     def setLoadFile(self,file):
         self.__loadFile=os.path.abspath(file)
-    def __Load(self,file):
-        logging.debug('[AutoSavedWindow] __Load called.')
-        if file is not None:
-            self.__file=os.path.abspath(file)
-        if os.path.exists(self.__file):
-            self._load(self.__file)
     def FileName(self):
         return self.__file
     def Name(self):
@@ -618,6 +616,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             if ok==QMessageBox.Cancel:
                 event.ignore()
                 return
+        self.Save()
         if not AutoSavedWindow._IsClosed():
             AutoSavedWindow._RemoveAutoWindow(self)
             if not self.IsConnected():

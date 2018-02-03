@@ -1,9 +1,10 @@
 from PyQt5.QtWidgets import *
 from .ExtendShell import ExtendShell
 from .GraphWindow import AutoSavedWindow, PreviewWindow, ExtendMdiSubWindow
+from collections import OrderedDict
 
 class MainWindow(QMainWindow):
-    _actions={"File":{"Exit":exit}}
+    _actions=OrderedDict(File={"Exit":exit})
     _instance=None
     def __init__(self):
         super().__init__()

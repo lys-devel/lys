@@ -36,17 +36,17 @@ class Graph(AutoSavedWindow):
         with open(file,'r') as f:
             d=eval(f.read())
         self.move(d['Graph']['Position_x'],d['Graph']['Position_y'])
-        tmp=self.canvas.IsDrawEnabled()
         self.canvas.EnableDraw(False)
         self.canvas.LoadFromDictionary(d,os.path.dirname(file))
         self.canvas.EnableDraw(True)
-    def _init(self):
+    def _init(self,file=None):
         self.canvas=ExtendCanvas()
-        self.resize(200,200)
+        if file is not None:
+            self._load(file)
         self.canvas.keyPressed.connect(self.keyPress)
         self.canvas.setSaveFunction(self.Save)
         self.setWidget(self.canvas)
-        self.resized.connect(self.canvas.parentResized)
+        self.canvas.RestoreSize()
     def keyPress(self, e):
         if e.key() == Qt.Key_G:
             ModifyWindow(self.canvas,self)

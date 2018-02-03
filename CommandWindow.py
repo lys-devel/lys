@@ -175,6 +175,7 @@ class CommandWindow(QMdiSubWindow):
         print('Welcome to Analysis program lys. Loading .py files...')
         m=PluginManager(home(),self.__shell)
         m.start()
+        print('Loading .grf files...')
         AutoSavedWindow.RestoreAllWindows()
     def saveData(self):
         self.__clog.data=self.output.toPlainText()
