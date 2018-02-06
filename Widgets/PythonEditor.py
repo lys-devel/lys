@@ -25,9 +25,11 @@ def format(color, style=''):
 # Syntax styles that can be shared by all languages
 STYLES = {
     'keyword': format('#C578DD'),
+    'keyword2': format('#56B5C2'),
     'operator': format('#eeeeee'),
     'brace': format('#eeeeee'),
     'defclass': format('#D19965'),
+    'defmethod': format('#56B5C2'),
     'string': format('#97C279'),
     'string2': format('#97C279'),
     'comment': format('gray', 'italic'),
@@ -45,9 +47,11 @@ class PythonHighlighter (QSyntaxHighlighter):
         'for', 'from', 'global', 'if', 'import', 'in',
         'is', 'lambda', 'not', 'or', 'pass', 'print',
         'raise', 'return', 'try', 'while', 'yield',
-        'None', 'True', 'False',
+        'None', 'True', 'False'
     ]
-
+    keywords2 = [
+        '__init__','__del__','format','len','super', 'cd', 'home', 'pwd', 'cp', 'mv', 'rm'
+    ]
     # Python operators
     operators = [
         '=',
@@ -79,6 +83,8 @@ class PythonHighlighter (QSyntaxHighlighter):
         # Keyword, operator, and brace rules
         rules += [(r'\b%s\b' % w, 0, STYLES['keyword'])
             for w in PythonHighlighter.keywords]
+        rules += [(r'\b%s\b' % w, 0, STYLES['keyword2'])
+            for w in PythonHighlighter.keywords2]
         rules += [(r'%s' % o, 0, STYLES['operator'])
             for o in PythonHighlighter.operators]
         rules += [(r'%s' % b, 0, STYLES['brace'])
@@ -95,7 +101,7 @@ class PythonHighlighter (QSyntaxHighlighter):
             (r"'[^'\\]*(\\.[^'\\]*)*'", 0, STYLES['string']),
 
             # 'def' followed by an identifier
-            (r'\bdef\b\s*(\w+)', 1, STYLES['defclass']),
+            (r'\bdef\b\s*(\w+)', 1, STYLES['defmethod']),
             # 'class' followed by an identifier
             (r'\bclass\b\s*(\w+)', 1, STYLES['defclass']),
 
@@ -163,7 +169,7 @@ class PythonHighlighter (QSyntaxHighlighter):
             # No; multi-line string
             else:
                 self.setCurrentBlockState(in_state)
-                length = text.length() - start + add
+                length = len(text) - start + add
             # Apply formatting
             self.setFormat(start, length, style)
             # Look for the next match
@@ -235,7 +241,7 @@ class PythonEditor(ExtendMdiSubWindow):
         self.setWindowTitle(os.path.basename(file))
         self.widget=_PlainTextEdit(self)
         self.widget.keyPressed.connect(self.keyPressed)
-        self.widget.setStyleSheet("background-color : #282C34; color: #eeeeee")
+        self.widget.setStyleSheet("background-color : #282C34; color: #eeeeee;")
         self.highlighter=PythonHighlighter(self.widget.document())
         self.file=os.path.abspath(file)
         with open(self.file, 'r') as data:
