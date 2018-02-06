@@ -503,7 +503,7 @@ class ExtendMdiSubWindow(AttachableWindow):
         super().closeEvent(event)
 
 class AutoSavedWindow(ExtendMdiSubWindow):
-    __list=List(home()+'/.lys/winlist.lst')
+    __list=None
     _isclosed=False
     _restore=False
     @classmethod
@@ -520,6 +520,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     @classmethod
     def RestoreAllWindows(cls):
         from . import LoadFile
+        cls.__list=List(home()+'./.lys/winlist.lst')
         cls._restore=True
         mkdir(home()+'/.lys/wins')
         for path in cls.__list.data:
