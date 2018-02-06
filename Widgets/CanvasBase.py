@@ -14,8 +14,23 @@ def _saveCanvas(func):
     import functools
     @functools.wraps(func)
     def wrapper(*args,**kwargs):
+        if args[0].saveflg:
+            res=func(*args,**kwargs)
+        else:
+            args[0].saveflg=True
+            res=func(*args,**kwargs)
+            args[0].Save()
+            args[0].saveflg=False
+        return res
+    return wrapper
+def _notSaveCanvas(func):
+    import functools
+    @functools.wraps(func)
+    def wrapper(*args,**kwargs):
+        saved=args[0].saveflg
+        args[0].saveflg=True
         res=func(*args,**kwargs)
-        args[0].Save()
+        args[0].saveflg=saved
         return res
     return wrapper
 class Axis(Enum):
@@ -78,13 +93,14 @@ class FigureCanvasBase(FigureCanvas):
         return self.drawflg
     def EnableDraw(self,b):
         self.drawflg=b
+    def EnableSave(self,b):
+        self.saveflg=b
     def draw(self):
         if self.drawflg is not None:
             if not self.drawflg:
                 return
         try:
             super().draw()
-            super().flush_events()
             self.__emitAfterDraw()
         except Exception:
             pass

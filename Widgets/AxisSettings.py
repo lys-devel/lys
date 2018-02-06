@@ -179,6 +179,8 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
                         self.setAxisRange(dic[l],l)
     @_saveCanvas
     def setAxisRange(self,range,axis):
+        import time
+        start=time.time()
         ax=axis
         axes=self.getAxes(axis)
         if axes is None:

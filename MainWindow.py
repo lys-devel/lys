@@ -1,9 +1,10 @@
 from PyQt5.QtWidgets import *
 from .ExtendShell import ExtendShell
 from .GraphWindow import AutoSavedWindow, PreviewWindow, ExtendMdiSubWindow
+from collections import OrderedDict
 
 class MainWindow(QMainWindow):
-    _actions={"File":{"Exit":exit}}
+    _actions=OrderedDict(File={"Exit":exit})
     _instance=None
     def __init__(self):
         super().__init__()
@@ -25,7 +26,9 @@ class MainWindow(QMainWindow):
                 item=menu.addMenu(key)
                 self.__createMenu(item,actions[key])
     def closeEvent(self,event):
-        self.com.saveData()
+        if not self.com.saveData():
+            event.ignore()
+            return
         ExtendMdiSubWindow.CloseAllWindows()
         event.accept()
 

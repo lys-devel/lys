@@ -12,7 +12,7 @@ from ExtendAnalysis.ExtendType import *
 from .ColorWidgets import *
 from ExtendAnalysis.GraphWindow import *
 from .AxisLabelSettings import *
-from .CanvasBase import _saveCanvas
+from .CanvasBase import _saveCanvas, _notSaveCanvas
 
 class MarginAdjustableCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):
@@ -126,6 +126,8 @@ class ResizableCanvas(MarginAdjustableCanvas):
         self.__haxis1='Left'
         self.__haxis2='Bottom'
         self.__listener=[]
+        self.setAbsoluteSize(4,4)
+        self.setAutoSize()
         self.addMarginAdjustedListener(self)
         self.addAxisRangeChangeListener(self.OnAxisRangeChanged)
 
@@ -144,7 +146,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
         super().LoadFromDictionary(dictionary,path)
         if 'Size' in dictionary:
             dic=dictionary['Size']
-            if dic['Width'][1] in ['Aspect','Plan']:
+            if dic['Width'][0] in ['Aspect','Plan']:
                 self.setSizeByArray(dic['Height'],'Height',True)
                 self.setSizeByArray(dic['Width'],'Width',True)
             else:
@@ -153,7 +155,6 @@ class ResizableCanvas(MarginAdjustableCanvas):
     def OnMarginAdjusted(self):
         self.setSizeByArray([self.__wmode,self.__wvalue,self.__waxis1,self.__waxis2],'Width')
         self.setSizeByArray([self.__hmode,self.__hvalue,self.__haxis1,self.__haxis2],'Height')
-    @_saveCanvas
     def setSizeByArray(self,array,axis,loaded=False):
         if axis=='Width':
             self.__wmode=array[0]
@@ -306,6 +307,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
             if param[0]=='Aspect' or param[0]=='Plan':
                 par.setWidth(par.width())
         self._emitResizeEvent()
+    @_saveCanvas
     def parentResized(self):
         wp=self.getSizeParams('Width')
         hp=self.getSizeParams('Height')
@@ -386,7 +388,10 @@ class ResizableCanvas(MarginAdjustableCanvas):
             return (self.__wmode,self.__wvalue,self.__waxis1,self.__waxis2)
         else:
             return (self.__hmode,self.__hvalue,self.__haxis1,self.__haxis2)
-
+    @_notSaveCanvas
+    def RestoreSize(self):
+        self.setSizeByArray(self.getSizeParams('Width'),'Width',True)
+        self.setSizeByArray(self.getSizeParams('Height'),'Height',True)
     def addResizeListener(self,listener):
         self.__listener.append(weakref.ref(listener))
     def _emitResizeEvent(self):

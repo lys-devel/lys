@@ -9,6 +9,7 @@ from watchdog.observers import Observer
 
 from .ExtendType import *
 from .Widgets.ExtendWidgets import *
+from .Widgets.PythonEditor import *
 from .GraphWindow import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -175,12 +176,16 @@ class CommandWindow(QMdiSubWindow):
         print('Welcome to Analysis program lys. Loading .py files...')
         m=PluginManager(home(),self.__shell)
         m.start()
+        print('Loading .grf files...')
         AutoSavedWindow.RestoreAllWindows()
     def saveData(self):
         self.__clog.data=self.output.toPlainText()
         self.__clog.Save()
         self.__log2.data=str(self.__shell.GetCommandLog())
+        if not PythonEditor.CloseAllEditors():
+            return False
         AutoSavedWindow.StoreAllWindows()
+        return True
     def closeEvent(self,event):
         event.ignore()
     def __CreateLayout(self):
@@ -223,4 +228,4 @@ class CommandWindow(QMdiSubWindow):
             self.__shell.Load(p)
     def __openpy(self):
         for p in self.view.selectedPaths():
-            print(p)
+            PythonEditor(p)

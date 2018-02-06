@@ -4,10 +4,12 @@ from enum import Enum
 from PyQt5.QtGui import *
 
 from .SaveSettings import *
+from .CanvasBase import _saveCanvas
 
 class ExtendCanvas(SaveSettingCanvas):
     keyPressed=pyqtSignal(QKeyEvent)
     def __init__(self, dpi=100):
+        self.saveflg=False
         self.EnableDraw(False)
         super().__init__(dpi=dpi)
         self.setFocusPolicy(Qt.StrongFocus)
@@ -125,3 +127,6 @@ class ExtendCanvas(SaveSettingCanvas):
                 mod.selectTab(tab)
                 break
             parent=parent.parentWidget()
+    @_saveCanvas
+    def LoadFromDictionary(self,dictionary,path):
+        return super().LoadFromDictionary(dictionary,path)
