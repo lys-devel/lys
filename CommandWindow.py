@@ -137,8 +137,8 @@ class PluginManager:
                 return
             try:
                 self.shell.SendCommand('from importlib import import_module, reload',False)
-                self.plugins[module_name] = import_module(module_name)
                 self.shell.SendCommand('from '+module_name+' import *')
+                self.plugins[module_name] = import_module(module_name)
                 #print('{}.py has been loaded.'.format(module_name))
             except:
                 print('Error on loading {}.py.'.format(module_name))
@@ -146,9 +146,11 @@ class PluginManager:
             try:
                 self.plugins[module_name]=reload(self.plugins[module_name])
                 self.shell.SendCommand('from '+module_name+' import *',False)
-                #print('{}.py has been reloaded.'.format(module_name))
-            except:
-                print('Error on reloading {}.py.'.format(module_name))
+                print('{}.py has been reloaded.'.format(module_name))
+            except Exception as e:
+                import traceback
+                sys.stderr.write('Error on reloading {}.py.'.format(module_name))
+                print(traceback.format_exc())
 
 class CommandWindow(QMdiSubWindow):
     def __init__(self, shell, parent=None):

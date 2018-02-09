@@ -1,4 +1,4 @@
-import cmd, os
+import cmd, os, traceback
 
 from . import LoadFile
 from . import Wave
@@ -23,18 +23,23 @@ class ExtendShell(object):
             return
         if txt=="exit()" or txt=="exit":
             self.__com.close()
+        flg=False
         try:
             tmp=eval(txt,globals())
             if not tmp is None:
                 print(tmp)
         except Exception:
+            flg=True
+        if flg:
             try:
                 exec(txt,globals())
             except Exception:
+                err=traceback.format_exc()
                 try:
                     res=self.__ecom.onecmd(txt)
-                except Exception:
+                except Exception as e:
                     sys.stderr.write('Invalid command.\n')
+                    print(err)
     def GetCommandLog(self):
         return self.__comlog
     def SetCommandLog(self,log):
