@@ -156,6 +156,7 @@ class CommandWindow(QMdiSubWindow):
     def __init__(self, shell, parent=None):
         super(CommandWindow, self).__init__(parent)
         self.setWindowTitle("Command Window")
+        self.resize(600,600)
         self.__shell=shell
 
         self.__CreateLayout()

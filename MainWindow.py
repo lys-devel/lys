@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 from .ExtendShell import ExtendShell
 from .GraphWindow import AutoSavedWindow, PreviewWindow, ExtendMdiSubWindow
+from .ExtendType import home
 from collections import OrderedDict
 
 class MainWindow(QMainWindow):
@@ -16,12 +17,20 @@ class MainWindow(QMainWindow):
         shell=ExtendShell()
         self.com=shell.CommandWindow()
         self.area.addSubWindow(self.com)
+        self.__prepareMenu()
         self.__createMenu(self.menuBar(),MainWindow._actions)
         self.show()
+    def __prepareMenu(self):
+        m=MainWindow._actions
+        m['File']['Proc']=QAction('Show proc.py',triggered=self.__showproc)
+        m['File']['Proc'].setShortcut("Ctrl+P")
     def __createMenu(self,menu,actions):
         for key in actions.keys():
             if not isinstance(actions[key],dict):
-                menu.addAction(QAction(key,self,triggered=actions[key]))
+                if isinstance(actions[key],QAction):
+                    menu.addAction(actions[key])
+                else:
+                    menu.addAction(QAction(key,self,triggered=actions[key]))
             else:
                 item=menu.addMenu(key)
                 self.__createMenu(item,actions[key])
@@ -31,7 +40,9 @@ class MainWindow(QMainWindow):
             return
         ExtendMdiSubWindow.CloseAllWindows()
         event.accept()
-
+    def __showproc(self):
+        from .Widgets.PythonEditor import PythonEditor
+        PythonEditor(home()+'/proc.py')
 def create():
     main=MainWindow()
     return main

@@ -627,15 +627,17 @@ class OffsetAdjustableCanvas(DataHidableCanvas):
         for d in data:
             res.append(d.offset)
         return res
-class OffsetAdjustBox(QGroupBox):
+class OffsetAdjustBox(QWidget):
     def __init__(self,canvas,dim):
-        super().__init__("Offset")
+        super().__init__()
         self.canvas=canvas
         canvas.addDataSelectionListener(self)
         self.__initlayout()
         self.__flg=False
         self.__dim=dim
     def __initlayout(self):
+        vbox=QVBoxLayout()
+        gr1=QGroupBox('Offset')
         gl=QGridLayout()
         self.__spin1=QDoubleSpinBox(valueChanged=self.__dataChanged)
         self.__spin2=QDoubleSpinBox(valueChanged=self.__dataChanged)
@@ -649,7 +651,48 @@ class OffsetAdjustBox(QGroupBox):
         gl.addWidget(self.__spin2,1,1)
         gl.addWidget(QLabel('y muloffset'),2,1)
         gl.addWidget(self.__spin4,3,1)
-        self.setLayout(gl)
+        gr1.setLayout(gl)
+        vbox.addWidget(gr1)
+
+        gr2=QGroupBox('Side by side')
+        g2=QGridLayout()
+        self.__spinfrom=QDoubleSpinBox()
+        self.__spinfrom.setRange(-np.inf,np.inf)
+        self.__spindelta=QDoubleSpinBox()
+        self.__spindelta.setRange(-np.inf,np.inf)
+        g2.addWidget(QLabel('from'),0,0)
+        g2.addWidget(self.__spinfrom,1,0)
+        g2.addWidget(QLabel('delta'),0,1)
+        g2.addWidget(self.__spindelta,1,1)
+
+        btn=QPushButton('Set',clicked=self.__sidebyside)
+        self.__type=QComboBox()
+        self.__type.addItem('y offset')
+        self.__type.addItem('x offset')
+        self.__type.addItem('y muloffset')
+        self.__type.addItem('x muloffset')
+        g2.addWidget(QLabel('type'),0,2)
+        g2.addWidget(self.__type,1,2)
+        g2.addWidget(btn,2,1)
+        gr2.setLayout(g2)
+        vbox.addWidget(gr2)
+
+        self.setLayout(vbox)
+    def __sidebyside(self):
+        indexes=self.canvas.getSelectedIndexes(self.__dim)
+        f=self.__spinfrom.value()
+        d=self.__spindelta.value()
+        for i in range(len(indexes)):
+            r=list(self.canvas.getOffset(indexes[i])[0])
+            if self.__type.currentText()=='x offset':
+                r[0]=f+d*i
+            if self.__type.currentText()=='y offset':
+                r[1]=f+d*i
+            if self.__type.currentText()=='x muloffset':
+                r[2]=f+d*i
+            if self.__type.currentText()=='y muloffset':
+                r[3]=f+d*i
+            self.canvas.setOffset(r,indexes[i])
     def __dataChanged(self):
         if not self.__flg:
             indexes=self.canvas.getSelectedIndexes(self.__dim)
