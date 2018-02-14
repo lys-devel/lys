@@ -19,8 +19,8 @@ from .ImageSettings import *
 class RangeSelectableCanvas(ImageSettingCanvas):
     def __init__(self,dpi=100):
         super().__init__(dpi)
-        self.rect = Rectangle((0,0), 0, 0, color='orange', alpha=0.5)
-        patch=self.axes.add_patch(self.rect)
+        self.__rect = Rectangle((0,0), 0, 0, color='orange', alpha=0.5)
+        patch=self.axes.add_patch(self.__rect)
         patch.set_zorder(20000)
         self.Selection=False
 
@@ -45,29 +45,29 @@ class RangeSelectableCanvas(ImageSettingCanvas):
             self.__saved = self.copy_from_bbox(self.axes.bbox)
             self.rect_pos_start=[event.x,event.y]
             ax=self.__GlobalToAxis(event.x,event.y,self.axes)
-            self.rect.set_xy(ax)
+            self.__rect.set_xy(ax)
     def OnMouseUp(self, event):
         if self.Selection == True and event.button == 1:
             self.rect_pos_end=[event.x,event.y]
             ax=self.__GlobalToAxis(event.x,event.y,self.axes)
-            self.rect.set_width(ax[0]-self.rect.xy[0])
-            self.rect.set_height(ax[1]-self.rect.xy[1])
+            self.__rect.set_width(ax[0]-self.__rect.xy[0])
+            self.__rect.set_height(ax[1]-self.__rect.xy[1])
             self.draw()
             self.Selection=False
     def OnMouseMove(self, event):
         if self.Selection == True:
             ax=self.__GlobalToAxis(event.x,event.y,self.axes)
-            self.rect.set_width(ax[0]-self.rect.xy[0])
-            self.rect.set_height(ax[1]-self.rect.xy[1])
+            self.__rect.set_width(ax[0]-self.__rect.xy[0])
+            self.__rect.set_height(ax[1]-self.__rect.xy[1])
             self.restore_region(self.__saved)
-            self.axes.draw_artist(self.rect)
+            self.axes.draw_artist(self.__rect)
             self.blit(self.axes.bbox)
             self.flush_events()
     def IsRangeSelected(self):
-        return not self.rect.get_width()==0
+        return not self.__rect.get_width()==0
     def ClearSelectedRange(self):
-        self.rect.set_width(0)
-        self.rect.set_height(0)
+        self.__rect.set_width(0)
+        self.__rect.set_height(0)
     def SelectedRange(self):
         start=self.__GlobalToAxis(self.rect_pos_start[0],self.rect_pos_start[1],self.axes)
         end=self.__GlobalToAxis(self.rect_pos_end[0],self.rect_pos_end[1],self.axes)

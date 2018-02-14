@@ -47,10 +47,10 @@ class PythonHighlighter (QSyntaxHighlighter):
         'for', 'from', 'global', 'if', 'import', 'in',
         'is', 'lambda', 'not', 'or', 'pass', 'print',
         'raise', 'return', 'try', 'while', 'yield',
-        'None', 'True', 'False'
+        'None', 'True', 'False', 'with', 'as'
     ]
     keywords2 = [
-        '__init__','__del__','format','len','super', 'cd', 'home', 'pwd', 'cp', 'mv', 'rm'
+        '__init__','__del__','format','len','super', 'cd', 'home', 'pwd', 'cp', 'mv', 'rm', 'range', 'open'
     ]
     # Python operators
     operators = [
