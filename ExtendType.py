@@ -11,9 +11,11 @@ __CDChangeListener=[]
 sys.path.append(__home)
 
 def mkdir(name):
+    if os.path.exists(name):
+        return
     try:
         os.makedirs(name)
-    except Exception:
+    except:
         pass
 def copy(name,name_to):
     try:
@@ -27,7 +29,7 @@ def copy(name,name_to):
                 shutil.copy(name,name_to)
             else:
                 sys.stderr.write('Error: Cannot copy. This file exists.\n')
-    except Exception:
+    except:
         sys.stderr.write('Error: Cannot remove.\n')
 def move(name,name_to):
     if os.path.abspath(name_to).find(os.path.abspath(name))>-1:
@@ -98,7 +100,13 @@ class ExtendObject(object):
         if res is None:
             del cls.__dic[abs]
         return res
-
+    @classmethod
+    def Reload(cls,list=[]):
+        for ref in cls.__dic.values():
+            o=ref()
+            if o is not None:
+                o._load(o._filename())
+                o._emitDataChanged()
     def __init__(self,file):
         self.__file=file
         self.__init(file)
@@ -158,6 +166,8 @@ class ExtendObject(object):
             f.write(str(self.data))
     def _vallist(self):
         return ['data']
+    def _filename(self):
+        return self.__file
 
 class AutoSaved(object):
     def _newobj(self,file):
@@ -517,6 +527,9 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     def _RemoveAutoWindow(cls,win):
         if win.FileName() in cls.__list.data:
             cls.__list.remove(win.FileName())
+            if not win.IsConnected():
+                remove(win.FileName())
+                
     @classmethod
     def RestoreAllWindows(cls):
         from . import LoadFile
@@ -592,9 +605,10 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         self.__isTmp=True
     def Save(self,file=None):
         if file is not None:
-            self._save(file)
             AutoSavedWindow._RemoveAutoWindow(self)
             self.__file=os.path.abspath(file)
+            mkdir(os.path.dirname(file))
+            self._save(self.__file)
             self.__isTmp=False
             title=os.path.basename(file)
             self.setWindowTitle(title)
@@ -616,6 +630,4 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         self.Save()
         if not AutoSavedWindow._IsClosed():
             AutoSavedWindow._RemoveAutoWindow(self)
-            if not self.IsConnected():
-                remove(self.__file)
         return super().closeEvent(event)
