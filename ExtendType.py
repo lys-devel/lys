@@ -309,7 +309,7 @@ class Wave(AutoSaved):
 
     def slice(self,pos1,pos2,axis='x'):
         index=['x','y'].index(axis)
-        size=pos2[index]-pos1[index]+1
+        size=abs(pos2[index]-pos1[index])+1
         x,y=np.linspace(pos1[0], pos2[0], size), np.linspace(pos1[1], pos2[1], size)
         res=scipy.ndimage.map_coordinates(self.data, np.vstack((y,x)))
         w=Wave()

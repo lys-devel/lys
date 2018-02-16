@@ -223,6 +223,18 @@ class PreviewWindow(ExtendMdiSubWindow):
             return None
         pt=obj.main.SelectedRange()
         return (obj.wave.posToPoint(pt[0]),obj.wave.posToPoint(pt[1]))
+    @classmethod
+    def AnchorArea(cls):
+        if not cls.__checkInstance():
+            return None
+        obj=cls.instance()
+        if obj.wave==None:
+            return None
+        anc1=obj.main.getAnchorInfo(1)
+        anc2=obj.main.getAnchorInfo(2)
+        if anc1 is not None and anc2 is not None:
+            if anc1[0]==anc2[0]:
+                return (obj.wave.posToPoint(anc1[1]),obj.wave.posToPoint(anc2[1]))
 class Table(ExtendMdiSubWindow):
     def __init__(self,wave=None):
         super().__init__()
