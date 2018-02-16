@@ -309,12 +309,15 @@ class Wave(AutoSaved):
 
     def slice(self,pos1,pos2,axis='x'):
         index=['x','y'].index(axis)
-        size=pos2[index]-pos1[index]
+        size=pos2[index]-pos1[index]+1
         x,y=np.linspace(pos1[0], pos2[0], size), np.linspace(pos1[1], pos2[1], size)
-        res=scipy.ndimage.map_coordinates(self.data, np.vstack((x,y)))
+        res=scipy.ndimage.map_coordinates(self.data, np.vstack((y,x)))
         w=Wave()
         w.data=res
-        w.x=self.x[pos1[index]:pos2[index]]
+        if axis == 'x':
+            w.x=self.x[pos1[index]:pos2[index]+1]
+        elif axis == 'y':
+            w.x=self.y[pos1[index]:pos2[index]+1]
         return w
     def getSlicedImage(self,zindex):
         return self.data[:,:,zindex]
@@ -529,7 +532,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             cls.__list.remove(win.FileName())
             if not win.IsConnected():
                 remove(win.FileName())
-                
+
     @classmethod
     def RestoreAllWindows(cls):
         from . import LoadFile

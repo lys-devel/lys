@@ -196,6 +196,20 @@ class PreviewWindow(ExtendMdiSubWindow):
                 id2=self.bottom.Append(slicex)
                 self.left.setDataColor(self.main.getAnchorColor(i),id1)
                 self.bottom.setDataColor(self.main.getAnchorColor(i),id2)
+        anc1=self.main.getAnchorInfo(1)
+        anc2=self.main.getAnchorInfo(2)
+        if anc1 is not None and anc2 is not None:
+            if anc1[0]==anc2[0]:
+                flg=True
+                w=anc1[0].wave
+                p1=w.posToPoint(anc1[1])
+                p2=w.posToPoint(anc2[1])
+                slicex=w.slice(p1,p2,'x')
+                slicey=w.slice(p1,p2,'y')
+                id1=self.left.Append(slicey)
+                id2=self.bottom.Append(slicex)
+                self.left.setDataColor(self.main.getAnchorColor(i),id1)
+                self.bottom.setDataColor(self.main.getAnchorColor(i),id2)
         if flg:
             self._setLayout(2)
         else:
