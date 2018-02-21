@@ -66,7 +66,7 @@ class Graph(AutoSavedWindow):
         self.canvas.fig.canvas=None
         super().closeEvent(event)
     def Append(self,wave,axis=Axis.BottomLeft):
-        self.canvas.Append(wave,axis)
+        return self.canvas.Append(wave,axis)
 
 class PreviewWindow(ExtendMdiSubWindow):
     instance=None
