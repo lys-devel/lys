@@ -162,9 +162,10 @@ class FigureCanvasBase(FigureCanvas):
         else:
             wav=LoadFile.load(wave)
         if appearance is None:
-            return self._Append(wav,ax,id,{},offset,zindex)
+            ids=self._Append(wav,ax,id,{},offset,zindex)
         else:
-            return self._Append(wav,ax,id,appearance,offset,zindex)
+            ids=self._Append(wav,ax,id,appearance,offset,zindex)
+        return ids
     @_saveCanvas
     def _Append(self,wav,ax,id,appearance,offset,zindex=0, reuse=False):
         if wav.data.ndim==1:
@@ -182,16 +183,16 @@ class FigureCanvasBase(FigureCanvas):
     def _Append1D(self,wav,ax,ID,appearance,offset):
         if wav.x.ndim==0:
             xdata=np.arange(len(wav.data))
-            ydata=wav.data
+            ydata=np.array(wav.data)
         else:
-            xdata=wav.x
-            ydata=wav.data
-        xdata=xdata+offset[0]
-        ydata=ydata+offset[1]
-        if not offset[2]==0:
-            xdata*=offset[2]
-        if not offset[3]==0:
-            ydata*=offset[3]
+            xdata=np.array(wav.x)
+            ydata=np.array(wav.data)
+        if not offset[2]==0.0:
+            xdata=xdata*offset[2]
+        if not offset[3]==0.0:
+            ydata=ydata*offset[3]
+        xdata+=offset[0]
+        ydata+=offset[1]
         line, = ax.plot(xdata,ydata,label=wav.Name(),picker=5)
         if ID is None:
             id=-2000+len(self.getLines())
@@ -706,11 +707,11 @@ class OffsetAdjustBox(QWidget):
             return
         data=self.canvas.getOffset(indexes)[0]
         self.__spin1.setValue(data[0])
-        self.__spin1.setRange(-10000000,10000000)
+        self.__spin1.setRange(-np.inf,np.inf)
         self.__spin2.setValue(data[1])
-        self.__spin2.setRange(-10000000,10000000)
+        self.__spin2.setRange(-np.inf,np.inf)
         self.__spin3.setValue(data[2])
-        self.__spin3.setRange(-10000000,10000000)
+        self.__spin3.setRange(-np.inf,np.inf)
         self.__spin4.setValue(data[3])
-        self.__spin4.setRange(-10000000,10000000)
+        self.__spin4.setRange(-np.inf,np.inf)
         self.__flg=False
