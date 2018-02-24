@@ -81,6 +81,8 @@ class FittingWidget(QWidget):
         vbox1.addLayout(hbox2)
         if self.canvas is not None:
             hbox1=QHBoxLayout()
+            self.csr=QCheckBox('use cursor')
+            hbox1.addWidget(self.csr)
             self.tot=QCheckBox('total')
             self.tot.stateChanged.connect(self.__totadd)
             hbox1.addWidget(self.tot)
@@ -135,7 +137,12 @@ class FittingWidget(QWidget):
         fit=Fitting()
         for f in funcs:
             fit.addFunction(f)
-        res=fit.fit(self.wave.x, self.wave.data, guess=guess, bounds=bounds)
+        if self.csr.isChecked():
+            c1=self.canvas.getAnchorInfo(1)[1][0]
+            c2=self.canvas.getAnchorInfo(2)[1][0]
+            res=fit.fit(self.wave.x[c1:c2], self.wave.data[c1:c2], guess=guess, bounds=bounds)
+        else:
+            res=fit.fit(self.wave.x, self.wave.data, guess=guess, bounds=bounds)
         self._tree.setParams(res[0])
 
 class FittingTree(QTreeView):
