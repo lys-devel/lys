@@ -37,6 +37,9 @@ class cos(function):
 class exp(function):
     def func(self,x,position,height,a):
         return np.exp(a*(x-position))*height
+class Gauss(function):
+    def func(self,x,position,height,sigma):
+        return np.exp((x-position)/(2*sigma**2))*height
 class doubleExp(function):
     def func(self,x,position,height,a,b):
         return height*np.heaviside(x-position,0.5)*(1-np.exp(-((x-position)/a)**2))*np.exp(-(x-position)/b)
@@ -62,6 +65,7 @@ ListOfFunctions["Linear"]=linear()
 ListOfFunctions["Step"]=step()
 ListOfFunctions["Cos"]=cos()
 ListOfFunctions["Exp"]=exp()
+ListOfFunctions["Gauss"]=Gauss()
 ListOfFunctions["DoubleExp"]=doubleExp()
 ListOfFunctions["relaxOsci"]=relaxOscillation()
 ListOfFunctions["Error"]=GaussConvolved(step())
