@@ -7,7 +7,7 @@ from matplotlib.axis import XAxis,YAxis
 from matplotlib.lines import Line2D
 from matplotlib.image import AxesImage
 from matplotlib.text import Text
-from .Annotation import *
+from .LineAnnotation import *
 from .CanvasBase import _saveCanvas
 
 class AnchorData(object):
@@ -16,7 +16,7 @@ class AnchorData(object):
         self.obj2=obj2
         self.id=idn
         self.target=target
-class PicableCanvas(AnnotationSettingCanvas):
+class PicableCanvas(LineAnnotationSettingCanvas):
     def __init__(self,dpi=100):
         super().__init__(dpi)
         self.mpl_connect('pick_event',self.OnPick)

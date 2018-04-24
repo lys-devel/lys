@@ -122,6 +122,7 @@ class _AnnotationTab(QWidget):
         layout=QVBoxLayout(self)
         tab=QTabWidget()
         tab.addTab(AnnotationBox(canvas),'Text')
+        tab.addTab(LineAnnotationBox(canvas),'Line')
         self._test=QPushButton('Legend(test)')
         self._test.clicked.connect(self.test)
         tab.addTab(self._test,'Legend')

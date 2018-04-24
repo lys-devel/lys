@@ -18,28 +18,315 @@ from .AreaSettings import *
 from .CanvasBase import _saveCanvas
 
 class AnnotationData(object):
-    def __init__(self,obj,idn,appearance):
+    def __init__(self,name,obj,idn,appearance):
+        self.name=name
         self.obj=obj
         self.id=idn
         self.appearance=appearance
+
 class AnnotatableCanvas(AreaSettingCanvas):
     def __init__(self,dpi):
         super().__init__(dpi)
-        self.__list=[]
-        self.__sel=[]
-        self.__changed=[]
-        self.__edited=[]
-        self.__selected=[]
+        self._list={}
+        self._sel={}
+        self._changed={}
+        self._edited={}
+        self._selected={}
+        self._id_start={}
+        self._id_seed=10000
+    def _registerType(self,type):
+        self._list[type]=[]
+        self._sel[type]=[]
+        self._changed[type]=[]
+        self._edited[type]=[]
+        self._selected[type]=[]
+        self._id_start[type]=self._id_seed
+        self._id_seed+=300
+    @_saveCanvas
+    def addAnnotation(self,type,name,obj,appearance=None,id=None):
+        if id is None:
+            ids=self._id_start[type]+len(self._list[type])
+        else:
+            ids=id
+        obj.set_zorder(ids)
+        if appearance is None:
+            self._list[type].insert(ids-self._id_start[type],AnnotationData(name,obj,ids,{}))
+        else:
+            self._list[type].insert(ids-self._id_start[type],AnnotationData(name,obj,ids,appearance))
+        self._emitAnnotationChanged(type)
+        self.draw()
     def loadAnnotAppearance(self):
         pass
     def saveAnnotAppearance(self):
         pass
+    @_saveCanvas
+    def removeAnnotation(self,indexes,type='text'):
+        for i in indexes:
+            for d in self._list[type]:
+                if i==d.id:
+                    d.obj.remove()
+                    self._list[type].remove(d)
+        self._reorderAnnotation(type)
+        self._emitAnnotationChanged(type)
+        self.draw()
+    def getAnnotations(self,type='text'):
+        return self._list[type]
+    def getSelectedAnnotations(self,type='text'):
+        return self._sel[type]
+    def setSelectedAnnotations(self,indexes,type='text'):
+        if hasattr(indexes, '__iter__'):
+            self._sel[type]=indexes
+        else:
+            self._sel[type]=[indexes]
+        self._emitAnnotationSelected()
+    def getAnnotationFromIndexes(self,indexes,type='text'):
+        res=[]
+        if hasattr(indexes, '__iter__'):
+            list=indexes
+        else:
+            list=[indexes]
+        for i in list:
+            for d in self._list[type]:
+                if d.id==i:
+                    res.append(d)
+        return res
+    def _reorderAnnotation(self,type='text'):
+        n=0
+        for d in self._list[type]:
+            d.obj.set_zorder(10000+n)
+            d.id=10000+n
+            n+=1
+        self.draw()
+    def _findIndex(self,id,type='text'):
+        res=-1
+        for d in self._list[type]:
+            if d.obj.get_zorder()==id:
+                res=self._list[type].index(d)
+        return res
+    @_saveCanvas
+    def moveAnnotation(self,list,target=None,type='text'):
+        tar=eval(str(target))
+        for l in list:
+            n=self._findIndex(l)
+            item_n=self._list[type][n]
+            self._list[type].remove(item_n)
+            if tar is not None:
+                self._list[type].insert(self._findIndex(tar)+1,item_n)
+            else:
+                self._list[type].insert(0,item_n)
+        self._reorderAnnotation()
+
+    def addAnnotationChangeListener(self,listener,type='text'):
+        self._changed[type].append(weakref.ref(listener))
+    def addAnnotationSelectedListener(self,listener,type='text'):
+        self._selected[type].append(weakref.ref(listener))
+    def addAnnotationEditedListener(self,listener,type='text'):
+        self._edited[type].append(weakref.ref(listener))
+    def _emitAnnotationChanged(self,type='text'):
+        for l in self._changed[type]:
+            if l() is None:
+                self._changed[type].remove(l)
+            else:
+                l().OnAnnotationChanged()
+    def _emitAnnotationSelected(self,type='text'):
+        for l in self._selected[type]:
+            if l() is None:
+                self._selected[type].remove(l)
+            else:
+                l().OnAnnotationSelected()
+    def _emitAnnotationEdited(self,type='text'):
+        for l in self._edited[type]:
+            if l() is None:
+                self._edited[type].remove(l)
+            else:
+                l().OnAnnotationEdited()
+
+class AnnotationHidableCanvas(AnnotatableCanvas):
+    def saveAnnotAppearance(self):
+        super().saveAnnotAppearance()
+        data=self.getAnnotations()
+        for d in data:
+            d.appearance['Visible']=d.obj.get_visible()
+    def loadAnnotAppearance(self):
+        super().loadAnnotAppearance()
+        data=self.getAnnotations()
+        for d in data:
+            if 'Visible' in d.appearance:
+                d.obj.set_visible(d.appearance['Visible'])
+    @_saveCanvas
+    def hideAnnotation(self,indexes,type='text'):
+        dat=self.getAnnotationFromIndexes(indexes,type=type)
+        for d in dat:
+            d.obj.set_visible(False)
+        self.draw()
+    @_saveCanvas
+    def showAnnotation(self,indexes,type='text'):
+        dat=self.getAnnotationFromIndexes(indexes,type=type)
+        for d in dat:
+            d.obj.set_visible(True)
+        self.draw()
+class AnnotationSelectionBox(QTreeView):
+    class _Model(QStandardItemModel):
+        def __init__(self,canvas,type='text'):
+            super().__init__(0,3)
+            self.setHeaderData(0,Qt.Horizontal,'Line')
+            self.setHeaderData(1,Qt.Horizontal,'Axis')
+            self.setHeaderData(2,Qt.Horizontal,'Zorder')
+            self.canvas=canvas
+            self.type=type
+        def clear(self):
+            super().clear()
+            self.setColumnCount(3)
+            self.setHeaderData(0,Qt.Horizontal,'Annotation')
+            self.setHeaderData(1,Qt.Horizontal,'Axis')
+            self.setHeaderData(2,Qt.Horizontal,'Zorder')
+        def supportedDropActions(self):
+            return Qt.MoveAction
+        def mimeData(self, indexes):
+            mimedata = QMimeData()
+            data=[]
+            for i in indexes:
+                if i.column() !=2:
+                    continue
+                t=eval(self.itemFromIndex(i).text())
+                data.append(t)
+            mimedata.setData('index',str(data).encode('utf-8'))
+            mimedata.setText(str(data))
+            return mimedata
+        def mimeTypes(self):
+            return ['index']
+        def dropMimeData(self, data, action, row, column, parent):
+            f=eval(data.text())
+            par=self.itemFromIndex(parent)
+            if par is None:
+                if row==-1 and column==-1:
+                    self.canvas.moveAnnotation(f,type=self.type)
+                else:
+                    self.canvas.moveAnnotation(f,self.item(row,2).text(),type=self.type)
+            else:
+                self.canvas.moveAnnotation(f,self.item(self.itemFromIndex(parent).row(),2).text(),type=self.type)
+            self.canvas._emitAnnotationChanged()
+            return False
+    def __init__(self,canvas,type='text'):
+        super().__init__()
+        self.canvas=canvas
+        self.__type=type
+        self.__initlayout()
+        self._loadstate()
+        self.canvas.addAnnotationChangeListener(self,type)
+        self.canvas.addAnnotationEditedListener(self,type)
+        self.canvas.addAnnotationSelectedListener(self,type)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.buildContextMenu)
+        self.flg=False
+    def __initlayout(self):
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setDropIndicatorShown(True)
+        self.__model=AnnotationSelectionBox._Model(self.canvas,self.__type)
+        self.setModel(self.__model)
+        self.selectionModel().selectionChanged.connect(self.OnSelected)
+    def OnAnnotationSelected(self):
+        if self.flg:
+            return
+        self.flg=True
+        indexes=self.canvas.getSelectedAnnotations(self.__type)
+        list=self.canvas.getAnnotations(self.__type)
+        selm=self.selectionModel()
+        for i in range(len(list)):
+            index0=self.__model.index(len(list)-i-1,0)
+            index1=self.__model.index(len(list)-i-1,1)
+            index2=self.__model.index(len(list)-i-1,2)
+            id=float(self.__model.itemFromIndex(index2).text())
+            if id in indexes:
+                selm.select(index0,QItemSelectionModel.Select)
+                selm.select(index1,QItemSelectionModel.Select)
+                selm.select(index2,QItemSelectionModel.Select)
+            else:
+                selm.select(index0,QItemSelectionModel.Deselect)
+                selm.select(index1,QItemSelectionModel.Deselect)
+                selm.select(index2,QItemSelectionModel.Deselect)
+        self.flg=False
+    def _loadstate(self):
+        list=self.canvas.getAnnotations(self.__type)
+        self.__model.clear()
+        i=1
+        print(len(list))
+        for l in list:
+            self.__model.setItem(len(list)-i,0,QStandardItem(l.name))
+            self.__model.setItem(len(list)-i,1,QStandardItem(self.canvas.axesName(l.obj.axes)))
+            self.__model.setItem(len(list)-i,2,QStandardItem(str(l.id)))
+            i+=1
+
+    def OnSelected(self):
+        if self.flg:
+            return
+        self.flg=True
+        indexes=self.selectedIndexes()
+        ids=[]
+        for i in indexes:
+            if i.column()==2:
+                ids.append(int(self.__model.itemFromIndex(i).text()))
+        self.canvas.setSelectedAnnotations(ids,self.__type)
+        self.flg=False
+    def OnAnnotationChanged(self):
+        self._loadstate()
+    def OnAnnotationEdited(self):
+        list=self.canvas.getAnnotations(self.__type)
+        i=1
+        for l in list:
+            self.__model.itemFromIndex(self.__model.index(len(list)-i,0)).setText(l.name)
+            i+=1
+    def sizeHint(self):
+        return QSize(150,100)
+    def buildContextMenu(self, qPoint):
+        menu = QMenu(self)
+        menulabels = ['Show', 'Hide', 'Add', 'Remove']
+        actionlist = []
+        for label in menulabels:
+            actionlist.append(menu.addAction(label))
+        action = menu.exec_(QCursor.pos())
+        list=self.canvas.getSelectedAnnotations(self.__type)
+        if action==None:
+            return
+        elif action.text() == 'Show':
+            self.canvas.showAnnotation(list,self.__type)
+        elif action.text() == 'Hide':
+            self.canvas.hideAnnotation(list,self.__type)
+        elif action.text() == 'Remove':
+            self.canvas.removeAnnotation(list,self.__type)
+        elif action.text() == 'Add':
+            self.canvas.addText("")
+
+class TextAnnotationCanvas(AnnotationHidableCanvas):
+    def __init__(self,dpi):
+        super().__init__(dpi)
+        self._registerType('text')
+    @_saveCanvas
+    def addText(self,text,axis=Axis.BottomLeft,appearance=None,id=None):
+        axes=self._getAxesFrom(axis)
+        a=axes.text(0.5,0.5,text,transform=axes.transAxes,picker=True)
+        self.addAnnotation('text',text,a,appearance,id)
+    @_saveCanvas
+    def setAnnotationText(self,indexes,txt):
+        list=self.getAnnotationFromIndexes(indexes)
+        for l in list:
+            l.obj.set_text(txt)
+        self._emitAnnotationEdited()
+        self.draw()
+    def getAnnotationText(self,indexes):
+        res=[]
+        list=self.getAnnotationFromIndexes(indexes)
+        for l in list:
+            res.append(l.obj.get_text())
+        return res
+
     def SaveAsDictionary(self,dictionary,path):
         super().SaveAsDictionary(dictionary,path)
         i=0
         dic={}
         self.saveAnnotAppearance()
-        for data in self.__list:
+        for data in self._list['text']:
             dic[i]={}
             dic[i]['Text']=data.obj.get_text()
             dic[i]['Appearance']=str(data.appearance)
@@ -71,273 +358,10 @@ class AnnotatableCanvas(AreaSettingCanvas):
                     axis=Axis.BottomRight
                 if axis==4:
                     axis=Axis.TopRight
-                self.addAnnotation(t,axis,appearance=appearance)
+                self.addText(t,axis,appearance=appearance)
                 i+=1
         self.loadAnnotAppearance()
-    @_saveCanvas
-    def addAnnotation(self,text,axis=Axis.BottomLeft,appearance=None,id=None):
-        axes=self._getAxesFrom(axis)
-        a=axes.text(0.5,0.5,text,transform=axes.transAxes,picker=True)
-        if id is None:
-            ids=10000+len(self.__list)
-        else:
-            ids=id
-        a.set_zorder(ids)
-        if appearance is None:
-            self.__list.insert(ids-10000,AnnotationData(a,ids,{}))
-        else:
-            self.__list.insert(ids-10000,AnnotationData(a,ids,appearance))
-        self._emitAnnotationChanged()
-        self.draw()
-    @_saveCanvas
-    def removeAnnotation(self,indexes):
-        for i in indexes:
-            for d in self.__list:
-                if i==d.id:
-                    d.obj.remove()
-                    self.__list.remove(d)
-        self._reorderAnnotation()
-        self._emitAnnotationChanged()
-        self.draw()
-    @_saveCanvas
-    def setAnnotationText(self,indexes,txt):
-        list=self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            l.obj.set_text(txt)
-        self._emitAnnotationEdited()
-        self.draw()
-    def getAnnotationText(self,indexes):
-        res=[]
-        list=self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            res.append(l.obj.get_text())
-        return res
-
-    def getAnnotations(self):
-        return self.__list
-    def getSelectedAnnotations(self):
-        return self.__sel
-    def setSelectedAnnotations(self,indexes):
-        if hasattr(indexes, '__iter__'):
-            self.__sel=indexes
-        else:
-            self.__sel=[indexes]
-        self._emitAnnotationSelected()
-    def getAnnotationFromIndexes(self,indexes):
-        res=[]
-        if hasattr(indexes, '__iter__'):
-            list=indexes
-        else:
-            list=[indexes]
-        for i in list:
-            for d in self.__list:
-                if d.id==i:
-                    res.append(d)
-        return res
-    def _reorderAnnotation(self):
-        n=0
-        for d in self.__list:
-            d.obj.set_zorder(10000+n)
-            d.id=10000+n
-            n+=1
-        self.draw()
-    def _findIndex(self,id):
-        res=-1
-        for d in self.__list:
-            if d.obj.get_zorder()==id:
-                res=self.__list.index(d)
-        return res
-    @_saveCanvas
-    def moveAnnotation(self,list,target=None):
-        tar=eval(str(target))
-        for l in list:
-            n=self._findIndex(l)
-            item_n=self.__list[n]
-            self.__list.remove(item_n)
-            if tar is not None:
-                self.__list.insert(self._findIndex(tar)+1,item_n)
-            else:
-                self.__list.insert(0,item_n)
-        self._reorderAnnotation()
-    def addAnnotationChangeListener(self,listener):
-        self.__changed.append(weakref.ref(listener))
-    def addAnnotationSelectedListener(self,listener):
-        self.__selected.append(weakref.ref(listener))
-    def addAnnotationEditedListener(self,listener):
-        self.__edited.append(weakref.ref(listener))
-    def _emitAnnotationChanged(self):
-        for l in self.__changed:
-            if l() is None:
-                self.__changed.remove(l)
-            else:
-                l().OnAnnotationChanged()
-    def _emitAnnotationSelected(self):
-        for l in self.__selected:
-            if l() is None:
-                self.__selected.remove(l)
-            else:
-                l().OnAnnotationSelected()
-    def _emitAnnotationEdited(self):
-        for l in self.__edited:
-            if l() is None:
-                self.__edited.remove(l)
-            else:
-                l().OnAnnotationEdited()
-
-class AnnotationHidableCanvas(AnnotatableCanvas):
-    def saveAnnotAppearance(self):
-        super().saveAnnotAppearance()
-        data=self.getAnnotations()
-        for d in data:
-            d.appearance['Visible']=d.obj.get_visible()
-    def loadAnnotAppearance(self):
-        super().loadAnnotAppearance()
-        data=self.getAnnotations()
-        for d in data:
-            if 'Visible' in d.appearance:
-                d.obj.set_visible(d.appearance['Visible'])
-    @_saveCanvas
-    def hideAnnotation(self,indexes):
-        dat=self.getAnnotationFromIndexes(indexes)
-        for d in dat:
-            d.obj.set_visible(False)
-        self.draw()
-    @_saveCanvas
-    def showAnnotation(self,indexes):
-        dat=self.getAnnotationFromIndexes(indexes)
-        for d in dat:
-            d.obj.set_visible(True)
-        self.draw()
-class AnnotationSelectionBox(QTreeView):
-    class _Model(QStandardItemModel):
-        def __init__(self,canvas):
-            super().__init__(0,3)
-            self.setHeaderData(0,Qt.Horizontal,'Line')
-            self.setHeaderData(1,Qt.Horizontal,'Axis')
-            self.setHeaderData(2,Qt.Horizontal,'Zorder')
-            self.canvas=canvas
-        def clear(self):
-            super().clear()
-            self.setColumnCount(3)
-            self.setHeaderData(0,Qt.Horizontal,'Annotation')
-            self.setHeaderData(1,Qt.Horizontal,'Axis')
-            self.setHeaderData(2,Qt.Horizontal,'Zorder')
-        def supportedDropActions(self):
-            return Qt.MoveAction
-        def mimeData(self, indexes):
-            mimedata = QMimeData()
-            data=[]
-            for i in indexes:
-                if i.column() !=2:
-                    continue
-                t=eval(self.itemFromIndex(i).text())
-                data.append(t)
-            mimedata.setData('index',str(data).encode('utf-8'))
-            mimedata.setText(str(data))
-            return mimedata
-        def mimeTypes(self):
-            return ['index']
-        def dropMimeData(self, data, action, row, column, parent):
-            f=eval(data.text())
-            par=self.itemFromIndex(parent)
-            if par is None:
-                if row==-1 and column==-1:
-                    self.canvas.moveAnnotation(f)
-                else:
-                    self.canvas.moveAnnotation(f,self.item(row,2).text())
-            else:
-                self.canvas.moveAnnotation(f,self.item(self.itemFromIndex(parent).row(),2).text())
-            self.canvas._emitAnnotationChanged()
-            return False
-    def __init__(self,canvas):
-        super().__init__()
-        self.canvas=canvas
-        self.__initlayout()
-        self._loadstate()
-        self.canvas.addAnnotationChangeListener(self)
-        self.canvas.addAnnotationEditedListener(self)
-        self.canvas.addAnnotationSelectedListener(self)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
-        self.flg=False
-    def __initlayout(self):
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
-        self.setDropIndicatorShown(True)
-        self.__model=AnnotationSelectionBox._Model(self.canvas)
-        self.setModel(self.__model)
-        self.selectionModel().selectionChanged.connect(self.OnSelected)
-    def OnAnnotationSelected(self):
-        if self.flg:
-            return
-        self.flg=True
-        indexes=self.canvas.getSelectedAnnotations()
-        list=self.canvas.getAnnotations()
-        selm=self.selectionModel()
-        for i in range(len(list)):
-            index0=self.__model.index(len(list)-i-1,0)
-            index1=self.__model.index(len(list)-i-1,1)
-            index2=self.__model.index(len(list)-i-1,2)
-            id=float(self.__model.itemFromIndex(index2).text())
-            if id in indexes:
-                selm.select(index0,QItemSelectionModel.Select)
-                selm.select(index1,QItemSelectionModel.Select)
-                selm.select(index2,QItemSelectionModel.Select)
-            else:
-                selm.select(index0,QItemSelectionModel.Deselect)
-                selm.select(index1,QItemSelectionModel.Deselect)
-                selm.select(index2,QItemSelectionModel.Deselect)
-        self.flg=False
-    def _loadstate(self):
-        list=self.canvas.getAnnotations()
-        self.__model.clear()
-        i=1
-        for l in list:
-            self.__model.setItem(len(list)-i,0,QStandardItem(l.obj.get_text()))
-            self.__model.setItem(len(list)-i,1,QStandardItem(self.canvas.axesName(l.obj.axes)))
-            self.__model.setItem(len(list)-i,2,QStandardItem(str(l.id)))
-            i+=1
-    def OnSelected(self):
-        if self.flg:
-            return
-        self.flg=True
-        indexes=self.selectedIndexes()
-        ids=[]
-        for i in indexes:
-            if i.column()==2:
-                ids.append(int(self.__model.itemFromIndex(i).text()))
-        self.canvas.setSelectedAnnotations(ids)
-        self.flg=False
-    def OnAnnotationChanged(self):
-        self._loadstate()
-    def OnAnnotationEdited(self):
-        list=self.canvas.getAnnotations()
-        i=1
-        for l in list:
-            self.__model.itemFromIndex(self.__model.index(len(list)-i,0)).setText(l.obj.get_text())
-            i+=1
-    def sizeHint(self):
-        return QSize(150,100)
-    def buildContextMenu(self, qPoint):
-        menu = QMenu(self)
-        menulabels = ['Show', 'Hide', 'Add', 'Remove']
-        actionlist = []
-        for label in menulabels:
-            actionlist.append(menu.addAction(label))
-        action = menu.exec_(QCursor.pos())
-        list=self.canvas.getSelectedAnnotations()
-        if action==None:
-            return
-        elif action.text() == 'Show':
-            self.canvas.showAnnotation(list)
-        elif action.text() == 'Hide':
-            self.canvas.hideAnnotation(list)
-        elif action.text() == 'Remove':
-            self.canvas.removeAnnotation(list)
-        elif action.text() == 'Add':
-            self.canvas.addAnnotation("")
-
-class AnnotationEditableCanvas(AnnotationHidableCanvas):
+class AnnotationEditableCanvas(TextAnnotationCanvas):
     def __init__(self,dpi):
         super().__init__(dpi)
         self.addFontChangeListener(self)
