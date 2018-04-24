@@ -251,7 +251,6 @@ class AnnotationSelectionBox(QTreeView):
         list=self.canvas.getAnnotations(self.__type)
         self.__model.clear()
         i=1
-        print(len(list))
         for l in list:
             self.__model.setItem(len(list)-i,0,QStandardItem(l.name))
             self.__model.setItem(len(list)-i,1,QStandardItem(self.canvas.axesName(l.obj.axes)))
@@ -342,7 +341,6 @@ class TextAnnotationCanvas(AnnotationHidableCanvas):
             i+=1
         dictionary['Textlist']=dic
     def LoadFromDictionary(self,dictionary,path):
-        super().LoadFromDictionary(dictionary,path)
         if 'Textlist' in dictionary:
             dic=dictionary['Textlist']
             i=0
@@ -360,7 +358,7 @@ class TextAnnotationCanvas(AnnotationHidableCanvas):
                     axis=Axis.TopRight
                 self.addText(t,axis,appearance=appearance)
                 i+=1
-        self.loadAnnotAppearance()
+        super().LoadFromDictionary(dictionary,path)
 class AnnotationEditableCanvas(TextAnnotationCanvas):
     def __init__(self,dpi):
         super().__init__(dpi)
