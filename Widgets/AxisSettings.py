@@ -852,16 +852,19 @@ class TickAdjustBox(QGroupBox):
         gl.addWidget(QLabel('Interval'),1,0)
         self.__spin1=QDoubleSpinBox()
         self.__spin1.valueChanged.connect(self.__chnum)
+        self.__spin1.setRange(0,np.inf)
         gl.addWidget(self.__spin1,1,1)
 
         gl.addWidget(QLabel('Length'),2,0)
         self.__spin2=QDoubleSpinBox()
         self.__spin2.valueChanged.connect(self.__chlen)
+        self.__spin2.setRange(0,np.inf)
         gl.addWidget(self.__spin2,2,1)
 
         gl.addWidget(QLabel('Width'),3,0)
         self.__spin3=QDoubleSpinBox()
         self.__spin3.valueChanged.connect(self.__chwid)
+        self.__spin3.setRange(0,np.inf)
         gl.addWidget(self.__spin3,3,1)
 
         self.__minor=QCheckBox('Minor')

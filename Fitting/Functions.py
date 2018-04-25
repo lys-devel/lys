@@ -39,7 +39,7 @@ class exp(function):
         return np.exp(a*(x-position))*height
 class Gauss(function):
     def func(self,x,position,height,sigma):
-        return np.exp((x-position)**2/(2*sigma**2))*height
+        return np.exp(-(x-position)**2/(2*sigma**2))*height
 class doubleExp(function):
     def func(self,x,position,height,a,b):
         return height*np.heaviside(x-position,0.5)*(1-np.exp(-((x-position)/a)**2))*np.exp(-(x-position)/b)
