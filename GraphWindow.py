@@ -245,3 +245,5 @@ class Table(ExtendMdiSubWindow):
         self.show()
     def Append(self,wave):
         self._etable.Append(wave)
+    def checkState(self,index):
+        self._etable.checkState(index)

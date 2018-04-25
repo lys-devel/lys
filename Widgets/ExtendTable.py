@@ -4,51 +4,69 @@ from PyQt5.QtCore import *
 
 class ExtendTable(QTableView):
     class ArrayModel(QStandardItemModel):
-        def __init__(self, array=None):
+        def __init__(self, array=None,checkable=False):
             super().__init__()
             self.set(array)
+            self.__checkable=True
         def data(self,index,role=Qt.DisplayRole):
             if role==Qt.DisplayRole or role==Qt.EditRole:
                 if self._data is None:
                     return ""
-                elif self._data.ndim==1:
+                elif len(self._data.shape())==1:
                     return str(self._data[index.row()])
                 else:
                     return str(self._data[index.row()][index.column()])
             return super().data(index,role)
+        def setData(self,index,value,role=Qt.EditRole):
+            if role==Qt.EditRole:
+                item = index.model().itemFromIndex(index)
+                if value.isdigit():
+                    if len(self._data.shape())==1:
+                        self._data[item.row()]=float(value)
+                    else:
+                        self._data[item.row()][item.column()]=float(value)
+                else:
+                    if len(self._data.shape())==1:
+                        self._data[item.row()]=value
+                    else:
+                        self._data[item.row()][item.column()]=value
+                self._data.Save()
+                return True
+            return super().setData(index,value,role)
         def clear(self):
             self._data=None
         def set(self,array):
             if array is None:
                 self._data=None
                 return
-            elif array.ndim==1:
-                self.setRowCount(array.shape[0])
+            elif len(array.shape())==1:
+                self.setRowCount(array.shape()[0])
                 self.setColumnCount(1)
             else:
-                self.setRowCount(array.shape[0])
-                self.setColumnCount(array.shape[1])
+                self.setRowCount(array.shape()[0])
+                self.setColumnCount(array.shape()[1])
             self._data=array
+        def flags(self,index):
+            if index.column()==0 and self.__checkable:
+                item = index.model().itemFromIndex(index)
+                item.setCheckable(True)
+                return super().flags(index) | Qt.ItemIsUserCheckable
+            return super().flags(index)
 
-    def __init__(self,wave=None):
+    def __init__(self,data=None,checkable=True):
         super().__init__()
-        if wave is None:
-            self._model=self.ArrayModel(None)
+        if data is None:
+            self._model=self.ArrayModel(None, checkable)
         else:
-            self._model=self.ArrayModel(wave.data)
+            self._model=self.ArrayModel(data, checkable)
         self.setModel(self._model)
-        self._model.itemChanged.connect(self.onDataChanged)
-        self._wave=wave
-    def onDataChanged(self,item):
-        if item.text().isdigit():
-            if self._wave.data.ndim==1:
-                self._wave.data[item.row()]=float(item.text())
-            else:
-                self._wave.data[item.row()][item.column()]=float(item.text())
-            self._wave.update()
     def clear(self):
         self._model.clear()
-        self._wave=None
-    def Append(self,wave):
-        self._model.set(wave.data)
-        self._wave=wave
+    def Append(self,data):
+        self._model.set(data)
+    def checkState(self,row):
+        item=self._model.item(row)
+        if item is None:
+            return None
+        else:
+            return item.checkState()
