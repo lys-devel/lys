@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, sys, shutil, weakref, logging
+import os, sys, shutil, weakref, logging, unittest
 import numpy as np
 import scipy.ndimage
 import scipy.signal
@@ -253,8 +253,6 @@ class AutoSaved(object):
             if m() is None:
                 self.__modListener.remove(m)
             else:
-                import time
-                t=time.time()
                 m()(self)
 class Wave(AutoSaved):
     class _wavedata(ExtendObject):
@@ -306,6 +304,11 @@ class Wave(AutoSaved):
                     return res
         else:
             return super().__getattribute__(key)
+    def __getitem__(self,key):
+        return self.data[key]
+    def __setitem__(self,key,value):
+        self.data[key]=value
+        self.Save()
 
     def slice(self,pos1,pos2,axis='x',width=1):
         index=['x','y'].index(axis)
@@ -382,6 +385,53 @@ class Wave(AutoSaved):
         return self.data[range[0]:range[1]+1].sum()/(range[1]-range[0]+1)
     def __average2D(self,range1,range2):
         return self.data[int(range2[0]):int(range2[1])+1,int(range1[0]):int(range1[1])+1].sum()/(range1[1]-range1[0]+1)/(range2[1]-range2[0]+1)
+    def shape(self):
+        res=[]
+        tmp=self.data.shape
+        for i in tmp:
+            if i is not None:
+                res.append(i)
+        return tuple(res)
+class Test_AutoSaved(unittest.TestCase):
+    def test_wave(self):
+        w=Wave('test.npz')
+        self.assertEqual(w.Name(),'test')
+        self.assertEqual(w.FileName(),'test.npz')
+        self.assertEqual(w.IsConnected(),True)
+        w.data=[1,2,3]
+        self.assertEqual(w.data[0],1)
+
+        w2=Wave('test.npz')
+        self.assertEqual(w2.data[0],1)
+        w2.data=[2,3,4]
+        self.assertEqual(w2.data[0],2)
+        self.assertEqual(w.data[0],2)
+
+        w2.Save('test2.npz')
+        w2.data=[3,4,5]
+        self.assertEqual(w2.data[0],3)
+        self.assertEqual(w.data[0],2)
+
+        w3=Wave()
+        self.assertEqual(w3.IsConnected(),False)
+        w3.data=[4,5,6]
+        w3.Save('test.npz')
+        self.assertEqual(w3.IsConnected(),True)
+        self.assertEqual(w3.data[0],4)
+        self.assertEqual(w.data[0],4)
+        self.assertEqual(w.IsConnected(),True)
+
+        w.Disconnect()
+        w.data=[5,6,7]
+        self.assertEqual(w3.IsConnected(),True)
+        self.assertEqual(w3.data[0],4)
+        self.assertEqual(w.data[0],5)
+        self.assertEqual(w.IsConnected(),False)
+
+        w2.Disconnect()
+        w3.Disconnect()
+        remove('test.npz')
+        remove('test2.npz')
 class String(AutoSaved):
     class _stringdata(ExtendObject):
         def _load(self,file):
@@ -445,6 +495,16 @@ class List(AutoSaved):
         return key in self.data
     def __len__(self):
         return len(self.data)
+    def shape(self):
+        res=[]
+        d=self.data
+        while isinstance(d,list) or isinstance(d,List):
+            res.append(len(d))
+            if len(d) > 0:
+                d=d[0]
+            else:
+                break
+        return tuple(res)
 
 class ExtendMdiSubWindowBase(QMdiSubWindow):
     pass
@@ -645,3 +705,6 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         if not AutoSavedWindow._IsClosed():
             AutoSavedWindow._RemoveAutoWindow(self)
         return super().closeEvent(event)
+
+if __name__ == "__main__":
+    unittest.main()

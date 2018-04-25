@@ -144,8 +144,7 @@ class _FileSystemViewBase(QWidget):
     def __edit(self):
         t=Table()
         for p in self.selectedPaths():
-            w=Wave(p)
-            print(t)
+            w=LoadFile.load(p)
             t.Append(w)
     def Action_Print(self):
         return QAction('Print',self,triggered=self.__print)

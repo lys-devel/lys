@@ -148,6 +148,7 @@ class AnchorCanvas(PicableCanvas):
         m.addAction(QAction('Remove Anchor 1',self,triggered=self.__rema))
         m.addAction(QAction('Remove Anchor 2',self,triggered=self.__remb))
         m.addAction(QAction('Remove Anchor 3',self,triggered=self.__remc))
+        m.addAction(QAction('Print Anchor Info',self,triggered=self.__info))
         return menu
     def __adda(self):
         self.addAnchor(1,self.cpos)
@@ -168,6 +169,33 @@ class AnchorCanvas(PicableCanvas):
         self.__rem(2)
     def __remc(self):
         self.__rem(3)
+    def angle(self, x, y):
+        dot_xy = np.dot(x, y)
+        norm_x = np.linalg.norm(x)
+        norm_y = np.linalg.norm(y)
+        cos = dot_xy / (norm_x*norm_y)
+        rad = np.arccos(cos)
+        theta = rad * 180 / np.pi
+        return theta
+    def __info(self):
+        a1=self.getAnchorInfo(1)
+        a2=self.getAnchorInfo(2)
+        a3=self.getAnchorInfo(3)
+        if a1 is not None:
+            print('anchor 1: ', a1[1])
+        if a2 is not None:
+            print('anchor 2: ', a2[1])
+        if a3 is not None:
+            print('anchor 3: ', a3[1])
+        if a1 is not None and a2 is not None:
+            d=np.array(a1[1])-np.array(a2[1])
+            print('anchor 1-2: d =', d, ', |d| =',np.sqrt(d[0]**2+d[1]**2), ', angle(d) =', self.angle(np.array([1,0]),d), 'deg')
+        if a2 is not None and a3 is not None:
+            d=np.array(a2[1])-np.array(a3[1])
+            print('anchor 2-3: d =', d, ', |d| =',np.sqrt(d[0]**2+d[1]**2), ', angle(d) =', self.angle(np.array([1,0]),d), 'deg')
+        if a3 is not None and a1 is not None:
+            d=np.array(a3[1])-np.array(a1[1])
+            print('anchor 3-1: d =', d, ', |d| =',np.sqrt(d[0]**2+d[1]**2), ', angle(d) =', self.angle(np.array([1,0]),d), 'deg')
 
 class AnchorSettingCanvas(AnchorCanvas):
     pass

@@ -222,6 +222,7 @@ class CommandWindow(QMdiSubWindow):
         menu['other']=[ld,tree.Action_Delete(),tree.Action_Print()]
         menu['.npz']=[tree.Action_Display(),tree.Action_Append(),tree.Action_Preview(),tree.Action_Edit(),ld,tree.Action_Print(),tree.Action_Delete()]
         menu['.py']=[op,tree.Action_Delete()]
+        menu['.lst']=[op,tree.Action_Edit()]
         tree.SetContextMenuActions(menu)
 
     def __setCurrentDirectory(self):
