@@ -91,7 +91,7 @@ class AxisSelectableCanvas(RangeSelectableCanvas):
                 l().OnAxisSelected(self.axis_selected)
             else:
                 self.__listener.remove(l)
-    def getAxes(self,axis):
+    def getAxes(self,axis='Left'):
         ax=axis
         if ax in ['Left','Bottom']:
             return self.axes
