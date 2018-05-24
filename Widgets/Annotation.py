@@ -55,6 +55,7 @@ class AnnotatableCanvas(AreaSettingCanvas):
             self._list[type].insert(ids-self._id_start[type],AnnotationData(name,obj,ids,appearance))
         self._emitAnnotationChanged(type)
         self.draw()
+        return ids
     def loadAnnotAppearance(self):
         pass
     def saveAnnotAppearance(self):
@@ -302,10 +303,10 @@ class TextAnnotationCanvas(AnnotationHidableCanvas):
         super().__init__(dpi)
         self._registerType('text')
     @_saveCanvas
-    def addText(self,text,axis=Axis.BottomLeft,appearance=None,id=None):
+    def addText(self,text,axis=Axis.BottomLeft,appearance=None,id=None, x=0.5, y=0.5):
         axes=self._getAxesFrom(axis)
-        a=axes.text(0.5,0.5,text,transform=axes.transAxes,picker=True)
-        self.addAnnotation('text',text,a,appearance,id)
+        a=axes.text(x,y,text,transform=axes.transAxes,picker=True)
+        return self.addAnnotation('text',text,a,appearance,id)
     @_saveCanvas
     def setAnnotationText(self,indexes,txt):
         list=self.getAnnotationFromIndexes(indexes)

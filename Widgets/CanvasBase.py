@@ -201,7 +201,7 @@ class FigureCanvasBase(FigureCanvas):
         line.set_zorder(id)
         self._Datalist.insert(id+2000,WaveData(wav,line,ax,id,appearance,offset))
         return id
-    def _Append2D(self,wav,ax,ID,appearance,offset):
+    def calcExtent2D(self,wav,offset):
         xstart=wav.x[0]
         xend=wav.x[len(wav.x)-1]
         ystart=wav.y[0]
@@ -220,7 +220,11 @@ class FigureCanvasBase(FigureCanvas):
 
         dx=(xend-xstart+1)/wav.data.shape[1]
         dy=(yend-ystart+1)/wav.data.shape[0]
-        im=ax.imshow(wav.data,aspect='auto',extent=(xstart-dx/2,xend+dx/2,yend+dy/2,ystart-dy/2),picker=True)
+
+        return (xstart-dx/2,xend+dx/2,yend+dy/2,ystart-dy/2)
+
+    def _Append2D(self,wav,ax,ID,appearance,offset):
+        im=ax.imshow(wav.data,aspect='auto',extent=self.calcExtent2D(wav,offset),picker=True)
         if ID is None:
             id=-5000+len(self.getImages())
         else:

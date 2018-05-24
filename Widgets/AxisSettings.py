@@ -270,13 +270,13 @@ class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
                 self.setAxisRange([minVal,maxVal],axis)
         else:
             if mode in ['Vertical Expand', 'Expand']:
-                minVal=min(pos[1], pos[1]+height)
-                maxVal=max(pos[1], pos[1]+height)
+                minVal=max(pos[1], pos[1]+height)
+                maxVal=min(pos[1], pos[1]+height)
                 self.setAxisRange([minVal,maxVal],axis)
             if mode in ['Shrink','Vertical Shrink']:
                 ratio=abs((ylim[1]-ylim[0])/height)
-                a=min(pos[1], pos[1]+height)
-                b=max(pos[1], pos[1]+height)
+                a=max(pos[1], pos[1]+height)
+                b=min(pos[1], pos[1]+height)
                 minVal=ylim[0]-ratio*(a-ylim[0])
                 maxVal=ylim[1]+ratio*(ylim[1]-b)
                 self.setAxisRange([minVal,maxVal],axis)

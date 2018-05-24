@@ -67,6 +67,14 @@ class Graph(AutoSavedWindow):
         super().closeEvent(event)
     def Append(self,wave,axis=Axis.BottomLeft):
         return self.canvas.Append(wave,axis)
+    def Duplicate(self):
+        dic={}
+        self.canvas.SaveAsDictionary(dic,home())
+        g=Graph()
+        g.canvas.EnableDraw(False)
+        g.canvas.LoadFromDictionary(dic,home())
+        g.canvas.EnableDraw(True)
+        return g
 
 class PreviewWindow(ExtendMdiSubWindow):
     instance=None
