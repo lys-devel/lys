@@ -9,7 +9,7 @@ def load(name,load=True):
             mkdir(pwd()+'/'+os.path.basename(name))
             __loadFolder(name,pwd()+'/'+os.path.basename(name))
         elif os.path.isfile(name):
-            path,ext=os.path.splitext(name)
+            path, ext=os.path.splitext(name)
             res=dic[ext](os.path.abspath(name))
             res.setLoadFile(name)
             if load:

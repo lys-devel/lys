@@ -15,6 +15,11 @@ class SaveSettingCanvas(AnchorSettingCanvas):
         mime.setData('application/svg+xml',self.toData('svg'))
         mime.setData('Portable Document Format',self.toData('pdf'))
         mime.setData('application/pdf',self.toData('pdf'))
+        try:
+            mime.setText(self.toData('pdf').hex())
+        except:
+            import traceback
+            print(traceback.format_exc())
         buf = io.BytesIO()
         self.fig.savefig(buf,transparent=True)
         mime.setImageData(QImage.fromData(buf.getvalue()))

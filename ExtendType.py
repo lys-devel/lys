@@ -185,8 +185,8 @@ class AutoSaved(object):
         else:
             self.obj=res
         self.obj.addDataChangedListener(self._EmitModified)
-    def __del__(self):
-        self.Save()
+#    def __del__(self):
+#        self.Save()
     def __setattr__(self,key,value):
         if not key=='obj':
             if self.obj is not None:
@@ -642,7 +642,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         if cls._restore:
             return super().__new__(cls)
         if AutoSavedWindow._IsUsed(file):
-            logging.debug('[AutoSavedWindow] found loaded window.')
+            logging.debug('[AutoSavedWindow] found loaded window.', file)
             return None
         return super().__new__(cls)
     def __init__(self, file=None, title=None):
