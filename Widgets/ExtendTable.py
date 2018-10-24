@@ -33,6 +33,21 @@ class ExtendTable(QTableView):
                 self._data.Save()
                 return True
             return super().setData(index,value,role)
+        def setDataValue(self,value,row,column=0,role=Qt.EditRole):
+            if role==Qt.EditRole:
+                if str(value).isdigit():
+                    if len(self._data.shape())==1:
+                        self._data[row]=float(value)
+                    else:
+                        self._data[row][column]=float(value)
+                else:
+                    if len(self._data.shape())==1:
+                        self._data[row]=value
+                    else:
+                        self._data[row][column]=value
+                self._data.Save()
+                return True
+            return super().setData(index,value,role)
         def clear(self):
             self._data=None
         def set(self,array):
@@ -70,3 +85,7 @@ class ExtendTable(QTableView):
             return None
         else:
             return item.checkState()
+    def selectedRow(self):
+        return self.selectionModel().selectedIndexes()[0].row()
+    def setData(self,value,row,column):
+        self._model.setDataValue(value,row,column)

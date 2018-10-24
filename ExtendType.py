@@ -651,6 +651,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             self.__file
         except Exception:
             logging.debug('[AutoSavedWindow] new window will be created.')
+            self.__closeflg=True
             if file is None:
                 logging.debug('[AutoSavedWindow] file is None. New temporary window is created.')
                 self.__isTmp=True
@@ -693,9 +694,14 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             AutoSavedWindow._AddAutoWindow(self)
         else:
             self._save(self.__file)
-
+    def close(self, force=False):
+        if force:
+            self.__closeflg=False
+        else:
+            self.__closeflg=True
+        super().close()
     def closeEvent(self,event):
-        if (not AutoSavedWindow._IsClosed()) and (not self.IsConnected()):
+        if (not AutoSavedWindow._IsClosed()) and (not self.IsConnected()) and self.__closeflg:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
             msg.setText("This window is not saved. Do you really want to close it?")
