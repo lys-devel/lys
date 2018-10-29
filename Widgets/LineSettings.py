@@ -67,6 +67,25 @@ class LineColorAdjustBox(ColorSelection):
             return
         cols=self.canvas.getDataColor(indexes)
         self.setColor(cols[0])
+class LineColorSideBySideDialog(QDialog):
+    def __init__(self,parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Select colormap')
+        self.__initlayout()
+
+    def __initlayout(self):
+        l=QVBoxLayout()
+        ok=QPushButton('O K',clicked=self.accept)
+        cancel=QPushButton('CANCEL',clicked=self.reject)
+        h=QHBoxLayout()
+        h.addWidget(ok)
+        h.addWidget(cancel)
+        self.csel = ColormapSelection()
+        l.addWidget(self.csel)
+        l.addLayout(h)
+        self.setLayout(l)
+    def getColor(self):
+        return self.csel.currentColor()
 
 class LineStyleAdjustableCanvas(LineColorAdjustableCanvas):
     def saveAppearance(self):
@@ -308,8 +327,16 @@ class ApperanceBox(QWidget):
         layout_h1=QHBoxLayout()
         layout_h1.addWidget(QLabel('Color'))
         layout_h1.addWidget(LineColorAdjustBox(canvas))
+        btn=QPushButton('Side by Side',clicked=self.__sidebyside)
+        layout_h1.addWidget(btn)
         layout.addLayout(layout_h1)
         layout.addWidget(LineStyleAdjustBox(canvas))
         layout.addWidget(MarkerStyleAdjustBox(canvas))
 
         self.setLayout(layout)
+    def __sidebyside(self):
+        d=LineColorSideBySideDialog()
+        res=d.exec_()
+        if res==QDialog.Accepted:
+            c=d.getColor()
+            print(c)

@@ -7,7 +7,7 @@ from .ExtendType import *
 from .Widgets.ExtendCanvas import *
 from .Widgets.ExtendTable import *
 from .ModifyWindow import ModifyWindow
-from .FittingWindow import FittingWindow
+from .FittingWindow import *
 
 class Graph(AutoSavedWindow):
     @classmethod
@@ -56,6 +56,12 @@ class Graph(AutoSavedWindow):
                 if d.wave.FileName is not None:
                     wavelis.append(d.wave)
             FittingWindow(self,wavelis,self.canvas)
+        if e.key() == Qt.Key_L:
+            wavelis=[]
+            for d in self.canvas.getImages():
+                if d.wave.FileName is not None:
+                    wavelis.append(d.wave)
+            LineProfileWindow(self,wavelis,self.canvas)
         if e.key() == Qt.Key_S:
             text, ok = QInputDialog.getText(self, '---Save Dialog---', 'Enter graph name:')
             if not text.endswith('.grf'):

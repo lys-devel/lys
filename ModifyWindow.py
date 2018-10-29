@@ -18,23 +18,9 @@ class ModifyWindow(ExtendMdiSubWindow):
         self.show()
         self.canvas=canvas
         self._parent=parent
-        if isinstance(parent,ExtendMdiSubWindow):
-            self._parent.moved.connect(self.attachTo)
-            self._parent.resized.connect(self.attachTo)
-            self._parent.closed.connect(self.close)
+        self._attach(parent)
         self.attachTo()
         ModifyWindow.instance=weakref.ref(self)
-    def closeEvent(self,event):
-        if self._parent is not None:
-            self._parent.moved.disconnect(self.attachTo)
-            self._parent.resized.disconnect(self.attachTo)
-            self._parent.closed.disconnect(self.close)
-        super().closeEvent(event)
-    def attachTo(self):
-        if self._parent is not None:
-            pos=self._parent.pos()
-            frm=self._parent.frameGeometry()
-            self.move(QPoint(pos.x()+frm.width(),pos.y()))
     def _initlayout(self,canvas,win,showArea):
         self.__list=[]
         self.setWindowTitle("Modify Window")

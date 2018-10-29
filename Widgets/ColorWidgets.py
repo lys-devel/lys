@@ -120,6 +120,8 @@ class ColormapSelection(QWidget):
             return self.__combo.currentText()+"_r"
         else:
             return self.__combo.currentText()
+    def currentColorMaps(self):
+        return cmapdic[self.currentColor()]
     def isLog(self):
         return self.__log.isChecked()
     def setLog(self,value):

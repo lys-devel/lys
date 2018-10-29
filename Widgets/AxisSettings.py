@@ -44,6 +44,7 @@ class RangeSelectableCanvas(ImageSettingCanvas):
             self.Selection=True
             self.__saved = self.copy_from_bbox(self.axes.bbox)
             self.rect_pos_start=[event.x,event.y]
+            self.rect_pos_end=[event.x,event.y]
             ax=self.__GlobalToAxis(event.x,event.y,self.axes)
             self.__rect.set_xy(ax)
     def OnMouseUp(self, event):
@@ -71,7 +72,10 @@ class RangeSelectableCanvas(ImageSettingCanvas):
     def SelectedRange(self):
         start=self.__GlobalToAxis(self.rect_pos_start[0],self.rect_pos_start[1],self.axes)
         end=self.__GlobalToAxis(self.rect_pos_end[0],self.rect_pos_end[1],self.axes)
-        return (start,end)
+        if start[0]==end[0] and start[1]==end[1]:
+            return None
+        else:
+            return (start,end)
 
 class AxisSelectableCanvas(RangeSelectableCanvas):
     def __init__(self, dpi=100):
