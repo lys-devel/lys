@@ -318,12 +318,12 @@ class Wave(AutoSaved):
         dx=(pos2[0]-pos1[0])
         dy=(pos2[1]-pos1[1])
         if dx==0:#axis : y
-            w.data=self.data[:,pos1[0]-width:pos2[0]+1+width].sum(1)
-            w.x=self.y[pos1[index]-width:pos2[index]+1+width,:]
+            w.data=self.data[pos1[1]:pos2[1]+1,pos1[0]-width:pos2[0]+1+width].sum(1)
+            w.x=self.y[pos1[1]:pos2[1]+1]
             return w
         elif dy==0:
-            w.data=self.data[pos1[1]:pos2[1]+1,:].sum(0)
-            w.x=self.x[pos1[index]:pos2[index]+1]
+            w.data=self.data[pos1[1]:pos2[1]+1,pos1[0]:pos1[1]+1].sum(0)
+            w.x=self.x[pos1[0]:pos2[0]+1]
         else:
             s=dy/dx
             dy=np.sqrt(1/(1+s*s))/2
