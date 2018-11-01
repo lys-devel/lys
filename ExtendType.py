@@ -378,6 +378,14 @@ class Wave(AutoSaved):
         dx=(x1-x0)/(self.data.shape[1]-1)
         dy=(y1-y0)/(self.data.shape[0]-1)
         return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
+    def pointToPos(self,p):
+        x0=self.x[0]
+        x1=self.x[len(self.x)-1]
+        y0=self.y[0]
+        y1=self.y[len(self.y)-1]
+        dx=(x1-x0)/(self.data.shape[1]-1)
+        dy=(y1-y0)/(self.data.shape[0]-1)
+        return (p[0]*dx+x0,p[1]*dy+y0)
     def copy(self):
         w=Wave()
         w.data=self.data
