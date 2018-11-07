@@ -191,8 +191,8 @@ class FigureCanvasBase(FigureCanvas):
             xdata=xdata*offset[2]
         if not offset[3]==0.0:
             ydata=ydata*offset[3]
-        xdata+=offset[0]
-        ydata+=offset[1]
+        xdata=xdata+offset[0]
+        ydata=ydata+offset[1]
         line, = ax.plot(xdata,ydata,label=wav.Name(),picker=5)
         if ID is None:
             id=-2000+len(self.getLines())
@@ -232,6 +232,7 @@ class FigureCanvasBase(FigureCanvas):
         im.set_zorder(id)
         d=WaveData(wav,im,ax,id,appearance,offset)
         self._Datalist.insert(id+5000,d)
+        self.setColormap('gray',id)
         return id
     def _Append3D(self,wav,ax,ID,appearance,offset,z):
         xstart=wav.x[0]+offset[0]
@@ -251,6 +252,7 @@ class FigureCanvasBase(FigureCanvas):
             id=ID
         im.set_zorder(id)
         self._Datalist.insert(id+5000,WaveData(wav,im,ax,id,appearance,offset,z))
+        self.setColormap('gray',id)
         return id
     @_saveCanvas
     def Remove(self,indexes):

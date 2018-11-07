@@ -8,6 +8,7 @@ from .CanvasBase import _saveCanvas
 
 class ExtendCanvas(SaveSettingCanvas):
     keyPressed=pyqtSignal(QKeyEvent)
+    savedDict={}
     def __init__(self, dpi=100):
         self.saveflg=False
         self.EnableDraw(False)
@@ -128,5 +129,16 @@ class ExtendCanvas(SaveSettingCanvas):
                 break
             parent=parent.parentWidget()
     @_saveCanvas
-    def LoadFromDictionary(self,dictionary,path):
+    def LoadFromDictionary(self,dictionary,path=home()):
         return super().LoadFromDictionary(dictionary,path)
+    def SaveAsDictionary(self,dictionary,path=home()):
+        super().SaveAsDictionary(dictionary,path)
+    def SaveSetting(self,type):
+        dict={}
+        self.SaveAsDictionary(dict)
+        ExtendCanvas.savedDict[type]=dict[type]
+    def LoadSetting(self,type):
+        if type in ExtendCanvas.savedDict:
+            d={}
+            d[type]=ExtendCanvas.savedDict[type]
+            self.LoadFromDictionary(d)

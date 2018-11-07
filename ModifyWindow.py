@@ -53,7 +53,19 @@ class _AreaTab(QWidget):
         self.layout=QVBoxLayout(self)
         self.layout.addWidget(self._size)
         self.layout.addWidget(self._margin)
+        sav=QPushButton('Save',clicked=self._save)
+        lod=QPushButton('Load',clicked=self._load)
+        hbox=QHBoxLayout()
+        hbox.addWidget(sav)
+        hbox.addWidget(lod)
+        self.layout.addLayout(hbox)
         self.setLayout(self.layout)
+    def _save(self):
+        self.canvas.SaveSetting('Size')
+        self.canvas.SaveSetting('Margin')
+    def _load(self):
+        self.canvas.LoadSetting('Size')
+        self.canvas.LoadSetting('Margin')
 class _AxisTab(QWidget):
     def __init__(self,canvas):
         super().__init__()
@@ -66,9 +78,21 @@ class _AxisTab(QWidget):
         tab.addTab(AxisAndTickBox(canvas),'Main')
         tab.addTab(AxisAndTickLabelBox(canvas),'Label')
         tab.addTab(AxisFontBox(canvas),'Font')
+        sav=QPushButton('Save',clicked=self._save)
+        lod=QPushButton('Load',clicked=self._load)
+        hbox=QHBoxLayout()
+        hbox.addWidget(sav)
+        hbox.addWidget(lod)
         layout.addWidget(tab)
+        layout.addLayout(hbox)
 
         self.setLayout(layout)
+    def _save(self):
+        for t in ['AxisSetting','TickSetting','AxisRange','LabelSetting','TickLabelSetting']:
+            self.canvas.SaveSetting(t)
+    def _load(self):
+        for t in ['AxisSetting','TickSetting','AxisRange','LabelSetting','TickLabelSetting']:
+            self.canvas.LoadSetting(t)
 class _LineTab(QWidget):
     def __init__(self,canvas):
         super().__init__()

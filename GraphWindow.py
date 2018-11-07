@@ -20,6 +20,12 @@ class Graph(AutoSavedWindow):
                     return l
                 else:
                     m+=1
+    @classmethod
+    def closeAllGraphs(cls):
+        list=cls.mdimain.subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        for l in reversed(list):
+            if isinstance(l,Graph):
+                l.close(force=True)
     def _prefix(self):
         return 'graph'
     def _suffix(self):

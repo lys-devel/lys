@@ -102,6 +102,8 @@ class ImageColorAdjustBox(QWidget):
             l_h1=QHBoxLayout()
             self.__auto=QPushButton("Auto")
             self.__auto.clicked.connect(self.__setAuto)
+            self.__zero=QPushButton("Zero")
+            self.__zero.clicked.connect(self.__setZero)
             self.__spin1=QDoubleSpinBox()
             self.__spin1.setRange(0,100)
             self.__spin2=QDoubleSpinBox()
@@ -110,25 +112,36 @@ class ImageColorAdjustBox(QWidget):
             l_h1.addWidget(self.__spin1)
             l_h1.addWidget(QLabel('Abs'))
             l_h1.addWidget(self.__spin2)
-            l_h1.addWidget(self.__auto)
             layout.addLayout(l_h1)
             self.__slider=QSlider(Qt.Horizontal)
             self.__slider.setRange(0,100)
-            layout.addWidget(self.__slider)
-            self.__slider.valueChanged.connect(self.__spin1.setValue)
+            l_h2=QHBoxLayout()
+            l_h2.addWidget(self.__slider)
+            l_h2.addWidget(self.__auto)
+            l_h2.addWidget(self.__zero)
+            layout.addLayout(l_h2)
+            self.__slider.valueChanged.connect(self.setSlider)
             self.__spin1.valueChanged.connect(self.setRelative)
             self.__spin2.valueChanged.connect(self.setAbsolute)
             self.setLayout(layout)
         def __setAuto(self):
             self.setRelative(self.__autovalue)
+        def __setZero(self):
+            self.setAbsolute(0)
+        def setSlider(self,val):
+            self.setRelative(val)
         def setRelative(self,val):
-            self.__flg=True
-            self.__slider.setValue(val)
+            if self.__flg:
+                return
             self.__spin2.setValue(self.__mean+self.__wid*(val-50)/50)
-            self.__flg=False
         def setAbsolute(self,val):
-            if not self.__flg:
-                self.__spin1.setValue((val-self.__mean)/self.__wid*50+50)
+            if self.__flg:
+                return
+            self.__flg=True
+            self.__spin1.setValue((val-self.__mean)/self.__wid*50+50)
+            self.__spin2.setValue(val)
+            self.__slider.setValue((val-self.__mean)/self.__wid*50+50)
+            self.__flg=False
             self.valueChanged.emit()
         def getValue(self):
             return self.__spin2.value()
@@ -175,8 +188,8 @@ class ImageColorAdjustBox(QWidget):
         if not self.__flg:
             indexes=self.canvas.getSelectedIndexes(2)
             self.canvas.setColorRange(indexes,self.__start.getValue(),self.__end.getValue(),self.__cmap.isLog())
-            self.__start.setLimit(-float('inf'),self.__end.getValue())
-            self.__end.setLimit(self.__start.getValue(),float('inf'))
+            #self.__start.setLimit(-float('inf'),self.__end.getValue())
+            #self.__end.setLimit(self.__start.getValue(),float('inf'))
     def __changeColormap(self):
         if not self.__flg:
             indexes=self.canvas.getSelectedIndexes(2)
