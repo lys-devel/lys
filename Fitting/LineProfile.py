@@ -28,7 +28,7 @@ class LineProfileWidget(QWidget):
             self._path.setText(path)
         else:
             p,ext=os.path.splitext(wavelist[0].Name())
-            self._path.setText('LineProfile/'+p)
+            self._path.setText('Analysis/'+p)
 
         hbox5=QHBoxLayout()
         hbox5.addWidget(self._grf)
@@ -134,11 +134,14 @@ class LineProfileWidget(QWidget):
     def __exe(self):
         from ExtendAnalysis.GraphWindow import Graph
         if self._axis.currentText() in ["Horizontal","Vertical"]:
-            ws, list=self.__cutline()
+            ws, list, xdata=self.__cutline()
         else:
-            ws, list=self.__alongline()
+            ws, list, xdata=self.__alongline()
         if self._save.isChecked():
             p=pwd()+'/'+self._path.text()
+            xd=Wave()
+            xd.data=xdata
+            xd.Save(p+"/xdata.npz")
             for w, l in zip(ws,list):
                 w.Save(p+"/data"+str(l)+".npz")
         if self._grf.isChecked():
@@ -170,11 +173,14 @@ class LineProfileWidget(QWidget):
                     list.append(i)
 
         res=[]
+        xdata=[]
         for l in list:
             if axis=='x':
                 res.append(w.slice((0,l),(len(rr)-1,l),axis,width=wid))
+                xdata.append(w.pointToPos([l,0])[0])
             if axis=='y':
                 res.append(w.slice((l,0),(l,len(rr)-1),axis,width=wid))
-        return res, list
+                xdata.append(w.pointToPos([0,l])[1])
+        return res, list, xdata
     def __alongline(self):
         pass

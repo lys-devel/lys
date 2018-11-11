@@ -57,14 +57,17 @@ class FittingWidget(QWidget):
     def __initlayout(self,wavelist,path):
         vbox1=QVBoxLayout()
         self._target=QComboBox()
+        self._items=[]
         for w in wavelist:
             if w.FileName() is not None:
+                self._items.append(os.path.relpath(w.FileName(),home()))
                 self._target.addItem(os.path.relpath(w.FileName(),home()))
         self._tree=FittingTree()
         self._tree.updated.connect(self.update)
         self._tree.peakAdded.connect(self.OnPeakAdded)
         self._tree.peakRemoved.connect(self.OnPeakRemoved)
         self._exec=QPushButton('Fit',clicked=self.__execute)
+        self._expo=QPushButton('Export',clicked=self.__export)
         vbox1.addWidget(self._target)
         hbox2=QHBoxLayout()
         self.save=QCheckBox('Save to')
@@ -94,13 +97,21 @@ class FittingWidget(QWidget):
             hbox1.addWidget(self.residual)
             vbox1.addLayout(hbox1)
         vbox1.addWidget(self._tree)
-        vbox1.addWidget(self._exec)
+        hbox3=QHBoxLayout()
+        hbox3.addWidget(self._exec)
+        hbox3.addWidget(self._expo)
+        vbox1.addLayout(hbox3)
         self._target.currentIndexChanged.connect(self.__setName)
         self.setLayout(vbox1)
     def __setName(self):
-        self.wave=Wave(home()+'/'+self._target.currentText())
+        txt=self._target.currentText()
+        self.wave=Wave(home()+'/'+txt)
         if self.wave.Name() is not None:
-            self.path.setText(os.path.relpath(pwd()+'/Fit/'+self.wave.Name(),home()))
+            if txt.startswith('Analysis'):
+                path,ext=os.path.splitext(txt)
+                self.path.setText(path)
+            else:
+                self.path.setText(os.path.relpath(pwd()+'/Fit/'+self.wave.Name(),home()))
     def __totadd(self):
         if self.canvas is not None:
             if self.tot.isChecked():
@@ -144,6 +155,47 @@ class FittingWidget(QWidget):
         else:
             res=fit.fit(self.wave.x, self.wave.data, guess=guess, bounds=bounds)
         self._tree.setParams(res[0])
+    def __export(self):
+        class GetValues(QDialog):
+            def __init__(self, parent=None):
+                super().__init__(parent)
+                self.n = QSpinBox()
+                self.index = QSpinBox()
+                grid = QGridLayout()
+                grid.addWidget(QLabel("peak"), 0, 0)
+                grid.addWidget(self.n, 1, 0)
+                grid.addWidget(QLabel("index"), 0, 1)
+                grid.addWidget(self.index, 1, 1)
+
+                hbox1=QHBoxLayout()
+                btns = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel,Qt.Horizontal, self)
+                btns.accepted.connect(self.accept)
+                btns.rejected.connect(self.reject)
+
+                vbox1=QVBoxLayout()
+                vbox1.addLayout(grid)
+                vbox1.addWidget(btns)
+                self.setLayout(vbox1)
+            def get(self):
+                return (self.n.value(),self.index.value())
+        dialog = GetValues(self)
+        result = dialog.exec_()
+        if result==QDialog.Rejected:
+            return
+        n,index=dialog.get()
+        res=[]
+        for i in self._items:
+            p, ext=os.path.splitext(i)
+            if os.path.exists(p+"/FittingResult.dic"):
+                d=Dict(p+"/FittingResult.dic")
+            else:
+                continue
+            res.append(d['peak'+str(n)]['guess'][index])
+        w=Wave()
+        w.data=res
+
+        w.Save(os.path.dirname(self._target.currentText())+'/peak'+str(n)+"_"+str(index))
+
 
 class FittingTree(QTreeView):
     updated=pyqtSignal()
