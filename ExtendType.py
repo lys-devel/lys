@@ -311,12 +311,15 @@ class Wave(AutoSaved):
         self.Save()
 
     def slice(self,pos1,pos2,axis='x',width=1):
-        index=['x','y'].index(axis)
-        size=abs(pos2[index]-pos1[index])+1
         w=Wave()
-        res=np.zeros((size))
         dx=(pos2[0]-pos1[0])
         dy=(pos2[1]-pos1[1])
+        index=['x','y','xy'].index(axis)
+        if index==2:
+            size=int(np.sqrt(dx*dx+dy*dy)+1)
+        else:
+            size=abs(pos2[index]-pos1[index])+1
+        res=np.zeros((size))
         if dx==0:#axis : y
             w.data=self.data[pos1[1]:pos2[1]+1,pos1[0]-width:pos2[0]+1+width].sum(1)
             w.x=self.y[pos1[1]:pos2[1]+1]
@@ -324,18 +327,24 @@ class Wave(AutoSaved):
         elif dy==0:
             w.data=self.data[pos1[1]:pos2[1]+1,pos1[0]:pos1[1]+1].sum(0)
             w.x=self.x[pos1[0]:pos2[0]+1]
+            return w
         else:
             s=dy/dx
-            dy=np.sqrt(1/(1+s*s))/2
+            dy=np.sqrt(1/(1+s*s))
             dx=-dy*s
         for i in range(1-width,width,2):
-            x,y = np.linspace(pos1[0], pos2[0], size) + dx*i, np.linspace(pos1[1], pos2[1], size)+ dy*i
+            x,y = np.linspace(pos1[0], pos2[0], size) + dx*(i*0.5), np.linspace(pos1[1], pos2[1], size)+ dy*(i*0.5)
             res += scipy.ndimage.map_coordinates(self.data, np.vstack((y,x)))
         w.data=res
         if axis == 'x':
             w.x=self.x[pos1[index]:pos2[index]+1]
         elif axis == 'y':
             w.x=self.y[pos1[index]:pos2[index]+1]
+        else:
+            dx=abs(self.x[pos1[0]]-self.x[pos2[0]])
+            dy=abs(self.y[pos1[1]]-self.y[pos2[1]])
+            d=np.sqrt(dx*dx+dy*dy)
+            w.x=np.linspace(0,d,size)
         return w
     def getSlicedImage(self,zindex):
         return self.data[:,:,zindex]
