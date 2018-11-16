@@ -206,7 +206,6 @@ class FigureCanvasBase(FigureCanvas):
         xend=wav.x[len(wav.x)-1]
         ystart=wav.y[0]
         yend=wav.y[len(wav.y)-1]
-
         if not offset[2]==0:
             xstart*=offset[2]
             xend*=offset[2]
@@ -217,10 +216,8 @@ class FigureCanvasBase(FigureCanvas):
         xend=xend+offset[0]
         ystart=ystart+offset[1]
         yend=yend+offset[1]
-
         dx=(xend-xstart+1)/wav.data.shape[1]
         dy=(yend-ystart+1)/wav.data.shape[0]
-
         return (xstart-dx/2,xend+dx/2,yend+dy/2,ystart-dy/2)
 
     def _Append2D(self,wav,ax,ID,appearance,offset):

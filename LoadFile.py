@@ -109,6 +109,9 @@ def __loadDm3(name):
         w.note['exposure']=data.tags['root.ImageList.1.ImageTags.DataBar.Exposure Time (s)']
         w.note['hbin']=data.tags['root.ImageList.1.ImageTags.Acquisition.Parameters.Detector.hbin']
         w.note['vbin']=data.tags['root.ImageList.1.ImageTags.Acquisition.Parameters.Detector.vbin']
+        w.note['delay']=data.tags['root.ImageList.1.ImageTags.Experiment.Laser.delay']
+        w.note['power']=data.tags['root.ImageList.1.ImageTags.Experiment.Laser.power']
+        w.note['scanMode']=data.tags['root.ImageList.1.ImageTags.Experiment.mode']
     except:
         pass
     return w
