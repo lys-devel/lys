@@ -231,6 +231,9 @@ class FigureCanvasBase(FigureCanvas):
         self._Datalist.insert(id+5000,d)
         self.setColormap('gray',id)
         return id
+    def AppendContour(self,wav):
+        ax=self.__getAxes(Axis.BottomLeft)
+        im=ax.contour(wav.data[::-1,:],0.5,extent=self.calcExtent2D(wav,(0,0,0,0)))
     def _Append3D(self,wav,ax,ID,appearance,offset,z):
         xstart=wav.x[0]+offset[0]
         xend=wav.x[len(wav.x)-1]+offset[0]
