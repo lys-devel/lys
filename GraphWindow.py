@@ -242,6 +242,8 @@ class PreviewWindow(ExtendMdiSubWindow):
         if obj.wave==None:
             return None
         pt=obj.main.SelectedRange()
+        if pt is None:
+            return None
         return (obj.wave.posToPoint(pt[0]),obj.wave.posToPoint(pt[1]))
     @classmethod
     def AnchorArea(cls):

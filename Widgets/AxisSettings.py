@@ -23,7 +23,8 @@ class RangeSelectableCanvas(ImageSettingCanvas):
         patch=self.axes.add_patch(self.__rect)
         patch.set_zorder(20000)
         self.Selection=False
-
+        self.rect_pos_start=[0,0]
+        self.rect_pos_end=[0,0]
         self.mpl_connect('button_press_event',self.OnMouseDown)
         self.mpl_connect('button_release_event', self.OnMouseUp)
         self.mpl_connect('motion_notify_event', self.OnMouseMove)

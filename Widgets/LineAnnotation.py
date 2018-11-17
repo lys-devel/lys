@@ -24,7 +24,7 @@ class LineAnnotCanvas(AnnotationSettingCanvas):
     def addLine(self,pos,axis=Axis.BottomLeft,appearance=None,id=None):
         axes=self._getAxesFrom(axis)
         a,=axes.plot((pos[0][0],pos[1][0]),(pos[0][1],pos[1][1]),picker=5)
-        self.addAnnotation('line','line',a,appearance=appearance,id=id)
+        return self.addAnnotation('line','line',a,appearance=appearance,id=id)
     def SaveAsDictionary(self,dictionary,path):
         super().SaveAsDictionary(dictionary,path)
         i=0
