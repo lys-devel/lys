@@ -164,7 +164,7 @@ class FigureCanvasBase(FigureCanvas):
         if appearance is None:
             ids=self._Append(wav,ax,id,{},offset,zindex)
         else:
-            ids=self._Append(wav,ax,id,appearance,offset,zindex)
+            ids=self._Append(wav,ax,id,dict(appearance),offset,zindex)
         return ids
     @_saveCanvas
     def _Append(self,wav,ax,id,appearance,offset,zindex=0, reuse=False):
@@ -178,6 +178,8 @@ class FigureCanvasBase(FigureCanvas):
             wav.addModifiedListener(self.OnWaveModified)
         self._emitDataChanged()
         self.waveAppended.emit(ids)
+        if appearance is not None:
+            self.loadAppearance()
         self.draw()
         return ids
     def _Append1D(self,wav,ax,ID,appearance,offset):
@@ -229,12 +231,13 @@ class FigureCanvasBase(FigureCanvas):
         im.set_zorder(id)
         d=WaveData(wav,im,ax,id,appearance,offset)
         self._Datalist.insert(id+5000,d)
-        self.setColormap('gray',id)
+        if len(appearance.keys()) == 0:
+            self.setColormap('gray',id)
         return id
     def AppendContour(self,wav,offset=(0,0,0,0)):
         ax=self.__getAxes(Axis.BottomLeft)
         ext=self.calcExtent2D(wav,offset)
-        obj=ax.contour(wav.data[::-1,:],[0.5],extent=ext)
+        obj=ax.contour(wav.data[::-1,:],[0.5],extent=ext,colors=['red'])
         return obj
     def _Append3D(self,wav,ax,ID,appearance,offset,z):
         xstart=wav.x[0]+offset[0]

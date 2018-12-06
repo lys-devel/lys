@@ -320,21 +320,11 @@ class Wave(AutoSaved):
         else:
             size=abs(pos2[index]-pos1[index])+1
         res=np.zeros((size))
-        if dx==0:#axis : y
-            w.data=self.data[pos1[1]:pos2[1]+1,pos1[0]-width:pos2[0]+1+width].sum(1)
-            w.x=self.y[pos1[1]:pos2[1]+1]
-            return w
-        elif dy==0:
-            w.data=self.data[pos1[1]:pos2[1]+1,pos1[0]:pos1[1]+1].sum(0)
-            w.x=self.x[pos1[0]:pos2[0]+1]
-            return w
-        else:
-            s=dy/dx
-            dy=np.sqrt(1/(1+s*s))
-            dx=-dy*s
+        nor=np.sqrt(dx*dx+dy*dy)
+        dx, dy = dy/nor, -dx/nor
         for i in range(1-width,width,2):
             x,y = np.linspace(pos1[0], pos2[0], size) + dx*(i*0.5), np.linspace(pos1[1], pos2[1], size)+ dy*(i*0.5)
-            res += scipy.ndimage.map_coordinates(self.data, np.vstack((y,x)))
+            res += scipy.ndimage.map_coordinates(self.data, np.vstack((y,x)),mode="constant",order=3,prefilter=True)
         w.data=res
         if axis == 'x':
             w.x=self.x[pos1[index]:pos2[index]+1]
@@ -384,16 +374,16 @@ class Wave(AutoSaved):
         x1=self.x[len(self.x)-1]
         y0=self.y[0]
         y1=self.y[len(self.y)-1]
-        dx=(x1-x0)/(self.data.shape[1]-1)
-        dy=(y1-y0)/(self.data.shape[0]-1)
+        dx=(x1-x0)/(len(self.x)-1)
+        dy=(y1-y0)/(len(self.y)-1)
         return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
     def pointToPos(self,p):
         x0=self.x[0]
         x1=self.x[len(self.x)-1]
         y0=self.y[0]
         y1=self.y[len(self.y)-1]
-        dx=(x1-x0)/(self.data.shape[1]-1)
-        dy=(y1-y0)/(self.data.shape[0]-1)
+        dx=(x1-x0)/(len(self.x)-1)
+        dy=(y1-y0)/(len(self.y)-1)
         return (p[0]*dx+x0,p[1]*dy+y0)
     def copy(self):
         w=Wave()
