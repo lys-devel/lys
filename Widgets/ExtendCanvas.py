@@ -119,7 +119,7 @@ class ExtendCanvas(SaveSettingCanvas):
         super().keyPressEvent(e)
         self.keyPressed.emit(e)
     def defModFunc(self,canvas,tab='Axis'):
-        from ExtendAnalysis.ModifyWindow import ModifyWindow
+        from ExtendAnalysis.ModifyWindow.ModifyWindow import ModifyWindow
         from ExtendAnalysis.GraphWindow import Graph
         parent=self.parentWidget()
         while(parent is not None):

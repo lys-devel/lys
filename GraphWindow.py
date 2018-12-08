@@ -4,9 +4,10 @@ from enum import Enum
 from PyQt5.QtGui import *
 
 from .ExtendType import *
-from .Widgets.ExtendCanvas import *
+#from .Widgets.ExtendCanvas import *
+from .pyqtGraph.ExtendCanvas import *
 from .Widgets.ExtendTable import *
-from .ModifyWindow import ModifyWindow
+from .ModifyWindow.ModifyWindow import ModifyWindow
 from .FittingWindow import *
 
 class Graph(AutoSavedWindow):
