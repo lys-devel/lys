@@ -71,7 +71,10 @@ class Graph(AutoSavedWindow):
         self.canvas.keyPressed.connect(self.keyPress)
         self.resized.connect(self.canvas.parentResized)
         self.canvas.setSaveFunction(self.Save)
-        self.canvas.RestoreSize()
+        if file is not None:
+            self.canvas.RestoreSize()
+        else:
+            self.canvas.RestoreSize(init=True)
     def keyPress(self, e):
         if e.key() == Qt.Key_G:
             ModifyWindow(self.canvas,self)

@@ -73,8 +73,6 @@ class ResizableCanvas(MarginAdjustableCanvas):
         self.__haxis1='Left'
         self.__haxis2='Bottom'
         self.__listener=[]
-        self.setAbsoluteSize(4,4)
-        self.setAutoSize()
         self.addAxisRangeChangeListener(self.OnAxisRangeChanged)
         self.__resizeflg=False
 
@@ -330,7 +328,12 @@ class ResizableCanvas(MarginAdjustableCanvas):
         else:
             return (self.__hmode,self.__hvalue,self.__haxis1,self.__haxis2)
     @_notSaveCanvas
-    def RestoreSize(self):
+    def RestoreSize(self,init=False):
+        if init:
+            self.__wmode='Auto'
+            self.__wvalue=4
+            self.__hmode='Auto'
+            self.__hvalue=4
         self.setSizeByArray(self.getSizeParams('Width'),'Width',True)
         self.setSizeByArray(self.getSizeParams('Height'),'Height',True)
     def addResizeListener(self,listener):

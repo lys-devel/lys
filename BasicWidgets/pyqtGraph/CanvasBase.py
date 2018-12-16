@@ -198,9 +198,9 @@ class FigureCanvasBase(pg.PlotWidget):
             self.loadAppearance()
         return ids
     def _nextPen(self):
-        list=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', "#7f7f7f", "#17becf"]
+        list=[ "#17becf", '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', "#7f7f7f"]
         self.npen+=1
-        return pg.mkPen(list[self.npen%9])
+        return pg.mkPen(list[self.npen%9],width=2)
     def _Append1D(self,wav,ax,ID,appearance,offset):
         if wav.x.ndim==0:
             xdata=np.arange(len(wav.data))
