@@ -8,9 +8,7 @@ from watchdog.events import FileSystemEvent, PatternMatchingEventHandler
 from watchdog.observers import Observer
 
 from .ExtendType import *
-from .Widgets.ExtendWidgets import *
-from .Widgets.PythonEditor import *
-from .GraphWindow import *
+from .BasicWidgets import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -152,7 +150,7 @@ class PluginManager:
                 sys.stderr.write('Error on reloading {}.py.'.format(module_name))
                 print(traceback.format_exc())
 
-class CommandWindow(QMdiSubWindow):
+class CommandWindow(QWidget):
     def __init__(self, shell, parent=None):
         super(CommandWindow, self).__init__(parent)
         self.setWindowTitle("Command Window")
@@ -201,15 +199,19 @@ class CommandWindow(QMdiSubWindow):
         wid=QWidget(self)
         wid.setLayout(layout)
 
-        layout_h=QSplitter(Qt.Horizontal)
+        layout_h=QSplitter(Qt.Vertical)
+        self._tab=QTabWidget()
         self.__dirmodel = ColoredFileSystemModel()
         self.view=FileSystemView(self,self.__dirmodel)
         self.__viewContextMenu(self.view)
         self.view.SetPath(pwd())
-        layout_h.addWidget(self.view)
+        self._tab.addTab(self.view,"File")
+        layout_h.addWidget(self._tab)
         layout_h.addWidget(wid)
 
-        self.setWidget(layout_h)
+        lay=QHBoxLayout()
+        lay.addWidget(layout_h)
+        self.setLayout(lay)
     def __viewContextMenu(self,tree):
         cd=QAction('Set Current Directory',self,triggered=self.__setCurrentDirectory)
         ld=QAction('Load',self,triggered=self.__load)

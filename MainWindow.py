@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from .ExtendShell import ExtendShell
-from .GraphWindow import AutoSavedWindow, PreviewWindow, ExtendMdiSubWindow, Graph
+from .BasicWidgets import *
 from .ExtendType import home
 from collections import OrderedDict
 
@@ -12,12 +12,14 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle('Analysis Program Lys')
         MainWindow._instance=self
+        sp=QSplitter(Qt.Horizontal)
         self.area=QMdiArea()
-        self.setCentralWidget(self.area)
         ExtendMdiSubWindow.mdimain=self.area
         shell=ExtendShell()
         self.com=shell.CommandWindow()
-        self.area.addSubWindow(self.com)
+        sp.addWidget(self.area)
+        sp.addWidget(self.com)
+        self.setCentralWidget(sp)
         self.__prepareMenu()
         self.__createMenu(self.menuBar(),MainWindow._actions)
         self.show()
@@ -30,6 +32,13 @@ class MainWindow(QMainWindow):
         m['Window']['Proc'].setShortcut("Ctrl+P")
         m['Window']['closeGraphs']=QAction('Close all graphs',triggered=Graph.closeAllGraphs)
         m['Window']['closeGraphs'].setShortcut("Ctrl+K")
+        m['Window']['hideSide']=QAction('CommandWindow',triggered=self._hidecom)
+        m['Window']['hideSide'].setShortcut("Ctrl+J")
+    def _hidecom(self):
+        if self.com.isVisible():
+            self.com.hide()
+        else:
+            self.com.show()
     def __createMenu(self,menu,actions):
         for key in actions.keys():
             if not isinstance(actions[key],dict):
@@ -46,11 +55,8 @@ class MainWindow(QMainWindow):
             return
         ExtendMdiSubWindow.CloseAllWindows()
         event.accept()
-    def keyPressEvent(self, ev):
-        if ev.key()==Qt.Key_Q:
-            print('test')
     def __showproc(self):
-        from .Widgets.PythonEditor import PythonEditor
+        #from .BasicWidgets.Commons.PythonEditor import PythonEditor
         PythonEditor(home()+'/proc.py')
 def create():
     main=MainWindow()

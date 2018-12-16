@@ -3,7 +3,7 @@ import cmd, os, traceback
 from . import LoadFile
 from . import Wave
 from .CommandWindow import CommandWindow
-from .GraphWindow import Graph,PreviewWindow
+from .BasicWidgets import *
 
 class ExtendShell(object):
     def __init__(self,home=None):

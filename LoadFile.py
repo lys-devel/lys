@@ -1,7 +1,7 @@
 import os,sys
 import numpy as np
 from .ExtendType import *
-from .GraphWindow import Graph
+from .BasicWidgets.GraphWindow import Graph
 
 def load(name,load=True):
     try:
