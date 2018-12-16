@@ -134,8 +134,8 @@ class PluginManager:
             if module_name.startswith('.'):
                 return
             try:
-                self.shell.SendCommand('from importlib import import_module, reload',False)
-                self.shell.SendCommand('from '+module_name+' import *')
+                self.shell.SendCommand('from importlib import import_module, reload',message=False,save=False)
+                self.shell.SendCommand('from '+module_name+' import *',message=True,save=False)
                 self.plugins[module_name] = import_module(module_name)
                 #print('{}.py has been loaded.'.format(module_name))
             except:
@@ -143,12 +143,44 @@ class PluginManager:
         else:
             try:
                 self.plugins[module_name]=reload(self.plugins[module_name])
-                self.shell.SendCommand('from '+module_name+' import *',False)
+                self.shell.SendCommand('from '+module_name+' import *',message=False,save=False)
                 print('{}.py has been reloaded.'.format(module_name))
             except Exception as e:
                 import traceback
                 sys.stderr.write('Error on reloading {}.py.'.format(module_name))
                 print(traceback.format_exc())
+
+class SettingWidget(QWidget):
+    path=home()+"/.lys/settings"
+    def __init__(self):
+        super().__init__()
+        self.__initlayout()
+        self.__load()
+    def __initlayout(self):
+        layout=QVBoxLayout()
+        h1=QHBoxLayout()
+        self.g1=QRadioButton("Matplotlib")
+        self.g2=QRadioButton("pyqtGraph")
+        self.g1.toggled.connect(lambda:self._lib(self.g1))
+        self.g2.toggled.connect(lambda:self._lib(self.g2))
+        h1.addWidget(QLabel("Graph library"))
+        h1.addWidget(self.g1)
+        h1.addWidget(self.g2)
+        layout.addLayout(h1)
+        layout.addStretch()
+        self.setLayout(layout)
+    def _lib(self,btn):
+        if btn==self.g1:
+            Graph.graphLibrary="matplotlib"
+        elif btn==self.g2:
+            Graph.graphLibrary="pyqtgraph"
+        self.grfType.data=Graph.graphLibrary
+    def __load(self):
+        self.grfType=String(self.path+"/graphLib.str")
+        if self.grfType.data=="pyqtgraph":
+            self.g2.toggle()
+        else:
+            self.g1.toggle()
 
 class CommandWindow(QWidget):
     def __init__(self, shell, parent=None):
@@ -201,13 +233,22 @@ class CommandWindow(QWidget):
 
         layout_h=QSplitter(Qt.Vertical)
         self._tab=QTabWidget()
+
         self.__dirmodel = ColoredFileSystemModel()
         self.view=FileSystemView(self,self.__dirmodel)
         self.__viewContextMenu(self.view)
         self.view.SetPath(pwd())
+
+        self.__dirmodel2 = ExtendFileSystemModel()
+        self.view2=FileSystemView(self,self.__dirmodel2)
+        self.__viewContextMenu2(self.view2)
+        self.view2.SetPath(home()+"/.lys/workspace")
+
         self._tab.addTab(self.view,"File")
-        layout_h.addWidget(self._tab)
+        self._tab.addTab(self.view2,"Workspace")
+        self._tab.addTab(SettingWidget(),"Settings")
         layout_h.addWidget(wid)
+        layout_h.addWidget(self._tab)
 
         lay=QHBoxLayout()
         lay.addWidget(layout_h)
@@ -225,6 +266,15 @@ class CommandWindow(QWidget):
         menu['.lst']=[op,tree.Action_Edit()]
         tree.SetContextMenuActions(menu)
 
+    def __viewContextMenu2(self,tree):
+        ld=QAction('Load workspace',self,triggered=self.__work)
+        add=QAction('Add workspace',self,triggered=self.__addwork)
+        menu={}
+        menu['dir']=[ld,add,tree.Action_Delete()]
+        menu['mix']=[add,tree.Action_Delete()]
+        menu['other']=[add,tree.Action_Delete()]
+        tree.SetContextMenuActions(menu)
+
     def __setCurrentDirectory(self):
         cd(self.view.selectedPaths()[0])
     def __load(self):
@@ -233,3 +283,10 @@ class CommandWindow(QWidget):
     def __openpy(self):
         for p in self.view.selectedPaths():
             PythonEditor(p)
+    def __work(self,path):
+        name=self.view2.selectedPaths()[0].replace(AutoSavedWindow.folder_prefix,"")
+        AutoSavedWindow.SwitchTo(name)
+    def __addwork(self):
+        text, ok = QInputDialog.getText(self, 'New worksapce', 'Name of workspace')
+        if ok:
+            AutoSavedWindow.SwitchTo(text)

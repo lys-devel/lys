@@ -613,10 +613,13 @@ class ExtendMdiSubWindow(AttachableWindow):
         ExtendMdiSubWindow._RemoveWindow(self)
         super().closeEvent(event)
 
+_workspace="default"
+_windir=home()+'/.lys/workspace/'+_workspace+'/wins'
 class AutoSavedWindow(ExtendMdiSubWindow):
     __list=None
     _isclosed=False
     _restore=False
+    folder_prefix=home()+'/.lys/workspace/'
     @classmethod
     def _IsUsed(cls,path):
         return path in cls.__list.data
@@ -630,17 +633,31 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             cls.__list.remove(win.FileName())
             if not win.IsConnected():
                 remove(win.FileName())
-
     @classmethod
-    def RestoreAllWindows(cls):
+    def SwitchTo(cls,workspace='default'):
+        if workspace=="":
+            workspace="default"
+        cls.StoreAllWindows()
+        cls.RestoreAllWindows(workspace)
+    @classmethod
+    def RestoreAllWindows(cls,workspace='default'):
         from . import LoadFile
-        cls.__list=List(home()+'./.lys/winlist.lst')
+        AutoSavedWindow._workspace=workspace
+        #please delete after replacing winlist
+        oldpath=home()+'./.lys/winlist.lst'
+        newpath=home()+'/.lys/workspace/'+AutoSavedWindow._workspace+'/winlist.lst'
+        if os.path.exists(oldpath) and not os.path.exists(newpath):
+            copy(oldpath,newpath)
+        #################################
+        cls.__list=List(home()+'/.lys/workspace/'+AutoSavedWindow._workspace+'/winlist.lst')
+        AutoSavedWindow._windir=home()+'/.lys/workspace/'+AutoSavedWindow._workspace+'/wins'
+        print("Workspace: "+AutoSavedWindow._workspace)
         cls._restore=True
-        mkdir(home()+'/.lys/wins')
+        mkdir(_windir)
         for path in cls.__list.data:
             try:
                 w=LoadFile.load(path)
-                if path.find(home()+'/.lys/wins') > -1:
+                if path.find(_windir) > -1:
                     w.Disconnect()
             except:
                 pass
@@ -648,15 +665,21 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     @classmethod
     def StoreAllWindows(cls):
         cls._isclosed=True
+        list=cls.mdimain.subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        for l in reversed(list):
+            if isinstance(l,AutoSavedWindow):
+                l.close(force=True)
+        cls._isclosed=False
     @classmethod
     def _IsClosed(cls):
         return cls._isclosed
     def _onRestore(cls):
         return cls._restore
     def NewTmpFilePath(self):
-        mkdir(home()+'/.lys/wins')
+        mkdir(AutoSavedWindow._windir)
         for i in range(1000):
-            path=home()+'/.lys/wins/'+self._prefix()+str(i).zfill(3)+self._suffix()
+            path=AutoSavedWindow._windir+'/'+self._prefix()+str(i).zfill(3)+self._suffix()
+            print(path)
             if not AutoSavedWindow._IsUsed(path):
                 return path
         print('Too many windows.')
@@ -689,7 +712,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
                 super().__init__(self.Name())
             if file is not None:
                 self.__file=os.path.abspath(file)
-            if os.path.exists(self.__file):
+            if os.path.exists(self.__file) and not self.__isTmp:
                 self._init(self.__file,**kwargs)
             else:
                 self._init(**kwargs)

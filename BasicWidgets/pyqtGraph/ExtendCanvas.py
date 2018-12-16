@@ -26,7 +26,6 @@ class ExtendCanvas(ResizableCanvas):
         self.moveText=False
         self.textPosStart=None
         self.cursorPosStart=None
-        self.EnableDraw(True)
     def __findAxis(self,axis):
         axes=axis.axes
         xy=isinstance(axis,XAxis)

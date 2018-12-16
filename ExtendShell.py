@@ -10,10 +10,10 @@ class ExtendShell(object):
         self.__comlog=[]
         self.__ecom=ExtendCommand(self)
 
-    def SendCommand(self,txt,message=True):
+    def SendCommand(self,txt,message=True,save=True):
         if message:
             print(">",txt)
-        if not len(txt)==0:
+        if not len(txt)==0 and save:
             self.__comlog.append(txt)
         if txt=="cd":
             cd()
@@ -78,7 +78,10 @@ class ExtendCommand(cmd.Cmd):
         remove(arg)
     def do_cp(self,arg):
         lis=arg.split(" ")
-        copy(lis[0],lis[1])
+    def do_workspace(self,arg):
+        lis=arg.split(" ")
+        w=lis[0].replace(" ","")
+        AutoSavedWindow.SwitchTo(lis[0])
     def do_mv(self,arg):
         lis=arg.split(" ")
         move(lis[0],lis[1])

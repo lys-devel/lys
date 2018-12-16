@@ -9,6 +9,7 @@ from .ModifyWindow.ModifyWindow import *
 from .FittingWindow import *
 
 class Graph(AutoSavedWindow):
+    graphLibrary="matplotlib"
     @classmethod
     def active(cls,n=0):
         list=cls.mdimain.subWindowList(order=QMdiArea.ActivationHistoryOrder)
@@ -55,9 +56,11 @@ class Graph(AutoSavedWindow):
             return d["Library"]
         else:
             return "matplotlib"
-    def _init(self,file=None,lib="pyqtgraph"):
+    def _init(self,file=None,lib=None):
         if file is not None:
             lib=self._loadLibType(file)
+        if lib is None:
+            lib=Graph.graphLibrary
         if lib=="matplotlib":
             self.canvas=ExtendCanvas()
         elif lib=="pyqtgraph":
