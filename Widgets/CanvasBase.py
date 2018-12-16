@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import *
 from matplotlib import colors
 from ExtendAnalysis import *
 from ExtendAnalysis import LoadFile
+from .Commons import *
 
 def _saveCanvas(func):
     import functools
@@ -33,20 +34,7 @@ def _notSaveCanvas(func):
         args[0].saveflg=saved
         return res
     return wrapper
-class Axis(Enum):
-    BottomLeft=1
-    TopLeft=2
-    BottomRight=3
-    TopRight=4
-class WaveData(object):
-    def __init__(self,wave,obj,axis,idn,appearance,offset=(0,0,0,0),zindex=0):
-        self.wave=wave
-        self.obj=obj
-        self.axis=axis
-        self.id=idn
-        self.appearance=appearance
-        self.offset=offset
-        self.zindex=zindex
+
 class FigureCanvasBase(FigureCanvas):
     waveAppended=pyqtSignal(int)
     def __init__(self, dpi=100):

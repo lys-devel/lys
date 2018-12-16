@@ -4,22 +4,25 @@ from enum import Enum
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import pyqtgraph as pg
-from .LineSettings import *
+from .AreaSettings import *
 from ExtendAnalysis import *
 
-class ExtendCanvas(MarkerStyleAdjustableCanvas):
+#pg.setConfigOption('background', 'w')
+#pg.setConfigOption('foreground', 'k')
+
+class ExtendCanvas(ResizableCanvas):
     keyPressed=pyqtSignal(QKeyEvent)
     savedDict={}
     def __init__(self, dpi=100):
         self.saveflg=False
         super().__init__(dpi=dpi)
-        self.fig.scene().sigMouseClicked.connect(self.__onClick)
+        self.fig.scene().sigMouseClicked.connect(self._onClick)
+        self.axes.mouseDragEvent=self._onDrag
         self.modf=weakref.WeakMethod(self.defModFunc)
+        self.setFocusPolicy(Qt.StrongFocus)
+        #self.axes.menu.popup=self.buildContextMenu
         return
         self.EnableDraw(False)
-        self.setFocusPolicy(Qt.StrongFocus)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
         self.moveText=False
         self.textPosStart=None
         self.cursorPosStart=None
@@ -59,10 +62,12 @@ class ExtendCanvas(MarkerStyleAdjustableCanvas):
         x_loc=(x - ran.x0 * self.width())/((ran.x1 - ran.x0)*self.width())
         y_loc=(y - ran.y0 * self.height())/((ran.y1 - ran.y0)*self.height())
         return [x_loc,y_loc]
-    def __onClick(self,event):
-        if event.double():
-            print(self.fig.scene().selectedItems())
+    def _onClick(self,event):
+        if event.button()==Qt.LeftButton and event.double():
             self.modf()(self)
+            event.accept()
+        else:
+            super()._onClick(event)
     def OnMouseUp(self, event):
         if self.moveText == True and event.button == 1:
             self.moveText=False
@@ -119,9 +124,9 @@ class ExtendCanvas(MarkerStyleAdjustableCanvas):
                 return super().OnMouseDown(event)
         else:
             return super().OnMouseDown(event)
-    def buildContextMenu(self):
+    def buildContextMenu(self, *args):
         menu = super().constructContextMenu()
-        action = menu.exec_(QCursor.pos())
+        QMenu.popup(menu,*args)
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
         self.keyPressed.emit(e)

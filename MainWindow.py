@@ -21,6 +21,8 @@ class MainWindow(QMainWindow):
         self.__prepareMenu()
         self.__createMenu(self.menuBar(),MainWindow._actions)
         self.show()
+        print('Loading .grf files...')
+        AutoSavedWindow.RestoreAllWindows()
     def __prepareMenu(self):
         m=MainWindow._actions
         m['Window']={}

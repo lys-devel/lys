@@ -3,15 +3,9 @@ import random, weakref, gc, sys, os
 from collections import namedtuple
 import numpy as np
 from enum import Enum
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure, SubplotParams
-import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
-from matplotlib.widgets import RectangleSelector
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import lines, markers
 
 from ExtendAnalysis.ExtendType import *
 from ExtendAnalysis.Widgets.ColorWidgets import *
@@ -24,144 +18,153 @@ class LineColorAdjustableCanvas(OffsetAdjustableCanvas):
         super().saveAppearance()
         data=self.getLines()
         for d in data:
-            d.appearance['LineColor']=d.obj.get_color()
+            d.appearance['LineColor']=self._getLinePen(d.obj).color().name()
+    def _getLinePen(self,obj):
+        p=obj.opts['pen']
+        if isinstance(p,tuple):
+            return pg.mkPen(color=p)
+        else:
+            return p
+    def _getSymbolPen(self,obj):
+        p=obj.opts['symbolPen']
+        if isinstance(p,tuple):
+            return pg.mkPen(color=p)
+        else:
+            return p
+    def _getSymbolBrush(self,obj):
+        p=obj.opts['symbolBrush']
+        if isinstance(p,tuple):
+            return pg.mkBrush(color=p)
+        else:
+            return p
     @_saveCanvas
     def setDataColor(self,color,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
-            d.obj.set_color(color)
-        self.draw()
+            p=self._getLinePen(d.obj)
+            p.setColor(QColor(color))
+            d.obj.setPen(p)
     def getDataColor(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_color())
-        return res
+        return [self._getLinePen(d.obj).color().name() for d in self.getDataFromIndexes(1,indexes)]
     def loadAppearance(self):
         super().loadAppearance()
         data=self.getLines()
         for d in data:
             if 'LineColor' in d.appearance:
-                d.obj.set_color(d.appearance['LineColor'])
+                d.obj.setPen(pg.mkPen(color=QColor(d.appearance['LineColor'])))
 
 class LineStyleAdjustableCanvas(LineColorAdjustableCanvas):
+    __styles={'solid':Qt.SolidLine,'dashed':Qt.DashLine,'dashdot':Qt.DashDotLine,'dotted':Qt.DotLine,'None':Qt.NoPen}
+    __styles_inv = dict((v, k) for k, v in __styles.items())
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getLines()
         for d in data:
-            d.appearance['LineStyle']=d.obj.get_linestyle()
-            d.appearance['LineWidth']=d.obj.get_linewidth()
+            d.appearance['LineStyle']=self.__styles_inv[self._getLinePen(d.obj).style()]
+            d.appearance['LineWidth']=self._getLinePen(d.obj).width()
     @_saveCanvas
     def setLineStyle(self,style,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
-            d.obj.set_linestyle(style)
-            d.appearance['OldLineStyle']=d.obj.get_linestyle()
-        self.draw()
+            p=self._getLinePen(d.obj)
+            p.setStyle(self.__styles[style])
+            d.obj.setPen(p)
     def getLineStyle(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_linestyle().replace('-.','dashdot').replace('--','dashed').replace('-','solid').replace(':','dotted'))
-        return res
+        return [self.__styles_inv[self._getLinePen(d.obj).style()] for d in self.getDataFromIndexes(1,indexes)]
     @_saveCanvas
     def setLineWidth(self,width,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
-            d.obj.set_linewidth(width)
-        self.draw()
+            p=self._getLinePen(d.obj)
+            p.setWidth(width)
+            d.obj.setPen(p)
     def getLineWidth(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_linewidth())
-        return res
+        return [self._getLinePen(d.obj).width() for d in self.getDataFromIndexes(1,indexes)]
     def loadAppearance(self):
         super().loadAppearance()
         data=self.getLines()
         for d in data:
             if 'LineStyle' in d.appearance:
-                d.obj.set_linestyle(d.appearance['LineStyle'])
+                self._getLinePen(d.obj).setStyle(self.__styles[d.appearance['LineStyle']])
             if 'LineWidth' in d.appearance:
-                d.obj.set_linewidth(d.appearance['LineWidth'])
+                self._getLinePen(d.obj).setWidth(d.appearance['LineWidth'])
 
 class MarkerStyleAdjustableCanvas(LineStyleAdjustableCanvas):
+    __symbols={"circle":"o", "cross":"x", "tri_down":"t", "tri_up":"t1", "tri_right":"t2", "tri_left":"t3", "square":"s", "pentagon":"p","hexagon":"h", "star":"star", "plus":"+", "diamond":"d", "None":None}
+    __symbols_inv = dict((v, k) for k, v in __symbols.items())
+    __fillStyles=["filled", "None"]
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getLines()
         for d in data:
-            d.appearance['Marker']=d.obj.get_marker()
-            d.appearance['MarkerSize']=d.obj.get_markersize()
-            d.appearance['MarkerThick']=d.obj.get_markeredgewidth()
-            d.appearance['MarkerFilling']=d.obj.get_fillstyle()
+            d.appearance['Marker']=self.__symbols_inv[d.obj.opts['symbol']]
+            d.appearance['MarkerSize']=d.obj.opts['symbolSize']
+            d.appearance['MarkerThick']=self._getSymbolPen(d.obj).width()
+            d.appearance['MarkerFilling']=self._getSymbolBrush(d.obj).isOpaque()
     @_saveCanvas
     def setMarker(self,marker,indexes):
-        dummy=lines.Line2D([0,1],[0,1])
-        key=list(dummy.markers.keys())
-        val=list(dummy.markers.values())
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
-            d.obj.set_marker(key[val.index(marker)])
-            d.appearance['OldMarker']=d.obj.get_marker()
-        self.draw()
+            d.obj.setSymbol(self.__symbols[marker])
     def getMarker(self,indexes):
-        res=[]
-        dummy=lines.Line2D([0,1],[0,1])
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(dummy.markers[d.obj.get_marker()])
-        return res
+        return [self.__symbols_inv[d.obj.opts['symbol']] for d in self.getDataFromIndexes(1,indexes)]
     @_saveCanvas
     def setMarkerSize(self,size,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
-            d.obj.set_markersize(size)
-        self.draw()
+            d.obj.setSymbolSize(size)
     def getMarkerSize(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_markersize())
-        return res
+        return [d.obj.opts['symbolSize'] for d in self.getDataFromIndexes(1,indexes)]
     @_saveCanvas
     def setMarkerThick(self,size,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
-            d.obj.set_markeredgewidth(size)
-        self.draw()
+            p=self._getSymbolPen(d.obj)
+            p.setWidth(size)
+            d.obj.setSymbolPen(p)
+            #for refresh
+            p=self._getLinePen(d.obj)
+            d.obj.setPen(p)
     def getMarkerThick(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_markeredgewidth())
-        return res
+        return [self._getSymbolPen(d.obj).width() for d in self.getDataFromIndexes(1,indexes)]
     @_saveCanvas
     def setMarkerFilling(self,type,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
-            d.obj.set_fillstyle(type)
-        self.draw()
+            if type=="filled":
+                c=self._getLinePen(d.obj).color()
+                b=pg.mkBrush(c)
+                d.obj.setSymbolBrush(b)
+            else:
+                d.obj.setSymbolBrush(None)
     def getMarkerFilling(self,indexes):
         res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_fillstyle())
+        for d in self.getDataFromIndexes(1,indexes):
+            if self._getSymbolBrush(d.obj).isOpaque():
+                res.append('filled')
+            else:
+                res.append('None')
         return res
     def getMarkerList(self):
-        dummy=lines.Line2D([0,1],[0,1])
-        return dummy.markers
+        return self.__symbols_inv
     def getMarkerFillingList(self):
-        dummy=lines.Line2D([0,1],[0,1])
-        return dummy.fillStyles
+        return self.__fillStyles
     def loadAppearance(self):
         super().loadAppearance()
         data=self.getLines()
         for d in data:
-            if 'Marker' in d.appearance:
-                d.obj.set_marker(d.appearance['Marker'])
-            if 'MarkerSize' in d.appearance:
-                d.obj.set_markersize(d.appearance['MarkerSize'])
             if 'MarkerThick' in d.appearance:
-                d.obj.set_markeredgewidth(d.appearance['MarkerThick'])
+                p=self._getSymbolPen(d.obj)
+                p.setWidth(d.appearance['MarkerThick'])
+                d.obj.setSymbolPen(p)
+            if 'Marker' in d.appearance:
+                d.obj.setSymbol(self.__symbols[d.appearance['Marker']])
+            if 'MarkerSize' in d.appearance:
+                d.obj.setSymbolSize(d.appearance['MarkerSize'])
             if 'MarkerFilling' in d.appearance:
-                d.obj.set_fillstyle(d.appearance['MarkerFilling'])
+                if d.appearance['MarkerFilling']:
+                    c=self._getLinePen(d.obj).color()
+                    b=pg.mkBrush(c)
+                    d.obj.setSymbolBrush(b)
+                else:
+                    d.obj.setSymbolBrush(None)

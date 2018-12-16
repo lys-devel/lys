@@ -3,9 +3,17 @@ import sys, os
 from PyQt5.QtGui import *
 
 from ExtendAnalysis.ExtendType import *
+from ExtendAnalysis.pyqtGraph.ExtendCanvas import ExtendCanvas as pyqtCanvas
 from ExtendAnalysis.Widgets.ExtendCanvas import *
 from .LineSettingsGUI import *
+from .ImageSettingsGUI import *
+from .AxisSettingsGUI import *
 from .CanvasBaseGUI import *
+from .FontGUI import *
+from .AxisLabelSettingsGUI import *
+from .AreaSettingsGUI import *
+from .AnnotationGUI import *
+from .LineAnnotationGUI import *
 
 class ModifyWindow(ExtendMdiSubWindow):
     instance=None
@@ -28,13 +36,14 @@ class ModifyWindow(ExtendMdiSubWindow):
         self.setWindowTitle("Modify Window")
         self._tab=QTabWidget()
         if showArea:
-            #self._tab.addTab(_AreaTab(canvas),"Area")
+            self._tab.addTab(_AreaTab(canvas),"Area")
             self.__list.append('Area')
-        #self._tab.addTab(_AxisTab(canvas),"Axis")
+        self._tab.addTab(_AxisTab(canvas),"Axis")
         self._tab.addTab(_LineTab(canvas),"Lines")
-        #self._tab.addTab(_ImageTab(canvas),"Images")
-        #self._tab.addTab(_AnnotationTab(canvas),"Annot.")
-        #self._tab.addTab(SaveBox(canvas),'Save')
+        self._tab.addTab(_ImageTab(canvas),"Images")
+        if isinstance(canvas,ExtendCanvas):
+            self._tab.addTab(_AnnotationTab(canvas),"Annot.")
+            self._tab.addTab(SaveBox(canvas),'Save')
         self.__list.append('Axis')
         self.__list.append('Lines')
         self.__list.append('Images')

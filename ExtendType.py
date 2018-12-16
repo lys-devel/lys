@@ -660,7 +660,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             if not AutoSavedWindow._IsUsed(path):
                 return path
         print('Too many windows.')
-    def __new__(cls, file=None, title=None):
+    def __new__(cls, file=None, title=None, **kwargs):
         logging.debug('[AutoSavedWindow] __new__ called.')
         if cls._restore:
             return super().__new__(cls)
@@ -668,7 +668,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             logging.debug('[AutoSavedWindow] found loaded window.', file)
             return None
         return super().__new__(cls)
-    def __init__(self, file=None, title=None):
+    def __init__(self, file=None, title=None, **kwargs):
         logging.debug('[AutoSavedWindow] __init__ called.')
         try:
             self.__file
@@ -690,9 +690,9 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             if file is not None:
                 self.__file=os.path.abspath(file)
             if os.path.exists(self.__file):
-                self._init(self.__file)
+                self._init(self.__file,**kwargs)
             else:
-                self._init()
+                self._init(**kwargs)
             AutoSavedWindow._AddAutoWindow(self)
     def setLoadFile(self,file):
         self.__loadFile=os.path.abspath(file)

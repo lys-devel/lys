@@ -4,10 +4,8 @@ from enum import Enum
 from PyQt5.QtGui import *
 
 from .ExtendType import *
-#from .Widgets.ExtendCanvas import *
-from .pyqtGraph.ExtendCanvas import *
 from .Widgets.ExtendTable import *
-from .ModifyWindow.ModifyWindow import ModifyWindow
+from .ModifyWindow.ModifyWindow import *
 from .FittingWindow import *
 
 class Graph(AutoSavedWindow):
@@ -33,6 +31,10 @@ class Graph(AutoSavedWindow):
         return '.grf'
     def _save(self,file):
         d={}
+        if isinstance(self.canvas,ExtendCanvas):
+            d['Library']='matplotlib'
+        elif isinstance(self.canvas,pyqtCanvas):
+            d['Library']='pyqtgraph'
         self.canvas.SaveAsDictionary(d,os.path.dirname(file))
         d['Graph']={}
         d['Graph']['Position_x']=self.pos().x()
@@ -46,13 +48,26 @@ class Graph(AutoSavedWindow):
         self.canvas.EnableDraw(False)
         self.canvas.LoadFromDictionary(d,os.path.dirname(file))
         self.canvas.EnableDraw(True)
-    def _init(self,file=None):
-        self.canvas=ExtendCanvas()
+    def _loadLibType(self,file):
+        with open(file,'r') as f:
+            d=eval(f.read())
+        if 'Library' in d:
+            return d["Library"]
+        else:
+            return "matplotlib"
+    def _init(self,file=None,lib="matplotlib"):
+        if file is not None:
+            lib=self._loadLibType(file)
+        if lib=="matplotlib":
+            self.canvas=ExtendCanvas()
+        elif lib=="pyqtgraph":
+            self.canvas=pyqtCanvas()
+        self.setWidget(self.canvas)
         if file is not None:
             self._load(file)
         self.canvas.keyPressed.connect(self.keyPress)
+        self.resized.connect(self.canvas.parentResized)
         self.canvas.setSaveFunction(self.Save)
-        self.setWidget(self.canvas)
         self.canvas.RestoreSize()
     def keyPress(self, e):
         if e.key() == Qt.Key_G:
