@@ -4,6 +4,7 @@ import sys, os
 import rlcompleter
 from importlib import import_module, reload
 from pathlib import Path
+from .Tasks import tasks
 from watchdog.events import FileSystemEvent, PatternMatchingEventHandler
 from watchdog.observers import Observer
 
@@ -150,6 +151,48 @@ class PluginManager:
                 sys.stderr.write('Error on reloading {}.py.'.format(module_name))
                 print(traceback.format_exc())
 
+class TaskWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.__initlayout()
+
+    def __initlayout(self):
+        layout=QVBoxLayout()
+        self.tree=QTreeWidget()
+        self.tree.setColumnCount(3)
+        self.tree.setHeaderLabels(["Name","Status","Explanation"])
+        self.tree.setContextMenuPolicy( Qt.CustomContextMenu )
+        self.tree.customContextMenuRequested.connect( self.buildContextMenu )
+        layout.addWidget(self.tree)
+
+        tasks.updated.connect(self.__update)
+        self.setLayout(layout)
+    def __update(self):
+        self.tree.clear()
+        list=tasks.getTasks()
+        for i in list:
+            if i[0].isRunning():
+                st="Running"
+            else:
+                st="Waiting"
+            self.tree.addTopLevelItem(QTreeWidgetItem([i[1],st,i[2]]))
+    def buildContextMenu(self):
+        menu = QMenu( self.tree )
+        menulabels = ['Delete']
+        actionlist = []
+        for label in menulabels:
+            actionlist.append( menu.addAction( label ) )
+        action = menu.exec_(QCursor.pos())
+        for act in actionlist:
+            if act.text() == "Delete":
+                items=self.tree.selectedIndexes()
+                if len(items)==0:
+                    return
+                list=tasks.getTasks()
+                for i in items:
+                    if i.column()==0:
+                        tasks.removeTask(list[i.row()][0])
+
 class SettingWidget(QWidget):
     path=home()+"/.lys/settings"
     def __init__(self):
@@ -246,6 +289,7 @@ class CommandWindow(QWidget):
 
         self._tab.addTab(self.view,"File")
         self._tab.addTab(self.view2,"Workspace")
+        self._tab.addTab(TaskWidget(),"Tasks")
         self._tab.addTab(SettingWidget(),"Settings")
         layout_h.addWidget(wid)
         layout_h.addWidget(self._tab)
