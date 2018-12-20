@@ -1,112 +1,83 @@
-from PyQt5 import QtCore
+from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
-class __print_dummy(QtCore.QObject):
-    print_new=QtCore.pyqtSignal(tuple)
-    def __init__(self):
-        super().__init__()
-        self.print_new.connect(self.p)
-    def p(self,args):
-        print_orig(*args)
+from concurrent.futures import *
 
-d=__print_dummy()
-
-print_orig=print
-def print(*args):
-    id_orig=QApplication.instance().thread()
-    id=QtCore.QThread.currentThread()
-    if id==id_orig:
-        print_orig(*args)
-    else:
-        d.print_new.emit(args)
-
-
-class Tasks(QtCore.QObject):
-    updated=QtCore.pyqtSignal()
-    sequenceFinished=QtCore.pyqtSignal()
-    singleFinished=QtCore.pyqtSignal()
-    __list=[]
-    def _exenext(self,obj):
-        self.__list.remove(self.__list[0])
-        if len(self.__list)==0:
-            self.sequenceFinished.emit()
-        else:
-            i=self.__list[0][0]
-            i.start()
-        self.updated.emit()
-
-    __num=0
-    def sequence(self,func,*args,name=None,text=""):
-        t=_thread(func,*args)
-        t.finish.connect(self._exenext)
-        if name is None:
-            self.__num+=1
-            name="single"+str(self.__num)
-        self.__list.append([t,name,text])
-        if len(self.__list)==1:
-            t.start()
-        self.updated.emit()
-
-
-    __threadlist=[]
-    __threadnum=0
-    def single(self,func,*args,name=None,text=""):
-        t=_thread(func,*args)
-        t.finish.connect(self._singleFinished)
-        if name is None:
-            self.__threadnum+=1
-            name="single"+str(self.__threadnum)
-        self.__threadlist.append([t,name,text])
-        t.start()
-        self.updated.emit()
-
-    def _singleFinished(self,obj):
-        for i in range(len(self.__threadlist)):
-            if self.__threadlist[i][0]==obj:
-                self.__threadlist.remove(self.__threadlist[i])
-                self.singleFinished.emit()
-                self.updated.emit()
-                return
-
+class Tasks(QObject):
+    updated=pyqtSignal()
+    _list=[]
     def getTasks(self):
+        return self._list
+    def update(self):
+        self.updated.emit()
+
+class parallelExecutor(object):
+    _n=0
+    @classmethod
+    def _name(cls):
+        cls._n+=1
+        return "Task"+str(cls._n)
+    def __init__(self,blocking=True,finished=None,type="Process",max_workers=None,name=None,explanation=""):
+        if type=="Process":
+            self.pool=ProcessPoolExecutor(max_workers=max_workers)
+        elif type=="Thread":
+            self.pool=ThreadPoolExecutor(max_workers=max_workers)
+        self.blocking=blocking
+        self.finished=finished
+        if name is None:
+            self.nam=parallelExecutor._name()
+        else:
+            self.nam=name
+        self.expl=explanation
+    def execute(self,dlist):
+        self.futures=[]
+        self.count=len(dlist)
+        for d in dlist:
+            f=self.pool.submit(d.func, *d.args)
+            f.add_done_callback(self.callback)
+            self.futures.append(f)
+        tasks._list.append(self)
+        tasks.update()
+        if self.blocking:
+            tasks.update()
+            return self.getResult()
+        else:
+            return
+    def getResult(self):
         res=[]
-        res.extend(self.__threadlist)
-        res.extend(self.__list)
+        (done, notdone)=wait(self.futures)
+        for f in self.futures:
+            res.append(f.result())
         return res
-    def removeTask(self,thread):
-        try:
-            for i in range(len(self.__threadlist)):
-                if self.__threadlist[i][0]==thread:
-                    self.__threadlist.remove(self.__threadlist[i])
-                    self.updated.emit()
-                    return
-            for j in range(len(self.__list)):
-                if self.__list[j][0]==thread:
-                    self.__list.remove(self.__list[j])
-                    self.updated.emit()
-                    return
-        except:
-            pass
+    def callback(self,res):
+        self.count-=1
+        if self.count==0:
+            if self.finished is not None:
+                self.finished(self.getResult())
+            tasks._list.remove(self)
+        tasks.update()
+    def status(self):
+        if len(self.futures)==self.count:
+            return "Waiting"
+        else:
+            return str(int(float((1-self.count/len(self.futures))*100)))+"%"
+    def name(self):
+        return self.nam
+    def explanation(self):
+        return self.expl
+def Parallel(*args,**kwargs):
+	obj=parallelExecutor(*args,**kwargs)
+	return obj.execute
 
-class _worker(QtCore.QObject):
-    def __init__(self,func,*args):
-        super().__init__()
-        self.f=func
-        self.arg=args
-    def run(self):
-        try:
-            res=self.f(*self.arg)
-        except:
-            import traceback
-            print(traceback.format_exc())
+def delayed(func):
+	obj=_delayedFunc(func)
+	return obj.setArgs
 
-class _thread(QtCore.QThread):
-    finish=QtCore.pyqtSignal(QtCore.QThread)
-    def __init__(self,func,*args):
-        super().__init__()
-        self.worker=_worker(func,*args)
-    def run(self):
-        self.worker.run()
-        self.finish.emit(self)
+class _delayedFunc(object):
+	def __init__(self,func):
+		self.func=func
+	def setArgs(self,*args):
+		self.args=args
+		return self
 
 tasks=Tasks()

@@ -679,7 +679,6 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         mkdir(AutoSavedWindow._windir)
         for i in range(1000):
             path=AutoSavedWindow._windir+'/'+self._prefix()+str(i).zfill(3)+self._suffix()
-            print(path)
             if not AutoSavedWindow._IsUsed(path):
                 return path
         print('Too many windows.')

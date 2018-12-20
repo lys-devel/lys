@@ -4,7 +4,7 @@ import sys, os
 import rlcompleter
 from importlib import import_module, reload
 from pathlib import Path
-from .Tasks import tasks
+from .Tasks import *
 from watchdog.events import FileSystemEvent, PatternMatchingEventHandler
 from watchdog.observers import Observer
 
@@ -171,11 +171,7 @@ class TaskWidget(QWidget):
         self.tree.clear()
         list=tasks.getTasks()
         for i in list:
-            if i[0].isRunning():
-                st="Running"
-            else:
-                st="Waiting"
-            self.tree.addTopLevelItem(QTreeWidgetItem([i[1],st,i[2]]))
+            self.tree.addTopLevelItem(QTreeWidgetItem([i.name(),i.status(),i.explanation()]))
     def buildContextMenu(self):
         menu = QMenu( self.tree )
         menulabels = ['Delete']
