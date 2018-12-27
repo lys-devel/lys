@@ -6,6 +6,7 @@ import scipy.signal
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+import inspect
 __home=os.getcwd()
 __CDChangeListener=[]
 sys.path.append(__home)
@@ -181,12 +182,10 @@ class AutoSaved(object):
         res=ExtendObject._GetData(file)
         if res is None:
             self.obj=self._newobj(file)
-            self.Save()
+            #self.Save()##Note: it is modified 12/24
         else:
             self.obj=res
         self.obj.addDataChangedListener(self._EmitModified)
-#    def __del__(self):
-#        self.Save()
     def __setattr__(self,key,value):
         if not key=='obj':
             if self.obj is not None:

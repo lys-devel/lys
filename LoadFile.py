@@ -4,7 +4,7 @@ from .ExtendType import *
 from .BasicWidgets.GraphWindow import Graph
 
 def load(name,load=True):
-    try:
+    #try:
         if os.path.isdir(name):
             mkdir(pwd()+'/'+os.path.basename(name))
             __loadFolder(name,pwd()+'/'+os.path.basename(name))
@@ -14,8 +14,8 @@ def load(name,load=True):
             res.setLoadFile(name)
             if load:
                 return res
-    except Exception:
-        sys.stderr.write('Error: Cannot load.\n')
+    #except Exception:
+    #    sys.stderr.write('Error: Cannot load.\n')
 
 def save(name,nameAs):
     data=load(name)
@@ -89,8 +89,8 @@ def __loadPxt(name):
         w.z=wav.axis[2]
     return w
 
+import dm3_lib as dm3
 def __loadDm3(name):
-    import dm3_lib as dm3
     data = dm3.DM3(name)
     w=Wave()
     w.data=data.imagedata
