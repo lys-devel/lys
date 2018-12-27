@@ -81,12 +81,20 @@ def __loadPxt(name):
     wav=igor.igorpy.Wave(data['root'][nam.encode('utf-8')])
     w=Wave()
     w.data=wav.data
-    w.x=wav.axis[0]
-    w.note=wav.notes.decode()
+    note=[s.replace(" ","").replace("\r","").split("=") for s in wav.notes.decode().replace("\n\n","\n").split("\n")]
+    w.note={}
+    for n in note:
+        if len(n)==2:
+            w.note[n[0].lower()]=n[1]
+    if w.data.ndim==1:
+        w.x=wav.axis[0]
     if w.data.ndim>=2:
+        w.x=wav.axis[1]
+        w.y=wav.axis[0]
+    if w.data.ndim==3:
+        w.x=wav.axis[2]
         w.y=wav.axis[1]
-    if w.data.ndim>=3:
-        w.z=wav.axis[2]
+        w.z=wav.axis[0]
     return w
 
 def __loadDm3(name):
