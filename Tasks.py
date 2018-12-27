@@ -50,7 +50,7 @@ class Callable(object):
     def _childFinished(self,res):
         self.count-=1
         if self.count==0:
-            print("Callable:childfinished.",os.getpid(),threading.get_ident())
+            #print("Callable:childfinished.",os.getpid(),threading.get_ident())
             self._submit()
     def _submitIfPossible(self):
         if len(self._children)==0:
@@ -103,7 +103,7 @@ class Callable(object):
             "Executing"
 class CallableList(Callable):
     def __init__(self,callables):
-        print("callable list __init__")
+        #print("callable list __init__")
         self._calls=[]
         self._children=callables
         self.count=len(self._children)
@@ -119,16 +119,16 @@ class CallableList(Callable):
     def _childFinished(self,res):
         self.count-=1
         if self.count==0:
-            print("Callablelist. children finished.")
+            #print("Callablelist. children finished.")
             for c in self._calls:
                 c(self)
         tasks.update()
     def result(self):
-        print("Callablelist.result")
+        #print("Callablelist.result")
         if self.res is None:
             self._wait()
             self.res=[t.result() for t in self._children]
-        print("Callablelist.result finished")
+        #print("Callablelist.result finished")
         return self.res
     def _submitIfPossible(self):
         for c in self._children:
@@ -202,7 +202,7 @@ class _parallelExecutor(QObject):
     def _execute(self,dlist):
         self.obj=None
         tasks._list.append(self)
-        print("exe.start",os.getpid(),threading.get_ident())
+        #print("exe.start",os.getpid(),threading.get_ident())
         self.obj=self._createCallables(self._submit,dlist)
         self.obj._submitIfPossible()
         self.obj.addCallback(self.callback)
