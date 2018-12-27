@@ -89,8 +89,8 @@ def __loadPxt(name):
         w.z=wav.axis[2]
     return w
 
-import dm3_lib as dm3
 def __loadDm3(name):
+    import dm3_lib as dm3
     data = dm3.DM3(name)
     w=Wave()
     w.data=data.imagedata
