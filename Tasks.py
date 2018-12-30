@@ -8,18 +8,20 @@ from loky import get_reusable_executor
 class Tasks(QObject):
     updated=pyqtSignal()
     _list=[]
-    timeInt=0
     def getTasks(self):
         return self._list
     def update(self):
         self.updated.emit()
+    def _taskfinished(self,obj):
+        self._list.remove(obj)
+        self.update()
     def submit(self,task,*args,**kwargs):
         p=_parallelExecutor(*args,**kwargs)
-        return p._execute(task)
-    def execute(self,task,*args,**kwargs):
-        p=_parallelExecutor(*args,**kwargs)
+        p._prefinish.connect(self._taskfinished)
+        self._list.append(p)
         c=p._execute(task)
-        return c.result()
+        self.update()
+        return c
     def zip(self,tasks):
         return CallableList(tasks)
 
@@ -46,6 +48,8 @@ class Callable(object):
         for arg in self.task.kwargs:
             if isinstance(arg,Callable):
                 res.append(arg)
+        if self.wait is not None:
+            res.append(self.wait)
         return res
     def _childFinished(self,res):
         self.count-=1
@@ -58,8 +62,6 @@ class Callable(object):
     def _submit(self):
         Callable._i+=1
         args=[]
-        #if self.wait is not None:
-        #    self.wait.result()
         for arg in self.task.args:
             if isinstance(arg,Callable):
                 args.append(arg.result())
@@ -84,7 +86,7 @@ class Callable(object):
         #print("Callable.result")
         if self.res is None:
             self._wait()
-            self.res=self.obj.result(0.01)
+            self.res=self.obj.result()
         return self.res
     def _wait(self):
         if self.done: return
@@ -153,37 +155,25 @@ class CallableList(Callable):
             return "Waiting"
         else:
             return str(int(float(1-self.count/len(self._children))*100))+'%'
-"""
-class SingleExecutor(object):
-    def submit(self,func,*args):
-        self.res=func(*args)
-        return self
-    def add_done_callback(self,c):
-        c(self)
-    def result(self):
-        return self.res
-    def done(self):
-        return True
-"""
+
+_thread=ThreadPoolExecutor()
+_process=get_reusable_executor(timeout=None)
 class _parallelExecutor(QObject):
-    _thread=ThreadPoolExecutor()
-    _process=get_reusable_executor()
-    _lock1=multiprocessing.Manager().Lock()
-    _lock2=threading.Lock()
     finished=pyqtSignal(object)
+    _prefinish=pyqtSignal(object)
     _n=0
     @classmethod
     def _name(cls):
         cls._n+=1
         return "Task"+str(cls._n)
-    def __init__(self,finished=None,type="Thread",waitTask=None,name=None,explanation=""):
+    def __init__(self,finished=None,type="Thread",waitTask=None,name=None,explanation="",group=""):
         super().__init__()
         if type=="Process":
-            #self.pool=ProcessPoolExecutor()#
-            self.pool=_parallelExecutor._process
+#            self.pool=_parallelExecutor._process
+            self.pool=_process
         elif type=="Thread":
-            #self.pool=ThreadPoolExecutor()
-            self.pool=_parallelExecutor._thread
+#            self.pool=_parallelExecutor._thread
+            self.pool=_thread
         if finished is not None:
             self.finished.connect(finished)
         if name is None:
@@ -191,6 +181,7 @@ class _parallelExecutor(QObject):
         else:
             self.nam=name
         self.expl=explanation
+        self.grp=group
         self.futures=[]
         self.wait=waitTask
     def _createCallables(self,submit,d):
@@ -201,23 +192,14 @@ class _parallelExecutor(QObject):
         return res
     def _execute(self,dlist):
         self.obj=None
-        tasks._list.append(self)
         #print("exe.start",os.getpid(),threading.get_ident())
-        self.obj=self._createCallables(self._submit,dlist)
+        self.obj=self._createCallables(self.pool.submit,dlist)
         self.obj._submitIfPossible()
         self.obj.addCallback(self.callback)
-        tasks.update()
         return self.obj
-    def _submit(self,*args,**kwargs):
-        #with _parallelExecutor._lock1:
-        #    with _parallelExecutor._lock2:
-        res=self.pool.submit(*args,**kwargs)
-        return res
     def callback(self,res):
+        self._prefinish.emit(self)
         self.finished.emit(res)
-        del self.pool
-        tasks._list.remove(self)
-        tasks.update()
     def status(self):
         if self.obj is None:
             return "Waiting"
@@ -226,6 +208,8 @@ class _parallelExecutor(QObject):
         return self.nam
     def explanation(self):
         return self.expl
+    def group(self):
+        return self.grp
 
 class task(object):
     def __init__(self,func,*args,**kwargs):

@@ -44,11 +44,6 @@ class FigureCanvasBase(pg.PlotWidget):
         self.__loadFlg=False
         self.savef=None
         self.npen=0
-        return
-        self.axes.xaxis.set_picker(15)
-        self.axes.yaxis.set_picker(15)
-        self.__lisdraw=[]
-        self.drawflg=False
     def RestoreSize(self):
         pass
     def setSaveFunction(self,func):
@@ -63,7 +58,7 @@ class FigureCanvasBase(pg.PlotWidget):
         self.EnableDraw(False)
         self.saveAppearance()
         for d in self._Datalist:
-            if wave==d.wave:
+            if wave.obj==d.wave.obj:
                 d.axis.removeItem(d.obj)
                 self._Datalist.remove(d)
                 self._Append(wave,d.axis,d.id,appearance=d.appearance,offset=d.offset,zindex=d.zindex,reuse=True)

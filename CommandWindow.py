@@ -170,8 +170,29 @@ class TaskWidget(QWidget):
     def __update(self):
         self.tree.clear()
         list=tasks.getTasks()
+        dic={}
         for i in list:
-            self.tree.addTopLevelItem(QTreeWidgetItem([i.name(),i.status(),i.explanation()]))
+            if i.group()=="":
+                self.tree.addTopLevelItem(QTreeWidgetItem([i.name(),i.status(),i.explanation()]))
+            else:
+                grps=i.group().split("/")
+                parent=None
+                name=""
+                for g in grps:
+                    name=name+g
+                    if name in dic:
+                        item=dic[name]
+                    else:
+                        item=QTreeWidgetItem([g,"",""])
+                        dic[name]=item
+                        if parent is None:
+                            self.tree.addTopLevelItem(item)
+                        else:
+                            parent.addChild(item)
+                        item.setExpanded(True)
+                    parent=item
+                    name=name+"/"
+                parent.addChild(QTreeWidgetItem([i.name(),i.status(),i.explanation()]))
     def buildContextMenu(self):
         menu = QMenu( self.tree )
         menulabels = ['Delete']
@@ -221,6 +242,17 @@ class SettingWidget(QWidget):
         else:
             self.g1.toggle()
 
+class TextEditLogger(logging.Handler):
+    def __init__(self, parent=None):
+        super().__init__()
+        self.widget = QPlainTextEdit(parent)
+        self.widget.setReadOnly(True)
+    def emit(self, record):
+        msg = self.format(record)
+        self.widget.appendPlainText(msg)
+    def write(self, m):
+        pass
+
 class CommandWindow(QWidget):
     def __init__(self, shell, parent=None):
         super(CommandWindow, self).__init__(parent)
@@ -259,16 +291,35 @@ class CommandWindow(QWidget):
     def closeEvent(self,event):
         event.ignore()
     def __CreateLayout(self):
+        self._tab_up=QTabWidget()
         layout=QVBoxLayout()
         self.input=CommandLineEdit(self.__shell)
         self.output=QTextEdit(self)
         self.output.setReadOnly(True)
         self.output.setUndoRedoEnabled(False)
         layout.addWidget(self.output)
-        layout.addWidget(self.input)
-
         wid=QWidget(self)
         wid.setLayout(layout)
+
+        self._loglevel = QHBoxLayout()
+        self._loglevel.addWidget(QRadioButton("Error",toggled=lambda:self._debugLevel(40)))
+        war=QRadioButton("Warning",toggled=lambda:self._debugLevel(30))
+        self._loglevel.addWidget(war)
+        self._loglevel.addWidget(QRadioButton("Info",toggled=lambda:self._debugLevel(20)))
+        self._loglevel.addWidget(QRadioButton("Debug",toggled=lambda:self._debugLevel(10)))
+        war.toggle()
+        self._log=TextEditLogger()
+        logging.getLogger().addHandler(self._log)
+        logging.getLogger().setLevel(30)
+        self._log.setFormatter(logging.Formatter('%(asctime)s [%(levelname).1s] %(message)s',"%m/%d %H:%M:%S"))
+        l2=QVBoxLayout()
+        l2.addLayout(self._loglevel)
+        l2.addWidget(self._log.widget)
+        wid2=QWidget()
+        wid2.setLayout(l2)
+
+        self._tab_up.addTab(wid,"Command")
+        self._tab_up.addTab(wid2,"Log")
 
         layout_h=QSplitter(Qt.Vertical)
         self._tab=QTabWidget()
@@ -287,12 +338,15 @@ class CommandWindow(QWidget):
         self._tab.addTab(self.view2,"Workspace")
         self._tab.addTab(TaskWidget(),"Tasks")
         self._tab.addTab(SettingWidget(),"Settings")
-        layout_h.addWidget(wid)
+        layout_h.addWidget(self._tab_up)
+        layout_h.addWidget(self.input)
         layout_h.addWidget(self._tab)
 
         lay=QHBoxLayout()
         lay.addWidget(layout_h)
         self.setLayout(lay)
+    def _debugLevel(self,level):
+        logging.getLogger().setLevel(level)
     def __viewContextMenu(self,tree):
         cd=QAction('Set Current Directory',self,triggered=self.__setCurrentDirectory)
         ld=QAction('Load',self,triggered=self.__load)

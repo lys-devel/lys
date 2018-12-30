@@ -67,7 +67,7 @@ class FigureCanvasBase(FigureCanvas):
         self.EnableDraw(False)
         self.saveAppearance()
         for d in self._Datalist:
-            if wave==d.wave:
+            if wave.obj==d.wave.obj:
                 d.obj.remove()
                 self._Datalist.remove(d)
                 self._Append(wave,d.axis,d.id,appearance=d.appearance,offset=d.offset,zindex=d.zindex,reuse=True)
