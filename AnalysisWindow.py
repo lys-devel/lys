@@ -1,13 +1,16 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from .ExtendType import ExtendMdiSubWindow
+from .ExtendType import *
 class AnalysisWindow(ExtendMdiSubWindow):
     def __init__(self,title,proj=None):
-        super().__init__()
-        self.setWindowTitle(title)
+        set=globalSetting()
+        if "Floating" in set:
+            b=set["Floating"]
+        else:
+            b=False
+        super().__init__(title,floating=b)
         self.__proj=proj
-        #self.__initMenuBar()
         self.show()
 
     def __initMenuBar(self):

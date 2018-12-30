@@ -214,10 +214,16 @@ class SettingWidget(QWidget):
     path=home()+"/.lys/settings"
     def __init__(self):
         super().__init__()
+        self.setting=globalSetting()
         self.__initlayout()
         self.__load()
     def __initlayout(self):
         layout=QVBoxLayout()
+        layout.addLayout(self.__graphSetting())
+        layout.addWidget(self.__floatSetting())
+        layout.addStretch()
+        self.setLayout(layout)
+    def __graphSetting(self):
         h1=QHBoxLayout()
         self.g1=QRadioButton("Matplotlib")
         self.g2=QRadioButton("pyqtGraph")
@@ -226,21 +232,30 @@ class SettingWidget(QWidget):
         h1.addWidget(QLabel("Graph library"))
         h1.addWidget(self.g1)
         h1.addWidget(self.g2)
-        layout.addLayout(h1)
-        layout.addStretch()
-        self.setLayout(layout)
+        return h1
+    def __floatSetting(self):
+        self._float=QCheckBox("Floating Analysis Window")
+        self._float.stateChanged.connect(self._floatChanged)
+        return self._float
+    def _floatChanged(self,b):
+        self.setting["Floating"]=(not b==0)
     def _lib(self,btn):
         if btn==self.g1:
             Graph.graphLibrary="matplotlib"
         elif btn==self.g2:
             Graph.graphLibrary="pyqtgraph"
-        self.grfType.data=Graph.graphLibrary
+        self.setting["GraphLibrary"]=Graph.graphLibrary
     def __load(self):
-        self.grfType=String(self.path+"/graphLib.str")
-        if self.grfType.data=="pyqtgraph":
+        if "GraphLibrary" in self.setting:
+            self.grfType=self.setting["GraphLibrary"]
+        else:
+            self.grfType="matplotlib"
+        if self.grfType=="pyqtgraph":
             self.g2.toggle()
         else:
             self.g1.toggle()
+        if "Floating" in self.setting:
+            self._float.setChecked(self.setting["Floating"])
 
 class TextEditLogger(logging.Handler):
     def __init__(self, parent=None):
@@ -305,7 +320,7 @@ class CommandWindow(QWidget):
         self._loglevel.addWidget(QRadioButton("Error",toggled=lambda:self._debugLevel(40)))
         war=QRadioButton("Warning",toggled=lambda:self._debugLevel(30))
         self._loglevel.addWidget(war)
-        inf=(QRadioButton("Info",toggled=lambda:self._debugLevel(20))
+        inf=QRadioButton("Info",toggled=lambda:self._debugLevel(20))
         self._loglevel.addWidget(inf)
         self._loglevel.addWidget(QRadioButton("Debug",toggled=lambda:self._debugLevel(10)))
         inf.toggle()

@@ -78,6 +78,8 @@ def home():
 def addCDChangeListener(listener):
     __CDChangeListener.append(listener)
     listener.OnCDChanged(pwd())
+def globalSetting():
+    return Dict(home()+"/.lys/settings/global.dic")
 
 class ExtendObject(object):
     __dic={}
@@ -580,10 +582,12 @@ class AttachableWindow(SizeAdjustableWindow):
 class ExtendMdiSubWindow(AttachableWindow):
     mdimain=None
     __wins=[]
-    def __init__(self, title=None):
+    def __init__(self, title=None, floating=False):
         logging.debug('[ExtendMdiSubWindow] __init__')
         super().__init__()
-        ExtendMdiSubWindow._AddWindow(self)
+        self.__floating=floating
+        if not floating:
+            ExtendMdiSubWindow._AddWindow(self)
         self.setAttribute(Qt.WA_DeleteOnClose)
         if title is not None:
             self.setWindowTitle(title)
@@ -609,7 +613,8 @@ class ExtendMdiSubWindow(AttachableWindow):
     def AllWindows(cls):
         return cls.__wins
     def closeEvent(self,event):
-        ExtendMdiSubWindow._RemoveWindow(self)
+        if not self.__floating:
+            ExtendMdiSubWindow._RemoveWindow(self)
         super().closeEvent(event)
 
 _workspace="default"
