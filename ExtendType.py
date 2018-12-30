@@ -586,8 +586,7 @@ class ExtendMdiSubWindow(AttachableWindow):
         logging.debug('[ExtendMdiSubWindow] __init__')
         super().__init__()
         self.__floating=floating
-        if not floating:
-            ExtendMdiSubWindow._AddWindow(self)
+        ExtendMdiSubWindow._AddWindow(self,floating)
         self.setAttribute(Qt.WA_DeleteOnClose)
         if title is not None:
             self.setWindowTitle(title)
@@ -598,14 +597,15 @@ class ExtendMdiSubWindow(AttachableWindow):
         for g in cls.__wins:
             g.close()
     @classmethod
-    def _AddWindow(cls,win):
+    def _AddWindow(cls,win,floating):
         cls.__wins.append(win)
-        if cls.mdimain is not None:
+        if cls.mdimain is not None and not floating:
             cls.mdimain.addSubWindow(win)
     @classmethod
-    def _RemoveWindow(cls,win):
+    def _RemoveWindow(cls,win,floating):
         cls.__wins.remove(win)
-        cls.mdimain.removeSubWindow(win)
+        if not floating:
+            cls.mdimain.removeSubWindow(win)
     @classmethod
     def _Contains(cls,win):
         return win in cls.__wins
@@ -613,8 +613,7 @@ class ExtendMdiSubWindow(AttachableWindow):
     def AllWindows(cls):
         return cls.__wins
     def closeEvent(self,event):
-        if not self.__floating:
-            ExtendMdiSubWindow._RemoveWindow(self)
+        ExtendMdiSubWindow._RemoveWindow(self,self.__floating)
         super().closeEvent(event)
 
 _workspace="default"
