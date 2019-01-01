@@ -5,6 +5,7 @@ from .LoadFile import *
 from .AnalysisWindow import *
 from .BasicWidgets import *
 from .Tasks import *
+from .Analysis import filters, filtersGUI
 
 def handle_exception(exc_type, exc_value, exc_traceback):
     """ handle all exceptions """

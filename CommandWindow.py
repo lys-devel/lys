@@ -307,14 +307,13 @@ class CommandWindow(QWidget):
         event.ignore()
     def __CreateLayout(self):
         self._tab_up=QTabWidget()
-        layout=QVBoxLayout()
         self.input=CommandLineEdit(self.__shell)
         self.output=QTextEdit(self)
         self.output.setReadOnly(True)
         self.output.setUndoRedoEnabled(False)
-        layout.addWidget(self.output)
-        wid=QWidget(self)
-        wid.setLayout(layout)
+        #self.output2=QTextEdit(self)
+        #self.output2.setReadOnly(True)
+        #self.output2.setUndoRedoEnabled(False)
 
         self._loglevel = QHBoxLayout()
         self._loglevel.addWidget(QRadioButton("Error",toggled=lambda:self._debugLevel(40)))
@@ -334,7 +333,8 @@ class CommandWindow(QWidget):
         wid2=QWidget()
         wid2.setLayout(l2)
 
-        self._tab_up.addTab(wid,"Command")
+        self._tab_up.addTab(self.output,"Command")
+        #self._tab_up.addTab(self.output2,"Error")
         self._tab_up.addTab(wid2,"Log")
 
         layout_h=QSplitter(Qt.Vertical)

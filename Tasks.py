@@ -8,6 +8,7 @@ from loky import get_reusable_executor
 class Tasks(QObject):
     updated=pyqtSignal()
     _list=[]
+    _submitlist=[]
     def getTasks(self):
         return self._list
     def update(self):
@@ -20,13 +21,16 @@ class Tasks(QObject):
         p._prefinish.connect(self._taskfinished)
         self._list.append(p)
         c=p._execute(task)
+        #self._submitlist.append(c)
         self.update()
         return c
     def zip(self,tasks):
         return CallableList(tasks)
+    #def start(self):
+    #    for item in self._submitlist:
+    #        item._submitIfPossible()
 
 class Callable(object):
-    _i=0
     def __init__(self,submit,task,wait=None):
         super().__init__()
         self.submit=submit
@@ -60,7 +64,6 @@ class Callable(object):
         if len(self._children)==0:
             self._submit()
     def _submit(self):
-        Callable._i+=1
         args=[]
         for arg in self.task.args:
             if isinstance(arg,Callable):
@@ -132,6 +135,19 @@ class CallableList(Callable):
             self.res=[t.result() for t in self._children]
         #print("Callablelist.result finished")
         return self.res
+    def _extractCallables(self,arg):
+        if type(arg)==Callable:
+            return arg
+        else:
+            return CallableList([self._extractCallables(a) for a in arg])
+    def transpose(self,*args,**kwargs):
+        import numpy as np
+        t=np.array(self._children)
+        return self._extractCallables(t.transpose(*args,**kwargs))
+    def reshape(self,*args,**kwargs):
+        import numpy as np
+        t=np.array(self._children)
+        return self._extractCallables(t.reshape(*args,**kwargs))
     def _submitIfPossible(self):
         for c in self._children:
             c._submitIfPossible()
@@ -150,13 +166,15 @@ class CallableList(Callable):
         return self._children[self._i-1]
     def __len__(self):
         return len(self._children)
+    def __getitem__(self,key):
+        return self._children[key]
     def status(self):
         if self.count==len(self._children):
             return "Waiting"
         else:
             return str(int(float(1-self.count/len(self._children))*100))+'%'
 
-_thread=ThreadPoolExecutor()
+_thread=ThreadPoolExecutor(max_workers=5)
 _process=get_reusable_executor(timeout=None)
 class _parallelExecutor(QObject):
     finished=pyqtSignal(object)
