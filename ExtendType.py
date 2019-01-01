@@ -108,8 +108,11 @@ class ExtendObject(object):
         for ref in cls.__dic.values():
             o=ref()
             if o is not None:
-                o._load(o._filename())
-                o._emitDataChanged()
+                try:
+                    o._load(o._filename())
+                    o._emitDataChanged()
+                except:
+                    logging.error("[ExtendObject] Failed to reload. Restart is recommended.")
     def __init__(self,file):
         self.__file=file
         self.__init(file)
