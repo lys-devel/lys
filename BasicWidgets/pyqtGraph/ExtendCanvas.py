@@ -147,8 +147,13 @@ class ExtendCanvas(ResizableCanvas):
         dict={}
         self.SaveAsDictionary(dict)
         ExtendCanvas.savedDict[type]=dict[type]
-    def LoadSetting(self,type):
-        if type in ExtendCanvas.savedDict:
+        return dict[type]
+    def LoadSetting(self,type,obj=None):
+        if dict is not None:
+            d={}
+            d[type]=dict
+            self.LoadFromDictionary(d)
+        elif type in ExtendCanvas.savedDict:
             d={}
             d[type]=ExtendCanvas.savedDict[type]
             self.LoadFromDictionary(d)
