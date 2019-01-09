@@ -3,7 +3,7 @@ import numpy as np
 from .ExtendType import *
 from .BasicWidgets.GraphWindow import Graph
 
-def load(name,load=True):
+def load(name,load=True,disconnect=False):
     #try:
         if os.path.isdir(name):
             mkdir(pwd()+'/'+os.path.basename(name))
@@ -12,6 +12,8 @@ def load(name,load=True):
             path, ext=os.path.splitext(name)
             res=dic[ext](os.path.abspath(name))
             res.setLoadFile(name)
+            if disconnect:
+                res.Disconnect()
             if load:
                 return res
     #except Exception:

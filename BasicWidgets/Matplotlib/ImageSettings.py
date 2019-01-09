@@ -17,7 +17,6 @@ from .CanvasBase import _saveCanvas
 class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def __init__(self,dpi=100):
         super().__init__(dpi=dpi)
-        self.waveAppended.connect(self.autoColorRange)
     @_saveCanvas
     def autoColorRange(self,indexes):
         data=self.getDataFromIndexes(2,indexes)
