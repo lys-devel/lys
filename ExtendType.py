@@ -272,7 +272,7 @@ class Wave(AutoSaved):
             self.x=tmp['x']
             self.y=tmp['y']
             self.z=tmp['z']
-            self.note=tmp['note']
+            self.note=tmp['note'][()]
         def _save(self,file):
             np.savez(file, data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
         def _vallist(self):
