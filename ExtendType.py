@@ -313,7 +313,6 @@ class Wave(AutoSaved):
     def __setitem__(self,key,value):
         self.data[key]=value
         self.Save()
-
     def slice(self,pos1,pos2,axis='x',width=1):
         w=Wave()
         dx=(pos2[0]-pos1[0])
@@ -340,6 +339,80 @@ class Wave(AutoSaved):
             d=np.sqrt(dx*dx+dy*dy)
             w.x=np.linspace(0,d,size)
         return w
+    def integrate(self,region,type='circle',dr=1):
+        if type == 'circle':
+            return self._integrate_circle(region)
+        if type == 'tangent':
+            return self._integrate_tangent(region,dr)
+    def _integrate_tangent(self,region,dr):
+        w=Wave()
+        w.data=[self.integrate((region[0],region[1],r,r+dr)) for r in range(region[2],region[3],dr)]
+        dx=self.x[1]-self.x[0]
+        w.x=np.linspace(0,len(w.data)*dr*dx,num=len(w.data))
+        return w
+    def _integrate_circle(self,region):
+        cx=region[0]
+        cy=region[1]
+        R1=region[2]
+        R2=region[3]
+        res=0
+        n=0
+        for px in self._calcDonutPixels(R1,R2):
+            a=abs(px[0])-0.5
+            b=abs(px[1])-0.5
+            if a < b:
+                a,b=b,a
+            x,y = cx+px[0], cy+px[1]
+            if x > 0 and y > 0 and x < self.data.shape[1] and y < self.data.shape[0]:
+                rat=self._calcArea(a,b,R2)-self._calcArea(a,b,R1)
+                res+=self.data[y,x]*rat
+                n+=rat
+        return res/n
+    def _calcArea(self,a,b,r):
+        if r==0: return 0
+        if np.sqrt((a+1)*(a+1)+(b+1)*(b+1)) <= r:
+            return 1
+        elif np.sqrt(a*a+b*b) <= r and np.sqrt(a*a+(b+1)*(b+1)) >= r:
+            b1=np.sqrt(r*r-a*a)
+            return self._int(r,b,b1)-a*(b1-b)
+        elif np.sqrt(a*a+(b+1)*(b+1)) <= r and np.sqrt((a+1)*(a+1)+b*b) >= r:
+            return self._int(r,b,b+1)-a
+        elif np.sqrt((a+1)*(a+1)+b*b) <= r and np.sqrt((a+1)*(a+1)+(b+1)*(b+1)) > r:
+            b1=np.sqrt(r*r-(a+1)*(a+1))
+            return (b1-b)+self._int(r,b1,b+1)-a*(b+1-b1)
+        elif np.sqrt(a*a+b*b) > r:
+            return 0
+    # calc int_a^b sqrt(r^2-x^2) dx
+    def _int(self,r,a,b):
+        return 0.5*(b*np.sqrt(r*r-b*b)+r*r*np.arcsin(b/r)-a*np.sqrt(r*r-a*a)-r*r*np.arcsin(a/r))
+
+    def _calcDonutPixels(self,R1,R2):
+        res=[]
+        for y1 in range( -int(np.floor(R2+0.5)) , int(np.floor(R2+0.5)+1)):
+            y1_R1=self._calcCross(y1,R1)
+            y1_R2=self._calcCross(y1,R2)
+            y1p_R1=self._calcCross(y1+0.5,R1)
+            y1p_R2=self._calcCross(y1+0.5,R2)
+            y1m_R1=self._calcCross(y1-0.5,R1)
+            y1m_R2=self._calcCross(y1-0.5,R2)
+            if y1m_R1 * y1p_R1==0:
+                xmin=0
+            else:
+                xmin=int(np.round(np.amin([y1_R1,y1p_R1,y1m_R1])))
+            xmax=int(np.round(np.amax([y1_R2,y1p_R2,y1m_R2])))
+            for x1 in range(xmin,xmax+1):
+                res.append((x1,y1))
+            for x1 in range(-xmax,-xmin+1):
+                if x1!=0:
+                    res.append((x1,y1))
+        return res
+    def _calcCross(self,y,R):
+        if abs(y) > R:
+            return 0
+        else:
+            return np.sqrt(R*R-y*y)
+
+
     def getSlicedImage(self,zindex):
         return self.data[:,:,zindex]
 
