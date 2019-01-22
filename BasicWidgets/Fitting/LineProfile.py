@@ -132,7 +132,6 @@ class LineProfileWidget(QWidget):
             else:
                 self._r2.setValue(0)
     def __exe(self):
-        from ExtendAnalysis.GraphWindow import Graph
         if self._axis.currentText() in ["Horizontal","Vertical"]:
             ws, list, xdata=self.__cutline()
         else:
