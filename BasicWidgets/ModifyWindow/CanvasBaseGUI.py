@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 import numpy as np
+from ExtendAnalysis import *
 
 class DataSelectionBox(QTreeView):
     class _Model(QStandardItemModel):
@@ -128,7 +129,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         self.__dim=dim
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
-        menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Edit', 'Print']
+        menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Edit', 'Print', 'Export']
         actionlist = []
         for label in menulabels:
             actionlist.append(menu.addAction(label))
@@ -158,6 +159,15 @@ class RightClickableSelectionBox(DataSelectionBox):
             data=self.canvas.getDataFromIndexes(self.__dim,list)
             for d in data:
                 print(d.wave.FileName())
+        elif action.text() == 'Export':
+            filt=""
+            for f in Wave.SupportedFormats():
+                filt=filt+f+";;"
+            filt=filt[:len(filt)-2]
+            path, type=QFileDialog.getSaveFileName(filter=filt)
+            if len(path) != 0:
+                d=self.canvas.getDataFromIndexes(self.__dim,list)[0]
+                d.wave.export(path,type=type)
 class OffsetAdjustBox(QWidget):
     def __init__(self,canvas,dim):
         super().__init__()

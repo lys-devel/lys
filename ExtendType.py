@@ -411,8 +411,6 @@ class Wave(AutoSaved):
             return 0
         else:
             return np.sqrt(R*R-y*y)
-
-
     def getSlicedImage(self,zindex):
         return self.data[:,:,zindex]
 
@@ -480,6 +478,12 @@ class Wave(AutoSaved):
             if i is not None:
                 res.append(i)
         return tuple(res)
+    @staticmethod
+    def SupportedFormats():
+        return ["Numpy npz (*.npz)","Text (*.txt)"]
+    def export(self,path,type="Numpy npz (*.npz)"):
+        if type == 'Numpy npz (*.npz)':
+            np.savez(path+".npz".replace(".npz.npz",".npz"), data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
 class Test_AutoSaved(unittest.TestCase):
     def test_wave(self):
         w=Wave('test.npz')
