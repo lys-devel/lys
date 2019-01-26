@@ -129,6 +129,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.__listener=[]
+        self.__auto={"Left": True, "Right":True, "Top":True, "Bottom":True}
     def SaveAsDictionary(self,dictionary,path):
         super().SaveAsDictionary(dictionary,path)
         dic={}
@@ -153,9 +154,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
                     else:
                         self.setAxisRange(dic[l],l)
     @_saveCanvas
-    def setAxisRange(self,range,axis):
-        import time
-        start=time.time()
+    def setAxisRange(self,range,axis,auto=False):
         ax=axis
         axes=self.getAxes(axis)
         if axes is None:
@@ -164,6 +163,8 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
             axes.set_ylim(range)
         if ax in ['Top','Bottom']:
             axes.set_xlim(range)
+        if not auto:
+            self.__auto[axis]=False
         self._emitAxisRangeChanged()
         self.draw()
 
@@ -191,10 +192,32 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
         axes=self.getAxes(axis=ax)
         if axes is None:
             return
+        max=np.NaN
+        min=np.NaN
         if ax in ['Left','Right']:
-            axes.autoscale(axis='y')
+            for l in self.getLines():
+                max=np.nanmax([*l.wave.data,max])
+                min=np.nanmin([*l.wave.data,min])
+            for im in self.getImages():
+                max=np.nanmax([*im.wave.y,max])
+                min=np.nanmin([*im.wave.y,min])
         if ax in ['Top','Bottom']:
-            axes.autoscale(axis='x')
+            for l in self.getLines():
+                max=np.nanmax([*l.wave.x,max])
+                min=np.nanmin([*l.wave.x,min])
+            for im in self.getImages():
+                max=np.nanmax([*im.wave.x,max])
+                min=np.nanmin([*im.wave.x,min])
+        if len(self.getImages())==0:
+            mergin=(max-min)/20
+        else:
+            mergin=0
+        r=self.getAxisRange(axis)
+        if r[0] < r[1]:
+            self.setAxisRange([min-mergin,max+mergin],axis,auto=True)
+        else:
+            self.setAxisRange([max+mergin,min-mergin],axis,auto=True)
+        self.__auto[axis]=True
         self._emitAxisRangeChanged()
         self.draw()
     def isAutoScaled(self,axis):
@@ -202,6 +225,8 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
         axes=self.getAxes(axis=ax)
         if axes is None:
             return
+        else:
+            return self.__auto[axis]
         if ax in ['Left','Right']:
             return axes.get_autoscaley_on()
         if ax in ['Top','Bottom']:
