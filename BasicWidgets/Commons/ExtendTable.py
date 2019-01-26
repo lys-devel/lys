@@ -75,9 +75,13 @@ class ExtendTable(QTableView):
         else:
             self._model=self.ArrayModel(data, checkable)
         self.setModel(self._model)
+        self.__data=data
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.buildContextMenu)
     def clear(self):
         self._model.clear()
     def Append(self,data):
+        self.__data=data
         self._model.set(data)
     def checkState(self,row):
         item=self._model.item(row)
@@ -89,3 +93,18 @@ class ExtendTable(QTableView):
         return self.selectionModel().selectedIndexes()[0].row()
     def setData(self,value,row,column):
         self._model.setDataValue(value,row,column)
+    def buildContextMenu(self):
+        if self.__data is None:
+            return
+        menu = QMenu(self)
+        menulabels = ['Export']
+        actionlist = [menu.addAction( label ) for label in menulabels]
+        action = menu.exec_(QCursor.pos())
+        for act in actionlist:
+            if act.text() == "Export":
+                filt=""
+                for f in self.__data.SupportedFormats():
+                    filt=filt+f+";;"
+                filt=filt[:len(filt)-2]
+                path, type=QFileDialog.getSaveFileName(filter=filt)
+                self.__data.export(path,type=type)
