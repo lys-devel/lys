@@ -67,9 +67,12 @@ class AxisRangeAdjustBox(QGroupBox):
         layout_h2.addWidget(QLabel('Max'))
         layout_h2.addWidget(self.__spin2)
 
+        rev=QPushButton("Reverse",clicked=self.__reverse)
+
         layout.addWidget(self.__combo)
         layout.addLayout(layout_h1)
         layout.addLayout(layout_h2)
+        layout.addWidget(rev)
         self.setLayout(layout)
     def __loadstate(self,canvas):
         self.__loadflg=True
@@ -105,6 +108,10 @@ class AxisRangeAdjustBox(QGroupBox):
         mi=self.__spin1.value()
         ma=self.__spin2.value()
         self.canvas.setAxisRange([mi,ma],self.canvas.getSelectedAxis())
+    def __reverse(self):
+        mi=self.__spin1.value()
+        ma=self.__spin2.value()
+        self.canvas.setAxisRange([ma,mi],self.canvas.getSelectedAxis())
 
 opposite={'Left':'right','Right':'left','Bottom':'top','Top':'bottom'}
 Opposite={'Left':'Right','Right':'Left','Bottom':'Top','Top':'Bottom'}
