@@ -480,10 +480,15 @@ class Wave(AutoSaved):
         return tuple(res)
     @staticmethod
     def SupportedFormats():
-        return ["Numpy npz (*.npz)","Text (*.txt)"]
+        return ["Numpy npz (*.npz)","Comma-Separated Values (*.csv)"]
     def export(self,path,type="Numpy npz (*.npz)"):
         if type == 'Numpy npz (*.npz)':
             np.savez(path+".npz".replace(".npz.npz",".npz"), data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
+        if type == "Comma-Separated Values (*.csv)":
+            import csv
+            with open(path+".csv".replace(".csv.csv",".csv"),'w') as f:
+                writer=csv.writer(f,lineterminator='\n')
+                writer.writerows(self.data)
 class Test_AutoSaved(unittest.TestCase):
     def test_wave(self):
         w=Wave('test.npz')
@@ -597,6 +602,19 @@ class List(AutoSaved):
             else:
                 break
         return tuple(res)
+    @staticmethod
+    def SupportedFormats():
+        return ["Lys List file (*.lst)","Comma-Separated Values (*.csv)"]
+    def export(self,path,type="Lys List file (*.lst)"):
+        if type == "Lys List file (*.lst)":
+            l=List()
+            l.data=self.data
+            l.Save(path+".lst".replace(".lst.lst",".lst"))
+        if type == "Comma-Separated Values (*.csv)":
+            import csv
+            with open(path+".csv".replace(".csv.csv",".csv"),'w') as f:
+                writer=csv.writer(f,lineterminator='\n')
+                writer.writerows(self.data)
 
 class ExtendMdiSubWindowBase(QMdiSubWindow):
     pass
