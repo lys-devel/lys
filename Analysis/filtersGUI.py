@@ -353,6 +353,7 @@ class RegionSelectWidget(QGridLayout):
         self.addWidget(self.__y1,1,3)
         self.addWidget(self.__y2,1,4)
     def __loadFromPrev(self,arg):
+        from ExtendAnalysis import PreviewWindow
         p=PreviewWindow.SelectedArea()
         if p is None:
             return

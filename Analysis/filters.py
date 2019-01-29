@@ -126,10 +126,10 @@ class SelectRegionFilter(FilterInterface):
     def __init__(self, range):
         self._range=range
     def _execute(self,wave,**kwargs):
-        wave.data=self._selrange(wave.data,self._range)
         r=self._range
         wave.x=np.array(wave.x)[r[0]:r[1]]
         wave.y=np.array(wave.y)[r[2]:r[3]]
+        wave.data=self._selrange(wave.data,self._range)
 
 class Filters(object):
     def __init__(self,filters):
