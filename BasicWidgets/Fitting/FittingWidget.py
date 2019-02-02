@@ -151,6 +151,8 @@ class FittingWidget(QWidget):
         if self.csr.isChecked():
             c1=self.canvas.getAnchorInfo(1)[1][0]
             c2=self.canvas.getAnchorInfo(2)[1][0]
+            c1=np.argmin(np.abs(self.wave.x-c1))
+            c2=np.argmin(np.abs(self.wave.x-c2))
             res=fit.fit(self.wave.x[c1:c2], self.wave.data[c1:c2], guess=guess, bounds=bounds)
         else:
             res=fit.fit(self.wave.x, self.wave.data, guess=guess, bounds=bounds)

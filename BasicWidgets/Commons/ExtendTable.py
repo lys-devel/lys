@@ -76,6 +76,7 @@ class ExtendTable(QTableView):
             self._model=self.ArrayModel(data, checkable)
         self.setModel(self._model)
         self.__data=data
+        self.__menu=[]
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
     def clear(self):
@@ -93,18 +94,20 @@ class ExtendTable(QTableView):
         return self.selectionModel().selectedIndexes()[0].row()
     def setData(self,value,row,column):
         self._model.setDataValue(value,row,column)
+    def addMenu(self,act):
+        self.__menu.append(act)
     def buildContextMenu(self):
         if self.__data is None:
             return
         menu = QMenu(self)
-        menulabels = ['Export']
-        actionlist = [menu.addAction( label ) for label in menulabels]
-        action = menu.exec_(QCursor.pos())
-        for act in actionlist:
-            if act.text() == "Export":
-                filt=""
-                for f in self.__data.SupportedFormats():
-                    filt=filt+f+";;"
-                filt=filt[:len(filt)-2]
-                path, type=QFileDialog.getSaveFileName(filter=filt)
-                self.__data.export(path,type=type)
+        for act in self.__menu:
+            menu.addAction(act)
+        menu.addAction(QAction("Export",self,triggered=self._export))
+        menu.exec_(QCursor.pos())
+    def _export(self):
+        filt=""
+        for f in self.__data.SupportedFormats():
+            filt=filt+f+";;"
+        filt=filt[:len(filt)-2]
+        path, type=QFileDialog.getSaveFileName(filter=filt)
+        self.__data.export(path,type=type)

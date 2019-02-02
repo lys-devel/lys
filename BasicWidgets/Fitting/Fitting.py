@@ -50,7 +50,6 @@ class Fitting(object):
             res, tmp = optimize.curve_fit(f.func,xdata,ydata,estimation,bounds=(b_low,b_high))
             for i in fixed:
                 np.insert(res,i,bounds[0][i])
-        print(res)
         return res, tmp
 
 if __name__ == '__main__':
