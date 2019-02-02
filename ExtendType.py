@@ -257,7 +257,11 @@ class AutoSaved(object):
             if m() is None:
                 self.__modListener.remove(m)
             else:
-                m()(self)
+                try:
+                    m()(self)
+                except RuntimeError:
+                    logging.debug("[AutoSaved] mod listener is removed as C object has been deleted.")
+                    self.__modListener.remove(m)
 class Wave(AutoSaved):
     class _wavedata(ExtendObject):
         def _init(self):
