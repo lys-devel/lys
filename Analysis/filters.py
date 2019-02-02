@@ -1,6 +1,7 @@
 import numpy as np
 import scipy
 from scipy import signal
+from scipy.ndimage.interpolation import rotate
 import cv2
 from ExtendAnalysis import Wave
 
@@ -130,7 +131,23 @@ class SelectRegionFilter(FilterInterface):
         r=self._range
         wave.x=np.array(wave.x)[r[0]:r[1]]
         wave.y=np.array(wave.y)[r[2]:r[3]]
-
+"""
+class SymmetrizationFilter(FilterInterface):
+    #position=(x,y)
+    def __init__(self,position,angle):
+        self._pos=position
+        self._ang=angle
+    def _execute(self,wave,**kwargs):
+        rotated=rotate(wave.data,self._ang)
+        p_orig = np.array([pos[0]-(wave.data.shape[1]-1)/2,pos[1]-(wave.data.shape[0]-1)/2])
+        c_rot = np.array([rotated.shape[0]-1)/2, (rotated.shape[1]-1)/2])
+        t=self._ang/180*np.pi
+        R=np.array([[np.cos(t),-np.sin(t)],[np.sin(t),np.cos(t)]])
+        p_rot=c_rot+R*p_orig
+        w=Wave()
+        w.data=rotated
+        return w
+"""
 class Filters(object):
     def __init__(self,filters):
         self._filters=[]
