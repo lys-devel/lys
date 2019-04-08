@@ -489,6 +489,18 @@ class Wave(AutoSaved):
             with open(path+".csv".replace(".csv.csv",".csv"),'w') as f:
                 writer=csv.writer(f,lineterminator='\n')
                 writer.writerows(self.data)
+    @staticmethod
+    def importFrom(path):
+        p,ext=os.path.splitext(path)
+        if ext=="npz":
+            w=Wave(path)
+            w.Disconnect()
+            return w
+        else:
+            data=np.loadtxt(path,delimiter=",")
+            w=Wave()
+            w.data=data
+            return w
 class Test_AutoSaved(unittest.TestCase):
     def test_wave(self):
         w=Wave('test.npz')
