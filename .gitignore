@@ -9,3 +9,4 @@ valtest
 *.dic
 *.val
 *.str
+ExtendAnalysis.egg-info/

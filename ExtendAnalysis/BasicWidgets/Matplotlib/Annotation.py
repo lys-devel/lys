@@ -177,9 +177,9 @@ class TextAnnotationCanvas(AnnotationHidableCanvas):
         super().__init__(dpi)
         self._registerType('text')
     @_saveCanvas
-    def addText(self,text,axis=Axis.BottomLeft,appearance=None,id=None, x=0.5, y=0.5, box=dict(boxstyle='round', fc='w'), size=10):
+    def addText(self,text,axis=Axis.BottomLeft,appearance=None,id=None, x=0.5, y=0.5, box=dict(boxstyle='round', fc='w'), size=10, picker=True):
         axes=self._getAxesFrom(axis)
-        a=axes.text(x,y,text,transform=axes.transAxes,picker=True,bbox=box,size=size)
+        a=axes.text(x,y,text,transform=axes.transAxes,picker=picker,bbox=box,size=size)
         return self.addAnnotation('text',text,a,appearance,id)
     @_saveCanvas
     def setAnnotationText(self,indexes,txt):

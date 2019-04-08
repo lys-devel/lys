@@ -9,7 +9,6 @@ from .Tasks import *
 from .Analysis import filters, filtersGUI
 from .MainWindow import create
 
-
 def handle_exception(exc_type, exc_value, exc_traceback):
     """ handle all exceptions """
     if issubclass(exc_type, KeyboardInterrupt):

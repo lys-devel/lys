@@ -12,6 +12,7 @@ pg.setConfigOption('foreground', 'k')
 
 class ExtendCanvas(ResizableCanvas):
     keyPressed=pyqtSignal(QKeyEvent)
+    clicked=pyqtSignal(float,float)
     savedDict={}
     def __init__(self, dpi=100):
         self.saveflg=False
@@ -108,6 +109,7 @@ class ExtendCanvas(ResizableCanvas):
                 return super().OnMouseDown(event)
             self.modf()(self)
         elif event.button ==1:
+            self.clicked.emit(*self.__GlobalToAxis(event.x,event.y,self.axes))
             self.annot=self.getPickedAnnotation()
             if self.annot is not None:
                 self.annotindex=self.annot.get_zorder()

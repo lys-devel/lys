@@ -208,7 +208,6 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
             for im in self.getImages():
                 max=np.nanmax([*im.wave.x,max])
                 min=np.nanmin([*im.wave.x,min])
-        print(max,min)
         if np.isnan(max) or np.isnan(min):
             return
         if len(self.getImages())==0:

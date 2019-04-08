@@ -36,7 +36,6 @@ def _notSaveCanvas(func):
     return wrapper
 
 class FigureCanvasBase(FigureCanvas):
-    waveAppended=pyqtSignal(int)
     def __init__(self, dpi=100):
         self.fig=Figure(dpi=dpi)
         super().__init__(self.fig)
@@ -165,7 +164,6 @@ class FigureCanvasBase(FigureCanvas):
         if not reuse:
             wav.addModifiedListener(self.OnWaveModified)
         self._emitDataChanged()
-        self.waveAppended.emit(ids)
         if appearance is not None:
             self.loadAppearance()
         self.draw()
