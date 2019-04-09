@@ -1,6 +1,5 @@
 *.pyc
 *~
-test
 .com_settings
 _com_settings
 valtest
@@ -10,3 +9,5 @@ valtest
 *.val
 *.str
 ExtendAnalysis.egg-info/
+test/.lys/
+test/proc.py

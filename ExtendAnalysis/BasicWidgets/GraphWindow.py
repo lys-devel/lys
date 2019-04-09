@@ -110,6 +110,11 @@ class Graph(AutoSavedWindow):
         g.canvas.EnableDraw(True)
         return g
 
+def display(w):
+    g=Graph()
+    g.Append(w)
+    return g
+
 class PreviewWindow(ExtendMdiSubWindow):
     instance=None
     def __new__(cls,list):
