@@ -92,7 +92,7 @@ class AnnotationSelectionBox(QTreeView):
         i=1
         for l in list:
             self.__model.setItem(len(list)-i,0,QStandardItem(l.name))
-            self.__model.setItem(len(list)-i,1,QStandardItem(self.canvas.axesName(l.obj.axes)))
+            self.__model.setItem(len(list)-i,1,QStandardItem(l.axes.name))
             self.__model.setItem(len(list)-i,2,QStandardItem(str(l.id)))
             i+=1
 

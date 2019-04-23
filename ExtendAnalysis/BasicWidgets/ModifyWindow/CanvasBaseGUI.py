@@ -87,7 +87,7 @@ class DataSelectionBox(QTreeView):
         i=1
         for l in list:
             self.__model.setItem(len(list)-i,0,QStandardItem(l.wave.Name()))
-            self.__model.setItem(len(list)-i,1,QStandardItem(self.canvas.axesName(l.axis)))
+            self.__model.setItem(len(list)-i,1,QStandardItem(self.canvas.axesName(l.axes)))
             self.__model.setItem(len(list)-i,2,QStandardItem(str(l.id)))
             i+=1
         self.OnDataSelected()

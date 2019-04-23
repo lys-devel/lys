@@ -41,8 +41,8 @@ class ModifyWindow(ExtendMdiSubWindow):
         self._tab.addTab(_AxisTab(canvas),"Axis")
         self._tab.addTab(_LineTab(canvas),"Lines")
         self._tab.addTab(_ImageTab(canvas),"Images")
+        self._tab.addTab(_AnnotationTab(canvas),"Annot.")
         if isinstance(canvas,ExtendCanvas):
-            self._tab.addTab(_AnnotationTab(canvas),"Annot.")
             self._tab.addTab(SaveBox(canvas),'Save')
         self.__list.append('Axis')
         self.__list.append('Lines')
@@ -143,7 +143,10 @@ class _AnnotationTab(QWidget):
         layout=QVBoxLayout(self)
         tab=QTabWidget()
         tab.addTab(AnnotationBox(canvas),'Text')
-        tab.addTab(LineAnnotationBox(canvas),'Line')
+        if canvas.hasAnnotType('line'):
+            tab.addTab(LineAnnotationBox(canvas),'Line')
+        if canvas.hasAnnotType('rect'):
+            tab.addTab(RectAnnotationBox(canvas),'Rect')
         self._test=QPushButton('Legend(test)')
         self._test.clicked.connect(self.test)
         tab.addTab(self._test,'Legend')

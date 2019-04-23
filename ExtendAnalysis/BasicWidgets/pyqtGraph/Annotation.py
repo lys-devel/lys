@@ -15,6 +15,7 @@ class AnnotationData(object):
         self.obj=obj
         self.id=idn
         self.appearance=appearance
+        self.axes=Axis.BottomLeft
 
 class AnnotatableCanvas(AreaSettingCanvas):
     def __init__(self,dpi):
@@ -34,6 +35,8 @@ class AnnotatableCanvas(AreaSettingCanvas):
         self._selected[type]=[]
         self._id_start[type]=self._id_seed
         self._id_seed+=300
+    def hasAnnotType(self,type):
+        return type in self._list
     @_saveCanvas
     def addAnnotation(self,type,name,obj,appearance=None,id=None):
         if id is None:
@@ -64,12 +67,24 @@ class AnnotatableCanvas(AreaSettingCanvas):
         for i in indexes:
             for d in self._list[type]:
                 if i==d.id:
-                    d.axis.removeItem(obj)
+                    self.axes.removeItem(d.obj)
                     self._list[type].remove(d)
         self._reorderAnnotation(type)
         self._emitAnnotationChanged(type)
-    def getAnnotations(self,type='text'):
-        return self._list[type]
+    def getAnnotations(self,type='text',indexes=None):
+        if indexes is None:
+            return self._list[type]
+        else:
+            res=[]
+            if hasattr(indexes, "__iter__"):
+                list=indexes
+            else:
+                list=[indexes]
+            for i in list:
+                for d in self._list[type]:
+                    if i==d.id:
+                        res.append(d)
+            return res
     def getSelectedAnnotations(self,type='text'):
         return self._sel[type]
     def setSelectedAnnotations(self,indexes,type='text'):

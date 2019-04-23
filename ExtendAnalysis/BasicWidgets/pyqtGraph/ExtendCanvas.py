@@ -4,13 +4,13 @@ from enum import Enum
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import pyqtgraph as pg
-from .AreaSettings import *
+from .RectAnnotation import *
 from ExtendAnalysis import *
 
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
 
-class ExtendCanvas(ResizableCanvas):
+class ExtendCanvas(RectAnnotationSettingCanvas):
     keyPressed=pyqtSignal(QKeyEvent)
     clicked=pyqtSignal(float,float)
     savedDict={}
@@ -21,9 +21,8 @@ class ExtendCanvas(ResizableCanvas):
         self.axes.mouseDragEvent=self._onDrag
         self.modf=weakref.WeakMethod(self.defModFunc)
         self.setFocusPolicy(Qt.StrongFocus)
-        #self.axes.menu.popup=self.buildContextMenu
+        self.axes.menu.popup=self.buildContextMenu
         return
-        self.EnableDraw(False)
         self.moveText=False
         self.textPosStart=None
         self.cursorPosStart=None
@@ -127,7 +126,7 @@ class ExtendCanvas(ResizableCanvas):
             return super().OnMouseDown(event)
     def buildContextMenu(self, *args):
         menu = super().constructContextMenu()
-        QMenu.popup(menu,*args)
+        action = menu.exec_(QCursor.pos())
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
         self.keyPressed.emit(e)

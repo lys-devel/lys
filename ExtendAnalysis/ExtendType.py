@@ -628,7 +628,7 @@ class SizeAdjustableWindow(ExtendMdiSubWindowBase):
 class AttachableWindow(SizeAdjustableWindow):
     resized=pyqtSignal()
     moved=pyqtSignal()
-    closed=pyqtSignal()
+    closed=pyqtSignal(object)
     def __init__(self):
         super().__init__()
         self._parent=None
@@ -649,7 +649,7 @@ class AttachableWindow(SizeAdjustableWindow):
             self._parent.moved.disconnect(self.attachTo)
             self._parent.resized.disconnect(self.attachTo)
             self._parent.closed.disconnect(self.close)
-        self.closed.emit()
+        self.closed.emit(self)
         return super().closeEvent(event)
     def attachTo(self):
         if self._parent is not None:

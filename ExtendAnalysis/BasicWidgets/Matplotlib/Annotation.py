@@ -21,6 +21,7 @@ class AnnotationData(object):
         self.obj=obj
         self.id=idn
         self.appearance=appearance
+        self.axes=self.obj.axes
 
 class AnnotatableCanvas(AreaSettingCanvas):
     def __init__(self,dpi):
@@ -40,6 +41,8 @@ class AnnotatableCanvas(AreaSettingCanvas):
         self._selected[type]=[]
         self._id_start[type]=self._id_seed
         self._id_seed+=300
+    def hasAnnotType(self,type):
+        return type in self._list
     @_saveCanvas
     def addAnnotation(self,type,name,obj,appearance=None,id=None):
         if id is None:
