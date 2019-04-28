@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import matplotlib
+from abc import ABCMeta, abstractmethod
 
 from ExtendAnalysis import *
 from .AreaSettings import *
@@ -43,7 +44,10 @@ class AnnotatableCanvas(AreaSettingCanvas):
             ids=self._id_start[type]+len(self._list[type])
         else:
             ids=id
-        self.axes.addItem(obj)
+        if isinstance(obj,AnnotationObject):
+            obj.addedTo(self.axes)
+        else:
+            self.axes.addItem(obj)
         obj.setZValue(ids)
         if appearance is None:
             self._list[type].insert(ids-self._id_start[type],AnnotationData(name,obj,ids,{}))
@@ -153,7 +157,6 @@ class AnnotatableCanvas(AreaSettingCanvas):
                 self._edited[type].remove(l)
             else:
                 l().OnAnnotationEdited()
-
 class AnnotationHidableCanvas(AnnotatableCanvas):
     def saveAnnotAppearance(self):
         super().saveAnnotAppearance()

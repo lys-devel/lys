@@ -105,8 +105,11 @@ def __loadDm3(name):
     w=Wave()
     w.data=data.imagedata
     w.x=np.arange(0,data.pxsize[0]*w.data.shape[0],data.pxsize[0])
+    print(w.data.ndim)
     if w.data.ndim>=2:
+        print("debug001")
         w.y=np.arange(0,data.pxsize[0]*w.data.shape[1],data.pxsize[0])
+        print(np.arange(0,data.pxsize[0]*w.data.shape[1],data.pxsize[0]))
     w.note={}
     try:
         w.note['unit']=data.pxsize[1]

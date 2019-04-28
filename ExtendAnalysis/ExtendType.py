@@ -263,27 +263,56 @@ class AutoSaved(object):
 class Wave(AutoSaved):
     class _wavedata(ExtendObject):
         def _init(self):
-            self.data=[]
-            self.x=None
-            self.y=None
-            self.z=None
+            self.axes=[np.array(None)]
+            self.data=np.array(None)
             self.note=None
         def _load(self,file):
             tmp=np.load(file)
+            self.axes=[np.array(None) for i in range(tmp['data'].ndim)]
             self.data=tmp['data']
-            self.x=tmp['x']
-            self.y=tmp['y']
-            self.z=tmp['z']
+            if 'x' in tmp and len(self.axes) > 0:
+                self.axes[0]=tmp['x']
+            if 'y' in tmp and len(self.axes) > 1:
+                self.axes[1]=tmp['y']
+            if 'z' in tmp and len(self.axes) > 2:
+                self.axes[2]=tmp['z']
+            if 'axes' in tmp:
+                self.axes=tmp['axes']
             self.note=tmp['note'][()]
         def _save(self,file):
-            np.savez(file, data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
+            np.savez(file, data=self.data, axes=self.axes,note=self.note)
         def _vallist(self):
-            return ['data','x','y','z','note']
+            return ['data','x','y','z','note','axes']
         def __setattr__(self,key,value):
-            if key in ['data','x','y','z']:
+            if key == 'x' and len(self.axes) > 0:
+                self.axes[0]=np.array(value)
+            elif key == 'y' and len(self.axes) > 1:
+                self.axes[1]=np.array(value)
+            elif key == 'z' and len(self.axes) > 2:
+                self.axes[2]=np.array(value)
+            elif key in ['data']:
                 super().__setattr__(key,np.array(value))
+                while(len(self.axes) < self.data.ndim): self.axes.append(np.array(None))
+                while(len(self.axes) > self.data.ndim): self.axes.pop(len(self.axes)-1)
             else:
                 super().__setattr__(key,value)
+        def __getattribute__(self,key):
+            if key == 'x':
+                if len(self.axes) > 0:
+                    return self.axes[0]
+                else:
+                    return np.array(None)
+            if key == 'y':
+                if len(self.axes) > 1:
+                    return self.axes[1]
+                else:
+                    return np.array(None)
+            if key == 'z':
+                if len(self.axes) > 2:
+                    return self.axes[2]
+                else:
+                    return np.array(None)
+            return super().__getattribute__(key)
     def _newobj(self,file):
         return self._wavedata(file)
     def __getattribute__(self,key):

@@ -1,6 +1,88 @@
 from ExtendAnalysis import *
+from dask.array.core import Array as DArray
+import dask.array as da
+
+class DaskWave(object):
+    def __init__(self,wave,axes=None,chunks=64):
+        if isinstance(wave,Wave):
+            self.__fromWave(wave,axes,chunks)
+        elif isinstance(wave,DArray):
+            self.__fromda(wave,axes,chunks)
+    def __fromWave(self,wave,axes,chunks):
+        self.data=da.from_array(wave.data,chunks=chunks)
+        if axes is None:
+            self.axes=wave.axes
+        else:
+            self.axes=axes
+    def toWave(self):
+        w=Wave()
+        w.data=self.data.compute()
+        w.axes=self.axes
+        return w
+    def __fromda(self,wave,axes,chunks):
+        self.data=wave
+        self.axes=axes
+    def shape(self):
+        return self.data.shape
+    def sum(self,axis):
+        data=self.data.sum(axis)
+        axes=[]
+        for i, ax in enumerate(self.axes):
+            if not i == axis:
+                axes.append(ax)
+        return DaskWave(data,axes=axes)
+    def __getitem__(self,key):
+        if isinstance(key,tuple):
+            data=self.data[key]
+            axes=[]
+            for s, ax in zip(key,self.axes):
+                axes.append(self.axes)
+            return DaskWave(data,axes=axes)
+
+class AllExecutor(object):
+    def __init__(self,axis):
+        self.axis=axis
+    def getAxes(self):
+        return [self.axis]
+    def execute(self,wave,axis_offset,ignore=[]):
+        if self.axis in ignore:
+            return wave, 0
+        else:
+            return wave.sum(self.axis-axis_offset), 1
+class RectExecutor(object):
+    def __init__(self,axes,range):
+        self.axes=axes
+        self.setRange(range)
+    def getAxes(self):
+        return self.axes
+    def setRange(self,range):
+        self.range=[]
+        for r in range:
+            self.range.append(slice(*range))
+    def execute(self,wave,axis_offset,ignore=[]):
+        off=0
+        tmp = wave
+        for i, r in enumerate(self.axes,self.range):
+            if not i in ignore:
+                sl = [slice(None)]*tmp.data.ndim
+                sl[i] = r
+                off += 1
+                tmp = tmp[tuple(sl)].sum(i-axis_offset-off)
+        return tmp, off
 
 class MultiCut(AnalysisWindow):
+    class controlledGraphs(object):
+        def __init__(self):
+            self.__graphs=[]
+            self.__graphAxis=[]
+        def append(self,graph,axes):
+            self.__graphs.append(graph)
+            self.__graphAxis.append(axes)
+            g.closed.connect(self.__graphClosed)
+        def __graphClosed(self,graph):
+            i=self.__graphs.index(graph)
+            self.__graphs.pop(i)
+            self.__graphAxis.pop(i)
     class _axisWidget(QWidget):
         valueChanged=pyqtSignal(object,object)
         def __init__(self, n):
@@ -43,15 +125,19 @@ class MultiCut(AnalysisWindow):
         self.wave=None
         self.axes=[]
         self.ranges=[]
-        self.__graphs=[]
-        self.__graphAxis=[]
+        self.graphs=self.controlledGraphs()
+        self.__executors=[]
     def __initlayout__(self):
         disp=QPushButton("Display",clicked=self.display)
+        rx=QPushButton("Region (X)",clicked=self._regx)
+        ry=QPushButton("Region (Y)",clicked=self._regy)
         pt=QPushButton("Point",clicked=self._point)
         rt=QPushButton("Rect",clicked=self._rect)
         cc=QPushButton("Circle",clicked=self._circle)
 
         hbtn=QHBoxLayout()
+        hbtn.addWidget(rx)
+        hbtn.addWidget(ry)
         hbtn.addWidget(pt)
         hbtn.addWidget(rt)
         hbtn.addWidget(cc)
@@ -83,9 +169,10 @@ class MultiCut(AnalysisWindow):
         else:
             fname=file
         if os.path.exists(fname):
-            self.wave=LoadFile.load(fname)
+            self.wave=DaskWave(Wave(fname))
             self.__file.setText(fname)
             self.__resetLayout()
+            self.__executors=[AllExecutor(i) for i in range(self.wave.data.ndim)]
     def __resetLayout(self):
         for i in range(len(self.wave.shape())):
             wid=self._axisWidget(i)
@@ -99,30 +186,18 @@ class MultiCut(AnalysisWindow):
         for i in range(len(self.wave.shape())):
             if self.axes[i].isChecked():
                 checked.append(i)
-        if len(checked)==2:
-            g=self._disp2D(checked)
-        elif len(checked)==1:
-            self._disp1D(checked)
+        if len(checked) in [1,2]:
+            g=display(self._makeWave(checked))
+            self.graphs.append(g,checked)
         else:
             return
-        self.__graphs.append(g)
-        self.__graphAxis.append(checked)
-        g.closed.connect(self.__graphClosed)
-    def __graphClosed(self,graph):
-        i=self.__graphs.index(graph)
-        self.__graphs.pop(i)
-        self.__graphAxis.pop(i)
-    def _disp2D(self,checked):
-        j=0
-        res=self.wave.data
-        for i in range(len(self.wave.shape())):
-            if i in checked:
-                j+=1
-            else:
-                res=np.sum(res,axis=j)
-        w=Wave()
-        w.data=res
-        return display(w)
+    def _makeWave(self,axes):
+        tmp=self.wave
+        offset=0
+        for e in self.__executors:
+            tmp, off = e.execute(tmp,offset,ignore=axes)
+            offset += off
+        return tmp.toWave()
     def _point(self):
         pass
     def _rect(self):

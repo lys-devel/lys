@@ -4,13 +4,13 @@ from enum import Enum
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import pyqtgraph as pg
-from .RectAnnotation import *
+from .RegionAnnot import *
 from ExtendAnalysis import *
 
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
 
-class ExtendCanvas(RectAnnotationSettingCanvas):
+class ExtendCanvas(RegionAnnotationSettingCanvas):
     keyPressed=pyqtSignal(QKeyEvent)
     clicked=pyqtSignal(float,float)
     savedDict={}
