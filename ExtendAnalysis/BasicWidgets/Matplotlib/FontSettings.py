@@ -1,6 +1,6 @@
 from .AxisSettings import *
 from ExtendAnalysis.BasicWidgets.Commons.FontInfo import *
-from .CanvasBase import _saveCanvas
+from .CanvasBase import saveCanvas
 
 class FontSelectableCanvas(TickAdjustableCanvas):
     def __init__(self,dpi=100):
@@ -35,7 +35,7 @@ class FontSelectableCanvas(TickAdjustableCanvas):
                 self.__listener.remove(l)
             else:
                 l().OnFontChanged(name)
-    @_saveCanvas
+    @saveCanvas
     def addFont(self,name):
         if not name in self.__font:
             self.__font[name]=FontInfo(self.__font['Default'].family)
@@ -45,11 +45,11 @@ class FontSelectableCanvas(TickAdjustableCanvas):
             if not self.__def[name]:
                 return self.__font[name]
         return self.__font['Default']
-    @_saveCanvas
+    @saveCanvas
     def setFont(self,font,name='Default'):
         self.__font[name]=font
         self._emit(name)
-    @_saveCanvas
+    @saveCanvas
     def setFontDefault(self,b,name):
         self.__def[name]=b
         self._emit(name)

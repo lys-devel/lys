@@ -28,4 +28,10 @@ def createMainWindow():
     create()
     sys.exit(__app.exec())
 
+def makeMainWindow():
+    create()
+
+def exitMainWindow():
+    sys.exit(__app.exec())
+
 sys.excepthook = handle_exception

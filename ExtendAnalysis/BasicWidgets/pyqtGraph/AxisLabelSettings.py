@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from .FontSettings import *
-from .CanvasBase import _saveCanvas
+from .CanvasBase import saveCanvas
 
 class AxisLabelAdjustableCanvas(FontSelectableCanvas):
     def __init__(self, dpi=100):
@@ -35,7 +35,7 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
         for axis in ['Left','Right','Top','Bottom']:
             if self.axisIsValid(axis):
                 self.setAxisLabelFont(axis,self.getFont('Axis'))
-    @_saveCanvas
+    @saveCanvas
     def setAxisLabel(self,axis,text):
         ax=self.fig.getAxis(axis.lower())
         b=self.getAxisLabelVisible(axis)
@@ -45,7 +45,7 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
     def getAxisLabel(self,axis):
         ax=self.fig.getAxis(axis.lower())
         return ax.label.toPlainText()
-    @_saveCanvas
+    @saveCanvas
     def setAxisLabelFont(self,axis,font):
         ax=self.fig.getAxis(axis.lower())
         css={'font-family': font.family, 'font-size': str(font.size)+"pt", "color": font.color}
@@ -68,7 +68,7 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
         else:
             color="#ffffff"
         return FontInfo(family,size,color)
-    @_saveCanvas
+    @saveCanvas
     def setAxisLabelVisible(self,axis,b):
         ax=self.fig.getAxis(axis.lower())
         ax.showLabel(b)
@@ -76,7 +76,7 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
     def getAxisLabelVisible(self,axis):
         ax=self.fig.getAxis(axis.lower())
         return ax.label.isVisible()
-    @_saveCanvas
+    @saveCanvas
     def setAxisLabelCoords(self,axis,pos):
         ax=self.fig.getAxis(axis.lower())
         if axis in ['Left','Right']:
@@ -116,7 +116,7 @@ class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
         for axis in ['Left','Right','Top','Bottom']:
             if self.axisIsValid(axis):
                 self.setTickLabelFont(axis,self.getFont('Tick'))
-    @_saveCanvas
+    @saveCanvas
     def setTickLabelVisible(self,axis,tf,mirror=False,which='both'):
         if mirror:
             ax=self.fig.getAxis(opposite[axis.lower()])
@@ -130,7 +130,7 @@ class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
         else:
             ax=self.fig.getAxis(axis.lower())
         return ax.style['showValues']
-    @_saveCanvas
+    @saveCanvas
     def setTickLabelFont(self,axis,font):
         ax=self.fig.getAxis(axis.lower())
         ax.tickFont=QFont(font.family,font.size)

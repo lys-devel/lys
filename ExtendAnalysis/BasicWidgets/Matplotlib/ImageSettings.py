@@ -12,12 +12,12 @@ from matplotlib import colors
 from ExtendAnalysis.ExtendType import *
 from .LineSettings import *
 
-from .CanvasBase import _saveCanvas
+from .CanvasBase import saveCanvas
 
 class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def __init__(self,dpi=100):
         super().__init__(dpi=dpi)
-    @_saveCanvas
+    @saveCanvas
     def autoColorRange(self,indexes):
         data=self.getDataFromIndexes(2,indexes)
         for d in data:
@@ -55,7 +55,7 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
         for d in data:
             res.append(d.obj.get_cmap().name)
         return res
-    @_saveCanvas
+    @saveCanvas
     def setColormap(self,cmap,indexes):
         data=self.getDataFromIndexes(2,indexes)
         for d in data:
@@ -67,7 +67,7 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
         for d in data:
             res.append((d.obj.norm.vmin,d.obj.norm.vmax))
         return res
-    @_saveCanvas
+    @saveCanvas
     def setColorRange(self,indexes,min,max,log=False):
         data=self.getDataFromIndexes(2,indexes)
         if log:

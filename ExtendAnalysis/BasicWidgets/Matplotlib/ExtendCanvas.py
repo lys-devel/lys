@@ -4,7 +4,7 @@ from enum import Enum
 from PyQt5.QtGui import *
 
 from .SaveSettings import *
-from .CanvasBase import _saveCanvas
+from .CanvasBase import saveCanvas
 
 class ExtendCanvas(SaveSettingCanvas):
     keyPressed=pyqtSignal(QKeyEvent)
@@ -129,7 +129,7 @@ class ExtendCanvas(SaveSettingCanvas):
                 mod.selectTab(tab)
                 break
             parent=parent.parentWidget()
-    @_saveCanvas
+    @saveCanvas
     def LoadFromDictionary(self,dictionary,path=home()):
         return super().LoadFromDictionary(dictionary,path)
     def SaveAsDictionary(self,dictionary,path=home()):

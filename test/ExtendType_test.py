@@ -81,8 +81,3 @@ class Wave_test(unittest.TestCase):
         self.assertTrue((w2.x == [1,2]).all())
         self.assertTrue((w2.y == [1,2]).all())
         self.assertTrue(w2.z is None)
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTests(unittest.makeSuite(Wave_test))
-    return suite

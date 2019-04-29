@@ -8,7 +8,7 @@ from matplotlib.lines import Line2D
 from matplotlib.image import AxesImage
 from matplotlib.text import Text
 from .LineAnnotation import *
-from .CanvasBase import _saveCanvas
+from .CanvasBase import saveCanvas
 
 class AnchorData(object):
     def __init__(self,obj,obj2,idn,target):

@@ -6,13 +6,13 @@ from PyQt5.QtWidgets import *
 
 from ExtendAnalysis import *
 from .LineAnnotation import *
-from .CanvasBase import _saveCanvas
+from .CanvasBase import saveCanvas
 
 class RectAnnotCanvas(LineAnnotationSettingCanvas):
     def __init__(self,dpi):
         super().__init__(dpi)
         self._registerType('rect')
-    @_saveCanvas
+    @saveCanvas
     def addRect(self,pos,size,axis=Axis.BottomLeft,appearance=None,id=None):
         roi=pg.RectROI(pos,size)
         roi.setPen(pg.mkPen(color='#000000'))
@@ -58,7 +58,7 @@ class RectAnnotColorAdjustableCanvas(RectAnnotCanvas):
         for d in data:
             if 'Color' in d.appearance:
                 self.setAnnotLineColor(d.appearance['Color'],d.id)
-    @_saveCanvas
+    @saveCanvas
     def setAnnotLineColor(self,color,indexes):
         data=self.getAnnotationFromIndexes(indexes,'rect')
         for d in data:
@@ -87,7 +87,7 @@ class AnnotRectStyleAdjustableCanvas(RectAnnotColorAdjustableCanvas):
                 self.setAnnotLineStyle(d.appearance['LineStyle'],d.id)
             if 'LineWidth' in d.appearance:
                 self.setAnnotLineWidth(d.appearance['LineWidth'],d.id)
-    @_saveCanvas
+    @saveCanvas
     def setAnnotLineStyle(self,style,indexes):
         data=self.getAnnotationFromIndexes(indexes,'rect')
         for d in data:
@@ -99,7 +99,7 @@ class AnnotRectStyleAdjustableCanvas(RectAnnotColorAdjustableCanvas):
         for d in data:
             res.append(self.__styles_inv[d.obj.pen.style()])
         return res
-    @_saveCanvas
+    @saveCanvas
     def setAnnotLineWidth(self,width,indexes):
         data=self.getAnnotationFromIndexes(indexes,'rect')
         for d in data:

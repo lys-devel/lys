@@ -139,7 +139,7 @@ class ExtendCanvas(RegionAnnotationSettingCanvas):
                 mod.selectTab(tab)
                 break
             parent=parent.parentWidget()
-    #@_saveCanvas
+    #@saveCanvas
     def LoadFromDictionary(self,dictionary,path=home()):
         return super().LoadFromDictionary(dictionary,path)
     def SaveAsDictionary(self,dictionary,path=home()):

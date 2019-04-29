@@ -7,7 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from ExtendAnalysis import *
-from .CanvasBase import _saveCanvas
+from .CanvasBase import saveCanvas
 from .ImageSettings import *
 
 class RangeSelectableCanvas(ImageSettingCanvas):
@@ -124,7 +124,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
                         self.setAutoScaleAxis(l)
                     else:
                         self.setAxisRange(dic[l],l)
-    @_saveCanvas
+    @saveCanvas
     def setAxisRange(self,range,axis):
         axes=self.getAxes(axis)
         if axes is None:
@@ -153,7 +153,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
                 l()()
             else:
                 self.__listener.remove(l)
-    @_saveCanvas
+    @saveCanvas
     def setAutoScaleAxis(self,axis):
         axes=self.getAxes(axis=axis)
         if axes is None:
@@ -172,7 +172,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
         if axis in ['Top','Bottom']:
             return axes.autoRangeEnabled()[0]!=False
 class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
-    @_saveCanvas
+    @saveCanvas
     def __ExpandAndShrink(self,mode,axis):
         if not self.axisIsValid(axis):
             return
@@ -293,7 +293,7 @@ class AxisAdjustableCanvas(AxisRangeRightClickCanvas):
         if not self.axisIsValid(Opposite[axis]):
             res.append(self.fig.axes[opposite[axis]]['item'])
         return res
-    @_saveCanvas
+    @saveCanvas
     def setAxisMode(self,axis,mod):
         ax=self._getAxisList(axis)
         for a in ax:
@@ -307,7 +307,7 @@ class AxisAdjustableCanvas(AxisRangeRightClickCanvas):
             return 'log'
         else:
             return 'linear'
-    @_saveCanvas
+    @saveCanvas
     def setAxisThick(self,axis,thick):
         ax=self._getAxisList(axis)
         for a in ax:
@@ -317,7 +317,7 @@ class AxisAdjustableCanvas(AxisRangeRightClickCanvas):
     def getAxisThick(self,axis):
         ax=self.fig.axes[axis.lower()]['item']
         return ax.pen().width()
-    @_saveCanvas
+    @saveCanvas
     def setAxisColor(self,axis,color):
         ax=self._getAxisList(axis)
         for a in ax:
@@ -327,7 +327,7 @@ class AxisAdjustableCanvas(AxisRangeRightClickCanvas):
     def getAxisColor(self,axis):
         ax=self.fig.axes[axis.lower()]['item']
         return ax.pen().color().name()
-    @_saveCanvas
+    @saveCanvas
     def setMirrorAxis(self,axis,value):
         ax=self.fig.axes[opposite[axis]]['item']
         ax.setVisible(value)
@@ -395,7 +395,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
                 ax.setStyle(tickLength=self._direction[axis]*self._length[axis])
             else:
                 ax.setStyle(tickLength=0)
-    @_saveCanvas
+    @saveCanvas
     def setAutoLocator(self,axis,n,which='major'):
         self._setAutoLocator(axis,n,which)
         if not self.axisIsValid(Opposite[axis]):
@@ -445,7 +445,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
             return self._major[axis]
         else:
             return self._minor[axis]
-    @_saveCanvas
+    @saveCanvas
     def setTickDirection(self,axis,direction):
         data={"in":-1, "out":1}
         for a in self.__alist(axis):
@@ -454,19 +454,19 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
     def getTickDirection(self,axis):
         if self._direction[axis] > 0: return 'out'
         else: return 'in'
-    @_saveCanvas
+    @saveCanvas
     def setTickWidth(self,axis,value,which='major'):
         self.setAxisThick(axis,value)
     def getTickWidth(self,axis,which='major'):
         return self.getAxisThick(axis)
-    @_saveCanvas
+    @saveCanvas
     def setTickLength(self,axis,value,which='major'):
         for a in self.__alist(axis):
             self._length[a]=int(value)
         self.__set()
     def getTickLength(self,axis,which='major'):
         return self._length[axis]
-    @_saveCanvas
+    @saveCanvas
     def setTickVisible(self,axis,tf,mirror=False,which='both'):
         if which in ['both','major']:
             if not mirror:

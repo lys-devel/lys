@@ -7,31 +7,8 @@ from PyQt5.QtWidgets import *
 import pyqtgraph as pg
 from ExtendAnalysis import *
 from ExtendAnalysis import LoadFile
-from ExtendAnalysis.BasicWidgets.Commons.Commons import *
+from ..CanvasInterface import *
 
-def _saveCanvas(func):
-    import functools
-    @functools.wraps(func)
-    def wrapper(*args,**kwargs):
-        if args[0].saveflg:
-            res=func(*args,**kwargs)
-        else:
-            args[0].saveflg=True
-            res=func(*args,**kwargs)
-            args[0].Save()
-            args[0].saveflg=False
-        return res
-    return wrapper
-def _notSaveCanvas(func):
-    import functools
-    @functools.wraps(func)
-    def wrapper(*args,**kwargs):
-        saved=args[0].saveflg
-        args[0].saveflg=True
-        res=func(*args,**kwargs)
-        args[0].saveflg=saved
-        return res
-    return wrapper
 class FigureCanvasBase(pg.PlotWidget):
     def __init__(self, dpi=100):
         super().__init__()
@@ -41,6 +18,7 @@ class FigureCanvasBase(pg.PlotWidget):
         self.__lisaxis=[]
         self._Datalist=[]
         self.__loadFlg=False
+        self.drawflg=True
         self.savef=None
         self.npen=0
     def RestoreSize(self):
@@ -50,7 +28,7 @@ class FigureCanvasBase(pg.PlotWidget):
     def Save(self):
         if (not self.__loadFlg) and (self.savef is not None):
             self.savef()()
-    @_saveCanvas
+    @saveCanvas
     def OnWaveModified(self,wave):
         flg=False
         self.__loadFlg=True
@@ -176,7 +154,7 @@ class FigureCanvasBase(pg.PlotWidget):
         else:
             ids=self._Append(wav,ax,id,dict(appearance),offset,zindex)
         return ids
-    @_saveCanvas
+    @saveCanvas
     def _Append(self,wav,ax,id,appearance,offset,zindex=0, reuse=False):
         if wav.data.ndim==1:
             ids=self._Append1D(wav,ax,id,appearance,offset)
@@ -284,7 +262,7 @@ class FigureCanvasBase(pg.PlotWidget):
         self._Datalist.insert(id+5000,WaveData(wav,im,ax,id,appearance,offset,z))
         self.setColormap('gray',id)
         return id
-    @_saveCanvas
+    @saveCanvas
     def Remove(self,indexes):
         if hasattr(indexes, '__iter__'):
             list=indexes
@@ -297,7 +275,7 @@ class FigureCanvasBase(pg.PlotWidget):
                     self._Datalist.remove(d)
         self._emitDataChanged()
         self.draw()
-    @_saveCanvas
+    @saveCanvas
     def Clear(self):
         for d in self._Datalist:
             d.obj.remove()
@@ -460,7 +438,7 @@ class DataSelectableCanvas(FigureCanvasBase):
             if d.id==id:
                 res=self._Datalist.index(d)
         return res
-    @_saveCanvas
+    @saveCanvas
     def moveItem(self,list,target=None):
         tar=eval(str(target))
         for l in list:
@@ -488,13 +466,13 @@ class DataHidableCanvas(DataSelectableCanvas):
         for d in data:
             if 'Visible' in d.appearance:
                 d.obj.setVisible(d.appearance['Visible'])
-    @_saveCanvas
+    @saveCanvas
     def hideData(self,dim,indexes):
         dat=self.getDataFromIndexes(dim,indexes)
         for d in dat:
             d.obj.setVisible(False)
         self.draw()
-    @_saveCanvas
+    @saveCanvas
     def showData(self,dim,indexes):
         dat=self.getDataFromIndexes(dim,indexes)
         for d in dat:
@@ -502,7 +480,7 @@ class DataHidableCanvas(DataSelectableCanvas):
         self.draw()
 
 class OffsetAdjustableCanvas(DataHidableCanvas):
-    @_saveCanvas
+    @saveCanvas
     def setOffset(self,offset,indexes):
         data=self.getDataFromIndexes(None,indexes)
         for d in data:

@@ -11,3 +11,4 @@ valtest
 ExtendAnalysis.egg-info/
 test/.lys/
 test/proc.py
+*.egg

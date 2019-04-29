@@ -9,7 +9,7 @@ from PyQt5.QtWidgets import *
 
 from ExtendAnalysis.ExtendType import *
 from .CanvasBase import *
-from .CanvasBase import _saveCanvas
+from .CanvasBase import saveCanvas
 
 class LineColorAdjustableCanvas(OffsetAdjustableCanvas):
     def saveAppearance(self):
@@ -35,7 +35,7 @@ class LineColorAdjustableCanvas(OffsetAdjustableCanvas):
             return pg.mkBrush(color=p)
         else:
             return p
-    @_saveCanvas
+    @saveCanvas
     def setDataColor(self,color,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
@@ -60,7 +60,7 @@ class LineStyleAdjustableCanvas(LineColorAdjustableCanvas):
         for d in data:
             d.appearance['LineStyle']=self.__styles_inv[self._getLinePen(d.obj).style()]
             d.appearance['LineWidth']=self._getLinePen(d.obj).width()
-    @_saveCanvas
+    @saveCanvas
     def setLineStyle(self,style,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
@@ -69,7 +69,7 @@ class LineStyleAdjustableCanvas(LineColorAdjustableCanvas):
             d.obj.setPen(p)
     def getLineStyle(self,indexes):
         return [self.__styles_inv[self._getLinePen(d.obj).style()] for d in self.getDataFromIndexes(1,indexes)]
-    @_saveCanvas
+    @saveCanvas
     def setLineWidth(self,width,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
@@ -99,21 +99,21 @@ class MarkerStyleAdjustableCanvas(LineStyleAdjustableCanvas):
             d.appearance['MarkerSize']=d.obj.opts['symbolSize']
             d.appearance['MarkerThick']=self._getSymbolPen(d.obj).width()
             d.appearance['MarkerFilling']=self._getSymbolBrush(d.obj).isOpaque()
-    @_saveCanvas
+    @saveCanvas
     def setMarker(self,marker,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
             d.obj.setSymbol(self.__symbols[marker])
     def getMarker(self,indexes):
         return [self.__symbols_inv[d.obj.opts['symbol']] for d in self.getDataFromIndexes(1,indexes)]
-    @_saveCanvas
+    @saveCanvas
     def setMarkerSize(self,size,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
             d.obj.setSymbolSize(size)
     def getMarkerSize(self,indexes):
         return [d.obj.opts['symbolSize'] for d in self.getDataFromIndexes(1,indexes)]
-    @_saveCanvas
+    @saveCanvas
     def setMarkerThick(self,size,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:
@@ -125,7 +125,7 @@ class MarkerStyleAdjustableCanvas(LineStyleAdjustableCanvas):
             d.obj.setPen(p)
     def getMarkerThick(self,indexes):
         return [self._getSymbolPen(d.obj).width() for d in self.getDataFromIndexes(1,indexes)]
-    @_saveCanvas
+    @saveCanvas
     def setMarkerFilling(self,type,indexes):
         data=self.getDataFromIndexes(1,indexes)
         for d in data:

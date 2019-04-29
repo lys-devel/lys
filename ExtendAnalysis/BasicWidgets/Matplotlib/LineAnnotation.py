@@ -14,13 +14,13 @@ from ExtendAnalysis.ExtendType import *
 from ExtendAnalysis import *
 
 from .Annotation import *
-from .CanvasBase import _saveCanvas
+from .CanvasBase import saveCanvas
 
 class LineAnnotCanvas(AnnotationSettingCanvas):
     def __init__(self,dpi):
         super().__init__(dpi)
         self._registerType('line')
-    @_saveCanvas
+    @saveCanvas
     def addLine(self,pos,axis=Axis.BottomLeft,appearance=None,id=None):
         axes=self._getAxesFrom(axis)
         a,=axes.plot((pos[0][0],pos[1][0]),(pos[0][1],pos[1][1]),picker=5)
@@ -81,7 +81,7 @@ class LineAnnotColorAdjustableCanvas(LineAnnotCanvas):
         for d in data:
             if 'LineColor' in d.appearance:
                 self.setAnnotLineColor(d.appearance['LineColor'],d.id)
-    @_saveCanvas
+    @saveCanvas
     def setAnnotLineColor(self,color,indexes):
         data=self.getAnnotationFromIndexes(indexes,'line')
         for d in data:
@@ -109,7 +109,7 @@ class AnnotLineStyleAdjustableCanvas(LineAnnotColorAdjustableCanvas):
                 d.obj.set_linestyle(d.appearance['LineStyle'])
             if 'LineWidth' in d.appearance:
                 d.obj.set_linewidth(d.appearance['LineWidth'])
-    @_saveCanvas
+    @saveCanvas
     def setAnnotLineStyle(self,style,indexes):
         data=self.getAnnotationFromIndexes(indexes,'line')
         for d in data:
@@ -122,7 +122,7 @@ class AnnotLineStyleAdjustableCanvas(LineAnnotColorAdjustableCanvas):
         for d in data:
             res.append(d.obj.get_linestyle().replace('-.','dashdot').replace('--','dashed').replace('-','solid').replace(':','dotted'))
         return res
-    @_saveCanvas
+    @saveCanvas
     def setAnnotLineWidth(self,width,indexes):
         data=self.getAnnotationFromIndexes(indexes,'line')
         for d in data:

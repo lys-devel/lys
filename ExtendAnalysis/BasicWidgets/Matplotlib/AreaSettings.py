@@ -10,7 +10,7 @@ from matplotlib import colors
 
 from ExtendAnalysis.ExtendType import *
 from .AxisLabelSettings import *
-from .CanvasBase import _saveCanvas, _notSaveCanvas
+from .CanvasBase import saveCanvas, notSaveCanvas
 
 class MarginAdjustableCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):
@@ -25,7 +25,7 @@ class MarginAdjustableCanvas(AxisSettingCanvas):
         if 'Margin' in dictionary:
             m=dictionary['Margin']
             self.setMargin(left=m[0],right=m[1],bottom=m[2],top=m[3])
-    @_saveCanvas
+    @saveCanvas
     def setMargin(self,left=0, right=0, bottom=0, top=0):
         l=left
         r=right
@@ -166,39 +166,39 @@ class ResizableCanvas(MarginAdjustableCanvas):
                 par.setHeight(0)
         if not (param[0]=='Plan' or param[0]=='Aspect'):
             self.axes.set_aspect('auto')
-    @_saveCanvas
+    @saveCanvas
     def setAutoWidth(self):
         self.__wmode='Auto'
         self._unfixAxis('Width')
         self._emitResizeEvent()
-    @_saveCanvas
+    @saveCanvas
     def setAutoHeight(self):
         self.__hmode='Auto'
         self._unfixAxis('Height')
         self._emitResizeEvent()
-    @_saveCanvas
+    @saveCanvas
     def setAutoSize(self):
         self.setAutoWidth()
         self.setAutoHeight()
-    @_saveCanvas
+    @saveCanvas
     def setAbsoluteWidth(self,width):
         if width==0:
             return
         self.__wmode='Absolute'
         self.__wvalue=width
         self._setAbsWid(width)
-    @_saveCanvas
+    @saveCanvas
     def setAbsoluteHeight(self,height):
         if height==0:
             return
         self.__hmode='Absolute'
         self.__hvalue=height
         self._setAbsHei(height)
-    @_saveCanvas
+    @saveCanvas
     def setAbsoluteSize(self,width,height):
         self.setAbsoluteWidth(width)
         self.setAbsoluteHeight(height)
-    @_saveCanvas
+    @saveCanvas
     def setWidthPerUnit(self,value,axis):
         if value==0:
             return
@@ -207,7 +207,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
         self.__waxis1=axis
         ran=self.getAxisRange(axis)
         self._setAbsWid(value*abs(ran[1]-ran[0]))
-    @_saveCanvas
+    @saveCanvas
     def setHeightPerUnit(self,value,axis):
         if value==0:
             return
@@ -259,7 +259,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
             if param[0]=='Aspect' or param[0]=='Plan':
                 par.setWidth(par.width())
         self._emitResizeEvent()
-    @_saveCanvas
+    @saveCanvas
     def parentResized(self):
         wp=self.getSizeParams('Width')
         hp=self.getSizeParams('Height')
@@ -267,21 +267,21 @@ class ResizableCanvas(MarginAdjustableCanvas):
             self.setSizeByArray(wp,'Width')
         if (hp[0]=='Aspect' or hp[0]=='Plan') and wp[0]=='Auto':
             self.setSizeByArray(hp,'Height')
-    @_saveCanvas
+    @saveCanvas
     def setWidthForHeight(self,aspect):
         if aspect==0:
             return
         self.__wmode='Aspect'
         self.__wvalue=aspect
         self._widthForHeight(aspect)
-    @_saveCanvas
+    @saveCanvas
     def setHeightForWidth(self,aspect):
         if aspect==0:
             return
         self.__hmode='Aspect'
         self.__hvalue=aspect
         self._heightForWidth(aspect)
-    @_saveCanvas
+    @saveCanvas
     def setWidthPlan(self,aspect,axis1,axis2):
         if aspect==0:
             return
@@ -292,7 +292,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
         ran1=self.getAxisRange(axis1)
         ran2=self.getAxisRange(axis2)
         self._widthForHeight(aspect*abs(ran1[1]-ran1[0])/abs(ran2[1]-ran2[0]))
-    @_saveCanvas
+    @saveCanvas
     def setHeightPlan(self,aspect,axis1,axis2):
         if aspect==0:
             return
@@ -340,7 +340,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
             return (self.__wmode,self.__wvalue,self.__waxis1,self.__waxis2)
         else:
             return (self.__hmode,self.__hvalue,self.__haxis1,self.__haxis2)
-    @_notSaveCanvas
+    @notSaveCanvas
     def RestoreSize(self,init=False):
         if init:
             self.__wmode='Auto'

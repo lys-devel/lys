@@ -12,7 +12,6 @@ from PyQt5.QtWidgets import *
 from matplotlib import lines, markers, ticker
 
 from ExtendAnalysis import *
-from .CanvasBase import _saveCanvas
 from .ImageSettings import *
 
 class RangeSelectableCanvas(ImageSettingCanvas):
@@ -153,7 +152,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
                         self.setAutoScaleAxis(l)
                     else:
                         self.setAxisRange(dic[l],l)
-    @_saveCanvas
+    @saveCanvas
     def setAxisRange(self,range,axis,auto=False):
         ax=axis
         axes=self.getAxes(axis)
@@ -186,7 +185,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
                 l()()
             else:
                 self.__listener.remove(l)
-    @_saveCanvas
+    @saveCanvas
     def setAutoScaleAxis(self,axis):
         ax=axis
         axes=self.getAxes(axis=ax)
@@ -246,7 +245,7 @@ class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
         x_loc=(x - ran.x0 * self.width())/((ran.x1 - ran.x0)*self.width())
         y_loc=(y - ran.y0 * self.height())/((ran.y1 - ran.y0)*self.height())
         return [x_loc,y_loc]
-    @_saveCanvas
+    @saveCanvas
     def __ExpandAndShrink(self,mode,axis):
         if not self.axisIsValid(axis):
             return
@@ -429,7 +428,7 @@ class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
                     self.setMirrorAxis(l,dic[l+"_mirror"])
                     self.setAxisColor(l,dic[l+"_color"])
                     self.setAxisThick(l,dic[l+"_thick"])
-    @_saveCanvas
+    @saveCanvas
     def setAxisMode(self,axis,mod):
         axes=self.getAxes(axis)
         if axes is None:
@@ -446,7 +445,7 @@ class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
             return axes.get_yscale()
         else:
             return axes.get_xscale()
-    @_saveCanvas
+    @saveCanvas
     def setAxisThick(self,axis,thick):
         axes=self.getAxes(axis)
         if axes is None:
@@ -457,7 +456,7 @@ class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
     def getAxisThick(self,axis):
         axes=self.getAxes(axis)
         return axes.spines[axis.lower()].get_linewidth()
-    @_saveCanvas
+    @saveCanvas
     def setAxisColor(self,axis,color):
         axes=self.getAxes(axis)
         if axes is None:
@@ -473,7 +472,7 @@ class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
         axes=self.getAxes(axis)
         color=axes.spines[axis.lower()].get_edgecolor()
         return color
-    @_saveCanvas
+    @saveCanvas
     def setMirrorAxis(self,axis,value):
         axes=self.getAxes(axis)
         if axes is None:
@@ -528,7 +527,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
                     self.setTickWidth(l,dic[l+"_tickwid2"],which='minor')
                     self.setAutoLocator(l,dic[l+"_ticknum2"],which='minor')
                     self.setTickDirection(l,dic[l+"_tickdir"])
-    @_saveCanvas
+    @saveCanvas
     def setAutoLocator(self,axis,n,which='major'):
         axs=self.getAxes(axis)
         if axs is None:
@@ -560,7 +559,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
             return 0
         else:
             return l()[1]-l()[0]
-    @_saveCanvas
+    @saveCanvas
     def setTickDirection(self,axis,direction):
         axes=self.getAxes(axis)
         if axes==None:
@@ -582,7 +581,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         elif axis=='Top':
             list=[3,2,'|']
         return data[list.index(marker)]
-    @_saveCanvas
+    @saveCanvas
     def setTickWidth(self,axis,value,which='major'):
         axes=self.getAxes(axis)
         if axes is None:
@@ -594,7 +593,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         self.draw()
     def getTickWidth(self,axis,which='major'):
         return self._getTickLine(axis,which).get_markeredgewidth()
-    @_saveCanvas
+    @saveCanvas
     def setTickLength(self,axis,value,which='major'):
         axes=self.getAxes(axis)
         if axes is None:
@@ -620,7 +619,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
             return tick.tick1line
         else:
             return tick.tick2line
-    @_saveCanvas
+    @saveCanvas
     def setTickVisible(self,axis,tf,mirror=False,which='both'):
         axes=self.getAxes(axis)
         if axes==None:

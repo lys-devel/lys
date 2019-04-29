@@ -1,0 +1,252 @@
+Welcome to Analysis program lys. Loading .py files...
+> from proc import *
+> from setup import *
+Invalid command.
+Traceback (most recent call last):
+  File "/mnt/d/Users/fly-bird/Documents/lys/ExtendAnalysis/ExtendShell.py", line 35, in SendCommand
+    exec(txt,globals())
+  File "<string>", line 1, in <module>
+  File "/mnt/d/Users/fly-bird/Documents/lys/setup.py", line 11, in <module>
+    test_suite="TestSuite.suite"
+  File "/home/asuka/.local/lib/python3.5/site-packages/setuptools/__init__.py", line 145, in setup
+    return distutils.core.setup(**attrs)
+  File "/usr/lib/python3.5/distutils/core.py", line 148, in setup
+    dist.run_commands()
+  File "/usr/lib/python3.5/distutils/dist.py", line 955, in run_commands
+    self.run_command(cmd)
+  File "/usr/lib/python3.5/distutils/dist.py", line 971, in run_command
+    log.info("running %s", command)
+  File "/usr/lib/python3.5/distutils/log.py", line 44, in info
+    self._log(INFO, msg, args)
+  File "/usr/lib/python3.5/distutils/log.py", line 30, in _log
+    if stream.errors == 'strict':
+AttributeError: 'Logger' object has no attribute 'errors'
+
+Error on loading setup.py.
+Workspace: default
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+Welcome to Analysis program lys. Loading .py files...
+> from proc import *
+> from setup import *
+Invalid command.
+Traceback (most recent call last):
+  File "/mnt/d/Users/fly-bird/Documents/lys/ExtendAnalysis/ExtendShell.py", line 35, in SendCommand
+    exec(txt,globals())
+  File "<string>", line 1, in <module>
+  File "/mnt/d/Users/fly-bird/Documents/lys/setup.py", line 11, in <module>
+    test_suite="TestSuite.suite"
+  File "/home/asuka/.local/lib/python3.5/site-packages/setuptools/__init__.py", line 145, in setup
+    return distutils.core.setup(**attrs)
+  File "/usr/lib/python3.5/distutils/core.py", line 148, in setup
+    dist.run_commands()
+  File "/usr/lib/python3.5/distutils/dist.py", line 955, in run_commands
+    self.run_command(cmd)
+  File "/usr/lib/python3.5/distutils/dist.py", line 971, in run_command
+    log.info("running %s", command)
+  File "/usr/lib/python3.5/distutils/log.py", line 44, in info
+    self._log(INFO, msg, args)
+  File "/usr/lib/python3.5/distutils/log.py", line 30, in _log
+    if stream.errors == 'strict':
+AttributeError: 'Logger' object has no attribute 'errors'
+
+Error on loading setup.py.
+debug
+debug
+Workspace: default
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
+debug
