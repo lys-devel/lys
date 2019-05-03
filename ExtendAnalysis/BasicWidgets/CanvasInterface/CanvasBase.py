@@ -1,6 +1,6 @@
-from enum import Enum
+from enum import IntEnum
 
-class Axis(Enum):
+class Axis(IntEnum):
     BottomLeft=1
     TopLeft=2
     BottomRight=3

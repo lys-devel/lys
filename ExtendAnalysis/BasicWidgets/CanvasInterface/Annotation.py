@@ -1,4 +1,9 @@
 import weakref
+
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
 from .CanvasBase import *
 from .SaveCanvas import *
 
@@ -77,7 +82,7 @@ class AnnotatableCanvasBase(object):
                     if i==d.id:
                         res.append(d)
             return res
-    def getAnnotationFromIndexes(self,indexes,type='all'):
+    def getAnnotationFromIndexes(self,indexes=None,type='all'):
         return self.getAnnotations(type,indexes)
     def addAnnotationChangeListener(self,listener,type='text'):
         self._changed[type].append(weakref.ref(listener))
@@ -97,6 +102,8 @@ class AnnotatableCanvasBase(object):
     def _removeObject(self,obj):
         raise NotImplementedError()
     def _setZOrder(self,obj,zorder):
+        raise NotImplementedError()
+    def _getAnnotAxis(self,obj):
         raise NotImplementedError()
 
 class AnnotationEditableCanvasBase(AnnotatableCanvasBase):
@@ -186,4 +193,78 @@ class AnnotationHidableCanvasBase(AnnotationOrderMovableCanvasBase):
     def _isVisible(self,obj):
         raise NotImplementedError()
     def _setVisible(self,obj,b):
+        raise NotImplementedError()
+
+class AnnotLineColorAdjustableCanvas(AnnotationHidableCanvasBase):
+    def saveAnnotAppearance(self):
+        super().saveAnnotAppearance()
+        data=self.getAnnotations()
+        for d in data:
+            d.appearance['LineColor']=self._getLineColor(d.obj)
+    def loadAnnotAppearance(self):
+        super().loadAnnotAppearance()
+        data=self.getAnnotations()
+        for d in data:
+            if 'LineColor' in d.appearance:
+                self.setAnnotLineColor(d.appearance['LineColor'],d.id)
+    @saveCanvas
+    def setAnnotLineColor(self,color,indexes):
+        data=self.getAnnotationFromIndexes(indexes)
+        for d in data:
+            self._setLineColor(d.obj,color)
+    def getAnnotLineColor(self,indexes):
+        data=self.getAnnotationFromIndexes(indexes)
+        return [self._getLineColor(d.obj) for d in data]
+    def _getLineColor(self,obj):
+        raise NotImplementedError()
+    def _setLineColor(self,obj,color):
+        raise NotImplementedError()
+
+class AnnotLineStyleAdjustableCanvas(AnnotLineColorAdjustableCanvas):
+    @saveCanvas
+    def setAnnotLineStyle(self,style,indexes):
+        data=self.getAnnotationFromIndexes(indexes)
+        for d in data:
+            self._setLineStyle(d.obj,style)
+            d.appearance['OldLineStyle']=self._getLineStyle(d.obj)
+    def getAnnotLineStyle(self,indexes):
+        data=self.getAnnotationFromIndexes(indexes)
+        return [self._getLineStyle(d.obj) for d in data]
+    @saveCanvas
+    def setAnnotLineWidth(self,width,indexes):
+        data=self.getAnnotationFromIndexes(indexes)
+        for d in data:
+            self._setLineWidth(d.obj,width)
+    def getAnnotLineWidth(self,indexes):
+        data=self.getAnnotationFromIndexes(indexes)
+        return [self._getLineWidth(d.obj) for d in data]
+    def saveAnnotAppearance(self):
+        super().saveAnnotAppearance()
+        data=self.getAnnotations()
+        for d in data:
+            d.appearance['LineStyle']=self._getLineStyle(d.obj)
+            d.appearance['LineWidth']=self._getLineWidth(d.obj)
+    def loadAnnotAppearance(self):
+        super().loadAnnotAppearance()
+        data=self.getAnnotations()
+        for d in data:
+            if 'LineStyle' in d.appearance:
+                self.setAnnotLineStyle(d.appearance['LineStyle'],d.id)
+            if 'LineWidth' in d.appearance:
+                self.setAnnotLineWidth(d.appearance['LineWidth'],d.id)
+    def _getLineStyle(self,obj):
+        pass
+    def _setLineStyle(self,obj,style):
+        pass
+    def _getLineWidth(self,obj):
+        pass
+    def _setLineWidth(self,obj,width):
+        pass
+
+class AnnotationCallbackCanvasBase(AnnotLineStyleAdjustableCanvas):
+    def addCallback(self,indexes,callback):
+        list=self.getAnnotations(indexes)
+        for l in list:
+            self._addAnnotCallback(l.obj,callback)
+    def _addAnnotCallback(self,obj,callback):
         raise NotImplementedError()

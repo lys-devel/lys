@@ -25,16 +25,7 @@ class TextAnnotationCanvasBase(object):
             dic[i]={}
             dic[i]['Text']=self._getText(data.obj)
             dic[i]['Appearance']=str(data.appearance)
-            axis = self._getAnnotAxis(data.obj)
-            if axis == Axis.BottomLeft:
-                axis=1
-            if axis == Axis.TopLeft:
-                axis=2
-            if axis == Axis.BottomRight:
-                axis=3
-            if axis == Axis.TopRight:
-                axis=4
-            dic[i]['Axis']=axis
+            dic[i]['Axis']=int(self._getAnnotAxis(data.obj))
         dictionary['Textlist']=dic
     def LoadFromDictionary(self,dictionary,path):
         if 'Textlist' in dictionary:
@@ -43,15 +34,7 @@ class TextAnnotationCanvasBase(object):
             while i in dic:
                 t=dic[i]['Text']
                 appearance=eval(dic[i]['Appearance'])
-                axis=dic[i]['Axis']
-                if axis==1:
-                    axis=Axis.BottomLeft
-                if axis==2:
-                    axis=Axis.TopLeft
-                if axis==3:
-                    axis=Axis.BottomRight
-                if axis==4:
-                    axis=Axis.TopRight
+                axis=Axis(dic[i]['Axis'])
                 self.addText(t,axis,appearance=appearance)
                 i+=1
     # methods to be implemented
@@ -60,6 +43,4 @@ class TextAnnotationCanvasBase(object):
     def _setText(self,obj,txt):
         raise NotImplementedError()
     def _getText(self,obj):
-        raise NotImplementedError()
-    def _getAnnotAxis(self,obj):
         raise NotImplementedError()

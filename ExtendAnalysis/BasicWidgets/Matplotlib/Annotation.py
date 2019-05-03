@@ -11,10 +11,10 @@ import matplotlib
 from ExtendAnalysis import *
 from .AreaSettings import *
 
-class AnnotatableCanvas(AreaSettingCanvas, AnnotationHidableCanvasBase):
+class AnnotatableCanvas(AreaSettingCanvas, AnnotLineStyleAdjustableCanvas):
     def __init__(self,dpi):
         super().__init__(dpi)
-        AnnotationHidableCanvasBase.__init__(self)
+        AnnotLineStyleAdjustableCanvas.__init__(self)
     def _addObject(self,obj):
         pass
     def _setZOrder(self,obj,ids):
@@ -25,7 +25,28 @@ class AnnotatableCanvas(AreaSettingCanvas, AnnotationHidableCanvasBase):
         obj.set_visible(b)
     def _isVisible(self,obj):
         return obj.get_visible()
-
+    def _getAnnotAxis(self,obj):
+        if obj.axes==self.axes:
+            return Axis.BottomLeft
+        if obj.axes==self.axes_ty:
+            return Axis.TopLeft
+        if obj.axes==self.axes_tx:
+            return Axis.BottomRight
+        if obj.axes==self.axes_txy:
+            return Axis.TopRight
+    def _setLineColor(self,obj,color):
+        obj.set_color(color)
+    def _getLineColor(self,obj):
+        return obj.get_color()
+    def _getLineStyle(self,obj):
+        return obj.get_linestyle().replace('-.','dashdot').replace('--','dashed').replace('-','solid').replace(':','dotted')
+    def _setLineStyle(self,obj,style):
+        obj.set_linestyle(style)
+    def _getLineWidth(self,obj):
+        return obj.get_linewidth()
+    def _setLineWidth(self,obj,width):
+        obj.set_linewidth(width)
+        
 class TextAnnotationCanvas(AnnotatableCanvas, TextAnnotationCanvasBase):
     def __init__(self,dpi):
         super().__init__(dpi)
@@ -37,15 +58,6 @@ class TextAnnotationCanvas(AnnotatableCanvas, TextAnnotationCanvasBase):
         obj.set_text(txt)
     def _getText(self,obj):
         return obj.get_text()
-    def _getAnnotAxis(self,obj):
-        if obj.axes==self.axes:
-            return Axis.BottomLeft
-        if obj.axes==self.axes_ty:
-            return Axis.TopLeft
-        if obj.axes==self.axes_tx:
-            return Axis.BottomRight
-        if obj.axes==self.axes_txy:
-            return Axis.TopRight
     def SaveAsDictionary(self,dictionary,path):
         AnnotatableCanvas.SaveAsDictionary(self,dictionary,path)
         TextAnnotationCanvasBase.SaveAsDictionary(self,dictionary,path)
