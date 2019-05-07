@@ -25,7 +25,7 @@ class CrosshairItem(GraphicsObject):
         self.lines[1].sigPositionChanged.connect(lambda: self.lineMoved(1))
         self.setMovable(True)
     def getPosition(self):
-        r = (self.lines[0].value(), self.lines[1].value())
+        r = (self.lines[1].value(), self.lines[0].value())
         return r
     def setPosition(self, pos):
         if self.lines[0].value() == pos[0] and self.lines[1].value() == pos[1]:

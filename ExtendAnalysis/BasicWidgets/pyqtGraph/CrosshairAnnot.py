@@ -57,3 +57,8 @@ class CrosshairAnnotCanvas(RegionAnnotCanvas, CrosshairAnnotationCanvasBase):
             return super()._setLineWidth(obj.lines[1],width)
         else:
             return super()._setLineStyle(obj,width)
+    def _addAnnotCallback(self,obj,callback):
+        if isinstance(obj,CrosshairItem):
+            obj.sigRegionChanged.connect(lambda roi: callback(roi.getPosition()))
+        else:
+            super()._addAnnotCallback(obj,callback)

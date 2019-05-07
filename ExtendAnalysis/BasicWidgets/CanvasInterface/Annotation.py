@@ -263,7 +263,7 @@ class AnnotLineStyleAdjustableCanvas(AnnotLineColorAdjustableCanvas):
 
 class AnnotationCallbackCanvasBase(AnnotLineStyleAdjustableCanvas):
     def addCallback(self,indexes,callback):
-        list=self.getAnnotations(indexes)
+        list=self.getAnnotations("all",indexes)
         for l in list:
             self._addAnnotCallback(l.obj,callback)
     def _addAnnotCallback(self,obj,callback):

@@ -479,14 +479,20 @@ class Wave(AutoSaved):
             return self.__average1D(args[0])
         if dim==2:
             return self.__average2D(args[0],args[1])
-    def posToPoint(self,pos):
-        x0=self.x[0]
-        x1=self.x[len(self.x)-1]
-        y0=self.y[0]
-        y1=self.y[len(self.y)-1]
-        dx=(x1-x0)/(len(self.x)-1)
-        dy=(y1-y0)/(len(self.y)-1)
-        return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
+    def posToPoint(self,pos,axis=None):
+        if axis is None:
+            x0=self.x[0]
+            x1=self.x[len(self.x)-1]
+            y0=self.y[0]
+            y1=self.y[len(self.y)-1]
+            dx=(x1-x0)/(len(self.x)-1)
+            dy=(y1-y0)/(len(self.y)-1)
+            return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
+        else:
+            x0=self.axes[axis][0]
+            x1=self.axes[axis][len(self.axes[axis])-1]
+            dx=(x1-x0)/(len(self.axes[axis])-1)
+            return int(round((pos-x0)/dx))
     def pointToPos(self,p):
         x0=self.x[0]
         x1=self.x[len(self.x)-1]

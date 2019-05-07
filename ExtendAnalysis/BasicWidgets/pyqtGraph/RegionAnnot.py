@@ -57,3 +57,9 @@ class RegionAnnotCanvas(RectAnnotCanvas, RegionAnnotationCanvasBase):
             return super()._setLineWidth(obj.lines[1],width)
         else:
             return super()._setLineStyle(obj,width)
+    def _addAnnotCallback(self,obj,callback):
+        if isinstance(obj,pg.LinearRegionItem):
+            obj.sigRegionChanged.connect(lambda roi: callback(roi.getRegion()))
+            obj.sigRegionChanged.emit(obj)
+        else:
+            super()._addAnnotCallback(obj,callback)

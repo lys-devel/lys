@@ -37,8 +37,6 @@ class AnnotatableCanvas(AreaSettingCanvas, AnnotationCallbackCanvasBase):
         return obj.pen.width()
     def _setLineWidth(self,obj,width):
         obj.pen.setWidth(width)
-    def _addAnnotCallback(self,obj,callback):
-        obj.sigRegionChanged.connect(callback)
 
 class TextAnnotationCanvas(AnnotatableCanvas, TextAnnotationCanvasBase):
     def __init__(self,dpi):

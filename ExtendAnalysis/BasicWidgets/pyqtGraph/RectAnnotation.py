@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import weakref
 import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -26,3 +27,9 @@ class RectAnnotCanvas(LineAnnotationSettingCanvas, RectAnnotationCanvasBase):
         return list(obj.pos())
     def _getRectSize(self,obj):
         return list(obj.size())
+    def _addAnnotCallback(self,obj,callback):
+        if isinstance(obj,pg.RectROI):
+            obj.sigRegionChanged.connect(lambda roi: callback([[roi.pos()[0],roi.pos()[0]+roi.size()[0]],[roi.pos()[1],roi.pos()[1]+roi.size()[1]]]))
+            obj.sigRegionChanged.emit(obj)
+        else:
+            super()._addAnnotCallback(obj,callback)

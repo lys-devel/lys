@@ -1,3 +1,4 @@
+import copy
 from ExtendAnalysis import *
 from dask.array.core import Array as DArray
 import dask.array as da
@@ -24,6 +25,14 @@ class DaskWave(object):
         self.axes=axes
     def shape(self):
         return self.data.shape
+    def posToPoint(self,pos,axis):
+        ax=self.axes[axis]
+        if (ax == np.array(None)).all():
+            return int(round(pos))
+        x0=self.ax[0]
+        x1=self.ax[len(self.ax)-1]
+        dx=(x1-x0)/(len(self.ax)-1)
+        return int(round((pos-x0)/dx))
     def sum(self,axis):
         data=self.data.sum(axis)
         axes=[]
@@ -38,9 +47,38 @@ class DaskWave(object):
             for s, ax in zip(key,self.axes):
                 axes.append(self.axes)
             return DaskWave(data,axes=axes)
+        else:
+            super().__getitem__(key)
 
-class AllExecutor(object):
+class ExecutorList(QObject):
+    updated = pyqtSignal(tuple)
+    def __init__(self):
+        super().__init__()
+        self.__exe=[]
+    def add(self,obj):
+        self.__exe.append(obj)
+        obj.updated.connect(self.updated.emit)
+    def __exeList(self,wave):
+        axes=[]
+        for e in self.__exe:
+            axes.extend(e.getAxes())
+        axes=list(set(axes))
+        res=list(self.__exe)
+        for i in range(wave.data.ndim):
+            if not i in axes:
+                res.append(AllExecutor(i))
+        return res
+    def makeWave(self,wave,axes):
+        tmp=wave
+        offset=0
+        for e in self.__exeList(wave):
+            tmp, off = e.execute(tmp,offset,ignore=axes)
+            offset += off
+        return tmp.toWave()
+class AllExecutor(QObject):
+    updated = pyqtSignal(tuple)
     def __init__(self,axis):
+        super().__init__()
         self.axis=axis
     def getAxes(self):
         return [self.axis]
@@ -49,26 +87,62 @@ class AllExecutor(object):
             return wave, 0
         else:
             return wave.sum(self.axis-axis_offset), 1
-class RectExecutor(object):
-    def __init__(self,axes,range):
-        self.axes=axes
-        self.setRange(range)
+class RegionExecutor(QObject):
+    updated = pyqtSignal(tuple)
+    def __init__(self,axes,range=None):
+        super().__init__()
+        if isinstance(axes,int):
+            self.axes=(axes,)
+        else:
+            self.axes=axes
+        if range is not None:
+            self.setRange(range)
     def getAxes(self):
         return self.axes
     def setRange(self,range):
         self.range=[]
-        for r in range:
-            self.range.append(slice(*range))
+        if isinstance(range[0],list):
+            for r in range:
+                self.range.append(r)
+        else:
+            self.range.append(range)
+        self.updated.emit(self.axes)
     def execute(self,wave,axis_offset,ignore=[]):
         off=0
         tmp = wave
-        for i, r in enumerate(self.axes,self.range):
+        for i, r in zip(self.axes,self.range):
             if not i in ignore:
                 sl = [slice(None)]*tmp.data.ndim
-                sl[i] = r
-                off += 1
+                sl[i-axis_offset-off] = slice(wave.posToPoint(r[0],i),wave.posToPoint(r[1],i))
                 tmp = tmp[tuple(sl)].sum(i-axis_offset-off)
+                off += 1
         return tmp, off
+    def callback(self,region):
+        self.setRange(region)
+class PointExecutor(QObject):
+    updated = pyqtSignal(tuple)
+    def __init__(self,axes,pos=None):
+        super().__init__()
+        self.axes=axes
+        if pos is not None:
+            self.setPosition(pos)
+    def getAxes(self):
+        return self.axes
+    def setPosition(self,pos):
+        self.position=pos
+        self.updated.emit(self.axes)
+    def execute(self,wave,axis_offset,ignore=[]):
+        off=0
+        tmp = wave
+        for i, p in zip(self.axes,self.position):
+            if not i in ignore:
+                sl = [slice(None)]*tmp.data.ndim
+                sl[i-off] = wave.posToPoint(p,i)
+                tmp = tmp[tuple(sl)]#.sum(i-axis_offset-off)
+                off += 1
+        return tmp, off
+    def callback(self,pos):
+        self.setPosition(pos)
 
 class MultiCut(AnalysisWindow):
     class controlledGraphs(object):
@@ -78,11 +152,16 @@ class MultiCut(AnalysisWindow):
         def append(self,graph,axes):
             self.__graphs.append(graph)
             self.__graphAxis.append(axes)
-            g.closed.connect(self.__graphClosed)
+            graph.closed.connect(self.__graphClosed)
         def __graphClosed(self,graph):
             i=self.__graphs.index(graph)
             self.__graphs.pop(i)
             self.__graphAxis.pop(i)
+        def graphAxes(self,graph):
+            i=self.__graphs.index(graph)
+            return self.__graphAxis[i]
+        def getGraphsAndAxes(self):
+            return zip(self.__graphs,self.__graphAxis)
     class _axisWidget(QWidget):
         valueChanged=pyqtSignal(object,object)
         def __init__(self, n):
@@ -90,35 +169,15 @@ class MultiCut(AnalysisWindow):
             self.__initlayout(n)
         def __initlayout(self, n):
             self._check=QCheckBox("Axis "+str(n))
-            self._type=QComboBox()
-            self._type.addItems(["All", "Point", "Rect", "Circle"])
 
             h1=QHBoxLayout()
             h1.addWidget(self._check)
-            h1.addWidget(self._type)
 
-            h2=QHBoxLayout()
-            self.v1=QSpinBox()
-            self.v2=QSpinBox()
-            self.v1.setRange(0,10000000)
-            self.v2.setRange(0,10000000)
-            h2.addWidget(self.v1)
-            h2.addWidget(self.v2)
             self.layout=QVBoxLayout()
             self.layout.addLayout(h1)
-            self.layout.addLayout(h2)
             self.setLayout(self.layout)
         def isChecked(self):
             return self._check.isChecked()
-        def setRect(self,index):
-            self.index=index
-            self._type.setCurrentText("Rect")
-        def callback(self,roi):
-            index=self.index
-            val=self,roi.pos()+roi.size()
-            self.v1.setValue(roi.pos()[index])
-            self.v2.setValue(roi.pos()[index]+roi.size()[index])
-            self.valueChanged.emit(self,(self.v1.value(),self.v2.value()))
     def __init__(self):
         super().__init__("Multi-dimensional analysis")
         self.__initlayout__()
@@ -126,7 +185,8 @@ class MultiCut(AnalysisWindow):
         self.axes=[]
         self.ranges=[]
         self.graphs=self.controlledGraphs()
-        self.__executors=[]
+        self.__exe=ExecutorList()
+        self.__exe.updated.connect(self.update)
     def __initlayout__(self):
         disp=QPushButton("Display",clicked=self.display)
         rx=QPushButton("Region (X)",clicked=self._regx)
@@ -176,70 +236,60 @@ class MultiCut(AnalysisWindow):
     def __resetLayout(self):
         for i in range(len(self.wave.shape())):
             wid=self._axisWidget(i)
-            wid.valueChanged.connect(self.callback)
             self.axes.append(wid)
             self.ranges.append([None])
             self.layout.insertWidget(i,wid)
             self.adjustSize()
-    def display(self):
+    def __getChecked(self):
         checked=[]
         for i in range(len(self.wave.shape())):
             if self.axes[i].isChecked():
                 checked.append(i)
-        if len(checked) in [1,2]:
-            g=display(self._makeWave(checked))
-            self.graphs.append(g,checked)
+        return checked
+    def display(self,axes=None):
+        if axes is None:
+            ax=self.__getChecked()
+        else:
+            ax=axes
+        if len(ax) in [1,2]:
+            g=display(self.__exe.makeWave(self.wave,ax))
+            self.graphs.append(g,ax)
         else:
             return
-    def _makeWave(self,axes):
-        tmp=self.wave
-        offset=0
-        for e in self.__executors:
-            tmp, off = e.execute(tmp,offset,ignore=axes)
-            offset += off
-        return tmp.toWave()
     def _point(self):
-        pass
+        g=Graph.active()
+        id=g.canvas.addCross([0,0])
+        e=PointExecutor(self.graphs.graphAxes(g))
+        self.__exe.add(e)
+        g.canvas.addCallback(id,e.callback)
     def _rect(self):
         g=Graph.active()
-        i=self.__graphs.index(g)
-        ax=self.__graphAxis[i]
         id=g.canvas.addRect([0,0],[1,1])
-        k=0
-        for n in ax:
-            self.axes[n].setRect(k)
-            k+=1
-            g.canvas.addCallback(id,self.axes[n].callback)
+        e=RegionExecutor(self.graphs.graphAxes(g))
+        self.__exe.add(e)
+        g.canvas.addCallback(id,e.callback)
     def _circle(self):
         pass
-    def callback(self,axis,r):
-        index=self.axes.index(axis)
-        self.ranges[index]=r
-        self.update(index)
+    def _regx(self):
+        g=Graph.active()
+        id=g.canvas.addRegion([0,1])
+        e=RegionExecutor(self.graphs.graphAxes(g)[0])
+        self.__exe.add(e)
+        g.canvas.addCallback(id,e.callback)
+    def _regy(self):
+        g=Graph.active()
+        id=g.canvas.addRegion([0,1],"horizontal")
+        e=RegionExecutor(self.graphs.graphAxes(g)[1])
+        self.__exe.add(e)
+        g.canvas.addCallback(id,e.callback)
     def update(self,index):
-        for g, axs in zip(self.__graphs,self.__graphAxis):
+        for g, axs in self.graphs.getGraphsAndAxes():
             if not index in axs:
                 w=g.canvas.getWaveData()[0].wave
-                w.data=self._int2D(axs)
-    def _int2D(self,checked):
-        import time
-        start=time.time()
-        j=0
-        sl=[slice(None)]*len(self.wave.shape())
-        for i in range(len(self.wave.shape())):
-            if not i in checked:
-                sl[i]=slice(*self.ranges[i])
-        res=self.wave.data[tuple(sl)]
-        for i in range(len(self.wave.shape())):
-            if i in checked:
-                j+=1
-            else:
-                res=np.sum(res,axis=j)
-        print(time.time()-start)
-        return res
+                w.data=self.__exe.makeWave(self.wave,axs).data
 
 def create():
     win=MultiCut()
-    win.load('/home/smb/data/STEMTest.npz')
+    win.load('STEMTest.npz')
 
 addMainMenu(['Analysis','MultiCut'],create)
