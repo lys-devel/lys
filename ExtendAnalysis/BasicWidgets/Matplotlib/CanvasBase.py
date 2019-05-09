@@ -13,6 +13,7 @@ from ExtendAnalysis import LoadFile
 from ..CanvasInterface import *
 
 class FigureCanvasBase(FigureCanvas):
+    dataChanged=pyqtSignal()
     def __init__(self, dpi=100):
         self.fig=Figure(dpi=dpi)
         super().__init__(self.fig)
@@ -140,7 +141,7 @@ class FigureCanvasBase(FigureCanvas):
             ids=self._Append3D(wav,ax,id,appearance,offset,zindex)
         if not reuse:
             wav.addModifiedListener(self.OnWaveModified)
-        self._emitDataChanged()
+        self.dataChanged.emit()
         if appearance is not None:
             self.loadAppearance()
         self.draw()
@@ -233,23 +234,15 @@ class FigureCanvasBase(FigureCanvas):
                 if i==d.id:
                     d.obj.remove()
                     self._Datalist.remove(d)
-        self._emitDataChanged()
+        self.dataChanged.emit()
         self.draw()
     @saveCanvas
     def Clear(self):
         for d in self._Datalist:
             d.obj.remove()
         self._Datalist.clear()
-        self._emitDataChanged()
+        self.dataChanged.emit()
         self.draw()
-    def addDataChangeListener(self,listener):
-        self.__listener.append(weakref.ref(listener))
-    def _emitDataChanged(self):
-        for l in self.__listener:
-            if l() is not None:
-                l().OnDataChanged()
-            else:
-                self.__listener.remove(l)
     def getWaveData(self,dim=None):
         if dim is None:
             return self._Datalist
@@ -406,7 +399,7 @@ class DataSelectableCanvas(FigureCanvasBase):
             else:
                 self._Datalist.insert(0,item_n)
         self._reorder()
-        self._emitDataChanged()
+        self.dataChanged.emit()
     def addDataSelectionListener(self,listener):
         self.__listener.append(weakref.ref(listener))
 

@@ -52,7 +52,7 @@ class DataSelectionBox(QTreeView):
         self.__initlayout()
         self.flg=False
         self._loadstate()
-        canvas.addDataChangeListener(self)
+        canvas.dataChanged.connect(self.OnDataChanged)
         canvas.addDataSelectionListener(self)
     def __initlayout(self):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)

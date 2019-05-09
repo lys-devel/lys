@@ -349,6 +349,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         self.setTickDirection('Bottom','in')
         self.setTickVisible('Left',False,which='minor')
         self.setTickVisible('Bottom',False,which='minor')
+        self.dataChanged.connect(self._refreshTicks)
     def SaveAsDictionary(self,dictionary,path):
         super().SaveAsDictionary(dictionary,path)
         dic={}
@@ -383,6 +384,10 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
                     self.setTickWidth(l,dic[l+"_tickwid2"],which='minor')
                     self.setAutoLocator(l,dic[l+"_ticknum2"],which='minor')
                     self.setTickDirection(l,dic[l+"_tickdir"])
+    def _refreshTicks(self):
+        for l in ['Left','Right','Top','Bottom']:
+            for t in ['major','minor']:
+                self.setAutoLocator(l,self.getAutoLocator(l,t),t)
     def __alist(self,axis):
         res=[axis]
         if not self.axisIsValid(Opposite[axis]):

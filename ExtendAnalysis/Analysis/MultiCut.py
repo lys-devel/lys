@@ -29,9 +29,9 @@ class DaskWave(object):
         ax=self.axes[axis]
         if (ax == np.array(None)).all():
             return int(round(pos))
-        x0=self.ax[0]
-        x1=self.ax[len(self.ax)-1]
-        dx=(x1-x0)/(len(self.ax)-1)
+        x0=ax[0]
+        x1=ax[len(ax)-1]
+        dx=(x1-x0)/(len(ax)-1)
         return int(round((pos-x0)/dx))
     def sum(self,axis):
         data=self.data.sum(axis)
@@ -45,7 +45,7 @@ class DaskWave(object):
             data=self.data[key]
             axes=[]
             for s, ax in zip(key,self.axes):
-                axes.append(self.axes)
+                axes.append(ax[s])
             return DaskWave(data,axes=axes)
         else:
             super().__getitem__(key)
@@ -247,12 +247,13 @@ class MultiCut(AnalysisWindow):
                 checked.append(i)
         return checked
     def display(self,axes=None):
-        if axes is None:
+        if not hasattr(axes,"__iter__"):
             ax=self.__getChecked()
         else:
             ax=axes
         if len(ax) in [1,2]:
-            g=display(self.__exe.makeWave(self.wave,ax))
+            w=self.__exe.makeWave(self.wave,ax)
+            g=display(w)
             self.graphs.append(g,ax)
         else:
             return
