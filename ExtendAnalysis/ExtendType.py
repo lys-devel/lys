@@ -269,16 +269,26 @@ class Wave(AutoSaved):
         def _load(self,file):
             tmp=np.load(file)
             self.axes=[np.array(None) for i in range(tmp['data'].ndim)]
+            if 'axes' in tmp:
+                self._load_new(tmp)
+            else:
+                self._load_old(tmp)
+            self.note=tmp['note'][()]
+        def _load_new(self,tmp):
             self.data=tmp['data']
-            if 'x' in tmp and len(self.axes) > 0:
-                self.axes[0]=tmp['x']
-            if 'y' in tmp and len(self.axes) > 1:
-                self.axes[1]=tmp['y']
-            if 'z' in tmp and len(self.axes) > 2:
-                self.axes[2]=tmp['z']
             if 'axes' in tmp:
                 self.axes=tmp['axes']
-            self.note=tmp['note'][()]
+        def _load_old(self,tmp):
+            self.data=tmp['data'].T
+            if self.data.ndim==1:
+                self.axes[0]=tmp['x']
+            if self.data.ndim==2:
+                self.axes[0]=tmp['x']
+                self.axes[1]=tmp['y']
+            if self.data.ndim==3:
+                self.axes[0]=tmp['x']
+                self.axes[1]=tmp['y']
+                self.axes[2]=tmp['z']
         def _save(self,file):
             np.savez(file, data=self.data, axes=self.axes,note=self.note)
         def _vallist(self):
@@ -319,7 +329,7 @@ class Wave(AutoSaved):
         if key=='x' or key=='y' or key=='z':
             val=super().__getattribute__(key)
             index=['x','y','z'].index(key)
-            dim=self.data.ndim-index-1
+            dim=index#self.data.ndim-index-1
             if self.data.ndim<=index:
                 return None
             elif val.ndim==0:
