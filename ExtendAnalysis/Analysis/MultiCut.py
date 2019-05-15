@@ -94,7 +94,7 @@ class RegionExecutor(QObject):
         if isinstance(axes,int):
             self.axes=(axes,)
         else:
-            self.axes=axes
+            self.axes=tuple(axes)
         if range is not None:
             self.setRange(range)
     def getAxes(self):
@@ -123,13 +123,19 @@ class PointExecutor(QObject):
     updated = pyqtSignal(tuple)
     def __init__(self,axes,pos=None):
         super().__init__()
-        self.axes=axes
+        if isinstance(axes,int):
+            self.axes=(axes,)
+        else:
+            self.axes=axes
         if pos is not None:
             self.setPosition(pos)
     def getAxes(self):
         return self.axes
     def setPosition(self,pos):
-        self.position=pos
+        if isinstance(pos,float) or isinstance(pos,int):
+            self.position=[pos]
+        else:
+            self.position=pos
         self.updated.emit(self.axes)
     def execute(self,wave,axis_offset,ignore=[]):
         off=0
@@ -143,154 +149,3 @@ class PointExecutor(QObject):
         return tmp, off
     def callback(self,pos):
         self.setPosition(pos)
-
-class MultiCut(AnalysisWindow):
-    class controlledGraphs(object):
-        def __init__(self):
-            self.__graphs=[]
-            self.__graphAxis=[]
-        def append(self,graph,axes):
-            self.__graphs.append(graph)
-            self.__graphAxis.append(axes)
-            graph.closed.connect(self.__graphClosed)
-        def __graphClosed(self,graph):
-            i=self.__graphs.index(graph)
-            self.__graphs.pop(i)
-            self.__graphAxis.pop(i)
-        def graphAxes(self,graph):
-            i=self.__graphs.index(graph)
-            return self.__graphAxis[i]
-        def getGraphsAndAxes(self):
-            return zip(self.__graphs,self.__graphAxis)
-    class _axisWidget(QWidget):
-        valueChanged=pyqtSignal(object,object)
-        def __init__(self, n):
-            super().__init__()
-            self.__initlayout(n)
-        def __initlayout(self, n):
-            self._check=QCheckBox("Axis "+str(n))
-
-            h1=QHBoxLayout()
-            h1.addWidget(self._check)
-
-            self.layout=QVBoxLayout()
-            self.layout.addLayout(h1)
-            self.setLayout(self.layout)
-        def isChecked(self):
-            return self._check.isChecked()
-    def __init__(self):
-        super().__init__("Multi-dimensional analysis")
-        self.__initlayout__()
-        self.wave=None
-        self.axes=[]
-        self.ranges=[]
-        self.graphs=self.controlledGraphs()
-        self.__exe=ExecutorList()
-        self.__exe.updated.connect(self.update)
-    def __initlayout__(self):
-        disp=QPushButton("Display",clicked=self.display)
-        rx=QPushButton("Region (X)",clicked=self._regx)
-        ry=QPushButton("Region (Y)",clicked=self._regy)
-        pt=QPushButton("Point",clicked=self._point)
-        rt=QPushButton("Rect",clicked=self._rect)
-        cc=QPushButton("Circle",clicked=self._circle)
-
-        hbtn=QHBoxLayout()
-        hbtn.addWidget(rx)
-        hbtn.addWidget(ry)
-        hbtn.addWidget(pt)
-        hbtn.addWidget(rt)
-        hbtn.addWidget(cc)
-        vbtn=QVBoxLayout()
-        vbtn.addWidget(disp)
-        vbtn.addLayout(hbtn)
-
-        grp=QGroupBox("Interactive")
-        grp.setLayout(vbtn)
-
-        self.__file=QLineEdit()
-        btn=QPushButton("Load",clicked=self.load)
-
-        h1=QHBoxLayout()
-        h1.addWidget(btn)
-        h1.addWidget(self.__file)
-
-        self.layout=QVBoxLayout()
-        self.layout.addWidget(grp)
-        self.layout.addLayout(h1)
-
-        wid=QWidget()
-        wid.setLayout(self.layout)
-        self.setWidget(wid)
-        self.adjustSize()
-    def load(self,file):
-        if file == False:
-            fname = QFileDialog.getOpenFileName(self, 'Select data file')[0]
-        else:
-            fname=file
-        if os.path.exists(fname):
-            self.wave=DaskWave(Wave(fname))
-            self.__file.setText(fname)
-            self.__resetLayout()
-            self.__executors=[AllExecutor(i) for i in range(self.wave.data.ndim)]
-    def __resetLayout(self):
-        for i in range(len(self.wave.shape())):
-            wid=self._axisWidget(i)
-            self.axes.append(wid)
-            self.ranges.append([None])
-            self.layout.insertWidget(i,wid)
-            self.adjustSize()
-    def __getChecked(self):
-        checked=[]
-        for i in range(len(self.wave.shape())):
-            if self.axes[i].isChecked():
-                checked.append(i)
-        return checked
-    def display(self,axes=None):
-        if not hasattr(axes,"__iter__"):
-            ax=self.__getChecked()
-        else:
-            ax=axes
-        if len(ax) in [1,2]:
-            w=self.__exe.makeWave(self.wave,ax)
-            g=display(w)
-            self.graphs.append(g,ax)
-        else:
-            return
-    def _point(self):
-        g=Graph.active()
-        id=g.canvas.addCross([0,0])
-        e=PointExecutor(self.graphs.graphAxes(g))
-        self.__exe.add(e)
-        g.canvas.addCallback(id,e.callback)
-    def _rect(self):
-        g=Graph.active()
-        id=g.canvas.addRect([0,0],[1,1])
-        e=RegionExecutor(self.graphs.graphAxes(g))
-        self.__exe.add(e)
-        g.canvas.addCallback(id,e.callback)
-    def _circle(self):
-        pass
-    def _regx(self):
-        g=Graph.active()
-        id=g.canvas.addRegion([0,1])
-        e=RegionExecutor(self.graphs.graphAxes(g)[0])
-        self.__exe.add(e)
-        g.canvas.addCallback(id,e.callback)
-    def _regy(self):
-        g=Graph.active()
-        id=g.canvas.addRegion([0,1],"horizontal")
-        e=RegionExecutor(self.graphs.graphAxes(g)[1])
-        self.__exe.add(e)
-        g.canvas.addCallback(id,e.callback)
-    def update(self,index):
-        for g, axs in self.graphs.getGraphsAndAxes():
-            if not index in axs:
-                w=g.canvas.getWaveData()[0].wave
-                w.data=self.__exe.makeWave(self.wave,axs).data
-
-def create():
-    win=MultiCut()
-    win.load('STEMTest.npz')
-
-addMainMenu(['Analysis','MultiCut'],create)

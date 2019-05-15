@@ -1,1 +1,1 @@
-from .MultiCut import MultiCut
+from .MultiCutGUI import MultiCut

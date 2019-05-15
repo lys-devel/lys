@@ -340,7 +340,17 @@ class Wave(AutoSaved):
         else:
             return super().__getattribute__(key)
     def __getitem__(self,key):
-        return self.data[key]
+        if isinstance(key,tuple):
+            data=self.data[key]
+            axes=[]
+            for s, ax in zip(key,self.axes):
+                axes.append(ax[s])
+            w=Wave()
+            w.data=data
+            w.axes=axes
+            return w
+        else:
+            super().__getitem__(key)
     def __setitem__(self,key,value):
         self.data[key]=value
         self.Save()

@@ -6,8 +6,9 @@ from .filters import *
 class PreFilterSetting(QWidget):
     filterAdded=pyqtSignal(QWidget)
     filterDeleted=pyqtSignal(QWidget)
-    def __init__(self):
+    def __init__(self,dimension=2):
         super().__init__()
+        self.dim=dimension
         self._layout=QVBoxLayout()
         self._combo=QComboBox()
         self._combo.addItem('')
@@ -32,15 +33,15 @@ class PreFilterSetting(QWidget):
             self.filterDeleted.emit(self)
         else:
             if text=='Smoothing Filter':
-                self._setting=SmoothingSetting(self)
+                self._setting=SmoothingSetting(self,self.dim)
             if text=='Frequency Filter':
-                self._setting=FrequencySetting(self)
+                self._setting=FrequencySetting(self,self.dim)
             if text=='Differential Filter':
-                self._setting=DifferentialSetting(self)
+                self._setting=DifferentialSetting(self,self.dim)
             if text=='Normalization':
-                self._setting=NormalizeSetting(self)
+                self._setting=NormalizeSetting(self,self.dim)
             if text=='Select region':
-                self._setting=SelectRegionSetting(self)
+                self._setting=SelectRegionSetting(self,self.dim)
             self._layout.addWidget(self._setting)
             self.filterAdded.emit(self)
     def GetFilter(self):
@@ -48,14 +49,15 @@ class PreFilterSetting(QWidget):
             return self._setting.GetFilter()
 
 class SmoothingSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dimension=2):
         super().__init__(parent)
+        self.dim=dimension
         self._layout=QHBoxLayout()
         self._combo=QComboBox()
         self._combo.addItem('Median')
         self._combo.addItem('Average')
         self._combo.addItem('Gaussian')
-        self._combo.addItem('Bilateral')
+        #self._combo.addItem('Bilateral')
         self._combo.currentTextChanged.connect(self._update)
         self._layout.addWidget(QLabel('Method'))
         self._layout.addWidget(self._combo)
@@ -68,52 +70,72 @@ class SmoothingSetting(QWidget):
             self._setting.deleteLater()
             self._setting=None
         if item=='Median':
-            self._setting=MedianSetting(self)
+            self._setting=MedianSetting(self,self.dim)
         if item=='Average':
-            self._setting=AverageSetting(self)
+            self._setting=AverageSetting(self,self.dim)
         if item=='Gaussian':
-            self._setting=GaussianSetting(self)
+            self._setting=GaussianSetting(self,self.dim)
         if item=='Bilateral':
-            self._setting=BilateralSetting(self)
+            self._setting=BilateralSetting(self,self.dim)
         if self._setting is not None:
             self._layout.addWidget(self._setting)
     def GetFilter(self):
         if self._setting is not None:
             return self._setting.GetFilter()
 
+class OddSpinBox(QSpinBox):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.setMinimum(1)
+        self.setSingleStep(2)
+        self.setValue(3)
+        self.valueChanged.connect(self.valChanged)
+    def valChanged(self,val):
+        if val % 2 ==0:
+            self.setValue(val-1)
+class _kernelSizeLayout(QGridLayout):
+    def __init__(self,dimension=2):
+        super().__init__()
+        self.addWidget(QLabel('Kernel Size'),1,0)
+        self._kernels = [OddSpinBox() for d in range(dimension)]
+        for i, k in enumerate(self._kernels):
+            self.addWidget(QLabel('Axis'+str(i+1)),0,i+1)
+            self.addWidget(k,1,i+1)
+    def getKernelSize(self):
+        return [k.value() for k in self._kernels]
+class _kernelSigmaLayout(QGridLayout):
+    def __init__(self,dimension=2):
+        super().__init__()
+        self.addWidget(QLabel('Sigma'),1,0)
+        self._kernels = [QDoubleSpinBox() for d in range(dimension)]
+        for i, k in enumerate(self._kernels):
+            k.setMinimum(0)
+            self.addWidget(QLabel('Axis'+str(i+1)),0,i+1)
+            self.addWidget(k,1,i+1)
+    def getKernelSigma(self):
+        return [k.value() for k in self._kernels]
+
 class MedianSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dimension=2):
         super().__init__(parent)
-        self._layout=QHBoxLayout()
-        self._kernel=QSpinBox()
-        self._kernel.setMinimum(3)
-        self._layout.addWidget(QLabel('Kernel Size'))
-        self._layout.addWidget(self._kernel)
+        self._layout=_kernelSizeLayout(dimension)
         self.setLayout(self._layout)
     def GetFilter(self):
-        return MedianFilter(self._kernel.value())
+        return MedianFilter(self._layout.getKernelSize())
 class AverageSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dimension=2):
         super().__init__(parent)
-        self._layout=QHBoxLayout()
-        self._kernel=QSpinBox()
-        self._kernel.setMinimum(3)
-        self._layout.addWidget(QLabel('Kernel Size'))
-        self._layout.addWidget(self._kernel)
+        self._layout=_kernelSizeLayout(dimension)
         self.setLayout(self._layout)
     def GetFilter(self):
-        return AverageFilter(self._kernel.value())
+        return AverageFilter(self._layout.getKernelSize())
 class GaussianSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dimension=2):
         super().__init__(parent)
-        self._layout=QHBoxLayout()
-        self._kernel=QSpinBox()
-        self._kernel.setMinimum(3)
-        self._layout.addWidget(QLabel('Kernel Size'))
-        self._layout.addWidget(self._kernel)
+        self._layout=_kernelSigmaLayout(dimension)
         self.setLayout(self._layout)
     def GetFilter(self):
-        return GaussianFilter(self._kernel.value())
+        return GaussianFilter(self._layout.getKernelSigma())
 class BilateralSetting(QWidget):
     def __init__(self,parent):
         super().__init__(parent)
@@ -137,9 +159,22 @@ class BilateralSetting(QWidget):
     def GetFilter(self):
         return BilateralFilter(self._kernel.value(),self._s_color.value(),self._s_space.value())
 
+class AxisCheckLayout(QHBoxLayout):
+    def __init__(self,dim):
+        super().__init__()
+        self._axes=[QCheckBox("Axis"+str(i)) for i in range(dim)]
+        for a in self._axes:
+            self.addWidget(a)
+    def GetChecked(self):
+        axes = []
+        for i, a in enumerate(self._axes):
+            if a.isChecked():
+                axes.append(i)
+        return axes
 class FrequencySetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim=2):
         super().__init__(parent)
+        self.dim=dim
         self._layout=QHBoxLayout()
         self._combo=QComboBox()
         self._combo.addItem('Low-pass')
@@ -158,20 +193,20 @@ class FrequencySetting(QWidget):
             self._setting.deleteLater()
             self._setting=None
         if item=='Low-pass':
-            self._setting=LowPassSetting(self)
+            self._setting=LowPassSetting(self,self.dim)
         if item=='High-pass':
-            self._setting=HighPassSetting(self)
+            self._setting=HighPassSetting(self,self.dim)
         if item=='Band-pass':
-            self._setting=BandPassSetting(self)
+            self._setting=BandPassSetting(self,self.dim)
         if item=='Band-stop':
-            self._setting=BandStopSetting(self)
+            self._setting=BandStopSetting(self,self.dim)
         if self._setting is not None:
             self._layout.addWidget(self._setting)
     def GetFilter(self):
         if self._setting is not None:
             return self._setting.GetFilter()
 class LowPassSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__(parent)
         self._layout=QHBoxLayout()
         self._cut=QDoubleSpinBox()
@@ -185,11 +220,16 @@ class LowPassSetting(QWidget):
         self._layout.addWidget(self._order)
         self._layout.addWidget(QLabel('Cutoff'))
         self._layout.addWidget(self._cut)
-        self.setLayout(self._layout)
+
+        self._axes=AxisCheckLayout(dim)
+        vbox=QVBoxLayout()
+        vbox.addLayout(self._layout)
+        vbox.addLayout(self._axes)
+        self.setLayout(vbox)
     def GetFilter(self):
-        return LowPassFilter(self._order.value(),self._cut.value())
+        return LowPassFilter(self._order.value(),self._cut.value(),self._axes.GetChecked())
 class HighPassSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__(parent)
         self._layout=QHBoxLayout()
         self._cut=QDoubleSpinBox()
@@ -203,11 +243,15 @@ class HighPassSetting(QWidget):
         self._layout.addWidget(self._order)
         self._layout.addWidget(QLabel('Cutoff'))
         self._layout.addWidget(self._cut)
-        self.setLayout(self._layout)
+        self._axes=AxisCheckLayout(dim)
+        vbox=QVBoxLayout()
+        vbox.addLayout(self._layout)
+        vbox.addLayout(self._axes)
+        self.setLayout(vbox)
     def GetFilter(self):
-        return HighPassFilter(self._order.value(),self._cut.value())
+        return HighPassFilter(self._order.value(),self._cut.value(),self._axes.GetChecked())
 class BandPassSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__(parent)
         self._layout=QHBoxLayout()
         self._cut1=QDoubleSpinBox()
@@ -227,11 +271,15 @@ class BandPassSetting(QWidget):
         self._layout.addWidget(self._cut1)
         self._layout.addWidget(QLabel('High'))
         self._layout.addWidget(self._cut2)
-        self.setLayout(self._layout)
+        self._axes=AxisCheckLayout(dim)
+        vbox=QVBoxLayout()
+        vbox.addLayout(self._layout)
+        vbox.addLayout(self._axes)
+        self.setLayout(vbox)
     def GetFilter(self):
-        return BandPassFilter(self._order.value(),[self._cut1.value(),self._cut2.value()])
+        return BandPassFilter(self._order.value(),[self._cut1.value(),self._cut2.value()],self._axes.GetChecked())
 class BandStopSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__(parent)
         self._layout=QHBoxLayout()
         self._cut1=QDoubleSpinBox()
@@ -251,13 +299,18 @@ class BandStopSetting(QWidget):
         self._layout.addWidget(self._cut1)
         self._layout.addWidget(QLabel('High'))
         self._layout.addWidget(self._cut2)
-        self.setLayout(self._layout)
+        self._axes=AxisCheckLayout(dim)
+        vbox=QVBoxLayout()
+        vbox.addLayout(self._layout)
+        vbox.addLayout(self._axes)
+        self.setLayout(vbox)
     def GetFilter(self):
-        return BandStopFilter(self._order.value(),[self._cut1.value(),self._cut2.value()])
+        return BandStopFilter(self._order.value(),[self._cut1.value(),self._cut2.value()],self._axes.GetChecked())
 
 class DifferentialSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__(parent)
+        self.dim=dim
         self._layout=QHBoxLayout()
         self._combo=QComboBox()
         self._combo.addItem('Prewitt')
@@ -276,13 +329,13 @@ class DifferentialSetting(QWidget):
             self._setting.deleteLater()
             self._setting=None
         if item=='Prewitt':
-            self._setting=PrewittSetting(self)
+            self._setting=PrewittSetting(self,self.dim)
         if item=='Sobel':
-            self._setting=SobelSetting(self)
+            self._setting=SobelSetting(self,self.dim)
         if item=='Laplacian':
-            self._setting=LaplacianSetting(self)
+            self._setting=LaplacianSetting(self,self.dim)
         if item=='Sharpen':
-            self._setting=SharpenSetting(self)
+            self._setting=SharpenSetting(self,self.dim)
         if self._setting is not None:
             self._layout.addWidget(self._setting)
     def GetFilter(self):
@@ -290,107 +343,91 @@ class DifferentialSetting(QWidget):
             return self._setting.GetFilter()
 
 class PrewittSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__(parent)
-        self._layout=QHBoxLayout()
-        self._combo=QComboBox()
-        self._combo.addItem('x+y')
-        self._combo.addItem('x')
-        self._combo.addItem('y')
-        self._layout.addWidget(self._combo)
+        self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
     def GetFilter(self):
-        return PrewittFilter(self._combo.currentText())
+        return PrewittFilter(self._layout.GetChecked())
 class SobelSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__(parent)
-        self._layout=QHBoxLayout()
-        self._combo=QComboBox()
-        self._combo.addItem('x+y')
-        self._combo.addItem('x')
-        self._combo.addItem('y')
-        self._layout.addWidget(self._combo)
+        self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
     def GetFilter(self):
-        return SobelFilter(self._combo.currentText())
+        return SobelFilter(self._layout.GetChecked())
 class LaplacianSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__(parent)
-        self._layout=QHBoxLayout()
+        self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
     def GetFilter(self):
-        return LaplacianFilter()
+        return LaplacianFilter(self._layout.GetChecked())
 class SharpenSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__(parent)
-        self._layout=QHBoxLayout()
+        self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
     def GetFilter(self):
-        return SharpenFilter()
+        return SharpenFilter(self._layout.GetChecked())
 
 class RegionSelectWidget(QGridLayout):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__()
-        self.__initLayout()
-    def __initLayout(self):
-        self.__x1=QSpinBox()
-        self.__x1.setRange(0,10000)
-        self.__x2=QSpinBox()
-        self.__x2.setRange(0,10000)
-        self.__y1=QSpinBox()
-        self.__y1.setRange(0,10000)
-        self.__y2=QSpinBox()
-        self.__y2.setRange(0,10000)
-        self.addWidget(QLabel('Range'),0,0)
-        self.__loadPrev=QPushButton('Load from prev.',clicked=self.__loadFromPrev)
-        self.addWidget(self.__loadPrev,1,0)
-        self.addWidget(QLabel('x1'),0,1)
-        self.addWidget(QLabel('x2'),0,2)
-        self.addWidget(QLabel('y1'),0,3)
-        self.addWidget(QLabel('y2'),0,4)
-        self.addWidget(self.__x1,1,1)
-        self.addWidget(self.__x2,1,2)
-        self.addWidget(self.__y1,1,3)
-        self.addWidget(self.__y2,1,4)
+        self.__initLayout(dim)
+    def __initLayout(self,dim):
+        self.__loadPrev=QPushButton('Load from Graph',clicked=self.__loadFromPrev)
+        self.addWidget(self.__loadPrev,0,0)
+
+        self.addWidget(QLabel("from"),1,0)
+        self.addWidget(QLabel("to"),2,0)
+        self.start = [QSpinBox() for d in range(dim)]
+        self.end = [QSpinBox() for d in range(dim)]
+        i = 1
+        for s, e in zip(self.start,self.end):
+            s.setRange(0,10000)
+            e.setRange(0,10000)
+            self.addWidget(QLabel("Axis"+str(i)),0,i)
+            self.addWidget(s,1,i)
+            self.addWidget(e,2,i)
+            i += 1
     def __loadFromPrev(self,arg):
-        from ExtendAnalysis import PreviewWindow
-        p=PreviewWindow.SelectedArea()
-        if p is None:
-            return
-        self.__x1.setValue(min(p[0][0],p[1][0]))
-        self.__x2.setValue(max(p[0][0],p[1][0]))
-        self.__y1.setValue(min(p[0][1],p[1][1]))
-        self.__y2.setValue(max(p[0][1],p[1][1]))
+        raise NotImplementedError()
     def getRegion(self):
-        return [self.__x1.value(),self.__x2.value(),self.__y1.value(),self.__y2.value()]
+        return [[s.value(), e.value()] for s, e in zip(self.start,self.end)]
 
 class NormalizeSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__()
         self.__parent=parent
-        self.__initLayout()
+        self.range=RegionSelectWidget(self,dim)
+        self.setLayout(self.range)
     def GetFilter(self):
         return NormalizeFilter(self.range.getRegion())
-    def __initLayout(self):
-        self.range=RegionSelectWidget(self)
-        self.setLayout(self.range)
 
 class SelectRegionSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dim):
         super().__init__()
         self.__parent=parent
-        self.__initLayout()
+        self.range=RegionSelectWidget(self,dim)
+        self.setLayout(self.range)
     def GetFilter(self):
         return SelectRegionFilter(self.range.getRegion())
-    def __initLayout(self):
-        self.range=RegionSelectWidget(self)
-        self.setLayout(self.range)
 
 class FiltersGUI(QWidget):
-    def __init__(self):
+    def __init__(self,dimension = 2):
         super().__init__()
         self._flist=[]
+        self.dim=dimension
         self.__initLayout()
+    def setDimension(self,dimension):
+        if self.dim != dimension:
+            self.dim=dimension
+            self.clear()
+            self._addFirst()
+    def clear(self):
+        while(len(self._flist)>0):
+            self._delete(self._flist[0],force=True)
     def GetFilters(self):
         res=[]
         for f in self._flist:
@@ -401,24 +438,25 @@ class FiltersGUI(QWidget):
     def __initLayout(self):
         hbox=QHBoxLayout()
         self._layout=QVBoxLayout()
-        first=PreFilterSetting()
+        self._layout.addStretch()
+        self._addFirst()
+        hbox.addLayout(self._layout,3)
+        self.setLayout(hbox)
+    def _addFirst(self):
+        first=PreFilterSetting(self.dim)
         first.filterAdded.connect(self._add)
         first.filterDeleted.connect(self._delete)
         self._flist.append(first)
-
-        self._layout.addWidget(first)
-        self._layout.addStretch()
-        hbox.addLayout(self._layout,3)
-        self.setLayout(hbox)
+        self._layout.insertWidget(0,first)
     def _add(self,item):
         if self._flist[len(self._flist)-1]==item:
-            newitem=PreFilterSetting()
+            newitem=PreFilterSetting(self.dim)
             newitem.filterAdded.connect(self._add)
             newitem.filterDeleted.connect(self._delete)
             self._layout.insertWidget(self._layout.count()-1,newitem)
             self._flist.append(newitem)
-    def _delete(self,item):
-        if len(self._flist)>1:
+    def _delete(self,item,force=False):
+        if len(self._flist)>1 or force:
             self._layout.removeWidget(item)
             item.deleteLater()
             self._flist.remove(item)
