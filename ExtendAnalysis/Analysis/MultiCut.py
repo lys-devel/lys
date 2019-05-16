@@ -50,20 +50,59 @@ class DaskWave(object):
         else:
             super().__getitem__(key)
 
-class ExecutorList(QObject):
+class controlledObjects(QObject):
+    appended=pyqtSignal()
+    removed=pyqtSignal()
+    def __init__(self):
+        super().__init__()
+        self._objs=[]
+        self._axis=[]
+    def append(self,obj,axes):
+        self._objs.append(obj)
+        self._axis.append(axes)
+        self.appended.emit()
+    def remove(self,obj):
+        if obj in self._objs:
+            i=self._objs.index(obj)
+            self._objs.pop(i)
+            self._axis.pop(i)
+            self.removed.emit()
+    def removeAt(self,index):
+        self.remove(self._objs[index])
+    def getAxes(self,obj):
+        i=self._objs.index(obj)
+        return self._axis[i]
+    def getObjectsAndAxes(self):
+        return zip(self._objs,self._axis)
+    def __len__(self):
+        return len(self._objs)
+    def __getitem__(self,index):
+        return [self._objs[index],self._axis[index]]
+
+class ExecutorList(controlledObjects):
     updated = pyqtSignal(tuple)
     def __init__(self):
         super().__init__()
-        self.__exe=[]
-    def add(self,obj):
-        self.__exe.append(obj)
+    def append(self,obj):
+        super().append(obj,obj.getAxes())
         obj.updated.connect(self.updated.emit)
+    def remove(self,obj):
+        obj.updated.disconnect()
+        super().remove(obj)
+    def enable(self,obj):
+        pass
+    def enableAt(self,index):
+        self.enable(self._objs[index])
+    def disable(self,obj):
+        pass
+    def disableAt(self,obj):
+        self.disable(self._objs[index])
     def __exeList(self,wave):
         axes=[]
-        for e in self.__exe:
+        for e in self._objs:
             axes.extend(e.getAxes())
         axes=list(set(axes))
-        res=list(self.__exe)
+        res=list(self._objs)
         for i in range(wave.data.ndim):
             if not i in axes:
                 res.append(AllExecutor(i))
@@ -74,6 +113,12 @@ class ExecutorList(QObject):
         for e in self.__exeList(wave):
             tmp, off = e.execute(tmp,offset,ignore=axes)
             offset += off
+        if len(axes) == 2:
+            if axes[0] > axes[1]:
+                tmp.data=tmp.data.T
+                t=tmp.axes[0]
+                tmp.axes[0]=tmp.axes[1]
+                tmp.axes[1]=t
         return tmp.toWave()
 class AllExecutor(QObject):
     updated = pyqtSignal(tuple)
@@ -119,6 +164,8 @@ class RegionExecutor(QObject):
         return tmp, off
     def callback(self,region):
         self.setRange(region)
+    def Name(self):
+        return "Region"
 class PointExecutor(QObject):
     updated = pyqtSignal(tuple)
     def __init__(self,axes,pos=None):
@@ -149,3 +196,5 @@ class PointExecutor(QObject):
         return tmp, off
     def callback(self,pos):
         self.setPosition(pos)
+    def Name(self):
+        return "Point"

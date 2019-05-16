@@ -6,7 +6,7 @@ from scipy.ndimage.interpolation import rotate
 import cv2
 
 from dask_image import ndfilters as dfilters
-from dask.array import apply_along_axis
+from dask.array import apply_along_axis, einsum
 
 from ExtendAnalysis import Wave, tasks, task
 from .MultiCut import DaskWave
@@ -168,22 +168,32 @@ class BandStopFilter(FilterInterface):
         return _filt(wave,self._axes,self._b,self._a)
 
 class NormalizeFilter(FilterInterface):
-    def _normalize(self,data,r):
-        if not r[0]==0 and r[1]==0 and r[2]==0 and r[3]==0:
-            data=data/np.average(data[r[2]:r[3],r[0]:r[1]])
-        else:
-            data=data/np.average(data)
-        return data
-    def __init__(self, range):
+    def _makeSlice(self):
+        sl = []
+        for i, r in enumerate(self._range):
+            if (r[0] == 0 and r[1] == 0) or self._axis == i:
+                sl.append(slice(None))
+            else:
+                sl.append(slice(*r))
+        return tuple(sl)
+    def __init__(self, range, axis):
         self._range=range
+        self._axis = axis
     def _execute(self,wave,**kwargs):
-        wave.data=self._normalize(np.array(wave.data,dtype=np.float32),self._range)
+        axes = list(range(wave.data.ndim))
+        if self._axis == -1:
+            wave.data=wave.data/wave.data[self._makeSlice()].sum()
+        else:
+            letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"]
+            axes.remove(self._axis)
+            nor = 1 / wave.data[self._makeSlice()].sum(axis = axes)
+            subscripts = ""
+            for i in range(wave.data.ndim):
+                subscripts += letters[i]
+            subscripts = subscripts+"," + letters[self._axis] + "->"+subscripts
+            wave.data = einsum(subscripts,wave.data,nor)
 
 class SelectRegionFilter(FilterInterface):
-    def _selrange(self,data,r):
-        if r[0]==0 and r[1]==0 and r[2]==0 and r[3]==0:
-            return data
-        return data[r[2]:r[3],r[0]:r[1]]
     def __init__(self, range):
         self._range=range
     def _execute(self,wave,**kwargs):
@@ -193,7 +203,10 @@ class SelectRegionFilter(FilterInterface):
                 sl.append(slice(None))
             else:
                 sl.append(slice(*r))
-        return wave[tuple(sl)]
+        key=tuple(sl)
+        wave.data=wave.data[key]
+        wave.axes=[ax[s] for s, ax in zip(key,wave.axes)]
+        return wave
 
 """
 class SymmetrizationFilter(FilterInterface):

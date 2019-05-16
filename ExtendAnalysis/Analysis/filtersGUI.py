@@ -1,14 +1,16 @@
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+from ExtendAnalysis import *
 from .filters import *
 
 class PreFilterSetting(QWidget):
     filterAdded=pyqtSignal(QWidget)
     filterDeleted=pyqtSignal(QWidget)
-    def __init__(self,dimension=2):
+    def __init__(self,dimension=2,loader=None):
         super().__init__()
         self.dim=dimension
+        self.loader=loader
         self._layout=QVBoxLayout()
         self._combo=QComboBox()
         self._combo.addItem('')
@@ -39,9 +41,9 @@ class PreFilterSetting(QWidget):
             if text=='Differential Filter':
                 self._setting=DifferentialSetting(self,self.dim)
             if text=='Normalization':
-                self._setting=NormalizeSetting(self,self.dim)
+                self._setting=NormalizeSetting(self,self.dim,self.loader)
             if text=='Select region':
-                self._setting=SelectRegionSetting(self,self.dim)
+                self._setting=SelectRegionSetting(self,self.dim,self.loader)
             self._layout.addWidget(self._setting)
             self.filterAdded.emit(self)
     def GetFilter(self):
@@ -372,11 +374,16 @@ class SharpenSetting(QWidget):
         return SharpenFilter(self._layout.GetChecked())
 
 class RegionSelectWidget(QGridLayout):
-    def __init__(self,parent,dim):
+    loadClicked=pyqtSignal(object)
+    def __init__(self,parent,dim,loader=None):
         super().__init__()
-        self.__initLayout(dim)
-    def __initLayout(self,dim):
+        self.__initLayout(dim,loader)
+    def __initLayout(self,dim,loader):
         self.__loadPrev=QPushButton('Load from Graph',clicked=self.__loadFromPrev)
+        if loader is None:
+            self.loadClicked.connect(self.__load)
+        else:
+            self.loadClicked.connect(loader)
         self.addWidget(self.__loadPrev,0,0)
 
         self.addWidget(QLabel("from"),1,0)
@@ -392,32 +399,58 @@ class RegionSelectWidget(QGridLayout):
             self.addWidget(e,2,i)
             i += 1
     def __loadFromPrev(self,arg):
-        raise NotImplementedError()
+        self.loadClicked.emit(self)
+    def __load(self,obj):
+        c=Graph.active().canvas
+        if c is not None:
+            r = c.SelectedRange()
+            w=c.getWaveData()[0].wave
+            p1 = w.posToPoint(r[0])
+            p2 = w.posToPoint(r[1])
+            self.setRegion(0,(p1[0],p2[0]))
+            self.setRegion(1,(p1[1],p2[1]))
+    def setRegion(self,axis,range):
+        if axis < len(self.start):
+            self.start[axis].setValue(min(range[0],range[1]))
+            self.end[axis].setValue(max(range[0],range[1]))
     def getRegion(self):
         return [[s.value(), e.value()] for s, e in zip(self.start,self.end)]
 
 class NormalizeSetting(QWidget):
-    def __init__(self,parent,dim):
+    def __init__(self,parent,dim,loader=None):
         super().__init__()
         self.__parent=parent
-        self.range=RegionSelectWidget(self,dim)
-        self.setLayout(self.range)
+        self.range=RegionSelectWidget(self,dim,loader)
+        self.combo=QComboBox()
+        self.combo.addItem("Whole")
+        for d in range(dim):
+            self.combo.addItem("Axis" + str(d+1))
+
+        vbox=QVBoxLayout()
+        vbox.addWidget(QLabel("Axis"))
+        vbox.addWidget(self.combo)
+
+        hbox = QHBoxLayout()
+        hbox.addLayout(vbox)
+        hbox.addLayout(self.range)
+        self.setLayout(hbox)
     def GetFilter(self):
-        return NormalizeFilter(self.range.getRegion())
+        return NormalizeFilter(self.range.getRegion(),self.combo.currentIndex()-1)
 
 class SelectRegionSetting(QWidget):
-    def __init__(self,parent,dim):
+    def __init__(self,parent,dim,loader=None):
         super().__init__()
         self.__parent=parent
-        self.range=RegionSelectWidget(self,dim)
+        self.range=RegionSelectWidget(self,dim,loader)
         self.setLayout(self.range)
     def GetFilter(self):
         return SelectRegionFilter(self.range.getRegion())
 
 class FiltersGUI(QWidget):
-    def __init__(self,dimension = 2):
+    def __init__(self,dimension = 2, regionLoader=None):
         super().__init__()
         self._flist=[]
+        self.loader=regionLoader
         self.dim=dimension
         self.__initLayout()
     def setDimension(self,dimension):
@@ -443,14 +476,14 @@ class FiltersGUI(QWidget):
         hbox.addLayout(self._layout,3)
         self.setLayout(hbox)
     def _addFirst(self):
-        first=PreFilterSetting(self.dim)
+        first=PreFilterSetting(self.dim,self.loader)
         first.filterAdded.connect(self._add)
         first.filterDeleted.connect(self._delete)
         self._flist.append(first)
         self._layout.insertWidget(0,first)
     def _add(self,item):
         if self._flist[len(self._flist)-1]==item:
-            newitem=PreFilterSetting(self.dim)
+            newitem=PreFilterSetting(self.dim,self.loader)
             newitem.filterAdded.connect(self._add)
             newitem.filterDeleted.connect(self._delete)
             self._layout.insertWidget(self._layout.count()-1,newitem)

@@ -181,6 +181,7 @@ class AutoSaved(object):
 
     def __init__(self,file=None):
         self.obj=None
+        self.__name=None
         self.__file=self._parseFilename(file)
         self.__loadFile=None
         self.__modListener=[]
@@ -244,11 +245,15 @@ class AutoSaved(object):
             return os.path.abspath(self.__file)
         return self.__loadFile
     def Name(self):
-        if self.FileName() is None:
+        if self.__name is not None:
+            return self.__name
+        elif self.FileName() is None:
             return "untitled"
         else:
             nam,ext=os.path.splitext(os.path.basename(self.FileName()))
             return nam
+    def SetName(self,name):
+        self.__name=name
     def IsConnected(self):
         return self.__file is not None
 
