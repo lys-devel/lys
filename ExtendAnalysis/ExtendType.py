@@ -494,6 +494,15 @@ class Wave(AutoSaved):
             w.data=np.gradient(self.data)[i]
         return w
 
+    def sum(self,axis):
+        w=Wave()
+        w.data=self.data.sum(axis)
+        axes=[]
+        for i, ax in enumerate(self.axes):
+            if not i == axis:
+                axes.append(ax)
+        w.axes=axes
+        return w
     def average(self,*args):
         dim=len(args)
         if len(args)==0:

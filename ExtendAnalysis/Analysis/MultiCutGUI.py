@@ -82,8 +82,8 @@ class ControlledObjectsModel(QAbstractItemModel):
     def __init__(self,obj):
         super().__init__()
         self.obj=obj
-        obj.appended.connect(self.layoutChanged.emit)
-        obj.removed.connect(self.layoutChanged.emit)
+        obj.appended.connect(lambda x: self.layoutChanged.emit())
+        obj.removed.connect(lambda x: self.layoutChanged.emit())
         self.setHeaderData(0,Qt.Horizontal,'Name')
         self.setHeaderData(1,Qt.Horizontal,'Axes')
     def data(self, index, role):
@@ -113,7 +113,15 @@ class ControlledObjectsModel(QAbstractItemModel):
                 return "Name"
             else:
                 return "Axes"
-
+class ExecutorModel(ControlledObjectsModel):
+    def data(self, index, role):
+        item = index.internalPointer()
+        if item is not None and role == Qt.ForegroundRole:
+            if self.obj.isEnabled(index.row()):
+                return QBrush(QColor("black"))
+            else:
+                return QBrush(QColor("gray"))
+        return super().data(index,role)
 class controlledWavesGUI(QTreeView):
     def __init__(self,obj,dispfunc,appendfunc):
         super().__init__()
@@ -158,17 +166,26 @@ class controlledExecutorsGUI(QTreeView):
     def __init__(self,obj):
         super().__init__()
         self.obj=obj
-        self.__model=ControlledObjectsModel(obj)
+        self.__model=ExecutorModel(obj)
         self.setModel(self.__model)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
     def buildContextMenu(self):
         menu = QMenu(self)
+        menu.addAction(QAction("Enable",self,triggered=self._enable))
+        menu.addAction(QAction("Disable",self,triggered=self._disable))
         menu.addAction(QAction("Remove",self,triggered=self._remove))
         menu.exec_(QCursor.pos())
     def _remove(self):
         i = self.selectionModel().selectedIndexes()[0].row()
         self.obj.removeAt(i)
+    def _enable(self):
+        i = self.selectionModel().selectedIndexes()[0].row()
+        self.obj.enableAt(i)
+    def _disable(self):
+        i = self.selectionModel().selectedIndexes()[0].row()
+        self.obj.disableAt(i)
+
 class CutTab(QWidget):
     class _axisLayout(QWidget):
         def __init__(self, dim):
@@ -213,6 +230,7 @@ class CutTab(QWidget):
         self.graphs=controlledObjects()
         self.waves=controlledObjects()
         self.__exe=ExecutorList()
+        self.graphs.removed.connect(self.__exe.graphRemoved)
         self.__initlayout__()
         self.ax=None
         self.wave=None
@@ -311,21 +329,24 @@ class CutTab(QWidget):
         g=Graph.active()
         g.Append(wave)
     def update(self,index):
+        import time
+        start=time.time()
         for w, axs in self.waves.getObjectsAndAxes():
-            if not index in axs:
+            if not set(index).issubset(axs):
                 w.data=self.__exe.makeWave(self.wave,axs).data
+        print("debug_total",time.time()-start)
     def _point(self):
         g=Graph.active()
         id=g.canvas.addCross([0,0])
         e=PointExecutor(self.graphs.getAxes(g))
-        self.__exe.append(e)
         g.canvas.addCallback(id,e.callback)
+        self.__exe.append(e,g)
     def _rect(self):
         g=Graph.active()
         id=g.canvas.addRect([0,0],[1,1])
         e=RegionExecutor(self.graphs.getAxes(g))
-        self.__exe.append(e)
         g.canvas.addCallback(id,e.callback)
+        self.__exe.append(e,g)
     def _circle(self):
         pass
     def _line(self):
@@ -334,26 +355,26 @@ class CutTab(QWidget):
         g=Graph.active()
         id=g.canvas.addRegion([0,1])
         e=RegionExecutor(self.graphs.getAxes(g)[0])
-        self.__exe.append(e)
         g.canvas.addCallback(id,e.callback)
+        self.__exe.append(e,g)
     def _regy(self):
         g=Graph.active()
         id=g.canvas.addRegion([0,1],"horizontal")
         e=RegionExecutor(self.graphs.getAxes(g)[1])
-        self.__exe.append(e)
         g.canvas.addCallback(id,e.callback)
+        self.__exe.append(e,g)
     def _linex(self):
         g=Graph.active()
         id=g.canvas.addInfiniteLine(0)
         e=PointExecutor(self.graphs.getAxes(g)[0])
-        self.__exe.append(e)
         g.canvas.addCallback(id,e.callback)
+        self.__exe.append(e,g)
     def _liney(self):
         g=Graph.active()
         id=g.canvas.addInfiniteLine(0,'horizontal')
         e=PointExecutor(self.graphs.getAxes(g)[0])
-        self.__exe.append(e)
         g.canvas.addCallback(id,e.callback)
+        self.__exe.append(e,g)
 
 def create():
     win=MultiCut()

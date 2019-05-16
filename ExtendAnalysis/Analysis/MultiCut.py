@@ -4,7 +4,7 @@ from dask.array.core import Array as DArray
 import dask.array as da
 
 class DaskWave(object):
-    def __init__(self,wave,axes=None,chunks=64):
+    def __init__(self,wave,axes=None,chunks="auto"):
         if isinstance(wave,Wave):
             self.__fromWave(wave,axes,chunks)
         elif isinstance(wave,DArray):
@@ -16,8 +16,11 @@ class DaskWave(object):
         else:
             self.axes=axes
     def toWave(self):
+        import time
+        start=time.time()
         w=Wave()
-        w.data=self.data.compute()
+        res=self.data.compute()
+        w.data=res
         w.axes=self.axes
         return w
     def __fromda(self,wave,axes,chunks):
@@ -51,8 +54,8 @@ class DaskWave(object):
             super().__getitem__(key)
 
 class controlledObjects(QObject):
-    appended=pyqtSignal()
-    removed=pyqtSignal()
+    appended=pyqtSignal(object)
+    removed=pyqtSignal(object)
     def __init__(self):
         super().__init__()
         self._objs=[]
@@ -60,13 +63,15 @@ class controlledObjects(QObject):
     def append(self,obj,axes):
         self._objs.append(obj)
         self._axis.append(axes)
-        self.appended.emit()
+        self.appended.emit(obj)
     def remove(self,obj):
         if obj in self._objs:
             i=self._objs.index(obj)
             self._objs.pop(i)
             self._axis.pop(i)
-            self.removed.emit()
+            self.removed.emit(obj)
+            return i
+        return None
     def removeAt(self,index):
         self.remove(self._objs[index])
     def getAxes(self,obj):
@@ -83,26 +88,53 @@ class ExecutorList(controlledObjects):
     updated = pyqtSignal(tuple)
     def __init__(self):
         super().__init__()
-    def append(self,obj):
+        self._enabled=[]
+        self._graphs=[]
+    def graphRemoved(self,graph):
+        for i, g in enumerate(self._graphs):
+            if g == graph:
+                self.removeAt(i)
+    def append(self, obj, graph):
         super().append(obj,obj.getAxes())
+        self._enabled.append(False)
+        self._graphs.append(graph)
         obj.updated.connect(self.updated.emit)
+        self.enable(obj)
     def remove(self,obj):
         obj.updated.disconnect()
-        super().remove(obj)
+        i = super().remove(obj)
+        if i is not None:
+            self._enabled.pop(i)
+            self._graphs.pop(i)
+        self.updated.emit(obj.getAxes())
+        return i
     def enable(self,obj):
-        pass
+        i = self._objs.index(obj)
+        self._enabled[i]=True
+        for o in self._objs:
+            if not o == obj:
+                for ax1 in obj.getAxes():
+                    for ax2 in o.getAxes():
+                        if ax1 == ax2:
+                            self.disable(o)
+        self.updated.emit(obj.getAxes())
     def enableAt(self,index):
         self.enable(self._objs[index])
     def disable(self,obj):
-        pass
-    def disableAt(self,obj):
+        i = self._objs.index(obj)
+        self._enabled[i]=False
+        self.updated.emit(obj.getAxes())
+    def disableAt(self,index):
         self.disable(self._objs[index])
+    def isEnabled(self,i):
+        return self._enabled[i]
     def __exeList(self,wave):
-        axes=[]
-        for e in self._objs:
-            axes.extend(e.getAxes())
-        axes=list(set(axes))
-        res=list(self._objs)
+        axes = []
+        res = []
+        for i, e in enumerate(self._objs):
+            if self.isEnabled(i):
+                axes.extend(e.getAxes())
+                res.append(e)
         for i in range(wave.data.ndim):
             if not i in axes:
                 res.append(AllExecutor(i))
@@ -119,7 +151,8 @@ class ExecutorList(controlledObjects):
                 t=tmp.axes[0]
                 tmp.axes[0]=tmp.axes[1]
                 tmp.axes[1]=t
-        return tmp.toWave()
+        res=tmp.toWave()
+        return res
 class AllExecutor(QObject):
     updated = pyqtSignal(tuple)
     def __init__(self,axis):
