@@ -191,6 +191,7 @@ class CutTab(QWidget):
         def __init__(self, dim):
             super().__init__()
             self.__initlayout(dim)
+            self._lineids={}
         def __initlayout(self, dim):
             self.grp1=QButtonGroup(self)
             self.grp2=QButtonGroup(self)
@@ -215,12 +216,25 @@ class CutTab(QWidget):
                 layout.addWidget(b,1,i+1)
             layout.addWidget(self._cmb2,1,len(self._btn2)+1)
             self.setLayout(layout)
+        def updateLines(self,lines):
+            for c in [self._cmb1, self._cmb2]:
+                old=c.currentText()
+                for i in range(c.count()):
+                    c.removeItem(0)
+                for i, l in enumerate(lines):
+                    c.addItem(l.Name())
+                    if l.Name()==old:
+                        c.setCurrentIndex(i)
+            self._lineids={}
+            for l in lines:
+                self._lineids[l.Name()] = l.ID()
         def getAxes(self):
             ax1=self._btn1.index(self.grp1.checkedButton())
             ax2=self._btn2.index(self.grp2.checkedButton())-1
-            if ax2 == len(self._btn2):
-                print("line: not implemented.")
-                ax2 = -1
+            if ax1 == len(self._btn1)-1:
+                ax1 = self._lineids[self._cmb1.currentText()]
+            if ax2 == len(self._btn2)-2:
+                ax2 = self._lineids[self._cmb2.currentText()]
             if ax2 == -1:
                 return (ax1,)
             else:
@@ -229,12 +243,15 @@ class CutTab(QWidget):
         super().__init__()
         self.graphs=controlledObjects()
         self.waves=controlledObjects()
+        self.lines=controlledObjects()
         self.__exe=ExecutorList()
         self.graphs.removed.connect(self.__exe.graphRemoved)
         self.__initlayout__()
         self.ax=None
         self.wave=None
         self.__exe.updated.connect(self.update)
+        self.__exe.appended.connect(self._exechanged)
+        self.__exe.removed.connect(self._exechanged)
     def __initlayout__(self):
         self.wlist=controlledWavesGUI(self.waves,self.display,self.append)
         self.glist=controlledGraphsGUI(self.graphs)
@@ -297,6 +314,9 @@ class CutTab(QWidget):
         self.ax = self._axisLayout(self.wave.data.ndim)
         self._make.insertWidget(1,self.ax)
         self.adjustSize()
+    def _exechanged(self):
+        list=self.__exe.getFreeLines()
+        self.ax.updateLines(list)
     def findAxisFromGraph(self, graph):
         return self.graphs.getAxes(graph)
     def make(self,axes=None):
@@ -329,12 +349,17 @@ class CutTab(QWidget):
         g=Graph.active()
         g.Append(wave)
     def update(self,index):
-        import time
-        start=time.time()
         for w, axs in self.waves.getObjectsAndAxes():
-            if not set(index).issubset(axs):
-                w.data=self.__exe.makeWave(self.wave,axs).data
-        print("debug_total",time.time()-start)
+            if index[0] < 10000:
+                if not set(index).issubset(axs):
+                    wav=self.__exe.makeWave(self.wave,axs)
+                    w.axes=wav.axes
+                    w.data=wav.data
+            else:
+                if index[0] in axs:
+                    wav=self.__exe.makeWave(self.wave,axs)
+                    w.axes=wav.axes
+                    w.data=wav.data
     def _point(self):
         g=Graph.active()
         id=g.canvas.addCross([0,0])
@@ -350,7 +375,11 @@ class CutTab(QWidget):
     def _circle(self):
         pass
     def _line(self):
-        pass
+        g=Graph.active()
+        id=g.canvas.addLine([[0,0],[1,1]])
+        e=FreeLineExecutor(self.graphs.getAxes(g))
+        g.canvas.addCallback(id,e.callback)
+        self.__exe.append(e,g)
     def _regx(self):
         g=Graph.active()
         id=g.canvas.addRegion([0,1])

@@ -24,7 +24,13 @@ class LineAnnotCanvas(AnnotationSettingCanvas, LineAnnotationCanvasBase):
         return line
     def _getLinePosition(self,obj):
         pos = obj.listPoints()
-        return [[pos[0][0],pos[1][0]],[pos[0][1],pos[1][1]]]
+        return [[obj.pos()[0]+obj.listPoints()[0][0],obj.pos()[0]+obj.listPoints()[1][0]],[obj.pos()[1]+obj.listPoints()[0][1],obj.pos()[1]+obj.listPoints()[1][1]]]
+    def _addAnnotCallback(self,obj,callback):
+        if isinstance(obj,pg.LineSegmentROI):
+            obj.sigRegionChanged.connect(lambda obj: callback([[obj.pos()[0]+obj.listPoints()[0][0],obj.pos()[0]+obj.listPoints()[1][0]],[obj.pos()[1]+obj.listPoints()[0][1],obj.pos()[1]+obj.listPoints()[1][1]]]))
+            obj.sigRegionChanged.emit(obj)
+        else:
+            super()._addAnnotCallback(obj,callback)
 
 class InfiniteLineAnnotCanvas(LineAnnotCanvas, InfiniteLineAnnotationCanvasBase):
     def __init__(self,dpi):

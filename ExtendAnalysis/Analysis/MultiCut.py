@@ -16,12 +16,11 @@ class DaskWave(object):
         else:
             self.axes=axes
     def toWave(self):
-        import time
-        start=time.time()
+        import copy
         w=Wave()
         res=self.data.compute()
         w.data=res
-        w.axes=self.axes
+        w.axes=copy.copy(self.axes)
         return w
     def __fromda(self,wave,axes,chunks):
         self.data=wave
@@ -48,7 +47,8 @@ class DaskWave(object):
             data=self.data[key]
             axes=[]
             for s, ax in zip(key,self.axes):
-                axes.append(ax[s])
+                if not isinstance(s,int):
+                    axes.append(ax[s])
             return DaskWave(data,axes=axes)
         else:
             super().__getitem__(key)
@@ -111,11 +111,13 @@ class ExecutorList(controlledObjects):
     def enable(self,obj):
         i = self._objs.index(obj)
         self._enabled[i]=True
+        if isinstance(obj,FreeLineExecutor):
+            return
         for o in self._objs:
             if not o == obj:
                 for ax1 in obj.getAxes():
                     for ax2 in o.getAxes():
-                        if ax1 == ax2:
+                        if ax1 == ax2 and not isinstance(o,FreeLineExecutor):
                             self.disable(o)
         self.updated.emit(obj.getAxes())
     def enableAt(self,index):
@@ -126,6 +128,12 @@ class ExecutorList(controlledObjects):
         self.updated.emit(obj.getAxes())
     def disableAt(self,index):
         self.disable(self._objs[index])
+    def getFreeLines(self):
+        res=[]
+        for o in self._objs:
+            if isinstance(o,FreeLineExecutor):
+                res.append(o)
+        return res
     def isEnabled(self,i):
         return self._enabled[i]
     def __exeList(self,wave):
@@ -133,25 +141,52 @@ class ExecutorList(controlledObjects):
         res = []
         for i, e in enumerate(self._objs):
             if self.isEnabled(i):
-                axes.extend(e.getAxes())
-                res.append(e)
+                if not isinstance(self._objs,FreeLineExecutor):
+                    axes.extend(e.getAxes())
+                    res.append(e)
         for i in range(wave.data.ndim):
             if not i in axes:
                 res.append(AllExecutor(i))
         return res
+    def __findFreeLineExecutor(self,id):
+        for fl in self.getFreeLines():
+            if fl.ID() == id:
+                return fl
+    def __ignoreList(self,axes):
+        ignore=[]
+        for ax in axes:
+            if ax < 10000:
+                ignore.append(ax)
+            else:
+                ignore.extend(self.__findFreeLineExecutor(ax).getAxes())
+        return ignore
+    def __applyFreeLines(self,wave,axes_orig,applied):
+        for a in axes_orig:
+            if a >= 10000:
+                fl=self.__findFreeLineExecutor(a)
+                axes = fl.getAxes()
+                for i, ax in enumerate(axes):
+                    for ax2 in applied:
+                        if ax2 < ax:
+                            axes[i] -= 1
+                fl.execute(wave,axes)
     def makeWave(self,wave,axes):
         tmp=wave
         offset=0
+        applied=[]
         for e in self.__exeList(wave):
-            tmp, off = e.execute(tmp,offset,ignore=axes)
-            offset += off
-        if len(axes) == 2:
+            if not isinstance(e,FreeLineExecutor):
+                tmp, axs = e.execute(tmp,offset,ignore=self.__ignoreList(axes))
+                offset += len(axs)
+                applied.extend(axs)
+        res=tmp.toWave()
+        self.__applyFreeLines(res,axes,applied)
+        if len(axes) == 2 and axes[0] < 10000 and axes[1] < 10000:
             if axes[0] > axes[1]:
                 tmp.data=tmp.data.T
                 t=tmp.axes[0]
                 tmp.axes[0]=tmp.axes[1]
                 tmp.axes[1]=t
-        res=tmp.toWave()
         return res
 class AllExecutor(QObject):
     updated = pyqtSignal(tuple)
@@ -162,9 +197,9 @@ class AllExecutor(QObject):
         return [self.axis]
     def execute(self,wave,axis_offset,ignore=[]):
         if self.axis in ignore:
-            return wave, 0
+            return wave, []
         else:
-            return wave.sum(self.axis-axis_offset), 1
+            return wave.sum(self.axis-axis_offset), [self.axis]
 class RegionExecutor(QObject):
     updated = pyqtSignal(tuple)
     def __init__(self,axes,range=None):
@@ -188,13 +223,15 @@ class RegionExecutor(QObject):
     def execute(self,wave,axis_offset,ignore=[]):
         off=0
         tmp = wave
+        axes = []
         for i, r in zip(self.axes,self.range):
             if not i in ignore:
                 sl = [slice(None)]*tmp.data.ndim
                 sl[i-axis_offset-off] = slice(wave.posToPoint(r[0],i),wave.posToPoint(r[1],i))
                 tmp = tmp[tuple(sl)].sum(i-axis_offset-off)
                 off += 1
-        return tmp, off
+                axes.append(i)
+        return tmp, axes
     def callback(self,region):
         self.setRange(region)
     def Name(self):
@@ -220,14 +257,98 @@ class PointExecutor(QObject):
     def execute(self,wave,axis_offset,ignore=[]):
         off=0
         tmp = wave
+        axes = []
         for i, p in zip(self.axes,self.position):
             if not i in ignore:
                 sl = [slice(None)]*tmp.data.ndim
                 sl[i-off] = wave.posToPoint(p,i)
                 tmp = tmp[tuple(sl)]#.sum(i-axis_offset-off)
                 off += 1
-        return tmp, off
+                axes.append(i)
+        return tmp, axes
     def callback(self,pos):
         self.setPosition(pos)
     def Name(self):
         return "Point"
+class FreeLineExecutor(QObject):
+    _id=10000
+    updated = pyqtSignal(tuple)
+    def __init__(self,axes,pos=None):
+        super().__init__()
+        self.axes=axes
+        self.id = FreeLineExecutor._id
+        FreeLineExecutor._id +=1
+        if pos is not None:
+            self.setPosition(pos)
+    def getAxes(self):
+        return self.axes
+    def setPosition(self,pos):
+        self.position=pos
+        self.updated.emit((self.id,))
+    def execute(self,wave,axes,width=1):
+        import copy
+        pos1 = (wave.posToPoint(self.position[0][0],axes[0]),wave.posToPoint(self.position[1][0],axes[0]))
+        pos2 = (wave.posToPoint(self.position[0][1],axes[1]),wave.posToPoint(self.position[1][1],axes[1]))
+        dx=(pos2[0]-pos1[0])
+        dy=(pos2[1]-pos1[1])
+        size=int(np.sqrt(dx*dx+dy*dy)+1)
+        nor=np.sqrt(dx*dx+dy*dy)
+        dx, dy = dy/nor, -dx/nor
+        coords_array=[]
+        coords_shape=[]
+        for ax in range(wave.data.ndim):
+            if ax in axes:
+                if ax == axes[0]:
+                    coords_shape.append(size)
+                    coords_array.append("x")
+                else:
+                    coords_array.append("y")
+            else:
+                coords_shape.append(wave.data.shape[ax])
+                coords_array.append(np.linspace(0,wave.data.shape[ax]-1,wave.data.shape[ax]))
+        replacedAxis = min(*axes)
+        res = np.zeros(tuple(coords_shape))
+        for j in range(1-width,width,2):
+            coords = []
+            x, y = np.linspace(pos1[0], pos2[0], size) + dx*(j*0.5), np.linspace(pos1[1], pos2[1], size) + dy*(j*0.5)
+            offset = 0
+            for d1, ar in enumerate(coords_array):
+                shape = copy.copy(coords_shape)
+                if isinstance(ar,str):
+                    shape.pop(replacedAxis)
+                    ord = list(range(len(coords_shape)-1))
+                    ord.insert(replacedAxis,len(coords_shape)-1)
+                    if ar == "x":
+                        tmp = np.tile(x,tuple([*shape,1]))
+                    elif ar == "y":
+                        tmp = np.tile(y,tuple([*shape,1]))
+                        offset = 1
+                    tmp=tmp.transpose(tuple(ord))
+                else:
+                    shape.pop(d1 - offset)
+                    ord = list(range(len(coords_shape)-1))
+                    ord.insert(d1 - offset,len(coords_shape)-1)
+                    tmp = np.tile(ar,tuple([*shape,1]))
+                    tmp=tmp.transpose(tuple(ord))
+                coords.append(tmp)
+            res += scipy.ndimage.map_coordinates(wave.data, coords, order = 1)
+        axis1=wave.axes[axes[0]]
+        if axis1 is None:
+            axis1=list(range(wave.data.shape[axes[0]]))
+        axis2=wave.axes[axes[1]]
+        if axis2 is None:
+            axis2=list(range(wave.data.shape[axes[1]]))
+        dx=abs(axis1[pos1[0]]-axis1[pos2[0]])
+        dy=abs(axis2[pos1[1]]-axis2[pos2[1]])
+        d=np.sqrt(dx*dx+dy*dy)
+        axisData=np.linspace(0,d,size)
+        wave.axes[replacedAxis]=axisData
+        wave.axes=np.delete(wave.axes,max(*axes),0)
+        wave.data=res
+        return wave
+    def callback(self,pos):
+        self.setPosition(pos)
+    def Name(self):
+        return "Line"+str(self.id-10000)
+    def ID(self):
+        return self.id
