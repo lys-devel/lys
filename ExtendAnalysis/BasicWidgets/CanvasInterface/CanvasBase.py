@@ -1,4 +1,5 @@
 from enum import IntEnum
+from .SaveCanvas import *
 
 class Axis(IntEnum):
     BottomLeft=1
@@ -16,3 +17,6 @@ class WaveData(object):
         self.appearance=appearance
         self.offset=offset
         self.zindex=zindex
+
+class CanvasBaseBase(DrawableCanvasBase):
+    pass

@@ -15,7 +15,6 @@ class ExtendCanvas(AnnotGUICanvas):
     clicked=pyqtSignal(float,float)
     savedDict={}
     def __init__(self, dpi=100):
-        self.saveflg=False
         super().__init__(dpi=dpi)
         self.fig.scene().sigMouseClicked.connect(self._onClick)
         self.axes.mouseDragEvent=self._onDrag

@@ -9,30 +9,22 @@ from ExtendAnalysis import *
 from ExtendAnalysis import LoadFile
 from ..CanvasInterface import *
 
-class FigureCanvasBase(pg.PlotWidget):
+class FigureCanvasBase(pg.PlotWidget,CanvasBaseBase):
     dataChanged=pyqtSignal()
     def __init__(self, dpi=100):
+        CanvasBaseBase.__init__(self)
         super().__init__()
         self.__initAxes()
         self.fig.canvas=None
         self.__listener=[]
         self.__lisaxis=[]
         self._Datalist=[]
-        self.__loadFlg=False
-        self.drawflg=True
-        self.savef=None
         self.npen=0
     def RestoreSize(self):
         pass
-    def setSaveFunction(self,func):
-        self.savef=weakref.WeakMethod(func)
-    def Save(self):
-        if (not self.__loadFlg) and (self.savef is not None):
-            self.savef()()
     @saveCanvas
     def OnWaveModified(self,wave):
         flg=False
-        self.__loadFlg=True
         self.EnableDraw(False)
         self.saveAppearance()
         for d in self._Datalist:
@@ -45,32 +37,10 @@ class FigureCanvasBase(pg.PlotWidget):
         self.EnableDraw(True)
         if(flg):
             self.draw()
-        self.__loadFlg=False
-    def IsDrawEnabled(self):
-        return self.drawflg
-    def EnableDraw(self,b):
-        self.drawflg=b
-    def EnableSave(self,b):
-        self.saveflg=b
-    def draw(self):
-        if self.drawflg is not None:
-            if not self.drawflg:
-                return
-        try:
-            self.update()
-            self.__emitAfterDraw()
-        except Exception:
-            pass
+    def _draw(self):
+        self.update()
     def addAxisChangeListener(self,listener):
         self.__lisaxis.append(weakref.ref(listener))
-    def addAfterDrawListener(self,listener):
-        self.__lisdraw.append(weakref.ref(listener))
-    def __emitAfterDraw(self):
-        for l in self.__lisdraw:
-            if l() is not None:
-                l().OnAfterDraw()
-            else:
-                self.__lisdraw.remove(l)
     def __emitAxisChanged(self,axis):
         for l in self.__lisaxis:
             if l() is not None:
@@ -327,7 +297,7 @@ class FigureCanvasBase(pg.PlotWidget):
             i+=1
         dictionary['Datalist']=dic
     def LoadFromDictionary(self,dictionary,path):
-        self.__loadFlg=True
+        self.EnableSave(False)
         i=0
         sdir=pwd()
         cd(path)
@@ -360,7 +330,7 @@ class FigureCanvasBase(pg.PlotWidget):
                 self.Append(p,axis,appearance=ap,offset=offset,zindex=zi)
                 i+=1
         self.loadAppearance()
-        self.__loadFlg=False
+        self.EnableSave(True)
         cd(sdir)
     def axesName(self,axes):
         if axes==self.axes:

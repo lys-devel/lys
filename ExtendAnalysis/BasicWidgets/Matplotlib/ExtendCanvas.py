@@ -11,7 +11,6 @@ class ExtendCanvas(SaveSettingCanvas):
     clicked=pyqtSignal(float,float)
     savedDict={}
     def __init__(self, dpi=100):
-        self.saveflg=False
         self.EnableDraw(False)
         super().__init__(dpi=dpi)
         self.setFocusPolicy(Qt.StrongFocus)

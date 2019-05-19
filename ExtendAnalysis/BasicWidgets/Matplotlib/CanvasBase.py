@@ -12,10 +12,11 @@ from ExtendAnalysis import *
 from ExtendAnalysis import LoadFile
 from ..CanvasInterface import *
 
-class FigureCanvasBase(FigureCanvas):
+class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
     dataChanged=pyqtSignal()
     def __init__(self, dpi=100):
         self.fig=Figure(dpi=dpi)
+        #CanvasBaseBase.__init__(self)
         super().__init__(self.fig)
         self.axes = self.fig.add_subplot(111)#TODO #This line takes 0.3s for each image.
         self.axes.minorticks_on()
@@ -27,20 +28,9 @@ class FigureCanvasBase(FigureCanvas):
         self._Datalist=[]
         self.__listener=[]
         self.__lisaxis=[]
-        self.__lisdraw=[]
-        self.drawflg=False
-        self.__loadFlg=False
-        self.savef=None
-
-    def setSaveFunction(self,func):
-        self.savef=weakref.WeakMethod(func)
-    def Save(self):
-        if (not self.__loadFlg) and (self.savef is not None):
-            self.savef()()
     @saveCanvas
     def OnWaveModified(self,wave):
         flg=False
-        self.__loadFlg=True
         self.EnableDraw(False)
         self.saveAppearance()
         for d in self._Datalist:
@@ -53,32 +43,10 @@ class FigureCanvasBase(FigureCanvas):
         self.EnableDraw(True)
         if(flg):
             self.draw()
-        self.__loadFlg=False
-    def IsDrawEnabled(self):
-        return self.drawflg
-    def EnableDraw(self,b):
-        self.drawflg=b
-    def EnableSave(self,b):
-        self.saveflg=b
-    def draw(self):
-        if self.drawflg is not None:
-            if not self.drawflg:
-                return
-        try:
-            super().draw()
-            self.__emitAfterDraw()
-        except Exception:
-            pass
+    def _draw(self):
+        super().draw()
     def addAxisChangeListener(self,listener):
         self.__lisaxis.append(weakref.ref(listener))
-    def addAfterDrawListener(self,listener):
-        self.__lisdraw.append(weakref.ref(listener))
-    def __emitAfterDraw(self):
-        for l in self.__lisdraw:
-            if l() is not None:
-                l().OnAfterDraw()
-            else:
-                self.__lisdraw.remove(l)
     def __emitAxisChanged(self,axis):
         for l in self.__lisaxis:
             if l() is not None:
@@ -287,7 +255,7 @@ class FigureCanvasBase(FigureCanvas):
             i+=1
         dictionary['Datalist']=dic
     def LoadFromDictionary(self,dictionary,path):
-        self.__loadFlg=True
+        self.EnableSave(False)
         i=0
         sdir=pwd()
         cd(path)
@@ -320,7 +288,7 @@ class FigureCanvasBase(FigureCanvas):
                 self.Append(p,axis,appearance=ap,offset=offset,zindex=zi)
                 i+=1
         self.loadAppearance()
-        self.__loadFlg=False
+        self.EnableSave(True)
         cd(sdir)
     def axesName(self,axes):
         if axes==self.axes:
