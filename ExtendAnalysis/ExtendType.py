@@ -265,6 +265,12 @@ class AutoSaved(object):
                 self.__modListener.remove(m)
             else:
                 m()(self)
+def produce(data,axes,note):
+    w=Wave()
+    w.data=data
+    w.axes=axes
+    w.note=note
+    return w
 class Wave(AutoSaved):
     class _wavedata(ExtendObject):
         def _init(self):
@@ -369,6 +375,11 @@ class Wave(AutoSaved):
     def __setitem__(self,key,value):
         self.data[key]=value
         self.Save()
+    def __reduce_ex__(self,proto):
+        if self.IsConnected():
+            return Wave,(self.FileName())
+        else:
+            return produce,(self.data,self.axes,self.note)
     def _parseFilename(self,path):
         if path is None:
             return None

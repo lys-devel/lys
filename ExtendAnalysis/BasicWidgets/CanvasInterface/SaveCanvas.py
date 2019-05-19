@@ -27,10 +27,8 @@ def notSaveCanvas(func):
         return res
     return wrapper
 
-class SavableCanvasBase(QObject):
+class SavableCanvasBase(object):
     def __init__(self,*args,**kwargs):
-        print("savable init")
-        super().__init__(*args,**kwargs)
         self.saveflg=False
         self.savef=None
         self.__loadFlg=False
@@ -41,7 +39,14 @@ class SavableCanvasBase(QObject):
             self.savef()()
     def EnableSave(self,b):
         self.saveflg=b
-
+    def SaveAsDictionary(self,dictionary,path):
+        pass
+    def LoadFromDictionary(self,dictionary,path):
+        pass
+    def saveAppearance(self):
+        pass
+    def loadAppearance(self):
+        pass
 class DrawableCanvasBase(SavableCanvasBase):
     afterDraw=pyqtSignal()
     def __init__(self,*args,**kwargs):

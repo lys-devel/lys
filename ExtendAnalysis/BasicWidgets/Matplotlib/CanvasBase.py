@@ -8,15 +8,17 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from matplotlib import colors
 
+import matplotlib as mpl
+mpl.rc('image',cmap='gray')
+
 from ExtendAnalysis import *
 from ExtendAnalysis import LoadFile
 from ..CanvasInterface import *
 
 class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
-    dataChanged=pyqtSignal()
     def __init__(self, dpi=100):
         self.fig=Figure(dpi=dpi)
-        #CanvasBaseBase.__init__(self)
+        CanvasBaseBase.__init__(self)
         super().__init__(self.fig)
         self.axes = self.fig.add_subplot(111)#TODO #This line takes 0.3s for each image.
         self.axes.minorticks_on()
@@ -25,24 +27,7 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
         self.axes_tx=None
         self.axes_ty=None
         self.axes_txy=None
-        self._Datalist=[]
-        self.__listener=[]
         self.__lisaxis=[]
-    @saveCanvas
-    def OnWaveModified(self,wave):
-        flg=False
-        self.EnableDraw(False)
-        self.saveAppearance()
-        for d in self._Datalist:
-            if wave.obj==d.wave.obj:
-                d.obj.remove()
-                self._Datalist.remove(d)
-                self._Append(wave,d.axis,d.id,appearance=d.appearance,offset=d.offset,zindex=d.zindex,reuse=True)
-                flg=True
-        self.loadAppearance()
-        self.EnableDraw(True)
-        if(flg):
-            self.draw()
     def _draw(self):
         super().draw()
     def addAxisChangeListener(self,listener):
@@ -87,54 +72,11 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
                 self.axes_txy.yaxis.set_picker(15)
                 self.axes_txy.minorticks_on()
             return self.axes_txy
-
-    def Append(self,wave,axis=Axis.BottomLeft,id=None,appearance=None,offset=(0,0,0,0),zindex=0):
+    def _append1d(self,xdata,ydata,axis,zorder):
         ax=self.__getAxes(axis)
-        if isinstance(wave,Wave):
-            wav=wave
-        else:
-            wav=LoadFile.load(wave)
-        if appearance is None:
-            ids=self._Append(wav,ax,id,{},offset,zindex)
-        else:
-            ids=self._Append(wav,ax,id,dict(appearance),offset,zindex)
-        return ids
-    @saveCanvas
-    def _Append(self,wav,ax,id,appearance,offset,zindex=0, reuse=False):
-        if wav.data.ndim==1:
-            ids=self._Append1D(wav,ax,id,appearance,offset)
-        if wav.data.ndim==2:
-            ids=self._Append2D(wav,ax,id,appearance,offset)
-        if wav.data.ndim==3:
-            ids=self._Append3D(wav,ax,id,appearance,offset,zindex)
-        if not reuse:
-            wav.addModifiedListener(self.OnWaveModified)
-        self.dataChanged.emit()
-        if appearance is not None:
-            self.loadAppearance()
-        self.draw()
-        return ids
-    def _Append1D(self,wav,ax,ID,appearance,offset):
-        if wav.x.ndim==0:
-            xdata=np.arange(len(wav.data))
-            ydata=np.array(wav.data)
-        else:
-            xdata=np.array(wav.x)
-            ydata=np.array(wav.data)
-        if not offset[2]==0.0:
-            xdata=xdata*offset[2]
-        if not offset[3]==0.0:
-            ydata=ydata*offset[3]
-        xdata=xdata+offset[0]
-        ydata=ydata+offset[1]
-        line, = ax.plot(xdata,ydata,label=wav.Name(),picker=5)
-        if ID is None:
-            id=-2000+len(self.getLines())
-        else:
-            id=ID
-        line.set_zorder(id)
-        self._Datalist.insert(id+2000,WaveData(wav,line,ax,id,appearance,offset))
-        return id
+        line, = ax.plot(xdata,ydata,picker=5)
+        line.set_zorder(zorder)
+        return line, ax
     def calcExtent2D(self,wav,offset):
         xstart=wav.x[0]
         xend=wav.x[len(wav.x)-1]
@@ -153,64 +95,18 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
         dx=(xend-xstart+1)/wav.data.shape[1]
         dy=(yend-ystart+1)/wav.data.shape[0]
         return (xstart-dx/2,xend+dx/2,yend+dy/2,ystart-dy/2)
-
-    def _Append2D(self,wav,ax,ID,appearance,offset):
-        im=ax.imshow(wav.data,aspect='auto',extent=self.calcExtent2D(wav,offset),picker=True)
-        if ID is None:
-            id=-5000+len(self.getImages())
-        else:
-            id=ID
-        im.set_zorder(id)
-        d=WaveData(wav,im,ax,id,appearance,offset)
-        self._Datalist.insert(id+5000,d)
-        if len(appearance.keys()) == 0:
-            self.setColormap('gray',id)
-        return id
+    def _append2d(self,wave,offset,axis,zorder):
+        ax=self.__getAxes(axis)
+        im=ax.imshow(wave.data,aspect='auto',extent=self.calcExtent2D(wave,offset),picker=True)
+        im.set_zorder(zorder)
+        return im, ax
     def AppendContour(self,wav,offset=(0,0,0,0)):
         ax=self.__getAxes(Axis.BottomLeft)
         ext=self.calcExtent2D(wav,offset)
         obj=ax.contour(wav.data[::-1,:],[0.5],extent=ext,colors=['red'])
         return obj
-    def _Append3D(self,wav,ax,ID,appearance,offset,z):
-        xstart=wav.x[0]+offset[0]
-        xend=wav.x[len(wav.x)-1]+offset[0]
-        ystart=wav.y[0]+offset[1]
-        yend=wav.y[len(wav.y)-1]+offset[1]
-        if not offset[2]==0:
-            xstart*=offset[2]
-            xend*=offset[2]
-        if not offset[3]==0:
-            ystart*=offset[3]
-            yend*=offset[3]
-        im=ax.imshow(wav.getSlicedImage(z),aspect='auto',extent=(xstart,xend,ystart,yend),picker=True)
-        if ID is None:
-            id=-5000+len(self.getImages())
-        else:
-            id=ID
-        im.set_zorder(id)
-        self._Datalist.insert(id+5000,WaveData(wav,im,ax,id,appearance,offset,z))
-        self.setColormap('gray',id)
-        return id
-    @saveCanvas
-    def Remove(self,indexes):
-        if hasattr(indexes, '__iter__'):
-            list=indexes
-        else:
-            list=[indexes]
-        for i in list:
-            for d in self._Datalist:
-                if i==d.id:
-                    d.obj.remove()
-                    self._Datalist.remove(d)
-        self.dataChanged.emit()
-        self.draw()
-    @saveCanvas
-    def Clear(self):
-        for d in self._Datalist:
-            d.obj.remove()
-        self._Datalist.clear()
-        self.dataChanged.emit()
-        self.draw()
+    def _remove(self,data):
+        data.obj.remove()
     def getWaveData(self,dim=None):
         if dim is None:
             return self._Datalist
@@ -229,67 +125,6 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
         for i in self._Datalist:
             if i.id==artist.get_zorder():
                 return i
-    def SaveAsDictionary(self,dictionary,path):
-        i=0
-        dic={}
-        self.saveAppearance()
-        for data in self._Datalist:
-            dic[i]={}
-            fname=data.wave.FileName()
-            if fname is not None:
-                dic[i]['File']=os.path.relpath(data.wave.FileName(),path).replace('\\','/')
-            else:
-                dic[i]['File']=None
-            if data.axis==self.axes:
-                axis=1
-            if data.axis==self.axes_ty:
-                axis=2
-            if data.axis==self.axes_tx:
-                axis=3
-            if data.axis==self.axes_txy:
-                axis=4
-            dic[i]['Axis']=axis
-            dic[i]['Appearance']=str(data.appearance)
-            dic[i]['Offset']=str(data.offset)
-            dic[i]['ZIndex']=str(data.zindex)
-            i+=1
-        dictionary['Datalist']=dic
-    def LoadFromDictionary(self,dictionary,path):
-        self.EnableSave(False)
-        i=0
-        sdir=pwd()
-        cd(path)
-        if 'Datalist' in dictionary:
-            dic=dictionary['Datalist']
-            while i in dic:
-                p=dic[i]['File']
-                if p is None:
-                    i+=1
-                    continue
-                axis=dic[i]['Axis']
-                if axis==1:
-                    axis=Axis.BottomLeft
-                if axis==2:
-                    axis=Axis.TopLeft
-                if axis==3:
-                    axis=Axis.BottomRight
-                if axis==4:
-                    axis=Axis.TopRight
-                if 'Appearance' in dic[i]:
-                    ap=eval(dic[i]['Appearance'])
-                else:
-                    ap={}
-                if 'Offset' in dic[i]:
-                    offset=eval(dic[i]['Offset'])
-                if 'ZIndex' in dic[i]:
-                    zi=eval(dic[i]['ZIndex'])
-                else:
-                    offset=(0,0,0,0)
-                self.Append(p,axis,appearance=ap,offset=offset,zindex=zi)
-                i+=1
-        self.loadAppearance()
-        self.EnableSave(True)
-        cd(sdir)
     def axesName(self,axes):
         if axes==self.axes:
             return 'Bottom Left'
@@ -311,10 +146,6 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
                 n2+=1
             d.obj.set_zorder(d.id)
         self.draw()
-    def saveAppearance(self):
-        pass
-    def loadAppearance(self):
-        pass
     def constructContextMenu(self):
         return QMenu(self)
 
