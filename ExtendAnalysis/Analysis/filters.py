@@ -6,7 +6,7 @@ from scipy.ndimage.interpolation import rotate
 import cv2
 
 from dask_image import ndfilters as dfilters
-from dask.array import apply_along_axis, einsum
+from dask.array import apply_along_axis, einsum, fft, absolute
 
 from ExtendAnalysis import Wave, tasks, task
 from .MultiCut import DaskWave
@@ -166,6 +166,23 @@ class BandStopFilter(FilterInterface):
         self._axes=axes
     def _execute(self,wave,**kwargs):
         return _filt(wave,self._axes,self._b,self._a)
+
+class FourierFilter(FilterInterface):
+    def __init__(self,axes,type="forward"):
+        self.type=type
+        self.axes=axes
+    def _execute(self,wave,**kwargs):
+        for d in self.axes:
+            if isinstance(wave, Wave):
+                if type == "forward":
+                    wave.data = np.fft.fftn(wave.data,axes=self.axes)
+                else:
+                    wave.data = np.fft.ifftn(wave.data,axes=self.axes)
+            if isinstance(wave, DaskWave):
+                wave.data = absolute(fft.fftn(wave.data,axes=self.axes))
+            else:
+                wave.data = absolute(fft.ifftn(wave.data,axes=self.axes))
+        return wave
 
 class NormalizeFilter(FilterInterface):
     def _makeSlice(self):

@@ -253,7 +253,7 @@ Opposite={'Left':'Right','Right':'Left','Bottom':'Top','Top':'Bottom','left':'Ri
 class AxisAdjustableCanvas(AxisRangeRightClickCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
-        self.addAxisChangeListener(self)
+        self.axisChanged.connect(self.OnAxisChanged)
     def OnAxisChanged(self,axis):
         if self.axisIsValid('Right'):
             self.setMirrorAxis('Left',False)
@@ -322,7 +322,11 @@ class AxisAdjustableCanvas(AxisRangeRightClickCanvas):
         ax=self._getAxisList(axis)
         for a in ax:
             pen=a.pen()
-            pen.setColor(QColor(color))
+            if isinstance(color, tuple):
+                col = [c*255 for c in color]
+                pen.setColor(QColor(*col))
+            else:
+                pen.setColor(QColor(color))
             a.setPen(pen)
     def getAxisColor(self,axis):
         ax=self.fig.axes[axis.lower()]['item']

@@ -3,12 +3,14 @@ from .MultiCut import *
 from .filtersGUI import *
 
 class MultiCut(AnalysisWindow):
-    def __init__(self):
+    def __init__(self,wave=None):
         super().__init__("Multi-dimensional analysis")
         self.__initlayout__()
         self.wave=None
         self.axes=[]
         self.ranges=[]
+        if wave is not None:
+            self.load(wave)
     def __initlayout__(self):
         self._pre = PrefilterTab(self._loadRegion)
         self._cut = CutTab()
@@ -37,9 +39,13 @@ class MultiCut(AnalysisWindow):
             fname = QFileDialog.getOpenFileName(self, 'Select data file')[0]
         else:
             fname=file
-        if os.path.exists(fname):
+        if isinstance(fname,str):
             self.wave=Wave(fname)
             self.__file.setText(fname)
+            self._pre.setWave(self.wave)
+        elif isinstance(fname,Wave):
+            self.wave=fname
+            self.__file.setText(self.wave.Name())
             self._pre.setWave(self.wave)
     def _loadRegion(self,obj):
         g=Graph.active()
@@ -75,8 +81,9 @@ class PrefilterTab(QWidget):
         f=self.filt.GetFilters()
         waves=DaskWave(self.wave)
         f.execute(waves)
-        waves.data.compute()
-        self.filterApplied.emit(waves)
+        w = waves.toWave()
+        dw = DaskWave(w)
+        self.filterApplied.emit(dw)
 
 class ControlledObjectsModel(QAbstractItemModel):
     def __init__(self,obj):
@@ -305,7 +312,13 @@ class CutTab(QWidget):
         grp.setLayout(hbox)
         return grp
     def _setWave(self,wave):
+        old = self.wave
         self.wave=wave
+        print("Wave set. shape = ", self.wave.data.shape, ", dtype = ",self.wave.data.dtype)
+        if old is not None:
+            if old.data.shape == wave.data.shape:
+                self.updateAll()
+                return
         self.__resetLayout()
     def __resetLayout(self):
         if self.ax is not None:
@@ -348,18 +361,32 @@ class CutTab(QWidget):
     def append(self,wave,axes):
         g=Graph.active()
         g.Append(wave)
-    def update(self,index):
+    def updateAll(self):
+        for w, axs in self.waves.getObjectsAndAxes():
+            try:
+                wav=self.__exe.makeWave(self.wave,axs)
+                w.axes=wav.axes
+                w.data=wav.data
+            except:
+                pass
+    def update(self,index,all=False):
         for w, axs in self.waves.getObjectsAndAxes():
             if index[0] < 10000:
                 if not set(index).issubset(axs):
-                    wav=self.__exe.makeWave(self.wave,axs)
-                    w.axes=wav.axes
-                    w.data=wav.data
+                    try:
+                        wav=self.__exe.makeWave(self.wave,axs)
+                        w.axes=wav.axes
+                        w.data=wav.data
+                    except:
+                        pass
             else:
                 if index[0] in axs:
-                    wav=self.__exe.makeWave(self.wave,axs)
-                    w.axes=wav.axes
-                    w.data=wav.data
+                    try:
+                        wav=self.__exe.makeWave(self.wave,axs)
+                        w.axes=wav.axes
+                        w.data=wav.data
+                    except:
+                        pass
     def _point(self):
         g=Graph.active()
         id=g.canvas.addCross([0,0])

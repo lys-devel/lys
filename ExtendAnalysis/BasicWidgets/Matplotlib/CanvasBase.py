@@ -15,10 +15,11 @@ from ExtendAnalysis import *
 from ExtendAnalysis import LoadFile
 from ..CanvasInterface import *
 
-class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
+class FigureCanvasBase(FigureCanvas,AbstractCanvasBase):
+    axisChanged=pyqtSignal(str)
     def __init__(self, dpi=100):
         self.fig=Figure(dpi=dpi)
-        CanvasBaseBase.__init__(self)
+        AbstractCanvasBase.__init__(self)
         super().__init__(self.fig)
         self.axes = self.fig.add_subplot(111)#TODO #This line takes 0.3s for each image.
         self.axes.minorticks_on()
@@ -27,17 +28,8 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
         self.axes_tx=None
         self.axes_ty=None
         self.axes_txy=None
-        self.__lisaxis=[]
     def _draw(self):
         super().draw()
-    def addAxisChangeListener(self,listener):
-        self.__lisaxis.append(weakref.ref(listener))
-    def __emitAxisChanged(self,axis):
-        for l in self.__lisaxis:
-            if l() is not None:
-                l().OnAxisChanged(axis)
-            else:
-                self.__lisaxis.remove(l)
     def _getAxesFrom(self,axis):
         return self.__getAxes(axis)
     def __getAxes(self,axis):
@@ -51,7 +43,7 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
                 self.axes_ty.xaxis.set_picker(15)
                 self.axes_ty.yaxis.set_picker(15)
                 self.axes_ty.minorticks_on()
-                self.__emitAxisChanged('Top')
+                self.axisChanged.emit('Top')
             return self.axes_ty
         if axis==Axis.BottomRight:
             if self.axes_tx is None:
@@ -61,13 +53,13 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
                 self.axes_tx.xaxis.set_picker(15)
                 self.axes_tx.yaxis.set_picker(15)
                 self.axes_tx.minorticks_on()
-                self.__emitAxisChanged('Right')
+                self.axisChanged.emit('Right')
             return self.axes_tx
         if axis==Axis.TopRight:
             if self.axes_txy is None:
                 self.axes_txy=self.axes.twinx().twiny()
-                self.__emitAxisChanged('Right')
-                self.__emitAxisChanged('Top')
+                self.axisChanged.emit('Right')
+                self.axisChanged.emit('Top')
                 self.axes_txy.xaxis.set_picker(15)
                 self.axes_txy.yaxis.set_picker(15)
                 self.axes_txy.minorticks_on()
@@ -107,20 +99,9 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
         return obj
     def _remove(self,data):
         data.obj.remove()
-    def getWaveData(self,dim=None):
-        if dim is None:
-            return self._Datalist
-        res=[]
-        for d in self._Datalist:
-            if d.wave.data.ndim==1 and dim==1:
-                res.append(d)
-            if d.wave.data.ndim>=2 and dim==2:
-                res.append(d)
-        return res
-    def getLines(self):
-        return self.getWaveData(1)
-    def getImages(self):
-        return self.getWaveData(2)
+    def _setZOrder(self,obj,z):
+        obj.set_zorder(z)
+
     def getWaveDataFromArtist(self,artist):
         for i in self._Datalist:
             if i.id==artist.get_zorder():
@@ -149,94 +130,8 @@ class FigureCanvasBase(FigureCanvas,CanvasBaseBase):
     def constructContextMenu(self):
         return QMenu(self)
 
-class DataSelectableCanvas(FigureCanvasBase):
-    def __init__(self,dpi):
-        super().__init__(dpi)
-        self.__indexes=[[],[],[],[]]
-        self.__listener=[]
-    def setSelectedIndexes(self,dim,indexes):
-        if hasattr(indexes, '__iter__'):
-            list=indexes
-        else:
-            list=[indexes]
-        self.__indexes[dim]=list
-        self._emitDataSelected()
-    def getSelectedIndexes(self,dim):
-        return self.__indexes[dim]
-    def getDataFromIndexes(self,dim,indexes):
-        res=[]
-        if hasattr(indexes, '__iter__'):
-            list=indexes
-        else:
-            list=[indexes]
-        for i in list:
-            for d in self.getWaveData(dim):
-                if d.id==i:
-                    res.append(d)
-        return res
-    def _emitDataSelected(self):
-        for l in self.__listener:
-            if l() is not None:
-                l().OnDataSelected()
-            else:
-                self.__listener.remove(l)
-    def _findIndex(self,id):
-        res=-1
-        for d in self._Datalist:
-            if d.id==id:
-                res=self._Datalist.index(d)
-        return res
-    @saveCanvas
-    def moveItem(self,list,target=None):
-        tar=eval(str(target))
-        for l in list:
-            n=self._findIndex(l)
-            item_n=self._Datalist[n]
-            self._Datalist.remove(item_n)
-            if tar is not None:
-                self._Datalist.insert(self._findIndex(tar)+1,item_n)
-            else:
-                self._Datalist.insert(0,item_n)
-        self._reorder()
-        self.dataChanged.emit()
-    def addDataSelectionListener(self,listener):
-        self.__listener.append(weakref.ref(listener))
-
-class DataHidableCanvas(DataSelectableCanvas):
-    def saveAppearance(self):
-        super().saveAppearance()
-        data=self.getWaveData()
-        for d in data:
-            d.appearance['Visible']=d.obj.get_visible()
-    def loadAppearance(self):
-        super().loadAppearance()
-        data=self.getWaveData()
-        for d in data:
-            if 'Visible' in d.appearance:
-                d.obj.set_visible(d.appearance['Visible'])
-    @saveCanvas
-    def hideData(self,dim,indexes):
-        dat=self.getDataFromIndexes(dim,indexes)
-        for d in dat:
-            d.obj.set_visible(False)
-        self.draw()
-    @saveCanvas
-    def showData(self,dim,indexes):
-        dat=self.getDataFromIndexes(dim,indexes)
-        for d in dat:
-            d.obj.set_visible(True)
-        self.draw()
-
-class OffsetAdjustableCanvas(DataHidableCanvas):
-    @saveCanvas
-    def setOffset(self,offset,indexes):
-        data=self.getDataFromIndexes(None,indexes)
-        for d in data:
-            d.offset=offset
-            self.OnWaveModified(d.wave)
-    def getOffset(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(None,indexes)
-        for d in data:
-            res.append(d.offset)
-        return res
+    # DataHidableCanvasBase
+    def _isVisible(self,obj):
+        return obj.get_visible()
+    def _setVisible(self,obj,b):
+        obj.set_visible(b)

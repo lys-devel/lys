@@ -48,7 +48,10 @@ class DaskWave(object):
             axes=[]
             for s, ax in zip(key,self.axes):
                 if not isinstance(s,int):
-                    axes.append(ax[s])
+                    if ax is None or (ax == np.array(None)).all():
+                        axes.append(None)
+                    else:
+                        axes.append(ax[s])
             return DaskWave(data,axes=axes)
         else:
             super().__getitem__(key)
@@ -171,6 +174,8 @@ class ExecutorList(controlledObjects):
                             axes[i] -= 1
                 fl.execute(wave,axes)
     def makeWave(self,wave,axes):
+        import time
+        start = time.time()
         tmp=wave
         offset=0
         applied=[]
@@ -187,6 +192,7 @@ class ExecutorList(controlledObjects):
                 t=tmp.axes[0]
                 tmp.axes[0]=tmp.axes[1]
                 tmp.axes[1]=t
+        #print(time.time()-start)
         return res
 class AllExecutor(QObject):
     updated = pyqtSignal(tuple)
@@ -332,10 +338,10 @@ class FreeLineExecutor(QObject):
                     tmp=tmp.transpose(tuple(ord))
                 coords.append(tmp)
             res += scipy.ndimage.map_coordinates(wave.data, coords, order = 1)
-        axis1=wave.axes[axes[0]]
+        axis1=wave.getAxis(axes[0])
         if axis1 is None:
             axis1=list(range(wave.data.shape[axes[0]]))
-        axis2=wave.axes[axes[1]]
+        axis2=wave.getAxis(axes[1])
         if axis2 is None:
             axis2=list(range(wave.data.shape[axes[1]]))
         dx=abs(axis1[pos1[0]]-axis1[pos2[0]])

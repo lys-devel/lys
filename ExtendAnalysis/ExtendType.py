@@ -340,26 +340,25 @@ class Wave(AutoSaved):
         if key=='x' or key=='y' or key=='z':
             val=super().__getattribute__(key)
             index=['x','y','z'].index(key)
-            dim=index#self.data.ndim-index-1
-            if self.data.ndim<=index:
-                return None
-            elif val.ndim==0:
-                if self.data.ndim>index:
-                    return np.arange(self.data.shape[dim])
-                else:
-                    return val
-            else:
-                if self.data.shape[dim]==val.shape[0]:
-                    return val
-                else:
-                    res=np.empty((self.data.shape[dim]))
-                    for i in range(self.data.shape[dim]):
-                        res[i]=np.NaN
-                    for i in range(min(self.data.shape[dim],val.shape[0])):
-                        res[i]=val[i]
-                    return res
+            return self.getAxis(index)
         else:
             return super().__getattribute__(key)
+    def getAxis(self,dim):
+        val = np.array(self.axes[dim])
+        if self.data.ndim <= dim:
+            return None
+        elif val.ndim==0:
+            return np.arange(self.data.shape[dim])
+        else:
+            if self.data.shape[dim]==val.shape[0]:
+                return val
+            else:
+                res=np.empty((self.data.shape[dim]))
+                for i in range(self.data.shape[dim]):
+                    res[i]=np.NaN
+                for i in range(min(self.data.shape[dim],val.shape[0])):
+                    res[i]=val[i]
+                return res
     def __getitem__(self,key):
         if isinstance(key,tuple):
             data=self.data[key]
@@ -534,9 +533,10 @@ class Wave(AutoSaved):
             dy=(y1-y0)/(len(self.y)-1)
             return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
         else:
-            x0=self.axes[axis][0]
-            x1=self.axes[axis][len(self.axes[axis])-1]
-            dx=(x1-x0)/(len(self.axes[axis])-1)
+            ax = self.getAxis(axis)
+            x0=ax[0]
+            x1=ax[len(ax)-1]
+            dx=(x1-x0)/(len(ax)-1)
             return int(round((pos-x0)/dx))
     def pointToPos(self,p):
         x0=self.x[0]

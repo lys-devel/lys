@@ -40,6 +40,8 @@ class PreFilterSetting(QWidget):
                 self._setting=FrequencySetting(self,self.dim)
             if text=='Differential Filter':
                 self._setting=DifferentialSetting(self,self.dim)
+            if text=='Fourier Filter':
+                self._setting=FourierSetting(self,self.dim)
             if text=='Normalization':
                 self._setting=NormalizeSetting(self,self.dim,self.loader)
             if text=='Select region':
@@ -372,6 +374,49 @@ class SharpenSetting(QWidget):
         self.setLayout(self._layout)
     def GetFilter(self):
         return SharpenFilter(self._layout.GetChecked())
+
+class FourierSetting(QWidget):
+    def __init__(self,parent,dim):
+        super().__init__(parent)
+        self.dim=dim
+        self._layout=QHBoxLayout()
+        self._combo=QComboBox()
+        self._combo.addItem('Forward')
+        self._combo.addItem('Backward')
+        self._combo.currentTextChanged.connect(self._update)
+        self._layout.addWidget(QLabel('Direction'))
+        self._layout.addWidget(self._combo)
+        self.setLayout(self._layout)
+        self._setting=None
+        self._update('Forward')
+    def _update(self,item):
+        if self._setting is not None:
+            self._layout.removeWidget(self._setting)
+            self._setting.deleteLater()
+            self._setting=None
+        if item=='Forward':
+            self._setting=FFTSetting(self,self.dim)
+        if item=='Backward':
+            self._setting=IFFTSetting(self,self.dim)
+        if self._setting is not None:
+            self._layout.addWidget(self._setting)
+    def GetFilter(self):
+        if self._setting is not None:
+            return self._setting.GetFilter()
+class FFTSetting(QWidget):
+    def __init__(self,parent,dim):
+        super().__init__(parent)
+        self._layout=AxisCheckLayout(dim)
+        self.setLayout(self._layout)
+    def GetFilter(self):
+        return FourierFilter(self._layout.GetChecked())
+class IFFTSetting(QWidget):
+    def __init__(self,parent,dim):
+        super().__init__(parent)
+        self._layout=AxisCheckLayout(dim)
+        self.setLayout(self._layout)
+    def GetFilter(self):
+        return FourierFilter(self._layout.GetChecked(),type="backward")
 
 class RegionSelectWidget(QGridLayout):
     loadClicked=pyqtSignal(object)
