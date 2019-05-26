@@ -7,6 +7,6 @@ sys.path.append('./test/BasicWidgets')
 setup(
     name="ExtendAnalysis",
     version="0.1.1",
-    install_requires=["numpy", "loky", "matplotlib", "opencv-python", "Pillow", "PyQt5", "pyqtGraph", "retry", "scipy", "watchdog", "dask[array]"],
+    install_requires=["numpy", "loky", "matplotlib", "opencv-python", "Pillow", "PyQt5", "pyqtGraph", "retry", "scipy", "watchdog", "dask[array]","dask_image"],
     test_suite="TestSuite.suite"
 )

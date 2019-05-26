@@ -1,4 +1,5 @@
 import  PyQt5.QtWidgets
+from PyQt5 import QtGui
 __app = PyQt5.QtWidgets.QApplication([])
 
 from .ExtendType import *
