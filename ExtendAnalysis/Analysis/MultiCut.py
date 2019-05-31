@@ -97,7 +97,7 @@ class ExecutorList(controlledObjects):
         for i, g in enumerate(self._graphs):
             if g == graph:
                 self.removeAt(i)
-    def append(self, obj, graph):
+    def append(self, obj, graph=None):
         super().append(obj,obj.getAxes())
         self._enabled.append(False)
         self._graphs.append(graph)
@@ -139,6 +139,15 @@ class ExecutorList(controlledObjects):
         return res
     def isEnabled(self,i):
         return self._enabled[i]
+    def saveEnabledState(self):
+        import copy
+        self._saveEnabled=copy.deepcopy(self._enabled)
+    def restoreEnabledState(self):
+        for i, b in enumerate(self._saveEnabled):
+            if b:
+                self.enableAt(i)
+            else:
+                self.disableAt(i)
     def __exeList(self,wave):
         axes = []
         res = []

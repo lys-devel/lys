@@ -199,11 +199,11 @@ class NormalizeFilter(FilterInterface):
     def _execute(self,wave,**kwargs):
         axes = list(range(wave.data.ndim))
         if self._axis == -1:
-            wave.data=wave.data/wave.data[self._makeSlice()].sum()
+            wave.data=wave.data/wave.data[self._makeSlice()].mean()
         else:
             letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"]
             axes.remove(self._axis)
-            nor = 1 / wave.data[self._makeSlice()].sum(axis = axes)
+            nor = 1 / wave.data[self._makeSlice()].mean(axis = axes)
             subscripts = ""
             for i in range(wave.data.ndim):
                 subscripts += letters[i]

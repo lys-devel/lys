@@ -518,7 +518,12 @@ class FiltersGUI(QWidget):
         self._layout=QVBoxLayout()
         self._layout.addStretch()
         self._addFirst()
-        hbox.addLayout(self._layout,3)
+        inner = QWidget()
+        inner.setLayout(self._layout)
+        scroll=QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(inner)
+        hbox.addWidget(scroll,3)
         self.setLayout(hbox)
     def _addFirst(self):
         first=PreFilterSetting(self.dim,self.loader)
