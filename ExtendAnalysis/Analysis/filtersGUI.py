@@ -3,6 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from ExtendAnalysis import *
 from .filters import *
+import _pickle as cPickle
 
 class PreFilterSetting(QWidget):
     filterAdded=pyqtSignal(QWidget)
@@ -51,6 +52,11 @@ class PreFilterSetting(QWidget):
     def GetFilter(self):
         if self._setting is not None:
             return self._setting.GetFilter()
+    def SetFilter(self,filt):
+        for setting in filterGroups.values():
+            s = setting._parseFromFilter(filt)
+            if s is not None:
+                print(s)
 
 class SmoothingSetting(QWidget):
     def __init__(self,parent,dimension=2):
@@ -86,6 +92,9 @@ class SmoothingSetting(QWidget):
     def GetFilter(self):
         if self._setting is not None:
             return self._setting.GetFilter()
+    @staticmethod
+    def _parseFromFilter(f):
+        return MedianSetting._parseFromFilter(f)
 
 class OddSpinBox(QSpinBox):
     def __init__(self,*args,**kwargs):
@@ -107,6 +116,9 @@ class _kernelSizeLayout(QGridLayout):
             self.addWidget(k,1,i+1)
     def getKernelSize(self):
         return [k.value() for k in self._kernels]
+    def setKernelSize(self,val):
+        for k, v in zip(self._kernels, val):
+            k.setValue(v)
 class _kernelSigmaLayout(QGridLayout):
     def __init__(self,dimension=2):
         super().__init__()
@@ -126,6 +138,14 @@ class MedianSetting(QWidget):
         self.setLayout(self._layout)
     def GetFilter(self):
         return MedianFilter(self._layout.getKernelSize())
+    @staticmethod
+    def _parseFromFilter(f):
+        if isinstance(f,MedianFilter):
+            obj = MedianSetting(None)
+            obj._layout.setKernelSize(f.getKernel())
+            return obj
+        else:
+            return None
 class AverageSetting(QWidget):
     def __init__(self,parent,dimension=2):
         super().__init__(parent)
@@ -209,6 +229,9 @@ class FrequencySetting(QWidget):
     def GetFilter(self):
         if self._setting is not None:
             return self._setting.GetFilter()
+    @staticmethod
+    def _parseFromFilter(f):
+        return None
 class LowPassSetting(QWidget):
     def __init__(self,parent,dim):
         super().__init__(parent)
@@ -345,6 +368,9 @@ class DifferentialSetting(QWidget):
     def GetFilter(self):
         if self._setting is not None:
             return self._setting.GetFilter()
+    @staticmethod
+    def _parseFromFilter(f):
+        return None
 
 class PrewittSetting(QWidget):
     def __init__(self,parent,dim):
@@ -403,6 +429,9 @@ class FourierSetting(QWidget):
     def GetFilter(self):
         if self._setting is not None:
             return self._setting.GetFilter()
+    @staticmethod
+    def _parseFromFilter(f):
+        return None
 class FFTSetting(QWidget):
     def __init__(self,parent,dim):
         super().__init__(parent)
@@ -481,6 +510,9 @@ class NormalizeSetting(QWidget):
         self.setLayout(hbox)
     def GetFilter(self):
         return NormalizeFilter(self.range.getRegion(),self.combo.currentIndex()-1)
+    @staticmethod
+    def _parseFromFilter(f):
+        return None
 
 class SelectRegionSetting(QWidget):
     def __init__(self,parent,dim,loader=None):
@@ -490,6 +522,9 @@ class SelectRegionSetting(QWidget):
         self.setLayout(self.range)
     def GetFilter(self):
         return SelectRegionFilter(self.range.getRegion())
+    @staticmethod
+    def _parseFromFilter(f):
+        return None
 
 class FiltersGUI(QWidget):
     def __init__(self,dimension = 2, regionLoader=None):
@@ -502,10 +537,10 @@ class FiltersGUI(QWidget):
         if self.dim != dimension:
             self.dim=dimension
             self.clear()
-            self._addFirst()
     def clear(self):
         while(len(self._flist)>0):
             self._delete(self._flist[0],force=True)
+        self._addFirst()
     def GetFilters(self):
         res=[]
         for f in self._flist:
@@ -514,6 +549,7 @@ class FiltersGUI(QWidget):
                 res.append(filt)
         return Filters(res)
     def __initLayout(self):
+        vbox = QVBoxLayout()
         hbox=QHBoxLayout()
         self._layout=QVBoxLayout()
         self._layout.addStretch()
@@ -524,7 +560,19 @@ class FiltersGUI(QWidget):
         scroll.setWidgetResizable(True)
         scroll.setWidget(inner)
         hbox.addWidget(scroll,3)
-        self.setLayout(hbox)
+
+        save = QPushButton("Save",clicked = self._save)
+        load = QPushButton("Load",clicked = self._load)
+        clear = QPushButton("Clear",clicked = self.clear)
+        hbox2 = QHBoxLayout()
+        hbox2.addWidget(save)
+        hbox2.addWidget(load)
+        hbox2.addWidget(clear)
+
+        vbox.addLayout(hbox)
+        vbox.addLayout(hbox2)
+
+        self.setLayout(vbox)
     def _addFirst(self):
         first=PreFilterSetting(self.dim,self.loader)
         first.filterAdded.connect(self._add)
@@ -543,3 +591,26 @@ class FiltersGUI(QWidget):
             self._layout.removeWidget(item)
             item.deleteLater()
             self._flist.remove(item)
+    def _save(self):
+        self.saveAs("test.fil")
+    def _load(self):
+        self.loadFrom("test.fil")
+    def saveAs(self,file):
+        filt = self.GetFilters()
+        s=String(file)
+        s.data = cPickle.dumps(filt)
+    def loadFrom(self,file):
+        s=String(file)
+        filt = cPickle.loads(eval(s.data)).getFilters()
+        self.clear()
+        for f in filt:
+            self._flist[len(self._flist)-1].SetFilter(f)
+
+filterGroups = {
+'Select region': SelectRegionSetting,
+'Smoothing Filter': SmoothingSetting,
+'Frequency Filter': FrequencySetting,
+'Differential Filter': DifferentialSetting,
+'Fourier Filter': FourierSetting,
+'Normalization': NormalizeSetting
+}

@@ -184,10 +184,14 @@ class controlledExecutorsGUI(QTreeView):
         self.customContextMenuRequested.connect(self.buildContextMenu)
     def buildContextMenu(self):
         menu = QMenu(self)
+        menu.addAction(QAction("Setting",self,triggered=self._setting))
         menu.addAction(QAction("Enable",self,triggered=self._enable))
         menu.addAction(QAction("Disable",self,triggered=self._disable))
         menu.addAction(QAction("Remove",self,triggered=self._remove))
         menu.exec_(QCursor.pos())
+    def _setting(self):
+        i = self.selectionModel().selectedIndexes()[0].row()
+        self.obj.setting(i)
     def _remove(self):
         i = self.selectionModel().selectedIndexes()[0].row()
         self.obj.removeAt(i)
@@ -531,9 +535,9 @@ class AnimationTab(QWidget):
             params['time']={"unit":self.__timeunit.currentText(), "offset":self.__timeoffset.value()}
         if self.__usescale.isChecked():
             params['scale']={"size":self.__scalesize.value()}
-        file = self.__filename.text()+".gif"
+        file = self.__filename.text()+".mp4"
         if file is None:
-            file = "Animation.gif"
+            file = "Animation.mp4"
         self._makeAnime(file, dic, data, axis, params, self.__pexe)
     def _makeAnime(self, file, dic, data, axis, params, exe):
         import copy
@@ -543,7 +547,7 @@ class AnimationTab(QWidget):
         for d in data:
             c.Append(d.wave, appearance = copy.deepcopy(d.appearance), offset = copy.deepcopy(d.offset))
         ani=animation.FuncAnimation(c.fig, _frame, fargs=(c, axis, params, exe), frames=len(axis), interval=30, repeat = False, init_func=_init)
-        ani.save(file,writer='imagemagick')
+        ani.save(file,writer='ffmpeg')
         self.__exe.remove(self.__pexe)
         self.__exe.restoreEnabledState()
         QMessageBox.information(None, "Info", "Animation is saved to "+file, QMessageBox.Yes)
@@ -557,7 +561,7 @@ def _frame(i, c, axis, params, exe):
         _drawTime(c,axis[i],**params["time"])
 def _drawTime(c,data=None,unit="",offset=0):
     c.clearAnnotations('text')
-    t='{:.10g}'.format(data+float(offset))+" "+unit
+    t='{:.10g}'.format(round(data+float(offset),1))+" "+unit
     c.addText(t,x=0.1,y=0.1)
 def _drawScale(c,size):
     xr=c.getAxisRange('Bottom')

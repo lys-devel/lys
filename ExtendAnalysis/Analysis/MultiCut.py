@@ -123,8 +123,8 @@ class ExecutorList(controlledObjects):
                         if ax1 == ax2 and not isinstance(o,FreeLineExecutor):
                             self.disable(o)
         self.updated.emit(obj.getAxes())
-    def enableAt(self,index):
-        self.enable(self._objs[index])
+    def setting(self,index):
+        self._objs[index].setting()
     def disable(self,obj):
         i = self._objs.index(obj)
         self._enabled[i]=False
@@ -183,8 +183,6 @@ class ExecutorList(controlledObjects):
                             axes[i] -= 1
                 fl.execute(wave,axes)
     def makeWave(self,wave,axes):
-        import time
-        start = time.time()
         tmp=wave
         offset=0
         applied=[]
@@ -195,13 +193,12 @@ class ExecutorList(controlledObjects):
                 applied.extend(axs)
         res=tmp.toWave()
         self.__applyFreeLines(res,axes,applied)
-        if len(axes) == 2 and axes[0] < 10000 and axes[1] < 10000:
-            if axes[0] > axes[1]:
-                tmp.data=tmp.data.T
-                t=tmp.axes[0]
-                tmp.axes[0]=tmp.axes[1]
-                tmp.axes[1]=t
-        #print(time.time()-start)
+        if len(axes) == 2 and axes[0] < 10000:
+            if axes[0] > axes[1] or axes[1] >= 10000:
+                res.data=res.data.T
+                t=res.axes[0]
+                res.axes[0]=res.axes[1]
+                res.axes[1]=t
         return res
 class AllExecutor(QObject):
     updated = pyqtSignal(tuple)
@@ -293,6 +290,7 @@ class FreeLineExecutor(QObject):
         self.axes=axes
         self.id = FreeLineExecutor._id
         FreeLineExecutor._id +=1
+        self.width = 1
         if pos is not None:
             self.setPosition(pos)
     def getAxes(self):
@@ -300,8 +298,16 @@ class FreeLineExecutor(QObject):
     def setPosition(self,pos):
         self.position=pos
         self.updated.emit((self.id,))
-    def execute(self,wave,axes,width=1):
+    def setting(self):
+        val, res = QInputDialog.getInt(None,"Setting for free line","width")
+        if res:
+            self.setWidth(val)
+        self.updated.emit((self.id,))
+    def setWidth(self,w):
+        self.width = w
+    def execute(self,wave,axes):
         import copy
+        width = self.width
         pos1 = (wave.posToPoint(self.position[0][0],axes[0]),wave.posToPoint(self.position[1][0],axes[0]))
         pos2 = (wave.posToPoint(self.position[0][1],axes[1]),wave.posToPoint(self.position[1][1],axes[1]))
         dx=(pos2[0]-pos1[0])
@@ -364,6 +370,6 @@ class FreeLineExecutor(QObject):
     def callback(self,pos):
         self.setPosition(pos)
     def Name(self):
-        return "Line"+str(self.id-10000)
+        return "Line"+str(self.id-10000)+" (width = " + str(self.width) + ")"
     def ID(self):
         return self.id

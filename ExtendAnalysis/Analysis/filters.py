@@ -32,7 +32,7 @@ class ShiftFilter(FilterInterface):
 
 class MedianFilter(FilterInterface):
     def __init__(self,kernel):
-        self._kernel=[int((k+1)/2) for k in kernel]
+        self._kernel = [int((k+1)/2) for k in kernel]
     def _execute(self,wave,**kwargs):
         if isinstance(wave, Wave):
             wave.data = filters.median_filter(wave.data,size=self._kernel)
@@ -41,6 +41,8 @@ class MedianFilter(FilterInterface):
             wave.data = dfilters.median_filter(wave.data,size=self._kernel)
             return wave
         return filters.median_filter(wave,size=self._kernel)
+    def getKernel(self):
+        return [int(2*k-1) for k in self._kernel]
 class AverageFilter(FilterInterface):
     def __init__(self,kernel):
         self._kernel=[int((k+1)/2) for k in kernel]
@@ -251,3 +253,5 @@ class Filters(object):
             f.execute(wave,**kwargs)
     def insert(self,index,obj):
         self._filters.insert(index,obj)
+    def getFilters(self):
+        return self._filters
