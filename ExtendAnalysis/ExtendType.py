@@ -569,7 +569,7 @@ class Wave(AutoSaved):
         return ["Numpy npz (*.npz)","Comma-Separated Values (*.csv)"]
     def export(self,path,type="Numpy npz (*.npz)"):
         if type == 'Numpy npz (*.npz)':
-            np.savez(path+".npz".replace(".npz.npz",".npz"), data=self.data, x=self.x, y=self.y, z=self.z,note=self.note)
+            np.savez(path+".npz".replace(".npz.npz",".npz"), data=self.data, axes = self.axes, note=self.note)
         if type == "Comma-Separated Values (*.csv)":
             import csv
             with open(path+".csv".replace(".csv.csv",".csv"),'w') as f:
