@@ -15,12 +15,8 @@ class PreFilterSetting(QWidget):
         self._layout=QVBoxLayout()
         self._combo=QComboBox()
         self._combo.addItem('')
-        self._combo.addItem('Select region')
-        self._combo.addItem('Smoothing Filter')
-        self._combo.addItem('Frequency Filter')
-        self._combo.addItem('Differential Filter')
-        self._combo.addItem('Normalization')
-        self._combo.addItem('Fourier Filter')
+        for f in filterGroups.keys():
+            self._combo.addItem(f)
         self._combo.currentTextChanged.connect(self._update)
         self._layout.addWidget(QLabel('Type'))
         self._layout.addWidget(self._combo)
@@ -35,18 +31,8 @@ class PreFilterSetting(QWidget):
         if text=='':
             self.filterDeleted.emit(self)
         else:
-            if text=='Smoothing Filter':
-                self._setting=SmoothingSetting(self,self.dim)
-            if text=='Frequency Filter':
-                self._setting=FrequencySetting(self,self.dim)
-            if text=='Differential Filter':
-                self._setting=DifferentialSetting(self,self.dim)
-            if text=='Fourier Filter':
-                self._setting=FourierSetting(self,self.dim)
-            if text=='Normalization':
-                self._setting=NormalizeSetting(self,self.dim,self.loader)
-            if text=='Select region':
-                self._setting=SelectRegionSetting(self,self.dim,self.loader)
+            if text in filterGroups:
+                self._setting = filterGroups[text](self,self.dim,loader=self.loader)
             self._layout.addWidget(self._setting)
             self.filterAdded.emit(self)
     def GetFilter(self):
@@ -59,7 +45,7 @@ class PreFilterSetting(QWidget):
                 print(s)
 
 class SmoothingSetting(QWidget):
-    def __init__(self,parent,dimension=2):
+    def __init__(self,parent,dimension=2,loader=None):
         super().__init__(parent)
         self.dim=dimension
         self._layout=QHBoxLayout()
@@ -196,7 +182,7 @@ class AxisCheckLayout(QHBoxLayout):
                 axes.append(i)
         return axes
 class FrequencySetting(QWidget):
-    def __init__(self,parent,dim=2):
+    def __init__(self,parent,dim=2,loader=None):
         super().__init__(parent)
         self.dim=dim
         self._layout=QHBoxLayout()
@@ -335,7 +321,7 @@ class BandStopSetting(QWidget):
         return BandStopFilter(self._order.value(),[self._cut1.value(),self._cut2.value()],self._axes.GetChecked())
 
 class DifferentialSetting(QWidget):
-    def __init__(self,parent,dim):
+    def __init__(self,parent,dim,loader=None):
         super().__init__(parent)
         self.dim=dim
         self._layout=QHBoxLayout()
@@ -402,7 +388,7 @@ class SharpenSetting(QWidget):
         return SharpenFilter(self._layout.GetChecked())
 
 class FourierSetting(QWidget):
-    def __init__(self,parent,dim):
+    def __init__(self,parent,dim,loader=None):
         super().__init__(parent)
         self.dim=dim
         self._layout=QHBoxLayout()
