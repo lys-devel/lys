@@ -111,6 +111,8 @@ class ExecutorList(controlledObjects):
             self._graphs.pop(i)
         self.updated.emit(obj.getAxes())
         return i
+    def enableAt(self,index):
+        self.enable(self._objs[index])
     def enable(self,obj):
         i = self._objs.index(obj)
         self._enabled[i]=True

@@ -18,9 +18,6 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def autoColorRange(self,indexes):
         data=self.getDataFromIndexes(2,indexes)
         for d in data:
-            #m=d.wave.average()
-            #v=np.sqrt(d.wave.var())*3
-            #norm=colors.Normalize(vmin=m-v,vmax=m+v)
             d.obj.setImage(d.wave.data,autoLevels=True)
     def saveAppearance(self):
         super().saveAppearance()

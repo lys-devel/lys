@@ -58,7 +58,7 @@ class ImageColorAdjustBox(QWidget):
             self.__flg=True
             self.__spin1.setValue((val-self.__mean)/self.__wid*50+50)
             self.__spin2.setValue(val)
-            self.__slider.setValue((val-self.__mean)/self.__wid*50+50)
+            self.__slider.setValue(int((val-self.__mean)/self.__wid*50+50))
             self.__flg=False
             self.valueChanged.emit()
         def getValue(self):
