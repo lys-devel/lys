@@ -396,20 +396,28 @@ class FourierSetting(QWidget):
         self._combo.addItem('Forward')
         self._combo.addItem('Backward')
         self._combo.currentTextChanged.connect(self._update)
+        self._process=QComboBox()
+        self._process.addItem('Absolute')
+        self._process.addItem('Real')
+        self._process.addItem('Imag')
+        self._process.currentTextChanged.connect(self._update)
         self._layout.addWidget(QLabel('Direction'))
         self._layout.addWidget(self._combo)
+        self._layout.addWidget(QLabel('Process'))
+        self._layout.addWidget(self._process)
         self.setLayout(self._layout)
         self._setting=None
-        self._update('Forward')
-    def _update(self,item):
+        self._update()
+    def _update(self):
+        item = self._combo.currentText()
         if self._setting is not None:
             self._layout.removeWidget(self._setting)
             self._setting.deleteLater()
             self._setting=None
         if item=='Forward':
-            self._setting=FFTSetting(self,self.dim)
+            self._setting=FFTSetting(self,self.dim,self._process.currentText().lower())
         if item=='Backward':
-            self._setting=IFFTSetting(self,self.dim)
+            self._setting=IFFTSetting(self,self.dim,self._process.currentText().lower())
         if self._setting is not None:
             self._layout.addWidget(self._setting)
     def GetFilter(self):
@@ -419,19 +427,21 @@ class FourierSetting(QWidget):
     def _parseFromFilter(f):
         return None
 class FFTSetting(QWidget):
-    def __init__(self,parent,dim):
+    def __init__(self,parent,dim,process):
         super().__init__(parent)
+        self._process = process
         self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
     def GetFilter(self):
-        return FourierFilter(self._layout.GetChecked())
+        return FourierFilter(self._layout.GetChecked(),process=self._process)
 class IFFTSetting(QWidget):
-    def __init__(self,parent,dim):
+    def __init__(self,parent,dim,process):
         super().__init__(parent)
+        self._process = process
         self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
     def GetFilter(self):
-        return FourierFilter(self._layout.GetChecked(),type="backward")
+        return FourierFilter(self._layout.GetChecked(),type="backward",process=self._process)
 
 class RegionSelectWidget(QGridLayout):
     loadClicked=pyqtSignal(object)
