@@ -1,6 +1,6 @@
 from inspect import signature
 import numpy as np
-from scipy import ndimage
+from scipy import ndimage, special
 from collections import OrderedDict
 
 class function(object):
@@ -31,6 +31,9 @@ class linear(function):
 class step(function):
     def func(self,x,position,height):
         return np.heaviside(x-position,0.5)*height
+class Error(function):
+    def func(self,x,position,height,fwhm):
+        return height/2*(special.erf(2*np.sqrt(np.log(2))*(x-position)/fwhm)+1)
 class cos(function):
     def func(self,x,position,height,frequency,phase):
         return np.cos(frequency*(x-position)+phase)*height
@@ -68,7 +71,7 @@ ListOfFunctions["Exp"]=exp()
 ListOfFunctions["Gauss"]=Gauss()
 ListOfFunctions["DoubleExp"]=doubleExp()
 ListOfFunctions["relaxOsci"]=relaxOscillation()
-ListOfFunctions["Error"]=GaussConvolved(step())
+ListOfFunctions["Error"]=Error()
 def findFuncByInstance(instance):
     for key in ListOfFunctions.keys():
         if ListOfFunctions[key]==instance:
