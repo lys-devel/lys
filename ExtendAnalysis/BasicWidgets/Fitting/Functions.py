@@ -34,6 +34,9 @@ class step(function):
 class Error(function):
     def func(self,x,position,height,fwhm):
         return height/2*(special.erf(2*np.sqrt(np.log(2))*(x-position)/fwhm)+1)
+class Lorentzian(function):
+    def func(self,x,position,height,fwhm):
+        return height*(fwhm/2)**2/((x-position)**2+(fwhm/2)**2)
 class cos(function):
     def func(self,x,position,height,frequency,phase):
         return np.cos(frequency*(x-position)+phase)*height
@@ -69,6 +72,7 @@ ListOfFunctions["Step"]=step()
 ListOfFunctions["Cos"]=cos()
 ListOfFunctions["Exp"]=exp()
 ListOfFunctions["Gauss"]=Gauss()
+ListOfFunctions["Lorentzian"]=Lorentzian()
 ListOfFunctions["DoubleExp"]=doubleExp()
 ListOfFunctions["relaxOsci"]=relaxOscillation()
 ListOfFunctions["Error"]=Error()
