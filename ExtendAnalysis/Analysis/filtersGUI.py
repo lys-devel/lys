@@ -8,79 +8,120 @@ import _pickle as cPickle
 class PreFilterSetting(QWidget):
     filterAdded=pyqtSignal(QWidget)
     filterDeleted=pyqtSignal(QWidget)
-    def __init__(self,dimension=2,loader=None):
+    def __init__(self,parent,dimension=2,loader=None):
+        super().__init__()
+        h1=QHBoxLayout()
+        self.root = RootSetting(self,dimension,loader,h1)
+        self.root.filterChanged.connect(self._filt)
+        self._layout = QVBoxLayout()
+        self._layout.addLayout(h1)
+        self.setLayout(self._layout)
+        self._child = None
+    def _filt(self,widget):
+        if self._child is not None:
+            self._layout.removeWidget(self._child)
+            self._child.deleteLater()
+            self._child=None
+        if isinstance(widget,DeleteSetting):
+            self.filterDeleted.emit(self)
+        else:
+            self._layout.addWidget(widget)
+            self._child = widget
+            self.filterAdded.emit(self)
+    def GetFilter(self):
+        if self._child is not None:
+            return self._child.GetFilter()
+    def SetFilter(self,filt):
+        obj = self.root.parseFromFilter(filt)
+        self._filt(obj)
+class FilterGroupSetting(QWidget):
+    filterChanged=pyqtSignal(QWidget)
+    def __init__(self,parent,dimension=2,loader=None,layout = None):
         super().__init__()
         self.dim=dimension
         self.loader=loader
-        self._layout=QVBoxLayout()
+        self._filters = self._filterList()
+
+        self._layout=layout
         self._combo=QComboBox()
-        self._combo.addItem('')
-        for f in filterGroups.keys():
-            self._combo.addItem(f)
+        for f in self._filters.keys():
+            self._combo.addItem(f,f)
         self._combo.currentTextChanged.connect(self._update)
-        self._layout.addWidget(QLabel('Type'))
-        self._layout.addWidget(self._combo)
+        vlayout = QVBoxLayout()
+        vlayout.addWidget(QLabel('Type'))
+        vlayout.addWidget(self._combo)
+        self.setLayout(vlayout)
+        self._layout.addWidget(self)
+        self._childGroup=None
+        self._update(self._combo.currentText())
+    @classmethod
+    def _filterList(cls):
+        return filterGroups
+    def _update(self,text=None):
+        if text is None:
+            text = self._combo.currentText()
+        if text in self._filters:
+            self._removeChildGroup()
+            if issubclass(self._filters[text],FilterGroupSetting):
+                self.filter = self._filters[text](self,self.dim,loader=self.loader,layout=self._layout)
+                self._addGroup(self.filter)
+            else:
+                self.filter = self._filters[text](None,self.dim,loader=self.loader)
+                self.filterChanged.emit(self.filter)
+    def _addGroup(self,g):
+        self._childGroup = g
+        g.filterChanged.connect(self.filterChanged)
+        self._layout.addWidget(g)
+        g._update()
+    def _removeChildGroup(self):
+        if self._childGroup is not None:
+            self._childGroup._removeChildGroup()
+            self._childGroup.filterChanged.disconnect(self.filterChanged)
+            self._layout.removeWidget(self._childGroup)
+            self._childGroup.deleteLater()
+            self._childGroup=None
+    @classmethod
+    def _havingFilter(cls,f):
+        for key, s in cls._filterList().items():
+            if s._havingFilter(f) is not None:
+                return key
+    def parseFromFilter(self,f):
+        name = self._havingFilter(f)
+        if name is not None:
+            self._combo.setCurrentIndex(self._combo.findData(name))
+        return self.filter.parseFromFilter(f)
 
-        self.setLayout(self._layout)
-        self._setting=None
-    def _update(self,text):
-        if self._setting is not None:
-            self._layout.removeWidget(self._setting)
-            self._setting.deleteLater()
-            self._setting=None
-        if text=='':
-            self.filterDeleted.emit(self)
-        else:
-            if text in filterGroups:
-                self._setting = filterGroups[text](self,self.dim,loader=self.loader)
-            self._layout.addWidget(self._setting)
-            self.filterAdded.emit(self)
-    def GetFilter(self):
-        if self._setting is not None:
-            return self._setting.GetFilter()
-    def SetFilter(self,filt):
-        for setting in filterGroups.values():
-            s = setting._parseFromFilter(filt)
-            if s is not None:
-                print(s)
-
-class SmoothingSetting(QWidget):
+class RootSetting(FilterGroupSetting):
+    filterAdded=pyqtSignal(QWidget)
+    filterDeleted=pyqtSignal(QWidget)
+    @classmethod
+    def _filterList(cls):
+        d = {
+        '': DeleteSetting,
+        'Select region': SelectRegionSetting,
+        'Smoothing Filter': SmoothingSetting,
+        'Frequency Filter': FrequencySetting,
+        'Differential Filter': DifferentialSetting,
+        'Fourier Filter': FourierSetting,
+        'Normalization': NormalizeSetting
+        }
+        return d
+class DeleteSetting(QWidget):
     def __init__(self,parent,dimension=2,loader=None):
         super().__init__(parent)
-        self.dim=dimension
-        self._layout=QHBoxLayout()
-        self._combo=QComboBox()
-        self._combo.addItem('Median')
-        self._combo.addItem('Average')
-        self._combo.addItem('Gaussian')
-        #self._combo.addItem('Bilateral')
-        self._combo.currentTextChanged.connect(self._update)
-        self._layout.addWidget(QLabel('Method'))
-        self._layout.addWidget(self._combo)
-        self.setLayout(self._layout)
-        self._setting=None
-        self._update('Median')
-    def _update(self,item):
-        if self._setting is not None:
-            self._layout.removeWidget(self._setting)
-            self._setting.deleteLater()
-            self._setting=None
-        if item=='Median':
-            self._setting=MedianSetting(self,self.dim)
-        if item=='Average':
-            self._setting=AverageSetting(self,self.dim)
-        if item=='Gaussian':
-            self._setting=GaussianSetting(self,self.dim)
-        if item=='Bilateral':
-            self._setting=BilateralSetting(self,self.dim)
-        if self._setting is not None:
-            self._layout.addWidget(self._setting)
-    def GetFilter(self):
-        if self._setting is not None:
-            return self._setting.GetFilter()
-    @staticmethod
-    def _parseFromFilter(f):
-        return MedianSetting._parseFromFilter(f)
+    @classmethod
+    def _havingFilter(cls,f):
+        return None
+class SmoothingSetting(FilterGroupSetting):
+    @classmethod
+    def _filterList(cls):
+        d = {
+        'Median': MedianSetting,
+        'Average': AverageSetting,
+        'Gaussian': GaussianSetting
+        #'Bilateral': BilateralSetting
+        }
+        return d
 
 class OddSpinBox(QSpinBox):
     def __init__(self,*args,**kwargs):
@@ -116,38 +157,63 @@ class _kernelSigmaLayout(QGridLayout):
             self.addWidget(k,1,i+1)
     def getKernelSigma(self):
         return [k.value() for k in self._kernels]
+    def setKernelSigma(self,val):
+        for k, v in zip(self._kernels, val):
+            k.setValue(v)
 
-class MedianSetting(QWidget):
-    def __init__(self,parent,dimension=2):
+class FilterSettingBase(QWidget):
+    def __init__(self,parent,dimension=2,loader=None):
         super().__init__(parent)
+        self.dim = dimension
+        self.loader = loader
+
+class MedianSetting(FilterSettingBase):
+    def __init__(self,parent,dimension=2,loader=None):
+        super().__init__(parent,dimension,loader)
         self._layout=_kernelSizeLayout(dimension)
         self.setLayout(self._layout)
     def GetFilter(self):
         return MedianFilter(self._layout.getKernelSize())
-    @staticmethod
-    def _parseFromFilter(f):
+    @classmethod
+    def _havingFilter(cls,f):
         if isinstance(f,MedianFilter):
-            obj = MedianSetting(None)
-            obj._layout.setKernelSize(f.getKernel())
-            return obj
-        else:
-            return None
-class AverageSetting(QWidget):
-    def __init__(self,parent,dimension=2):
-        super().__init__(parent)
+            return True
+    def parseFromFilter(self,f):
+        obj = MedianSetting(None,self.dim,self.loader)
+        obj._layout.setKernelSize(f.getKernel())
+        return obj
+class AverageSetting(FilterSettingBase):
+    def __init__(self,parent,dimension=2,loader=None):
+        super().__init__(parent,dimension,loader)
         self._layout=_kernelSizeLayout(dimension)
         self.setLayout(self._layout)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,AverageFilter):
+            return True
     def GetFilter(self):
         return AverageFilter(self._layout.getKernelSize())
-class GaussianSetting(QWidget):
-    def __init__(self,parent,dimension=2):
-        super().__init__(parent)
+    def parseFromFilter(self,f):
+        obj = AverageSetting(None,self.dim,self.loader)
+        obj._layout.setKernelSize(f.getKernel())
+        return obj
+class GaussianSetting(FilterSettingBase):
+    def __init__(self,parent,dimension=2,loader=None):
+        super().__init__(parent,dimension,loader)
         self._layout=_kernelSigmaLayout(dimension)
         self.setLayout(self._layout)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,GaussianFilter):
+            return True
     def GetFilter(self):
         return GaussianFilter(self._layout.getKernelSigma())
+    def parseFromFilter(self,f):
+        obj = GaussianSetting(None,self.dim,self.loader)
+        obj._layout.setKernelSigma(f.getKernel())
+        return obj
 class BilateralSetting(QWidget):
-    def __init__(self,parent):
+    def __init__(self,parent,dimension=2,loader=None):
         super().__init__(parent)
         self._layout=QHBoxLayout()
         self._kernel=QSpinBox()
@@ -166,6 +232,10 @@ class BilateralSetting(QWidget):
         self._layout.addWidget(QLabel('Sigma space'))
         self._layout.addWidget(self._s_space)
         self.setLayout(self._layout)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,BilateralFilter):
+            return True
     def GetFilter(self):
         return BilateralFilter(self._kernel.value(),self._s_color.value(),self._s_space.value())
 
@@ -181,46 +251,26 @@ class AxisCheckLayout(QHBoxLayout):
             if a.isChecked():
                 axes.append(i)
         return axes
-class FrequencySetting(QWidget):
-    def __init__(self,parent,dim=2,loader=None):
-        super().__init__(parent)
-        self.dim=dim
-        self._layout=QHBoxLayout()
-        self._combo=QComboBox()
-        self._combo.addItem('Low-pass')
-        self._combo.addItem('High-pass')
-        self._combo.addItem('Band-pass')
-        self._combo.addItem('Band-stop')
-        self._combo.currentTextChanged.connect(self._update)
-        self._layout.addWidget(QLabel('Method'))
-        self._layout.addWidget(self._combo)
-        self.setLayout(self._layout)
-        self._setting=None
-        self._update('Low-pass')
-    def _update(self,item):
-        if self._setting is not None:
-            self._layout.removeWidget(self._setting)
-            self._setting.deleteLater()
-            self._setting=None
-        if item=='Low-pass':
-            self._setting=LowPassSetting(self,self.dim)
-        if item=='High-pass':
-            self._setting=HighPassSetting(self,self.dim)
-        if item=='Band-pass':
-            self._setting=BandPassSetting(self,self.dim)
-        if item=='Band-stop':
-            self._setting=BandStopSetting(self,self.dim)
-        if self._setting is not None:
-            self._layout.addWidget(self._setting)
-    def GetFilter(self):
-        if self._setting is not None:
-            return self._setting.GetFilter()
-    @staticmethod
-    def _parseFromFilter(f):
-        return None
-class LowPassSetting(QWidget):
-    def __init__(self,parent,dim):
-        super().__init__(parent)
+    def SetChecked(self,axes):
+        for i, a in enumerate(self._axes):
+            if i in axes:
+                a.setChecked(True)
+            else:
+                a.setChecked(False)
+
+class FrequencySetting(FilterGroupSetting):
+    @classmethod
+    def _filterList(cls):
+        d = {
+        'Lowpass': LowPassSetting,
+        'Highpass': HighPassSetting,
+        'Bandpass': BandPassSetting,
+        'Bandstop': BandStopSetting
+        }
+        return d
+class LowPassSetting(FilterSettingBase):
+    def __init__(self,parent,dim,loader=None):
+        super().__init__(parent,dim,loader)
         self._layout=QHBoxLayout()
         self._cut=QDoubleSpinBox()
         self._cut.setDecimals(3)
@@ -239,11 +289,22 @@ class LowPassSetting(QWidget):
         vbox.addLayout(self._layout)
         vbox.addLayout(self._axes)
         self.setLayout(vbox)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,LowPassFilter):
+            return True
     def GetFilter(self):
         return LowPassFilter(self._order.value(),self._cut.value(),self._axes.GetChecked())
-class HighPassSetting(QWidget):
-    def __init__(self,parent,dim):
-        super().__init__(parent)
+    def parseFromFilter(self,f):
+        obj = LowPassSetting(None,self.dim,self.loader)
+        order, cutoff, axes = f.getParams()
+        obj._cut.setValue(cutoff)
+        obj._order.setValue(order)
+        obj._axes.SetChecked(axes)
+        return obj
+class HighPassSetting(FilterSettingBase):
+    def __init__(self,parent,dim,loader=None):
+        super().__init__(parent,dim,loader)
         self._layout=QHBoxLayout()
         self._cut=QDoubleSpinBox()
         self._cut.setDecimals(3)
@@ -261,11 +322,22 @@ class HighPassSetting(QWidget):
         vbox.addLayout(self._layout)
         vbox.addLayout(self._axes)
         self.setLayout(vbox)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,HighPassFilter):
+            return True
     def GetFilter(self):
         return HighPassFilter(self._order.value(),self._cut.value(),self._axes.GetChecked())
-class BandPassSetting(QWidget):
-    def __init__(self,parent,dim):
-        super().__init__(parent)
+    def parseFromFilter(self,f):
+        obj = HighPassSetting(None,self.dim,self.loader)
+        order, cutoff, axes = f.getParams()
+        obj._cut.setValue(cutoff)
+        obj._order.setValue(order)
+        obj._axes.SetChecked(axes)
+        return obj
+class BandPassSetting(FilterSettingBase):
+    def __init__(self,parent,dim,loader=None):
+        super().__init__(parent,dim,loader)
         self._layout=QHBoxLayout()
         self._cut1=QDoubleSpinBox()
         self._cut1.setDecimals(3)
@@ -289,11 +361,23 @@ class BandPassSetting(QWidget):
         vbox.addLayout(self._layout)
         vbox.addLayout(self._axes)
         self.setLayout(vbox)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,BandPassFilter):
+            return True
     def GetFilter(self):
         return BandPassFilter(self._order.value(),[self._cut1.value(),self._cut2.value()],self._axes.GetChecked())
-class BandStopSetting(QWidget):
-    def __init__(self,parent,dim):
-        super().__init__(parent)
+    def parseFromFilter(self,f):
+        obj = BandPassSetting(None,self.dim,self.loader)
+        order, cutoff, axes = f.getParams()
+        obj._cut1.setValue(cutoff[0])
+        obj._cut2.setValue(cutoff[1])
+        obj._order.setValue(order)
+        obj._axes.SetChecked(axes)
+        return obj
+class BandStopSetting(FilterSettingBase):
+    def __init__(self,parent,dim,loader=None):
+        super().__init__(parent,dim,loader)
         self._layout=QHBoxLayout()
         self._cut1=QDoubleSpinBox()
         self._cut1.setDecimals(3)
@@ -317,136 +401,136 @@ class BandStopSetting(QWidget):
         vbox.addLayout(self._layout)
         vbox.addLayout(self._axes)
         self.setLayout(vbox)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,BandStopFilter):
+            return True
     def GetFilter(self):
         return BandStopFilter(self._order.value(),[self._cut1.value(),self._cut2.value()],self._axes.GetChecked())
+    def parseFromFilter(self,f):
+        obj = BandStopSetting(None,self.dim,self.loader)
+        order, cutoff, axes = f.getParams()
+        obj._cut1.setValue(cutoff[0])
+        obj._cut2.setValue(cutoff[1])
+        obj._order.setValue(order)
+        obj._axes.SetChecked(axes)
+        return obj
 
-class DifferentialSetting(QWidget):
+class DifferentialSetting(FilterGroupSetting):
+    @classmethod
+    def _filterList(cls):
+        d = {
+        'Prewitt': PrewittSetting,
+        'Sobel': SobelSetting,
+        'Laplacian': LaplacianSetting,
+        'Sharpen': SharpenSetting
+        }
+        return d
+
+class PrewittSetting(FilterSettingBase):
     def __init__(self,parent,dim,loader=None):
-        super().__init__(parent)
-        self.dim=dim
-        self._layout=QHBoxLayout()
-        self._combo=QComboBox()
-        self._combo.addItem('Prewitt')
-        self._combo.addItem('Sobel')
-        self._combo.addItem('Laplacian')
-        self._combo.addItem('Sharpen')
-        self._combo.currentTextChanged.connect(self._update)
-        self._layout.addWidget(QLabel('Method'))
-        self._layout.addWidget(self._combo)
-        self.setLayout(self._layout)
-        self._setting=None
-        self._update('Prewitt')
-    def _update(self,item):
-        if self._setting is not None:
-            self._layout.removeWidget(self._setting)
-            self._setting.deleteLater()
-            self._setting=None
-        if item=='Prewitt':
-            self._setting=PrewittSetting(self,self.dim)
-        if item=='Sobel':
-            self._setting=SobelSetting(self,self.dim)
-        if item=='Laplacian':
-            self._setting=LaplacianSetting(self,self.dim)
-        if item=='Sharpen':
-            self._setting=SharpenSetting(self,self.dim)
-        if self._setting is not None:
-            self._layout.addWidget(self._setting)
-    def GetFilter(self):
-        if self._setting is not None:
-            return self._setting.GetFilter()
-    @staticmethod
-    def _parseFromFilter(f):
-        return None
-
-class PrewittSetting(QWidget):
-    def __init__(self,parent,dim):
-        super().__init__(parent)
+        super().__init__(parent,dim,loader)
         self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,PrewittFilter):
+            return True
     def GetFilter(self):
         return PrewittFilter(self._layout.GetChecked())
-class SobelSetting(QWidget):
-    def __init__(self,parent,dim):
-        super().__init__(parent)
+    def parseFromFilter(self,f):
+        obj = PrewittSetting(None,self.dim,self.loader)
+        axes = f.getAxes()
+        obj._layout.SetChecked(axes)
+        return obj
+class SobelSetting(FilterSettingBase):
+    def __init__(self,parent,dim,loader=None):
+        super().__init__(parent,dim,loader)
         self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,SobelFilter):
+            return True
     def GetFilter(self):
         return SobelFilter(self._layout.GetChecked())
-class LaplacianSetting(QWidget):
-    def __init__(self,parent,dim):
-        super().__init__(parent)
+    def parseFromFilter(self,f):
+        obj = SobelSetting(None,self.dim,self.loader)
+        axes = f.getAxes()
+        obj._layout.SetChecked(axes)
+        return obj
+class LaplacianSetting(FilterSettingBase):
+    def __init__(self,parent,dim,loader=None):
+        super().__init__(parent,dim,loader)
         self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
+    @classmethod
+    def _havingFilter(cls,f):
+        if type(f) == LaplacianFilter:
+            return True
     def GetFilter(self):
         return LaplacianFilter(self._layout.GetChecked())
-class SharpenSetting(QWidget):
-    def __init__(self,parent,dim):
-        super().__init__(parent)
+    def parseFromFilter(self,f):
+        obj = LaplacianSetting(None,self.dim,self.loader)
+        axes = f.getAxes()
+        obj._layout.SetChecked(axes)
+        return obj
+class SharpenSetting(FilterSettingBase):
+    def __init__(self,parent,dim,loader=None):
+        super().__init__(parent,dim,loader)
         self._layout=AxisCheckLayout(dim)
         self.setLayout(self._layout)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,SharpenFilter):
+            return True
     def GetFilter(self):
         return SharpenFilter(self._layout.GetChecked())
+    def parseFromFilter(self,f):
+        obj = SharpenSetting(None,self.dim,self.loader)
+        axes = f.getAxes()
+        obj._layout.SetChecked(axes)
+        return obj
 
-class FourierSetting(QWidget):
+class FourierSetting(FilterSettingBase):
     def __init__(self,parent,dim,loader=None):
-        super().__init__(parent)
+        super().__init__(parent,dim,loader)
         self.dim=dim
         self._layout=QHBoxLayout()
         self._combo=QComboBox()
-        self._combo.addItem('Forward')
-        self._combo.addItem('Backward')
-        self._combo.currentTextChanged.connect(self._update)
+        self._combo.addItem('forward','forward')
+        self._combo.addItem('backward','backward')
         self._process=QComboBox()
-        self._process.addItem('Absolute')
-        self._process.addItem('Real')
-        self._process.addItem('Imag')
-        self._process.currentTextChanged.connect(self._update)
+        self._process.addItem('absolute','absolute')
+        self._process.addItem('real','real')
+        self._process.addItem('imag','imag')
+        self._axes=AxisCheckLayout(dim)
         self._layout.addWidget(QLabel('Direction'))
         self._layout.addWidget(self._combo)
         self._layout.addWidget(QLabel('Process'))
         self._layout.addWidget(self._process)
+        self._layout.addLayout(self._axes)
         self.setLayout(self._layout)
-        self._setting=None
-        self._update()
-    def _update(self):
-        item = self._combo.currentText()
-        if self._setting is not None:
-            self._layout.removeWidget(self._setting)
-            self._setting.deleteLater()
-            self._setting=None
-        if item=='Forward':
-            self._setting=FFTSetting(self,self.dim,self._process.currentText().lower())
-        if item=='Backward':
-            self._setting=IFFTSetting(self,self.dim,self._process.currentText().lower())
-        if self._setting is not None:
-            self._layout.addWidget(self._setting)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,FourierFilter):
+            return True
     def GetFilter(self):
-        if self._setting is not None:
-            return self._setting.GetFilter()
-    @staticmethod
-    def _parseFromFilter(f):
-        return None
-class FFTSetting(QWidget):
-    def __init__(self,parent,dim,process):
-        super().__init__(parent)
-        self._process = process
-        self._layout=AxisCheckLayout(dim)
-        self.setLayout(self._layout)
-    def GetFilter(self):
-        return FourierFilter(self._layout.GetChecked(),process=self._process)
-class IFFTSetting(QWidget):
-    def __init__(self,parent,dim,process):
-        super().__init__(parent)
-        self._process = process
-        self._layout=AxisCheckLayout(dim)
-        self.setLayout(self._layout)
-    def GetFilter(self):
-        return FourierFilter(self._layout.GetChecked(),type="backward",process=self._process)
+        return FourierFilter(self._axes.GetChecked(), type = self._combo.currentText(), process = self._process.currentText())
+    def parseFromFilter(self,f):
+        obj = FourierSetting(None,self.dim,self.loader)
+        axes, type, process = f.getParams()
+        obj._axes.SetChecked(axes)
+        obj._process.setCurrentIndex(obj._process.findData(process))
+        obj._combo.setCurrentIndex(obj._combo.findData(type))
+        return obj
 
 class RegionSelectWidget(QGridLayout):
     loadClicked=pyqtSignal(object)
     def __init__(self,parent,dim,loader=None):
         super().__init__()
+        self.dim = dim
+        self.loader = loader
         self.__initLayout(dim,loader)
     def __initLayout(self,dim,loader):
         self.__loadPrev=QPushButton('Load from Graph',clicked=self.__loadFromPrev)
@@ -486,9 +570,9 @@ class RegionSelectWidget(QGridLayout):
     def getRegion(self):
         return [[s.value(), e.value()] for s, e in zip(self.start,self.end)]
 
-class NormalizeSetting(QWidget):
+class NormalizeSetting(FilterSettingBase):
     def __init__(self,parent,dim,loader=None):
-        super().__init__()
+        super().__init__(parent,dim,loader)
         self.__parent=parent
         self.range=RegionSelectWidget(self,dim,loader)
         self.combo=QComboBox()
@@ -506,21 +590,36 @@ class NormalizeSetting(QWidget):
         self.setLayout(hbox)
     def GetFilter(self):
         return NormalizeFilter(self.range.getRegion(),self.combo.currentIndex()-1)
-    @staticmethod
-    def _parseFromFilter(f):
-        return None
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,NormalizeFilter):
+            return True
+    def parseFromFilter(self,f):
+        obj = NormalizeSetting(None,self.dim,self.loader)
+        region, axis = f.getParams()
+        obj.combo.setCurrentIndex(axis+1)
+        for i, r in enumerate(region):
+            obj.range.setRegion(i,r)
+        return obj
 
-class SelectRegionSetting(QWidget):
+class SelectRegionSetting(FilterSettingBase):
     def __init__(self,parent,dim,loader=None):
-        super().__init__()
+        super().__init__(parent,dim,loader)
         self.__parent=parent
         self.range=RegionSelectWidget(self,dim,loader)
         self.setLayout(self.range)
+    @classmethod
+    def _havingFilter(cls,f):
+        if isinstance(f,SelectRegionFilter):
+            return True
     def GetFilter(self):
         return SelectRegionFilter(self.range.getRegion())
-    @staticmethod
-    def _parseFromFilter(f):
-        return None
+    def parseFromFilter(self,f):
+        obj = SelectRegionSetting(None,self.dim,self.loader)
+        region = f.getRegion()
+        for i, r in enumerate(region):
+            obj.range.setRegion(i,r)
+        return obj
 
 class FiltersGUI(QWidget):
     def __init__(self,dimension = 2, regionLoader=None):
@@ -570,14 +669,14 @@ class FiltersGUI(QWidget):
 
         self.setLayout(vbox)
     def _addFirst(self):
-        first=PreFilterSetting(self.dim,self.loader)
+        first=PreFilterSetting(self,self.dim,self.loader)
         first.filterAdded.connect(self._add)
         first.filterDeleted.connect(self._delete)
         self._flist.append(first)
         self._layout.insertWidget(0,first)
     def _add(self,item):
         if self._flist[len(self._flist)-1]==item:
-            newitem=PreFilterSetting(self.dim,self.loader)
+            newitem=PreFilterSetting(self,self.dim,self.loader)
             newitem.filterAdded.connect(self._add)
             newitem.filterDeleted.connect(self._delete)
             self._layout.insertWidget(self._layout.count()-1,newitem)

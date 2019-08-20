@@ -54,6 +54,8 @@ class AverageFilter(FilterInterface):
             wave.data = dfilters.uniform_filter(wave.data,size=self._kernel)
             return wave
         return filters.uniform_filter(wave,size=self._kernel)
+    def getKernel(self):
+        return [int(2*k-1) for k in self._kernel]
 class GaussianFilter(FilterInterface):
     def __init__(self,kernel):
         self._kernel=kernel
@@ -65,6 +67,8 @@ class GaussianFilter(FilterInterface):
             wave.data = dfilters.gaussian_filter(wave.data,sigma=self._kernel)
             return wave
         return filters.gaussian_filter(wave,sigma=self._kernel)
+    def getKernel(self):
+        return self._kernel
 class BilateralFilter(FilterInterface):
     def __init__(self,kernel,s_color,s_space):
         self._kernel=kernel
@@ -100,6 +104,8 @@ class ConvolutionFilter(FilterInterface):
             else:
                 wave=filters.convolve(wave,kernel)
         return wave
+    def getAxes(self):
+        return self._axes
 class PrewittFilter(ConvolutionFilter):
     def _getKernel(self,core, axis):
         return filters.prewitt(core,axis = axis)
@@ -147,48 +153,69 @@ def _filts(x,b,a):
 class LowPassFilter(FilterInterface):
     def __init__(self,order,cutoff,axes):
         self._b, self._a=signal.butter(order,cutoff)
+        self._order = order
+        self._cutoff = cutoff
         self._axes=axes
     def _execute(self,wave,**kwargs):
         return _filt(wave,self._axes,self._b,self._a)
+    def getParams(self):
+        return self._order, self._cutoff, self._axes
 class HighPassFilter(FilterInterface):
     def __init__(self,order,cutoff,axes):
         self._b, self._a=signal.butter(order,cutoff,btype='highpass')
+        self._order = order
+        self._cutoff = cutoff
         self._axes=axes
     def _execute(self,wave,**kwargs):
         return _filt(wave,self._axes,self._b,self._a)
+    def getParams(self):
+        return self._order, self._cutoff, self._axes
 class BandPassFilter(FilterInterface):
     def __init__(self,order,cutoff,axes):
         self._b, self._a=signal.butter(order,cutoff,btype='bandpass')
+        self._order = order
+        self._cutoff = cutoff
         self._axes=axes
     def _execute(self,wave,**kwargs):
         return _filt(wave,self._axes,self._b,self._a)
+    def getParams(self):
+        return self._order, self._cutoff, self._axes
 class BandStopFilter(FilterInterface):
     def __init__(self,order,cutoff,axes):
         self._b, self._a=signal.butter(order,cutoff,btype='bandstop')
+        self._order = order
+        self._cutoff = cutoff
         self._axes=axes
     def _execute(self,wave,**kwargs):
         return _filt(wave,self._axes,self._b,self._a)
+    def getParams(self):
+        return self._order, self._cutoff, self._axes
 
 class FourierFilter(FilterInterface):
     def __init__(self,axes,type="forward",process="absolute"):
         self.type=type
         self.axes=axes
-        if process == "absolute":
-            self.func = absolute
-        elif process == "real":
-            self.func = real
-        elif process == "imag":
-            self.func = imag
+        self.process = process
     def _execute(self,wave,**kwargs):
+        if self.process == "absolute":
+            func = absolute
+        elif self.process == "real":
+            func = real
+        elif self.process == "imag":
+            func = imag
         for d in self.axes:
             if isinstance(wave, Wave):
                 raise NotImplementedError()
             if isinstance(wave, DaskWave):
-                wave.data = self.func(fft.fftn(wave.data,axes=self.axes))
+                wave.data = func(fft.fftn(wave.data,axes=self.axes))
             else:
-                wave.data = self.func(fft.ifftn(wave.data,axes=self.axes))
+                wave.data = func(fft.ifftn(wave.data,axes=self.axes))
+            for ax in self.axes:
+                a = wave.axes[ax]
+                wave.axes[ax] = np.linspace(0,len(a)/(np.max(a)-np.min(a)),len(a))
         return wave
-
+    def getParams(self):
+        return self.axes, self.type, self.process
 class NormalizeFilter(FilterInterface):
     def _makeSlice(self):
         sl = []
@@ -214,6 +241,8 @@ class NormalizeFilter(FilterInterface):
                 subscripts += letters[i]
             subscripts = subscripts+"," + letters[self._axis] + "->"+subscripts
             wave.data = einsum(subscripts,wave.data,nor)
+    def getParams(self):
+        return self._range,self._axis
 
 class SelectRegionFilter(FilterInterface):
     def __init__(self, range):
@@ -229,6 +258,8 @@ class SelectRegionFilter(FilterInterface):
         wave.data=wave.data[key]
         wave.axes=[ax[s] for s, ax in zip(key,wave.axes)]
         return wave
+    def getRegion(self):
+        return self._range
 
 """
 class SymmetrizationFilter(FilterInterface):
