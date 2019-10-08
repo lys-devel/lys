@@ -5,6 +5,8 @@ from scipy.ndimage import filters
 from scipy.ndimage.interpolation import rotate
 import cv2
 
+import _pickle as cPickle
+
 from dask_image import ndfilters as dfilters
 from dask.array import apply_along_axis, einsum, fft, absolute, real, imag
 
@@ -197,22 +199,26 @@ class FourierFilter(FilterInterface):
         self.axes=axes
         self.process = process
     def _execute(self,wave,**kwargs):
-        if self.process == "absolute":
-            func = absolute
-        elif self.process == "real":
-            func = real
-        elif self.process == "imag":
-            func = imag
         for d in self.axes:
-            if isinstance(wave, Wave):
-                raise NotImplementedError()
-            if isinstance(wave, DaskWave):
-                wave.data = func(fft.fftn(wave.data,axes=self.axes))
-            else:
-                wave.data = func(fft.ifftn(wave.data,axes=self.axes))
             for ax in self.axes:
                 a = wave.axes[ax]
                 wave.axes[ax] = np.linspace(0,len(a)/(np.max(a)-np.min(a)),len(a))
+            if isinstance(wave, Wave):
+                if self.process == "absolute":
+                    func = np.absolute
+                elif self.process == "real":
+                    func = np.real
+                elif self.process == "imag":
+                    func = np.imag
+                wave.data = func(np.fft.fftn(wave.data,axes = self.axes))
+            if isinstance(wave, DaskWave):
+                if self.process == "absolute":
+                    func = absolute
+                elif self.process == "real":
+                    func = real
+                elif self.process == "imag":
+                    func = imag
+                wave.data = func(fft.fftn(wave.data,axes = self.axes))
         return wave
     def getParams(self):
         return self.axes, self.type, self.process
@@ -289,3 +295,8 @@ class Filters(object):
         self._filters.insert(index,obj)
     def getFilters(self):
         return self._filters
+    def __str__(self):
+        return str(cPickle.dumps(self))
+    @staticmethod
+    def fromString(str):
+        return cPickle.loads(eval(str))

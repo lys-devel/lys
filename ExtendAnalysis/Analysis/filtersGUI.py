@@ -34,6 +34,8 @@ class PreFilterSetting(QWidget):
     def SetFilter(self,filt):
         obj = self.root.parseFromFilter(filt)
         self._filt(obj)
+    def clear(self):
+        self.root._combo.setCurrentIndex(0)
 class FilterGroupSetting(QWidget):
     filterChanged=pyqtSignal(QWidget)
     def __init__(self,parent,dimension=2,loader=None,layout = None):
@@ -63,7 +65,7 @@ class FilterGroupSetting(QWidget):
         if text in self._filters:
             self._removeChildGroup()
             if issubclass(self._filters[text],FilterGroupSetting):
-                self.filter = self._filters[text](self,self.dim,loader=self.loader,layout=self._layout)
+                self.filter = self._filters[text](None,self.dim,loader=self.loader,layout=self._layout)
                 self._addGroup(self.filter)
             else:
                 self.filter = self._filters[text](None,self.dim,loader=self.loader)
@@ -108,7 +110,7 @@ class RootSetting(FilterGroupSetting):
         return d
 class DeleteSetting(QWidget):
     def __init__(self,parent,dimension=2,loader=None):
-        super().__init__(parent)
+        super().__init__(None)
     @classmethod
     def _havingFilter(cls,f):
         return None
@@ -163,7 +165,7 @@ class _kernelSigmaLayout(QGridLayout):
 
 class FilterSettingBase(QWidget):
     def __init__(self,parent,dimension=2,loader=None):
-        super().__init__(parent)
+        super().__init__(None)
         self.dim = dimension
         self.loader = loader
 
@@ -633,9 +635,9 @@ class FiltersGUI(QWidget):
             self.dim=dimension
             self.clear()
     def clear(self):
-        while(len(self._flist)>0):
-            self._delete(self._flist[0],force=True)
-        self._addFirst()
+        while(len(self._flist) > 1):
+            self._delete(self._flist[0])
+        self._flist[0].clear()
     def GetFilters(self):
         res=[]
         for f in self._flist:
@@ -682,7 +684,7 @@ class FiltersGUI(QWidget):
             self._layout.insertWidget(self._layout.count()-1,newitem)
             self._flist.append(newitem)
     def _delete(self,item,force=False):
-        if len(self._flist)>1 or force:
+        if len(self._flist) > 1 or force:
             self._layout.removeWidget(item)
             item.deleteLater()
             self._flist.remove(item)
@@ -693,13 +695,44 @@ class FiltersGUI(QWidget):
     def saveAs(self,file):
         filt = self.GetFilters()
         s=String(file)
-        s.data = cPickle.dumps(filt)
+        s.data = str(filt)
     def loadFrom(self,file):
         s=String(file)
-        filt = cPickle.loads(eval(s.data)).getFilters()
+        self.loadFromString(s.data)
+    def loadFromString(self,str):
+        self.loadFilters(Filters.fromString(str))
+    def loadFilters(self,filt):
         self.clear()
-        for f in filt:
+        for f in filt.getFilters():
             self._flist[len(self._flist)-1].SetFilter(f)
+
+class FiltersDialog(QDialog):
+    def __init__(self, dim):
+        super().__init__()
+
+        self.filters = FiltersGUI(dim)
+
+        self.ok = QPushButton("O K",clicked = self._ok)
+        self.cancel = QPushButton("CANCEL", clicked = self._cancel)
+        h1 = QHBoxLayout()
+        h1.addWidget(self.ok)
+        h1.addWidget(self.cancel)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.filters)
+        layout.addLayout(h1)
+        self.setLayout(layout)
+        self.adjustSize()
+    def _ok(self):
+        self.ok = True
+        self.close()
+    def _cancel(self):
+        self.ok = False
+        self.close()
+    def getResult(self):
+        return self.ok, self.filters.GetFilters()
+    def setFilter(self,filt):
+        self.filters.loadFilters(filt)
 
 filterGroups = {
 'Select region': SelectRegionSetting,

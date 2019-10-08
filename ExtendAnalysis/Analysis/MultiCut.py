@@ -10,11 +10,13 @@ class DaskWave(object):
         elif isinstance(wave,DArray):
             self.__fromda(wave,axes,chunks)
     def __fromWave(self,wave,axes,chunks):
+        import copy
         self.data=da.from_array(wave.data,chunks=chunks)
         if axes is None:
             self.axes=wave.axes
         else:
             self.axes=axes
+        self.note = copy.copy(wave.note)
     def toWave(self):
         import copy
         w=Wave()

@@ -208,6 +208,7 @@ class ExecutorModel(ControlledObjectsModel):
                 return QBrush(QColor("gray"))
         return super().data(index,role)
 class controlledWavesGUI(QTreeView):
+    updated = pyqtSignal()
     def __init__(self,obj,dispfunc,appendfunc):
         super().__init__()
         self.obj=obj
@@ -222,6 +223,7 @@ class controlledWavesGUI(QTreeView):
         menu.addAction(QAction("Display",self,triggered=self._display))
         menu.addAction(QAction("Append",self,triggered=self._append))
         menu.addAction(QAction("Remove",self,triggered=self._remove))
+        menu.addAction(QAction("PostProcess",self,triggered=self._post))
         menu.exec_(QCursor.pos())
     def _display(self):
         i = self.selectionModel().selectedIndexes()[0].row()
@@ -232,6 +234,18 @@ class controlledWavesGUI(QTreeView):
     def _remove(self):
         i = self.selectionModel().selectedIndexes()[0].row()
         self.obj.removeAt(i)
+    def _post(self):
+        i = self.selectionModel().selectedIndexes()[0].row()
+        w = self.obj[i][0]
+        d = FiltersDialog(w.data.ndim)
+        if 'MultiCut_PostProcess' in w.note:
+            d.setFilter(Filters.fromString(w.note['MultiCut_PostProcess']))
+        d.exec_()
+        ok, filt = d.getResult()
+        if ok:
+            w.note['MultiCut_PostProcess']=str(filt)
+        self.updated.emit()
+
 class controlledGraphsGUI(QTreeView):
     def __init__(self,obj):
         super().__init__()
@@ -343,6 +357,7 @@ class CutTab(QWidget):
         self.__exe.removed.connect(self._exechanged)
     def __initlayout__(self):
         self.wlist=controlledWavesGUI(self.waves,self.display,self.append)
+        self.wlist.updated.connect(self.updateAll)
         self.glist=controlledGraphsGUI(self.graphs)
         disp=QPushButton("Display",clicked=self.display)
         make=QPushButton("Make",clicked=self.make)
@@ -367,7 +382,6 @@ class CutTab(QWidget):
         self.layout.addStretch()
 
         self.setLayout(self.layout)
-        self.adjustSize()
     def __interactive(self):
         lx=QPushButton("Line (X)",clicked=self._linex)
         ly=QPushButton("Line (Y)",clicked=self._liney)
@@ -452,6 +466,7 @@ class CutTab(QWidget):
                 wav=self.__exe.makeWave(self.wave,axs)
                 w.axes=wav.axes
                 w.data=wav.data
+                self._postProcess(w)
             except:
                 pass
     def update(self,index,all=False):
@@ -462,6 +477,7 @@ class CutTab(QWidget):
                         wav=self.__exe.makeWave(self.wave,axs)
                         w.axes=wav.axes
                         w.data=wav.data
+                        self._postProcess(w)
                     except:
                         pass
             else:
@@ -470,8 +486,14 @@ class CutTab(QWidget):
                         wav=self.__exe.makeWave(self.wave,axs)
                         w.axes=wav.axes
                         w.data=wav.data
+                        self._postProcess(w)
                     except:
                         pass
+
+    def _postProcess(self,w):
+        if "MultiCut_PostProcess" in w.note:
+            filt = Filters.fromString(w.note["MultiCut_PostProcess"])
+            filt.execute(w)
     def _point(self):
         g=Graph.active()
         id=g.canvas.addCross([0,0])

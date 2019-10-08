@@ -276,7 +276,7 @@ class Wave(AutoSaved):
         def _init(self):
             self.axes=[np.array(None)]
             self.data=np.array(None)
-            self.note=None
+            self.note={}
         def _load(self,file):
             tmp=np.load(file)
             self.axes=[np.array(None) for i in range(tmp['data'].ndim)]
