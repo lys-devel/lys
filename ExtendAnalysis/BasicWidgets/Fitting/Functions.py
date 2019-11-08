@@ -80,3 +80,5 @@ def findFuncByInstance(instance):
     for key in ListOfFunctions.keys():
         if ListOfFunctions[key]==instance:
             return key
+def addFunction(name, funcObj):
+    ListOfFunctions[name] = funcObj

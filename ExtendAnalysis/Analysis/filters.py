@@ -3,6 +3,7 @@ import scipy
 from scipy import signal
 from scipy.ndimage import filters
 from scipy.ndimage.interpolation import rotate
+from scipy.interpolate import interpn
 import cv2
 
 import _pickle as cPickle
@@ -31,6 +32,39 @@ class ShiftFilter(FilterInterface):
             wave.data=(scipy.ndimage.interpolation.shift(np.array(wave.data,dtype=np.float32),self._s, cval=0))
         else:
             wave.data=(scipy.ndimage.interpolation.shift(np.array(wave.data,dtype=np.float32),shift, cval=0))
+
+class SimpleMathFilter(FilterInterface):
+    def __init__(self,type,value):
+        self._type = type
+        self._value = value
+    def _execute(self,wave,**kwargs):
+        if self._type == "+":
+            wave.data = wave.data + self._value
+        if self._type == "-":
+            wave.data = wave.data - self._value
+        if self._type == "*":
+            wave.data = wave.data * self._value
+        if self._type == "/":
+            wave.data = wave.data / self._value
+        if self._type == "**":
+            wave.data = wave.data ** self._value
+        return wave
+
+class InterpFilter(FilterInterface):
+    def __init__(self, size):
+        self._size = size
+    def _execute(self,wave,**kwargs):
+        if isinstance(wave, Wave):
+            size = self._size
+            for i in range(len(size)):
+                if size[i] == 0:
+                    size[i] = len(wave.axes[i])
+            axes_new = [np.linspace(min(wave.axes[i]), max(wave.axes[i]), size[i]) for i in range(len(self._size))]
+            wave.data = interpn(wave.axes, wave.data, np.array(np.meshgrid(*axes_new)).T)
+            wave.axes = axes_new
+        if isinstance(wave, DaskWave):
+            raise NotImplementedError()
+        return wave
 
 class MedianFilter(FilterInterface):
     def __init__(self,kernel):
@@ -199,26 +233,31 @@ class FourierFilter(FilterInterface):
         self.axes=axes
         self.process = process
     def _execute(self,wave,**kwargs):
-        for d in self.axes:
-            for ax in self.axes:
-                a = wave.axes[ax]
-                wave.axes[ax] = np.linspace(0,len(a)/(np.max(a)-np.min(a)),len(a))
-            if isinstance(wave, Wave):
-                if self.process == "absolute":
-                    func = np.absolute
-                elif self.process == "real":
-                    func = np.real
-                elif self.process == "imag":
-                    func = np.imag
+        for ax in self.axes:
+            a = wave.axes[ax]
+            wave.axes[ax] = np.linspace(0,len(a)/(np.max(a)-np.min(a)),len(a))
+        if isinstance(wave, Wave):
+            if self.process == "absolute":
+                func = np.absolute
+            elif self.process == "real":
+                func = np.real
+            elif self.process == "imag":
+                func = np.imag
+            if self.type == "forward":
                 wave.data = func(np.fft.fftn(wave.data,axes = self.axes))
-            if isinstance(wave, DaskWave):
-                if self.process == "absolute":
-                    func = absolute
-                elif self.process == "real":
-                    func = real
-                elif self.process == "imag":
-                    func = imag
+            else:
+                wave.data = func(np.fft.ifftn(wave.data,axes = self.axes))
+        if isinstance(wave, DaskWave):
+            if self.process == "absolute":
+                func = absolute
+            elif self.process == "real":
+                func = real
+            elif self.process == "imag":
+                func = imag
+            if self.type == "forward":
                 wave.data = func(fft.fftn(wave.data,axes = self.axes))
+            else:
+                wave.data = func(fft.ifftn(wave.data,axes = self.axes))
         return wave
     def getParams(self):
         return self.axes, self.type, self.process
