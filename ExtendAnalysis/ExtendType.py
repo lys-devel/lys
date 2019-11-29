@@ -278,13 +278,16 @@ class Wave(AutoSaved):
             self.data=np.array(None)
             self.note={}
         def _load(self,file):
-            tmp=np.load(file)
+            tmp=np.load(file,allow_pickle=True)
             self.axes=[np.array(None) for i in range(tmp['data'].ndim)]
             if 'axes' in tmp:
                 self._load_new(tmp)
             else:
                 self._load_old(tmp)
-            self.note=tmp['note'][()]
+            if 'note' in tmp:
+                self.note = tmp['note'][()]
+            else:
+                self.note = {}
         def _load_new(self,tmp):
             self.data=tmp['data']
             if 'axes' in tmp:
@@ -301,7 +304,7 @@ class Wave(AutoSaved):
                 self.axes[1]=tmp['y']
                 self.axes[2]=tmp['z']
         def _save(self,file):
-            np.savez(file, data=self.data, axes=self.axes,note=self.note)
+            np.savez(file, data=self.data, axes=self.axes,note=self.note, allow_pickle = True)
         def _vallist(self):
             return ['data','x','y','z','note','axes']
         def __setattr__(self,key,value):
