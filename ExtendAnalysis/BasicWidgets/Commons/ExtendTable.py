@@ -44,7 +44,7 @@ class ExtendTable(QWidget):
 
     def Set(self, data, overwrite=True):
         self.Append(data, pos=(0, 0))
-        self.SetSize(data.shape())
+        self.SetSize(np.array(data.data).shape)
         self.SetOverwrite(overwrite)
 
     def SetOverwrite(self, b):
