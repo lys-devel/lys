@@ -45,10 +45,10 @@ class ExtendFileSystemModel(QSortFilterProxyModel):
 class _FileSystemViewBase(QWidget):
     def __init__(self,view,parent=None,model=ExtendFileSystemModel(),path=''):
         super().__init__()
-        self._path=path
         self.__view=view
         self.Model=model
         self.__view.setModel(self.Model)
+        self.SetPath(path)
         self.__actions={}
     def SetContextMenuActions(self,dict):
         self.__actions=dict
@@ -154,7 +154,7 @@ class _FileSystemViewBase(QWidget):
             print(w)
 
 class FileSystemView(_FileSystemViewBase):
-    def __init__(self,parent=None,model=None,path=''):
+    def __init__(self,parent=None,model=ExtendFileSystemModel(),path=''):
         layout=QVBoxLayout()
         self.tree=QTreeView(parent=parent)
         super().__init__(self.tree,parent,model,path)
@@ -175,7 +175,7 @@ class FileSystemView(_FileSystemViewBase):
             indexes.append(self.Model.indexFromPath(self._path))
         return indexes
 class FileSystemList(QListView,_FileSystemViewBase):
-    def __init__(self,parent=None,model=None,path=''):
+    def __init__(self,parent=None,model=ExtendFileSystemModel(),path=''):
         QListView.__init__(self,parent=parent)
         _FileSystemViewBase.__init__(self,QListView,parent,model,path)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
