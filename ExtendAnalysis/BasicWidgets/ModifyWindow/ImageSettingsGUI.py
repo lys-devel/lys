@@ -71,7 +71,7 @@ class ImageColorAdjustBox(QWidget):
     def __init__(self,canvas):
         super().__init__()
         self.canvas=canvas
-        canvas.addDataSelectionListener(self)
+        canvas.dataSelected.connect(self.OnDataSelected)
         self.__initlayout()
         self.__flg=False
     def __initlayout(self):
@@ -118,7 +118,7 @@ class ImagePlaneAdjustBox(QWidget):
     def __init__(self,canvas):
         super().__init__()
         self.canvas=canvas
-        canvas.addDataSelectionListener(self)
+        canvas.dataSelected.connect(self.OnDataSelected)
         self.__initlayout()
         self.__flg=False
         self.index=None

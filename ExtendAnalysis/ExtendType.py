@@ -181,6 +181,7 @@ class AutoSaved(object):
 
     def __init__(self,file=None):
         self.obj=None
+        self.__name=None
         self.__file=self._parseFilename(file)
         self.__loadFile=None
         self.__modListener=[]
@@ -244,11 +245,15 @@ class AutoSaved(object):
             return os.path.abspath(self.__file)
         return self.__loadFile
     def Name(self):
-        if self.FileName() is None:
+        if self.__name is not None:
+            return self.__name
+        elif self.FileName() is None:
             return "untitled"
         else:
             nam,ext=os.path.splitext(os.path.basename(self.FileName()))
             return nam
+    def SetName(self,name):
+        self.__name=name
     def IsConnected(self):
         return self.__file is not None
 
@@ -260,6 +265,12 @@ class AutoSaved(object):
                 self.__modListener.remove(m)
             else:
                 m()(self)
+def produce(data,axes,note):
+    w=Wave()
+    w.data=data
+    w.axes=axes
+    w.note=note
+    return w
 class Wave(AutoSaved):
     class _wavedata(ExtendObject):
         def _init(self):
@@ -269,16 +280,26 @@ class Wave(AutoSaved):
         def _load(self,file):
             tmp=np.load(file)
             self.axes=[np.array(None) for i in range(tmp['data'].ndim)]
+            if 'axes' in tmp:
+                self._load_new(tmp)
+            else:
+                self._load_old(tmp)
+            self.note=tmp['note'][()]
+        def _load_new(self,tmp):
             self.data=tmp['data']
-            if 'x' in tmp and len(self.axes) > 0:
-                self.axes[0]=tmp['x']
-            if 'y' in tmp and len(self.axes) > 1:
-                self.axes[1]=tmp['y']
-            if 'z' in tmp and len(self.axes) > 2:
-                self.axes[2]=tmp['z']
             if 'axes' in tmp:
                 self.axes=tmp['axes']
-            self.note=tmp['note'][()]
+        def _load_old(self,tmp):
+            self.data=tmp['data'].T
+            if self.data.ndim==1:
+                self.axes[0]=tmp['x']
+            if self.data.ndim==2:
+                self.axes[0]=tmp['x']
+                self.axes[1]=tmp['y']
+            if self.data.ndim==3:
+                self.axes[0]=tmp['x']
+                self.axes[1]=tmp['y']
+                self.axes[2]=tmp['z']
         def _save(self,file):
             np.savez(file, data=self.data, axes=self.axes,note=self.note)
         def _vallist(self):
@@ -319,31 +340,45 @@ class Wave(AutoSaved):
         if key=='x' or key=='y' or key=='z':
             val=super().__getattribute__(key)
             index=['x','y','z'].index(key)
-            dim=self.data.ndim-index-1
-            if self.data.ndim<=index:
-                return None
-            elif val.ndim==0:
-                if self.data.ndim>index:
-                    return np.arange(self.data.shape[dim])
-                else:
-                    return val
-            else:
-                if self.data.shape[dim]==val.shape[0]:
-                    return val
-                else:
-                    res=np.empty((self.data.shape[dim]))
-                    for i in range(self.data.shape[dim]):
-                        res[i]=np.NaN
-                    for i in range(min(self.data.shape[dim],val.shape[0])):
-                        res[i]=val[i]
-                    return res
+            return self.getAxis(index)
         else:
             return super().__getattribute__(key)
+    def getAxis(self,dim):
+        val = np.array(self.axes[dim])
+        if self.data.ndim <= dim:
+            return None
+        elif val.ndim==0:
+            return np.arange(self.data.shape[dim])
+        else:
+            if self.data.shape[dim]==val.shape[0]:
+                return val
+            else:
+                res=np.empty((self.data.shape[dim]))
+                for i in range(self.data.shape[dim]):
+                    res[i]=np.NaN
+                for i in range(min(self.data.shape[dim],val.shape[0])):
+                    res[i]=val[i]
+                return res
     def __getitem__(self,key):
-        return self.data[key]
+        if isinstance(key,tuple):
+            data=self.data[key]
+            axes=[]
+            for s, ax in zip(key,self.axes):
+                axes.append(ax[s])
+            w=Wave()
+            w.data=data
+            w.axes=axes
+            return w
+        else:
+            super().__getitem__(key)
     def __setitem__(self,key,value):
         self.data[key]=value
         self.Save()
+    def __reduce_ex__(self,proto):
+        if self.IsConnected():
+            return Wave,(self.FileName())
+        else:
+            return produce,(self.data,self.axes,self.note)
     def _parseFilename(self,path):
         if path is None:
             return None
@@ -469,6 +504,15 @@ class Wave(AutoSaved):
             w.data=np.gradient(self.data)[i]
         return w
 
+    def sum(self,axis):
+        w=Wave()
+        w.data=self.data.sum(axis)
+        axes=[]
+        for i, ax in enumerate(self.axes):
+            if not i == axis:
+                axes.append(ax)
+        w.axes=axes
+        return w
     def average(self,*args):
         dim=len(args)
         if len(args)==0:
@@ -489,9 +533,10 @@ class Wave(AutoSaved):
             dy=(y1-y0)/(len(self.y)-1)
             return (int(round((pos[0]-x0)/dx)),int(round((pos[1]-y0)/dy)))
         else:
-            x0=self.axes[axis][0]
-            x1=self.axes[axis][len(self.axes[axis])-1]
-            dx=(x1-x0)/(len(self.axes[axis])-1)
+            ax = self.getAxis(axis)
+            x0=ax[0]
+            x1=ax[len(ax)-1]
+            dx=(x1-x0)/(len(ax)-1)
             return int(round((pos-x0)/dx))
     def pointToPos(self,p):
         x0=self.x[0]

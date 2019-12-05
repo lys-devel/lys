@@ -107,6 +107,9 @@ class Graph(AutoSavedWindow):
                 text += '.grf'
             if ok:
                 self.Save(text)
+        if e.key() == Qt.Key_D:
+            #text, ok = QInputDialog.getText(self, '---Save Dialog---', 'Enter graph name:')
+            self.Duplicate(lib=Graph.graphLibrary)
 
     def closeEvent(self, event):
         self.canvas.fig.canvas = None
@@ -115,18 +118,18 @@ class Graph(AutoSavedWindow):
     def Append(self, wave, axis=Axis.BottomLeft):
         return self.canvas.Append(wave, axis)
 
-    def Duplicate(self):
+    def Duplicate(self, lib=None):
         dic = {}
         self.canvas.SaveAsDictionary(dic, home())
-        g = Graph()
+        g = Graph(lib=lib)
         g.canvas.EnableDraw(False)
         g.canvas.LoadFromDictionary(dic, home())
         g.canvas.EnableDraw(True)
         return g
 
 
-def display(w):
-    g = Graph()
+def display(w, lib=None):
+    g = Graph(lib=lib)
     g.Append(w)
     return g
 

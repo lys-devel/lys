@@ -393,7 +393,7 @@ Opposite={'Left':'Right','Right':'Left','Bottom':'Top','Top':'Bottom'}
 class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
-        self.addAxisChangeListener(self)
+        self.axisChanged.connect(self.OnAxisChanged)
     def OnAxisChanged(self,axis):
         if self.axisIsValid('Right'):
             self.setMirrorAxis('Left',False)

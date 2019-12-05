@@ -8,7 +8,7 @@ class AxisSelectionWidget(QComboBox):
     def __init__(self,canvas):
         super().__init__()
         self.canvas=canvas
-        self.canvas.addAxisChangeListener(self)
+        self.canvas.axisChanged.connect(self.OnAxisChanged)
         self.canvas.addAxisSelectedListener(self)
         self.flg=False
         self.__setItem()

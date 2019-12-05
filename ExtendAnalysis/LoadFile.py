@@ -99,35 +99,37 @@ def __loadPxt(name):
         w.z=wav.axis[0]
     return w
 
-def __loadDm3(name):
+try:
     import dm3_lib as dm3
-    data = dm3.DM3(name)
-    w=Wave()
-    w.data=data.imagedata
-    w.x=np.arange(0,data.pxsize[0]*w.data.shape[0],data.pxsize[0])
-    print(w.data.ndim)
-    if w.data.ndim>=2:
-        print("debug001")
-        w.y=np.arange(0,data.pxsize[0]*w.data.shape[1],data.pxsize[0])
-        print(np.arange(0,data.pxsize[0]*w.data.shape[1],data.pxsize[0]))
-    w.note={}
-    try:
-        w.note['unit']=data.pxsize[1]
-        w.note['specimen']=data.info['specimen'].decode()
-        w.note['date']=data.info['acq_date'].decode()
-        w.note['mag']=float(data.info['mag'].decode())
-        w.note['time']=data.info['acq_time'].decode()
-        w.note['voltage']=float(data.info['hv'].decode())
-        w.note['mode']=data.info['mode'].decode()
-        w.note['exposure']=data.tags['root.ImageList.1.ImageTags.DataBar.Exposure Time (s)']
-        w.note['hbin']=data.tags['root.ImageList.1.ImageTags.Acquisition.Parameters.Detector.hbin']
-        w.note['vbin']=data.tags['root.ImageList.1.ImageTags.Acquisition.Parameters.Detector.vbin']
-        w.note['delay']=data.tags['root.ImageList.1.ImageTags.Experiment.Laser.delay']
-        w.note['power']=data.tags['root.ImageList.1.ImageTags.Experiment.Laser.power']
-        w.note['scanMode']=data.tags['root.ImageList.1.ImageTags.Experiment.mode']
-    except:
-        pass
-    return w
+    def __loadDm3(name):
+        data = dm3.DM3(name)
+        w=Wave()
+        w.data=data.imagedata
+        w.x=np.arange(0,data.pxsize[0]*w.data.shape[0],data.pxsize[0])
+        if w.data.ndim>=2:
+            w.y=np.arange(0,data.pxsize[0]*w.data.shape[1],data.pxsize[0])
+            #print(np.arange(0,data.pxsize[0]*w.data.shape[1],data.pxsize[0]))
+        w.note={}
+        try:
+            w.note['unit']=data.pxsize[1]
+            w.note['specimen']=data.info['specimen'].decode()
+            w.note['date']=data.info['acq_date'].decode()
+            w.note['mag']=float(data.info['mag'].decode())
+            w.note['time']=data.info['acq_time'].decode()
+            w.note['voltage']=float(data.info['hv'].decode())
+            w.note['mode']=data.info['mode'].decode()
+            w.note['exposure']=data.tags['root.ImageList.1.ImageTags.DataBar.Exposure Time (s)']
+            w.note['hbin']=data.tags['root.ImageList.1.ImageTags.Acquisition.Parameters.Detector.hbin']
+            w.note['vbin']=data.tags['root.ImageList.1.ImageTags.Acquisition.Parameters.Detector.vbin']
+            w.note['delay']=data.tags['root.ImageList.1.ImageTags.Experiment.Laser.delay']
+            w.note['power']=data.tags['root.ImageList.1.ImageTags.Experiment.Laser.power']
+            w.note['scanMode']=data.tags['root.ImageList.1.ImageTags.Experiment.mode']
+        except:
+            pass
+        return w
+except ImportError:
+    def __loadDm3(name):
+        print("Error: To use .dm3 files, please install dm3_lib module.")
 
 def addFileLoader(type, func):
     dic[type]=func

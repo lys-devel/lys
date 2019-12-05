@@ -17,149 +17,49 @@ from ExtendAnalysis.ExtendType import *
 from .CanvasBase import *
 from ..CanvasInterface import *
 
-class LineColorAdjustableCanvas(OffsetAdjustableCanvas):
-    def saveAppearance(self):
-        super().saveAppearance()
-        data=self.getLines()
-        for d in data:
-            d.appearance['LineColor']=d.obj.get_color()
-    @saveCanvas
-    def setDataColor(self,color,indexes):
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            d.obj.set_color(color)
-        self.draw()
-    def getDataColor(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_color())
-        return res
-    def loadAppearance(self):
-        super().loadAppearance()
-        data=self.getLines()
-        for d in data:
-            if 'LineColor' in d.appearance:
-                d.obj.set_color(d.appearance['LineColor'])
+class LineColorAdjustableCanvas(FigureCanvasBase):
+    def _setDataColor(self,obj,color):
+        obj.set_color(color)
+    def _getDataColor(self,obj):
+        return obj.get_color()
 
 class LineStyleAdjustableCanvas(LineColorAdjustableCanvas):
-    def saveAppearance(self):
-        super().saveAppearance()
-        data=self.getLines()
-        for d in data:
-            d.appearance['LineStyle']=d.obj.get_linestyle()
-            d.appearance['LineWidth']=d.obj.get_linewidth()
-    @saveCanvas
-    def setLineStyle(self,style,indexes):
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            d.obj.set_linestyle(style)
-            d.appearance['OldLineStyle']=d.obj.get_linestyle()
-        self.draw()
-    def getLineStyle(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_linestyle().replace('-.','dashdot').replace('--','dashed').replace('-','solid').replace(':','dotted'))
-        return res
-    @saveCanvas
-    def setLineWidth(self,width,indexes):
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            d.obj.set_linewidth(width)
-        self.draw()
-    def getLineWidth(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_linewidth())
-        return res
-    def loadAppearance(self):
-        super().loadAppearance()
-        data=self.getLines()
-        for d in data:
-            if 'LineStyle' in d.appearance:
-                d.obj.set_linestyle(d.appearance['LineStyle'])
-            if 'LineWidth' in d.appearance:
-                d.obj.set_linewidth(d.appearance['LineWidth'])
+    def _getLineDataStyle(self,obj):
+        return obj.get_linestyle().replace('-.','dashdot').replace('--','dashed').replace('-','solid').replace(':','dotted')
+    def _setLineDataStyle(self,obj,style):
+        obj.set_linestyle(style)
+    def _getLineDataWidth(self,obj):
+        return obj.get_linewidth()
+    def _setLineDataWidth(self,obj,width):
+        obj.set_linewidth(width)
 
 class MarkerStyleAdjustableCanvas(LineStyleAdjustableCanvas):
-    def saveAppearance(self):
-        super().saveAppearance()
-        data=self.getLines()
-        for d in data:
-            d.appearance['Marker']=d.obj.get_marker()
-            d.appearance['MarkerSize']=d.obj.get_markersize()
-            d.appearance['MarkerThick']=d.obj.get_markeredgewidth()
-            d.appearance['MarkerFilling']=d.obj.get_fillstyle()
-    @saveCanvas
-    def setMarker(self,marker,indexes):
+    def _getMarker(self,obj):
+        dummy=lines.Line2D([0,1],[0,1])
+        return dummy.markers[obj.get_marker()]
+    def _getMarkerSize(self,obj):
+        return obj.get_markersize()
+    def _getMarkerThick(self,obj):
+        return obj.get_markeredgewidth()
+    def _getMarkerFilling(self,obj):
+        return obj.get_fillstyle()
+    def _setMarker(self,obj,marker):
         dummy=lines.Line2D([0,1],[0,1])
         key=list(dummy.markers.keys())
         val=list(dummy.markers.values())
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            d.obj.set_marker(key[val.index(marker)])
-            d.appearance['OldMarker']=d.obj.get_marker()
-        self.draw()
-    def getMarker(self,indexes):
-        res=[]
+        if marker in val:
+            obj.set_marker(key[val.index(marker)])
+    def _setMarkerSize(self,obj,size):
+        obj.set_markersize(size)
+    def _setMarkerThick(self,obj,thick):
+        obj.set_markeredgewidth(thick)
+    def _setMarkerFilling(self,obj,filling):
         dummy=lines.Line2D([0,1],[0,1])
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(dummy.markers[d.obj.get_marker()])
-        return res
-    @saveCanvas
-    def setMarkerSize(self,size,indexes):
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            d.obj.set_markersize(size)
-        self.draw()
-    def getMarkerSize(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_markersize())
-        return res
-    @saveCanvas
-    def setMarkerThick(self,size,indexes):
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            d.obj.set_markeredgewidth(size)
-        self.draw()
-    def getMarkerThick(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_markeredgewidth())
-        return res
-    @saveCanvas
-    def setMarkerFilling(self,type,indexes):
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            d.obj.set_fillstyle(type)
-        self.draw()
-    def getMarkerFilling(self,indexes):
-        res=[]
-        data=self.getDataFromIndexes(1,indexes)
-        for d in data:
-            res.append(d.obj.get_fillstyle())
-        return res
+        if filling in dummy.fillStyles:
+            obj.set_fillstyle(filling)
     def getMarkerList(self):
         dummy=lines.Line2D([0,1],[0,1])
         return dummy.markers
     def getMarkerFillingList(self):
         dummy=lines.Line2D([0,1],[0,1])
         return dummy.fillStyles
-    def loadAppearance(self):
-        super().loadAppearance()
-        data=self.getLines()
-        for d in data:
-            if 'Marker' in d.appearance:
-                d.obj.set_marker(d.appearance['Marker'])
-            if 'MarkerSize' in d.appearance:
-                d.obj.set_markersize(d.appearance['MarkerSize'])
-            if 'MarkerThick' in d.appearance:
-                d.obj.set_markeredgewidth(d.appearance['MarkerThick'])
-            if 'MarkerFilling' in d.appearance:
-                d.obj.set_fillstyle(d.appearance['MarkerFilling'])

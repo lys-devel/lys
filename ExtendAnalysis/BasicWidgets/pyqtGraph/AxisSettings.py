@@ -253,7 +253,7 @@ Opposite={'Left':'Right','Right':'Left','Bottom':'Top','Top':'Bottom','left':'Ri
 class AxisAdjustableCanvas(AxisRangeRightClickCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
-        self.addAxisChangeListener(self)
+        self.axisChanged.connect(self.OnAxisChanged)
     def OnAxisChanged(self,axis):
         if self.axisIsValid('Right'):
             self.setMirrorAxis('Left',False)
@@ -322,7 +322,11 @@ class AxisAdjustableCanvas(AxisRangeRightClickCanvas):
         ax=self._getAxisList(axis)
         for a in ax:
             pen=a.pen()
-            pen.setColor(QColor(color))
+            if isinstance(color, tuple):
+                col = [c*255 for c in color]
+                pen.setColor(QColor(*col))
+            else:
+                pen.setColor(QColor(color))
             a.setPen(pen)
     def getAxisColor(self,axis):
         ax=self.fig.axes[axis.lower()]['item']
@@ -349,6 +353,7 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         self.setTickDirection('Bottom','in')
         self.setTickVisible('Left',False,which='minor')
         self.setTickVisible('Bottom',False,which='minor')
+        self.dataChanged.connect(self._refreshTicks)
     def SaveAsDictionary(self,dictionary,path):
         super().SaveAsDictionary(dictionary,path)
         dic={}
@@ -383,6 +388,10 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
                     self.setTickWidth(l,dic[l+"_tickwid2"],which='minor')
                     self.setAutoLocator(l,dic[l+"_ticknum2"],which='minor')
                     self.setTickDirection(l,dic[l+"_tickdir"])
+    def _refreshTicks(self):
+        for l in ['Left','Right','Top','Bottom']:
+            for t in ['major','minor']:
+                self.setAutoLocator(l,self.getAutoLocator(l,t),t)
     def __alist(self,axis):
         res=[axis]
         if not self.axisIsValid(Opposite[axis]):

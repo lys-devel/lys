@@ -1,4 +1,7 @@
-import functools
+import functools, weakref
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 
 def saveCanvas(func):
     @functools.wraps(func)
@@ -23,3 +26,47 @@ def notSaveCanvas(func):
         args[0].saveflg=saved
         return res
     return wrapper
+
+class SavableCanvasBase(object):
+    def __init__(self,*args,**kwargs):
+        self.saveflg=False
+        self.savef=None
+        self.__loadFlg=False
+    def setSaveFunction(self,func):
+        self.savef=weakref.WeakMethod(func)
+    def Save(self):
+        if self.__loadFlg and (self.savef is not None):
+            self.savef()()
+    def EnableSave(self,b):
+        self.saveflg=b
+    def SaveAsDictionary(self,dictionary,path):
+        pass
+    def LoadFromDictionary(self,dictionary,path):
+        pass
+    def saveAppearance(self):
+        pass
+    def loadAppearance(self):
+        pass
+class DrawableCanvasBase(SavableCanvasBase):
+    afterDraw=pyqtSignal()
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.drawflg=None
+    def IsDrawEnabled(self):
+        return self.drawflg
+    def EnableDraw(self,b):
+        self.drawflg=b
+    def draw(self):
+        if self.drawflg is not None:
+            if not self.drawflg:
+                return
+        try:
+            self._draw()
+            afterDraw.emit()
+        except Exception:
+            pass
+    def _draw(self):
+        pass
+    def addAfterDrawListener(self,listener):
+        print("use afterDraw.connect")
+        raise NotImplementedError()

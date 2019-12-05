@@ -52,8 +52,8 @@ class DataSelectionBox(QTreeView):
         self.__initlayout()
         self.flg=False
         self._loadstate()
-        canvas.addDataChangeListener(self)
-        canvas.addDataSelectionListener(self)
+        canvas.dataChanged.connect(self.OnDataChanged)
+        canvas.dataSelected.connect(self.OnDataSelected)
     def __initlayout(self):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QAbstractItemView.InternalMove)
@@ -129,7 +129,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         self.__dim=dim
     def buildContextMenu(self, qPoint):
         menu = QMenu(self)
-        menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Edit', 'Print', 'Export']
+        menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Append', 'Edit', 'Print', 'Export']
         actionlist = []
         for label in menulabels:
             actionlist.append(menu.addAction(label))
@@ -142,14 +142,20 @@ class RightClickableSelectionBox(DataSelectionBox):
         elif action.text() == 'Hide':
             self.canvas.hideData(self.__dim,list)
         elif action.text() == 'Edit':
-            from ExtendAnalysis.GraphWindow import Table
+            from ExtendAnalysis import Table
             t=Table()
             data=self.canvas.getDataFromIndexes(self.__dim,list)
             for d in data:
                 t.Append(d.wave)
         elif action.text() == 'Display':
-            from ExtendAnalysis.GraphWindow import Graph
+            from ExtendAnalysis import Graph
             g=Graph()
+            data=self.canvas.getDataFromIndexes(self.__dim,list)
+            for d in data:
+                g.Append(d.wave)
+        elif action.text() == 'Append':
+            from ExtendAnalysis import Graph
+            g=Graph.active(1)
             data=self.canvas.getDataFromIndexes(self.__dim,list)
             for d in data:
                 g.Append(d.wave)
@@ -172,7 +178,7 @@ class OffsetAdjustBox(QWidget):
     def __init__(self,canvas,dim):
         super().__init__()
         self.canvas=canvas
-        canvas.addDataSelectionListener(self)
+        canvas.dataSelected.connect(self.OnDataSelected)
         self.__initlayout()
         self.__flg=False
         self.__dim=dim

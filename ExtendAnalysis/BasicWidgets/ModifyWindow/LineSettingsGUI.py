@@ -8,7 +8,7 @@ class LineColorAdjustBox(ColorSelection):
     def __init__(self,canvas):
         super().__init__()
         self.canvas=canvas
-        canvas.addDataSelectionListener(self)
+        canvas.dataSelected.connect(self.OnDataSelected)
         self.colorChanged.connect(self.__changed)
     def OnClicked(self):
         indexes=self.canvas.getSelectedIndexes(1)
@@ -52,7 +52,7 @@ class LineStyleAdjustBox(QGroupBox):
     def __init__(self,canvas):
         super().__init__("Line")
         self.canvas=canvas
-        canvas.addDataSelectionListener(self)
+        canvas.dataSelected.connect(self.OnDataSelected)
 
         layout=QGridLayout()
         self.__combo=QComboBox()
@@ -78,7 +78,7 @@ class LineStyleAdjustBox(QGroupBox):
         indexes=self.canvas.getSelectedIndexes(1)
         if len(indexes)==0:
             return
-        self.canvas.setLineWidth(self.__spin1.value(),indexes)
+        self.canvas.setDataWidth(self.__spin1.value(),indexes)
     def OnDataSelected(self):
         indexes=self.canvas.getSelectedIndexes(1)
         if len(indexes)==0:
@@ -94,7 +94,7 @@ class MarkerStyleAdjustBox(QGroupBox):
         self.canvas=canvas
         self.__list=list(canvas.getMarkerList().values())
         self.__fillist=canvas.getMarkerFillingList()
-        canvas.addDataSelectionListener(self)
+        canvas.dataSelected.connect(self.OnDataSelected)
         self.__initlayout()
 
     def __initlayout(self):
