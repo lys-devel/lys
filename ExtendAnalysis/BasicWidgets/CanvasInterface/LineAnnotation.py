@@ -8,6 +8,8 @@ class LineAnnotationCanvasBase(object):
     def addLine(self,pos=None,axis=Axis.BottomLeft,appearance=None,id=None):
         line=self._makeLineAnnot(pos,axis)
         return self.addAnnotation('line','line',line,appearance=appearance,id=id)
+    def getAnnotLinePosition(self, annot):
+        return self._getLinePosition(annot.obj)
     def SaveAsDictionary(self,dictionary,path):
         #super().SaveAsDictionary(dictionary,path)
         dic={}

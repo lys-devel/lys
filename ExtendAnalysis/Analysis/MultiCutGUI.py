@@ -1,3 +1,4 @@
+import copy
 from ExtendAnalysis import *
 from .MultiCut import *
 from .filtersGUI import *
@@ -14,10 +15,14 @@ class MultiCut(AnalysisWindow):
     def __initlayout__(self):
         self._pre = PrefilterTab(self._loadRegion)
         self._cut = CutTab()
+        self._ani = AnimationTab(self._cut.getExecutorList())
         self._pre.filterApplied.connect(self._cut._setWave)
+        self._pre.filterApplied.connect(self._ani._setWave)
+        self._ani.updated.connect(self._cut.update)
         tab = QTabWidget()
         tab.addTab(self._pre,"Prefilter")
         tab.addTab(self._cut,"Cut")
+        tab.addTab(self._ani,"Animation")
 
         self.__file=QLineEdit()
         btn=QPushButton("Load",clicked=self.load)
@@ -60,17 +65,82 @@ class MultiCut(AnalysisWindow):
             obj.setRegion(axes[1],(p1[1],p2[1]))
 
 class PrefilterTab(QWidget):
+    class _chunkDialog(QDialog):
+        class customSpinBox(QSpinBox):
+            def __init__(self,value):
+                super().__init__()
+                self.setRange(-1,value)
+                self.val = value
+                self.vallist = self.make_divisors(value)
+                self.vallist.insert(0,-1)
+                self.setValue(value)
+            def stepBy(self, steps):
+                pos = self.vallist.index(self.value()) + steps
+                if pos < 0:
+                    pos = 0
+                if pos > len(self.vallist):
+                    pos = (self.vallist) - 1
+                self.setValue(self.vallist[pos])
+            def make_divisors(self,n):
+                divisors = []
+                for i in range(1, int(n**0.5)+1):
+                    if n % i == 0:
+                        divisors.append(i)
+                        if i != n // i:
+                            divisors.append(n//i)
+                divisors.sort()
+                return divisors
+        def __init__(self, size):
+            super().__init__(None)
+
+            self.btn1 = QRadioButton("Auto")
+            self.btn2 = QRadioButton("Custom")
+            self.btn2.setChecked(True)
+
+            self.ok = QPushButton("O K",clicked = self._ok)
+            self.cancel = QPushButton("CANCEL", clicked = self._cancel)
+            h1 = QHBoxLayout()
+            h1.addWidget(self.ok)
+            h1.addWidget(self.cancel)
+
+            self.chunks = [self.customSpinBox(i) for i in size]
+            h2 = QHBoxLayout()
+            for c in self.chunks:
+                h2.addWidget(c)
+
+            layout = QVBoxLayout()
+            layout.addWidget(self.btn1)
+            layout.addWidget(self.btn2)
+            layout.addLayout(h2)
+            layout.addLayout(h1)
+            self.setLayout(layout)
+        def _ok(self):
+            self.ok = True
+            self.close()
+        def _cancel(self):
+            self.ok = False
+            self.close()
+        def getResult(self):
+            if self.btn1.isChecked():
+                return self.ok, "auto"
+            else:
+                return self.ok, tuple([c.value() for c in self.chunks])
+
     filterApplied = pyqtSignal(object)
     def __init__(self,loader):
         super().__init__()
         self.__initlayout__(loader)
         self.wave=None
+        self.__chunk = "auto"
     def __initlayout__(self,loader):
         self.layout=QVBoxLayout()
 
         self.filt = FiltersGUI(regionLoader=loader)
         self.layout.addWidget(self.filt)
-        self.layout.addWidget(QPushButton("Apply filters",clicked=self._click))
+        h1 = QHBoxLayout()
+        h1.addWidget(QPushButton("Rechunk",clicked=self._chunk))
+        h1.addWidget(QPushButton("Apply filters",clicked=self._click))
+        self.layout.addLayout(h1)
 
         self.setLayout(self.layout)
         self.adjustSize()
@@ -79,11 +149,19 @@ class PrefilterTab(QWidget):
         self.filt.setDimension(self.wave.data.ndim)
     def _click(self):
         f=self.filt.GetFilters()
-        waves=DaskWave(self.wave)
+        waves=DaskWave(self.wave,chunks=self.__chunk)
         f.execute(waves)
         w = waves.toWave()
         dw = DaskWave(w)
         self.filterApplied.emit(dw)
+    def _chunk(self):
+        if self.wave is None:
+            return
+        d = self._chunkDialog(self.wave.data.shape)
+        d.exec_()
+        ok, res = d.getResult()
+        if ok:
+            self.__chunk = res
 
 class ControlledObjectsModel(QAbstractItemModel):
     def __init__(self,obj):
@@ -130,6 +208,7 @@ class ExecutorModel(ControlledObjectsModel):
                 return QBrush(QColor("gray"))
         return super().data(index,role)
 class controlledWavesGUI(QTreeView):
+    updated = pyqtSignal()
     def __init__(self,obj,dispfunc,appendfunc):
         super().__init__()
         self.obj=obj
@@ -144,6 +223,7 @@ class controlledWavesGUI(QTreeView):
         menu.addAction(QAction("Display",self,triggered=self._display))
         menu.addAction(QAction("Append",self,triggered=self._append))
         menu.addAction(QAction("Remove",self,triggered=self._remove))
+        menu.addAction(QAction("PostProcess",self,triggered=self._post))
         menu.exec_(QCursor.pos())
     def _display(self):
         i = self.selectionModel().selectedIndexes()[0].row()
@@ -154,6 +234,18 @@ class controlledWavesGUI(QTreeView):
     def _remove(self):
         i = self.selectionModel().selectedIndexes()[0].row()
         self.obj.removeAt(i)
+    def _post(self):
+        i = self.selectionModel().selectedIndexes()[0].row()
+        w = self.obj[i][0]
+        d = FiltersDialog(w.data.ndim)
+        if 'MultiCut_PostProcess' in w.note:
+            d.setFilter(Filters.fromString(w.note['MultiCut_PostProcess']))
+        d.exec_()
+        ok, filt = d.getResult()
+        if ok:
+            w.note['MultiCut_PostProcess']=str(filt)
+        self.updated.emit()
+
 class controlledGraphsGUI(QTreeView):
     def __init__(self,obj):
         super().__init__()
@@ -179,10 +271,14 @@ class controlledExecutorsGUI(QTreeView):
         self.customContextMenuRequested.connect(self.buildContextMenu)
     def buildContextMenu(self):
         menu = QMenu(self)
+        menu.addAction(QAction("Setting",self,triggered=self._setting))
         menu.addAction(QAction("Enable",self,triggered=self._enable))
         menu.addAction(QAction("Disable",self,triggered=self._disable))
         menu.addAction(QAction("Remove",self,triggered=self._remove))
         menu.exec_(QCursor.pos())
+    def _setting(self):
+        i = self.selectionModel().selectedIndexes()[0].row()
+        self.obj.setting(i)
     def _remove(self):
         i = self.selectionModel().selectedIndexes()[0].row()
         self.obj.removeAt(i)
@@ -261,6 +357,7 @@ class CutTab(QWidget):
         self.__exe.removed.connect(self._exechanged)
     def __initlayout__(self):
         self.wlist=controlledWavesGUI(self.waves,self.display,self.append)
+        self.wlist.updated.connect(self.updateAll)
         self.glist=controlledGraphsGUI(self.graphs)
         disp=QPushButton("Display",clicked=self.display)
         make=QPushButton("Make",clicked=self.make)
@@ -274,17 +371,17 @@ class CutTab(QWidget):
         self._make=QVBoxLayout()
         self._make.addLayout(hbox2)
         self._make.addLayout(hbox)
-
-        self.layout=QVBoxLayout()
         make=QGroupBox("Waves & Graphs")
         make.setLayout(self._make)
+
         grp=self.__interactive()
+
+        self.layout=QVBoxLayout()
         self.layout.addWidget(make)
         self.layout.addWidget(grp)
         self.layout.addStretch()
 
         self.setLayout(self.layout)
-        self.adjustSize()
     def __interactive(self):
         lx=QPushButton("Line (X)",clicked=self._linex)
         ly=QPushButton("Line (Y)",clicked=self._liney)
@@ -314,7 +411,7 @@ class CutTab(QWidget):
     def _setWave(self,wave):
         old = self.wave
         self.wave=wave
-        print("Wave set. shape = ", self.wave.data.shape, ", dtype = ",self.wave.data.dtype)
+        print("Wave set. shape = ", self.wave.data.shape, ", dtype = ",self.wave.data.dtype, ", chunksize - ", self.wave.data.chunksize)
         if old is not None:
             if old.data.shape == wave.data.shape:
                 self.updateAll()
@@ -330,6 +427,8 @@ class CutTab(QWidget):
     def _exechanged(self):
         list=self.__exe.getFreeLines()
         self.ax.updateLines(list)
+    def getExecutorList(self):
+        return self.__exe
     def findAxisFromGraph(self, graph):
         return self.graphs.getAxes(graph)
     def make(self,axes=None):
@@ -355,7 +454,7 @@ class CutTab(QWidget):
         else:
             w=wave
         if w is not None:
-            g=display(w)
+            g=display(w,lib="pyqtgraph")
             self.graphs.append(g,ax)
             g.closed.connect(self.graphs.remove)
     def append(self,wave,axes):
@@ -367,6 +466,7 @@ class CutTab(QWidget):
                 wav=self.__exe.makeWave(self.wave,axs)
                 w.axes=wav.axes
                 w.data=wav.data
+                self._postProcess(w)
             except:
                 pass
     def update(self,index,all=False):
@@ -377,6 +477,7 @@ class CutTab(QWidget):
                         wav=self.__exe.makeWave(self.wave,axs)
                         w.axes=wav.axes
                         w.data=wav.data
+                        self._postProcess(w)
                     except:
                         pass
             else:
@@ -385,8 +486,14 @@ class CutTab(QWidget):
                         wav=self.__exe.makeWave(self.wave,axs)
                         w.axes=wav.axes
                         w.data=wav.data
+                        self._postProcess(w)
                     except:
                         pass
+
+    def _postProcess(self,w):
+        if "MultiCut_PostProcess" in w.note:
+            filt = Filters.fromString(w.note["MultiCut_PostProcess"])
+            filt.execute(w)
     def _point(self):
         g=Graph.active()
         id=g.canvas.addCross([0,0])
@@ -431,6 +538,135 @@ class CutTab(QWidget):
         e=PointExecutor(self.graphs.getAxes(g)[0])
         g.canvas.addCallback(id,e.callback)
         self.__exe.append(e,g)
+
+class AnimationTab(QWidget):
+    updated=pyqtSignal(int)
+    class _axisWidget(QWidget):
+        def __init__(self, dim):
+            super().__init__()
+            self.__initlayout(dim)
+        def __initlayout(self, dim):
+            self.grp1=QButtonGroup(self)
+            self._btn1=[QRadioButton(str(d)) for d in range(dim)]
+            layout = QHBoxLayout()
+            layout.addWidget(QLabel("Axis"))
+            for i, b in enumerate(self._btn1):
+                self.grp1.addButton(b)
+            for i, b in enumerate(self._btn1):
+                layout.addWidget(b)
+            layout.addStretch()
+            self.setLayout(layout)
+        def getAxis(self):
+            return self._btn1.index(self.grp1.checkedButton())
+    def __init__(self, executor):
+        super().__init__()
+        self.__initlayout()
+        self.__exe=executor
+    def __initlayout(self):
+        self.layout = QVBoxLayout()
+
+        self.__axis = self._axisWidget(2)
+
+        btn = QPushButton("Create animation",clicked = self.__animation)
+        self.__filename=QLineEdit()
+        hbox1 = QHBoxLayout()
+        hbox1.addWidget(QLabel("Filename"))
+        hbox1.addWidget(self.__filename)
+        self.layout.addWidget(self.__axis)
+        self.layout.addLayout(hbox1)
+        self.layout.addLayout(self.__makeTimeOptionLayout())
+        self.layout.addLayout(self.__makeScaleOptionLayout())
+        self.layout.addStretch()
+        self.layout.addWidget(btn)
+        self.setLayout(self.layout)
+    def __makeTimeOptionLayout(self):
+        self.__useTime=QCheckBox('Draw time')
+        self.__timeoffset=QDoubleSpinBox()
+        self.__timeoffset.setRange(float('-inf'),float('inf'))
+        self.__timeunit=QComboBox()
+        self.__timeunit.addItems(['','ps','ns'])
+        hbox1 = QHBoxLayout()
+        hbox1.addWidget(self.__useTime)
+        hbox1.addWidget(self.__timeoffset)
+        hbox1.addWidget(self.__timeunit)
+        return hbox1
+    def __makeScaleOptionLayout(self):
+        self.__usescale=QCheckBox('Draw scale')
+        self.__scalesize=QDoubleSpinBox()
+        self.__scalesize.setValue(1)
+        self.__scalesize.setRange(0,float('inf'))
+        hbox2 = QHBoxLayout()
+        hbox2.addWidget(self.__usescale)
+        hbox2.addWidget(self.__scalesize)
+        return hbox2
+    def _setWave(self,wave):
+        self.wave=wave
+        self.layout.removeWidget(self.__axis)
+        self.__axis.deleteLater()
+        self.__axis = self._axisWidget(wave.data.ndim)
+        self.layout.insertWidget(0,self.__axis)
+    def __loadCanvasSettings(self):
+        import copy
+        if Graph.active() is None:
+            return None, None
+        c=Graph.active().canvas
+        dic={}
+        for t in ['AxisSetting','TickSetting','AxisRange','LabelSetting','TickLabelSetting','Size','Margin']:
+            dic[t]=c.SaveSetting(t)
+        wd=c.getWaveData()
+        return dic, wd
+    def __animation(self):
+        logging.info('[Animation] Analysis started.')
+        dic, data = self.__loadCanvasSettings()
+        if dic is None:
+            logging.warning('[Animation] Prepare graph for reference.')
+            return
+        axis = self.wave.axes[self.__axis.getAxis()]
+        self.__pexe = PointExecutor((self.__axis.getAxis(),))
+        self.__exe.saveEnabledState()
+        self.__exe.append(self.__pexe)
+        params={}
+        if self.__useTime.isChecked():
+            params['time']={"unit":self.__timeunit.currentText(), "offset":self.__timeoffset.value()}
+        if self.__usescale.isChecked():
+            params['scale']={"size":self.__scalesize.value()}
+        file = self.__filename.text()+".mp4"
+        if file is None:
+            file = "Animation.mp4"
+        self._makeAnime(file, dic, data, axis, params, self.__pexe)
+    def _makeAnime(self, file, dic, data, axis, params, exe):
+        import copy
+        c=ExtendCanvas()
+        for key,value in dic.items():
+            c.LoadSetting(key,value)
+        for d in data:
+            c.Append(d.wave, appearance = copy.deepcopy(d.appearance), offset = copy.deepcopy(d.offset))
+        ani=animation.FuncAnimation(c.fig, _frame, fargs=(c, axis, params, exe), frames=len(axis), interval=30, repeat = False, init_func=_init)
+        ani.save(file,writer='ffmpeg')
+        self.__exe.remove(self.__pexe)
+        self.__exe.restoreEnabledState()
+        QMessageBox.information(None, "Info", "Animation is saved to "+file, QMessageBox.Yes)
+        logging.info("Animation is saved to "+file)
+        return file
+def _init():
+    pass
+def _frame(i, c, axis, params, exe):
+    exe.setPosition(axis[i])
+    if "time" in params:
+        _drawTime(c,axis[i],**params["time"])
+def _drawTime(c,data=None,unit="",offset=0):
+    c.clearAnnotations('text')
+    t='{:.10g}'.format(round(data+float(offset),1))+" "+unit
+    c.addText(t,x=0.1,y=0.1)
+def _drawScale(c,size):
+    xr=c.getAxisRange('Bottom')
+    yr=c.getAxisRange('Left')
+    x=xr[0]+(xr[1]-xr[0])*0.95
+    y=yr[1]+(yr[0]-yr[1])*0.9
+    id=c.addLine(([x-size,y],[x,y]))
+    c.setAnnotLineColor('white',id)
+_segtmp=None
+
 
 def create():
     win=MultiCut()

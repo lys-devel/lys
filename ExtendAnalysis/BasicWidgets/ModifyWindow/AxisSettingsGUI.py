@@ -54,7 +54,7 @@ class AxisRangeAdjustBox(QGroupBox):
         self.__spin1=QDoubleSpinBox()
         self.__spin1.setDecimals(5)
         self.__spin1.valueChanged.connect(self.__spinChanged)
-        self.__spin1.setRange(-10000,10000)
+        self.__spin1.setRange(-np.inf,np.inf)
 
         layout_h1.addWidget(QLabel('Min'))
         layout_h1.addWidget(self.__spin1)
@@ -63,7 +63,7 @@ class AxisRangeAdjustBox(QGroupBox):
         self.__spin2=QDoubleSpinBox()
         self.__spin2.setDecimals(5)
         self.__spin2.valueChanged.connect(self.__spinChanged)
-        self.__spin2.setRange(-10000,10000)
+        self.__spin2.setRange(-np.inf,np.inf)
         layout_h2.addWidget(QLabel('Max'))
         layout_h2.addWidget(self.__spin2)
 

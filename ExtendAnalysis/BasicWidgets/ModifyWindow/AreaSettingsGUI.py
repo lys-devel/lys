@@ -110,8 +110,14 @@ class ResizeBox(QGroupBox):
             self.cw.setCurrentIndex(lis1.index(param[0]))
             self.spin1.setValue(param[1])
             lis2=self.canvas.axisList()
-            self.combo2.setCurrentIndex(lis2.index(param[2]))
-            self.combo3.setCurrentIndex(lis2.index(param[3]))
+            try:
+                self.combo2.setCurrentIndex(lis2.index(param[2]))
+            except:
+                self.combo2.setCurrentIndex(lis2.index('Left'))
+            try:
+                self.combo3.setCurrentIndex(lis2.index(param[3]))
+            except:
+                self.combo3.setCurrentIndex(lis2.index('Bottom'))
             self._setLook(param[0])
             self.__loadflg=False
         def __ModeChanged(self):
