@@ -2,6 +2,8 @@
 
 import sys, os
 
+import autopep8
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -186,7 +188,7 @@ class _PlainTextEdit(QPlainTextEdit):
     def __init__(self,parent):
         super().__init__(parent)
         self.metrics=self.fontMetrics()
-        self.setTabStopWidth(self.metrics.width(" ")*12)
+        self.setTabStopWidth(self.metrics.width(" ")*6)
         self.setViewportMargins(self.metrics.width("8")*8, 0, 0, 0)
         self.numberArea = QWidget(self)
         self.numberArea.setGeometry(0,0,self.fontMetrics().width("8")*8,self.height())
@@ -245,7 +247,7 @@ class PythonEditor(ExtendMdiSubWindow):
         self.highlighter=PythonHighlighter(self.widget.document())
         self.file=os.path.abspath(file)
         with open(self.file, 'r') as data:
-            self.widget.setPlainText(data.read())
+            self.widget.setPlainText(autopep8.fix_code(data.read()).replace("    ","\t"))
         self.setWidget(self.widget)
         self.resize(600,600)
         PythonEditor._Add(self)
@@ -255,7 +257,7 @@ class PythonEditor(ExtendMdiSubWindow):
                 self.save()
     def save(self):
         with open(self.file, 'w') as data:
-            data.write(self.widget.toPlainText())
+            data.write(autopep8.fix_code(self.widget.toPlainText()).replace("    ","\t"))
     def closeEvent(self,event):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
