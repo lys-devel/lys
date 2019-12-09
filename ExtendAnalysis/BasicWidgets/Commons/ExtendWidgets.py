@@ -10,47 +10,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 
-class ScientificSpinBox(QDoubleSpinBox):
-    def __init__(self):
-        super().__init__()
-        self.setRange(-np.inf, np.inf)
-        self.setDecimals(16)
-        self.setAccelerated(True)
-
-    def textFromValue(self, value):
-        return "{:.6g}".format(value)
-
-    def valueFromText(self, text):
-        return float(text)
-
-    def validate(self, text, pos):
-        try:
-            float(text)
-        except:
-            try:
-                float(text.replace("e", "").replace("-", ""))
-            except:
-                return (QValidator.Invalid, text, pos)
-            else:
-                return (QValidator.Intermediate, text, pos)
-        else:
-            return (QValidator.Acceptable, text, pos)
-
-    def stepBy(self, steps):
-        v = self.value()
-        if v == 0:
-            n = 1
-        else:
-            l = np.log10(abs(v))
-            p = math.floor(l)
-            if l == p and np.sign(steps) != np.sign(v):
-                p = p - 1
-            n = 10 ** p
-            if l == 0:
-                n = 1
-        self.setValue(v + steps * n)
-
-
 class ExtendFileSystemModel(QSortFilterProxyModel):
     def __init__(self, model=QFileSystemModel()):
         super().__init__()
