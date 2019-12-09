@@ -72,8 +72,6 @@ class DataSelectionBox(QTreeView):
         self.selectionModel().selectionChanged.connect(self.OnSelected)
 
     def OnDataSelected(self):
-        if self.flg:
-            return
         indexes = self.canvas.getSelectedIndexes(self.__dim)
         list = self.canvas.getWaveData(self.__dim)
         selm = self.selectionModel()
@@ -92,6 +90,7 @@ class DataSelectionBox(QTreeView):
                 selm.select(index2, QItemSelectionModel.Deselect)
 
     def _loadstate(self):
+        self.flg = True
         list = self.canvas.getWaveData(self.__dim)
         self.__model.clear()
         i = 1
@@ -101,8 +100,11 @@ class DataSelectionBox(QTreeView):
             self.__model.setItem(len(list) - i, 2, QStandardItem(str(l.id)))
             i += 1
         self.OnDataSelected()
+        self.flg = False
 
     def OnSelected(self):
+        if self.flg:
+            return
         self.flg = True
         indexes = self.selectedIndexes()
         ids = []
@@ -280,6 +282,7 @@ class OffsetAdjustBox(QWidget):
         self.__flg = True
         indexes = self.canvas.getSelectedIndexes(self.__dim)
         if len(indexes) == 0:
+            self.__flg = False
             return
         data = self.canvas.getOffset(indexes)[0]
         self.__spin1.setValue(data[0])
