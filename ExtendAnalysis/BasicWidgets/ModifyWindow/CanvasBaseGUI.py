@@ -267,23 +267,23 @@ class OffsetAdjustBox(QWidget):
     def __dataChanged(self):
         if not self.__flg:
             indexes = self.canvas.getSelectedIndexes(self.__dim)
+            self.__flg = True
             self.canvas.setOffset((self.__spin1.value(), self.__spin2.value(), self.__spin3.value(), self.__spin4.value()), indexes)
+            self.__flg = False
 
     def OnDataSelected(self):
         self.__loadstate()
 
     def __loadstate(self):
+        if self.__flg:
+            return
         self.__flg = True
         indexes = self.canvas.getSelectedIndexes(self.__dim)
         if len(indexes) == 0:
             return
         data = self.canvas.getOffset(indexes)[0]
         self.__spin1.setValue(data[0])
-        self.__spin1.setRange(-np.inf, np.inf)
         self.__spin2.setValue(data[1])
-        self.__spin2.setRange(-np.inf, np.inf)
         self.__spin3.setValue(data[2])
-        self.__spin3.setRange(-np.inf, np.inf)
         self.__spin4.setValue(data[3])
-        self.__spin4.setRange(-np.inf, np.inf)
         self.__flg = False

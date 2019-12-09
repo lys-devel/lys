@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from .ColorWidgets import *
+from ExtendAnalysis.BasicWidgets.Commons.ScientificSpinBox import *
 
 
 class AxisSelectionWidget(QComboBox):
@@ -47,7 +48,7 @@ class AxisRangeAdjustBox(QGroupBox):
         self.__initlayout()
         self.__loadstate(canvas)
         self.canvas.addAxisSelectedListener(self)
-        self.canvas.addAxisRangeChangeListener(self.OnAxisRangeChanged)
+        self.canvas.axisRangeChanged.connect(self.OnAxisRangeChanged)
 
     def __initlayout(self):
         layout = QVBoxLayout()
@@ -245,7 +246,7 @@ class TickAdjustBox(QGroupBox):
 
         layout_h = QHBoxLayout()
         self.__all = QCheckBox('All axes')
-        self.__all.setChecked(True)
+        self.__all.setChecked(False)
         layout_h.addWidget(self.__all)
 
         self.__mir = QCheckBox('Mirror')
@@ -263,7 +264,7 @@ class TickAdjustBox(QGroupBox):
         gl.addWidget(self.__mode, 0, 1)
 
         gl.addWidget(QLabel('Interval'), 1, 0)
-        self.__spin1 = QDoubleSpinBox()
+        self.__spin1 = ScientificSpinBox()
         self.__spin1.valueChanged.connect(self.__chnum)
         self.__spin1.setRange(0, np.inf)
         gl.addWidget(self.__spin1, 1, 1)
@@ -285,7 +286,7 @@ class TickAdjustBox(QGroupBox):
         gl.addWidget(self.__minor, 0, 2)
 
         gl.addWidget(QLabel('Interval'), 1, 2)
-        self.__spin4 = QDoubleSpinBox()
+        self.__spin4 = ScientificSpinBox()
         self.__spin4.valueChanged.connect(self.__chnum2)
         gl.addWidget(self.__spin4, 1, 3)
 

@@ -182,12 +182,12 @@ class PreviewWindow(ExtendMdiSubWindow):
 
     def __initcanvas(self):
         self.left = ExtendCanvas()
-        self.left.addAxisRangeChangeListener(self.axis_l)
+        self.left.axisRangeChanged.connect(self.axis_l)
         self.main = ExtendCanvas()
-        self.main.addAxisRangeChangeListener(self.axis_c)
+        self.main.axisRangeChanged.connect(self.axis_c)
         self.main.addAnchorChangedListener(self.OnAnchorChanged)
         self.bottom = ExtendCanvas()
-        self.bottom.addAxisRangeChangeListener(self.axis_b)
+        self.bottom.axisRangeChanged.connect(self.axis_b)
         self.axisflg = False
 
     def __initlayout(self):
