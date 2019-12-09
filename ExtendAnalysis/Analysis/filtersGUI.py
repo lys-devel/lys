@@ -621,6 +621,65 @@ class FourierSetting(FilterSettingBase):
         return obj
 
 
+class SymmetricOperationSetting(FilterGroupSetting):
+    @classmethod
+    def _filterList(cls):
+        d = {
+            'Reverse': ReverseSetting,
+            'Roll': RollSetting,
+        }
+        return d
+
+
+class ReverseSetting(FilterSettingBase):
+    def __init__(self, parent, dim, loader=None):
+        super().__init__(parent, dim, loader)
+        self._axes = AxisCheckLayout(dim)
+        self.setLayout(self._axes)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, ReverseFilter):
+            return True
+
+    def GetFilter(self):
+        return ReverseFilter(self._axes.GetChecked())
+
+    def parseFromFilter(self, f):
+        obj = ReverseSetting(None, self.dim, self.loader)
+        obj._axes.SetChecked(f.getAxes())
+        return obj
+
+
+class RollSetting(FilterSettingBase):
+    def __init__(self, parent, dim, loader=None):
+        super().__init__(parent, dim, loader)
+        layout = QHBoxLayout()
+        self._combo = QComboBox()
+        self._combo.addItem("1/2")
+        self._combo.addItem("1/4")
+        self._combo.addItem("-1/4")
+        self._axes = AxisCheckLayout(dim)
+        layout.addWidget(self._combo)
+        layout.addLayout(self._axes)
+        self.setLayout(layout)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, RollFilter):
+            return True
+
+    def GetFilter(self):
+        return RollFilter(self._combo.currentText(), self._axes.GetChecked())
+
+    def parseFromFilter(self, f):
+        obj = RollSetting(None, self.dim, self.loader)
+        type, axes = f.getParams()
+        obj._axes.SetChecked(axes)
+        obj._combo.setCurrentText(type)
+        return obj
+
+
 class SimpleMathSetting(FilterGroupSetting):
     @classmethod
     def _filterList(cls):
@@ -982,6 +1041,7 @@ filterGroups = {
     'Frequency Filter': FrequencySetting,
     'Differential Filter': DifferentialSetting,
     'Fourier Filter': FourierSetting,
+    'Symmetric Operations': SymmetricOperationSetting,
     'Simple Math': SimpleMathSetting,
     'Interpolation (Only for post process)': InterpSetting,
     'Normalization': NormalizeSetting
