@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import sys, os
+import sys, os, glob
 import rlcompleter
 from importlib import import_module, reload
 from pathlib import Path
@@ -367,8 +367,10 @@ class CommandWindow(QWidget):
         cd=QAction('Set Current Directory',self,triggered=self.__setCurrentDirectory)
         ld=QAction('Load',self,triggered=self.__load)
         op=QAction('Open', self, triggered=self.__openpy)
+        show=QAction('Show all graphs', self, triggered=self.__showgraphs)
+        save=QAction('Save all graphs', self, triggered=self.__savegraphs)
         menu={}
-        menu['dir']=[cd,tree.Action_NewDirectory(),tree.Action_Delete()]
+        menu['dir']=[cd,tree.Action_NewDirectory(),tree.Action_Delete(), show, save]
         menu['mix']=[ld,tree.Action_Delete()]
         menu['other']=[ld,tree.Action_Delete(),tree.Action_Print()]
         menu['.npz']=[tree.Action_Display(),tree.Action_Append(),tree.Action_Preview(),tree.Action_Edit(),ld,tree.Action_Print(),tree.Action_Delete()]
@@ -393,6 +395,20 @@ class CommandWindow(QWidget):
     def __openpy(self):
         for p in self.view.selectedPaths():
             PythonEditor(p)
+    def __showgraphs(self):
+        p = self.view.selectedPaths()[0]
+        for f in glob.glob(p+"/*.grf"):
+            Graph(f)
+    def __savegraphs(self):
+        p = self.view.selectedPaths()[0]
+        i = 0
+        while(True):
+            g = Graph.active(i)
+            if g is None:
+                return
+            else:
+                g.Save(p+"/graph"+str(i)+".grf")
+            i += 1
     def __work(self,path):
         name=self.view2.selectedPaths()[0].replace(AutoSavedWindow.folder_prefix,"")
         AutoSavedWindow.SwitchTo(name)
