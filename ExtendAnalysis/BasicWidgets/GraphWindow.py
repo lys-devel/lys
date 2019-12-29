@@ -79,6 +79,7 @@ class Graph(AutoSavedWindow):
         if file is not None:
             self._load(file)
         self.canvas.keyPressed.connect(self.keyPress)
+        self.closed.connect(self.canvas.emitCloseEvent)
         self.resized.connect(self.canvas.parentResized)
         self.canvas.setSaveFunction(self.Save)
         if file is not None:
@@ -133,6 +134,36 @@ def display(w, lib=None):
     g.Append(w)
     return g
 
+class MultipleGrid(ExtendMdiSubWindow):
+    def __init__(self):
+        super().__init__()
+        self.__initlayout()
+        self.resize(400,400)
+    def __initlayout(self):
+        self.layout = QGridLayout()
+        w=QWidget()
+        w.setLayout(self.layout)
+        self.setWidget(w)
+    def Append(self, widget, x, y, w, h):
+        for i in range(x,x+w):
+            for j in range(y,y+h):
+                wid = self.itemAtPosition(i,j)
+                if wid is not None:
+                    self.layout.removeWidget(wid)
+                    wid.deleteLater()
+                    if isinstance(wid, BasicEventCanvasBase):
+                        wid.emitCloseEvent()
+        self.layout.addWidget(widget, x, y, w, h)
+    def setSize(self, size):
+        for s in range(size):
+            self.layout.setColumnStretch(s,1)
+            self.layout.setRowStretch(s,1)
+    def itemAtPosition(self, i, j):
+        item = self.layout.itemAtPosition(i,j)
+        if item is not None:
+            return item.widget()
+        else:
+            return None
 
 class PreviewWindow(ExtendMdiSubWindow):
     instance = None
