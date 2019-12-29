@@ -26,6 +26,12 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
             norm=colors.Normalize(vmin=m-v,vmax=m+v)
             d.obj.set_norm(norm)
         self.draw()
+    def keyPressEvent(self, e):
+        super().keyPressEvent(e)
+        if e.key() == Qt.Key_A:
+            ids = [i.id for i in self.getImages()]
+            self.autoColorRange(ids)
+
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getImages()
@@ -84,14 +90,7 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
             res.append(isinstance(d.obj.norm,colors.LogNorm))
         return res
 
-class ImagePlaneAdjustableCanvas(ImageColorAdjustableCanvas):
-    def setIndex(self,indexes,zindex):
-        data=self.getDataFromIndexes(2,indexes)[0]
-        data.zindex=zindex
-        self.OnWaveModified(data.wave)
-        self.setSelectedIndexes(2,data.id)
-
-class ImageAnimationCanvas(ImagePlaneAdjustableCanvas):
+class ImageAnimationCanvas(ImageColorAdjustableCanvas):
     def addImage(self):
         for i in range(1):
             w=Wave()

@@ -19,6 +19,11 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
         data=self.getDataFromIndexes(2,indexes)
         for d in data:
             d.obj.setImage(d.wave.data,autoLevels=True)
+    def keyPressEvent(self, e):
+        super().keyPressEvent(e)
+        if e.key() == Qt.Key_A:
+            ids = [i.id for i in self.getImages()]
+            self.autoColorRange(ids)
     def saveAppearance(self):
         super().saveAppearance()
         data=self.getImages()
