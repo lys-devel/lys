@@ -596,6 +596,7 @@ class FourierSetting(FilterSettingBase):
         self._process.addItem('absolute', 'absolute')
         self._process.addItem('real', 'real')
         self._process.addItem('imag', 'imag')
+        self._process.addItem('phase', 'phase')
         self._axes = AxisCheckLayout(dim)
         self._layout.addWidget(QLabel('Direction'))
         self._layout.addWidget(self._combo)

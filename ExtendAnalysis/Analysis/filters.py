@@ -9,7 +9,7 @@ import cv2
 import _pickle as cPickle
 
 from dask_image import ndfilters as dfilters
-from dask.array import apply_along_axis, einsum, fft, absolute, real, imag, flip, roll
+from dask.array import apply_along_axis, einsum, fft, absolute, real, imag, flip, roll, angle
 
 from ExtendAnalysis import Wave, tasks, task
 from .MultiCut import DaskWave
@@ -302,6 +302,8 @@ class FourierFilter(FilterInterface):
                 func = np.real
             elif self.process == "imag":
                 func = np.imag
+            elif self.process == "phase":
+                func = np.angle
             if self.type == "forward":
                 wave.data = func(np.fft.fftn(wave.data, axes=self.axes))
             else:
@@ -313,6 +315,8 @@ class FourierFilter(FilterInterface):
                 func = real
             elif self.process == "imag":
                 func = imag
+            elif self.process == "phase":
+                func = angle
             if self.type == "forward":
                 wave.data = func(fft.fftn(wave.data, axes=self.axes))
             else:
