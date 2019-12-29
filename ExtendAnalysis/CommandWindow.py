@@ -295,6 +295,8 @@ class CommandWindow(QWidget):
         print('Welcome to Analysis program lys. Loading .py files...')
         m=PluginManager(home(),self.__shell)
         m.start()
+    def clearLog(self):
+        self.output.clear()
     def saveData(self):
         self.__clog.data=self.output.toPlainText()
         self.__clog.Save()
