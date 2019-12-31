@@ -172,11 +172,11 @@ class SpreadSheet(object):
 
     def Resize(self, size=(300, 300)):
         data_old = np.array(self._data)
-        size_old = self.size
+        size_old = np.array(self.size)
         self.__initDataSize(size)
         for i in range(min(size[0], size_old[0])):
             for j in range(min(size[1], size_old[1])):
-                self._data[i][j] = data_old[i][j]
+                self._data[j][i] = data_old[j][i]
 
     def _getWave(self, index):
         return self.waves[index]
@@ -262,6 +262,7 @@ class _ExtendTableTable(QTableView):
 
     def clear(self):
         self._model.clear()
+        self.sheet = self._model.sheet
 
     def Append(self, data, extract=True, pos=None):
         index = self.sheet.Append(data)
