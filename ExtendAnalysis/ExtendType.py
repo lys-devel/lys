@@ -305,7 +305,7 @@ class Wave(AutoSaved):
                 self.axes[1]=tmp['y']
                 self.axes[2]=tmp['z']
         def _save(self,file):
-            np.savez(file, data=self.data, axes=self.axes,note=self.note, allow_pickle = True)
+            np.savez_compressed(file, data=self.data, axes=self.axes,note=self.note, allow_pickle = True)
         def _vallist(self):
             return ['data','x','y','z','note','axes']
         def __setattr__(self,key,value):
