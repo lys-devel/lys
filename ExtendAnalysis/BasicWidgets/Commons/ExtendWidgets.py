@@ -148,6 +148,14 @@ class _FileSystemViewBase(QWidget):
             w = Wave(p)
             g.Append(w)
 
+    def Action_MultiCut(self):
+        return QAction('MultiCut', self, triggered=self.__multicut)
+
+    def __multicut(self):
+        from ExtendAnalysis import MultiCut
+        w = Wave(self.selectedPaths()[0])
+        MultiCut(w)
+
     def Action_Append(self):
         return QAction('Append', self, triggered=self.__append)
 

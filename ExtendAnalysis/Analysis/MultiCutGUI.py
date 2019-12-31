@@ -559,13 +559,33 @@ class CutTab(QWidget):
         return (np.min(rows), np.min(columns)), (np.max(rows) - np.min(rows) + 1, np.max(columns)-np.min(columns)+1)
 
     def typical(self):
+        if self.wave.data.ndim == 2:
+            self.typical2d()
         if self.wave.data.ndim == 3:
             self.typical3d()
+        if self.wave.data.ndim == 4:
+            self.typical4d()
+        if self.wave.data.ndim == 5:
+            self.typical5d()
+    def typical2d(self):
+        c1 = self.display(axes=[0,1], pos=[0,0], wid=[4,4])
     def typical3d(self):
         c1 = self.display(axes=[2], pos=[3,0], wid=[1,4])
         c2 = self.display(axes=[0,1], pos=[0,0], wid=[3,4])
         self._linex(c1)
         self._rect(c2)
+    def typical4d(self):
+        c1 = self.display(axes=[0,1], pos=[0,0], wid=[4,2])
+        c2 = self.display(axes=[2,3], pos=[0,2], wid=[4,2])
+        self._rect(c1)
+        self._rect(c2)
+    def typical5d(self):
+        c1 = self.display(axes=[0,1], pos=[0,0], wid=[3,2])
+        c2 = self.display(axes=[2,3], pos=[0,2], wid=[3,2])
+        c3 = self.display(axes=[4], pos=[3,0], wid=[1,4])
+        self._rect(c1)
+        self._rect(c2)
+        self._linex(c3)
     def append(self, wave, axes):
         c = self._getTargetCanvas()
         c.Append(wave)

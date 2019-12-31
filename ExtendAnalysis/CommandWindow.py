@@ -375,7 +375,7 @@ class CommandWindow(QWidget):
         menu['dir']=[cd,tree.Action_NewDirectory(),tree.Action_Delete(), show, save]
         menu['mix']=[ld,tree.Action_Delete()]
         menu['other']=[ld,tree.Action_Delete(),tree.Action_Print()]
-        menu['.npz']=[tree.Action_Display(),tree.Action_Append(),tree.Action_Preview(),tree.Action_Edit(),ld,tree.Action_Print(),tree.Action_Delete()]
+        menu['.npz']=[tree.Action_Display(),tree.Action_Append(),tree.Action_MultiCut(),tree.Action_Preview(),tree.Action_Edit(),ld,tree.Action_Print(),tree.Action_Delete()]
         menu['.py']=[op,tree.Action_Delete()]
         menu['.lst']=[op,tree.Action_Edit()]
         tree.SetContextMenuActions(menu)
