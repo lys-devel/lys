@@ -66,6 +66,8 @@ class ExtendShell(object):
         exec(nam+'=LoadFile.load(\''+name+'\')',globals())
         print(nam+' is loaded from '+ext+' file')
         return eval(nam,globals())
+    def clearLog(self):
+        self.__com.clearLog()
 
 class ExtendCommand(cmd.Cmd):
     def __init__(self,shell):
@@ -121,3 +123,5 @@ class ExtendCommand(cmd.Cmd):
             except Exception:
                 lis2.append(l)
         PreviewWindow(*lis2)
+    def do_clear(self, arg):
+        self.__shell.clearLog()

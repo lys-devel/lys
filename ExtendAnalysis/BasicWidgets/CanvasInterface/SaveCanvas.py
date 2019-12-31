@@ -27,7 +27,12 @@ def notSaveCanvas(func):
         return res
     return wrapper
 
-class SavableCanvasBase(object):
+class BasicEventCanvasBase(object):
+    deleted = pyqtSignal(object)
+    def emitCloseEvent(self):
+        self.deleted.emit(self)
+
+class SavableCanvasBase(BasicEventCanvasBase):
     def __init__(self,*args,**kwargs):
         self.saveflg=False
         self.savef=None

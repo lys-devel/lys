@@ -4,19 +4,41 @@ from .MultiCut import *
 from .filtersGUI import *
 
 
-class MultiCut(AnalysisWindow):
+class MultiCut(ExtendMdiSubWindow):
     def __init__(self, wave=None):
         super().__init__("Multi-dimensional analysis")
+        self.grid = MultipleGrid()
         self.__initlayout__()
         self.wave = None
         self.axes = []
         self.ranges = []
+        self.closeforce = False
+        self.grid.closed.connect(self.forceclose)
+        self._attach(self.grid)
+        self.attachTo()
+        self.adjustSize()
+        self.updateGeometry()
         if wave is not None:
             self.load(wave)
+    def forceclose(self):
+        self.closeforce=True
+        self.close()
+    def closeEvent(self,event):
+        if self.closeforce:
+            event.accept()
+            return super().closeEvent(event)
+        else:
+            self.hide()
+            event.ignore()
+            return
+
+    def keyPress(self, e):
+        if e.key() == Qt.Key_M:
+            self.show()
 
     def __initlayout__(self):
         self._pre = PrefilterTab(self._loadRegion)
-        self._cut = CutTab()
+        self._cut = CutTab(self, self.grid)
         self._ani = AnimationTab(self._cut.getExecutorList())
         self._pre.filterApplied.connect(self._cut._setWave)
         self._pre.filterApplied.connect(self._ani._setWave)
@@ -64,7 +86,7 @@ class MultiCut(AnalysisWindow):
             w = c.getWaveData()[0].wave
             p1 = w.posToPoint(r[0])
             p2 = w.posToPoint(r[1])
-            axes = self._cut.findAxisFromGraph(g)
+            axes = self._cut.findAxisFromCanvas(c)
             obj.setRegion(axes[0], (p1[0], p2[0]))
             obj.setRegion(axes[1], (p1[1], p2[1]))
 
@@ -161,6 +183,8 @@ class PrefilterTab(QWidget):
     def setWave(self, wave):
         self.wave = wave
         self.filt.setDimension(self.wave.data.ndim)
+        if(wave.data.ndim < 4):
+            self._click()
 
     def _click(self):
         f = self.filt.GetFilters()
@@ -280,25 +304,6 @@ class controlledWavesGUI(QTreeView):
         self.updated.emit()
 
 
-class controlledGraphsGUI(QTreeView):
-    def __init__(self, obj):
-        super().__init__()
-        self.obj = obj
-        self.__model = ControlledObjectsModel(obj)
-        self.setModel(self.__model)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
-
-    def buildContextMenu(self):
-        menu = QMenu(self)
-        menu.addAction(QAction("Remove", self, triggered=self._remove))
-        menu.exec_(QCursor.pos())
-
-    def _remove(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.obj.removeAt(i)
-
-
 class controlledExecutorsGUI(QTreeView):
     def __init__(self, obj):
         super().__init__()
@@ -390,44 +395,64 @@ class CutTab(QWidget):
             else:
                 return (ax1, ax2)
 
-    def __init__(self):
+    def __init__(self, parent, grid):
         super().__init__()
-        self.graphs = controlledObjects()
+        self.parent = parent
+        self.grid = grid
         self.waves = controlledObjects()
         self.lines = controlledObjects()
+        self.canvases = controlledObjects()
         self.__exe = ExecutorList()
-        self.graphs.removed.connect(self.__exe.graphRemoved)
+        self.canvases.removed.connect(self.__exe.graphRemoved)
         self.__initlayout__()
         self.ax = None
         self.wave = None
         self.__exe.updated.connect(self.update)
         self.__exe.appended.connect(self._exechanged)
         self.__exe.removed.connect(self._exechanged)
-
+    def setSize(self,size):
+        self.size=size
+        self._table.setRowCount(size)
+        self._table.setColumnCount(size)
+        self.grid.setSize(size)
     def __initlayout__(self):
         self.wlist = controlledWavesGUI(self.waves, self.display, self.append)
         self.wlist.updated.connect(self.updateAll)
-        self.glist = controlledGraphsGUI(self.graphs)
+        self._table = QTableWidget()
+        self.setSize(4)
+        self._table.horizontalHeader().hide()
+        self._table.verticalHeader().hide()
+        self._table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self._table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self._usegraph = QRadioButton("Use Graph")
+        self._usegrid = QRadioButton("Use Grid")
+        self._usegrid.setChecked(True)
         disp = QPushButton("Display", clicked=self.display)
         make = QPushButton("Make", clicked=self.make)
+        typ = QPushButton("Typical", clicked=self.typical)
 
         hbox = QHBoxLayout()
         hbox.addWidget(make)
         hbox.addWidget(disp)
-        hbox2 = QHBoxLayout()
-        hbox2.addWidget(self.wlist)
-        hbox2.addWidget(self.glist)
+        hbox.addWidget(typ)
         self._make = QVBoxLayout()
-        self._make.addLayout(hbox2)
+        v1 = QVBoxLayout()
+        v1.addWidget(self._usegraph)
+        v1.addWidget(self._usegrid)
+        v1.addWidget(self._table)
+        h1 = QHBoxLayout()
+        h1.addWidget(self.wlist,2)
+        h1.addLayout(v1,1)
+        self._make.addLayout(h1)
         self._make.addLayout(hbox)
-        make = QGroupBox("Waves & Graphs")
+        make = QGroupBox("Waves")
         make.setLayout(self._make)
 
         grp = self.__interactive()
 
         self.layout = QVBoxLayout()
-        self.layout.addWidget(make)
-        self.layout.addWidget(grp)
+        self.layout.addWidget(make,1)
+        self.layout.addWidget(grp,1)
         self.layout.addStretch()
 
         self.setLayout(self.layout)
@@ -484,8 +509,8 @@ class CutTab(QWidget):
     def getExecutorList(self):
         return self.__exe
 
-    def findAxisFromGraph(self, graph):
-        return self.graphs.getAxes(graph)
+    def findAxisFromCanvas(self, canvas):
+        return self.canvases.getAxes(canvas)
 
     def make(self, axes=None):
         if not hasattr(axes, "__iter__"):
@@ -501,7 +526,7 @@ class CutTab(QWidget):
         else:
             return None
 
-    def display(self, wave=None, axes=None):
+    def display(self, wave=None, axes=None, pos=None, wid=None):
         if not hasattr(axes, "__iter__"):
             ax = self.ax.getAxes()
         else:
@@ -511,13 +536,39 @@ class CutTab(QWidget):
         else:
             w = wave
         if w is not None:
-            g = display(w, lib="pyqtgraph")
-            self.graphs.append(g, ax)
-            g.closed.connect(self.graphs.remove)
+            if self._usegraph.isChecked():
+                g = display(w, lib="pyqtgraph")
+                self.canvases.append(g.canvas, ax)
+                g.canvas.deleted.connect(self.canvases.remove)
+                return g.canvas
+            elif self._usegrid.isChecked():
+                if pos == None or wid == None:
+                    pos, wid = self._getGridPos()
+                c = pyqtCanvas()
+                c.Append(w)
+                c.keyPressed.connect(self.parent.keyPress)
+                self.canvases.append(c, ax)
+                c.deleted.connect(self.canvases.remove)
+                self.grid.Append(c, *pos, *wid)
+                return c
+    def _getGridPos(self):
+        rows = [i.row() for i in self._table.selectionModel().selectedIndexes()]
+        columns = [i.column() for i in self._table.selectionModel().selectedIndexes()]
+        if len(rows)*len(columns) == 0:
+            return (0,0), (self.size,self.size)
+        return (np.min(rows), np.min(columns)), (np.max(rows) - np.min(rows) + 1, np.max(columns)-np.min(columns)+1)
 
+    def typical(self):
+        if self.wave.data.ndim == 3:
+            self.typical3d()
+    def typical3d(self):
+        c1 = self.display(axes=[2], pos=[3,0], wid=[1,4])
+        c2 = self.display(axes=[0,1], pos=[0,0], wid=[3,4])
+        self._linex(c1)
+        self._rect(c2)
     def append(self, wave, axes):
-        g = Graph.active()
-        g.Append(wave)
+        c = self._getTargetCanvas()
+        c.Append(wave)
 
     def updateAll(self):
         for w, axs in self.waves.getObjectsAndAxes():
@@ -555,57 +606,70 @@ class CutTab(QWidget):
             filt = Filters.fromString(w.note["MultiCut_PostProcess"])
             filt.execute(w)
 
-    def _point(self):
-        g = Graph.active()
-        id = g.canvas.addCross([0, 0])
-        e = PointExecutor(self.graphs.getAxes(g))
-        g.canvas.addCallback(id, e.callback)
-        self.__exe.append(e, g)
+    def _getTargetCanvas(self):
+        if self._usegraph.isChecked():
+            return Graph.active().canvas
+        elif self._usegrid.isChecked():
+            pos, wid = self._getGridPos()
+            return self.grid.itemAtPosition(*pos)
+    def _point(self, c = None):
+        if not isinstance(c, CanvasBaseBase):
+            c = self._getTargetCanvas()
+        id = c.addCross([0, 0])
+        e = PointExecutor(self.canvases.getAxes(c))
+        c.addCallback(id, e.callback)
+        self.__exe.append(e, c)
 
-    def _rect(self):
-        g = Graph.active()
-        id = g.canvas.addRect([0, 0], [1, 1])
-        e = RegionExecutor(self.graphs.getAxes(g))
-        g.canvas.addCallback(id, e.callback)
-        self.__exe.append(e, g)
+    def _rect(self, c=None):
+        if not isinstance(c, CanvasBaseBase):
+            c = self._getTargetCanvas()
+        id = c.addRect([0, 0], [1, 1])
+        e = RegionExecutor(self.canvases.getAxes(c))
+        c.addCallback(id, e.callback)
+        self.__exe.append(e, c)
 
     def _circle(self):
         pass
 
-    def _line(self):
-        g = Graph.active()
-        id = g.canvas.addLine([[0, 0], [1, 1]])
-        e = FreeLineExecutor(self.graphs.getAxes(g))
-        g.canvas.addCallback(id, e.callback)
-        self.__exe.append(e, g)
+    def _line(self, c=None):
+        if not isinstance(c, CanvasBaseBase):
+            c = self._getTargetCanvas()
+        id = c.addLine([[0, 0], [1, 1]])
+        e = FreeLineExecutor(self.canvases.getAxes(c))
+        c.addCallback(id, e.callback)
+        self.__exe.append(e, c)
 
-    def _regx(self):
-        g = Graph.active()
-        id = g.canvas.addRegion([0, 1])
-        e = RegionExecutor(self.graphs.getAxes(g)[0])
-        g.canvas.addCallback(id, e.callback)
-        self.__exe.append(e, g)
+    def _regx(self, c=None):
+        if not isinstance(c, CanvasBaseBase):
+            c = self._getTargetCanvas()
+        id = c.addRegion([0, 1])
+        e = RegionExecutor(self.canvases.getAxes(c)[0])
+        c.addCallback(id, e.callback)
+        self.__exe.append(e, c)
 
-    def _regy(self):
-        g = Graph.active()
-        id = g.canvas.addRegion([0, 1], "horizontal")
-        e = RegionExecutor(self.graphs.getAxes(g)[1])
-        g.canvas.addCallback(id, e.callback)
-        self.__exe.append(e, g)
+    def _regy(self, c=None):
+        if not isinstance(c, CanvasBaseBase):
+            c = self._getTargetCanvas()
+        id = c.addRegion([0, 1], "horizontal")
+        e = RegionExecutor(self.canvases.getAxes(c)[1])
+        c.addCallback(id, e.callback)
+        self.__exe.append(e, c)
 
-    def _linex(self):
-        g = Graph.active()
-        id = g.canvas.addInfiniteLine(0)
-        e = PointExecutor(self.graphs.getAxes(g)[0])
-        g.canvas.addCallback(id, e.callback)
-        self.__exe.append(e, g)
+    def _linex(self, c=None):
+        if not isinstance(c, CanvasBaseBase):
+            c = self._getTargetCanvas()
+        id = c.addInfiniteLine(0)
+        e = PointExecutor(self.canvases.getAxes(c)[0])
+        c.addCallback(id, e.callback)
+        self.__exe.append(e, c)
 
-    def _liney(self):
-        g = Graph.active()
-        id = g.canvas.addInfiniteLine(0, 'horizontal')
-        e = PointExecutor(self.graphs.getAxes(g)[0])
-        g.canvas.addCallback(id, e.callback)
-        self.__exe.append(e, g)
+    def _liney(self, c=None):
+        if not isinstance(c, CanvasBaseBase):
+            c = self._getTargetCanvas()
+        id = c.addInfiniteLine(0, 'horizontal')
+        e = PointExecutor(self.canvases.getAxes(c)[0])
+        c.addCallback(id, e.callback)
+        self.__exe.append(e, c)
 
 
 class AnimationTab(QWidget):

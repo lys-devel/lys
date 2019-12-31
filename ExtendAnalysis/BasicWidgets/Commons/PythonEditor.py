@@ -227,6 +227,7 @@ class _PlainTextEdit(QPlainTextEdit):
         paint.end()
 class PythonEditor(ExtendMdiSubWindow):
     __list=[]
+    updated = False
     @classmethod
     def _Add(cls,win):
         cls.__list.append(weakref.ref(win))
@@ -240,7 +241,6 @@ class PythonEditor(ExtendMdiSubWindow):
         return True
     def __init__(self,file):
         super().__init__()
-        self.setWindowTitle(os.path.basename(file))
         self.widget=_PlainTextEdit(self)
         self.widget.keyPressed.connect(self.keyPressed)
         self.widget.setStyleSheet("background-color : #282C34; color: #eeeeee;")
@@ -249,8 +249,15 @@ class PythonEditor(ExtendMdiSubWindow):
         with open(self.file, 'r') as data:
             self.widget.setPlainText(autopep8.fix_code(data.read()).replace("    ","\t"))
         self.setWidget(self.widget)
+        self.widget.textChanged.connect(self.updateText)
         self.resize(600,600)
         PythonEditor._Add(self)
+        self.refreshTitle()
+    def refreshTitle(self):
+        if self.updated:
+            self.setWindowTitle(os.path.basename(self.file) + " (modified)")
+        else:
+            self.setWindowTitle(os.path.basename(self.file))
     def keyPressed(self,event):
         if event.key() == Qt.Key_S:
             if (event.modifiers() and Qt.ControlModifier):
@@ -258,7 +265,12 @@ class PythonEditor(ExtendMdiSubWindow):
     def save(self):
         with open(self.file, 'w') as data:
             data.write(autopep8.fix_code(self.widget.toPlainText()).replace("    ","\t"))
+        self.updated = False
+        self.refreshTitle()
+
     def closeEvent(self,event):
+        if not self.updated:
+            return
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setText("Do you want to save changes?")
@@ -268,7 +280,11 @@ class PythonEditor(ExtendMdiSubWindow):
         if ok==QMessageBox.Cancel:
             event.ignore()
         if ok==QMessageBox.No:
+            self.updated = False
             event.accept()
         if ok==QMessageBox.Yes:
             self.save()
             event.accept()
+    def updateText(self):
+        self.updated=True
+        self.refreshTitle()
