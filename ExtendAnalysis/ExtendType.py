@@ -279,21 +279,22 @@ class Wave(AutoSaved):
             self.note={}
         def _load(self,file):
             tmp=np.load(file,allow_pickle=True)
-            self.axes=[np.array(None) for i in range(tmp['data'].ndim)]
+            data = tmp['data']
+            self.axes=[np.array(None) for i in range(data.ndim)]
             if 'axes' in tmp:
-                self._load_new(tmp)
+                self._load_new(data,tmp)
             else:
-                self._load_old(tmp)
+                self._load_old(data,tmp)
             if 'note' in tmp:
                 self.note = tmp['note'][()]
             else:
                 self.note = {}
-        def _load_new(self,tmp):
-            self.data=tmp['data']
+        def _load_new(self,data,tmp):
+            self.data=data
             if 'axes' in tmp:
                 self.axes=tmp['axes']
-        def _load_old(self,tmp):
-            self.data=tmp['data'].T
+        def _load_old(self,data,tmp):
+            self.data=data.T
             if self.data.ndim==1:
                 self.axes[0]=tmp['x']
             if self.data.ndim==2:
@@ -315,7 +316,10 @@ class Wave(AutoSaved):
             elif key == 'z' and len(self.axes) > 2:
                 self.axes[2]=np.array(value)
             elif key in ['data']:
-                super().__setattr__(key,np.array(value))
+                if isinstance(value, np.ndarray):
+                    super().__setattr__(key,value)
+                else:
+                    super().__setattr__(key,np.array(value))
                 while(len(self.axes) < self.data.ndim): self.axes.append(np.array(None))
                 while(len(self.axes) > self.data.ndim): self.axes.pop(len(self.axes)-1)
             else:
