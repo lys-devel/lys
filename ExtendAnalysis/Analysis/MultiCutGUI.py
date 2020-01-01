@@ -70,12 +70,16 @@ class MultiCut(ExtendMdiSubWindow):
         else:
             fname = file
         if isinstance(fname, str):
-            self.wave = Wave(fname)
+            self.wave = DaskWave(Wave(fname))
             self.__file.setText(fname)
             self._pre.setWave(self.wave)
         elif isinstance(fname, Wave):
-            self.wave = fname
-            self.__file.setText(self.wave.Name())
+            self.wave = DaskWave(fname)
+            self.__file.setText(fname.Name())
+            self._pre.setWave(self.wave)
+        elif isinstance(fname, DaskWave):
+            self.wave=fname
+            self.__file.setText("from memory")
             self._pre.setWave(self.wave)
 
     def _loadRegion(self, obj):
@@ -181,18 +185,16 @@ class PrefilterTab(QWidget):
         self.adjustSize()
 
     def setWave(self, wave):
+        wave.persist()
         self.wave = wave
         self.filt.setDimension(self.wave.data.ndim)
-        if(wave.data.ndim < 4):
-            self._click()
+        self._click()
 
     def _click(self):
-        f = self.filt.GetFilters()
         waves = DaskWave(self.wave, chunks=self.__chunk)
-        f.execute(waves)
-        w = waves.toWave()
-        dw = DaskWave(w)
-        self.filterApplied.emit(dw)
+        self.filt.GetFilters().execute(waves)
+        waves.persist()
+        self.filterApplied.emit(waves)
 
     def _chunk(self):
         if self.wave is None:

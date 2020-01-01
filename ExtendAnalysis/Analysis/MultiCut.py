@@ -3,6 +3,11 @@ from ExtendAnalysis import *
 from dask.array.core import Array as DArray
 import dask.array as da
 
+try:
+    from dask.distributed import Client
+    Client = Client()
+except:
+    pass
 
 class DaskWave(object):
     def __init__(self, wave, axes=None, chunks="auto"):
@@ -10,6 +15,8 @@ class DaskWave(object):
             self.__fromWave(wave, axes, chunks)
         elif isinstance(wave, DArray):
             self.__fromda(wave, axes, chunks)
+        elif isinstance(wave, DaskWave):
+            self.__fromda(wave.data, wave.axes, chunks)
 
     def __fromWave(self, wave, axes, chunks):
         import copy
@@ -27,6 +34,9 @@ class DaskWave(object):
         w.data = res
         w.axes = copy.copy(self.axes)
         return w
+
+    def persist(self):
+        self.data.persist()
 
     def __fromda(self, wave, axes, chunks):
         self.data = wave
