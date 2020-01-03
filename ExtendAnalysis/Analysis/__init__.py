@@ -1,1 +1,1 @@
-from .MultiCutGUI import MultiCut
+from .MultiCutGUI import MultiCut, DaskWave
