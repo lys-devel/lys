@@ -1,16 +1,22 @@
-import copy
+
+import copy, time
 from ExtendAnalysis import *
 from dask.array.core import Array as DArray
 import dask.array as da
 
 try:
     from dask.distributed import Client
-    Client = Client()
 except:
-    pass
+    print("dask.distributed not found")
 
 class DaskWave(object):
-    def __init__(self, wave, axes=None, chunks="auto"):
+    def __init__(self, wave, axes=None, chunks="auto", client = None):
+        if isinstance(wave, DaskWave):
+            client = wave.client
+        if client is None:
+            self.client=Client()
+        else:
+            self.client=client
         if isinstance(wave, Wave):
             self.__fromWave(wave, axes, chunks)
         elif isinstance(wave, DArray):
@@ -30,16 +36,16 @@ class DaskWave(object):
     def toWave(self):
         import copy
         w = Wave()
-        res = self.data.compute()
+        res = self.client.compute(self.data).result()
         w.data = res
         w.axes = copy.copy(self.axes)
         return w
 
     def persist(self):
-        self.data.persist()
+        self.data = self.client.persist(self.data)
 
     def __fromda(self, wave, axes, chunks):
-        self.data = wave
+        self.data = wave.rechunk(chunks)
         self.axes = axes
 
     def shape(self):
@@ -60,7 +66,7 @@ class DaskWave(object):
         for i, ax in enumerate(self.axes):
             if not i == axis:
                 axes.append(ax)
-        return DaskWave(data, axes=axes)
+        return DaskWave(data, axes=axes, client = self.client)
 
     def __getitem__(self, key):
         if isinstance(key, tuple):
@@ -72,7 +78,7 @@ class DaskWave(object):
                         axes.append(None)
                     else:
                         axes.append(ax[s])
-            return DaskWave(data, axes=axes)
+            return DaskWave(data, axes=axes, client = self.client)
         else:
             super().__getitem__(key)
 
@@ -204,7 +210,7 @@ class ExecutorList(controlledObjects):
                     res.append(e)
         for i in range(wave.data.ndim):
             if not i in axes:
-                res.append(AllExecutor(i))
+                res.append(DefaultExecutor(i))
         return res
 
     def __findFreeLineExecutor(self, id):
@@ -233,14 +239,19 @@ class ExecutorList(controlledObjects):
                 fl.execute(wave, axes)
 
     def makeWave(self, wave, axes):
-        tmp = wave
-        offset = 0
-        applied = []
+        start = time.time()
+        slices = [slice(None,None,None)]*wave.data.ndim
+        sumlist = []
         for e in self.__exeList(wave):
             if not isinstance(e, FreeLineExecutor):
-                tmp, axs = e.execute(tmp, offset, ignore=self.__ignoreList(axes))
-                offset += len(axs)
-                applied.extend(axs)
+                e.set(wave,slices,sumlist,ignore=self.__ignoreList(axes))
+        sumlist=np.array(sumlist)
+        applied = sumlist.tolist()
+        for i in range(len(slices)):
+            if isinstance(slices[len(slices)-1-i], int):
+                sumlist[sumlist > len(slices)-1-i]-=1
+                applied.append(i)
+        tmp = wave[tuple(slices)].sum(axis = tuple(sumlist.tolist()))
         res = tmp.toWave()
         self.__applyFreeLines(res, axes, applied)
         if len(axes) == 2 and axes[0] < 10000:
@@ -260,17 +271,36 @@ class AllExecutor(QObject):
         self.axis = axis
 
     def getAxes(self):
-        return [self.axis]
+        return (self.axis,)
 
-    def execute(self, wave, axis_offset, ignore=[]):
+    def set(self, wave, slices, sumlist, ignore=[]):
         if self.axis in ignore:
-            return wave, []
+            return sl, []
         else:
-            return wave.sum(self.axis - axis_offset), [self.axis]
+            slices[self.axis] = slice(None,None,None)
+            sumlist.append(self.axis)
 
     def __str__(self):
         return "All executor for axis = " + str(self.axis)
 
+class DefaultExecutor(QObject):
+    updated = pyqtSignal(tuple)
+
+    def __init__(self, axis):
+        super().__init__()
+        self.axis = axis
+
+    def getAxes(self):
+        return (self.axis,)
+
+    def set(self, wave, slices, sumlist, ignore=[]):
+        if self.axis in ignore:
+            return
+        else:
+            slices[self.axis] = 0
+
+    def __str__(self):
+        return "Default executor for axis = " + str(self.axis)
 
 class RegionExecutor(QObject):
     updated = pyqtSignal(tuple)
@@ -285,7 +315,7 @@ class RegionExecutor(QObject):
             self.setRange(range)
 
     def getAxes(self):
-        return self.axes
+        return tuple(self.axes)
 
     def setRange(self, range):
         self.range = []
@@ -296,24 +326,20 @@ class RegionExecutor(QObject):
             self.range.append(range)
         self.updated.emit(self.axes)
 
-    def execute(self, wave, axis_offset, ignore=[]):
-        off = 0
-        tmp = wave
-        axes = []
+    def set(self, wave, slices, sumlist, ignore=[]):
         for i, r in zip(self.axes, self.range):
             if not i in ignore:
-                sl = [slice(None)] * tmp.data.ndim
-                sl[i - axis_offset - off] = slice(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
-                tmp = tmp[tuple(sl)].sum(i - axis_offset - off)
-                off += 1
-                axes.append(i)
-        return tmp, axes
+                slices[i] = slice(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
+                sumlist.append(i)
 
     def callback(self, region):
         self.setRange(region)
 
     def Name(self):
         return "Region"
+
+    def __str__(self):
+        return "Region executor for axis = " + str(self.axes)
 
 
 class PointExecutor(QObject):
@@ -329,33 +355,28 @@ class PointExecutor(QObject):
             self.setPosition(pos)
 
     def getAxes(self):
-        return self.axes
+        return tuple(self.axes)
 
     def setPosition(self, pos):
         if isinstance(pos, float) or isinstance(pos, int):
             self.position = [pos]
         else:
             self.position = pos
-        self.updated.emit(self.axes)
+        self.updated.emit(tuple(self.axes))
 
-    def execute(self, wave, axis_offset, ignore=[]):
-        off = 0
-        tmp = wave
-        axes = []
+    def set(self, wave, slices, sumlist, ignore=[]):
         for i, p in zip(self.axes, self.position):
             if not i in ignore:
-                sl = [slice(None)] * tmp.data.ndim
-                sl[i - off] = wave.posToPoint(p, i)
-                tmp = tmp[tuple(sl)]  # .sum(i-axis_offset-off)
-                off += 1
-                axes.append(i)
-        return tmp, axes
+                slices[i] = wave.posToPoint(p, i)
 
     def callback(self, pos):
         self.setPosition(pos)
 
     def Name(self):
         return "Point"
+
+    def __str__(self):
+        return "Point executor for axis " + str(self.axes)
 
 
 class FreeLineExecutor(QObject):

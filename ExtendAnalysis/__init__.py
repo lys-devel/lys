@@ -11,7 +11,7 @@ from .AnalysisWindow import *
 from .BasicWidgets import *
 from .Tasks import *
 from .MainWindow import create, addMainMenu
-from .Analysis import filters, filtersGUI, MultiCut
+from .Analysis import filters, filtersGUI, MultiCut, DaskWave
 
 def handle_exception(exc_type, exc_value, exc_traceback):
     """ handle all exceptions """
