@@ -141,6 +141,11 @@ class SmoothingSetting(FilterGroupSetting):
         }
         return d
 
+class SpinBoxOverOne(QSpinBox):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setMinimum(1)
+        self.setValue(1)
 
 class OddSpinBox(QSpinBox):
     def __init__(self, *args, **kwargs):
@@ -156,10 +161,14 @@ class OddSpinBox(QSpinBox):
 
 
 class _kernelSizeLayout(QGridLayout):
-    def __init__(self, dimension=2):
+    def __init__(self, dimension=2, odd = True):
         super().__init__()
         self.addWidget(QLabel('Kernel Size'), 1, 0)
-        self._kernels = [OddSpinBox() for d in range(dimension)]
+        if odd:
+            spin=OddSpinBox
+        else:
+            spin=SpinBoxOverOne
+        self._kernels = [spin() for d in range(dimension)]
         for i, k in enumerate(self._kernels):
             self.addWidget(QLabel('Axis' + str(i + 1)), 0, i + 1)
             self.addWidget(k, 1, i + 1)
@@ -881,6 +890,24 @@ class NormalizeSetting(FilterSettingBase):
             obj.range.setRegion(i, r)
         return obj
 
+class ReduceSizeSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        self._layout = _kernelSizeLayout(dimension, odd = False)
+        self.setLayout(self._layout)
+
+    def GetFilter(self):
+        return ReduceSizeFilter(self._layout.getKernelSize())
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, ReduceSizeFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = ReduceSizeSetting(None, self.dim, self.loader)
+        obj._layout.setKernelSize(f.getKernel())
+        return obj
 
 class SelectRegionSetting(FilterSettingBase):
     def __init__(self, parent, dim, loader=None):
@@ -1045,5 +1072,6 @@ filterGroups = {
     'Symmetric Operations': SymmetricOperationSetting,
     'Simple Math': SimpleMathSetting,
     'Interpolation (Only for post process)': InterpSetting,
-    'Normalization': NormalizeSetting
+    'Normalization': NormalizeSetting,
+    'Reduce size': ReduceSizeSetting
 }
