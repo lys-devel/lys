@@ -20,10 +20,12 @@ class MultiCut(ExtendMdiSubWindow):
         self.updateGeometry()
         if wave is not None:
             self.load(wave)
+
     def forceclose(self):
-        self.closeforce=True
+        self.closeforce = True
         self.close()
-    def closeEvent(self,event):
+
+    def closeEvent(self, event):
         if self.closeforce:
             event.accept()
             return super().closeEvent(event)
@@ -78,7 +80,7 @@ class MultiCut(ExtendMdiSubWindow):
             self.__file.setText(fname.Name())
             self._pre.setWave(self.wave)
         elif isinstance(fname, DaskWave):
-            self.wave=fname
+            self.wave = fname
             self.__file.setText("from memory")
             self._pre.setWave(self.wave)
 
@@ -412,11 +414,13 @@ class CutTab(QWidget):
         self.__exe.updated.connect(self.update)
         self.__exe.appended.connect(self._exechanged)
         self.__exe.removed.connect(self._exechanged)
-    def setSize(self,size):
-        self.size=size
+
+    def setSize(self, size):
+        self.size = size
         self._table.setRowCount(size)
         self._table.setColumnCount(size)
         self.grid.setSize(size)
+
     def __initlayout__(self):
         self.wlist = controlledWavesGUI(self.waves, self.display, self.append)
         self.wlist.updated.connect(self.updateAll)
@@ -443,8 +447,8 @@ class CutTab(QWidget):
         v1.addWidget(self._usegrid)
         v1.addWidget(self._table)
         h1 = QHBoxLayout()
-        h1.addWidget(self.wlist,2)
-        h1.addLayout(v1,1)
+        h1.addWidget(self.wlist, 2)
+        h1.addLayout(v1, 1)
         self._make.addLayout(h1)
         self._make.addLayout(hbox)
         make = QGroupBox("Waves")
@@ -453,8 +457,8 @@ class CutTab(QWidget):
         grp = self.__interactive()
 
         self.layout = QVBoxLayout()
-        self.layout.addWidget(make,1)
-        self.layout.addWidget(grp,1)
+        self.layout.addWidget(make, 1)
+        self.layout.addWidget(grp, 1)
         self.layout.addStretch()
 
         self.setLayout(self.layout)
@@ -553,12 +557,13 @@ class CutTab(QWidget):
                 c.deleted.connect(self.canvases.remove)
                 self.grid.Append(c, *pos, *wid)
                 return c
+
     def _getGridPos(self):
         rows = [i.row() for i in self._table.selectionModel().selectedIndexes()]
         columns = [i.column() for i in self._table.selectionModel().selectedIndexes()]
-        if len(rows)*len(columns) == 0:
-            return (0,0), (self.size,self.size)
-        return (np.min(rows), np.min(columns)), (np.max(rows) - np.min(rows) + 1, np.max(columns)-np.min(columns)+1)
+        if len(rows) * len(columns) == 0:
+            return (0, 0), (self.size, self.size)
+        return (np.min(rows), np.min(columns)), (np.max(rows) - np.min(rows) + 1, np.max(columns) - np.min(columns) + 1)
 
     def typical(self):
         if self.wave.data.ndim == 2:
@@ -569,25 +574,30 @@ class CutTab(QWidget):
             self.typical4d()
         if self.wave.data.ndim == 5:
             self.typical5d()
+
     def typical2d(self):
-        c1 = self.display(axes=[0,1], pos=[0,0], wid=[4,4])
+        c1 = self.display(axes=[0, 1], pos=[0, 0], wid=[4, 4])
+
     def typical3d(self):
-        c1 = self.display(axes=[2], pos=[3,0], wid=[1,4])
-        c2 = self.display(axes=[0,1], pos=[0,0], wid=[3,4])
+        c1 = self.display(axes=[2], pos=[3, 0], wid=[1, 4])
+        c2 = self.display(axes=[0, 1], pos=[0, 0], wid=[3, 4])
         self._linex(c1)
         self._rect(c2)
+
     def typical4d(self):
-        c1 = self.display(axes=[0,1], pos=[0,0], wid=[4,2])
-        c2 = self.display(axes=[2,3], pos=[0,2], wid=[4,2])
+        c1 = self.display(axes=[0, 1], pos=[0, 0], wid=[4, 2])
+        c2 = self.display(axes=[2, 3], pos=[0, 2], wid=[4, 2])
         self._rect(c1)
         self._rect(c2)
+
     def typical5d(self):
-        c1 = self.display(axes=[0,1], pos=[0,0], wid=[3,2])
-        c2 = self.display(axes=[2,3], pos=[0,2], wid=[3,2])
-        c3 = self.display(axes=[4], pos=[3,0], wid=[1,4])
+        c1 = self.display(axes=[0, 1], pos=[0, 0], wid=[3, 2])
+        c2 = self.display(axes=[2, 3], pos=[0, 2], wid=[3, 2])
+        c3 = self.display(axes=(4,), pos=[3, 0], wid=[1, 4])
         self._rect(c1)
         self._rect(c2)
         self._linex(c3)
+
     def append(self, wave, axes):
         c = self._getTargetCanvas()
         c.Append(wave)
@@ -603,6 +613,8 @@ class CutTab(QWidget):
                 pass
 
     def update(self, index, all=False):
+        import time
+        start = time.time()
         for w, axs in self.waves.getObjectsAndAxes():
             if index[0] < 10000:
                 if not set(index).issubset(axs):
@@ -622,6 +634,7 @@ class CutTab(QWidget):
                         self._postProcess(w)
                     except:
                         pass
+        print("total time", time.time() - start, time.time())
 
     def _postProcess(self, w):
         if "MultiCut_PostProcess" in w.note:
@@ -634,10 +647,11 @@ class CutTab(QWidget):
         elif self._usegrid.isChecked():
             pos, wid = self._getGridPos()
             return self.grid.itemAtPosition(*pos)
-    def _point(self, c = None):
+
+    def _point(self, c=None):
         if not isinstance(c, CanvasBaseBase):
             c = self._getTargetCanvas()
-        id = c.addCross([0, 0])
+        id = c.addCross()
         e = PointExecutor(self.canvases.getAxes(c))
         c.addCallback(id, e.callback)
         self.__exe.append(e, c)
@@ -645,7 +659,7 @@ class CutTab(QWidget):
     def _rect(self, c=None):
         if not isinstance(c, CanvasBaseBase):
             c = self._getTargetCanvas()
-        id = c.addRect([0, 0], [1, 1])
+        id = c.addRect()
         e = RegionExecutor(self.canvases.getAxes(c))
         c.addCallback(id, e.callback)
         self.__exe.append(e, c)
@@ -656,7 +670,7 @@ class CutTab(QWidget):
     def _line(self, c=None):
         if not isinstance(c, CanvasBaseBase):
             c = self._getTargetCanvas()
-        id = c.addLine([[0, 0], [1, 1]])
+        id = c.addLine()
         e = FreeLineExecutor(self.canvases.getAxes(c))
         c.addCallback(id, e.callback)
         self.__exe.append(e, c)
@@ -664,7 +678,7 @@ class CutTab(QWidget):
     def _regx(self, c=None):
         if not isinstance(c, CanvasBaseBase):
             c = self._getTargetCanvas()
-        id = c.addRegion([0, 1])
+        id = c.addRegion()
         e = RegionExecutor(self.canvases.getAxes(c)[0])
         c.addCallback(id, e.callback)
         self.__exe.append(e, c)
@@ -672,7 +686,7 @@ class CutTab(QWidget):
     def _regy(self, c=None):
         if not isinstance(c, CanvasBaseBase):
             c = self._getTargetCanvas()
-        id = c.addRegion([0, 1], "horizontal")
+        id = c.addRegion(type="horizontal")
         e = RegionExecutor(self.canvases.getAxes(c)[1])
         c.addCallback(id, e.callback)
         self.__exe.append(e, c)
@@ -680,7 +694,7 @@ class CutTab(QWidget):
     def _linex(self, c=None):
         if not isinstance(c, CanvasBaseBase):
             c = self._getTargetCanvas()
-        id = c.addInfiniteLine(0)
+        id = c.addInfiniteLine()
         e = PointExecutor(self.canvases.getAxes(c)[0])
         c.addCallback(id, e.callback)
         self.__exe.append(e, c)
@@ -688,8 +702,8 @@ class CutTab(QWidget):
     def _liney(self, c=None):
         if not isinstance(c, CanvasBaseBase):
             c = self._getTargetCanvas()
-        id = c.addInfiniteLine(0, 'horizontal')
-        e = PointExecutor(self.canvases.getAxes(c)[0])
+        id = c.addInfiniteLine(type='horizontal')
+        e = PointExecutor(self.canvases.getAxes(c)[1])
         c.addCallback(id, e.callback)
         self.__exe.append(e, c)
 

@@ -1,22 +1,34 @@
-
-import copy, time
+import multiprocessing
+import copy
+import time
 from ExtendAnalysis import *
 from dask.array.core import Array as DArray
 import dask.array as da
 
 try:
-    from dask.distributed import Client
+    from dask.distributed import Client, LocalCluster
 except:
     print("dask.distributed not found")
 
+
 class DaskWave(object):
-    def __init__(self, wave, axes=None, chunks="auto", client = None):
-        if isinstance(wave, DaskWave):
-            client = wave.client
-        if client is None:
-            self.client=Client()
+    @classmethod
+    def initWorkers(cls, n_workers):
+        cluster = LocalCluster(n_workers)
+        cls.client = Client(cluster)
+        print("[DaskWave] Local cluster:", cls.client)
+
+    @classmethod
+    def __getClient(cls):
+        if hasattr(cls, "client"):
+            return cls.client
         else:
-            self.client=client
+            cluster = LocalCluster()
+            cls.client = Client(cluster)
+            return cls.client
+
+    def __init__(self, wave, axes=None, chunks="auto", client=None):
+        self.client = DaskWave.__getClient()
         if isinstance(wave, Wave):
             self.__fromWave(wave, axes, chunks)
         elif isinstance(wave, DArray):
@@ -64,9 +76,9 @@ class DaskWave(object):
         data = self.data.sum(axis)
         axes = []
         for i, ax in enumerate(self.axes):
-            if not i == axis:
+            if not i in axis:
                 axes.append(ax)
-        return DaskWave(data, axes=axes, client = self.client)
+        return DaskWave(data, axes=axes, client=self.client)
 
     def __getitem__(self, key):
         if isinstance(key, tuple):
@@ -78,7 +90,7 @@ class DaskWave(object):
                         axes.append(None)
                     else:
                         axes.append(ax[s])
-            return DaskWave(data, axes=axes, client = self.client)
+            return DaskWave(data, axes=axes, client=self.client)
         else:
             super().__getitem__(key)
 
@@ -240,18 +252,20 @@ class ExecutorList(controlledObjects):
 
     def makeWave(self, wave, axes):
         start = time.time()
-        slices = [slice(None,None,None)]*wave.data.ndim
+        slices = [slice(None, None, None)] * wave.data.ndim
         sumlist = []
         for e in self.__exeList(wave):
             if not isinstance(e, FreeLineExecutor):
-                e.set(wave,slices,sumlist,ignore=self.__ignoreList(axes))
-        sumlist=np.array(sumlist)
+                e.set(wave, slices, sumlist, ignore=self.__ignoreList(axes))
+        sumlist = np.array(sumlist)
         applied = sumlist.tolist()
         for i in range(len(slices)):
-            if isinstance(slices[len(slices)-1-i], int):
-                sumlist[sumlist > len(slices)-1-i]-=1
+            if isinstance(slices[len(slices) - 1 - i], int):
+                sumlist[sumlist > len(slices) - 1 - i] -= 1
                 applied.append(i)
-        tmp = wave[tuple(slices)].sum(axis = tuple(sumlist.tolist()))
+        tmp = wave
+        tmp = wave[tuple(slices)]
+        tmp = tmp.sum(axis=tuple(sumlist.tolist()))
         res = tmp.toWave()
         self.__applyFreeLines(res, axes, applied)
         if len(axes) == 2 and axes[0] < 10000:
@@ -277,11 +291,12 @@ class AllExecutor(QObject):
         if self.axis in ignore:
             return sl, []
         else:
-            slices[self.axis] = slice(None,None,None)
+            slices[self.axis] = slice(None, None, None)
             sumlist.append(self.axis)
 
     def __str__(self):
         return "All executor for axis = " + str(self.axis)
+
 
 class DefaultExecutor(QObject):
     updated = pyqtSignal(tuple)
@@ -301,6 +316,7 @@ class DefaultExecutor(QObject):
 
     def __str__(self):
         return "Default executor for axis = " + str(self.axis)
+
 
 class RegionExecutor(QObject):
     updated = pyqtSignal(tuple)
