@@ -123,6 +123,7 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.__listener = []
+        self.fig.vb.sigRangeChanged.connect(self.axisRangeChanged)
 
     def SaveAsDictionary(self, dictionary, path):
         super().SaveAsDictionary(dictionary, path)
