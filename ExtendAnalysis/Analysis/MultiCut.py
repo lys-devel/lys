@@ -10,12 +10,14 @@ class DaskWave(object):
     @classmethod
     def initWorkers(cls, n_workers):
         try:
+            import atexit
             from dask.distributed import Client, LocalCluster
             cluster = LocalCluster(n_workers)
             cls.client = Client(cluster)
+            atexit.register(lambda: cls.client.close())
             print("[DaskWave] Local cluster:", cls.client)
         except:
-            print("dask.distributed not found")
+            print("[DaskWave] failed to init dask.distributed")
 
     @classmethod
     def __getClient(cls):
