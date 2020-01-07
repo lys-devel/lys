@@ -5,18 +5,17 @@ from ExtendAnalysis import *
 from dask.array.core import Array as DArray
 import dask.array as da
 
-try:
-    from dask.distributed import Client, LocalCluster
-except:
-    print("dask.distributed not found")
-
 
 class DaskWave(object):
     @classmethod
     def initWorkers(cls, n_workers):
-        cluster = LocalCluster(n_workers)
-        cls.client = Client(cluster)
-        print("[DaskWave] Local cluster:", cls.client)
+        try:
+            from dask.distributed import Client, LocalCluster
+            cluster = LocalCluster(n_workers)
+            cls.client = Client(cluster)
+            print("[DaskWave] Local cluster:", cls.client)
+        except:
+            print("dask.distributed not found")
 
     @classmethod
     def __getClient(cls):
@@ -48,13 +47,13 @@ class DaskWave(object):
     def toWave(self):
         import copy
         w = Wave()
-        res = self.client.compute(self.data).result()
+        res = self.data.compute()  # self.client.compute(self.data).result()
         w.data = res
         w.axes = copy.copy(self.axes)
         return w
 
     def persist(self):
-        self.data = self.client.persist(self.data)
+        self.data = self.data.persist()  # self.client.persist(self.data)
 
     def __fromda(self, wave, axes, chunks):
         self.data = wave.rechunk(chunks)
