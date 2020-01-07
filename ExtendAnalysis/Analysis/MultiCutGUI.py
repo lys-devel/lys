@@ -251,7 +251,7 @@ class ControlledObjectsModel(QAbstractItemModel):
                 return "Axes"
 
 
-class ExecutorModel(ControlledObjectsModel):
+class SwitchableModel(ControlledObjectsModel):
     def data(self, index, role):
         item = index.internalPointer()
         if item is not None and role == Qt.ForegroundRole:
@@ -270,7 +270,7 @@ class controlledWavesGUI(QTreeView):
         self.obj = obj
         self.disp = dispfunc
         self.apnd = appendfunc
-        self.__model = ControlledObjectsModel(obj)
+        self.__model = SwitchableModel(obj)
         self.setModel(self.__model)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
@@ -279,6 +279,8 @@ class controlledWavesGUI(QTreeView):
         menu = QMenu(self)
         menu.addAction(QAction("Display", self, triggered=self._display))
         menu.addAction(QAction("Append", self, triggered=self._append))
+        menu.addAction(QAction("Enable", self, triggered=self._enable))
+        menu.addAction(QAction("Disable", self, triggered=self._disable))
         menu.addAction(QAction("Remove", self, triggered=self._remove))
         menu.addAction(QAction("PostProcess", self, triggered=self._post))
         menu.exec_(QCursor.pos())
@@ -307,12 +309,20 @@ class controlledWavesGUI(QTreeView):
             w.note['MultiCut_PostProcess'] = str(filt)
         self.updated.emit()
 
+    def _enable(self):
+        i = self.selectionModel().selectedIndexes()[0].row()
+        self.obj.enableAt(i)
+
+    def _disable(self):
+        i = self.selectionModel().selectedIndexes()[0].row()
+        self.obj.disableAt(i)
+
 
 class controlledExecutorsGUI(QTreeView):
     def __init__(self, obj):
         super().__init__()
         self.obj = obj
-        self.__model = ExecutorModel(obj)
+        self.__model = SwitchableModel(obj)
         self.setModel(self.__model)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
@@ -403,7 +413,7 @@ class CutTab(QWidget):
         super().__init__()
         self.parent = parent
         self.grid = grid
-        self.waves = controlledObjects()
+        self.waves = SwitchableObjects()
         self.lines = controlledObjects()
         self.canvases = controlledObjects()
         self.__exe = ExecutorList()
@@ -616,6 +626,8 @@ class CutTab(QWidget):
         import time
         start = time.time()
         for w, axs in self.waves.getObjectsAndAxes():
+            if not self.waves.isEnabled(w):
+                continue
             if index[0] < 10000:
                 if not set(index).issubset(axs):
                     try:

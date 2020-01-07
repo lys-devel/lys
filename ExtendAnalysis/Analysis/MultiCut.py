@@ -135,6 +135,43 @@ class controlledObjects(QObject):
         return [self._objs[index], self._axis[index]]
 
 
+class SwitchableObjects(controlledObjects):
+
+    def __init__(self):
+        super().__init__()
+        self._enabled = []
+
+    def enableAt(self, index):
+        self.enable(self._objs[index])
+
+    def disableAt(self, index):
+        self.disable(self._objs[index])
+
+    def enable(self, obj):
+        i = self._objs.index(obj)
+        self._enabled[i] = True
+
+    def disable(self, obj):
+        i = self._objs.index(obj)
+        self._enabled[i] = False
+
+    def append(self, obj, axes):
+        super().append(obj, axes)
+        self._enabled.append(True)
+
+    def remove(self, obj):
+        super().remove(obj)
+        if obj in self._objs:
+            i = self._objs.index(obj)
+            self._enabled.pop(i)
+
+    def isEnabled(self, i):
+        if isinstance(i, int):
+            return self._enabled[i]
+        else:
+            return self.isEnabled(self._objs.index(i))
+
+
 class ExecutorList(controlledObjects):
     updated = pyqtSignal(tuple)
 

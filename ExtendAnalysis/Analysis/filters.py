@@ -295,7 +295,10 @@ class FourierFilter(FilterInterface):
     def _execute(self, wave, **kwargs):
         for ax in self.axes:
             a = wave.axes[ax]
-            wave.axes[ax] = np.linspace(0, len(a) / (np.max(a) - np.min(a)), len(a))
+            if a is None or (a == np.array(None)).all():
+                wave.axes[ax] = np.array(None)
+            else:
+                wave.axes[ax] = np.linspace(0, len(a) / (np.max(a) - np.min(a)), len(a))
         if isinstance(wave, Wave):
             if self.process == "absolute":
                 func = np.absolute
@@ -366,6 +369,7 @@ class RollFilter(FilterInterface):
     def getParams(self):
         return self.amount, self.axes
 
+
 class ReduceSizeFilter(FilterInterface):
     def __init__(self, kernel):
         self.kernel = kernel
@@ -373,7 +377,7 @@ class ReduceSizeFilter(FilterInterface):
     def _execute(self, wave, **kwargs):
         axes = []
         for i, k in enumerate(self.kernel):
-            a=wave.axes[i]
+            a = wave.axes[i]
             if (a == np.array(None)).all():
                 axes.append(a)
             else:
@@ -381,17 +385,18 @@ class ReduceSizeFilter(FilterInterface):
         res = None
         rans = [range(k) for k in self.kernel]
         for list in itertools.product(*rans):
-            sl = tuple([slice(x,None,step) for x, step in zip(list, self.kernel)])
+            sl = tuple([slice(x, None, step) for x, step in zip(list, self.kernel)])
             if res is None:
                 res = wave.data[sl]
             else:
                 res += wave.data[sl]
-        wave.data=res
+        wave.data = res
         wave.axes = axes
         return wave
 
     def getKernel(self):
         return self.kernel
+
 
 class NormalizeFilter(FilterInterface):
     def _makeSlice(self):
