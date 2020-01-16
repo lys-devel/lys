@@ -292,7 +292,7 @@ class Wave(AutoSaved):
         def _load_new(self,data,tmp):
             self.data=data
             if 'axes' in tmp:
-                self.axes=tmp['axes']
+                self.axes=[axis for axis in tmp['axes']]
         def _load_old(self,data,tmp):
             self.data=data.T
             if self.data.ndim==1:
