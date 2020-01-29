@@ -15,17 +15,7 @@ from dask.array import apply_along_axis, einsum, fft, absolute, real, imag, flip
 from ExtendAnalysis import Wave, tasks, task
 from .MultiCut import DaskWave
 
-
-class FilterInterface(object):
-    def execute(self, wave, **kwargs):
-        if isinstance(wave, Wave) or isinstance(wave, DaskWave) or isinstance(wave, np.array):
-            self._execute(wave, **kwargs)
-        if hasattr(wave, "__iter__"):
-            for w in wave:
-                self.execute(w, **kwargs)
-
-    def _execute(self, wave, **kwargs):
-        pass
+from .filter import FilterInterface
 
 
 class ShiftFilter(FilterInterface):
@@ -217,13 +207,13 @@ def _filt(wave, axes, b, a):
             wave.data = signal.filtfilt(b, a, wave.data, axis=i)
     elif isinstance(wave, DaskWave):
         for i in axes:
-            wave.data = apply_along_axis(_filts, i, wave.data, b, a, dtype = wave.data.dtype, shape = (wave.data.shape[i],))
+            wave.data = apply_along_axis(_filts, i, wave.data, b, a, dtype=wave.data.dtype, shape=(wave.data.shape[i],))
     else:
         wave = signal.filtfilt(b, a, wave, axis=i)
     return wave
 
 
-def _filts(x, b, a):#, dtype, shape):
+def _filts(x, b, a):  # , dtype, shape):
     if x.shape[0] != 1:
         return signal.filtfilt(b, a, x)
     else:

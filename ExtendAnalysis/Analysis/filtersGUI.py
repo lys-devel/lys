@@ -3,6 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from ExtendAnalysis import *
 from .filters import *
+from .filterGUI import *
 import _pickle as cPickle
 
 
@@ -45,74 +46,6 @@ class PreFilterSetting(QWidget):
         self.root.setDimension(dimension)
 
 
-class FilterGroupSetting(QWidget):
-    filterChanged = pyqtSignal(QWidget)
-
-    def __init__(self, parent, dimension=2, loader=None, layout=None):
-        super().__init__()
-        self.dim = dimension
-        self.loader = loader
-        self._filters = self._filterList()
-
-        self._layout = layout
-        self._combo = QComboBox()
-        for f in self._filters.keys():
-            self._combo.addItem(f, f)
-        self._combo.currentTextChanged.connect(self._update)
-        vlayout = QVBoxLayout()
-        vlayout.addWidget(QLabel('Type'))
-        vlayout.addWidget(self._combo)
-        self.setLayout(vlayout)
-        self._layout.addWidget(self)
-        self._childGroup = None
-        self._update(self._combo.currentText())
-
-    @classmethod
-    def _filterList(cls):
-        return filterGroups
-
-    def _update(self, text=None):
-        if text is None:
-            text = self._combo.currentText()
-        if text in self._filters:
-            self._removeChildGroup()
-            if issubclass(self._filters[text], FilterGroupSetting):
-                self.filter = self._filters[text](None, self.dim, loader=self.loader, layout=self._layout)
-                self._addGroup(self.filter)
-            else:
-                self.filter = self._filters[text](None, self.dim, loader=self.loader)
-                self.filterChanged.emit(self.filter)
-
-    def _addGroup(self, g):
-        self._childGroup = g
-        g.filterChanged.connect(self.filterChanged)
-        self._layout.addWidget(g)
-        g._update()
-
-    def _removeChildGroup(self):
-        if self._childGroup is not None:
-            self._childGroup._removeChildGroup()
-            self._childGroup.filterChanged.disconnect(self.filterChanged)
-            self._layout.removeWidget(self._childGroup)
-            self._childGroup.deleteLater()
-            self._childGroup = None
-
-    @classmethod
-    def _havingFilter(cls, f):
-        for key, s in cls._filterList().items():
-            if s._havingFilter(f) is not None:
-                return key
-
-    def parseFromFilter(self, f):
-        name = self._havingFilter(f)
-        if name is not None:
-            self._combo.setCurrentIndex(self._combo.findData(name))
-        return self.filter.parseFromFilter(f)
-
-    def setDimension(self, dimension):
-        self.dim = dimension
-
-
 class RootSetting(FilterGroupSetting):
     filterAdded = pyqtSignal(QWidget)
     filterDeleted = pyqtSignal(QWidget)
@@ -141,11 +74,13 @@ class SmoothingSetting(FilterGroupSetting):
         }
         return d
 
+
 class SpinBoxOverOne(QSpinBox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setMinimum(1)
         self.setValue(1)
+
 
 class OddSpinBox(QSpinBox):
     def __init__(self, *args, **kwargs):
@@ -161,13 +96,13 @@ class OddSpinBox(QSpinBox):
 
 
 class _kernelSizeLayout(QGridLayout):
-    def __init__(self, dimension=2, odd = True):
+    def __init__(self, dimension=2, odd=True):
         super().__init__()
         self.addWidget(QLabel('Kernel Size'), 1, 0)
         if odd:
-            spin=OddSpinBox
+            spin = OddSpinBox
         else:
-            spin=SpinBoxOverOne
+            spin = SpinBoxOverOne
         self._kernels = [spin() for d in range(dimension)]
         for i, k in enumerate(self._kernels):
             self.addWidget(QLabel('Axis' + str(i + 1)), 0, i + 1)
@@ -197,13 +132,6 @@ class _kernelSigmaLayout(QGridLayout):
     def setKernelSigma(self, val):
         for k, v in zip(self._kernels, val):
             k.setValue(v)
-
-
-class FilterSettingBase(QWidget):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(None)
-        self.dim = dimension
-        self.loader = loader
 
 
 class MedianSetting(FilterSettingBase):
@@ -890,10 +818,11 @@ class NormalizeSetting(FilterSettingBase):
             obj.range.setRegion(i, r)
         return obj
 
+
 class ReduceSizeSetting(FilterSettingBase):
     def __init__(self, parent, dimension=2, loader=None):
         super().__init__(parent, dimension, loader)
-        self._layout = _kernelSizeLayout(dimension, odd = False)
+        self._layout = _kernelSizeLayout(dimension, odd=False)
         self.setLayout(self._layout)
 
     def GetFilter(self):
@@ -908,6 +837,7 @@ class ReduceSizeSetting(FilterSettingBase):
         obj = ReduceSizeSetting(None, self.dim, self.loader)
         obj._layout.setKernelSize(f.getKernel())
         return obj
+
 
 class SelectRegionSetting(FilterSettingBase):
     def __init__(self, parent, dim, loader=None):
@@ -1072,6 +1002,7 @@ filterGroups = {
     'Symmetric Operations': SymmetricOperationSetting,
     'Simple Math': SimpleMathSetting,
     'Interpolation (Only for post process)': InterpSetting,
+    'Segmentation (Only for post process)': SegmentSetting,
     'Normalization': NormalizeSetting,
     'Reduce size': ReduceSizeSetting
 }
