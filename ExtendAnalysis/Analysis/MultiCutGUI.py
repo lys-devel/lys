@@ -52,10 +52,13 @@ class MultiCut(ExtendMdiSubWindow):
 
         self.__file = QLineEdit()
         btn = QPushButton("Load", clicked=self.load)
+        self.__useDask = QCheckBox("Dask")
+        self.__useDask.setChecked(True)
 
         h1 = QHBoxLayout()
         h1.addWidget(btn)
         h1.addWidget(self.__file)
+        h1.addWidget(self.__useDask)
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(tab)
@@ -95,6 +98,9 @@ class MultiCut(ExtendMdiSubWindow):
             axes = self._cut.findAxisFromCanvas(c)
             obj.setRegion(axes[0], (p1[0], p2[0]))
             obj.setRegion(axes[1], (p1[1], p2[1]))
+
+    def useDask(self):
+        return self.__useDask.isChecked()
 
 
 class PrefilterTab(QWidget):
@@ -507,8 +513,12 @@ class CutTab(QWidget):
 
     def _setWave(self, wave):
         old = self.wave
-        self.wave = wave
-        print("Wave set. shape = ", self.wave.data.shape, ", dtype = ", self.wave.data.dtype, ", chunksize - ", self.wave.data.chunksize)
+        if self.parent.useDask():
+            self.wave = wave
+            print("DaskWave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype, ", chunksize = ", wave.data.chunksize)
+        else:
+            self.wave = wave.toWave()
+            print("Wave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype)
         if old is not None:
             if old.data.shape == wave.data.shape:
                 self.updateAll()
