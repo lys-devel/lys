@@ -377,7 +377,17 @@ class RegionExecutor(QObject):
     def set(self, wave, slices, sumlist, ignore=[]):
         for i, r in zip(self.axes, self.range):
             if not i in ignore:
-                slices[i] = slice(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
+                p1 = min(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
+                p2 = max(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
+                if p1 < 0:
+                    p1 = 0
+                if p2 < 0:
+                    p2 = p1 + 1
+                if p1 > wave.data.shape[i] - 2:
+                    p1 = wave.data.shape[i] - 2
+                if p2 > wave.data.shape[i] - 1:
+                    p2 = wave.data.shape[i] - 1
+                slices[i] = slice(p1, p2)
                 sumlist.append(i)
 
     def callback(self, region):
