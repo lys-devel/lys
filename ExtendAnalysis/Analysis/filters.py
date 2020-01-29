@@ -443,7 +443,13 @@ class SelectRegionFilter(FilterInterface):
                 sl.append(slice(*r))
         key = tuple(sl)
         wave.data = wave.data[key]
-        wave.axes = [ax[s] for s, ax in zip(key, wave.axes)]
+        axes = []
+        for s, ax in zip(key, wave.axes):
+            if ax is None or (ax == np.array(None)).all():
+                axes.append(None)
+            else:
+                axes.append(ax[s])
+        wave.axes = axes
         return wave
 
     def getRegion(self):
