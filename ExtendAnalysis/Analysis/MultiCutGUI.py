@@ -646,7 +646,7 @@ class CutTab(QWidget):
                         self._postProcess(w)
                     except:
                         pass
-        print("total time", time.time() - start, time.time())
+        #print("total time", time.time() - start, time.time())
 
     def _postProcess(self, w):
         if "MultiCut_PostProcess" in w.note:
