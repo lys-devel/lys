@@ -116,8 +116,8 @@ class Graph(AutoSavedWindow):
         self.canvas.fig.canvas = None
         super().closeEvent(event)
 
-    def Append(self, wave, axis=Axis.BottomLeft):
-        return self.canvas.Append(wave, axis)
+    def Append(self, wave, axis=Axis.BottomLeft, contour=False):
+        return self.canvas.Append(wave, axis, contour=contour)
 
     def Duplicate(self, lib=None):
         dic = {}
@@ -134,36 +134,42 @@ def display(w, lib=None):
     g.Append(w)
     return g
 
+
 class MultipleGrid(ExtendMdiSubWindow):
     def __init__(self):
         super().__init__()
         self.__initlayout()
-        self.resize(400,400)
+        self.resize(400, 400)
+
     def __initlayout(self):
         self.layout = QGridLayout()
-        w=QWidget()
+        w = QWidget()
         w.setLayout(self.layout)
         self.setWidget(w)
+
     def Append(self, widget, x, y, w, h):
-        for i in range(x,x+w):
-            for j in range(y,y+h):
-                wid = self.itemAtPosition(i,j)
+        for i in range(x, x + w):
+            for j in range(y, y + h):
+                wid = self.itemAtPosition(i, j)
                 if wid is not None:
                     self.layout.removeWidget(wid)
                     wid.deleteLater()
                     if isinstance(wid, BasicEventCanvasBase):
                         wid.emitCloseEvent()
         self.layout.addWidget(widget, x, y, w, h)
+
     def setSize(self, size):
         for s in range(size):
-            self.layout.setColumnStretch(s,1)
-            self.layout.setRowStretch(s,1)
+            self.layout.setColumnStretch(s, 1)
+            self.layout.setRowStretch(s, 1)
+
     def itemAtPosition(self, i, j):
-        item = self.layout.itemAtPosition(i,j)
+        item = self.layout.itemAtPosition(i, j)
         if item is not None:
             return item.widget()
         else:
             return None
+
 
 class PreviewWindow(ExtendMdiSubWindow):
     instance = None

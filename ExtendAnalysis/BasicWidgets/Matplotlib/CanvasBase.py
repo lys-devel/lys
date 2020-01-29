@@ -8,6 +8,7 @@ import os
 from enum import Enum
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
+from matplotlib.contour import QuadContourSet
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -102,17 +103,26 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         im.set_zorder(zorder)
         return im, ax
 
-    def AppendContour(self, wav, offset=(0, 0, 0, 0)):
-        ax = self.__getAxes(Axis.BottomLeft)
+    def _appendContour(self, wav, offset, axis, zorder):
+        ax = self.__getAxes(axis)
         ext = self.calcExtent2D(wav, offset)
-        obj = ax.contour(wav.data[::-1, :], [0.5], extent=ext, colors=['red'])
-        return obj
+        obj = ax.contour(wav.data.T[::-1, :], [0.5], extent=ext, colors=['red'])
+        self._setZOrder(obj, zorder)
+        return obj, ax
 
     def _remove(self, data):
-        data.obj.remove()
+        if isinstance(data.obj, QuadContourSet):
+            for o in data.obj.collections:
+                o.remove()
+        else:
+            data.obj.remove()
 
     def _setZOrder(self, obj, z):
-        obj.set_zorder(z)
+        if isinstance(obj, QuadContourSet):
+            for o in obj.collections:
+                o.set_zorder(z)
+        else:
+            obj.set_zorder(z)
 
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:
@@ -147,7 +157,14 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
 
     # DataHidableCanvasBase
     def _isVisible(self, obj):
-        return obj.get_visible()
+        if isinstance(obj, QuadContourSet):
+            return obj.collections[0].get_visible()
+        else:
+            return obj.get_visible()
 
     def _setVisible(self, obj, b):
-        obj.set_visible(b)
+        if isinstance(obj, QuadContourSet):
+            for o in obj.collections:
+                o.set_visible(b)
+        else:
+            obj.set_visible(b)

@@ -22,15 +22,6 @@ class AnnotatableCanvas(AreaSettingCanvas, AnnotationCallbackCanvasBase):
     def _removeObject(self, obj):
         self.axes.removeItem(obj)
 
-    def _setZOrder(self, obj, ids):
-        obj.setZValue(ids)
-
-    def _setVisible(self, obj, b):
-        obj.setVisible(b)
-
-    def _isVisible(self, obj):
-        return obj.isVisible()
-
     def _getAnnotAxis(self, obj):
         return Axis.BottomLeft
 
