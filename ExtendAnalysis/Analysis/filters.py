@@ -215,19 +215,19 @@ def _filt(wave, axes, b, a):
         wave.data = np.array(wave.data, dtype=np.float32)
         for i in axes:
             wave.data = signal.filtfilt(b, a, wave.data, axis=i)
-    if isinstance(wave, DaskWave):
+    elif isinstance(wave, DaskWave):
         for i in axes:
-            wave.data = apply_along_axis(_filts, i, wave.data, b=b, a=a)
+            wave.data = apply_along_axis(_filts, i, wave.data, b, a, dtype = wave.data.dtype, shape = (wave.data.shape[i],))
     else:
         wave = signal.filtfilt(b, a, wave, axis=i)
     return wave
 
 
-def _filts(x, b, a):
+def _filts(x, b, a):#, dtype, shape):
     if x.shape[0] != 1:
         return signal.filtfilt(b, a, x)
     else:
-        return np.array([0])  # signal.filtfilt(b,a,x)
+        return np.empty(shape, dtype=dtype)
 
 
 class LowPassFilter(FilterInterface):

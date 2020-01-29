@@ -2,7 +2,7 @@ import cmd, os, traceback
 
 from . import LoadFile
 from . import Wave
-from .CommandWindow import CommandWindow
+from .CommandWindow import CommandWindow as cw
 from .BasicWidgets import *
 
 class ExtendShell(object):
@@ -48,7 +48,7 @@ class ExtendShell(object):
         return globals()
 
     def CommandWindow(self):
-        self.__com=CommandWindow(self)
+        self.__com=cw(self)
         return self.__com
 
     def __GetValidName(self,name):
