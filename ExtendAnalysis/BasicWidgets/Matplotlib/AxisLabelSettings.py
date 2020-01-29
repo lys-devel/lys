@@ -182,16 +182,20 @@ class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
             tick=ax.get_major_ticks()[0]
         elif which=='minor':
             tick=ax.get_minor_ticks()[0]
-        if axis in ['Left','Bottom']:
+        if axis in ['Left', 'Bottom']:
             if mirror:
-                return tick.label2On
+                res = tick.tick2line.get_visible()#tick.tick2On
             else:
-                return tick.label1On
+                res = tick.tick1line.get_visible()#tick.tick1On
         else:
             if mirror:
-                return tick.label1On
+                res = tick.tick1line.get_visible()#tick.tick1On
             else:
-                return tick.label2On
+                res = tick.tick2line.get_visible()#tick.tick2On
+        if isinstance(res,bool):
+            return res
+        elif isinstance(res,str):
+            return res=="on"
     @saveCanvas
     def setTickLabelFont(self,axis,font):
         axes=self.getAxes(axis)

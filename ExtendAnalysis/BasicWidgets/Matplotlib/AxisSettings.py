@@ -727,11 +727,15 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
             tick = ax.get_minor_ticks()[0]
         if axis in ['Left', 'Bottom']:
             if mirror:
-                return tick.tick2On
+                res = tick.tick2line.get_visible()#tick.tick2On
             else:
-                return tick.tick1On
+                res = tick.tick1line.get_visible()#tick.tick1On
         else:
             if mirror:
-                return tick.tick1On
+                res = tick.tick1line.get_visible()#tick.tick1On
             else:
-                return tick.tick2On
+                res = tick.tick2line.get_visible()#tick.tick2On
+        if isinstance(res,bool):
+            return res
+        elif isinstance(res,str):
+            return res=="on"
