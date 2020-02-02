@@ -309,16 +309,20 @@ class controlledWavesGUI(QTreeView):
         self.obj.removeAt(i)
 
     def _post(self):
+        class dialog(FiltersDialog):
+            def __init__(self,wave):
+                super().__init__(wave.data.ndim)
+                self.wave=wave
+                self.applied.connect(self.__set)
+            def __set(self,f):
+                w.note['MultiCut_PostProcess'] = str(f)
         i = self.selectionModel().selectedIndexes()[0].row()
         w = self.obj[i][0]
-        d = FiltersDialog(w.data.ndim)
+        self.d = d = dialog(w)
+        d.applied.connect(self.updated.emit)
         if 'MultiCut_PostProcess' in w.note:
             d.setFilter(Filters.fromString(w.note['MultiCut_PostProcess']))
-        d.exec_()
-        ok, filt = d.getResult()
-        if ok:
-            w.note['MultiCut_PostProcess'] = str(filt)
-        self.updated.emit()
+        d.show()
 
     def _enable(self):
         i = self.selectionModel().selectedIndexes()[0].row()
@@ -520,9 +524,8 @@ class CutTab(QWidget):
             self.wave = wave.toWave()
             print("Wave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype)
         if old is not None:
-            if old.data.shape == wave.data.shape:
-                self.updateAll()
-                return
+            self.updateAll()
+            return
         self.__resetLayout()
 
     def __resetLayout(self):
@@ -651,7 +654,8 @@ class CutTab(QWidget):
                         w.data = wav.data
                         self._postProcess(w)
                     except:
-                        pass
+                        import traceback
+                        traceback.print_exc()
             else:
                 if index[0] in axs:
                     try:

@@ -306,6 +306,9 @@ class AutoSaved(object):
     def addModifiedListener(self, method):
         self.__modListener.append(weakref.WeakMethod(method))
 
+    def removeModifiedListener(self, method):
+        self.__modListener.remove(weakref.WeakMethod(method))
+
     def _EmitModified(self):
         for m in self.__modListener:
             if m() is None:

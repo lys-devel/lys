@@ -32,6 +32,10 @@ class CanvasBaseBase(DrawableCanvasBase):
         super().__init__(*args, **kwargs)
         self._Datalist = []
 
+    def emitCloseEvent(self):
+        super().emitCloseEvent()
+        self.Clear()
+
     @saveCanvas
     def OnWaveModified(self, wave):
         flg = False
@@ -39,7 +43,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         self.saveAppearance()
         for d in self._Datalist:
             if wave.obj == d.wave.obj:
-                self.Remove(d.id)
+                self.Remove(d.id,reuse=True)
                 self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, zindex=d.zindex, reuse=True, contour=d.contour)
                 flg = True
         self.loadAppearance()
@@ -116,7 +120,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         return id
 
     @saveCanvas
-    def Remove(self, indexes):
+    def Remove(self, indexes,reuse=False):
         if hasattr(indexes, '__iter__'):
             list = indexes
         else:
@@ -126,6 +130,8 @@ class CanvasBaseBase(DrawableCanvasBase):
                 if i == d.id:
                     self._remove(d)
                     self._Datalist.remove(d)
+                    if not reuse:
+                        d.wave.removeModifiedListener(self.OnWaveModified)
         self.dataChanged.emit()
 
     @saveCanvas

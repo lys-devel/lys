@@ -959,34 +959,39 @@ class FiltersGUI(QWidget):
             self._flist[len(self._flist) - 1].SetFilter(f)
 
 
-class FiltersDialog(QDialog):
+class FiltersDialog(ExtendMdiSubWindow):
+    applied=pyqtSignal(object)
     def __init__(self, dim):
         super().__init__()
-
         self.filters = FiltersGUI(dim)
 
         self.ok = QPushButton("O K", clicked=self._ok)
         self.cancel = QPushButton("CANCEL", clicked=self._cancel)
+        self.apply = QPushButton("Apply", clicked=self._apply)
         h1 = QHBoxLayout()
         h1.addWidget(self.ok)
         h1.addWidget(self.cancel)
+        h1.addWidget(self.apply)
 
         layout = QVBoxLayout()
         layout.addWidget(self.filters)
         layout.addLayout(h1)
-        self.setLayout(layout)
-        self.adjustSize()
+        w=QWidget()
+        w.setLayout(layout)
+        self.setWidget(w)
+        self.resize(500,500)
 
     def _ok(self):
         self.ok = True
+        self.applied.emit(self.filters.GetFilters())
         self.close()
 
     def _cancel(self):
         self.ok = False
         self.close()
 
-    def getResult(self):
-        return self.ok, self.filters.GetFilters()
+    def _apply(self):
+        self.applied.emit(self.filters.GetFilters())
 
     def setFilter(self, filt):
         self.filters.loadFilters(filt)
