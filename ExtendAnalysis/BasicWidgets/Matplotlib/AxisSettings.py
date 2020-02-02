@@ -15,10 +15,10 @@ from PyQt5.QtWidgets import *
 from matplotlib import lines, markers, ticker
 
 from ExtendAnalysis import *
-from .ImageSettings import *
+from .RGBSettings import *
 
 
-class RangeSelectableCanvas(ImageSettingCanvas):
+class RangeSelectableCanvas(RGBSettingCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi)
         self.__rect = Rectangle((0, 0), 0, 0, color='orange', alpha=0.5)

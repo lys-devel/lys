@@ -32,9 +32,10 @@ class CanvasBaseBase(DrawableCanvasBase):
         super().__init__(*args, **kwargs)
         self._Datalist = []
 
-    def emitCloseEvent(self):
-        super().emitCloseEvent()
+    @notSaveCanvas
+    def emitCloseEvent(self,*args,**kwargs):
         self.Clear()
+        super().emitCloseEvent()
 
     @saveCanvas
     def OnWaveModified(self, wave):
@@ -71,6 +72,8 @@ class CanvasBaseBase(DrawableCanvasBase):
                 ids = self._AppendContour(wav, axis, id, appearance, offset)
             else:
                 ids = self._Append2D(wav, axis, id, appearance, offset)
+        if wav.data.ndim == 3:
+            ids = self._Append3D(wav, axis, id, appearance, offset)
         if not reuse:
             wav.addModifiedListener(self.OnWaveModified)
         self.dataChanged.emit()
@@ -107,6 +110,25 @@ class CanvasBaseBase(DrawableCanvasBase):
         im, ax = self._append2d(wav, offset, axis, id)
         d = WaveData(wav, im, ax, axis, id, appearance, offset)
         self._Datalist.insert(id + 5000, d)
+        return id
+
+    def _Append3D(self, wav, axis, ID, appearance, offset):
+        if ID is None:
+            id = -6000 + len(self.getRGBs())
+        else:
+            id = ID
+        w=Wave()
+        if 'Range' in appearance:
+            rmin, rmax = appearance['Range']
+            amp = np.where(wav.data < rmin, rmin, wav.data)
+            amp = np.where(amp > rmax, rmax, amp)
+            w.data = (amp - rmin) / (rmax - rmin)
+        else:
+            w.data=wav.data
+        w.axes=wav.axes
+        im, ax = self._append3d(w, offset, axis, id)
+        d = WaveData(wav, im, ax, axis, id, appearance, offset)
+        self._Datalist.insert(id + 6000, d)
         return id
 
     def _AppendContour(self, wav, axis, ID, appearance, offset):
@@ -146,7 +168,9 @@ class CanvasBaseBase(DrawableCanvasBase):
         for d in self._Datalist:
             if d.wave.data.ndim == 1 and dim == 1:
                 res.append(d)
-            if d.wave.data.ndim >= 2 and dim == 2 and contour == d.contour:
+            if d.wave.data.ndim == 2 and dim == 2 and contour == d.contour:
+                res.append(d)
+            if d.wave.data.ndim == 3 and dim == 3:
                 res.append(d)
         return res
 
@@ -158,6 +182,9 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     def getContours(self):
         return self.getWaveData(2, True)
+
+    def getRGBs(self):
+        return self.getWaveData(3)
 
     def getDataFromIndexes(self, dim, indexes):
         res = []
@@ -244,7 +271,7 @@ class DataSelectableCanvasBase(CanvasBaseBase):
 
     def __init__(self):
         super().__init__()
-        self.__indexes = [[], [], []]
+        self.__indexes = [[], [], [], []]
 
     def setSelectedIndexes(self, dim, indexes):
         if hasattr(indexes, '__iter__'):

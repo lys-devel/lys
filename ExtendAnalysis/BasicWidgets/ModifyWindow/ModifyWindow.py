@@ -39,8 +39,12 @@ class ModifyWindow(ExtendMdiSubWindow):
             self._tab.addTab(_AreaTab(canvas),"Area")
             self.__list.append('Area')
         self._tab.addTab(_AxisTab(canvas),"Axis")
-        self._tab.addTab(_LineTab(canvas),"Lines")
-        self._tab.addTab(_ImageTab(canvas),"Images")
+        if len(canvas.getLines())!=0:
+            self._tab.addTab(_LineTab(canvas),"Lines")
+        if len(canvas.getImages())!=0:
+            self._tab.addTab(_ImageTab(canvas),"Images")
+        if len(canvas.getRGBs())!=0:
+            self._tab.addTab(_RGBTab(canvas),"RGB")
         self._tab.addTab(_AnnotationTab(canvas),"Annot.")
         if isinstance(canvas,ExtendCanvas):
             self._tab.addTab(SaveBox(canvas),'Save')
@@ -132,6 +136,19 @@ class _ImageTab(QWidget):
         tab.addTab(ImagePlaneAdjustBox(canvas),'Slice')
         tab.addTab(OffsetAdjustBox(canvas,2),'Offset')
         tab.addTab(AnimationBox(canvas),'Animation')
+        layout.addWidget(tab)
+        self.setLayout(layout)
+class _RGBTab(QWidget):
+    def __init__(self,canvas):
+        super().__init__()
+        self.canvas=canvas
+        self._initlayout(canvas)
+    def _initlayout(self,canvas):
+        layout=QVBoxLayout()
+        layout.addWidget(RightClickableSelectionBox(canvas,3))
+        tab=QTabWidget()
+        tab.addTab(RGBColorAdjustBox(canvas),'Color')
+        tab.addTab(OffsetAdjustBox(canvas,3),'Offset')
         layout.addWidget(tab)
         self.setLayout(layout)
 class _AnnotationTab(QWidget):

@@ -103,6 +103,12 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         im.set_zorder(zorder)
         return im, ax
 
+    def _append3d(self, wave, offset, axis, zorder):
+        ax = self.__getAxes(axis)
+        im = ax.imshow(wave.data.swapaxes(0,1), aspect='auto', extent=self.calcExtent2D(wave, offset), picker=True)
+        im.set_zorder(zorder)
+        return im, ax
+
     def _appendContour(self, wav, offset, axis, zorder):
         ax = self.__getAxes(axis)
         ext = self.calcExtent2D(wav, offset)

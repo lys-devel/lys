@@ -6,80 +6,80 @@ from .ColorWidgets import *
 
 from ExtendAnalysis.BasicWidgets.Commons.ScientificSpinBox import *
 
+class _rangeWidget(QGroupBox):
+    valueChanged = pyqtSignal()
+
+    def __init__(self, title, auto=50, mean=50, width=50):
+        super().__init__(title)
+        self.__mean = mean
+        self.__wid = width
+        self.__flg = False
+        self.__autovalue = auto
+        self.__initlayout()
+        self.__setAuto()
+
+    def __initlayout(self):
+        layout = QVBoxLayout()
+        l_h1 = QHBoxLayout()
+        self.__auto = QPushButton("Auto")
+        self.__auto.clicked.connect(self.__setAuto)
+        self.__zero = QPushButton("Zero")
+        self.__zero.clicked.connect(self.__setZero)
+        self.__spin1 = QDoubleSpinBox()
+        self.__spin1.setRange(0, 100)
+        self.__spin2 = ScientificSpinBox()
+        l_h1.addWidget(QLabel('Rel'))
+        l_h1.addWidget(self.__spin1)
+        l_h1.addWidget(QLabel('Abs'))
+        l_h1.addWidget(self.__spin2)
+        layout.addLayout(l_h1)
+        self.__slider = QSlider(Qt.Horizontal)
+        self.__slider.setRange(0, 100)
+        l_h2 = QHBoxLayout()
+        l_h2.addWidget(self.__slider)
+        l_h2.addWidget(self.__auto)
+        l_h2.addWidget(self.__zero)
+        layout.addLayout(l_h2)
+        self.__slider.valueChanged.connect(self.setSlider)
+        self.__spin1.valueChanged.connect(self.setRelative)
+        self.__spin2.valueChanged.connect(self.setAbsolute)
+        self.setLayout(layout)
+
+    def __setAuto(self):
+        self.setRelative(self.__autovalue)
+
+    def __setZero(self):
+        self.setAbsolute(0)
+
+    def setSlider(self, val):
+        self.setRelative(val)
+
+    def setRelative(self, val):
+        if self.__flg:
+            return
+        self.__spin2.setValue(self.__mean + self.__wid * (val - 50) / 50)
+
+    def setAbsolute(self, val):
+        if self.__flg:
+            return
+        self.__flg = True
+        self.__spin1.setValue((val - self.__mean) / self.__wid * 50 + 50)
+        self.__spin2.setValue(val)
+        self.__slider.setValue(int((val - self.__mean) / self.__wid * 50 + 50))
+        self.__flg = False
+        self.valueChanged.emit()
+
+    def getValue(self):
+        return self.__spin2.value()
+
+    def setRange(self, mean, wid):
+        self.__mean = mean
+        self.__wid = wid
+
+    def setLimit(self, min, max):
+        self.__spin2.setRange(min, max)
 
 class ImageColorAdjustBox(QWidget):
-    class _rangeWidget(QGroupBox):
-        valueChanged = pyqtSignal()
-
-        def __init__(self, title, auto=50, mean=50, width=50):
-            super().__init__(title)
-            self.__mean = mean
-            self.__wid = width
-            self.__flg = False
-            self.__autovalue = auto
-            self.__initlayout()
-            self.__setAuto()
-
-        def __initlayout(self):
-            layout = QVBoxLayout()
-            l_h1 = QHBoxLayout()
-            self.__auto = QPushButton("Auto")
-            self.__auto.clicked.connect(self.__setAuto)
-            self.__zero = QPushButton("Zero")
-            self.__zero.clicked.connect(self.__setZero)
-            self.__spin1 = QDoubleSpinBox()
-            self.__spin1.setRange(0, 100)
-            self.__spin2 = ScientificSpinBox()
-            l_h1.addWidget(QLabel('Rel'))
-            l_h1.addWidget(self.__spin1)
-            l_h1.addWidget(QLabel('Abs'))
-            l_h1.addWidget(self.__spin2)
-            layout.addLayout(l_h1)
-            self.__slider = QSlider(Qt.Horizontal)
-            self.__slider.setRange(0, 100)
-            l_h2 = QHBoxLayout()
-            l_h2.addWidget(self.__slider)
-            l_h2.addWidget(self.__auto)
-            l_h2.addWidget(self.__zero)
-            layout.addLayout(l_h2)
-            self.__slider.valueChanged.connect(self.setSlider)
-            self.__spin1.valueChanged.connect(self.setRelative)
-            self.__spin2.valueChanged.connect(self.setAbsolute)
-            self.setLayout(layout)
-
-        def __setAuto(self):
-            self.setRelative(self.__autovalue)
-
-        def __setZero(self):
-            self.setAbsolute(0)
-
-        def setSlider(self, val):
-            self.setRelative(val)
-
-        def setRelative(self, val):
-            if self.__flg:
-                return
-            self.__spin2.setValue(self.__mean + self.__wid * (val - 50) / 50)
-
-        def setAbsolute(self, val):
-            if self.__flg:
-                return
-            self.__flg = True
-            self.__spin1.setValue((val - self.__mean) / self.__wid * 50 + 50)
-            self.__spin2.setValue(val)
-            self.__slider.setValue(int((val - self.__mean) / self.__wid * 50 + 50))
-            self.__flg = False
-            self.valueChanged.emit()
-
-        def getValue(self):
-            return self.__spin2.value()
-
-        def setRange(self, mean, wid):
-            self.__mean = mean
-            self.__wid = wid
-
-        def setLimit(self, min, max):
-            self.__spin2.setRange(min, max)
 
     def __init__(self, canvas):
         super().__init__()
@@ -92,8 +92,8 @@ class ImageColorAdjustBox(QWidget):
         layout = QVBoxLayout()
         self.__cmap = ColormapSelection()
         self.__cmap.colorChanged.connect(self.__changeColormap)
-        self.__start = ImageColorAdjustBox._rangeWidget("First", 20)
-        self.__end = ImageColorAdjustBox._rangeWidget("Last", 80)
+        self.__start = _rangeWidget("First", 20)
+        self.__end = _rangeWidget("Last", 80)
         self.__start.valueChanged.connect(self.__changerange)
         self.__end.valueChanged.connect(self.__changerange)
         layout.addWidget(self.__cmap)
@@ -122,14 +122,48 @@ class ImageColorAdjustBox(QWidget):
         if not self.__flg:
             indexes = self.canvas.getSelectedIndexes(2)
             self.canvas.setColorRange(indexes, self.__start.getValue(), self.__end.getValue(), self.__cmap.isLog())
-            # self.__start.setLimit(-float('inf'),self.__end.getValue())
-            # self.__end.setLimit(self.__start.getValue(),float('inf'))
 
     def __changeColormap(self):
         if not self.__flg:
             indexes = self.canvas.getSelectedIndexes(2)
             self.canvas.setColormap(self.__cmap.currentColor(), indexes)
             self.__changerange()
+
+class RGBColorAdjustBox(QWidget):
+    def __init__(self, canvas):
+        super().__init__()
+        self.canvas = canvas
+        canvas.dataSelected.connect(self.OnDataSelected)
+        self.__initlayout()
+        self.__flg = False
+
+    def __initlayout(self):
+        layout = QVBoxLayout()
+        self.__start = _rangeWidget("First", 20)
+        self.__end = _rangeWidget("Last", 80)
+        self.__start.valueChanged.connect(self.__changerange)
+        self.__end.valueChanged.connect(self.__changerange)
+        layout.addWidget(self.__start)
+        layout.addWidget(self.__end)
+        self.setLayout(layout)
+
+    def OnDataSelected(self):
+        self.__flg = True
+        indexes = self.canvas.getSelectedIndexes(3)
+        if len(indexes) == 0:
+            return
+        im = self.canvas.getDataFromIndexes(3, indexes)[0].wave.data
+        self.__start.setRange(im.mean(), math.sqrt(im.var()) * 5)
+        self.__end.setRange(im.mean(), math.sqrt(im.var()) * 5)
+        ran = self.canvas.getColorRange(indexes)[0]
+        self.__start.setAbsolute(ran[0])
+        self.__end.setAbsolute(ran[1])
+        self.__flg = False
+
+    def __changerange(self):
+        if not self.__flg:
+            indexes = self.canvas.getSelectedIndexes(3)
+            self.canvas.setColorRange(indexes, self.__start.getValue(), self.__end.getValue())
 
 
 class ImagePlaneAdjustBox(QWidget):
