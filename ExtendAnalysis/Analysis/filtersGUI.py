@@ -1,7 +1,10 @@
+import collections
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from ExtendAnalysis import *
+
+filterGroups = collections.OrderedDict()
 from .filters import *
 from .filterGUI import *
 import _pickle as cPickle
@@ -53,14 +56,6 @@ class RootSetting(FilterGroupSetting):
     def _filterList(cls):
         return filterGroups
 
-
-class DeleteSetting(QWidget):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(None)
-
-    @classmethod
-    def _havingFilter(cls, f):
-        return None
 
 
 class SmoothingSetting(FilterGroupSetting):
@@ -1016,17 +1011,14 @@ class FiltersDialog(ExtendMdiSubWindow):
         self.filters.loadFilters(filt)
 
 
-filterGroups = {
-    '': DeleteSetting,
-    'Select region': SelectRegionSetting,
-    'Smoothing Filter': SmoothingSetting,
-    'Frequency Filter': FrequencySetting,
-    'Differential Filter': DifferentialSetting,
-    'Fourier Filter': FourierSetting,
-    'Symmetric Operations': SymmetricOperationSetting,
-    'Simple Math': SimpleMathSetting,
-    'Interpolation (Only for post process)': InterpSetting,
-    'Segmentation (Only for post process)': SegmentSetting,
-    'Normalization': NormalizeSetting,
-    'Reduce size': ReduceSizeSetting
-}
+filterGroups['Select region']=SelectRegionSetting
+filterGroups['Smoothing Filter'] = SmoothingSetting
+filterGroups['Frequency Filter'] = FrequencySetting
+filterGroups['Differential Filter'] = DifferentialSetting
+filterGroups['Fourier Filter'] = FourierSetting
+filterGroups['Symmetric Operations'] = SymmetricOperationSetting
+filterGroups['Simple Math'] = SimpleMathSetting
+filterGroups['Interpolation (Only for post process)'] = InterpSetting
+filterGroups['Segmentation (Only for post process)'] = SegmentSetting
+filterGroups['Normalization'] = NormalizeSetting
+filterGroups['Reduce size'] = ReduceSizeSetting
