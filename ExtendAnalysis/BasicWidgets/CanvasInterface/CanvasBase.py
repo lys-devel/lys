@@ -71,16 +71,12 @@ class CanvasBaseBase(DrawableCanvasBase):
                 wdata.id=ids
                 wdata.obj=obj
                 wdata.axes=ax
-                print("reused", wdata)
                 return wdata
             else:
                 wd=WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter)
-                print("added", wd)
                 return wd
         if filter is not None:
-            wav=Wave()
-            wav.data=w.data
-            wav.axes=w.axes
+            wav=w.Duplicate()
             filter.execute(wav)
         else:
             wav=w
@@ -231,7 +227,10 @@ class CanvasBaseBase(DrawableCanvasBase):
             dic[i]['Offset'] = str(data.offset)
             dic[i]['ZIndex'] = str(data.zindex)
             dic[i]['Contour'] = data.contour
-            dic[i]['Filter'] = str(data.filter)
+            if data.filter is None:
+                dic[i]['Filter'] = None
+            else:
+                dic[i]['Filter'] = str(data.filter)
             i += 1
         dictionary['Datalist'] = dic
 
@@ -263,7 +262,11 @@ class CanvasBaseBase(DrawableCanvasBase):
                 else:
                     contour = False
                 if 'Filter' in dic[i]:
-                    filter = Filters.fromString(dic[i]['Filter'])
+                    str = dic[i]['Filter']
+                    if str is None:
+                        filter = None
+                    else:
+                        filter = Filters.fromString(dic[i]['Filter'])
                 else:
                     filter=None
                 self.Append(w, axis, appearance=ap, offset=offset, zindex=zi, contour=contour, filter=filter)

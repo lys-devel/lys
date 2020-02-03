@@ -157,7 +157,6 @@ class RightClickableSelectionBox(DataSelectionBox):
                 self.applied.connect(self.__set)
             def __set(self,f):
                 self.data.filter = f
-                print("emit", self.data)
                 self.data.wave.emitModified()
         menu = QMenu(self)
         menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Append', 'Edit', 'Print', 'Export', 'Process']
