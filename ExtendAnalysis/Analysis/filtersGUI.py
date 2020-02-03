@@ -918,9 +918,13 @@ class FiltersGUI(QWidget):
         save = QPushButton("Save", clicked=self._save)
         load = QPushButton("Load", clicked=self._load)
         clear = QPushButton("Clear", clicked=self.clear)
+        exp = QPushButton("Export", clicked=self._export)
+        imp = QPushButton("Import", clicked=self._import)
         hbox2 = QHBoxLayout()
         hbox2.addWidget(save)
         hbox2.addWidget(load)
+        hbox2.addWidget(exp)
+        hbox2.addWidget(imp)
         hbox2.addWidget(clear)
 
         vbox.addLayout(hbox)
@@ -950,10 +954,20 @@ class FiltersGUI(QWidget):
             self._flist.remove(item)
 
     def _save(self):
-        self.saveAs("test.fil")
+        self.saveAs(".lys/quickFilter.fil")
 
     def _load(self):
-        self.loadFrom("test.fil")
+        self.loadFrom(".lys/quickFilter.fil")
+
+    def _export(self):
+        fname = QFileDialog.getSaveFileName(self, 'Save Filter', home(), filter = "Filter files(*.fil);;All files(*.*)")
+        if fname[0]:
+            self.saveAs((fname[0]+".fil").replace(".fil.fil",".fil"))
+
+    def _import(self):
+        fname = QFileDialog.getOpenFileName(self, 'Open Filter', home(), filter = "Filter files(*.fil);;All files(*.*)")
+        if fname[0]:
+            self.loadFrom(fname[0])
 
     def saveAs(self, file):
         filt = self.GetFilters()
