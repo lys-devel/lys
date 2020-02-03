@@ -419,6 +419,12 @@ class Wave(AutoSaved):
         else:
             return super().__getattribute__(key)
 
+    def axisIsValid(self, dim):
+        tmp = self.axes[dim]
+        if tmp is None or (tmp==np.array(None)).all():
+            return False
+        return True
+
     def getAxis(self, dim):
         val = np.array(self.axes[dim])
         if self.data.ndim <= dim:
@@ -466,6 +472,14 @@ class Wave(AutoSaved):
         if path is None:
             return None
         return (path + ".npz").replace(".npz.npz", ".npz")
+
+    def Duplicate(self):
+        import copy
+        w=Wave()
+        w.data=self.data
+        w.axes=copy.copy(self.axes)
+        w.note=copy.copy(self.note)
+        return w
 
     def slice(self, pos1, pos2, axis='x', width=1):
         w = Wave()
