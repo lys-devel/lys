@@ -642,12 +642,6 @@ class SimpleMathSettingBase(FilterSettingBase):
         self._type = type
         self.setLayout(self._layout)
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, SimpleMathFilter):
-            if f._type == self._type:
-                return True
-
     def GetFilter(self):
         return SimpleMathFilter(self._type, self._val.value())
 
@@ -658,9 +652,14 @@ class AddSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = AddSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._val)
+        obj._val.setValue(f._value)
         return obj
 
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, SimpleMathFilter):
+            if f._type == '+':
+                return True
 
 class SubtractSetting(SimpleMathSettingBase):
     def __init__(self, parent, dim, loader=None):
@@ -668,8 +667,13 @@ class SubtractSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = SubtractSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._val)
+        obj._val.setValue(f._value)
         return obj
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, SimpleMathFilter):
+            if f._type == '-':
+                return True
 
 
 class MultSetting(SimpleMathSettingBase):
@@ -678,8 +682,13 @@ class MultSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = MultSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._val)
+        obj._val.setValue(f._value)
         return obj
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, SimpleMathFilter):
+            if f._type == '*':
+                return True
 
 
 class DevideSetting(SimpleMathSettingBase):
@@ -688,9 +697,14 @@ class DevideSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = DevideSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._val)
+        obj._val.setValue(f._value)
         return obj
 
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, SimpleMathFilter):
+            if f._type == '/':
+                return True
 
 class PowSetting(SimpleMathSettingBase):
     def __init__(self, parent, dim, loader=None):
@@ -698,9 +712,14 @@ class PowSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = PowSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._val)
+        obj._val.setValue(f._value)
         return obj
 
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, SimpleMathFilter):
+            if f._type == '**':
+                return True
 
 class RegionSelectWidget(QGridLayout):
     loadClicked = pyqtSignal(object)

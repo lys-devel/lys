@@ -316,6 +316,9 @@ class AutoSaved(object):
             else:
                 m()(self)
 
+    def emitModified(self):
+        self._EmitModified()
+
 
 def produce(data, axes, note):
     w = Wave()

@@ -13,7 +13,7 @@ class Axis(IntEnum):
 
 
 class WaveData(object):
-    def __init__(self, wave, obj, axes, axis, idn, appearance, offset=(0, 0, 0, 0), zindex=0, contour=False):
+    def __init__(self, wave, obj, axes, axis, idn, appearance, offset=(0, 0, 0, 0), zindex=0, contour=False, filter=None):
         self.wave = wave
         self.obj = obj
         self.axis = axis
@@ -23,6 +23,7 @@ class WaveData(object):
         self.offset = offset
         self.zindex = zindex
         self.contour = contour
+        self.filter=filter
 
 
 class CanvasBaseBase(DrawableCanvasBase):
@@ -45,37 +46,59 @@ class CanvasBaseBase(DrawableCanvasBase):
         for d in self._Datalist:
             if wave.obj == d.wave.obj:
                 self.Remove(d.id,reuse=True)
-                self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, zindex=d.zindex, reuse=True, contour=d.contour)
+                self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, zindex=d.zindex, reuse=True, contour=d.contour, filter=d.filter, wdata=d)
                 flg = True
         self.loadAppearance()
         self.EnableDraw(True)
         if(flg):
             self.draw()
 
-    def Append(self, wave, axis=Axis.BottomLeft, id=None, appearance=None, offset=(0, 0, 0, 0), zindex=0, contour=False):
+    def Append(self, wave, axis=Axis.BottomLeft, id=None, appearance=None, offset=(0, 0, 0, 0), zindex=0, contour=False, filter=None):
         if isinstance(wave, Wave):
             wav = wave
         else:
             wav = LoadFile.load(wave)
         if appearance is None:
-            ids = self._Append(wav, axis, id, {}, offset, zindex, contour=contour)
+            ids = self._Append(wav, axis, id, {}, offset, zindex, contour=contour, filter=filter)
         else:
-            ids = self._Append(wav, axis, id, dict(appearance), offset, zindex, contour=contour)
+            ids = self._Append(wav, axis, id, dict(appearance), offset, zindex, contour=contour, filter=filter)
         return ids
 
     @saveCanvas
-    def _Append(self, wav, axis, id, appearance, offset, zindex=0, reuse=False, contour=False):
+    def _Append(self, w, axis, id, appearance, offset, zindex=0, reuse=False, contour=False, filter=None, wdata=None):
+        def makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata):
+            if reuse:
+                wdata.id=ids
+                wdata.obj=obj
+                wdata.axes=ax
+                print("reused", wdata)
+                return wdata
+            else:
+                wd=WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter)
+                print("added", wd)
+                return wd
+        if filter is not None:
+            wav=Wave()
+            wav.data=w.data
+            wav.axes=w.axes
+            filter.execute(wav)
+        else:
+            wav=w
         if wav.data.ndim == 1:
-            ids = self._Append1D(wav, axis, id, appearance, offset)
+            ids, obj, ax = self._Append1D(wav, axis, id, appearance, offset)
+            self._Datalist.insert(ids + 2000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
         if wav.data.ndim == 2:
             if contour:
-                ids = self._AppendContour(wav, axis, id, appearance, offset)
+                ids,obj,ax = self._AppendContour(wav, axis, id, appearance, offset)
+                self._Datalist.insert(ids + 4000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
             else:
-                ids = self._Append2D(wav, axis, id, appearance, offset)
+                ids, obj, ax = self._Append2D(wav, axis, id, appearance, offset)
+                self._Datalist.insert(ids + 5000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
         if wav.data.ndim == 3:
-            ids = self._Append3D(wav, axis, id, appearance, offset)
+            ids, obj, ax = self._Append3D(wav, axis, id, appearance, offset)
+            self._Datalist.insert(ids + 6000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
         if not reuse:
-            wav.addModifiedListener(self.OnWaveModified)
+            w.addModifiedListener(self.OnWaveModified)
         self.dataChanged.emit()
         if appearance is not None:
             self.loadAppearance()
@@ -99,8 +122,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         else:
             id = ID
         obj, ax = self._append1d(xdata, ydata, axis, id)
-        self._Datalist.insert(id + 2000, WaveData(wav, obj, ax, axis, id, appearance, offset))
-        return id
+        return id, obj, ax
 
     def _Append2D(self, wav, axis, ID, appearance, offset):
         if ID is None:
@@ -108,9 +130,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         else:
             id = ID
         im, ax = self._append2d(wav, offset, axis, id)
-        d = WaveData(wav, im, ax, axis, id, appearance, offset)
-        self._Datalist.insert(id + 5000, d)
-        return id
+        return id, im, ax
 
     def _Append3D(self, wav, axis, ID, appearance, offset):
         if ID is None:
@@ -127,9 +147,7 @@ class CanvasBaseBase(DrawableCanvasBase):
             w.data=wav.data
         w.axes=wav.axes
         im, ax = self._append3d(w, offset, axis, id)
-        d = WaveData(wav, im, ax, axis, id, appearance, offset)
-        self._Datalist.insert(id + 6000, d)
-        return id
+        return id, im, ax
 
     def _AppendContour(self, wav, axis, ID, appearance, offset):
         if ID is None:
@@ -137,9 +155,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         else:
             id = ID
         im, ax = self._appendContour(wav, offset, axis, id)
-        d = WaveData(wav, im, ax, axis, id, appearance, offset, contour=True)
-        self._Datalist.insert(id + 4000, d)
-        return id
+        return id, im, ax
 
     @saveCanvas
     def Remove(self, indexes,reuse=False):
@@ -215,10 +231,12 @@ class CanvasBaseBase(DrawableCanvasBase):
             dic[i]['Offset'] = str(data.offset)
             dic[i]['ZIndex'] = str(data.zindex)
             dic[i]['Contour'] = data.contour
+            dic[i]['Filter'] = str(data.filter)
             i += 1
         dictionary['Datalist'] = dic
 
     def LoadFromDictionary(self, dictionary, path):
+        from ExtendAnalysis.Analysis.filters import Filters
         self.EnableSave(False)
         i = 0
         sdir = pwd()
@@ -244,7 +262,11 @@ class CanvasBaseBase(DrawableCanvasBase):
                     contour = dic[i]['Contour']
                 else:
                     contour = False
-                self.Append(w, axis, appearance=ap, offset=offset, zindex=zi, contour=contour)
+                if 'Filter' in dic[i]:
+                    filter = Filters.fromString(dic[i]['Filter'])
+                else:
+                    filter=None
+                self.Append(w, axis, appearance=ap, offset=offset, zindex=zi, contour=contour, filter=filter)
                 i += 1
         self.loadAppearance()
         self.EnableSave(True)

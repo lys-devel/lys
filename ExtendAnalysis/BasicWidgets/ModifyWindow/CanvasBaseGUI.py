@@ -149,8 +149,18 @@ class RightClickableSelectionBox(DataSelectionBox):
         self.__dim = dim
 
     def buildContextMenu(self, qPoint):
+        from ExtendAnalysis.Analysis.filtersGUI import FiltersDialog
+        class dialog(FiltersDialog):
+            def __init__(self,data):
+                super().__init__(data.wave.data.ndim)
+                self.data=data
+                self.applied.connect(self.__set)
+            def __set(self,f):
+                self.data.filter = f
+                print("emit", self.data)
+                self.data.wave.emitModified()
         menu = QMenu(self)
-        menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Append', 'Edit', 'Print', 'Export']
+        menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Append', 'Edit', 'Print', 'Export', 'Process']
         actionlist = []
         for label in menulabels:
             actionlist.append(menu.addAction(label))
@@ -195,7 +205,12 @@ class RightClickableSelectionBox(DataSelectionBox):
             if len(path) != 0:
                 d = self.canvas.getDataFromIndexes(self.__dim, list)[0]
                 d.wave.export(path, type=type)
-
+        elif action.text() == 'Process':
+            data = self.canvas.getDataFromIndexes(self.__dim, list)[0]
+            d=dialog(data)
+            if data.filter is not None:
+                d.setFilter(data.filter)
+            d.show()
 
 class OffsetAdjustBox(QWidget):
     def __init__(self, canvas, dim):
