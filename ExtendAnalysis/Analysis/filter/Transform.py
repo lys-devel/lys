@@ -13,9 +13,9 @@ class SetAxisFilter(FilterInterface):
 
     def _execute(self, wave, **kwargs):
         if self._type == 'step':
-            a = np.linspace(self._val1, self._val1+self._val2*len(wave.getAxis(self._axis)), len(wave.getAxis(self._axis)))
+            a = np.linspace(self._val1, self._val1+self._val2 * wave.data.shape[self._axis], wave.data.shape[self._axis])
         else:
-            a = np.linspace(self._val1, self._val1+self._val2, len(wave.getAxis(self._axis)))
+            a = np.linspace(self._val1, self._val1+self._val2, wave.data.shape[self._axis])
         wave.axes[self._axis] = a
         return wave
 
