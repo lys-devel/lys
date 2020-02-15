@@ -186,6 +186,7 @@ class PrefilterTab(QWidget):
         self.layout.addWidget(self.filt)
         h1 = QHBoxLayout()
         h1.addWidget(QPushButton("Rechunk", clicked=self._chunk))
+        h1.addWidget(QPushButton("Apply Show", clicked=self._click2))
         h1.addWidget(QPushButton("Apply filters", clicked=self._click))
         self.layout.addLayout(h1)
 
@@ -203,6 +204,12 @@ class PrefilterTab(QWidget):
         self.filt.GetFilters().execute(waves)
         waves.persist()
         self.filterApplied.emit(waves)
+
+    def _click2(self):
+        waves = self.wave.toWave()
+        self.filt.GetFilters().execute(waves)
+        display(waves)
+
 
     def _chunk(self):
         if self.wave is None:

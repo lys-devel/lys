@@ -1033,6 +1033,5 @@ filterGroups['Fourier Filter'] = FourierSetting
 filterGroups['Symmetric Operations'] = SymmetricOperationSetting
 filterGroups['Simple Math'] = SimpleMathSetting
 filterGroups['Interpolation (Only for post process)'] = InterpSetting
-filterGroups['Segmentation (Only for post process)'] = SegmentSetting
 filterGroups['Normalization'] = NormalizeSetting
 filterGroups['Reduce size'] = ReduceSizeSetting

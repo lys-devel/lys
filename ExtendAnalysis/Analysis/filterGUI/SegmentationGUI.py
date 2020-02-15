@@ -1,12 +1,15 @@
 from ..filter.Segmentation import *
 from .FilterGroupSetting import *
+from ..filtersGUI import filterGroups
 
+from ...BasicWidgets.Commons.ScientificSpinBox import ScientificSpinBox
 
 class SegmentSetting(FilterGroupSetting):
     @classmethod
     def _filterList(cls):
         d = {
-            'Adaptive Threshold': AdaptiveThresholdSetting,
+            'Threshold': ThresholdSetting,
+            '*Adaptive Threshold': AdaptiveThresholdSetting,
         }
         return d
 
@@ -49,3 +52,32 @@ class AdaptiveThresholdSetting(FilterSettingBase):
         obj._c.setValue(params[1])
         obj._method.setCurrentText(params[2])
         return obj
+
+
+class ThresholdSetting(FilterSettingBase):
+    finished = pyqtSignal()
+
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        self._layout = QHBoxLayout()
+        self._c = ScientificSpinBox()
+        self._c.setValue(1)
+        self._layout.addWidget(QLabel('Threshold'))
+        self._layout.addWidget(self._c)
+        self.setLayout(self._layout)
+
+    def GetFilter(self):
+        return ThresholdFilter(self._c.value())
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, ThresholdFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        param = f.getParams()
+        obj = ThresholdSetting(None, self.dim, self.loader)
+        obj._c.setValue(param)
+        return obj
+
+filterGroups['Segmentation'] = SegmentSetting
