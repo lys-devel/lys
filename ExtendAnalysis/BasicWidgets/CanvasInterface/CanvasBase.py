@@ -1,4 +1,5 @@
 from enum import IntEnum
+from matplotlib.colors import hsv_to_rgb
 from .SaveCanvas import *
 from ExtendAnalysis import *
 from ExtendAnalysis import LoadFile
@@ -23,7 +24,7 @@ class WaveData(object):
         self.offset = offset
         self.zindex = zindex
         self.contour = contour
-        self.filter=filter
+        self.filter = filter
 
 
 class CanvasBaseBase(DrawableCanvasBase):
@@ -34,7 +35,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         self._Datalist = []
 
     @notSaveCanvas
-    def emitCloseEvent(self,*args,**kwargs):
+    def emitCloseEvent(self, *args, **kwargs):
         self.Clear()
         super().emitCloseEvent()
 
@@ -45,7 +46,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         self.saveAppearance()
         for d in self._Datalist:
             if wave.obj == d.wave.obj:
-                self.Remove(d.id,reuse=True)
+                self.Remove(d.id, reuse=True)
                 self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, zindex=d.zindex, reuse=True, contour=d.contour, filter=d.filter, wdata=d)
                 flg = True
         self.loadAppearance()
@@ -68,24 +69,32 @@ class CanvasBaseBase(DrawableCanvasBase):
     def _Append(self, w, axis, id, appearance, offset, zindex=0, reuse=False, contour=False, filter=None, wdata=None):
         def makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata):
             if reuse:
-                wdata.id=ids
-                wdata.obj=obj
-                wdata.axes=ax
+                wdata.id = ids
+                wdata.obj = obj
+                wdata.axes = ax
                 return wdata
             else:
-                wd=WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter)
+                wd = WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter)
                 return wd
         if filter is not None:
-            wav=w.Duplicate()
+            wav = w.Duplicate()
             filter.execute(wav)
         else:
-            wav=w
+            wav = w
+        if wav.data.ndim == 2 and wav.data.dtype == complex:
+            if not w == wav:
+                wav = w.Duplicate()
+            if 'Range' in appearance:
+                rmin, rmax = appearance['Range']
+            else:
+                rmin, rmax = 0, np.max(np.abs(wav.data))
+            wav.data = self._Complex2HSV(wav.data, rmin, rmax)
         if wav.data.ndim == 1:
             ids, obj, ax = self._Append1D(wav, axis, id, appearance, offset)
             self._Datalist.insert(ids + 2000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
         if wav.data.ndim == 2:
             if contour:
-                ids,obj,ax = self._AppendContour(wav, axis, id, appearance, offset)
+                ids, obj, ax = self._AppendContour(wav, axis, id, appearance, offset)
                 self._Datalist.insert(ids + 4000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
             else:
                 ids, obj, ax = self._Append2D(wav, axis, id, appearance, offset)
@@ -120,6 +129,16 @@ class CanvasBaseBase(DrawableCanvasBase):
         obj, ax = self._append1d(xdata, ydata, axis, id)
         return id, obj, ax
 
+    def _Complex2HSV(self, z, rmin, rmax, hue_start=90):
+        amp = np.abs(z)
+        amp = np.where(amp < rmin, rmin, amp)
+        amp = np.where(amp > rmax, rmax, amp)
+        ph = np.angle(z, deg=1) + hue_start
+        h = (ph % 360) / 360
+        s = (amp - rmin) / (rmax - rmin)
+        v = np.ones_like(h)
+        return hsv_to_rgb(np.dstack((h, s, v)))
+
     def _Append2D(self, wav, axis, ID, appearance, offset):
         if ID is None:
             id = -5000 + len(self.getImages())
@@ -133,15 +152,15 @@ class CanvasBaseBase(DrawableCanvasBase):
             id = -6000 + len(self.getRGBs())
         else:
             id = ID
-        w=Wave()
+        w = Wave()
         if 'Range' in appearance:
             rmin, rmax = appearance['Range']
             amp = np.where(wav.data < rmin, rmin, wav.data)
             amp = np.where(amp > rmax, rmax, amp)
             w.data = (amp - rmin) / (rmax - rmin)
         else:
-            w.data=wav.data
-        w.axes=wav.axes
+            w.data = wav.data
+        w.axes = wav.axes
         im, ax = self._append3d(w, offset, axis, id)
         return id, im, ax
 
@@ -154,7 +173,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         return id, im, ax
 
     @saveCanvas
-    def Remove(self, indexes,reuse=False):
+    def Remove(self, indexes, reuse=False):
         if hasattr(indexes, '__iter__'):
             list = indexes
         else:
@@ -180,9 +199,9 @@ class CanvasBaseBase(DrawableCanvasBase):
         for d in self._Datalist:
             if d.wave.data.ndim == 1 and dim == 1:
                 res.append(d)
-            if d.wave.data.ndim == 2 and dim == 2 and contour == d.contour:
+            if d.wave.data.ndim == 2 and dim == 2 and contour == d.contour and d.wave.data.dtype != complex:
                 res.append(d)
-            if d.wave.data.ndim == 3 and dim == 3:
+            if (d.wave.data.ndim == 3 and dim == 3) or (d.wave.data.ndim == 2 and dim == 3 and d.wave.data.dtype == complex):
                 res.append(d)
         return res
 
@@ -268,7 +287,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                     else:
                         filter = Filters.fromString(dic[i]['Filter'])
                 else:
-                    filter=None
+                    filter = None
                 self.Append(w, axis, appearance=ap, offset=offset, zindex=zi, contour=contour, filter=filter)
                 i += 1
         self.loadAppearance()

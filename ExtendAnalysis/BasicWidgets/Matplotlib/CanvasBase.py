@@ -99,13 +99,13 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
 
     def _append2d(self, wave, offset, axis, zorder):
         ax = self.__getAxes(axis)
-        im = ax.imshow(wave.data.T, aspect='auto', extent=self.calcExtent2D(wave, offset), picker=True)
+        im = ax.imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.calcExtent2D(wave, offset), picker=True)
         im.set_zorder(zorder)
         return im, ax
 
     def _append3d(self, wave, offset, axis, zorder):
         ax = self.__getAxes(axis)
-        im = ax.imshow(wave.data.swapaxes(0,1), aspect='auto', extent=self.calcExtent2D(wave, offset), picker=True)
+        im = ax.imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.calcExtent2D(wave, offset), picker=True)
         im.set_zorder(zorder)
         return im, ax
 
