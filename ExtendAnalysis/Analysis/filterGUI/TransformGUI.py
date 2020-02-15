@@ -1,7 +1,6 @@
 from ..filter.Transform import *
-from .FilterGroupSetting import *
-from ..filtersGUI import filterGroups
-from ...BasicWidgets.Commons.ScientificSpinBox import ScientificSpinBox
+from ..filtersGUI import *
+from ExtendAnalysis import ScientificSpinBox
 
 
 class TransformSetting(FilterGroupSetting):
@@ -10,10 +9,11 @@ class TransformSetting(FilterGroupSetting):
         d = {
             'Set axis': SetAxisSetting,
             'Shift': ShiftSetting,
-            'Magnify' : MagnificationSetting,
-            'Rotation2D' : Rotation2DSetting,
+            'Magnify': MagnificationSetting,
+            'Rotation2D': Rotation2DSetting,
         }
         return d
+
 
 class SetAxisSetting(FilterSettingBase):
     def __init__(self, parent, dimension=2, loader=None):
@@ -21,7 +21,7 @@ class SetAxisSetting(FilterSettingBase):
         self._layout = QGridLayout()
         self._axis = QComboBox()
         for i in range(dimension):
-            self._axis.addItem("Axis"+str(i+1))
+            self._axis.addItem("Axis" + str(i + 1))
         self._type = QComboBox()
         self._type.addItem("Start & Stop")
         self._type.addItem("Start & Step")
@@ -62,16 +62,17 @@ class SetAxisSetting(FilterSettingBase):
         obj._val2.setValue(val2)
         return obj
 
+
 class ShiftSetting(FilterSettingBase):
     def __init__(self, parent, dimension=2, loader=None):
         super().__init__(parent, dimension, loader)
         self._layout = QGridLayout()
         self._dim = dimension
-        self._values=[]
+        self._values = []
         for i in range(dimension):
             wid = ScientificSpinBox()
             self._values.append(wid)
-            self._layout.addWidget(QLabel('Axis' + str(i+1)), 0, i)
+            self._layout.addWidget(QLabel('Axis' + str(i + 1)), 0, i)
             self._layout.addWidget(wid, 1, i)
         self.setLayout(self._layout)
 
@@ -86,21 +87,22 @@ class ShiftSetting(FilterSettingBase):
     def parseFromFilter(self, f):
         obj = ShiftSetting(None, self.dim, self.loader)
         shift, axes = f.getParams()
-        for s, ax in zip(shift,axes):
+        for s, ax in zip(shift, axes):
             obj._values[ax].setValue(s)
         return obj
+
 
 class MagnificationSetting(FilterSettingBase):
     def __init__(self, parent, dimension=2, loader=None):
         super().__init__(parent, dimension, loader)
         self._layout = QGridLayout()
         self._dim = dimension
-        self._values=[]
+        self._values = []
         for i in range(dimension):
             wid = ScientificSpinBox()
             wid.setValue(1)
             self._values.append(wid)
-            self._layout.addWidget(QLabel('Axis' + str(i+1)), 0, i)
+            self._layout.addWidget(QLabel('Axis' + str(i + 1)), 0, i)
             self._layout.addWidget(wid, 1, i)
         self.setLayout(self._layout)
 
@@ -115,9 +117,10 @@ class MagnificationSetting(FilterSettingBase):
     def parseFromFilter(self, f):
         obj = MagnificationSetting(None, self.dim, self.loader)
         shift, axes = f.getParams()
-        for s, ax in zip(shift,axes):
+        for s, ax in zip(shift, axes):
             obj._values[ax].setValue(s)
         return obj
+
 
 class Rotation2DSetting(FilterSettingBase):
     def __init__(self, parent, dimension=2, loader=None):
@@ -142,4 +145,5 @@ class Rotation2DSetting(FilterSettingBase):
         obj._rot.setValue(r)
         return obj
 
-filterGroups["Transform"]=TransformSetting
+
+filterGroups["Transform"] = TransformSetting

@@ -4,22 +4,16 @@ from .MultiCut import *
 from .filtersGUI import *
 
 
-class MultiCut(ExtendMdiSubWindow):
-    def __init__(self, wave=None):
-        super().__init__("Multi-dimensional analysis")
+class GridAttachedWindow(ExtendMdiSubWindow):
+    def __init__(self, title):
+        super().__init__(title)
         self.grid = MultipleGrid()
-        self.__initlayout__()
-        self.wave = None
-        self.axes = []
-        self.ranges = []
         self.closeforce = False
         self.grid.closed.connect(self.forceclose)
         self._attach(self.grid)
         self.attachTo()
         self.adjustSize()
         self.updateGeometry()
-        if wave is not None:
-            self.load(wave)
 
     def forceclose(self):
         self.closeforce = True
@@ -34,6 +28,17 @@ class MultiCut(ExtendMdiSubWindow):
             event.ignore()
             return
 
+
+class MultiCut(GridAttachedWindow):
+    def __init__(self, wave=None):
+        super().__init__("Multi-dimensional analysis")
+        self.__initlayout__()
+        self.wave = None
+        self.axes = []
+        self.ranges = []
+        if wave is not None:
+            self.load(wave)
+
     def keyPress(self, e):
         if e.key() == Qt.Key_M:
             self.show()
@@ -42,8 +47,7 @@ class MultiCut(ExtendMdiSubWindow):
         self._pre = PrefilterTab(self._loadRegion)
         self._cut = CutTab(self, self.grid)
         self._ani = AnimationTab(self._cut.getExecutorList())
-        self._pre.filterApplied.connect(self._cut._setWave)
-        self._pre.filterApplied.connect(self._ani._setWave)
+        self._pre.filterApplied.connect(self._filterApplied)
         self._ani.updated.connect(self._cut.update)
         tab = QTabWidget()
         tab.addTab(self._pre, "Prefilter")
@@ -68,6 +72,16 @@ class MultiCut(ExtendMdiSubWindow):
         wid.setLayout(self.layout)
         self.setWidget(wid)
         self.adjustSize()
+
+    def _filterApplied(self, wave):
+        if self.useDask():
+            w = wave
+            print("DaskWave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype, ", chunksize = ", wave.data.chunksize)
+        else:
+            w = wave.toWave()
+            print("Wave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype)
+        self._cut._setWave(w)
+        self._ani._setWave(w)
 
     def load(self, file):
         if file == False:
@@ -210,7 +224,6 @@ class PrefilterTab(QWidget):
         self.filt.GetFilters().execute(waves)
         display(waves)
 
-
     def _chunk(self):
         if self.wave is None:
             return
@@ -317,11 +330,12 @@ class controlledWavesGUI(QTreeView):
 
     def _post(self):
         class dialog(FiltersDialog):
-            def __init__(self,wave):
+            def __init__(self, wave):
                 super().__init__(wave.data.ndim)
-                self.wave=wave
+                self.wave = wave
                 self.applied.connect(self.__set)
-            def __set(self,f):
+
+            def __set(self, f):
                 w.note['MultiCut_PostProcess'] = str(f)
         i = self.selectionModel().selectedIndexes()[0].row()
         w = self.obj[i][0]
@@ -524,12 +538,7 @@ class CutTab(QWidget):
 
     def _setWave(self, wave):
         old = self.wave
-        if self.parent.useDask():
-            self.wave = wave
-            print("DaskWave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype, ", chunksize = ", wave.data.chunksize)
-        else:
-            self.wave = wave.toWave()
-            print("Wave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype)
+        self.wave = wave
         if old is not None:
             self.updateAll()
             return

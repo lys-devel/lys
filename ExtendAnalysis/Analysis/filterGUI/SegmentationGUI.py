@@ -1,8 +1,7 @@
 from ..filter.Segmentation import *
-from .FilterGroupSetting import *
-from ..filtersGUI import filterGroups
+from ..filtersGUI import *
+from ExtendAnalysis import ScientificSpinBox
 
-from ...BasicWidgets.Commons.ScientificSpinBox import ScientificSpinBox
 
 class SegmentSetting(FilterGroupSetting):
     @classmethod
@@ -79,5 +78,6 @@ class ThresholdSetting(FilterSettingBase):
         obj = ThresholdSetting(None, self.dim, self.loader)
         obj._c.setValue(param)
         return obj
+
 
 filterGroups['Segmentation'] = SegmentSetting

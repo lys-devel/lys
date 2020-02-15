@@ -1,3 +1,4 @@
-from .MultiCutGUI import MultiCut, DaskWave
-from .filterGUI.FilterGroupSetting import FilterGroupSetting, FilterSettingBase
-from .filter import FilterInterface
+from . import filters
+from . import filtersGUI
+from .MultiCutGUI import MultiCut
+from . import filterGUI

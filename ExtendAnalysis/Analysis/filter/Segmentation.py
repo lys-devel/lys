@@ -1,10 +1,8 @@
 import cv2
 import numpy as np
 
-from ExtendAnalysis import Wave
-from ..MultiCut import DaskWave
-
-from . import FilterInterface
+from ExtendAnalysis import Wave, DaskWave
+from .FilterInterface import FilterInterface
 
 
 class AdaptiveThresholdFilter(FilterInterface):
@@ -30,6 +28,7 @@ class AdaptiveThresholdFilter(FilterInterface):
     def getParams(self):
         return self._size, self._c, self._method
 
+
 class ThresholdFilter(FilterInterface):
     def __init__(self, threshold):
         self._threshold = threshold
@@ -38,7 +37,7 @@ class ThresholdFilter(FilterInterface):
         if isinstance(wave, Wave):
             wave.data = cv2.threshold(wave.data, self._threshold, 1, cv2.THRESH_BINARY)
         if isinstance(wave, DaskWave):
-            wave.data=wave.data.copy()
+            wave.data = wave.data.copy()
             wave.data[wave.data < self._threshold] = 0
             wave.data[wave.data >= self._threshold] = 1
         return wave
