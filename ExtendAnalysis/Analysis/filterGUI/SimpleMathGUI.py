@@ -12,6 +12,7 @@ class SimpleMathSetting(FilterGroupSetting):
             'Multiply': MultSetting,
             'Devide': DevideSetting,
             'Pow': PowSetting,
+            'Complex': ComplexSetting,
         }
         return d
 
@@ -20,15 +21,22 @@ class SimpleMathSettingBase(FilterSettingBase):
     def __init__(self, parent, dim, loader=None, type=""):
         super().__init__(parent, dim, loader)
         self._layout = QHBoxLayout()
-        self._val = QDoubleSpinBox()
-        self._val.setDecimals(5)
-        self._layout.addWidget(QLabel('Value'))
-        self._layout.addWidget(self._val)
+        self._val1 = QDoubleSpinBox()
+        self._val1.setDecimals(5)
+        self._val2 = QDoubleSpinBox()
+        self._val2.setDecimals(5)
+        self._layout.addWidget(self._val1)
+        self._layout.addWidget(QLabel('+'))
+        self._layout.addWidget(self._val2)
+        self._layout.addWidget(QLabel('i'))
         self._type = type
         self.setLayout(self._layout)
 
     def GetFilter(self):
-        return SimpleMathFilter(self._type, self._val.value())
+        if self._val2.value() == 0:
+            return SimpleMathFilter(self._type, self._val1.value())
+        else:
+            return SimpleMathFilter(self._type, self._val1.value() + self._val2.value() * 1j)
 
 
 class AddSetting(SimpleMathSettingBase):
@@ -37,7 +45,8 @@ class AddSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = AddSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._value)
+        obj._val1.setValue(np.real(f._value))
+        obj._val2.setValue(np.imag(f._value))
         return obj
 
     @classmethod
@@ -53,7 +62,8 @@ class SubtractSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = SubtractSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._value)
+        obj._val1.setValue(np.real(f._value))
+        obj._val2.setValue(np.imag(f._value))
         return obj
 
     @classmethod
@@ -69,7 +79,8 @@ class MultSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = MultSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._value)
+        obj._val1.setValue(np.real(f._value))
+        obj._val2.setValue(np.imag(f._value))
         return obj
 
     @classmethod
@@ -85,7 +96,8 @@ class DevideSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = DevideSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._value)
+        obj._val1.setValue(np.real(f._value))
+        obj._val2.setValue(np.imag(f._value))
         return obj
 
     @classmethod
@@ -101,7 +113,8 @@ class PowSetting(SimpleMathSettingBase):
 
     def parseFromFilter(self, f):
         obj = PowSetting(None, self.dim, self.loader)
-        obj._val.setValue(f._value)
+        obj._val1.setValue(np.real(f._value))
+        obj._val2.setValue(np.imag(f._value))
         return obj
 
     @classmethod
@@ -109,6 +122,31 @@ class PowSetting(SimpleMathSettingBase):
         if isinstance(f, SimpleMathFilter):
             if f._type == '**':
                 return True
+
+
+class ComplexSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        layout = QHBoxLayout()
+        self._combo = QComboBox()
+        self._combo.addItem("absolute")
+        self._combo.addItem("real")
+        self._combo.addItem("imag")
+        layout.addWidget(self._combo)
+        self.setLayout(layout)
+
+    def GetFilter(self):
+        return ComplexFilter(self._combo.currentText())
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, ComplexFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = ComplexSetting(None, self.dim, self.loader)
+        obj._combo.setCurrentIndex(self._combo.indexOf(f._type))
+        return obj
 
 
 filterGroups['Simple Math'] = SimpleMathSetting

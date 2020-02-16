@@ -129,7 +129,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         if not offset[3] == 0.0:
             ydata = ydata * offset[3]
         xdata = xdata + offset[0]
-        ydata = ydata + offset[1]
+        ydata = np.real(ydata + offset[1])
         if ID is None:
             id = -2000 + len(self.getLines())
         else:
