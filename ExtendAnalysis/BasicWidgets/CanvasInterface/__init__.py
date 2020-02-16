@@ -8,3 +8,8 @@ from .RectAnnotation import *
 from .RegionAnnotation import *
 from .CrosshairAnnotation import *
 from .AnnotGUICanvas import *
+from .RGBSettings import *
+
+
+class AbstractCanvasBase(MarkerStyleAdjustableCanvasBase):
+    pass

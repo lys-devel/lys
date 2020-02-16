@@ -11,10 +11,10 @@ from PyQt5.QtWidgets import *
 
 from ExtendAnalysis import *
 from .CanvasBase import saveCanvas
-from .ImageSettings import *
+from .RGBSettings import *
 
 
-class RangeSelectableCanvas(ImageSettingCanvas):
+class RangeSelectableCanvas(RGBSettingCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi)
         self.roi = pg.RectROI([0, 0], [0, 0], invertible=True)

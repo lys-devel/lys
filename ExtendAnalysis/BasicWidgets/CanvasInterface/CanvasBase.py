@@ -82,7 +82,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         else:
             wav = w
         if wav.data.ndim == 2 and wav.data.dtype == complex:
-            if not w == wav:
+            if w == wav:
                 wav = w.Duplicate()
             if 'Range' in appearance:
                 rmin, rmax = appearance['Range']

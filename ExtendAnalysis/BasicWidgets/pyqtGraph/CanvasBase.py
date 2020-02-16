@@ -122,6 +122,16 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         im.setZValue(zorder)
         return im, ax
 
+    def _append3d(self, wave, offset, axis, zorder):
+        ax = self.__getAxes(axis)
+        im = pg.ImageItem(image=wave.data)
+        shift, mag = self.calcExtent2D(wave, offset)
+        im.scale(*mag)
+        im.translate(*shift)
+        ax.addItem(im)
+        im.setZValue(zorder)
+        return im, ax
+
     def _appendContour(self, wav, offset, axis, zorder):
         ax = self.__getAxes(axis)
         shift, mag = self.calcExtent2D(wav, offset)
