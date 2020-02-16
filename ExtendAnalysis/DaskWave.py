@@ -64,7 +64,7 @@ class DaskWave(object):
         data = self.data.sum(axis)
         axes = []
         for i, ax in enumerate(self.axes):
-            if not i in axis:
+            if not (i in axis or i == axis):
                 axes.append(ax)
         return DaskWave(data, axes=axes)
 

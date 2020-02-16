@@ -539,10 +539,13 @@ class CutTab(QWidget):
     def _setWave(self, wave):
         old = self.wave
         self.wave = wave
-        if old is not None:
-            self.updateAll()
+        if old is None:
+            self.__resetLayout()
             return
-        self.__resetLayout()
+        if old.data.shape != wave.data.shape:
+            self.__resetLayout()
+            return
+        self.updateAll()
 
     def __resetLayout(self):
         if self.ax is not None:

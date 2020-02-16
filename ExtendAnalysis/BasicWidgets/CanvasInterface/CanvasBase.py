@@ -89,6 +89,14 @@ class CanvasBaseBase(DrawableCanvasBase):
             else:
                 rmin, rmax = 0, np.max(np.abs(wav.data))
             wav.data = self._Complex2HSV(wav.data, rmin, rmax)
+        elif wav.data.ndim == 3:
+            if w == wav:
+                wav = w.Duplicate()
+            if 'Range' in appearance:
+                rmin, rmax = appearance['Range']
+                amp = np.where(wav.data < rmin, rmin, wav.data)
+                amp = np.where(amp > rmax, rmax, amp)
+                wav.data = (amp - rmin) / (rmax - rmin)
         if wav.data.ndim == 1:
             ids, obj, ax = self._Append1D(wav, axis, id, appearance, offset)
             self._Datalist.insert(ids + 2000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
@@ -153,16 +161,7 @@ class CanvasBaseBase(DrawableCanvasBase):
             id = -6000 + len(self.getRGBs())
         else:
             id = ID
-        w = Wave()
-        if 'Range' in appearance:
-            rmin, rmax = appearance['Range']
-            amp = np.where(wav.data < rmin, rmin, wav.data)
-            amp = np.where(amp > rmax, rmax, amp)
-            w.data = (amp - rmin) / (rmax - rmin)
-        else:
-            w.data = wav.data
-        w.axes = wav.axes
-        im, ax = self._append3d(w, offset, axis, id)
+        im, ax = self._append3d(wav, offset, axis, id)
         return id, im, ax
 
     def _AppendContour(self, wav, axis, ID, appearance, offset):

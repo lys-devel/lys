@@ -421,7 +421,7 @@ class Wave(AutoSaved):
 
     def axisIsValid(self, dim):
         tmp = self.axes[dim]
-        if tmp is None or (tmp==np.array(None)).all():
+        if tmp is None or (tmp == np.array(None)).all():
             return False
         return True
 
@@ -475,10 +475,10 @@ class Wave(AutoSaved):
 
     def Duplicate(self):
         import copy
-        w=Wave()
-        w.data=self.data
-        w.axes=copy.copy(self.axes)
-        w.note=copy.copy(self.note)
+        w = Wave()
+        w.data = self.data
+        w.axes = copy.copy(self.axes)
+        w.note = copy.copy(self.note)
         return w
 
     def slice(self, pos1, pos2, axis='x', width=1):
@@ -617,7 +617,7 @@ class Wave(AutoSaved):
         w.data = self.data.sum(axis)
         axes = []
         for i, ax in enumerate(self.axes):
-            if not i == axis:
+            if not (i in axis or i == axis):
                 axes.append(ax)
         w.axes = axes
         return w
