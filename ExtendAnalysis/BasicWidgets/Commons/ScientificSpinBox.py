@@ -40,9 +40,7 @@ class ScientificSpinBox(QDoubleSpinBox):
         else:
             l = np.log10(abs(v))
             p = math.floor(l)
-            if l == p and np.sign(steps) != np.sign(v):
+            if math.floor(abs(v) / (10**p)) == 1:  # and np.sign(steps) != np.sign(v):
                 p = p - 1
             n = 10 ** p
-            if l == 0:
-                n = 1
         self.setValue(v + steps * n)
