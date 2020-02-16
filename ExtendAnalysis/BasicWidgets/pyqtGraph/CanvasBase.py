@@ -124,7 +124,7 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
 
     def _append3d(self, wave, offset, axis, zorder):
         ax = self.__getAxes(axis)
-        im = pg.ImageItem(image=wave.data)
+        im = pg.ImageItem(image=wave.data, levels=(0, 1))
         shift, mag = self.calcExtent2D(wave, offset)
         im.scale(*mag)
         im.translate(*shift)

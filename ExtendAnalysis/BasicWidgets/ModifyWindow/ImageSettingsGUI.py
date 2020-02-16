@@ -6,6 +6,7 @@ from .ColorWidgets import *
 
 from ExtendAnalysis.BasicWidgets.Commons.ScientificSpinBox import *
 
+
 class _rangeWidget(QGroupBox):
     valueChanged = pyqtSignal()
 
@@ -79,6 +80,7 @@ class _rangeWidget(QGroupBox):
     def setLimit(self, min, max):
         self.__spin2.setRange(min, max)
 
+
 class ImageColorAdjustBox(QWidget):
 
     def __init__(self, canvas):
@@ -129,6 +131,7 @@ class ImageColorAdjustBox(QWidget):
             self.canvas.setColormap(self.__cmap.currentColor(), indexes)
             self.__changerange()
 
+
 class RGBColorAdjustBox(QWidget):
     def __init__(self, canvas):
         super().__init__()
@@ -152,7 +155,7 @@ class RGBColorAdjustBox(QWidget):
         indexes = self.canvas.getSelectedIndexes(3)
         if len(indexes) == 0:
             return
-        im = self.canvas.getDataFromIndexes(3, indexes)[0].wave.data
+        im = abs(self.canvas.getDataFromIndexes(3, indexes)[0].wave.data)
         self.__start.setRange(im.mean(), math.sqrt(im.var()) * 5)
         self.__end.setRange(im.mean(), math.sqrt(im.var()) * 5)
         ran = self.canvas.getColorRange(indexes)[0]

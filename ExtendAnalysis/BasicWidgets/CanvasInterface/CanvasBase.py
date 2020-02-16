@@ -135,9 +135,10 @@ class CanvasBaseBase(DrawableCanvasBase):
         amp = np.where(amp > rmax, rmax, amp)
         ph = np.angle(z, deg=1) + hue_start
         h = (ph % 360) / 360
-        s = (amp - rmin) / (rmax - rmin)
-        v = np.ones_like(h)
-        return hsv_to_rgb(np.dstack((h, s, v)))
+        s = np.ones_like(h)
+        v = (amp - rmin) / (rmax - rmin)
+        rgb = hsv_to_rgb(np.dstack((h, s, v)))
+        return rgb
 
     def _Append2D(self, wav, axis, ID, appearance, offset):
         if ID is None:
