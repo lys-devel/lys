@@ -1,5 +1,5 @@
 from .filter import *
-
+import _pickle as cPickle
 
 class Filters(object):
     def __init__(self, filters):

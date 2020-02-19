@@ -1,7 +1,7 @@
 from ..filter.SimpleMath import *
 from ..filtersGUI import *
 from .CommonWidgets import *
-
+from ExtendAnalysis import ScientificSpinBox
 
 class SimpleMathSetting(FilterGroupSetting):
     @classmethod
@@ -21,10 +21,8 @@ class SimpleMathSettingBase(FilterSettingBase):
     def __init__(self, parent, dim, loader=None, type=""):
         super().__init__(parent, dim, loader)
         self._layout = QHBoxLayout()
-        self._val1 = QDoubleSpinBox()
-        self._val1.setDecimals(5)
-        self._val2 = QDoubleSpinBox()
-        self._val2.setDecimals(5)
+        self._val1 = ScientificSpinBox()
+        self._val2 = ScientificSpinBox()
         self._layout.addWidget(self._val1)
         self._layout.addWidget(QLabel('+'))
         self._layout.addWidget(self._val2)
