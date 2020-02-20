@@ -98,6 +98,10 @@ class ColormapSelection(QWidget):
         super().__init__()
         self.__combo=ColormapSelection.ColorCombo()
         self.__combo.activated.connect(self.__changed)
+        self.__opacity = QDoubleSpinBox()
+        self.__opacity.setRange(0,1)
+        self.__opacity.setSingleStep(0.1)
+        self.__opacity.setDecimals(2)
         self.__check=QCheckBox("Reverse")
         self.__check.stateChanged.connect(self.__changed)
         self.__log=QCheckBox("Log")
@@ -105,7 +109,8 @@ class ColormapSelection(QWidget):
         layout=QVBoxLayout()
 
         layout_h=QHBoxLayout()
-        layout_h.addWidget(QLabel('Colormaps'))
+        layout_h.addWidget(QLabel('Opacity'))
+        layout_h.addWidget(self.__opacity)
         layout_h.addWidget(self.__check)
         layout_h.addWidget(self.__log)
 

@@ -142,10 +142,13 @@ class RGBColorAdjustBox(QWidget):
 
     def __initlayout(self):
         layout = QVBoxLayout()
+        self.__rot = ScientificSpinBox()
+        self.__rot.valueChanged.connect(self.__changeRange)
         self.__start = _rangeWidget("First", 20)
         self.__end = _rangeWidget("Last", 80)
         self.__start.valueChanged.connect(self.__changerange)
         self.__end.valueChanged.connect(self.__changerange)
+        layout.addWidget(self.__rot)
         layout.addWidget(self.__start)
         layout.addWidget(self.__end)
         self.setLayout(layout)
@@ -167,6 +170,7 @@ class RGBColorAdjustBox(QWidget):
         if not self.__flg:
             indexes = self.canvas.getSelectedIndexes(3)
             self.canvas.setColorRange(indexes, self.__start.getValue(), self.__end.getValue())
+            self.canvas.setColorRotation(indexes, self.__rot.getValue())
 
 
 class ImagePlaneAdjustBox(QWidget):

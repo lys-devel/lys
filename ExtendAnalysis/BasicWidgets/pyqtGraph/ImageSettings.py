@@ -38,6 +38,7 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
         data = self.getImages()
         for d in data:
             d.appearance['Range'] = list(d.obj.getLevels())
+            d.appearance['Opacity'] = list(d.obj.opacity())
 
     def loadAppearance(self):
         super().loadAppearance()
@@ -51,6 +52,8 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
                 self.__setColor(d, lut)
             if 'Range' in d.appearance:
                 d.obj.setLevels(d.appearance['Range'])
+            if 'Opacity' in d.appearance:
+                d.obj.setOpacity(d.appearance['Opacity'])
 
     def getColormap(self, indexes):
         res = []
@@ -99,6 +102,19 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
             else:
                 d.appearance['Log'] = False
                 d.obj.setImage(d.wave.data, levels=(min, max))
+
+    def getOpacity(self, indexes):
+        res = []
+        data = self.getDataFromIndexes(2, indexes)
+        for d in data:
+            res.append(d.obj.opacity())
+        return res
+
+    @saveCanvas
+    def setOpacity(self, indexes, value):
+        data = self.getDataFromIndexes(2, indexes)
+        for d in data:
+            d.obj.setOpacity(value)
 
     def isLog(self, indexes):
         res = []

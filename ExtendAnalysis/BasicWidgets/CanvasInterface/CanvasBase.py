@@ -88,7 +88,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                 rmin, rmax = appearance['Range']
             else:
                 rmin, rmax = 0, np.max(np.abs(wav.data))
-            wav.data = self._Complex2HSV(wav.data, rmin, rmax)
+            wav.data = self._Complex2HSV(wav.data, rmin, rmax, appearance.get('ColorRotation', 90))
         elif wav.data.ndim == 3:
             if w == wav:
                 wav = w.Duplicate()
