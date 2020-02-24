@@ -77,11 +77,11 @@ class ShiftSetting(FilterSettingBase):
         self.setLayout(self._layout)
 
     def GetFilter(self):
-        return ShiftFilter([v.value() for v in self._values], list(range(self._dim)))
+        return AxisShiftFilter([v.value() for v in self._values], list(range(self._dim)))
 
     @classmethod
     def _havingFilter(cls, f):
-        if isinstance(f, ShiftFilter):
+        if isinstance(f, AxisShiftFilter):
             return True
 
     def parseFromFilter(self, f):

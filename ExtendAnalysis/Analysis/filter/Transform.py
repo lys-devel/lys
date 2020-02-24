@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+from scipy import ndimage
 
 from .FilterInterface import FilterInterface
 
@@ -23,7 +24,7 @@ class SetAxisFilter(FilterInterface):
         return self._axis, self._val1, self._val2, self._type
 
 
-class ShiftFilter(FilterInterface):
+class AxisShiftFilter(FilterInterface):
     def __init__(self, shift, axes):
         self._shift = shift
         self._axes = axes
@@ -61,9 +62,7 @@ class Rotation2DFilter(FilterInterface):
         self._angle = angle
 
     def _execute(self, wave, **kwargs):
-        w, h = wave.data.shape[0], wave.data.shape[1]
-        R = cv2.getRotationMatrix2D((w / 2, h / 2), self._angle, 1)
-        wave.data = cv2.warpAffine(wave.data, R, (w, h))
+        wave.data = ndimage.rotate(wave.data, self._angle, reshape=False)
         return wave
 
     def getParams(self):

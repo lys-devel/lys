@@ -43,6 +43,17 @@ class RGBColorAdjustableCanvas(ImageSettingCanvas):
             d.appearance['Range'] = (min, max)
             self.OnWaveModified(d.wave)
 
+    @saveCanvas
+    def setColorRotation(self, indexes, value):
+        data = self.getDataFromIndexes(3, indexes)
+        for d in data:
+            d.appearance['ColorRotation'] = value
+            self.OnWaveModified(d.wave)
+
+    def colorRotation(self, indexes):
+        data = self.getDataFromIndexes(3, indexes)
+        return [d.appearance.get('ColorRotation', 0) for d in data]
+
 
 class RGBSettingCanvas(RGBColorAdjustableCanvas):
     pass

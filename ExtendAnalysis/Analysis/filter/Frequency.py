@@ -1,6 +1,7 @@
 import numpy as np
+import dask.array as da
 from scipy import signal
-from dask.array import fft, absolute, real, imag, apply_along_axis
+from dask.array import apply_along_axis
 
 from ExtendAnalysis import Wave, DaskWave
 from .FilterInterface import FilterInterface
@@ -83,45 +84,58 @@ class BandStopFilter(FilterInterface):
 
 
 class FourierFilter(FilterInterface):
-    def __init__(self, axes, type="forward", process="absolute"):
+    def __init__(self, axes, type="forward", process="absolute", roll=True):
         self.type = type
         self.axes = axes
         self.process = process
+        self.roll = roll
+
+    def __getLib(self, wave):
+        if isinstance(wave, Wave):
+            lib = np
+        elif isinstance(wave, DaskWave):
+            lib = da
+        return lib
+
+    def __getFunction(self, wave, process):
+        lib = self.__getLib(wave)
+        if process == "absolute":
+            func = lib.absolute
+        elif process == "real":
+            func = lib.real
+        elif process == "imag":
+            func = lib.imag
+        elif process == "phase":
+            func = lib.angle
+        elif process == 'complex':
+            def func(x): return x
+        return func
 
     def _execute(self, wave, **kwargs):
+        self.__exeAxes(wave)
+        size = [int(wave.data.shape[ax] / 2) for ax in self.axes]
+        lib = self.__getLib(wave)
+        func = self.__getFunction(wave, self.process)
+        if self.type == "forward":
+            wave.data = func(lib.fft.fftn(wave.data, axes=self.axes))
+            if self.roll:
+                wave.data = lib.roll(wave.data, size, axis=self.axes)
+        else:
+            if self.roll:
+                size_inv = [-s for s in size]
+                wave.data = lib.roll(wave.data, size_inv, axis=self.axes)
+            wave.data = func(lib.fft.ifftn(wave.data, axes=self.axes))
+        return wave
+
+    def __exeAxes(self, wave):
         for ax in self.axes:
             a = wave.axes[ax]
             if a is None or (a == np.array(None)).all():
                 wave.axes[ax] = np.array(None)
             else:
                 wave.axes[ax] = np.linspace(0, len(a) / (np.max(a) - np.min(a)), len(a))
-        if isinstance(wave, Wave):
-            if self.process == "absolute":
-                func = np.absolute
-            elif self.process == "real":
-                func = np.real
-            elif self.process == "imag":
-                func = np.imag
-            elif self.process == "phase":
-                func = np.angle
-            if self.type == "forward":
-                wave.data = func(np.fft.fftn(wave.data, axes=self.axes))
-            else:
-                wave.data = func(np.fft.ifftn(wave.data, axes=self.axes))
-        if isinstance(wave, DaskWave):
-            if self.process == "absolute":
-                func = absolute
-            elif self.process == "real":
-                func = real
-            elif self.process == "imag":
-                func = imag
-            elif self.process == "phase":
-                func = angle
-            if self.type == "forward":
-                wave.data = func(fft.fftn(wave.data, axes=self.axes))
-            else:
-                wave.data = func(fft.ifftn(wave.data, axes=self.axes))
-        return wave
+                if self.roll:
+                    wave.axes[ax] = wave.axes[ax] - wave.axes[ax][len(a) // 2]
 
     def getParams(self):
         return self.axes, self.type, self.process

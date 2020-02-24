@@ -102,6 +102,7 @@ class ColormapSelection(QWidget):
         self.__opacity.setRange(0,1)
         self.__opacity.setSingleStep(0.1)
         self.__opacity.setDecimals(2)
+        self.__opacity.valueChanged.connect(self.__changed)
         self.__check=QCheckBox("Reverse")
         self.__check.stateChanged.connect(self.__changed)
         self.__log=QCheckBox("Log")
@@ -134,6 +135,10 @@ class ColormapSelection(QWidget):
         return self.__log.isChecked()
     def setLog(self,value):
         self.__log.setChecked(value)
+    def setOpacity(self,value):
+        self.__opacity.setValue(value)
+    def opacity(self):
+        return self.__opacity.value()
 
 import pyqtgraph
 def cmapToColormap(cmap, nTicks=16):

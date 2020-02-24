@@ -1,6 +1,7 @@
 from ..filter.Region import *
 from ..filtersGUI import *
 from .CommonWidgets import *
+from ExtendAnalysis import ScientificSpinBox
 
 
 class RegionSelectWidget(QGridLayout):
@@ -22,12 +23,10 @@ class RegionSelectWidget(QGridLayout):
 
         self.addWidget(QLabel("from"), 1, 0)
         self.addWidget(QLabel("to"), 2, 0)
-        self.start = [QSpinBox() for d in range(dim)]
-        self.end = [QSpinBox() for d in range(dim)]
+        self.start = [ScientificSpinBox() for d in range(dim)]
+        self.end = [ScientificSpinBox() for d in range(dim)]
         i = 1
         for s, e in zip(self.start, self.end):
-            s.setRange(0, 10000)
-            e.setRange(0, 10000)
             self.addWidget(QLabel("Axis" + str(i)), 0, i)
             self.addWidget(s, 1, i)
             self.addWidget(e, 2, i)
@@ -40,11 +39,8 @@ class RegionSelectWidget(QGridLayout):
         c = Graph.active().canvas
         if c is not None:
             r = c.SelectedRange()
-            w = c.getWaveData()[0].wave
-            p1 = w.posToPoint(r[0])
-            p2 = w.posToPoint(r[1])
-            self.setRegion(0, (p1[0], p2[0]))
-            self.setRegion(1, (p1[1], p2[1]))
+            self.setRegion(0, (r[0][0], r[1][0]))
+            self.setRegion(1, (r[0][1], r[1][1]))
 
     def setRegion(self, axis, range):
         if axis < len(self.start):
