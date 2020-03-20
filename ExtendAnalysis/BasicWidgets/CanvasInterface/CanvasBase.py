@@ -14,7 +14,7 @@ class Axis(IntEnum):
 
 
 class WaveData(object):
-    def __init__(self, wave, obj, axes, axis, idn, appearance, offset=(0, 0, 0, 0), zindex=0, contour=False, filter=None):
+    def __init__(self, wave, obj, axes, axis, idn, appearance, offset=(0, 0, 0, 0), zindex=0, contour=False, filter=None, filteredWave=None):
         self.wave = wave
         self.obj = obj
         self.axis = axis
@@ -25,6 +25,7 @@ class WaveData(object):
         self.zindex = zindex
         self.contour = contour
         self.filter = filter
+        self.filteredWave = filteredWave
 
 
 class CanvasBaseBase(DrawableCanvasBase):
@@ -67,31 +68,31 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     @saveCanvas
     def _Append(self, w, axis, id, appearance, offset, zindex=0, reuse=False, contour=False, filter=None, wdata=None):
-        def makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata):
+        def makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata):
             if reuse:
                 wdata.id = ids
                 wdata.obj = obj
                 wdata.axes = ax
+                wdata.filteredWave=filteredWave
                 return wdata
             else:
-                wd = WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter)
+                wd = WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter, filteredWave=filteredWave)
                 return wd
         if filter is not None:
             wav = w.Duplicate()
             filter.execute(wav)
         else:
             wav = w
+        filteredWave=wav
         if wav.data.ndim == 2 and wav.data.dtype == complex:
-            if w == wav:
-                wav = w.Duplicate()
+            wav = wav.Duplicate()
             if 'Range' in appearance:
                 rmin, rmax = appearance['Range']
             else:
                 rmin, rmax = 0, np.max(np.abs(wav.data))
             wav.data = self._Complex2HSV(wav.data, rmin, rmax, appearance.get('ColorRotation', 90))
         elif wav.data.ndim == 3:
-            if w == wav:
-                wav = w.Duplicate()
+            wav = wav.Duplicate()
             if 'Range' in appearance:
                 rmin, rmax = appearance['Range']
                 amp = np.where(wav.data < rmin, rmin, wav.data)
@@ -99,17 +100,17 @@ class CanvasBaseBase(DrawableCanvasBase):
                 wav.data = (amp - rmin) / (rmax - rmin)
         if wav.data.ndim == 1:
             ids, obj, ax = self._Append1D(wav, axis, id, appearance, offset)
-            self._Datalist.insert(ids + 2000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
-        if wav.data.ndim == 2:
+            self._Datalist.insert(ids + 2000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata))
+        elif wav.data.ndim == 2:
             if contour:
                 ids, obj, ax = self._AppendContour(wav, axis, id, appearance, offset)
-                self._Datalist.insert(ids + 4000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
+                self._Datalist.insert(ids + 4000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata))
             else:
                 ids, obj, ax = self._Append2D(wav, axis, id, appearance, offset)
-                self._Datalist.insert(ids + 5000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
-        if wav.data.ndim == 3:
+                self._Datalist.insert(ids + 5000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata))
+        elif wav.data.ndim == 3:
             ids, obj, ax = self._Append3D(wav, axis, id, appearance, offset)
-            self._Datalist.insert(ids + 6000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, wdata))
+            self._Datalist.insert(ids + 6000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata))
         if not reuse:
             w.addModifiedListener(self.OnWaveModified)
         self.dataChanged.emit()

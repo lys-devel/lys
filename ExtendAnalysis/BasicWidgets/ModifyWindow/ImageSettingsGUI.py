@@ -114,6 +114,7 @@ class ImageColorAdjustBox(QWidget):
         self.__cmap.setLog(log)
         col = self.canvas.getColormap(indexes)[0]
         self.__cmap.setColormap(col)
+        self.__cmap.setOpacity(self.canvas.getOpacity(indexes)[0])
         im = self.canvas.getDataFromIndexes(2, indexes)[0].wave.data
         self.__start.setRange(im.mean(), math.sqrt(im.var()) * 5)
         self.__end.setRange(im.mean(), math.sqrt(im.var()) * 5)
@@ -131,6 +132,7 @@ class ImageColorAdjustBox(QWidget):
         if not self.__flg:
             indexes = self.canvas.getSelectedIndexes(2)
             self.canvas.setColormap(self.__cmap.currentColor(), indexes)
+            self.canvas.setOpacity(indexes, self.__cmap.opacity())
             self.__changerange()
 
 
@@ -145,7 +147,7 @@ class RGBColorAdjustBox(QWidget):
     def __initlayout(self):
         layout = QVBoxLayout()
         self.__rot = ScientificSpinBox()
-        self.__rot.valueChanged.connect(self.__changeRange)
+        self.__rot.valueChanged.connect(self.__changerange)
         self.__start = _rangeWidget("First", 20)
         self.__end = _rangeWidget("Last", 80)
         self.__start.valueChanged.connect(self.__changerange)
@@ -172,7 +174,7 @@ class RGBColorAdjustBox(QWidget):
         if not self.__flg:
             indexes = self.canvas.getSelectedIndexes(3)
             self.canvas.setColorRange(indexes, self.__start.getValue(), self.__end.getValue())
-            self.canvas.setColorRotation(indexes, self.__rot.getValue())
+            self.canvas.setColorRotation(indexes, self.__rot.value())
 
 
 class ImagePlaneAdjustBox(QWidget):

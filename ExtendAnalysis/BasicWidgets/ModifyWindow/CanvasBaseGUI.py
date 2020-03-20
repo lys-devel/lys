@@ -149,67 +149,92 @@ class RightClickableSelectionBox(DataSelectionBox):
         self.__dim = dim
 
     def buildContextMenu(self, qPoint):
+        menu = QMenu(self)
+        list = self.canvas.getSelectedIndexes(self.__dim)
+        menu.addAction(QAction('Show', self, triggered=lambda: self.canvas.showData(self.__dim, list)))
+        menu.addAction(QAction('Hide', self, triggered=lambda: self.canvas.hideData(self.__dim, list)))
+        menu.addAction(QAction('Remove', self, triggered=lambda: self.canvas.Remove(list)))
+        menu.addAction(QAction('Print', self, triggered=self.__print))
+        menu.addAction(QAction('Process', self, triggered=self.__process))
+        raw = menu.addMenu("Raw data")
+        raw.addAction(QAction('Display', self, triggered=lambda: self.__display("Wave")))
+        raw.addAction(QAction('Append', self, triggered=lambda: self.__append("Wave")))
+        raw.addAction(QAction('Edit', self, triggered=lambda: self.__edit("Wave")))
+        raw.addAction(QAction('Export', self, triggered=lambda: self.__export("Wave")))
+        pr = menu.addMenu("Processed data")
+        pr.addAction(QAction('Display', self, triggered=lambda: self.__display("ProcessedWave")))
+        pr.addAction(QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
+        pr.addAction(QAction('Edit', self, triggered=lambda: self.__edit("ProcessedWave")))
+        pr.addAction(QAction('Export', self, triggered=lambda: self.__export("ProcessedWave")))
+        action = menu.exec_(QCursor.pos())
+
+    def __display(self, type):
+        from ExtendAnalysis import Graph
+        g = Graph()
+        data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))
+        for d in data:
+            if type == "Wave":
+                g.Append(d.wave)
+            else:
+                g.Append(d.filteredWave)
+
+    def __append(self, type):
+        from ExtendAnalysis import Graph
+        g = Graph.active(1)
+        data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))
+        for d in data:
+            if type == "Wave":
+                g.Append(d.wave)
+            else:
+                g.Append(d.filteredWave)
+
+    def __edit(self, type):
+        from ExtendAnalysis import Table
+        t = Table()
+        data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))
+        for d in data:
+            if type == "Wave":
+                t.Append(d.wave)
+            else:
+                t.Append(d.filteredWave)
+
+    def __print(self):
+        data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))
+        for d in data:
+            print(d.wave.FileName())
+
+    def __process(self):
         from ExtendAnalysis.Analysis.filtersGUI import FiltersDialog
+
         class dialog(FiltersDialog):
-            def __init__(self,data):
+            def __init__(self, data):
                 super().__init__(data.wave.data.ndim)
-                self.data=data
+                self.data = data
                 self.applied.connect(self.__set)
-            def __set(self,f):
+
+            def __set(self, f):
                 self.data.filter = f
                 self.data.wave.emitModified()
-        menu = QMenu(self)
-        menulabels = ['Show', 'Hide', 'Remove', 'Display', 'Append', 'Edit', 'Print', 'Export', 'Process']
-        actionlist = []
-        for label in menulabels:
-            actionlist.append(menu.addAction(label))
-        action = menu.exec_(QCursor.pos())
+        data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))[0]
+        d = dialog(data)
+        if data.filter is not None:
+            d.setFilter(data.filter)
+        d.show()
+
+    def __export(self, waveType):
+        filt = ""
         list = self.canvas.getSelectedIndexes(self.__dim)
-        if action == None:
-            return
-        elif action.text() == 'Show':
-            self.canvas.showData(self.__dim, list)
-        elif action.text() == 'Hide':
-            self.canvas.hideData(self.__dim, list)
-        elif action.text() == 'Edit':
-            from ExtendAnalysis import Table
-            t = Table()
-            data = self.canvas.getDataFromIndexes(self.__dim, list)
-            for d in data:
-                t.Append(d.wave)
-        elif action.text() == 'Display':
-            from ExtendAnalysis import Graph
-            g = Graph()
-            data = self.canvas.getDataFromIndexes(self.__dim, list)
-            for d in data:
-                g.Append(d.wave)
-        elif action.text() == 'Append':
-            from ExtendAnalysis import Graph
-            g = Graph.active(1)
-            data = self.canvas.getDataFromIndexes(self.__dim, list)
-            for d in data:
-                g.Append(d.wave)
-        elif action.text() == 'Remove':
-            self.canvas.Remove(list)
-        elif action.text() == 'Print':
-            data = self.canvas.getDataFromIndexes(self.__dim, list)
-            for d in data:
-                print(d.wave.FileName())
-        elif action.text() == 'Export':
-            filt = ""
-            for f in Wave.SupportedFormats():
-                filt = filt + f + ";;"
-            filt = filt[:len(filt) - 2]
-            path, type = QFileDialog.getSaveFileName(filter=filt)
-            if len(path) != 0:
-                d = self.canvas.getDataFromIndexes(self.__dim, list)[0]
+        for f in Wave.SupportedFormats():
+            filt = filt + f + ";;"
+        filt = filt[:len(filt) - 2]
+        path, type = QFileDialog.getSaveFileName(filter=filt)
+        if len(path) != 0:
+            d = self.canvas.getDataFromIndexes(self.__dim, list)[0]
+            if waveType == "Wave":
                 d.wave.export(path, type=type)
-        elif action.text() == 'Process':
-            data = self.canvas.getDataFromIndexes(self.__dim, list)[0]
-            d=dialog(data)
-            if data.filter is not None:
-                d.setFilter(data.filter)
-            d.show()
+            else:
+                d.filteredWave.export(path, type=type)
+
 
 class OffsetAdjustBox(QWidget):
     def __init__(self, canvas, dim):

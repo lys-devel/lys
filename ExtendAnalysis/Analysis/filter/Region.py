@@ -5,13 +5,14 @@ from .FilterInterface import FilterInterface
 
 
 class NormalizeFilter(FilterInterface):
-    def _makeSlice(self):
+    def _makeSlice(self, wave):
         sl = []
         for i, r in enumerate(self._range):
             if (r[0] == 0 and r[1] == 0) or self._axis == i:
                 sl.append(slice(None))
             else:
-                sl.append(slice(*r))
+                ind = wave.posToPoint(r, i)
+                sl.append(slice(*ind))
         return tuple(sl)
 
     def __init__(self, range, axis):
@@ -21,7 +22,7 @@ class NormalizeFilter(FilterInterface):
     def _execute(self, wave, **kwargs):
         axes = list(range(wave.data.ndim))
         if self._axis == -1:
-            wave.data = wave.data / wave.data[self._makeSlice()].mean()
+            wave.data = wave.data / wave.data[self._makeSlice(wave)].mean()
         else:
             letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"]
             axes.remove(self._axis)
@@ -38,15 +39,16 @@ class NormalizeFilter(FilterInterface):
 
 class SelectRegionFilter(FilterInterface):
     def __init__(self, range):
-        self._range = range
+        self._range = np.array(range)
 
     def _execute(self, wave, **kwargs):
         sl = []
-        for r in self._range:
+        for i, r in enumerate(self._range):
             if r[0] == 0 and r[1] == 0:
                 sl.append(slice(None))
             else:
-                sl.append(slice(*r))
+                ind = wave.posToPoint(r, i)
+                sl.append(slice(*ind))
         key = tuple(sl)
         wave.data = wave.data[key]
         axes = []

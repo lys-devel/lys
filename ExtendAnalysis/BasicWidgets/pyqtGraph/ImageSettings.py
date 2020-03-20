@@ -25,7 +25,7 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def autoColorRange(self, indexes):
         data = self.getDataFromIndexes(2, indexes)
         for d in data:
-            d.obj.setImage(d.wave.data, autoLevels=True)
+            d.obj.setImage(d.filteredWave.data, autoLevels=True)
 
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
@@ -79,11 +79,11 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def __setColor(self, d, lut):
         if 'Log' in d.appearance:
             if d.appearance['Log']:
-                d.obj.setImage(np.log(d.wave.data), lut=lut)
+                d.obj.setImage(np.log(d.filteredWave.data), lut=lut)
             else:
-                d.obj.setImage(d.wave.data, lut=lut)
+                d.obj.setImage(d.filteredWave.data, lut=lut)
         else:
-            d.obj.setImage(d.wave.data, lut=lut)
+            d.obj.setImage(d.filteredWave.data, lut=lut)
 
     def getColorRange(self, indexes):
         res = []
@@ -98,10 +98,10 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
         for d in data:
             if log:
                 d.appearance['Log'] = True
-                d.obj.setImage(np.log(d.wave.data), levels=(min, max))
+                d.obj.setImage(np.log(d.filteredWave.data), levels=(min, max))
             else:
                 d.appearance['Log'] = False
-                d.obj.setImage(d.wave.data, levels=(min, max))
+                d.obj.setImage(d.filteredWave.data, levels=(min, max))
 
     def getOpacity(self, indexes):
         res = []

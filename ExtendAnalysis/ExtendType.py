@@ -476,7 +476,7 @@ class Wave(AutoSaved):
     def Duplicate(self):
         import copy
         w = Wave()
-        w.data = self.data
+        w.data = copy.copy(self.data)
         w.axes = copy.copy(self.axes)
         w.note = copy.copy(self.note)
         return w
@@ -643,6 +643,8 @@ class Wave(AutoSaved):
             dy = (y1 - y0) / (len(self.y) - 1)
             return (int(round((pos[0] - x0) / dx)), int(round((pos[1] - y0) / dy)))
         else:
+            if hasattr(pos, "__iter__"):
+                return [self.posToPoint(p, axis) for p in pos]
             ax = self.getAxis(axis)
             x0 = ax[0]
             x1 = ax[len(ax) - 1]
