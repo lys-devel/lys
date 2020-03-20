@@ -38,7 +38,7 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
         data = self.getImages()
         for d in data:
             d.appearance['Range'] = list(d.obj.getLevels())
-            d.appearance['Opacity'] = list(d.obj.opacity())
+            d.appearance['Opacity'] = d.obj.opacity()
 
     def loadAppearance(self):
         super().loadAppearance()
