@@ -66,11 +66,16 @@ class AnnotatableCanvasBase(object):
         self.removeAnnotation([l.id for l in list], type)
 
     def _reorderAnnotation(self, type='text'):
-        n = 0
-        for d in self._list[type]:
-            d.id = self._id_start[type] + n
-            self._setZOrder(d.obj, d.id)
-            n += 1
+        if type == "all":
+            keys = self._list.keys()
+        else:
+            keys = [type]
+        for k in keys:
+            n = 0
+            for d in self._list[k]:
+                d.id = self._id_start[k] + n
+                self._setZOrder(d.obj, d.id)
+                n += 1
 
     def getAnnotations(self, type='all', indexes=None):
         if indexes is None:
@@ -99,11 +104,16 @@ class AnnotatableCanvasBase(object):
         self._changed[type].append(weakref.ref(listener))
 
     def _emitAnnotationChanged(self, type='text'):
-        for l in self._changed[type]:
-            if l() is None:
-                self._changed[type].remove(l)
-            else:
-                l().OnAnnotationChanged()
+        if type == "all":
+            keys = self._list.keys()
+        else:
+            keys = [type]
+        for k in keys:
+            for l in self._changed[k]:
+                if l() is None:
+                    self._changed[k].remove(l)
+                else:
+                    l().OnAnnotationChanged()
 
     def loadAnnotAppearance(self):
         pass

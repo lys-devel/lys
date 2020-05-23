@@ -370,7 +370,7 @@ class FreeLineExecutor(QObject):
             self.setPosition(pos)
 
     def getAxes(self):
-        return self.axes
+        return list(self.axes)
 
     def setPosition(self, pos):
         self.position = pos
