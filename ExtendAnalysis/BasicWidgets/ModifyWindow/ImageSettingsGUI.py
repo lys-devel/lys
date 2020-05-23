@@ -76,6 +76,8 @@ class _rangeWidget(QGroupBox):
     def setRange(self, mean, wid):
         self.__mean = mean
         self.__wid = wid
+        if self.__wid == 0:
+            self.__wid = 1
 
     def setLimit(self, min, max):
         self.__spin2.setRange(min, max)

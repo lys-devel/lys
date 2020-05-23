@@ -28,10 +28,13 @@ class FontInfo(object):
         fonts = fm.findSystemFonts()
         cls._fonts = []
         for f in fonts:
-            n = fm.FontProperties(fname=f).get_name()
-            if not n in cls._fonts:
-                cls._fonts.append(n)
-            cls._fonts = sorted(cls._fonts)
+            try:
+                n = fm.FontProperties(fname=f).get_name()
+                if not n in cls._fonts:
+                    cls._fonts.append(n)
+                cls._fonts = sorted(cls._fonts)
+            except:
+                pass
 
     @classmethod
     def defaultFont(cls):

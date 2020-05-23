@@ -73,7 +73,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                 wdata.id = ids
                 wdata.obj = obj
                 wdata.axes = ax
-                wdata.filteredWave=filteredWave
+                wdata.filteredWave = filteredWave
                 return wdata
             else:
                 wd = WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter, filteredWave=filteredWave)
@@ -83,7 +83,7 @@ class CanvasBaseBase(DrawableCanvasBase):
             filter.execute(wav)
         else:
             wav = w
-        filteredWave=wav
+        filteredWave = wav
         if wav.data.ndim == 2 and wav.data.dtype == complex:
             wav = wav.Duplicate()
             if 'Range' in appearance:
@@ -190,8 +190,7 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     @saveCanvas
     def Clear(self):
-        for d in self._Datalist:
-            self.Remove(d.id)
+        self.Remove([d.id for d in self._Datalist])
 
     def getWaveData(self, dim=None, contour=False):
         if dim is None:
