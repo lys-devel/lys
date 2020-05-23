@@ -1,3 +1,5 @@
+import scipy
+import numpy as np
 from dask.array import flip, roll
 
 from ExtendAnalysis import Wave, DaskWave

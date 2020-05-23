@@ -1,6 +1,7 @@
 import itertools
 import time
 from ExtendAnalysis import *
+from scipy import ndimage
 import dask
 import dask.array as da
 
@@ -190,7 +191,7 @@ class ExecutorList(controlledObjects):
         for a in axes_orig:
             if a >= 10000:
                 fl = self.__findFreeLineExecutor(a)
-                axes = fl.getAxes()
+                axes = list(fl.getAxes())
                 for i, ax in enumerate(axes):
                     for ax2 in applied:
                         if ax2 < ax:
@@ -393,7 +394,7 @@ class FreeLineExecutor(QObject):
 
     def _execute_dask(self, wave, axes):
         def map(x, coords):
-            return np.sum([scipy.ndimage.map_coordinates(x, c, order=1) for c in coords], axis=0)
+            return np.sum([ndimage.map_coordinates(x, c, order=1) for c in coords], axis=0)
         coord = []
         for j in range(1 - self.width, self.width, 2):
             x, y, size = self.__makeCoordinates(wave, axes, j)
@@ -409,7 +410,7 @@ class FreeLineExecutor(QObject):
         res = None
         for j in range(1 - self.width, self.width, 2):
             x, y, size = self.__makeCoordinates(wave, axes, j)
-            map = scipy.ndimage.map_coordinates
+            map = ndimage.map_coordinates
             tmp = np.stack([map(wave.data[i], coordinates=np.array([x, y]), order=1) for i in indices]).T
             if res is None:
                 res = tmp
