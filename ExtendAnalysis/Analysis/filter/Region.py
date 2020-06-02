@@ -62,3 +62,35 @@ class SelectRegionFilter(FilterInterface):
 
     def getRegion(self):
         return self._range
+
+
+class IntegralFilter(FilterInterface):
+    def __init__(self, range):
+        self._range = np.array(range)
+
+    def _execute(self, wave, **kwargs):
+        sl = []
+        sumaxes = []
+        for i, r in enumerate(self._range):
+            if r[0] == 0 and r[1] == 0:
+                sl.append(slice(None))
+            else:
+                ind = wave.posToPoint(r, i)
+                sl.append(slice(*ind))
+                sumaxes.append(i)
+        key = tuple(sl)
+        print(sumaxes, key)
+        wave.data = np.sum(wave.data[key], axis=tuple(sumaxes))
+        axes = []
+        axis = 0
+        for s, ax in zip(key, wave.axes):
+            if not axis in sumaxes:
+                if ax is None or (ax == np.array(None)).all():
+                    axes.append(None)
+                else:
+                    axes.append(ax[s])
+        wave.axes = axes
+        return wave
+
+    def getRegion(self):
+        return self._range
