@@ -26,12 +26,12 @@ class NormalizeFilter(FilterInterface):
         else:
             letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"]
             axes.remove(self._axis)
-            nor = 1 / wave.data[self._makeSlice()].mean(axis=axes)
+            nor = 1 / wave.data[self._makeSlice(wave)].mean(axis=axes)
             subscripts = ""
             for i in range(wave.data.ndim):
                 subscripts += letters[i]
             subscripts = subscripts + "," + letters[self._axis] + "->" + subscripts
-            wave.data = einsum(subscripts, wave.data, nor)
+            wave.data = np.einsum(subscripts, wave.data, nor)
 
     def getParams(self):
         return self._range, self._axis
@@ -79,16 +79,14 @@ class IntegralFilter(FilterInterface):
                 sl.append(slice(*ind))
                 sumaxes.append(i)
         key = tuple(sl)
-        print(sumaxes, key)
-        wave.data = np.sum(wave.data[key], axis=tuple(sumaxes))
         axes = []
-        axis = 0
-        for s, ax in zip(key, wave.axes):
-            if not axis in sumaxes:
+        for i, (s, ax) in enumerate(zip(key, wave.axes)):
+            if not i in sumaxes:
                 if ax is None or (ax == np.array(None)).all():
                     axes.append(None)
                 else:
                     axes.append(ax[s])
+        wave.data = np.sum(wave.data[key], axis=tuple(sumaxes))
         wave.axes = axes
         return wave
 

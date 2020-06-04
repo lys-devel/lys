@@ -116,6 +116,7 @@ class SpreadSheet(object):
                 if data[0] == "=":
                     try:
                         exec(str(self._data[i][j]) + data, locals(), self._dict)
+                        self.saveAutoSaved()
                     except:
                         print("[Table] Error on exec:", str(self._data[i][j]) + data)
                         import inspect
@@ -183,6 +184,10 @@ class SpreadSheet(object):
 
     def getDataArray(self):
         return self._data
+
+    def saveAutoSaved(self):
+        for w in self.waves:
+            w.Save()
 
 
 class _ExtendTableTable(QTableView):

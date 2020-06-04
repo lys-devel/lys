@@ -11,10 +11,14 @@ class ShiftFilter(FilterInterface):
         self._s = shift
 
     def _execute(self, wave, shift=None, **kwargs):
-        if shift is None:
-            wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), self._s, cval=0))
+        if wave.data.ndim > 3:
+            order = 0
         else:
-            wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), shift, cval=0))
+            order = 3
+        if shift is None:
+            wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), self._s[0:wave.data.ndim], order=order, cval=0))
+        else:
+            wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), shift[0:wave.data.ndim], order=order, cval=0))
 
 
 class ReverseFilter(FilterInterface):

@@ -1,6 +1,7 @@
 from .filter import *
 import _pickle as cPickle
 
+
 class Filters(object):
     def __init__(self, filters):
         self._filters = []
@@ -12,6 +13,9 @@ class Filters(object):
 
     def insert(self, index, obj):
         self._filters.insert(index, obj)
+
+    def append(self, obj):
+        self._filters.append(obj)
 
     def getFilters(self):
         return self._filters

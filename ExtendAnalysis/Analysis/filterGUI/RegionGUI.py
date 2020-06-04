@@ -4,6 +4,66 @@ from .CommonWidgets import *
 from ExtendAnalysis import ScientificSpinBox
 
 
+class _axesSelectionDialog(QDialog):
+    def __init__(self, dim=2):
+        super().__init__()
+        self.dim = dim
+        self.__initlayout()
+
+    def __initlayout(self):
+        self.axis1 = _axisSelectionLayout("Axis 1", self.dim, 0)
+        self.axis2 = _axisSelectionLayout("Axis 2", self.dim, 1)
+        ok = QPushButton("O K", clicked=self.accept)
+        cancel = QPushButton("CALCEL", clicked=self.close)
+        h1 = QHBoxLayout()
+        h1.addWidget(ok)
+        h1.addWidget(cancel)
+        layout = QVBoxLayout()
+        layout.addLayout(self.axis1)
+        layout.addLayout(self.axis2)
+        layout.addLayout(h1)
+        self.setLayout(layout)
+
+    def setDimension(self, n):
+        self.axis1.setDimension(n)
+        self.axis2.setDimension(n)
+
+    def getAxes(self):
+        return (self.axis1.getAxis(), self.axis2.getAxis())
+
+
+class _axisSelectionLayout(QHBoxLayout):
+    def __init__(self, label, dim=2, init=0):
+        super().__init__()
+        self.dimension = 0
+        self.group = QButtonGroup()
+        self.childs = []
+        self.addWidget(QLabel(label))
+        self.setDimension(dim)
+        self.childs[init].setChecked(True)
+
+    def __update(self):
+        for c in self.childs:
+            self.removeWidget(c)
+            self.group.removeButton(c)
+            c.deleteLater()
+        self.childs = [QRadioButton(str(i)) for i in range(self.dimension)]
+        for c in self.childs:
+            self.addWidget(c)
+            self.group.addButton(c)
+
+    def setDimension(self, n):
+        if n == self.dimension:
+            return
+        self.dimension = n
+        self.__update()
+
+    def getAxis(self):
+        for i, b in enumerate(self.childs):
+            if b.isChecked():
+                return i
+
+
 class RegionSelectWidget(QGridLayout):
     loadClicked = pyqtSignal(object)
 
@@ -39,8 +99,17 @@ class RegionSelectWidget(QGridLayout):
         c = Graph.active().canvas
         if c is not None:
             r = c.SelectedRange()
-            self.setRegion(0, (r[0][0], r[1][0]))
-            self.setRegion(1, (r[0][1], r[1][1]))
+            if self.dim == 2:
+                self.setRegion(0, (r[0][0], r[1][0]))
+                self.setRegion(1, (r[0][1], r[1][1]))
+            else:
+                d = _axesSelectionDialog(self.dim)
+                d.show()
+                value = d.exec_()
+                if value:
+                    ax = d.getAxes()
+                    self.setRegion(ax[0], (r[0][0], r[1][0]))
+                    self.setRegion(ax[1], (r[0][1], r[1][1]))
 
     def setRegion(self, axis, range):
         if axis < len(self.start):
@@ -119,7 +188,7 @@ class IntegralSetting(FilterSettingBase):
 
     @classmethod
     def _havingFilter(cls, f):
-        if isinstance(f, SelectRegionFilter):
+        if isinstance(f, IntegralFilter):
             return True
 
     def GetFilter(self):
