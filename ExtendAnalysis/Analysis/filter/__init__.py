@@ -8,3 +8,4 @@ from .Region import *
 from .Resize import *
 from .Shift import *
 from .Smooth import *
+from .FreeLine import *

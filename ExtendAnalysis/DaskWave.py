@@ -81,3 +81,9 @@ class DaskWave(object):
             return DaskWave(data, axes=axes)
         else:
             super().__getitem__(key)
+
+    def axisIsValid(self, dim):
+        tmp = self.axes[dim]
+        if tmp is None or (tmp == np.array(None)).all():
+            return False
+        return True

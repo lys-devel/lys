@@ -1,6 +1,7 @@
 import itertools
 import time
 from ExtendAnalysis import *
+from .filter.FreeLine import *
 from scipy import ndimage
 import dask
 import dask.array as da
@@ -387,80 +388,9 @@ class FreeLineExecutor(QObject):
         self.width = w
 
     def execute(self, wave, axes):
-        if isinstance(wave, Wave):
-            return self._execute_wave(wave, axes)
-        if isinstance(wave, DaskWave):
-            return self._execute_dask(wave, axes)
-
-    def _execute_dask(self, wave, axes):
-        def map(x, coords):
-            return np.sum([ndimage.map_coordinates(x, c, order=1) for c in coords], axis=0)
-        coord = []
-        for j in range(1 - self.width, self.width, 2):
-            x, y, size = self.__makeCoordinates(wave, axes, j)
-            coord.append(np.array([x, y]))
-        gumap = da.gufunc(map, signature="(i,j),(p,q,r)->(m)",
-                          output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(axes), (0, 1, 2), (0,)], allow_rechunk=True, output_sizes={"m": size})
-        res = gumap(wave.data, da.from_array(coord))
-        self.__setAxesAndData(wave, axes, size, res)
-        return wave
-
-    def _execute_wave(self, wave, axes):
-        indices = self.__makeIndices(wave, axes)
-        res = None
-        for j in range(1 - self.width, self.width, 2):
-            x, y, size = self.__makeCoordinates(wave, axes, j)
-            map = ndimage.map_coordinates
-            tmp = np.stack([map(wave.data[i], coordinates=np.array([x, y]), order=1) for i in indices]).T
-            if res is None:
-                res = tmp
-            else:
-                res += tmp
-        self.__setAxesAndData(wave, axes, size, res)
-        return wave
-
-    def __makeIndices(self, wave, axes):
-        sl_base = []
-        sl_axes = []
-        for ax in range(wave.data.ndim):
-            if not ax in axes:
-                sl_axes.append(ax)
-                sl_base.append(range(wave.data.shape[ax]))
-        res = []
-        for indices in itertools.product(*sl_base):
-            sl = [slice(None, None, None)] * wave.data.ndim
-            for ax, index in zip(sl_axes, indices):
-                sl[ax] = index
-            res.append(tuple(sl))
-        return res
-
-    def __makeCoordinates(self, wave, axes, j):
-        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[1][0], axes[0]))
-        pos2 = (wave.posToPoint(self.position[0][1], axes[1]), wave.posToPoint(self.position[1][1], axes[1]))
-        dx = (pos2[0] - pos1[0])
-        dy = (pos2[1] - pos1[1])
-        size = int(np.sqrt(dx * dx + dy * dy) + 1)
-        nor = np.sqrt(dx * dx + dy * dy)
-        dx, dy = dy / nor, -dx / nor
-        return np.linspace(pos1[0], pos2[0], size) + dx * (j * 0.5), np.linspace(pos1[1], pos2[1], size) + dy * (j * 0.5), size
-
-    def __setAxesAndData(self, wave, axes, size, res):
-        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[1][0], axes[0]))
-        pos2 = (wave.posToPoint(self.position[0][1], axes[1]), wave.posToPoint(self.position[1][1], axes[1]))
-        replacedAxis = min(*axes)
-        axis1 = wave.axes[axes[0]]
-        if axis1 is None:
-            axis1 = list(range(wave.data.shape[axes[0]]))
-        axis2 = wave.axes[axes[1]]
-        if axis2 is None:
-            axis2 = list(range(wave.data.shape[axes[1]]))
-        dx = abs(axis1[pos1[0]] - axis1[pos2[0]])
-        dy = abs(axis2[pos1[1]] - axis2[pos2[1]])
-        d = np.sqrt(dx * dx + dy * dy)
-        axisData = np.linspace(0, d, size)
-        wave.axes[replacedAxis] = axisData
-        wave.axes = np.delete(wave.axes, max(*axes), 0)
-        wave.data = res
+        f = FreeLineFilter(axes, self.position, self.width)
+        f.execute(wave)
+        return
 
     def callback(self, pos):
         self.setPosition(pos)
