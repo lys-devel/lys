@@ -52,6 +52,8 @@ class DaskWave(object):
         return self.data.shape
 
     def posToPoint(self, pos, axis):
+        if hasattr(pos, "__iter__"):
+            return [self.posToPoint(p, axis) for p in pos]
         ax = self.axes[axis]
         if (ax == np.array(None)).all():
             return int(round(pos))
@@ -87,3 +89,10 @@ class DaskWave(object):
         if tmp is None or (tmp == np.array(None)).all():
             return False
         return True
+
+    @staticmethod
+    def SupportedFormats():
+        return Wave.SupportedFormats()
+
+    def export(self, path, type="Numpy npz (*.npz)"):
+        self.toWave().export(path, type)

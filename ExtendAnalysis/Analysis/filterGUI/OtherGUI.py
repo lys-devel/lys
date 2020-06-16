@@ -134,6 +134,44 @@ class FreeLineSetting(FilterSettingBase):
         return obj
 
 
+class PeakSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        self._combo = QComboBox()
+        self._combo.addItem("ArgRelMax")
+        self._combo.addItem("ArgRelMin")
+        self._order = QSpinBox()
+        self._axis = AxisSelectionLayout("Axis", dimension)
+        h1 = QHBoxLayout()
+        h1.addWidget(self._combo)
+        h1.addWidget(QLabel("order"))
+        h1.addWidget(self._order)
+        layout = QVBoxLayout()
+        layout.addLayout(self._axis)
+        layout.addLayout(h1)
+        self.setLayout(layout)
+
+    def GetFilter(self):
+        return PeakFilter(self._axis.getAxis(), self._order.value(), self._combo.currentText())
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, PeakFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = PeakSetting(None, self.dim, self.loader)
+        params = f.getParams()
+        obj._axis.setAxis(params[0])
+        obj._order.setValue(params[1])
+        if params[2] == "ArgRelMax":
+            obj._combo.setCurrentIndex(0)
+        else:
+            obj._combo.setCurrentIndex(1)
+        return obj
+
+
 filterGroups['*Interpolation'] = InterpSetting
 filterGroups['Reduce size'] = ReduceSizeSetting
 filterGroups['Cut along line'] = FreeLineSetting
+filterGroups['Find Peak'] = PeakSetting

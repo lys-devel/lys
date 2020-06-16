@@ -29,7 +29,7 @@ class FreeLineFilter(FilterInterface):
             x, y, size = self.__makeCoordinates(wave, axes, j)
             coord.append(np.array([x, y]))
         gumap = da.gufunc(map, signature="(i,j),(p,q,r)->(m)",
-                          output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(axes), (0, 1, 2), (0,)], allow_rechunk=True, output_sizes={"m": size})
+                          output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(axes), (0, 1, 2), (min(axes),)], allow_rechunk=True, output_sizes={"m": size})
         res = gumap(wave.data, da.from_array(coord))
         self.__setAxesAndData(wave, axes, size, res)
         return wave

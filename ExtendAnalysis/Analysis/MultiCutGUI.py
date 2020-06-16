@@ -43,16 +43,26 @@ class MultiCut(GridAttachedWindow):
         if e.key() == Qt.Key_M:
             self.show()
 
+    def __exportTab(self):
+        self._ani = AnimationTab(self._cut.getExecutorList())
+        self._data = ExportDataTab()
+        self._ani.updated.connect(self._cut.update)
+        w = QWidget()
+        lay = QVBoxLayout(self)
+        lay.addWidget(self._data)
+        lay.addWidget(self._ani)
+        lay.addStretch()
+        w.setLayout(lay)
+        return w
+
     def __initlayout__(self):
         self._pre = PrefilterTab(self._loadRegion)
-        self._cut = CutTab(self, self.grid)
-        self._ani = AnimationTab(self._cut.getExecutorList())
         self._pre.filterApplied.connect(self._filterApplied)
-        self._ani.updated.connect(self._cut.update)
+        self._cut = CutTab(self, self.grid)
         tab = QTabWidget()
         tab.addTab(self._pre, "Prefilter")
         tab.addTab(self._cut, "Cut")
-        tab.addTab(self._ani, "Animation")
+        tab.addTab(self.__exportTab(), "Export")
 
         self.__file = QLineEdit()
         btn = QPushButton("Load", clicked=self.load)
@@ -82,6 +92,7 @@ class MultiCut(GridAttachedWindow):
             print("Wave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype)
         self._cut._setWave(w)
         self._ani._setWave(w)
+        self._data._setWave(w)
 
     def load(self, file):
         if file == False:
@@ -200,7 +211,6 @@ class PrefilterTab(QWidget):
         self.layout.addWidget(self.filt)
         h1 = QHBoxLayout()
         h1.addWidget(QPushButton("Rechunk", clicked=self._chunk))
-        h1.addWidget(QPushButton("Apply Show", clicked=self._click2))
         h1.addWidget(QPushButton("Apply filters", clicked=self._click))
         self.layout.addLayout(h1)
 
@@ -218,11 +228,6 @@ class PrefilterTab(QWidget):
         self.filt.GetFilters().execute(waves)
         waves.persist()
         self.filterApplied.emit(waves)
-
-    def _click2(self):
-        waves = self.wave.toWave()
-        self.filt.GetFilters().execute(waves)
-        display(waves)
 
     def _chunk(self):
         if self.wave is None:
@@ -758,7 +763,37 @@ class CutTab(QWidget):
         self.__exe.append(e, c)
 
 
-class AnimationTab(QWidget):
+class ExportDataTab(QGroupBox):
+    def __init__(self):
+        super().__init__("Data")
+        self.__initlayout()
+
+    def __initlayout(self):
+        hb = QHBoxLayout()
+        hb.addWidget(QPushButton("Export", clicked=self.__export))
+        hb.addWidget(QPushButton("MultiCut", clicked=self.__mcut))
+
+        self.layout = QVBoxLayout()
+        self.layout.addLayout(hb)
+        self.setLayout(self.layout)
+
+    def _setWave(self, wave):
+        self.wave = wave
+
+    def __mcut(self):
+        MultiCut(self.wave)
+
+    def __export(self):
+        filt = ""
+        for f in self.wave.SupportedFormats():
+            filt = filt + f + ";;"
+        filt = filt[:len(filt) - 2]
+        path, type = QFileDialog.getSaveFileName(filter=filt)
+        if len(path) != 0:
+            self.wave.export(path, type=type)
+
+
+class AnimationTab(QGroupBox):
     updated = pyqtSignal(int)
 
     class _axisWidget(QWidget):
@@ -782,7 +817,7 @@ class AnimationTab(QWidget):
             return self._btn1.index(self.grp1.checkedButton())
 
     def __init__(self, executor):
-        super().__init__()
+        super().__init__("Animation")
         self.__initlayout()
         self.__exe = executor
 
@@ -800,7 +835,6 @@ class AnimationTab(QWidget):
         self.layout.addLayout(hbox1)
         self.layout.addLayout(self.__makeTimeOptionLayout())
         self.layout.addLayout(self.__makeScaleOptionLayout())
-        self.layout.addStretch()
         self.layout.addWidget(btn)
         self.setLayout(self.layout)
 
