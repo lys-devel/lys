@@ -15,6 +15,8 @@ from .RGBSettings import *
 
 
 class RangeSelectableCanvas(RGBSettingCanvas):
+    selectedRangeChanged = pyqtSignal(object)
+
     def __init__(self, dpi=100):
         super().__init__(dpi)
         self.roi = pg.RectROI([0, 0], [0, 0], invertible=True)
@@ -44,6 +46,7 @@ class RangeSelectableCanvas(RGBSettingCanvas):
             else:
                 self._roi_end = self.axes.mapSceneToView(event.scenePos())
                 self.roi.setSize(self._roi_end - self._roi_start)
+                self.selectedRangeChanged.emit(self.SelectedRange())
                 event.accept()
                 return
         return super()._onDrag(event)

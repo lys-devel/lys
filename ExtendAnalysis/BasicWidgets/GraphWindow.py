@@ -116,8 +116,8 @@ class Graph(AutoSavedWindow):
         self.canvas.fig.canvas = None
         super().closeEvent(event)
 
-    def Append(self, wave, axis=Axis.BottomLeft, contour=False):
-        return self.canvas.Append(wave, axis, contour=contour)
+    def Append(self, wave, axis=Axis.BottomLeft, contour=False, vector=False):
+        return self.canvas.Append(wave, axis, contour=contour, vector=vector)
 
     def Duplicate(self, lib=None):
         dic = {}

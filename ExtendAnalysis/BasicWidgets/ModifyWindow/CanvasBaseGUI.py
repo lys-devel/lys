@@ -53,10 +53,12 @@ class DataSelectionBox(QTreeView):
                 self.canvas.moveItem(f, self.item(self.itemFromIndex(parent).row(), 2).text())
             return False
 
-    def __init__(self, canvas, dim):
+    def __init__(self, canvas, dim, contour=False, vector=False):
         super().__init__()
         self.canvas = canvas
         self.__dim = dim
+        self._contour = contour
+        self._vector = vector
         self.__initlayout()
         self.flg = False
         self._loadstate()
@@ -91,7 +93,7 @@ class DataSelectionBox(QTreeView):
 
     def _loadstate(self):
         self.flg = True
-        list = self.canvas.getWaveData(self.__dim)
+        list = self.canvas.getWaveData(self.__dim, contour=self._contour, vector=self._vector)
         self.__model.clear()
         i = 1
         for l in list:
@@ -141,8 +143,8 @@ class DataShowButton(QPushButton):
 
 
 class RightClickableSelectionBox(DataSelectionBox):
-    def __init__(self, canvas, dim):
-        super().__init__(canvas, dim)
+    def __init__(self, canvas, dim, *args, **kwargs):
+        super().__init__(canvas, dim, *args, **kwargs)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.canvas = canvas
@@ -159,34 +161,38 @@ class RightClickableSelectionBox(DataSelectionBox):
         raw = menu.addMenu("Raw data")
         raw.addAction(QAction('Display', self, triggered=lambda: self.__display("Wave")))
         raw.addAction(QAction('Append', self, triggered=lambda: self.__append("Wave")))
+        if self.__dim == 3:
+            raw.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("Wave", vector=True)))
         raw.addAction(QAction('Edit', self, triggered=lambda: self.__edit("Wave")))
         raw.addAction(QAction('Export', self, triggered=lambda: self.__export("Wave")))
         pr = menu.addMenu("Processed data")
         pr.addAction(QAction('Display', self, triggered=lambda: self.__display("ProcessedWave")))
         pr.addAction(QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
+        if self.__dim == 3:
+            pr.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("ProcessedWave", vector=True)))
         pr.addAction(QAction('Edit', self, triggered=lambda: self.__edit("ProcessedWave")))
         pr.addAction(QAction('Export', self, triggered=lambda: self.__export("ProcessedWave")))
         action = menu.exec_(QCursor.pos())
 
-    def __display(self, type):
+    def __display(self, type, vector=False):
         from ExtendAnalysis import Graph
         g = Graph()
         data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))
         for d in data:
             if type == "Wave":
-                g.Append(d.wave)
+                g.Append(d.wave, vector=vector)
             else:
-                g.Append(d.filteredWave)
+                g.Append(d.filteredWave, vector=vector)
 
-    def __append(self, type):
+    def __append(self, type, vector=False):
         from ExtendAnalysis import Graph
         g = Graph.active(1)
         data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))
         for d in data:
             if type == "Wave":
-                g.Append(d.wave)
+                g.Append(d.wave, vector=vector)
             else:
-                g.Append(d.filteredWave)
+                g.Append(d.filteredWave, vector=vector)
 
     def __edit(self, type):
         from ExtendAnalysis import Table

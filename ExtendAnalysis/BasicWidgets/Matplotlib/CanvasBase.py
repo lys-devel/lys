@@ -116,6 +116,12 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         self._setZOrder(obj, zorder)
         return obj, ax
 
+    def _appendVectorField(self, wav, offset, axis, zorder):
+        ax = self.__getAxes(axis)
+        obj = ax.quiver(np.real(wav.data.T), np.imag(wav.data.T))
+        self._setZOrder(obj, zorder)
+        return obj, ax
+
     def _remove(self, data):
         if isinstance(data.obj, QuadContourSet):
             for o in data.obj.collections:

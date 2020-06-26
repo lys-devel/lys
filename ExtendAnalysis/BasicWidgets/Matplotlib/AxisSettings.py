@@ -19,6 +19,8 @@ from .RGBSettings import *
 
 
 class RangeSelectableCanvas(RGBSettingCanvas):
+    selectedRangeChanged = pyqtSignal(object)
+
     def __init__(self, dpi=100):
         super().__init__(dpi)
         self.__rect = Rectangle((0, 0), 0, 0, color='orange', alpha=0.5)
@@ -61,6 +63,7 @@ class RangeSelectableCanvas(RGBSettingCanvas):
             self.__rect.set_width(ax[0] - self.__rect.xy[0])
             self.__rect.set_height(ax[1] - self.__rect.xy[1])
             self.draw()
+            self.selectedRangeChanged.emit(self.SelectedRange())
             self.Selection = False
 
     def OnMouseMove(self, event):
@@ -71,6 +74,7 @@ class RangeSelectableCanvas(RGBSettingCanvas):
             self.restore_region(self.__saved)
             self.axes.draw_artist(self.__rect)
             self.blit(self.axes.bbox)
+            self.selectedRangeChanged.emit(self.SelectedRange())
             self.flush_events()
 
     def IsRangeSelected(self):
@@ -727,15 +731,15 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
             tick = ax.get_minor_ticks()[0]
         if axis in ['Left', 'Bottom']:
             if mirror:
-                res = tick.tick2line.get_visible()#tick.tick2On
+                res = tick.tick2line.get_visible()  # tick.tick2On
             else:
-                res = tick.tick1line.get_visible()#tick.tick1On
+                res = tick.tick1line.get_visible()  # tick.tick1On
         else:
             if mirror:
-                res = tick.tick1line.get_visible()#tick.tick1On
+                res = tick.tick1line.get_visible()  # tick.tick1On
             else:
-                res = tick.tick2line.get_visible()#tick.tick2On
-        if isinstance(res,bool):
+                res = tick.tick2line.get_visible()  # tick.tick2On
+        if isinstance(res, bool):
             return res
-        elif isinstance(res,str):
-            return res=="on"
+        elif isinstance(res, str):
+            return res == "on"
