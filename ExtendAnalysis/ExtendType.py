@@ -330,6 +330,7 @@ def produce(data, axes, note):
 
 class Wave(AutoSaved):
     class _wavedata(ExtendObject):
+
         def _init(self):
             self.axes = [np.array(None)]
             self.data = np.array(None)
@@ -407,6 +408,18 @@ class Wave(AutoSaved):
                 else:
                     return np.array(None)
             return super().__getattribute__(key)
+
+    def __init__(self, data=None, *args, **kwargs):
+        if type(data) == str:
+            super().__init__(data)
+        else:
+            super().__init__()
+            self.setData(data, *args)
+
+    def setData(self, data, *axes):
+        self.data = data
+        if len(axes) == self.data.ndim:
+            self.axes = list(axes)
 
     def _newobj(self, file):
         return self._wavedata(file)

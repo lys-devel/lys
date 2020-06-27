@@ -134,11 +134,11 @@ class _LineTab(QWidget):
 
     def _initlayout(self, canvas):
         layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, 1))
+        layout.addWidget(RightClickableSelectionBox(canvas, "line"))
 
         tab = QTabWidget()
         tab.addTab(ApperanceBox(canvas), 'Appearance')
-        tab.addTab(OffsetAdjustBox(canvas, 1), 'Offset')
+        tab.addTab(OffsetAdjustBox(canvas, "line"), 'Offset')
 
         layout.addWidget(tab)
         self.setLayout(layout)
@@ -152,11 +152,11 @@ class _ImageTab(QWidget):
 
     def _initlayout(self, canvas):
         layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, 2))
+        layout.addWidget(RightClickableSelectionBox(canvas, "image"))
         tab = QTabWidget()
         tab.addTab(ImageColorAdjustBox(canvas), 'Color')
         tab.addTab(ImagePlaneAdjustBox(canvas), 'Slice')
-        tab.addTab(OffsetAdjustBox(canvas, 2), 'Offset')
+        tab.addTab(OffsetAdjustBox(canvas, "image"), 'Offset')
         tab.addTab(AnimationBox(canvas), 'Animation')
         layout.addWidget(tab)
         self.setLayout(layout)
@@ -170,10 +170,10 @@ class _RGBTab(QWidget):
 
     def _initlayout(self, canvas):
         layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, 3))
+        layout.addWidget(RightClickableSelectionBox(canvas, "rgb"))
         tab = QTabWidget()
         tab.addTab(RGBColorAdjustBox(canvas), 'Color')
-        tab.addTab(OffsetAdjustBox(canvas, 3), 'Offset')
+        tab.addTab(OffsetAdjustBox(canvas, "rgb"), 'Offset')
         layout.addWidget(tab)
         self.setLayout(layout)
 
@@ -186,10 +186,10 @@ class _VectorTab(QWidget):
 
     def _initlayout(self, canvas):
         layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, 2, vector=True))
+        layout.addWidget(RightClickableSelectionBox(canvas, "vector"))
         tab = QTabWidget()
         #tab.addTab(RGBColorAdjustBox(canvas), 'Color')
-        tab.addTab(OffsetAdjustBox(canvas, 3), 'Offset')
+        tab.addTab(OffsetAdjustBox(canvas, "vector"), 'Offset')
         layout.addWidget(tab)
         self.setLayout(layout)
 

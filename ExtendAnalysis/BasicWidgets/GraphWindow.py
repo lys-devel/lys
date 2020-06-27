@@ -129,9 +129,9 @@ class Graph(AutoSavedWindow):
         return g
 
 
-def display(w, lib=None):
+def display(w, lib=None, **kwargs):
     g = Graph(lib=lib)
-    g.Append(w)
+    g.Append(w, **kwargs)
     return g
 
 

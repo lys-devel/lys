@@ -161,14 +161,14 @@ class RightClickableSelectionBox(DataSelectionBox):
         raw = menu.addMenu("Raw data")
         raw.addAction(QAction('Display', self, triggered=lambda: self.__display("Wave")))
         raw.addAction(QAction('Append', self, triggered=lambda: self.__append("Wave")))
-        if self.__dim == 3:
+        if self.__dim == 3 or self.__dim == "rgb":
             raw.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("Wave", vector=True)))
         raw.addAction(QAction('Edit', self, triggered=lambda: self.__edit("Wave")))
         raw.addAction(QAction('Export', self, triggered=lambda: self.__export("Wave")))
         pr = menu.addMenu("Processed data")
         pr.addAction(QAction('Display', self, triggered=lambda: self.__display("ProcessedWave")))
         pr.addAction(QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
-        if self.__dim == 3:
+        if self.__dim == 3 or self.__dim == "rgb":
             pr.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("ProcessedWave", vector=True)))
         pr.addAction(QAction('Edit', self, triggered=lambda: self.__edit("ProcessedWave")))
         pr.addAction(QAction('Export', self, triggered=lambda: self.__export("ProcessedWave")))

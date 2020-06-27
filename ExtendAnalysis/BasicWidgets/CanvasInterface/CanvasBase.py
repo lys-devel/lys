@@ -43,8 +43,6 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     @saveCanvas
     def OnWaveModified(self, wave):
-        flg = False
-        self.EnableDraw(False)
         self.saveAppearance()
         for d in self._Datalist:
             if wave.obj == d.wave.obj:
@@ -52,9 +50,6 @@ class CanvasBaseBase(DrawableCanvasBase):
                 self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, zindex=d.zindex, reuse=True, contour=d.contour, filter=d.filter, wdata=d, vector=d.vector)
                 flg = True
         self.loadAppearance()
-        self.EnableDraw(True)
-        if(flg):
-            self.draw()
 
     def Append(self, wave, axis=Axis.BottomLeft, id=None, appearance=None, offset=(0, 0, 0, 0), zindex=0, contour=False, filter=None, vector=False):
         if isinstance(wave, Wave):
@@ -85,13 +80,27 @@ class CanvasBaseBase(DrawableCanvasBase):
         else:
             wav = w
         filteredWave = wav
-        if wav.data.ndim == 2 and wav.data.dtype == complex and not vector:
+        type = self._checkType(w, contour, vector)
+        if type == "rgb":
+            wav = self._makeRGBData(wav, appearance)
+        ids, obj, ax = self._getAppendFunc(type)(wav, axis, id, appearance, offset)
+        id_pos = ids + self._getDefaultId(type)
+        self._Datalist.insert(id_pos, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata, vector))
+        if not reuse:
+            w.addModifiedListener(self.OnWaveModified)
+        self.dataChanged.emit()
+        if appearance is not None:
+            self.loadAppearance()
+        return ids
+
+    def _makeRGBData(self, wav, appearance):
+        if wav.data.ndim == 2:
             wav = wav.Duplicate()
             if 'Range' in appearance:
                 rmin, rmax = appearance['Range']
             else:
                 rmin, rmax = 0, np.max(np.abs(wav.data))
-            wav.data = self._Complex2HSV(wav.data, rmin, rmax, appearance.get('ColorRotation', 90))
+            wav.data = self._Complex2HSV(wav.data, rmin, rmax, appearance.get('ColorRotation', 0))
         elif wav.data.ndim == 3:
             wav = wav.Duplicate()
             if 'Range' in appearance:
@@ -99,28 +108,61 @@ class CanvasBaseBase(DrawableCanvasBase):
                 amp = np.where(wav.data < rmin, rmin, wav.data)
                 amp = np.where(amp > rmax, rmax, amp)
                 wav.data = (amp - rmin) / (rmax - rmin)
+        return wav
+
+    def _Complex2HSV(self, z, rmin, rmax, hue_start=0):
+        amp = np.abs(z)
+        amp = np.where(amp < rmin, rmin, amp)
+        amp = np.where(amp > rmax, rmax, amp)
+        ph = np.angle(z, deg=1) + hue_start
+        h = (ph % 360) / 360
+        s = np.ones_like(h)
+        v = (amp - rmin) / (rmax - rmin)
+        rgb = hsv_to_rgb(np.dstack((h, s, v)))
+        return rgb
+
+    def _checkType(self, wav, contour, vector):
         if wav.data.ndim == 1:
-            ids, obj, ax = self._Append1D(wav, axis, id, appearance, offset)
-            self._Datalist.insert(ids + 2000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata))
+            return "line"
         elif wav.data.ndim == 2:
             if wav.data.dtype == complex:
-                ids, obj, ax = self._AppendVectorField(wav, axis, id, appearance, offset)
-                self._Datalist.insert(ids + 5500, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata, vector))
-            elif contour:
-                ids, obj, ax = self._AppendContour(wav, axis, id, appearance, offset)
-                self._Datalist.insert(ids + 4000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata, vector))
+                if vector:
+                    return "vector"
+                else:
+                    return "rgb"
             else:
-                ids, obj, ax = self._Append2D(wav, axis, id, appearance, offset)
-                self._Datalist.insert(ids + 5000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata, vector))
+                if contour:
+                    return "contour"
+                else:
+                    return "image"
         elif wav.data.ndim == 3:
-            ids, obj, ax = self._Append3D(wav, axis, id, appearance, offset)
-            self._Datalist.insert(ids + 6000, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata, vector))
-        if not reuse:
-            w.addModifiedListener(self.OnWaveModified)
-        self.dataChanged.emit()
-        if appearance is not None:
-            self.loadAppearance()
-        return ids
+            if wav.data.shape[2] in [3, 4]:
+                return "rgb"
+        return "undefined"
+
+    def _getDefaultId(self, type):
+        if type == "line":
+            return 2000
+        if type == "vector":
+            return 5500
+        if type == "contour":
+            return 4000
+        if type == "image":
+            return 5000
+        if type == "rgb":
+            return 6000
+
+    def _getAppendFunc(self, type):
+        if type == "line":
+            return self._Append1D
+        if type == "vector":
+            return self._AppendVectorField
+        if type == "contour":
+            return self._AppendContour
+        if type == "image":
+            return self._Append2D
+        if type == "rgb":
+            return self._Append3D
 
     def _Append1D(self, wav, axis, ID, appearance, offset):
         if wav.x.ndim == 0:
@@ -141,17 +183,6 @@ class CanvasBaseBase(DrawableCanvasBase):
             id = ID
         obj, ax = self._append1d(xdata, ydata, axis, id)
         return id, obj, ax
-
-    def _Complex2HSV(self, z, rmin, rmax, hue_start=90):
-        amp = np.abs(z)
-        amp = np.where(amp < rmin, rmin, amp)
-        amp = np.where(amp > rmax, rmax, amp)
-        ph = np.angle(z, deg=1) + hue_start
-        h = (ph % 360) / 360
-        s = np.ones_like(h)
-        v = (amp - rmin) / (rmax - rmin)
-        rgb = hsv_to_rgb(np.dstack((h, s, v)))
-        return rgb
 
     def _Append2D(self, wav, axis, ID, appearance, offset):
         if ID is None:
@@ -205,6 +236,8 @@ class CanvasBaseBase(DrawableCanvasBase):
         self.Remove([d.id for d in self._Datalist])
 
     def getWaveData(self, dim=None, contour=False, vector=False):
+        if type(dim) == str:
+            return self._getWaveDataFromType(dim)
         if dim is None:
             return self._Datalist
         res = []
@@ -224,6 +257,18 @@ class CanvasBaseBase(DrawableCanvasBase):
             if d.wave.data.ndim == 3 and dim == 3:
                 res.append(d)
         return res
+
+    def _getWaveDataFromType(self, type):
+        if type == "line":
+            return self.getLines()
+        if type == "image":
+            return self.getImages()
+        if type == "vector":
+            return self.getVectorFields()
+        if type == "rgb":
+            return self.getRGBs()
+        if type == "contour":
+            return self.getContours()
 
     def getLines(self):
         return self.getWaveData(1)
@@ -334,6 +379,9 @@ class CanvasBaseBase(DrawableCanvasBase):
     def _appendContour(self, wave, offset, axis, zorder):
         raise NotImplementedError()
 
+    def _appendVectorField(self, wav, offset, axis, zorder):
+        raise NotImplementedError()
+
     def _setZOrder(self, obj, z):
         raise NotImplementedError()
 
@@ -343,18 +391,31 @@ class DataSelectableCanvasBase(CanvasBaseBase):
 
     def __init__(self):
         super().__init__()
-        self.__indexes = [[], [], [], []]
+        self.__indexes = {}
 
     def setSelectedIndexes(self, dim, indexes):
         if hasattr(indexes, '__iter__'):
             list = indexes
         else:
             list = [indexes]
-        self.__indexes[dim] = list
+        if dim == 1:
+            self.__indexes["line"] = list
+        if dim == 2:
+            self.__indexes["image"] = list
+        if dim == 3:
+            self.__indexes["rgb"] = list
+        else:
+            self.__indexes[dim] = list
         self.dataSelected.emit()
 
     def getSelectedIndexes(self, dim):
-        return self.__indexes[dim]
+        if dim == 1:
+            return self.__indexes.get("line", [])
+        if dim == 2:
+            return self.__indexes.get("image", [])
+        if dim == 3:
+            return self.__indexes.get("rgb", [])
+        return self.__indexes.get(dim, [])
 
     def _findIndex(self, id):
         res = -1
@@ -427,6 +488,7 @@ class OffsetAdjustableCanvasBase(DataHidableCanvasBase):
     @saveCanvas
     def setOffset(self, offset, indexes):
         data = self.getDataFromIndexes(None, indexes)
+        print(indexes, data)
         for d in data:
             d.offset = offset
             self.OnWaveModified(d.wave)

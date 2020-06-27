@@ -118,7 +118,17 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
 
     def _appendVectorField(self, wav, offset, axis, zorder):
         ax = self.__getAxes(axis)
-        obj = ax.quiver(np.real(wav.data.T), np.imag(wav.data.T))
+        if offset[2] == 0:
+            x = wav.x + offset[0]
+        else:
+            x = wav.x * offset[2] + offset[0]
+        if offset[3] == 0:
+            y = wav.x + offset[1]
+        else:
+            y = wav.x * offset[3] + offset[1]
+        print(offset)
+        xx, yy = np.meshgrid(x, y)
+        obj = ax.quiver(xx.T, yy.T, np.real(wav.data.T), np.imag(wav.data.T))
         self._setZOrder(obj, zorder)
         return obj, ax
 
