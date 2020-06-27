@@ -123,12 +123,11 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         else:
             x = wav.x * offset[2] + offset[0]
         if offset[3] == 0:
-            y = wav.x + offset[1]
+            y = wav.y + offset[1]
         else:
-            y = wav.x * offset[3] + offset[1]
-        print(offset)
+            y = wav.y * offset[3] + offset[1]
         xx, yy = np.meshgrid(x, y)
-        obj = ax.quiver(xx.T, yy.T, np.real(wav.data.T), np.imag(wav.data.T))
+        obj = ax.quiver(xx, yy, np.real(wav.data.T), np.imag(wav.data.T), pivot="mid")
         self._setZOrder(obj, zorder)
         return obj, ax
 

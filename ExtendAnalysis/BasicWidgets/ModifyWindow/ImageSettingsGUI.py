@@ -177,6 +177,101 @@ class RGBColorAdjustBox(QWidget):
             self.canvas.setColorRotation(indexes, self.__rot.value())
 
 
+class VectorAdjustBox(QWidget):
+    _pivots = ["tail", "middle", "tip"]
+
+    def __init__(self, canvas):
+        super().__init__()
+        self.canvas = canvas
+        canvas.dataSelected.connect(self.OnDataSelected)
+        self.__initlayout()
+        self.__flg = False
+
+    def __initlayout(self):
+        layout = QVBoxLayout()
+        self.__pivot = QComboBox()
+        self.__pivot.addItems(self._pivots)
+        self.__pivot.currentTextChanged.connect(self.__changePivot)
+        self.__scale = ScientificSpinBox()
+        self.__scale.valueChanged.connect(self.__changeLength)
+        self.__width = ScientificSpinBox()
+        self.__width.valueChanged.connect(self.__changeWidth)
+        self.__color = ColorSelection()
+        self.__color.colorChanged.connect(self.__changeColor)
+        self.__edgecolor = ColorSelection()
+        self.__edgecolor.colorChanged.connect(self.__changeEdgeColor)
+
+        grid1 = QGridLayout()
+        grid1.addWidget(QLabel("face"), 0, 1)
+        grid1.addWidget(QLabel("edge"), 0, 2)
+        grid1.addWidget(self.__color, 1, 1)
+        grid1.addWidget(self.__edgecolor, 1, 2)
+        grp1 = QGroupBox("Color")
+        grp1.setLayout(grid1)
+
+        grid2 = QGridLayout()
+        grid2.addWidget(QLabel("scale"), 0, 1)
+        grid2.addWidget(QLabel("width"), 0, 2)
+        grid2.addWidget(self.__scale, 1, 1)
+        grid2.addWidget(self.__width, 1, 2)
+        grp2 = QGroupBox("Size")
+        grp2.setLayout(grid2)
+
+        layout.addWidget(self.__pivot)
+        layout.addWidget(grp1)
+        layout.addWidget(grp2)
+        layout.addStretch()
+        self.setLayout(layout)
+
+    def OnDataSelected(self):
+        self.__flg = True
+        indexes = self.canvas.getSelectedIndexes("vector")
+        if len(indexes) == 0:
+            return
+        scale = self.canvas.getVectorScale(indexes)[0]
+        if scale is None:
+            self.__scale.setValue(0)
+        else:
+            self.__scale.setValue(scale)
+        width = self.canvas.getVectorWidth(indexes)[0]
+        if width is None:
+            self.__width.setValue(0)
+        else:
+            self.__width.setValue(width)
+        self.__flg = False
+        col = self.canvas.getVectorColor(indexes, "face")[0]
+        self.__color.setColor(col)
+        col = self.canvas.getVectorColor(indexes, "edge")[0]
+        self.__edgecolor.setColor(col)
+        p = self.canvas.getVectorPivot(indexes)[0]
+        self.__pivot.setCurrentIndex(self._pivots.index(p))
+
+    def __changeLength(self, value):
+        if not self.__flg:
+            indexes = self.canvas.getSelectedIndexes("vector")
+            self.canvas.setVectorScale(indexes, value)
+
+    def __changeWidth(self, value):
+        if not self.__flg:
+            indexes = self.canvas.getSelectedIndexes("vector")
+            self.canvas.setVectorWidth(indexes, value)
+
+    def __changeColor(self, color):
+        if not self.__flg:
+            indexes = self.canvas.getSelectedIndexes("vector")
+            self.canvas.setVectorColor(indexes, color, "face")
+
+    def __changeEdgeColor(self, color):
+        if not self.__flg:
+            indexes = self.canvas.getSelectedIndexes("vector")
+            self.canvas.setVectorColor(indexes, color, "edge")
+
+    def __changePivot(self):
+        if not self.__flg:
+            indexes = self.canvas.getSelectedIndexes("vector")
+            self.canvas.setVectorPivot(indexes, self.__pivot.currentText())
+
+
 class ImagePlaneAdjustBox(QWidget):
     def __init__(self, canvas):
         super().__init__()

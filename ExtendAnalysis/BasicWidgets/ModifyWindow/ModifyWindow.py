@@ -188,7 +188,7 @@ class _VectorTab(QWidget):
         layout = QVBoxLayout()
         layout.addWidget(RightClickableSelectionBox(canvas, "vector"))
         tab = QTabWidget()
-        #tab.addTab(RGBColorAdjustBox(canvas), 'Color')
+        tab.addTab(VectorAdjustBox(canvas), 'Vector')
         tab.addTab(OffsetAdjustBox(canvas, "vector"), 'Offset')
         layout.addWidget(tab)
         self.setLayout(layout)

@@ -15,10 +15,10 @@ from PyQt5.QtWidgets import *
 from matplotlib import lines, markers, ticker
 
 from ExtendAnalysis import *
-from .RGBSettings import *
+from .VectorSettings import *
 
 
-class RangeSelectableCanvas(RGBSettingCanvas):
+class RangeSelectableCanvas(VectorSettingCanvas):
     selectedRangeChanged = pyqtSignal(object)
 
     def __init__(self, dpi=100):
