@@ -186,7 +186,6 @@ class FourierSetting(FilterSettingBase):
     def __init__(self, parent, dim, loader=None):
         super().__init__(parent, dim, loader)
         self.dim = dim
-        self._layout = QHBoxLayout()
         self._combo = QComboBox()
         self._combo.addItem('forward', 'forward')
         self._combo.addItem('backward', 'backward')
@@ -195,12 +194,23 @@ class FourierSetting(FilterSettingBase):
         self._process.addItem('real', 'real')
         self._process.addItem('imag', 'imag')
         self._process.addItem('phase', 'phase')
+        self._process.addItem('complex', 'complex')
         self._axes = AxisCheckLayout(dim)
-        self._layout.addWidget(QLabel('Direction'))
-        self._layout.addWidget(self._combo)
-        self._layout.addWidget(QLabel('Process'))
-        self._layout.addWidget(self._process)
-        self._layout.addLayout(self._axes)
+        self._window = QComboBox()
+        self._window.addItem("Rect", "Rect")
+        self._window.addItem("Hann", "Hann")
+        self._window.addItem("Hamming", "Hamming")
+        self._window.addItem("Blackman", "Blackman")
+
+        self._layout = QGridLayout()
+        self._layout.addWidget(QLabel('Direction'), 0, 0)
+        self._layout.addWidget(QLabel('Process'), 0, 1)
+        self._layout.addWidget(QLabel('Window'), 0, 2)
+        self._layout.addWidget(QLabel('Axes'), 0, 3)
+        self._layout.addWidget(self._combo, 1, 0)
+        self._layout.addWidget(self._process, 1, 1)
+        self._layout.addWidget(self._window, 1, 2)
+        self._layout.addLayout(self._axes, 1, 3)
         self.setLayout(self._layout)
 
     @classmethod
@@ -209,14 +219,15 @@ class FourierSetting(FilterSettingBase):
             return True
 
     def GetFilter(self):
-        return FourierFilter(self._axes.GetChecked(), type=self._combo.currentText(), process=self._process.currentText())
+        return FourierFilter(self._axes.GetChecked(), type=self._combo.currentText(), process=self._process.currentText(), window=self._window.currentText())
 
     def parseFromFilter(self, f):
         obj = FourierSetting(None, self.dim, self.loader)
-        axes, type, process = f.getParams()
+        axes, type, process, window = f.getParams()
         obj._axes.SetChecked(axes)
         obj._process.setCurrentIndex(obj._process.findData(process))
         obj._combo.setCurrentIndex(obj._combo.findData(type))
+        obj._window.setCurrentIndex(obj._window.findData(window))
         return obj
 
 

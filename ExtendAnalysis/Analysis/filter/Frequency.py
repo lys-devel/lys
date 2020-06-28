@@ -84,10 +84,11 @@ class BandStopFilter(FilterInterface):
 
 
 class FourierFilter(FilterInterface):
-    def __init__(self, axes, type="forward", process="absolute", roll=True):
+    def __init__(self, axes, type="forward", process="absolute", window=None, roll=True):
         self.type = type
         self.axes = axes
         self.process = process
+        self.window = window
         self.roll = roll
 
     def __getLib(self, wave):
@@ -116,14 +117,15 @@ class FourierFilter(FilterInterface):
         size = [int(wave.data.shape[ax] / 2) for ax in self.axes]
         lib = self.__getLib(wave)
         func = self.__getFunction(wave, self.process)
+        data = self.__applyWindow(wave)
         if self.type == "forward":
-            wave.data = func(lib.fft.fftn(wave.data, axes=self.axes))
+            wave.data = func(lib.fft.fftn(data, axes=self.axes))
             if self.roll:
                 wave.data = lib.roll(wave.data, size, axis=self.axes)
         else:
             if self.roll:
                 size_inv = [-s for s in size]
-                wave.data = lib.roll(wave.data, size_inv, axis=self.axes)
+                wave.data = lib.roll(data, size_inv, axis=self.axes)
             wave.data = func(lib.fft.ifftn(wave.data, axes=self.axes))
         return wave
 
@@ -137,5 +139,23 @@ class FourierFilter(FilterInterface):
                 if self.roll:
                     wave.axes[ax] = wave.axes[ax] - wave.axes[ax][len(a) // 2]
 
+    def __applyWindow(self, wave):
+        windowFunc = {"Rect": None, "Hann": signal.hann, "Hamming": signal.hamming, "Blackman": signal.blackman}
+        index = ["i", "j", "k", "l", "m", "n", "o", "p", "q", "r"]
+        f = windowFunc[self.window]
+        if f is None:
+            return wave.data
+        window = []
+        fr, to = "", ""
+        for ax in range(wave.data.ndim):
+            if ax in self.axes:
+                window.append(f(wave.data.shape[ax]))
+            else:
+                window.append(np.array([1]))
+            fr += index[ax] + ","
+            to += index[ax]
+        window = np.einsum(fr[:len(fr) - 1] + "->" + to, *window)
+        return wave.data * window
+
     def getParams(self):
-        return self.axes, self.type, self.process
+        return self.axes, self.type, self.process, self.window

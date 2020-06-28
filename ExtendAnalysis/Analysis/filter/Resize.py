@@ -53,8 +53,10 @@ class PaddingFilter(FilterInterface):
         pad = np.ones(shape) * self.value
         if self.direction == "first":
             data = [pad, wave.data]
-        else:
+        elif self.direction == "last":
             data = [wave.data, pad]
+        else:
+            data = [pad, wave.data, pad]
         return data
 
     def _createAxis(self, wave, ax):
@@ -67,8 +69,10 @@ class PaddingFilter(FilterInterface):
         d = (e - s) / len(axis_old) * (len(axis_old) + self.size)
         if self.direction == "first":
             axis_new = np.linspace(e - d, e, len(axis_old) + self.size)
-        else:
+        elif self.direction == "last":
             axis_new = np.linspace(s, s + d, len(axis_old) + self.size)
+        else:
+            axis_new = np.linspace(e - d, s + d, len(axis_old) + 2 * self.size)
         return axis_new
 
     def getParams(self):

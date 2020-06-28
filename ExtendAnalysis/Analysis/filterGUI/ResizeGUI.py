@@ -73,7 +73,7 @@ class PaddingSetting(FilterSettingBase):
         self._size.setValue(200)
         self._value = ScientificSpinBox()
         self._direction = QComboBox()
-        self._direction.addItems(["first", "last"])
+        self._direction.addItems(["first", "last", "both"])
         self._layout = QGridLayout()
         self._layout.addWidget(QLabel("axes"), 0, 0)
         self._layout.addWidget(QLabel("direction"), 0, 1)
