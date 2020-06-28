@@ -30,3 +30,46 @@ class ReduceSizeFilter(FilterInterface):
 
     def getKernel(self):
         return self.kernel
+
+
+class PaddingFilter(FilterInterface):
+    def __init__(self, axes, value=0, size=100, direction="first"):
+        self.axes = axes
+        self.size = size
+        self.value = value
+        self.direction = direction
+
+    def _execute(self, wave, **kwargs):
+        for ax in self.axes:
+            data = self._createData(wave, ax)
+            axis = self._createAxis(wave, ax)
+            wave.data = np.concatenate(data, axis=ax)
+            wave.axes[ax] = axis
+        return wave
+
+    def _createData(self, wave, ax):
+        shape = list(wave.data.shape)
+        shape[ax] = self.size
+        pad = np.ones(shape) * self.value
+        if self.direction == "first":
+            data = [pad, wave.data]
+        else:
+            data = [wave.data, pad]
+        return data
+
+    def _createAxis(self, wave, ax):
+        if wave.axisIsValid(ax):
+            axis_old = np.array(wave.axes[ax])
+        else:
+            return None
+        s = axis_old[0]
+        e = axis_old[len(axis_old) - 1]
+        d = (e - s) / len(axis_old) * (len(axis_old) + self.size)
+        if self.direction == "first":
+            axis_new = np.linspace(e - d, e, len(axis_old) + self.size)
+        else:
+            axis_new = np.linspace(s, s + d, len(axis_old) + self.size)
+        return axis_new
+
+    def getParams(self):
+        return self.axes, self.value, self.size, self.direction

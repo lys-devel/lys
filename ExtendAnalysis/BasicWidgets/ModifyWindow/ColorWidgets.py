@@ -25,13 +25,13 @@ class ColorSelection(QPushButton):
         res = QColorDialog.getColor(QColor(self.getColor()))
         if res.isValid():
             c = (res.red() / 255.0, res.green() / 255.0, res.blue() / 255.0, res.alpha() / 255.0)
-            self.setColor(c)
+            self.setColor(res.name())
             self.colorChanged.emit(c)
 
     def setColor(self, color):
-        if hasattr(color, "__iter__"):
+        if isinstance(color, tuple) or isinstance(color, list):
             if len(color) == 4:
-                self.__color = "rgba" + str((color[0] * 255, color[1] * 255, color[2] * 255, color[3]))
+                self.__color = "rgba" + str((int(color[0] * 255), int(color[1] * 255), int(color[2] * 255), int(color[3])))
             if len(color) == 3:
                 self.__color = "rgba" + str((color[0] * 255, color[1] * 255, color[2] * 255, 1))
         else:

@@ -250,7 +250,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                         if vector and d.vector:
                             res.append(d)
                     else:
-                        if contour == d.contour:
+                        if contour == d.contour and vector == d.vector:
                             res.append(d)
                 if dim == 3 and d.wave.data.dtype == complex and not d.vector:
                     res.append(d)
