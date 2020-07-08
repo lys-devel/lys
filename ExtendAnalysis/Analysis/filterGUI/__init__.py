@@ -5,6 +5,7 @@ from . import SimpleMathGUI
 from . import FrequencyGUI
 from . import ConvolutionGUI
 from . import ResizeGUI
+from . import IntegralGUI
 from . import SegmentationGUI
 from . import SymmetricOperationGUI
 from . import OtherGUI
