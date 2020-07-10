@@ -21,11 +21,26 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
 
+    def getAutoColorRange(self, indexes):
+        data = self.getDataFromIndexes(2, indexes)
+        res = []
+        for d in data:
+            dat = np.nan_to_num(d.wave.data)
+            ma, mi = np.percentile(dat, [75, 25])
+            dat = np.clip(dat, mi, ma)
+            var = np.sqrt(dat.var()) * 3
+            if var == 0:
+                var = 1
+            mean = dat.mean()
+            res.append((mean, var))
+        return res
+
     @saveCanvas
     def autoColorRange(self, indexes):
+        ranges = self.getAutoColorRange(indexes)
         data = self.getDataFromIndexes(2, indexes)
-        for d in data:
-            d.obj.setImage(d.filteredWave.data, autoLevels=True)
+        for d, (i, (m, v)) in zip(data, zip(indexes, ranges)):
+            self.setColorRange(i, m - v, m + v, log=d.appearance.get("Log", False))
 
     def keyPressEvent(self, e):
         super().keyPressEvent(e)

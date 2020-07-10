@@ -11,7 +11,7 @@ class ScientificSpinBox(QDoubleSpinBox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setRange(-np.inf, np.inf)
-        self.setDecimals(16)
+        self.setDecimals(128)
         self.setAccelerated(True)
 
     def textFromValue(self, value):
