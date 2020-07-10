@@ -62,6 +62,42 @@ class DaskWave(object):
         dx = (x1 - x0) / (len(ax) - 1)
         return int(round((pos - x0) / dx))
 
+    def pointToPos(self, p, axis=None):
+        if axis is None:
+            x0 = self.x[0]
+            x1 = self.x[len(self.x) - 1]
+            y0 = self.y[0]
+            y1 = self.y[len(self.y) - 1]
+            dx = (x1 - x0) / (len(self.x) - 1)
+            dy = (y1 - y0) / (len(self.y) - 1)
+            return (p[0] * dx + x0, p[1] * dy + y0)
+        else:
+            if hasattr(p, "__iter__"):
+                return [self.pointToPos(pp, axis) for pp in p]
+            ax = self.getAxis(axis)
+            x0 = ax[0]
+            x1 = ax[len(ax) - 1]
+            dx = (x1 - x0) / (len(ax) - 1)
+            # return int(round((pos - x0) / dx))
+            return p*dx+x0
+
+    def getAxis(self, dim):
+        val = np.array(self.axes[dim])
+        if self.data.ndim <= dim:
+            return None
+        elif val.ndim == 0:
+            return np.arange(self.data.shape[dim])
+        else:
+            if self.data.shape[dim] == val.shape[0]:
+                return val
+            else:
+                res = np.empty((self.data.shape[dim]))
+                for i in range(self.data.shape[dim]):
+                    res[i] = np.NaN
+                for i in range(min(self.data.shape[dim], val.shape[0])):
+                    res[i] = val[i]
+                return res
+
     def sum(self, axis):
         data = self.data.sum(axis)
         axes = []

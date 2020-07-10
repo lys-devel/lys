@@ -44,7 +44,8 @@ def copy(name, name_to):
 
 def move(name, name_to):
     if os.path.abspath(name_to).find(os.path.abspath(name)) > -1:
-        sys.stderr.write('Error: Cannot move. The file cannot be moved to this folder.\n')
+        sys.stderr.write(
+            'Error: Cannot move. The file cannot be moved to this folder.\n')
         return 0
     try:
         if os.path.isdir(name):
@@ -74,7 +75,8 @@ def remove(name):
             if ExtendObject._GetData(os.path.abspath(name)) is None:
                 os.remove(name)
             else:
-                sys.stderr.write('Error: Cannot remove. This file is in use.\n')
+                sys.stderr.write(
+                    'Error: Cannot remove. This file is in use.\n')
     except Exception:
         sys.stderr.write('Error: Cannot remove.\n')
 
@@ -106,10 +108,12 @@ def globalSetting():
 
 class ExtendObject(object):
     __dic = {}
+
     @classmethod  # TODO
     def OnMoveFile(cls, file, file_to):
         if cls.IsUsed(os.path.abspath(file)):
-            cls.__dic[os.path.abspath(file)]()._Connect(os.path.abspath(file_to))
+            cls.__dic[os.path.abspath(file)]()._Connect(
+                os.path.abspath(file_to))
             cls._Remove(file)
 
     @classmethod
@@ -138,7 +142,8 @@ class ExtendObject(object):
                     o._load(o._filename())
                     o._emitDataChanged()
                 except:
-                    logging.error("[ExtendObject] Failed to reload. Restart is recommended.")
+                    logging.error(
+                        "[ExtendObject] Failed to reload. Restart is recommended.")
 
     def __init__(self, file):
         self.__file = file
@@ -367,7 +372,8 @@ class Wave(AutoSaved):
                 self.axes[2] = tmp['z']
 
         def _save(self, file):
-            np.savez_compressed(file, data=self.data, axes=self.axes, note=self.note, allow_pickle=True)
+            np.savez_compressed(
+                file, data=self.data, axes=self.axes, note=self.note, allow_pickle=True)
 
         def _vallist(self):
             return ['data', 'x', 'y', 'z', 'note', 'axes']
@@ -507,8 +513,10 @@ class Wave(AutoSaved):
         nor = np.sqrt(dx * dx + dy * dy)
         dx, dy = dy / nor, -dx / nor
         for i in range(1 - width, width, 2):
-            x, y = np.linspace(pos1[0], pos2[0], size) + dx * (i * 0.5), np.linspace(pos1[1], pos2[1], size) + dy * (i * 0.5)
-            res += scipy.ndimage.map_coordinates(self.data, np.vstack((y, x)), mode="constant", order=3, prefilter=True)
+            x, y = np.linspace(pos1[0], pos2[0], size) + dx * (i *
+                                                               0.5), np.linspace(pos1[1], pos2[1], size) + dy * (i * 0.5)
+            res += scipy.ndimage.map_coordinates(self.data, np.vstack(
+                (y, x)), mode="constant", order=3, prefilter=True)
         w.data = res
         if axis == 'x':
             w.x = self.x[pos1[index]:pos2[index] + 1]
@@ -529,7 +537,8 @@ class Wave(AutoSaved):
 
     def _integrate_tangent(self, region, dr):
         w = Wave()
-        w.data = [self.integrate((region[0], region[1], r, r + dr)) for r in range(region[2], region[3], dr)]
+        w.data = [self.integrate((region[0], region[1], r, r + dr))
+                  for r in range(region[2], region[3], dr)]
         dx = self.x[1] - self.x[0]
         w.x = np.linspace(0, len(w.data) * dr * dx, num=len(w.data))
         return w
@@ -664,14 +673,24 @@ class Wave(AutoSaved):
             dx = (x1 - x0) / (len(ax) - 1)
             return int(round((pos - x0) / dx))
 
-    def pointToPos(self, p):
-        x0 = self.x[0]
-        x1 = self.x[len(self.x) - 1]
-        y0 = self.y[0]
-        y1 = self.y[len(self.y) - 1]
-        dx = (x1 - x0) / (len(self.x) - 1)
-        dy = (y1 - y0) / (len(self.y) - 1)
-        return (p[0] * dx + x0, p[1] * dy + y0)
+    def pointToPos(self, p, axis=None):
+        if axis is None:
+            x0 = self.x[0]
+            x1 = self.x[len(self.x) - 1]
+            y0 = self.y[0]
+            y1 = self.y[len(self.y) - 1]
+            dx = (x1 - x0) / (len(self.x) - 1)
+            dy = (y1 - y0) / (len(self.y) - 1)
+            return (p[0] * dx + x0, p[1] * dy + y0)
+        else:
+            if hasattr(p, "__iter__"):
+                return [self.pointToPos(pp, axis) for pp in p]
+            ax = self.getAxis(axis)
+            x0 = ax[0]
+            x1 = ax[len(ax) - 1]
+            dx = (x1 - x0) / (len(ax) - 1)
+            # return int(round((pos - x0) / dx))
+            return p*dx+x0
 
     def copy(self):
         w = Wave()
@@ -701,7 +720,8 @@ class Wave(AutoSaved):
 
     def export(self, path, type="Numpy npz (*.npz)"):
         if type == 'Numpy npz (*.npz)':
-            np.savez(path + ".npz".replace(".npz.npz", ".npz"), data=self.data, axes=self.axes, note=self.note)
+            np.savez(path + ".npz".replace(".npz.npz", ".npz"),
+                     data=self.data, axes=self.axes, note=self.note)
         if type == "Comma-Separated Values (*.csv)":
             import csv
             with open(path + ".csv".replace(".csv.csv", ".csv"), 'w') as f:
@@ -963,6 +983,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     _isclosed = False
     _restore = False
     folder_prefix = home() + '/.lys/workspace/'
+
     @classmethod
     def _IsUsed(cls, path):
         return path in cls.__list.data
@@ -996,8 +1017,10 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         if os.path.exists(oldpath) and not os.path.exists(newpath):
             copy(oldpath, newpath)
         #################################
-        cls.__list = List(home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/winlist.lst')
-        AutoSavedWindow._windir = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/wins'
+        cls.__list = List(home() + '/.lys/workspace/' +
+                          AutoSavedWindow._workspace + '/winlist.lst')
+        AutoSavedWindow._windir = home() + '/.lys/workspace/' + \
+            AutoSavedWindow._workspace + '/wins'
         print("Workspace: " + AutoSavedWindow._workspace)
         cls._restore = True
         mkdir(_windir)
@@ -1029,7 +1052,8 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     def NewTmpFilePath(self):
         mkdir(AutoSavedWindow._windir)
         for i in range(1000):
-            path = AutoSavedWindow._windir + '/' + self._prefix() + str(i).zfill(3) + self._suffix()
+            path = AutoSavedWindow._windir + '/' + self._prefix() + str(i).zfill(3) + \
+                self._suffix()
             if not AutoSavedWindow._IsUsed(path):
                 return path
         print('Too many windows.')
@@ -1051,7 +1075,8 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             logging.debug('[AutoSavedWindow] new window will be created.')
             self.__closeflg = True
             if file is None:
-                logging.debug('[AutoSavedWindow] file is None. New temporary window is created.')
+                logging.debug(
+                    '[AutoSavedWindow] file is None. New temporary window is created.')
                 self.__isTmp = True
                 self.__file = self.NewTmpFilePath()
             else:
@@ -1110,7 +1135,8 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         if (not AutoSavedWindow._IsClosed()) and (not self.IsConnected()) and self.__closeflg:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
-            msg.setText("This window is not saved. Do you really want to close it?")
+            msg.setText(
+                "This window is not saved. Do you really want to close it?")
             msg.setWindowTitle("Caution")
             msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             ok = msg.exec_()
