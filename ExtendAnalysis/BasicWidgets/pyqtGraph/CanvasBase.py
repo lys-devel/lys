@@ -2,6 +2,7 @@
 import weakref
 import sys
 import os
+import warnings
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -9,6 +10,17 @@ import pyqtgraph as pg
 from ExtendAnalysis import *
 from ExtendAnalysis import LoadFile
 from ..CanvasInterface import *
+
+warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
+
+
+def _suppressNumpyWarnings(func):
+    def wrapper(*args, **kwargs):
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
+            warnings.filterwarnings('ignore', r'invalid value encountered in reduce')
+            return func(*args, **kwargs)
+    return wrapper
 
 
 class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
@@ -105,6 +117,7 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         self.npen += 1
         return pg.mkPen(list[self.npen % 9], width=2)
 
+    @_suppressNumpyWarnings
     def _append1d(self, xdata, ydata, axis, zorder):
         ax = self.__getAxes(axis)
         obj = pg.PlotDataItem(x=xdata, y=ydata, pen=self._nextPen())
@@ -112,6 +125,7 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         obj.setZValue(zorder)
         return obj, ax
 
+    @_suppressNumpyWarnings
     def _append2d(self, wave, offset, axis, zorder):
         ax = self.__getAxes(axis)
         im = pg.ImageItem(image=wave.data)
@@ -122,6 +136,7 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         im.setZValue(zorder)
         return im, ax
 
+    @_suppressNumpyWarnings
     def _append3d(self, wave, offset, axis, zorder):
         ax = self.__getAxes(axis)
         im = pg.ImageItem(image=wave.data, levels=(0, 1))
@@ -132,6 +147,7 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         im.setZValue(zorder)
         return im, ax
 
+    @_suppressNumpyWarnings
     def _appendContour(self, wav, offset, axis, zorder):
         ax = self.__getAxes(axis)
         shift, mag = self.calcExtent2D(wav, offset)

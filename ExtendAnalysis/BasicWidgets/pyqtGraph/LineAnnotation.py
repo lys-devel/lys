@@ -8,56 +8,69 @@ from ExtendAnalysis import *
 from .Annotation import *
 from .CanvasBase import saveCanvas
 
+
 class LineAnnotCanvas(AnnotationSettingCanvas, LineAnnotationCanvasBase):
-    def __init__(self,dpi):
+    def __init__(self, dpi):
         super().__init__(dpi)
         LineAnnotationCanvasBase.__init__(self)
-    def SaveAsDictionary(self,dictionary,path):
-        super().SaveAsDictionary(dictionary,path)
-        LineAnnotationCanvasBase.SaveAsDictionary(self,dictionary,path)
-    def LoadFromDictionary(self,dictionary,path):
-        super().LoadFromDictionary(dictionary,path)
-        LineAnnotationCanvasBase.LoadFromDictionary(self,dictionary,path)
-    def _makeLineAnnot(self,pos,axis):
-        line=pg.LineSegmentROI(pos)
+
+    def SaveAsDictionary(self, dictionary, path):
+        super().SaveAsDictionary(dictionary, path)
+        LineAnnotationCanvasBase.SaveAsDictionary(self, dictionary, path)
+
+    def LoadFromDictionary(self, dictionary, path):
+        super().LoadFromDictionary(dictionary, path)
+        LineAnnotationCanvasBase.LoadFromDictionary(self, dictionary, path)
+
+    def _makeLineAnnot(self, pos, axis):
+        line = pg.LineSegmentROI(pos)
         line.setPen(pg.mkPen(color='#000000'))
         return line
-    def _getLinePosition(self,obj):
+
+    def _getLinePosition(self, obj):
         pos = obj.listPoints()
-        return [[obj.pos()[0]+obj.listPoints()[0][0],obj.pos()[0]+obj.listPoints()[1][0]],[obj.pos()[1]+obj.listPoints()[0][1],obj.pos()[1]+obj.listPoints()[1][1]]]
-    def _addAnnotCallback(self,obj,callback):
-        if isinstance(obj,pg.LineSegmentROI):
-            obj.sigRegionChanged.connect(lambda obj: callback([[obj.pos()[0]+obj.listPoints()[0][0],obj.pos()[0]+obj.listPoints()[1][0]],[obj.pos()[1]+obj.listPoints()[0][1],obj.pos()[1]+obj.listPoints()[1][1]]]))
+        return [[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[0] + obj.listPoints()[1][0]], [obj.pos()[1] + obj.listPoints()[0][1], obj.pos()[1] + obj.listPoints()[1][1]]]
+
+    def _addAnnotCallback(self, obj, callback):
+        if isinstance(obj, pg.LineSegmentROI):
+            obj.sigRegionChanged.connect(lambda obj: callback([[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[0] + obj.listPoints()[1][0]], [obj.pos()[1] + obj.listPoints()[0][1], obj.pos()[1] + obj.listPoints()[1][1]]]))
             obj.sigRegionChanged.emit(obj)
         else:
-            super()._addAnnotCallback(obj,callback)
+            super()._addAnnotCallback(obj, callback)
+
 
 class InfiniteLineAnnotCanvas(LineAnnotCanvas, InfiniteLineAnnotationCanvasBase):
-    def __init__(self,dpi):
+    def __init__(self, dpi):
         super().__init__(dpi)
         InfiniteLineAnnotationCanvasBase.__init__(self)
-    def SaveAsDictionary(self,dictionary,path):
-        super().SaveAsDictionary(dictionary,path)
-        InfiniteLineAnnotationCanvasBase.SaveAsDictionary(self,dictionary,path)
-    def LoadFromDictionary(self,dictionary,path):
-        super().LoadFromDictionary(dictionary,path)
-        InfiniteLineAnnotationCanvasBase.LoadFromDictionary(self,dictionary,path)
-    def _makeInfiniteLineAnnot(self,pos,type,axis):
+
+    def SaveAsDictionary(self, dictionary, path):
+        super().SaveAsDictionary(dictionary, path)
+        InfiniteLineAnnotationCanvasBase.SaveAsDictionary(self, dictionary, path)
+
+    def LoadFromDictionary(self, dictionary, path):
+        super().LoadFromDictionary(dictionary, path)
+        InfiniteLineAnnotationCanvasBase.LoadFromDictionary(self, dictionary, path)
+
+    def _makeInfiniteLineAnnot(self, pos, type, axis):
         if type == 'vertical':
-            line=pg.InfiniteLine(pos,90)
+            line = pg.InfiniteLine(pos, 90)
         else:
-            line=pg.InfiniteLine(pos,0)
+            line = pg.InfiniteLine(pos, 0)
         line.setMovable(True)
         line.setPen(pg.mkPen(color='#000000'))
+        line.setVisible(True)
         return line
-    def _getInfiniteLinePosition(self,obj):
+
+    def _getInfiniteLinePosition(self, obj):
         return obj.value()
-    def _addAnnotCallback(self,obj,callback):
-        if isinstance(obj,pg.InfiniteLine):
+
+    def _addAnnotCallback(self, obj, callback):
+        if isinstance(obj, pg.InfiniteLine):
             obj.sigPositionChanged.connect(lambda line: callback(line.value()))
             obj.sigPositionChanged.emit(obj)
         else:
-            super()._addAnnotCallback(obj,callback)
+            super()._addAnnotCallback(obj, callback)
 
 
 class LineAnnotationSettingCanvas(InfiniteLineAnnotCanvas):
