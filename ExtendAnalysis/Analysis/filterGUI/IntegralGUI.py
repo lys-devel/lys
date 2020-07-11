@@ -8,10 +8,32 @@ class IntegrationSetting(FilterGroupSetting):
     @classmethod
     def _filterList(cls):
         d = {
-            'Axis': IntegralSetting,
+            'Axis': IntegralAllSetting,
+            'Range': IntegralSetting,
             'Circle': CircleSetting,
         }
         return d
+
+
+class IntegralAllSetting(FilterSettingBase):
+    def __init__(self, parent, dim, loader=None):
+        super().__init__(parent, dim, loader)
+        self.__parent = parent
+        self.axes = AxisCheckLayout(dim)
+        self.setLayout(self.axes)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, IntegralAllFilter):
+            return True
+
+    def GetFilter(self):
+        return IntegralAllFilter(self.axes.GetChecked())
+
+    def parseFromFilter(self, f):
+        obj = IntegralALlSetting(None, self.dim, self.loader)
+        obj.axes.SetChecked(f.getAxes())
+        return obj
 
 
 class IntegralSetting(FilterSettingBase):
@@ -90,9 +112,9 @@ class CircleSetting(FilterSettingBase):
         pos = np.array(c.getAnnotLinePosition(l)).T
         for c, i in zip(self.center, pos[0]):
             c.setValue(i)
-        r = np.linalg.norm(pos[0]-pos[1])
+        r = np.linalg.norm(pos[0] - pos[1])
         self.radiuses[0].setValue(r)
-        self.radiuses[1].setValue(r/100)
+        self.radiuses[1].setValue(r / 100)
 
 
 filterGroups['Integral'] = IntegrationSetting

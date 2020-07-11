@@ -4,6 +4,21 @@ from ExtendAnalysis import Wave, DaskWave
 from .FilterInterface import FilterInterface
 
 
+class IntegralAllFilter(FilterInterface):
+    def __init__(self, axes):
+        self._axes = axes
+
+    def _execute(self, wave, **kwargs):
+        data = wave.data.sum(axis=tuple(self._axes))
+        ax = [wave.axes[i] for i in range(len(wave.axes)) if not i in self._axes]
+        wave.data = data
+        wave.axes = ax
+        return wave
+
+    def getAxes(self):
+        return self._axes
+
+
 class IntegralFilter(FilterInterface):
     def __init__(self, range):
         self._range = np.array(range)
@@ -26,7 +41,7 @@ class IntegralFilter(FilterInterface):
                     axes.append(None)
                 else:
                     axes.append(ax[s])
-        wave.data = np.sum(wave.data[key], axis=tuple(sumaxes))
+        wave.data = wave.data[key].sum(axis=tuple(sumaxes))
         wave.axes = axes
         return wave
 
@@ -51,7 +66,7 @@ class IntegralCircleFilter(FilterInterface):
 
     def _execute_dask(self, wave, region, rad, **kwargs):
         gumap = da.gufunc(_integrate_tangent, signature="(i,j),(p)->(m)",
-                          output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(self._axes), (0,), (min(self._axes),)], allow_rechunk=True, output_sizes={"m": int(region[3]/region[4])})
+                          output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(self._axes), (0,), (min(self._axes),)], allow_rechunk=True, output_sizes={"m": int(region[3] / region[4])})
         res = gumap(wave.data, da.from_array(region))
         wave.data = res
         wave.axes = self.__makeAxes(
@@ -62,7 +77,7 @@ class IntegralCircleFilter(FilterInterface):
         result = list(np.array(wave.axes))
         result.pop(max(*axes))
         result.pop(min(*axes))
-        result.insert(min(*axes), np.linspace(0, r, int(r/dr)))
+        result.insert(min(*axes), np.linspace(0, r, int(r / dr)))
         return result
 
     def getParams(self):
@@ -72,15 +87,15 @@ class IntegralCircleFilter(FilterInterface):
 def _translate_unit(wave, center, radiuses, axes):
     cx = wave.posToPoint(center[0], axis=axes[0])
     cy = wave.posToPoint(center[1], axis=axes[1])
-    r = np.abs(wave.posToPoint(center[0]+radiuses[0], axis=axes[0])-cx)
+    r = np.abs(wave.posToPoint(center[0] + radiuses[0], axis=axes[0]) - cx)
     dr = max(np.abs(wave.posToPoint(
-        center[0]+radiuses[1], axis=axes[0])-cx), 1)
+        center[0] + radiuses[1], axis=axes[0]) - cx), 1)
     dr = int(dr)
-    r = np.floor(r/dr)*dr
+    r = np.floor(r / dr) * dr
     pdr = np.abs(wave.pointToPos(
-        dr, axis=axes[0])-wave.pointToPos(0, axis=axes[0]))
+        dr, axis=axes[0]) - wave.pointToPos(0, axis=axes[0]))
     pr = np.abs(wave.pointToPos(
-        r, axis=axes[0])-wave.pointToPos(0, axis=axes[0]))
+        r, axis=axes[0]) - wave.pointToPos(0, axis=axes[0]))
     return (cx, cy, 0, r, dr), (pr, pdr)
 
 

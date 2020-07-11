@@ -1,4 +1,5 @@
 import numpy as np
+import dask.array as da
 import itertools
 from ExtendAnalysis import Wave, DaskWave
 from .FilterInterface import FilterInterface
@@ -40,17 +41,21 @@ class PaddingFilter(FilterInterface):
         self.direction = direction
 
     def _execute(self, wave, **kwargs):
+        if isinstance(wave, Wave):
+            lib = np
+        elif isinstance(wave, DaskWave):
+            lib = da
         for ax in self.axes:
-            data = self._createData(wave, ax)
+            data = self._createData(wave, ax, lib)
             axis = self._createAxis(wave, ax)
-            wave.data = np.concatenate(data, axis=ax)
+            wave.data = lib.concatenate(data, axis=ax)
             wave.axes[ax] = axis
         return wave
 
-    def _createData(self, wave, ax):
+    def _createData(self, wave, ax, lib):
         shape = list(wave.data.shape)
         shape[ax] = self.size
-        pad = np.ones(shape) * self.value
+        pad = lib.ones(shape) * self.value
         if self.direction == "first":
             data = [pad, wave.data]
         elif self.direction == "last":

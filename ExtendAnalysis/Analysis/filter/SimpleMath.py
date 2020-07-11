@@ -44,3 +44,19 @@ class ComplexFilter(FilterInterface):
             if isinstance(wave, DaskWave):
                 wave.data = da.imag(wave.data)
         return wave
+
+
+class NanToNumFilter(FilterInterface):
+    def __init__(self, value):
+        self._value = value
+
+    def _execute(self, wave, **kwargs):
+        if isinstance(wave, Wave):
+            lib = np
+        elif isinstance(wave, DaskWave):
+            lib = da
+        wave.data = lib.nan_to_num(wave.data, self._value)
+        return wave
+
+    def getValue(self):
+        return self._value
