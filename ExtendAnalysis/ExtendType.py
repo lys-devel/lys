@@ -333,7 +333,76 @@ def produce(data, axes, note):
     return w
 
 
-class Wave(AutoSaved):
+class WaveMethods(object):
+    def shape(self):
+        res = []
+        tmp = self.data.shape
+        for i in tmp:
+            if i is not None:
+                res.append(i)
+        return tuple(res)
+
+    def axisIsValid(self, dim):
+        tmp = self.axes[dim]
+        if tmp is None or (tmp == np.array(None)).all():
+            return False
+        return True
+
+    def posToPoint(self, pos, axis=None):
+        if axis is None:
+            x0 = self.x[0]
+            x1 = self.x[len(self.x) - 1]
+            y0 = self.y[0]
+            y1 = self.y[len(self.y) - 1]
+            dx = (x1 - x0) / (len(self.x) - 1)
+            dy = (y1 - y0) / (len(self.y) - 1)
+            return (int(round((pos[0] - x0) / dx)), int(round((pos[1] - y0) / dy)))
+        else:
+            if hasattr(pos, "__iter__"):
+                return [self.posToPoint(p, axis) for p in pos]
+            ax = self.getAxis(axis)
+            x0 = ax[0]
+            x1 = ax[len(ax) - 1]
+            dx = (x1 - x0) / (len(ax) - 1)
+            return int(round((pos - x0) / dx))
+
+    def pointToPos(self, p, axis=None):
+        if axis is None:
+            x0 = self.x[0]
+            x1 = self.x[len(self.x) - 1]
+            y0 = self.y[0]
+            y1 = self.y[len(self.y) - 1]
+            dx = (x1 - x0) / (len(self.x) - 1)
+            dy = (y1 - y0) / (len(self.y) - 1)
+            return (p[0] * dx + x0, p[1] * dy + y0)
+        else:
+            if hasattr(p, "__iter__"):
+                return [self.pointToPos(pp, axis) for pp in p]
+            ax = self.getAxis(axis)
+            x0 = ax[0]
+            x1 = ax[len(ax) - 1]
+            dx = (x1 - x0) / (len(ax) - 1)
+            return p * dx + x0
+
+    def getAxis(self, dim):
+        val = np.array(self.axes[dim])
+        if self.data.ndim <= dim:
+            return None
+        elif val.ndim == 0:
+            return np.arange(self.data.shape[dim])
+        else:
+            if self.data.shape[dim] == val.shape[0]:
+                return val
+            else:
+                res = np.empty((self.data.shape[dim]))
+                for i in range(self.data.shape[dim]):
+                    res[i] = np.NaN
+                for i in range(min(self.data.shape[dim], val.shape[0])):
+                    res[i] = val[i]
+                return res
+
+
+class Wave(AutoSaved, WaveMethods):
     class _wavedata(ExtendObject):
 
         def _init(self):
@@ -437,29 +506,6 @@ class Wave(AutoSaved):
             return self.getAxis(index)
         else:
             return super().__getattribute__(key)
-
-    def axisIsValid(self, dim):
-        tmp = self.axes[dim]
-        if tmp is None or (tmp == np.array(None)).all():
-            return False
-        return True
-
-    def getAxis(self, dim):
-        val = np.array(self.axes[dim])
-        if self.data.ndim <= dim:
-            return None
-        elif val.ndim == 0:
-            return np.arange(self.data.shape[dim])
-        else:
-            if self.data.shape[dim] == val.shape[0]:
-                return val
-            else:
-                res = np.empty((self.data.shape[dim]))
-                for i in range(self.data.shape[dim]):
-                    res[i] = np.NaN
-                for i in range(min(self.data.shape[dim], val.shape[0])):
-                    res[i] = val[i]
-                return res
 
     def __getitem__(self, key):
         if isinstance(key, tuple):
@@ -655,43 +701,6 @@ class Wave(AutoSaved):
         if dim == 2:
             return self.__average2D(args[0], args[1])
 
-    def posToPoint(self, pos, axis=None):
-        if axis is None:
-            x0 = self.x[0]
-            x1 = self.x[len(self.x) - 1]
-            y0 = self.y[0]
-            y1 = self.y[len(self.y) - 1]
-            dx = (x1 - x0) / (len(self.x) - 1)
-            dy = (y1 - y0) / (len(self.y) - 1)
-            return (int(round((pos[0] - x0) / dx)), int(round((pos[1] - y0) / dy)))
-        else:
-            if hasattr(pos, "__iter__"):
-                return [self.posToPoint(p, axis) for p in pos]
-            ax = self.getAxis(axis)
-            x0 = ax[0]
-            x1 = ax[len(ax) - 1]
-            dx = (x1 - x0) / (len(ax) - 1)
-            return int(round((pos - x0) / dx))
-
-    def pointToPos(self, p, axis=None):
-        if axis is None:
-            x0 = self.x[0]
-            x1 = self.x[len(self.x) - 1]
-            y0 = self.y[0]
-            y1 = self.y[len(self.y) - 1]
-            dx = (x1 - x0) / (len(self.x) - 1)
-            dy = (y1 - y0) / (len(self.y) - 1)
-            return (p[0] * dx + x0, p[1] * dy + y0)
-        else:
-            if hasattr(p, "__iter__"):
-                return [self.pointToPos(pp, axis) for pp in p]
-            ax = self.getAxis(axis)
-            x0 = ax[0]
-            x1 = ax[len(ax) - 1]
-            dx = (x1 - x0) / (len(ax) - 1)
-            # return int(round((pos - x0) / dx))
-            return p*dx+x0
-
     def copy(self):
         w = Wave()
         w.data = self.data
@@ -705,14 +714,6 @@ class Wave(AutoSaved):
 
     def __average2D(self, range1, range2):
         return self.data[int(range2[0]):int(range2[1]) + 1, int(range1[0]):int(range1[1]) + 1].sum() / (range1[1] - range1[0] + 1) / (range2[1] - range2[0] + 1)
-
-    def shape(self):
-        res = []
-        tmp = self.data.shape
-        for i in tmp:
-            if i is not None:
-                res.append(i)
-        return tuple(res)
 
     @staticmethod
     def SupportedFormats():
