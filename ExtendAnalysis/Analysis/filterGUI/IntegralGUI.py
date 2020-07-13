@@ -31,7 +31,7 @@ class IntegralAllSetting(FilterSettingBase):
         return IntegralAllFilter(self.axes.GetChecked())
 
     def parseFromFilter(self, f):
-        obj = IntegralALlSetting(None, self.dim, self.loader)
+        obj = IntegralAllSetting(None, self.dim, self.loader)
         obj.axes.SetChecked(f.getAxes())
         return obj
 

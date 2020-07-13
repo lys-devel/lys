@@ -28,25 +28,26 @@ class DaskWave(WaveMethods):
         import copy
         self.data = da.from_array(wave.data, chunks=chunks)
         if axes is None:
-            self.axes = wave.axes
+            self.axes = copy.deepcopy(wave.axes)
         else:
-            self.axes = axes
-        self.note = copy.copy(wave.note)
+            self.axes = copy.deepcopy(axes)
+        self.note = copy.deepcopy(wave.note)
 
     def toWave(self):
         import copy
         w = Wave()
         res = self.data.compute()  # self.client.compute(self.data).result()
         w.data = res
-        w.axes = copy.copy(self.axes)
+        w.axes = copy.deepcopy(self.axes)
         return w
 
     def persist(self):
         self.data = self.data.persist()  # self.client.persist(self.data)
 
     def __fromda(self, wave, axes, chunks):
+        import copy
         self.data = wave.rechunk(chunks)
-        self.axes = axes
+        self.axes = copy.deepcopy(axes)
 
     def sum(self, axis):
         data = self.data.sum(axis)
