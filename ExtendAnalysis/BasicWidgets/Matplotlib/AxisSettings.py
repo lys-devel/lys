@@ -214,20 +214,21 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
             return
         max = np.NaN
         min = np.NaN
-        if ax in ['Left', 'Right']:
-            for l in self.getLines():
-                max = np.nanmax([*l.wave.data, max])
-                min = np.nanmin([*l.wave.data, min])
-            for im in self.getImages():
-                max = np.nanmax([*im.wave.y, max])
-                min = np.nanmin([*im.wave.y, min])
-        if ax in ['Top', 'Bottom']:
-            for l in self.getLines():
-                max = np.nanmax([*l.wave.x, max])
-                min = np.nanmin([*l.wave.x, min])
-            for im in self.getImages():
-                max = np.nanmax([*im.wave.x, max])
-                min = np.nanmin([*im.wave.x, min])
+        with np.errstate(invalid='ignore'):
+            if ax in ['Left', 'Right']:
+                for l in self.getLines():
+                    max = np.nanmax([*l.wave.data, max])
+                    min = np.nanmin([*l.wave.data, min])
+                for im in self.getImages():
+                    max = np.nanmax([*im.wave.y, max])
+                    min = np.nanmin([*im.wave.y, min])
+            if ax in ['Top', 'Bottom']:
+                for l in self.getLines():
+                    max = np.nanmax([*l.wave.x, max])
+                    min = np.nanmin([*l.wave.x, min])
+                for im in self.getImages():
+                    max = np.nanmax([*im.wave.x, max])
+                    min = np.nanmin([*im.wave.x, min])
         if np.isnan(max) or np.isnan(min):
             return
         if len(self.getImages()) == 0:

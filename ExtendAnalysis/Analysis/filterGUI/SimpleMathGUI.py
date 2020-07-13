@@ -3,6 +3,7 @@ from ..filtersGUI import *
 from .CommonWidgets import *
 from ExtendAnalysis import ScientificSpinBox
 
+
 class SimpleMathSetting(FilterGroupSetting):
     @classmethod
     def _filterList(cls):
@@ -13,6 +14,7 @@ class SimpleMathSetting(FilterGroupSetting):
             'Devide': DevideSetting,
             'Pow': PowSetting,
             'Complex': ComplexSetting,
+            'Replace nan': NanToNumSetting,
         }
         return d
 
@@ -144,6 +146,40 @@ class ComplexSetting(FilterSettingBase):
     def parseFromFilter(self, f):
         obj = ComplexSetting(None, self.dim, self.loader)
         obj._combo.setCurrentIndex(self._combo.indexOf(f._type))
+        return obj
+
+
+class NanToNumSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        layout = QHBoxLayout()
+        self._real = ScientificSpinBox()
+        self._imag = ScientificSpinBox()
+        layout.addWidget(self._real)
+        layout.addWidget(QLabel("+"))
+        layout.addWidget(self._imag)
+        layout.addWidget(QLabel("i"))
+        self.setLayout(layout)
+
+    def GetFilter(self):
+        r = self._real.value()
+        i = self._imag.value()
+        if i != 0:
+            val = r + i * 1j
+        else:
+            val = r
+        return NanToNumFilter(r)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, NanToNumFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = NanToNumSetting(None, self.dim, self.loader)
+        val = f.getValue()
+        self._real.setValue(np.real(val))
+        self._imag.setValue(np.imag(val))
         return obj
 
 

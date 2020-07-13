@@ -3,7 +3,7 @@ from dask.array.core import Array as DArray
 import dask.array as da
 
 
-class DaskWave(object):
+class DaskWave(WaveMethods):
     @classmethod
     def initWorkers(cls, n_workers):
         try:
@@ -28,39 +28,26 @@ class DaskWave(object):
         import copy
         self.data = da.from_array(wave.data, chunks=chunks)
         if axes is None:
-            self.axes = wave.axes
+            self.axes = copy.deepcopy(wave.axes)
         else:
-            self.axes = axes
-        self.note = copy.copy(wave.note)
+            self.axes = copy.deepcopy(axes)
+        self.note = copy.deepcopy(wave.note)
 
     def toWave(self):
         import copy
         w = Wave()
         res = self.data.compute()  # self.client.compute(self.data).result()
         w.data = res
-        w.axes = copy.copy(self.axes)
+        w.axes = copy.deepcopy(self.axes)
         return w
 
     def persist(self):
         self.data = self.data.persist()  # self.client.persist(self.data)
 
     def __fromda(self, wave, axes, chunks):
+        import copy
         self.data = wave.rechunk(chunks)
-        self.axes = axes
-
-    def shape(self):
-        return self.data.shape
-
-    def posToPoint(self, pos, axis):
-        if hasattr(pos, "__iter__"):
-            return [self.posToPoint(p, axis) for p in pos]
-        ax = self.axes[axis]
-        if (ax == np.array(None)).all():
-            return int(round(pos))
-        x0 = ax[0]
-        x1 = ax[len(ax) - 1]
-        dx = (x1 - x0) / (len(ax) - 1)
-        return int(round((pos - x0) / dx))
+        self.axes = copy.deepcopy(axes)
 
     def sum(self, axis):
         data = self.data.sum(axis)
@@ -83,12 +70,6 @@ class DaskWave(object):
             return DaskWave(data, axes=axes)
         else:
             super().__getitem__(key)
-
-    def axisIsValid(self, dim):
-        tmp = self.axes[dim]
-        if tmp is None or (tmp == np.array(None)).all():
-            return False
-        return True
 
     @staticmethod
     def SupportedFormats():

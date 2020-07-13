@@ -33,7 +33,7 @@ def getShape(name, *args, **kwargs):
         except:
             pass
     f = load(name, *args, **kwargs)
-    return len(f.data.shape)
+    return f.data.shape
 
 
 def getDtype(name, *args, **kwargs):

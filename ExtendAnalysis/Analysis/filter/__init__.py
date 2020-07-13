@@ -10,3 +10,4 @@ from .Shift import *
 from .Smooth import *
 from .FreeLine import *
 from .FindPeak import *
+from .Integral import *

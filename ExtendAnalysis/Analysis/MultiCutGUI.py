@@ -117,9 +117,7 @@ class MultiCut(GridAttachedWindow):
         c = g.canvas
         if c is not None:
             r = c.SelectedRange()
-            w = c.getWaveData()[0].wave
-            p1 = w.posToPoint(r[0])
-            p2 = w.posToPoint(r[1])
+            p1, p2 = r[0], r[1]
             axes = self._cut.findAxisFromCanvas(c)
             obj.setRegion(axes[0], (p1[0], p2[0]))
             obj.setRegion(axes[1], (p1[1], p2[1]))

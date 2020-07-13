@@ -35,11 +35,17 @@ class CanvasBaseBase(DrawableCanvasBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._Datalist = []
+        self._inverted = False
 
     @notSaveCanvas
     def emitCloseEvent(self, *args, **kwargs):
         self.Clear()
         super().emitCloseEvent()
+
+    @saveCanvas
+    def updateAll(self):
+        for d in self._Datalist:
+            self.OnWaveModified(d.wave)
 
     @saveCanvas
     def OnWaveModified(self, wave):
@@ -83,6 +89,8 @@ class CanvasBaseBase(DrawableCanvasBase):
         type = self._checkType(w, contour, vector)
         if type == "rgb":
             wav = self._makeRGBData(wav, appearance)
+        if self._inverted:
+            wav = self._makeInvertedData(wav)
         f = self._getAppendFunc(type)
         if f is None:
             print("[Graph] Can't append this data. shape = ", w.data.shape)
@@ -96,6 +104,14 @@ class CanvasBaseBase(DrawableCanvasBase):
         if appearance is not None:
             self.loadAppearance()
         return ids
+
+    def _makeInvertedData(self, wav):
+        w = wav.Duplicate()
+        if w.data.ndim == 1:
+            w.data, w.x = w.x, w.data
+        if w.data.ndim == 2:
+            w.data, w.x, w.y = w.data.T, w.y, w.x
+        return w
 
     def _makeRGBData(self, wav, appearance):
         if wav.data.ndim == 2:
@@ -289,6 +305,13 @@ class CanvasBaseBase(DrawableCanvasBase):
     def getVectorFields(self):
         return self.getWaveData(2, vector=True)
 
+    def setInverted(self, b):
+        self._inverted = b
+        self.updateAll()
+
+    def inverted(self):
+        return self._inverted
+
     def getDataFromIndexes(self, dim, indexes):
         res = []
         if hasattr(indexes, '__iter__'):
@@ -325,6 +348,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                 dic[i]['Filter'] = str(data.filter)
             i += 1
         dictionary['Datalist'] = dic
+        dictionary['Inverted'] = self._inverted
 
     def LoadFromDictionary(self, dictionary, path):
         from ExtendAnalysis.Analysis.filters import Filters
@@ -367,6 +391,8 @@ class CanvasBaseBase(DrawableCanvasBase):
                     filter = None
                 self.Append(w, axis, appearance=ap, offset=offset, zindex=zi, contour=contour, filter=filter, vector=vector)
                 i += 1
+        if 'Inverted' in dictionary:
+            self._inverted = dictionary['Inverted']
         self.loadAppearance()
         self.EnableSave(True)
         cd(sdir)

@@ -1,6 +1,7 @@
 from .SaveCanvas import *
 from .CanvasBase import *
 from .LineSettings import *
+from .ImageSettings import *
 from .Annotation import *
 from .TextAnnotation import *
 from .LineAnnotation import *
@@ -11,5 +12,5 @@ from .AnnotGUICanvas import *
 from .RGBSettings import *
 
 
-class AbstractCanvasBase(MarkerStyleAdjustableCanvasBase):
+class AbstractCanvasBase(ImageColorAdjustableCanvasBase):
     pass

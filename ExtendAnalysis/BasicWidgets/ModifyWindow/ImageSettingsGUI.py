@@ -115,9 +115,9 @@ class ImageColorAdjustBox(QWidget):
         col = self.canvas.getColormap(indexes)[0]
         self.__cmap.setColormap(col)
         self.__cmap.setOpacity(self.canvas.getOpacity(indexes)[0])
-        im = self.canvas.getDataFromIndexes(2, indexes)[0].wave.data
-        self.__start.setRange(im.mean(), math.sqrt(im.var()) * 5)
-        self.__end.setRange(im.mean(), math.sqrt(im.var()) * 5)
+        mean, var = self.canvas.getAutoColorRange(indexes)[0]
+        self.__start.setRange(mean, var * 5.0 / 3.0)
+        self.__end.setRange(mean, var * 5.0 / 3.0)
         ran = self.canvas.getColorRange(indexes)[0]
         self.__start.setAbsolute(ran[0])
         self.__end.setAbsolute(ran[1])
@@ -270,79 +270,3 @@ class VectorAdjustBox(QWidget):
         if not self.__flg:
             indexes = self.canvas.getSelectedIndexes("vector")
             self.canvas.setVectorPivot(indexes, self.__pivot.currentText())
-
-
-class ImagePlaneAdjustBox(QWidget):
-    def __init__(self, canvas):
-        super().__init__()
-        self.canvas = canvas
-        canvas.dataSelected.connect(self.OnDataSelected)
-        self.__initlayout()
-        self.__flg = False
-        self.index = None
-        self.zaxis = None
-
-    def __initlayout(self):
-        layout = QVBoxLayout()
-        l_h1 = QHBoxLayout()
-        self.__spin1 = QSpinBox()
-        self.__spin2 = QDoubleSpinBox()
-        l_h1.addWidget(QLabel('z index'))
-        l_h1.addWidget(self.__spin1)
-        l_h1.addWidget(QLabel('z value'))
-        l_h1.addWidget(self.__spin2)
-        layout.addLayout(l_h1)
-        self.__slider = QSlider(Qt.Horizontal)
-        self.__slider.setRange(0, 100)
-        layout.addWidget(self.__slider)
-        self.__slider.valueChanged.connect(self.__spin1.setValue)
-        self.__spin1.valueChanged.connect(self._setPlane)
-        self.setLayout(layout)
-
-    def OnDataSelected(self):
-        self.__flg = True
-        indexes = self.canvas.getSelectedIndexes(2)
-        if not len(indexes) == 0:
-            data = self.canvas.getDataFromIndexes(2, indexes)
-            data_3d = []
-            for d in data:
-                if d.wave.data.ndim >= 3:
-                    data_3d.append(d)
-            if not len(data_3d) == 0:
-                zaxis = data_3d[0].wave.z
-                self.index = data_3d[0].id
-                self.__spin1.setRange(0, len(zaxis) - 1)
-                self.__slider.setRange(0, len(zaxis) - 1)
-                self.zaxis = zaxis
-                zindex = data_3d[0].zindex
-                self.__spin1.setValue(zindex)
-        self.__flg = False
-
-    def _setPlane(self):
-        indexes = self.canvas.getSelectedIndexes(2)
-        zval = self.__spin1.value()
-        self.__spin2.setValue(self.zaxis[zval])
-        self.__slider.setValue(zval)
-        if self.__flg:
-            return
-        if not len(indexes) == 0:
-            self.canvas.setIndex(self.index, zval)
-
-
-class AnimationBox(QWidget):
-    def __init__(self, canvas):
-        super().__init__()
-        self.canvas = canvas
-        self.__initlayout()
-
-    def __initlayout(self):
-        layout = QVBoxLayout()
-        l_h1 = QHBoxLayout()
-        self.__start = QPushButton('Start')
-        self.__start.clicked.connect(self.canvas.StartAnimation)
-        self.__stop = QPushButton('Stop')
-        self.__stop.clicked.connect(self.canvas.StopAnimation)
-        l_h1.addWidget(self.__start)
-        l_h1.addWidget(self.__stop)
-        layout.addLayout(l_h1)
-        self.setLayout(layout)

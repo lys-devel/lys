@@ -53,8 +53,7 @@ class ModifyWindow(ExtendMdiSubWindow):
         if len(canvas.getVectorFields()) != 0:
             self._tab.addTab(_VectorTab(canvas), "Vector")
         self._tab.addTab(_AnnotationTab(canvas), "Annot.")
-        if isinstance(canvas, ExtendCanvas):
-            self._tab.addTab(_OtherTab(canvas), 'Other')
+        self._tab.addTab(_OtherTab(canvas), 'Other')
         self.__list.append('Axis')
         self.__list.append('Lines')
         self.__list.append('Images')
@@ -102,7 +101,12 @@ class _AxisTab(QWidget):
 
     def _initlayout(self, canvas):
         layout = QVBoxLayout(self)
-        layout.addWidget(AxisSelectionWidget(canvas))
+        h1 = QHBoxLayout()
+        h1.addWidget(AxisSelectionWidget(canvas))
+        inv = QCheckBox("Swap X/Y", stateChanged=self.__invert)
+        inv.setChecked(self.canvas.inverted())
+        h1.addWidget(inv, alignment=Qt.AlignRight)
+        layout.addLayout(h1)
         tab = QTabWidget()
         tab.addTab(AxisAndTickBox(canvas), 'Main')
         tab.addTab(AxisAndTickLabelBox(canvas), 'Label')
@@ -124,6 +128,9 @@ class _AxisTab(QWidget):
     def _load(self):
         for t in ['AxisSetting', 'TickSetting', 'AxisRange', 'LabelSetting', 'TickLabelSetting']:
             self.canvas.LoadSetting(t)
+
+    def __invert(self, b):
+        self.canvas.setInverted(b)
 
 
 class _LineTab(QWidget):
@@ -155,9 +162,7 @@ class _ImageTab(QWidget):
         layout.addWidget(RightClickableSelectionBox(canvas, "image"))
         tab = QTabWidget()
         tab.addTab(ImageColorAdjustBox(canvas), 'Color')
-        tab.addTab(ImagePlaneAdjustBox(canvas), 'Slice')
         tab.addTab(OffsetAdjustBox(canvas, "image"), 'Offset')
-        tab.addTab(AnimationBox(canvas), 'Animation')
         layout.addWidget(tab)
         self.setLayout(layout)
 

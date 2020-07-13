@@ -1,5 +1,6 @@
 import scipy
 import numpy as np
+import dask.array as da
 from dask.array import flip, roll
 
 from ExtendAnalysis import Wave, DaskWave
@@ -58,3 +59,41 @@ class RollFilter(FilterInterface):
 
     def getParams(self):
         return self.amount, self.axes
+
+
+class ReflectFilter(FilterInterface):
+    def __init__(self, type, axes):
+        self.axes = axes
+        self.type = type
+
+    def _execute(self, wave, **kwargs):
+        if isinstance(wave, Wave):
+            lib = np
+        elif isinstance(wave, DaskWave):
+            lib = da
+        for a in self.axes:
+            sl = [slice(None)] * wave.data.ndim
+            sl[a] = slice(None, None, -1)
+            if self.type == "center":
+                wave.data = wave.data + wave.data[tuple(sl)]
+            if self.type == "first":
+                wave.data = lib.concatenate([wave.data[tuple(sl)], wave.data], axis=a)
+                wave.axes[a] = self._elongateAxis(wave.axes[a], self.type)
+            if self.type == "last":
+                wave.data = lib.concatenate([wave.data, wave.data[tuple(sl)]], axis=a)
+                wave.axes[a] = self._elongateAxis(wave.axes[a], self.type)
+        return wave
+
+    def _elongateAxis(self, axis, type):
+        if axis is None:
+            return None
+        start = axis[0]
+        end = axis[len(axis) - 1]
+        d = (end - start) / (len(axis) - 1)
+        if type == "last":
+            return np.linspace(start, start + d * (2 * len(axis) - 1), 2 * len(axis))
+        if type == "first":
+            return np.linspace(end - d * (2 * len(axis) - 1), end, 2 * len(axis))
+
+    def getParams(self):
+        return self.type, self.axes
