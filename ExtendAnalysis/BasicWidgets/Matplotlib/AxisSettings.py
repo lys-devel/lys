@@ -694,7 +694,11 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         if which == 'major':
             tick = ax.get_major_ticks()[0]
         elif which == 'minor':
-            tick = ax.get_minor_ticks()[0]
+            ticks = ax.get_minor_ticks()
+            if len(ticks) == 0:
+                tick = ax.get_major_ticks()[0]
+            else:
+                tick = ticks[0]
         if axis in ['Left', 'Bottom']:
             return tick.tick1line
         else:
@@ -728,7 +732,11 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         if which == 'major':
             tick = ax.get_major_ticks()[0]
         elif which == 'minor':
-            tick = ax.get_minor_ticks()[0]
+            ticks = ax.get_minor_ticks()
+            if len(ticks) == 0:
+                tick = ax.get_major_ticks()[0]
+            else:
+                tick = ticks[0]
         if axis in ['Left', 'Bottom']:
             if mirror:
                 res = tick.tick2line.get_visible()  # tick.tick2On

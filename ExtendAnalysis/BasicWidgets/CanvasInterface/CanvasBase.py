@@ -83,7 +83,11 @@ class CanvasBaseBase(DrawableCanvasBase):
         type = self._checkType(w, contour, vector)
         if type == "rgb":
             wav = self._makeRGBData(wav, appearance)
-        ids, obj, ax = self._getAppendFunc(type)(wav, axis, id, appearance, offset)
+        f = self._getAppendFunc(type)
+        if f is None:
+            print("[Graph] Can't append this data. shape = ", w.data.shape)
+            return
+        ids, obj, ax = f(wav, axis, id, appearance, offset)
         id_pos = ids + self._getDefaultId(type)
         self._Datalist.insert(id_pos, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata, vector))
         if not reuse:
