@@ -303,12 +303,12 @@ class RegionExecutor(QObject):
                 if p1 < 0:
                     p1 = 0
                 if p2 < 0:
-                    p2 = p1 + 1
-                if p1 > wave.data.shape[i] - 2:
-                    p1 = wave.data.shape[i] - 2
+                    p2 = p1
+                if p1 > wave.data.shape[i] - 1:
+                    p1 = wave.data.shape[i] - 1
                 if p2 > wave.data.shape[i] - 1:
                     p2 = wave.data.shape[i] - 1
-                slices[i] = slice(p1, p2)
+                slices[i] = slice(p1, p2 + 1)
                 sumlist.append(i)
 
     def callback(self, region):
@@ -332,6 +332,11 @@ class PointExecutor(QObject):
             self.axes = axes
         if pos is not None:
             self.setPosition(pos)
+        else:
+            if hasattr(axes, "__iter__"):
+                self.position = [0 for a in axes]
+            else:
+                self.position = [0]
 
     def getAxes(self):
         return tuple(self.axes)
@@ -346,7 +351,12 @@ class PointExecutor(QObject):
     def set(self, wave, slices, sumlist, ignore=[]):
         for i, p in zip(self.axes, self.position):
             if not i in ignore:
-                slices[i] = wave.posToPoint(p, i)
+                p = wave.posToPoint(p, i)
+                if p < 0:
+                    p = 0
+                if p > wave.data.shape[i] - 1:
+                    p = wave.data.shape[i] - 1
+                slices[i] = p
 
     def callback(self, pos):
         self.setPosition(pos)

@@ -117,7 +117,11 @@ class AxisSelectionLayout(QHBoxLayout):
                 return i
 
     def setAxis(self, axis):
+        self.group.setExclusive(False)
+        for c in self.childs:
+            c.setChecked(False)
         self.childs[axis].setChecked(True)
+        self.group.setExclusive(True)
 
 
 class AxesSelectionDialog(QDialog):

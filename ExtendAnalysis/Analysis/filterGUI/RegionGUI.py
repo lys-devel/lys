@@ -4,6 +4,58 @@ from .CommonWidgets import *
 from ExtendAnalysis import ScientificSpinBox
 
 
+class NormalizationSetting(FilterGroupSetting):
+    @classmethod
+    def _filterList(cls):
+        d = {
+            'Reference': ReferenceNormalizeSetting,
+            'Area': NormalizeSetting,
+        }
+        return d
+
+
+class ReferenceNormalizeSetting(FilterSettingBase):
+    def __init__(self, parent, dim, loader=None, init=0):
+        super().__init__(parent, dim, loader)
+        self.__parent = parent
+        self.__axis = AxisSelectionLayout("Axis", dim, init)
+        self.__type = QComboBox()
+        self.__type.addItems(["Diff", "Divide"])
+        self.__ref = QComboBox()
+        self.__ref.addItems(["First", "Last"])
+        hbox = QHBoxLayout()
+        hbox.addLayout(self.__axis)
+        hbox.addWidget(self.__type)
+        hbox.addWidget(self.__ref)
+        self.setLayout(hbox)
+
+    def GetFilter(self):
+        ref = self.__ref.currentText()
+        if ref == "First":
+            ref = 0
+        else:
+            ref = -1
+        return ReferenceNormalizeFilter(self.__axis.getAxis(), self.__type.currentText(), ref)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, ReferenceNormalizeFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        axis, type, ref = f.getParams()
+        obj = ReferenceNormalizeSetting(None, self.dim, self.loader, init=axis)
+        if type == "Diff":
+            obj.__type.setCurrentIndex(0)
+        else:
+            obj.__type.setCurrentIndex(1)
+        if ref == 0:
+            obj.__ref.setCurrentIndex(0)
+        else:
+            obj.__ref.setCurrentIndex(1)
+        return obj
+
+
 class NormalizeSetting(FilterSettingBase):
     def __init__(self, parent, dim, loader=None):
         super().__init__(parent, dim, loader)
@@ -64,4 +116,4 @@ class SelectRegionSetting(FilterSettingBase):
 
 
 filterGroups['Select region'] = SelectRegionSetting
-filterGroups['Normalization'] = NormalizeSetting
+filterGroups['Normalization'] = NormalizationSetting

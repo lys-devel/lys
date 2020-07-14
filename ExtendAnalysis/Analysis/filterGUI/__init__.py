@@ -2,6 +2,7 @@ from . import RegionGUI
 from . import TransformGUI
 from . import SmoothGUI
 from . import SimpleMathGUI
+from . import MatrixMathGUI
 from . import FrequencyGUI
 from . import ConvolutionGUI
 from . import ResizeGUI

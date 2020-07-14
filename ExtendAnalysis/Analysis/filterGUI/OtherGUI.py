@@ -91,18 +91,22 @@ class PeakSetting(FilterSettingBase):
         self._combo.addItem("ArgRelMax")
         self._combo.addItem("ArgRelMin")
         self._order = QSpinBox()
+        self._value = QSpinBox()
+        self._value.setValue(3)
         self._axis = AxisSelectionLayout("Axis", dimension)
         h1 = QHBoxLayout()
         h1.addWidget(self._combo)
         h1.addWidget(QLabel("order"))
         h1.addWidget(self._order)
+        h1.addWidget(QLabel("size"))
+        h1.addWidget(self._value)
         layout = QVBoxLayout()
         layout.addLayout(self._axis)
         layout.addLayout(h1)
         self.setLayout(layout)
 
     def GetFilter(self):
-        return PeakFilter(self._axis.getAxis(), self._order.value(), self._combo.currentText())
+        return PeakFilter(self._axis.getAxis(), self._order.value(), self._combo.currentText(), self._value.value())
 
     @classmethod
     def _havingFilter(cls, f):
@@ -114,6 +118,7 @@ class PeakSetting(FilterSettingBase):
         params = f.getParams()
         obj._axis.setAxis(params[0])
         obj._order.setValue(params[1])
+        obj._value.setValue(params[3])
         if params[2] == "ArgRelMax":
             obj._combo.setCurrentIndex(0)
         else:
@@ -121,5 +126,41 @@ class PeakSetting(FilterSettingBase):
         return obj
 
 
+class PeakPostSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        self._axis = AxisSelectionLayout("Find peak along axis", dimension)
+        self._axes = AxisCheckLayout(dimension)
+        layout = QVBoxLayout()
+        layout.addLayout(self._axis)
+        layout.addLayout(self._axes)
+        self.setLayout(layout)
+
+    def GetFilter(self):
+        return PeakPostFilter(self._axis.getAxis(), self._axes.GetChecked())
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, PeakPostFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = PeakPostSetting(None, self.dim, self.loader)
+        axis, axes = f.getParams()
+        obj._axis.setAxis(axis)
+        obj._axes.SetChecked(axes)
+        return obj
+
+
+class FindPeakSetting(FilterGroupSetting):
+    @classmethod
+    def _filterList(cls):
+        d = {
+            'Find Peaks': PeakSetting,
+            'Postprocess (3+1D)': PeakPostSetting,
+        }
+        return d
+
+
 filterGroups['Cut along line'] = FreeLineSetting
-filterGroups['Find Peak'] = PeakSetting
+filterGroups['Peak'] = FindPeakSetting

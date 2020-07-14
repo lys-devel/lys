@@ -1,4 +1,5 @@
 import copy
+from matplotlib import animation
 from ExtendAnalysis import *
 from .MultiCut import *
 from .filtersGUI import *

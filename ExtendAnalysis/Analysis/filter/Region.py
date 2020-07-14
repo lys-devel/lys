@@ -1,4 +1,5 @@
 import numpy as np
+import dask.array as da
 
 from ExtendAnalysis import Wave, DaskWave
 from .FilterInterface import FilterInterface
@@ -37,6 +38,36 @@ class NormalizeFilter(FilterInterface):
 
     def getParams(self):
         return self._range, self._axis
+
+
+class ReferenceNormalizeFilter(FilterInterface):
+    def __init__(self, axis, type, ref):
+        self._type = type
+        self._axis = axis
+        self._ref = ref
+
+    def _execute(self, wave, **kwargs):
+        ref = self.__makeReference(wave)
+        if self._type == "Diff":
+            wave.data = wave.data - ref
+        if self._type == "Divide":
+            wave.data = wave.data / ref
+        return wave
+
+    def __makeReference(self, wave):
+        if isinstance(wave, DaskWave):
+            lib = da
+        else:
+            lib = np
+        sl = [slice(None)] * wave.data.ndim
+        sl[self._axis] = self._ref
+        order = list(range(1, wave.data.ndim))
+        order.insert(self._axis, 0)
+        res = lib.stack([wave.data[tuple(sl)]] * wave.data.shape[self._axis]).transpose(*order)
+        return res
+
+    def getParams(self):
+        return self._axis, self._type, self._ref
 
 
 class SelectRegionFilter(FilterInterface):
