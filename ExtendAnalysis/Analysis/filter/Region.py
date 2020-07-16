@@ -34,7 +34,11 @@ class NormalizeFilter(FilterInterface):
                 subscripts += letters[i]
             subscripts = subscripts + "," + \
                 letters[self._axis] + "->" + subscripts
-            wave.data = np.einsum(subscripts, wave.data, nor)
+            if isinstance(wave, DaskWave):
+                lib = da
+            else:
+                lib = np
+            wave.data = lib.einsum(subscripts, wave.data, nor)
 
     def getParams(self):
         return self._range, self._axis

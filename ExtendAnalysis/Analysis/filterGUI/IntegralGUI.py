@@ -64,7 +64,7 @@ class CircleSetting(FilterSettingBase):
         super().__init__(parent, dim, loader)
         self.__parent = parent
         self.axes = [AxisSelectionLayout(
-            "Axis1"), AxisSelectionLayout("Axis2")]
+            "Axis1", dim=dim, init=0), AxisSelectionLayout("Axis2", dim=dim, init=1)]
         self.center = [ScientificSpinBox(), ScientificSpinBox()]
         self.radiuses = [ScientificSpinBox(), ScientificSpinBox()]
         l0 = QGridLayout()
