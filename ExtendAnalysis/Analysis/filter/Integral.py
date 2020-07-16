@@ -122,7 +122,6 @@ def _integrate_circle(data, region):
         if a < b:
             a, b = b, a
         y, x = cx + px[0], cy + px[1]
-        if R2 <= 2:
         if x > 0 and y > 0 and x < data.shape[1] and y < data.shape[0]:
             if not np.isnan(data[y, x]):
                 rat = _calcArea(a, b, R2) - _calcArea(a, b, R1)
