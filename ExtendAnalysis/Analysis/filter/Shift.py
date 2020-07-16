@@ -17,9 +17,20 @@ class ShiftFilter(FilterInterface):
         else:
             order = 3
         if shift is None:
-            wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), self._s[0:wave.data.ndim], order=order, cval=0))
+            shi = self._s
         else:
-            wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), shift[0:wave.data.ndim], order=order, cval=0))
+            shi = shift
+        if isinstance(wave, Wave):
+            if shift is None:
+                wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), self._s[0:wave.data.ndim], order=order, cval=0))
+            else:
+                wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), shift[0:wave.data.ndim], order=order, cval=0))
+        elif isinstance(wave, DaskWave):
+            for ax, s in enumerate(shi):
+                wave.data = da.apply_along_axis(scipy.ndimage.interpolation.shift, ax, wave.data, s, dtype=wave.data.dtype, shape=(wave.data.shape[ax],), order=order, cval=0)
+
+    def getParams(self):
+        return self._s
 
 
 class ReverseFilter(FilterInterface):

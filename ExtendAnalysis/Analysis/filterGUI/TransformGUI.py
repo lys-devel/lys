@@ -9,6 +9,7 @@ class TransformSetting(FilterGroupSetting):
         d = {
             'Set axis': SetAxisSetting,
             'Shift': ShiftSetting,
+            'ImageShift': ImageShiftSetting,
             'Magnify': MagnificationSetting,
             'Rotation2D': Rotation2DSetting,
         }
@@ -88,6 +89,36 @@ class ShiftSetting(FilterSettingBase):
         obj = ShiftSetting(None, self.dim, self.loader)
         shift, axes = f.getParams()
         for s, ax in zip(shift, axes):
+            obj._values[ax].setValue(s)
+        return obj
+
+
+class ImageShiftSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        self._layout = QGridLayout()
+        self._dim = dimension
+        self._values = []
+        for i in range(dimension):
+            wid = QSpinBox()
+            wid.setRange(-1000000, 1000000)
+            self._values.append(wid)
+            self._layout.addWidget(QLabel('Axis' + str(i + 1)), 0, i)
+            self._layout.addWidget(wid, 1, i)
+        self.setLayout(self._layout)
+
+    def GetFilter(self):
+        return ShiftFilter([v.value() for v in self._values])
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, ShiftFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = ImageShiftSetting(None, self.dim, self.loader)
+        shift = f.getParams()
+        for ax, s in enumerate(shift):
             obj._values[ax].setValue(s)
         return obj
 
