@@ -10,7 +10,8 @@ class IntegralAllFilter(FilterInterface):
 
     def _execute(self, wave, **kwargs):
         data = wave.data.sum(axis=tuple(self._axes))
-        ax = [wave.axes[i] for i in range(len(wave.axes)) if not i in self._axes]
+        ax = [wave.axes[i]
+              for i in range(len(wave.axes)) if not i in self._axes]
         wave.data = data
         wave.axes = ax
         return wave
@@ -120,11 +121,17 @@ def _integrate_circle(data, region):
         b = abs(px[1]) - 0.5
         if a < b:
             a, b = b, a
-        x, y = cx + px[0], cy + px[1]
+        y, x = cx + px[0], cy + px[1]
+        if R2 <= 2:
+            print(data[y, x], px, x, y)
         if x > 0 and y > 0 and x < data.shape[1] and y < data.shape[0]:
-            rat = _calcArea(a, b, R2) - _calcArea(a, b, R1)
-            res += data[y, x] * rat
-            n += rat
+            if not np.isnan(data[y, x]):
+                rat = _calcArea(a, b, R2) - _calcArea(a, b, R1)
+                res += data[y, x] * rat
+                n += rat
+    if n == 0:
+        n = 1
+
     return res / n
 
 

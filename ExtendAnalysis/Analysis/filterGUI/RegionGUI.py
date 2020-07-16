@@ -115,5 +115,39 @@ class SelectRegionSetting(FilterSettingBase):
         return obj
 
 
+class MaskSetting(FilterSettingBase):
+    def __init__(self, parent, dim, loader=None):
+        super().__init__(parent, dim, loader)
+        self.__parent = parent
+        self.__filename = QLineEdit()
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.__filename)
+        hbox.addWidget(QPushButton("Load", clicked=self._LoadMask))
+        self.setLayout(hbox)
+
+    def _LoadMask(self):
+        file, _ = QFileDialog.getOpenFileName(
+            None, 'Open file', filter="npz(*.npz)")
+        if 0 != len(file):
+            self.__filename.setText(file)
+
+    def GetFilter(self):
+        return MaskFilter(self.__filename.text())
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, MaskFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        filename = f.getParams()
+        obj = MaskSetting(None, self.dim, self.loader)
+        obj.__filename.setText(filename)
+
+        return obj
+
+
 filterGroups['Select region'] = SelectRegionSetting
 filterGroups['Normalization'] = NormalizationSetting
+filterGroups['Masking'] = MaskSetting

@@ -63,7 +63,8 @@ class ReferenceNormalizeFilter(FilterInterface):
         sl[self._axis] = self._ref
         order = list(range(1, wave.data.ndim))
         order.insert(self._axis, 0)
-        res = lib.stack([wave.data[tuple(sl)]] * wave.data.shape[self._axis]).transpose(*order)
+        res = lib.stack([wave.data[tuple(sl)]] *
+                        wave.data.shape[self._axis]).transpose(*order)
         return res
 
     def getParams(self):
@@ -95,3 +96,18 @@ class SelectRegionFilter(FilterInterface):
 
     def getRegion(self):
         return self._range
+
+
+class MaskFilter(FilterInterface):
+
+    def __init__(self, filename):
+        self._mask = filename
+
+    def _execute(self, wave, **kwargs):
+        mask = Wave(self._mask)
+        if isinstance(wave, DaskWave):
+            mask = DaskWave(mask)
+        wave.data = wave.data*mask.data
+
+    def getParams(self):
+        return self._mask
