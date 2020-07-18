@@ -363,6 +363,9 @@ class controlledWavesGUI(QTreeView):
         i = self.selectionModel().selectedIndexes()[0].row()
         self.obj.disableAt(i)
 
+    def sizeHint(self):
+        return QSize(100, 100)
+
 
 class controlledExecutorsGUI(QTreeView):
     def __init__(self, obj):
@@ -396,6 +399,9 @@ class controlledExecutorsGUI(QTreeView):
     def _disable(self):
         i = self.selectionModel().selectedIndexes()[0].row()
         self.obj.disableAt(i)
+
+    def sizeHint(self):
+        return QSize(100, 100)
 
 
 class CutTab(QWidget):
@@ -486,9 +492,9 @@ class CutTab(QWidget):
         self._table.verticalHeader().hide()
         self._table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self._table.verticalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self._usegraph = QRadioButton("Use Graph")
-        self._usegrid = QRadioButton("Use Grid")
-        self._usegrid.setChecked(True)
+        self._table.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._table.customContextMenuRequested.connect(self._tableContext)
+        self._usegraph = QCheckBox("Use Graph")
         disp = QPushButton("Display", clicked=self.display)
         make = QPushButton("Make", clicked=self.make)
         typ = QPushButton("Typical", clicked=self.typical)
@@ -500,7 +506,6 @@ class CutTab(QWidget):
         self._make = QVBoxLayout()
         v1 = QVBoxLayout()
         v1.addWidget(self._usegraph)
-        v1.addWidget(self._usegrid)
         v1.addWidget(self._table)
         h1 = QHBoxLayout()
         h1.addWidget(self.wlist, 2)
@@ -607,8 +612,22 @@ class CutTab(QWidget):
                 g = display(w, lib="pyqtgraph")
                 self.canvases.append(g.canvas, ax)
                 g.canvas.deleted.connect(self.canvases.remove)
+                g.canvas.clicked.connect(lambda x, y: self._gridClicked(g.canvas))
                 return g.canvas
-            elif self._usegrid.isChecked():
+            else:
+                old = self._getTargetCanvas()
+                if old is not None:
+                    msgBox = QMessageBox()
+                    msgBox.setText("There is a graph at this position. Do you really want to proceed?")
+                    yes = msgBox.addButton(QMessageBox.Yes)
+                    graph = msgBox.addButton("Use Graph", QMessageBox.ActionRole)
+                    no = msgBox.addButton(QMessageBox.No)
+                    msgBox.exec_()
+                    if msgBox.clickedButton() == no:
+                        return
+                    elif msgBox.clickedButton() == graph:
+                        self._usegraph.setChecked(True)
+                        return self.display(wave, axes, pos, wid)
                 if pos == None or wid == None:
                     pos, wid = self._getGridPos()
                 c = pyqtCanvas()
@@ -616,8 +635,20 @@ class CutTab(QWidget):
                 c.keyPressed.connect(self.parent.keyPress)
                 self.canvases.append(c, ax)
                 c.deleted.connect(self.canvases.remove)
+                c.clicked.connect(lambda x, y: self._gridClicked(c))
                 self.grid.Append(c, *pos, *wid)
                 return c
+
+    def _gridClicked(self, canvas):
+        b = False
+        for i in range(4):
+            for j in range(4):
+                if self.grid.itemAtPosition(i, j) == canvas:
+                    self._table.setCurrentCell(i, j, QItemSelectionModel.Select)
+                    b = True
+                else:
+                    self._table.setCurrentCell(i, j, QItemSelectionModel.Deselect)
+        self._usegraph.setChecked(not b)
 
     def _getGridPos(self):
         rows = [i.row() for i in self._table.selectionModel().selectedIndexes()]
@@ -625,6 +656,13 @@ class CutTab(QWidget):
         if len(rows) * len(columns) == 0:
             return (0, 0), (self.size, self.size)
         return (np.min(rows), np.min(columns)), (np.max(rows) - np.min(rows) + 1, np.max(columns) - np.min(columns) + 1)
+
+    def _tableContext(self, pos):
+        menu = QMenu(self._table)
+        togrid = menu.addAction("Graph -> Grid (Not implemented)")
+        tograph = menu.addAction("Grid -> Graph (Not implemented)")
+        intergrid = menu.addAction("Grid -> Grid (Not implemented)")
+        menu.exec_(self._table.mapToGlobal(pos))
 
     def typical(self):
         if self.wave.data.ndim == 2:
@@ -708,7 +746,7 @@ class CutTab(QWidget):
     def _getTargetCanvas(self):
         if self._usegraph.isChecked():
             return Graph.active().canvas
-        elif self._usegrid.isChecked():
+        else:
             pos, wid = self._getGridPos()
             return self.grid.itemAtPosition(*pos)
 
