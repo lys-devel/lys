@@ -88,3 +88,6 @@ class FreeLineFilter(FilterInterface):
 
     def getParams(self):
         return self._axes, self._range, self._width
+
+    def getRelativeDimension(self):
+        return -1

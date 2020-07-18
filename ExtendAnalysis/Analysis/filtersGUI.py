@@ -137,7 +137,6 @@ class _PreFilterSetting(QWidget):
         insdown = QAction('Insert filter (down)', triggered=lambda: self.filterInserted.emit(self, "down"))
         for item in [up, down, insup, insdown, delete]:
             menu.addAction(item)
-
         menu.exec_(self.mapToGlobal(point))
 
 
@@ -146,6 +145,153 @@ class _RootSetting(FilterGroupSetting):
 
 
 class FiltersGUI(QWidget):
+    def __init__(self, dimension=2, regionLoader=None):
+        super().__init__()
+        self.loader = regionLoader
+        self.dim = dimension
+        self.__initLayout()
+
+    def GetFilters(self):
+        res = []
+        for t in self.__tabs:
+            res.extend(t.GetFilters().getFilters())
+        return Filters(res)
+
+    def __initLayout(self):
+        self._tab = QTabWidget()
+        self.__tabs = [_SubFiltersGUI(self.dim, self.loader)]
+        self.__preIndex = 0
+        self._tab.addTab(self.__tabs[0], "d = " + str(self.dim))
+        self._tab.addTab(QWidget(), "+")
+        self._tab.currentChanged.connect(self.__addTab)
+        self._tab.tabBar().setContextMenuPolicy(Qt.CustomContextMenu)
+        self._tab.tabBar().customContextMenuRequested.connect(self._tabContext)
+
+        save = QPushButton("Save", clicked=self._save)
+        load = QPushButton("Load", clicked=self._load)
+        clear = QPushButton("Clear", clicked=self.clear)
+        exp = QPushButton("Export", clicked=self._export)
+        imp = QPushButton("Import", clicked=self._import)
+        hbox2 = QHBoxLayout()
+        hbox2.addWidget(save)
+        hbox2.addWidget(load)
+        hbox2.addWidget(exp)
+        hbox2.addWidget(imp)
+        hbox2.addWidget(clear)
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(self._tab)
+        vbox.addLayout(hbox2)
+        self.setLayout(vbox)
+
+    def __addTab(self, index):
+        if index != len(self.__tabs):
+            self.__preIndex = index
+            return
+        dim = self.dim + int(np.sum([f.getRelativeDimension() for f in self.GetFilters().getFilters()]))
+        print(self.dim)
+        self.__insertNewTab(dim)
+        self.__preIndex = index
+        self._tab.setCurrentIndex(self.__preIndex)
+
+    def __insertNewTab(self, dim):
+        w = _SubFiltersGUI(dim, self.loader)
+        self.__tabs.append(w)
+        self._tab.insertTab(len(self.__tabs)-1, w, "d = "+str(dim))
+
+    def _tabContext(self, point):
+        menu = QMenu(self)
+        delete = QAction('Delete tab', triggered=self._delete)
+        clear = QAction('Clear tab', triggered=lambda: self.clear(self.__preIndex))
+        change = QAction('Change dimension of tab', triggered=self._setDim)
+        exp = QAction('Export filter in tab', triggered=lambda: self._export(self.__preIndex))
+        imp = QAction('Import filter to tab', triggered=lambda: self._import(self.__preIndex))
+        save = QAction('Save filter in tab', triggered=lambda: self._save(self.__preIndex))
+        load = QAction('Load filter to tab', triggered=lambda: self._load(self.__preIndex))
+        for item in [save, load, exp, imp, change, clear, delete]:
+            menu.addAction(item)
+        menu.exec_(self.mapToGlobal(point))
+
+    def _setDim(self):
+        dim, ok = QInputDialog().getInt(self, "Enter New dimension", "Dimension:")
+        if ok:
+            self.setDimension(dim, self.__preIndex)
+
+    def setDimension(self, dimension, index=0):
+        self.__tabs[index].setDimension(dimension)
+        self._tab.setTabText(index, "d = "+str(dimension))
+        self.dim = dimension
+
+    def clear(self, index=False):
+        if index == False:
+            while len(self.__tabs) > 1:
+                self.__preIndex = 1
+                self._delete()
+            self.__tabs[0].clear()
+        else:
+            self.__tabs[index].clear()
+
+    def _delete(self):
+        tab = self.__preIndex
+        if tab == 0:
+            return
+        self._tab.removeTab(tab)
+        self.__tabs.pop(tab)
+        self.__preIndex = tab-1
+        self._tab.setCurrentIndex(tab-1)
+
+    def _save(self, index=False):
+        self.saveAs(".lys/quickFilter.fil", index)
+
+    def _load(self, index=False):
+        self.loadFrom(".lys/quickFilter.fil", index)
+
+    def _export(self, index=-1):
+        fname = QFileDialog.getSaveFileName(self, 'Save Filter', home(), filter="Filter files(*.fil);;All files(*.*)")
+        if fname[0]:
+            self.saveAs((fname[0] + ".fil").replace(".fil.fil", ".fil"), index)
+
+    def _import(self, index=-1):
+        fname = QFileDialog.getOpenFileName(self, 'Open Filter', home(), filter="Filter files(*.fil);;All files(*.*)")
+        if fname[0]:
+            self.loadFrom(fname[0], index)
+
+    def saveAs(self, file, index=False):
+        if index == False:
+            filt = self.GetFilters()
+        else:
+            filt = self.__tabs[index].GetFilters()
+        s = String(file)
+        s.data = str(filt)
+
+    def loadFrom(self, file, index=False):
+        s = String(file)
+        self.loadFromString(s.data, index)
+
+    def loadFromString(self, str, index=False):
+        self.loadFilters(Filters.fromString(str), index)
+
+    def loadFilters(self, filt, index=False):
+        if index == False:
+            self.clear()
+            fs = filt.getFilters()
+            res, tmp = [], []
+            dim = self.dim
+            for f in fs:
+                tmp.append(f)
+                if f.getRelativeDimension() != 0 and f != fs[len(fs)-1]:
+                    dim += f.getRelativeDimension()
+                    self.__insertNewTab(dim)
+                    res.append(tmp)
+                    tmp = []
+            res.append(tmp)
+            for tab, fil in zip(self.__tabs, res):
+                tab.SetFilters(Filters(fil))
+        else:
+            self.__tabs[index].SetFilters(filt)
+
+
+class _SubFiltersGUI(QScrollArea):
     def __init__(self, dimension=2, regionLoader=None):
         super().__init__()
         self._flist = []
@@ -171,35 +317,19 @@ class FiltersGUI(QWidget):
                 res.append(filt)
         return Filters(res)
 
+    def SetFilters(self, filt):
+        self.clear()
+        for f in filt.getFilters():
+            self._flist[len(self._flist) - 1].SetFilter(f)
+
     def __initLayout(self):
-        vbox = QVBoxLayout()
-        hbox = QHBoxLayout()
         self._layout = QVBoxLayout()
         self._layout.addStretch()
         self._addFirst()
         inner = QWidget()
         inner.setLayout(self._layout)
-        scroll = QScrollArea()
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(inner)
-        hbox.addWidget(scroll, 3)
-
-        save = QPushButton("Save", clicked=self._save)
-        load = QPushButton("Load", clicked=self._load)
-        clear = QPushButton("Clear", clicked=self.clear)
-        exp = QPushButton("Export", clicked=self._export)
-        imp = QPushButton("Import", clicked=self._import)
-        hbox2 = QHBoxLayout()
-        hbox2.addWidget(save)
-        hbox2.addWidget(load)
-        hbox2.addWidget(exp)
-        hbox2.addWidget(imp)
-        hbox2.addWidget(clear)
-
-        vbox.addLayout(hbox)
-        vbox.addLayout(hbox2)
-
-        self.setLayout(vbox)
+        self.setWidgetResizable(True)
+        self.setWidget(inner)
 
     def __makeNewItem(self):
         item = _PreFilterSetting(self, self.dim, self.loader)
@@ -253,39 +383,6 @@ class FiltersGUI(QWidget):
         self._layout.insertWidget(pos, newitem)
         self._flist.insert(pos, newitem)
 
-    def _save(self):
-        self.saveAs(".lys/quickFilter.fil")
-
-    def _load(self):
-        self.loadFrom(".lys/quickFilter.fil")
-
-    def _export(self):
-        fname = QFileDialog.getSaveFileName(self, 'Save Filter', home(), filter="Filter files(*.fil);;All files(*.*)")
-        if fname[0]:
-            self.saveAs((fname[0] + ".fil").replace(".fil.fil", ".fil"))
-
-    def _import(self):
-        fname = QFileDialog.getOpenFileName(self, 'Open Filter', home(), filter="Filter files(*.fil);;All files(*.*)")
-        if fname[0]:
-            self.loadFrom(fname[0])
-
-    def saveAs(self, file):
-        filt = self.GetFilters()
-        s = String(file)
-        s.data = str(filt)
-
-    def loadFrom(self, file):
-        s = String(file)
-        self.loadFromString(s.data)
-
-    def loadFromString(self, str):
-        self.loadFilters(Filters.fromString(str))
-
-    def loadFilters(self, filt):
-        self.clear()
-        for f in filt.getFilters():
-            self._flist[len(self._flist) - 1].SetFilter(f)
-
 
 class FiltersDialog(ExtendMdiSubWindow):
     applied = pyqtSignal(object)
@@ -332,6 +429,9 @@ class _DeleteSetting(QWidget):
 
     @classmethod
     def _havingFilter(cls, f):
+        return None
+
+    def getFilter(self):
         return None
 
 

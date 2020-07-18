@@ -19,6 +19,9 @@ class IntegralAllFilter(FilterInterface):
     def getAxes(self):
         return self._axes
 
+    def getRelativeDimension(self):
+        return -len(self._axes)
+
 
 class IntegralFilter(FilterInterface):
     def __init__(self, range):
@@ -48,6 +51,9 @@ class IntegralFilter(FilterInterface):
 
     def getRegion(self):
         return self._range
+
+    def getRelativeDimension(self):
+        return -len([r for r in self._range if r[0] != 0 or r[1] != 0])
 
 
 class IntegralCircleFilter(FilterInterface):
@@ -83,6 +89,9 @@ class IntegralCircleFilter(FilterInterface):
 
     def getParams(self):
         return self._center, self._radiuses, self._axes
+
+    def getRelativeDimension(self):
+        return -1
 
 
 def _translate_unit(wave, center, radiuses, axes):

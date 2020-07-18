@@ -21,6 +21,9 @@ class SelectIndexFilter(FilterInterface):
     def getParams(self):
         return self._axis, self._index
 
+    def getRelativeDimension(self):
+        return -1
+
 
 class IndexMathFilter(FilterInterface):
     def __init__(self, axis, type, index1, index2):
@@ -49,3 +52,6 @@ class IndexMathFilter(FilterInterface):
 
     def getParams(self):
         return self._axis, self._type, self._index1, self._index2
+
+    def getRelativeDimension(self):
+        return -1

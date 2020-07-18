@@ -11,3 +11,6 @@ class FilterInterface(object):
 
     def _execute(self, wave, **kwargs):
         pass
+
+    def getRelativeDimension(self):
+        return 0
