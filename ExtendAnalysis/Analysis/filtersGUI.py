@@ -189,7 +189,6 @@ class FiltersGUI(QWidget):
             self.__preIndex = index
             return
         dim = self.dim + int(np.sum([f.getRelativeDimension() for f in self.GetFilters().getFilters()]))
-        print(self.dim)
         self.__insertNewTab(dim)
         self.__preIndex = index
         self._tab.setCurrentIndex(self.__preIndex)
