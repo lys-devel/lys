@@ -46,6 +46,10 @@ class controlledObjects(QObject):
     def __getitem__(self, index):
         return [self._objs[index], self._axis[index]]
 
+    def clear(self):
+        for obj in self._objs:
+            self.remove(obj)
+
 
 class SwitchableObjects(controlledObjects):
 
@@ -110,7 +114,7 @@ class ExecutorList(controlledObjects):
         if i is not None:
             self._enabled.pop(i)
             self._graphs.pop(i)
-        self.updated.emit(obj.getAxes())
+        self.updated.emit(tuple(obj.getAxes()))
         return i
 
     def enableAt(self, index):

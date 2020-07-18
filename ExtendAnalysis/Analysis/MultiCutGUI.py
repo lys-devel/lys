@@ -1,4 +1,3 @@
-import copy
 from matplotlib import animation
 from ExtendAnalysis import *
 from .MultiCut import *
@@ -75,12 +74,12 @@ class MultiCut(GridAttachedWindow):
         h1.addWidget(self.__file)
         h1.addWidget(self.__useDask)
 
-        self.layout = QVBoxLayout()
-        self.layout.addWidget(tab)
-        self.layout.addLayout(h1)
+        layout = QVBoxLayout()
+        layout.addWidget(tab)
+        layout.addLayout(h1)
 
         wid = QWidget()
-        wid.setLayout(self.layout)
+        wid.setLayout(layout)
         self.setWidget(wid)
         self.adjustSize()
 
@@ -201,6 +200,7 @@ class PrefilterTab(QWidget):
         super().__init__()
         self.__initlayout__(loader)
         self.wave = None
+        self.__outputShape = None
         self.__chunk = "auto"
 
     def __initlayout__(self, loader):
@@ -225,6 +225,12 @@ class PrefilterTab(QWidget):
     def _click(self):
         waves = DaskWave(self.wave, chunks=self.__chunk)
         self.filt.GetFilters().execute(waves)
+        if self.__outputShape != waves.data.shape and self.__outputShape is not None:
+            ret = QMessageBox.information(
+                None, "Caution", "The shape of the processed wave will be changed and the graphs will be disconnected. Do you really want to proceed?", QMessageBox.Yes, QMessageBox.No)
+            if ret == QMessageBox.No:
+                return
+        self.__outputShape = waves.data.shape
         waves.persist()
         self.filterApplied.emit(waves)
 
@@ -557,6 +563,10 @@ class CutTab(QWidget):
             self.ax.deleteLater()
         self.ax = self._axisLayout(self.wave.data.ndim)
         self._make.insertWidget(1, self.ax)
+        self.waves.clear()
+        self.lines.clear()
+        self.canvases.clear()
+        self.__exe.clear()
         self.adjustSize()
 
     def _exechanged(self):
