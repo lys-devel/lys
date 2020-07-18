@@ -27,7 +27,6 @@ class FilterGroupSetting(QWidget):
         self.loader = loader
         self._filters = self._filterList()
 
-        self._layout = layout
         self._combo = QComboBox()
         for f in self._filters.keys():
             self._combo.addItem(f, f)
@@ -36,9 +35,13 @@ class FilterGroupSetting(QWidget):
         vlayout.addWidget(QLabel('Type'))
         vlayout.addWidget(self._combo)
         self.setLayout(vlayout)
+        self._layout = layout
         self._layout.addWidget(self)
         self._childGroup = None
         self._update(self._combo.currentText())
+
+    def _initControlLayout(self):
+        return None
 
     @classmethod
     def _filterList(cls):
@@ -89,6 +92,8 @@ class FilterGroupSetting(QWidget):
 class _PreFilterSetting(QWidget):
     filterAdded = pyqtSignal(QWidget)
     filterDeleted = pyqtSignal(QWidget)
+    filterMoved = pyqtSignal(QWidget, str)
+    filterInserted = pyqtSignal(QWidget, str)
 
     def __init__(self, parent, dimension=2, loader=None):
         super().__init__()
@@ -98,6 +103,8 @@ class _PreFilterSetting(QWidget):
         self._layout = QVBoxLayout()
         self._layout.addLayout(h1)
         self.setLayout(self._layout)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self._contextMenu)
         self._child = None
 
     def _filt(self, widget):
@@ -105,12 +112,9 @@ class _PreFilterSetting(QWidget):
             self._layout.removeWidget(self._child)
             self._child.deleteLater()
             self._child = None
-        if isinstance(widget, _DeleteSetting):
-            self.filterDeleted.emit(self)
-        else:
-            self._layout.addWidget(widget)
-            self._child = widget
-            self.filterAdded.emit(self)
+        self._layout.addWidget(widget)
+        self._child = widget
+        self.filterAdded.emit(self)
 
     def GetFilter(self):
         if self._child is not None:
@@ -124,13 +128,21 @@ class _PreFilterSetting(QWidget):
         self.root._combo.setCurrentIndex(0)
         self.root.setDimension(dimension)
 
+    def _contextMenu(self, point):
+        menu = QMenu(self)
+        delete = QAction('Delete', triggered=lambda: self.filterDeleted.emit(self))
+        up = QAction('Move to up', triggered=lambda: self.filterMoved.emit(self, "up"))
+        down = QAction('Move to down', triggered=lambda: self.filterMoved.emit(self, "down"))
+        insup = QAction('Insert filter (up)', triggered=lambda: self.filterInserted.emit(self, "up"))
+        insdown = QAction('Insert filter (down)', triggered=lambda: self.filterInserted.emit(self, "down"))
+        for item in [up, down, insup, insdown, delete]:
+            menu.addAction(item)
+
+        menu.exec_(self.mapToGlobal(point))
+
 
 class _RootSetting(FilterGroupSetting):
-    filterAdded = pyqtSignal(QWidget)
-    filterDeleted = pyqtSignal(QWidget)
-    @classmethod
-    def _filterList(cls):
-        return filterGroups
+    pass
 
 
 class FiltersGUI(QWidget):
@@ -189,26 +201,57 @@ class FiltersGUI(QWidget):
 
         self.setLayout(vbox)
 
+    def __makeNewItem(self):
+        item = _PreFilterSetting(self, self.dim, self.loader)
+        item.filterAdded.connect(self._add)
+        item.filterDeleted.connect(self._delete)
+        item.filterMoved.connect(self._move)
+        item.filterInserted.connect(self._insert)
+        return item
+
     def _addFirst(self):
-        first = _PreFilterSetting(self, self.dim, self.loader)
-        first.filterAdded.connect(self._add)
-        first.filterDeleted.connect(self._delete)
+        first = self.__makeNewItem()
         self._flist.append(first)
         self._layout.insertWidget(0, first)
 
     def _add(self, item):
         if self._flist[len(self._flist) - 1] == item:
-            newitem = _PreFilterSetting(self, self.dim, self.loader)
-            newitem.filterAdded.connect(self._add)
-            newitem.filterDeleted.connect(self._delete)
+            newitem = self.__makeNewItem()
             self._layout.insertWidget(self._layout.count() - 1, newitem)
             self._flist.append(newitem)
 
     def _delete(self, item, force=False):
-        if len(self._flist) > 1 or force:
+        if self._layout.indexOf(item) != len(self._flist) - 1 or force:
             self._layout.removeWidget(item)
             item.deleteLater()
             self._flist.remove(item)
+
+    def _move(self, item, direction):
+        index = self._layout.indexOf(item)
+        if index == 0 and direction == "up":
+            return
+        if index == len(self._flist)-2 and direction == "down":
+            return
+        self._layout.removeWidget(item)
+        self._flist.remove(item)
+        if direction == "up":
+            pos = index-1
+        else:
+            pos = index+1
+        self._layout.insertWidget(pos, item)
+        self._flist.insert(pos, item)
+
+    def _insert(self, item, direction):
+        index = self._layout.indexOf(item)
+        if index >= len(self._flist)-2 and direction == "down":
+            return
+        if direction == "up":
+            pos = index
+        else:
+            pos = index+1
+        newitem = self.__makeNewItem()
+        self._layout.insertWidget(pos, newitem)
+        self._flist.insert(pos, newitem)
 
     def _save(self):
         self.saveAs(".lys/quickFilter.fil")
