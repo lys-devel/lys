@@ -20,7 +20,6 @@ def handle_exception(exc_type, exc_value, exc_traceback):
     import traceback
     filename, line, dummy, dummy = traceback.extract_tb(exc_traceback).pop()
     filename = os.path.basename(filename)
-    error = "%s: %s" % (exc_type.__name__, exc_value)
 
     sys.stderr.write("An error detected. This is the full error report:\n")
     sys.stderr.write("".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
