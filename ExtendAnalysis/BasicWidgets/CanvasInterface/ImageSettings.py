@@ -47,7 +47,7 @@ class ImageColorAdjustableCanvasBase(MarkerStyleAdjustableCanvasBase):
         res = []
         for d in data:
             dat = np.nan_to_num(d.wave.data)
-            ma, mi = np.percentile(dat, [75, 25])
+            ma, mi = np.percentile(dat, [95, 5])
             dat = np.clip(dat, mi, ma)
             var = np.sqrt(dat.var()) * 3
             if var == 0:
@@ -60,7 +60,11 @@ class ImageColorAdjustableCanvasBase(MarkerStyleAdjustableCanvasBase):
     def autoColorRange(self, indexes):
         ranges = self.getAutoColorRange(indexes)
         data = self.getDataFromIndexes(2, indexes)
-        for d, (i, (m, v)) in zip(data, zip(indexes, ranges)):
+        if hasattr(indexes, "__iter__"):
+            ind = indexes
+        else:
+            ind = [indexes]
+        for d, (i, (m, v)) in zip(data, zip(ind, ranges)):
             self.setColorRange(i, m - v, m + v, log=self._isLog(d))
 
     def getOpacity(self, indexes):
