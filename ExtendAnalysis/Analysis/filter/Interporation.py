@@ -15,8 +15,9 @@ class InterpFilter(FilterInterface):
             for i in range(len(size)):
                 if size[i] == 0:
                     size[i] = len(wave.axes[i])
-            axes_new = [np.linspace(min(wave.axes[i]), max(wave.axes[i]), size[i]) for i in range(len(self._size))]
-            data = interpn(wave.axes, wave.data, np.array(np.meshgrid(*axes_new)).T)
+            axes = [wave.getAxis(i) for i in range(len(self._size))]
+            axes_new = [np.linspace(min(wave.getAxis(i)), max(wave.getAxis(i)), size[i]) for i in range(len(self._size))]
+            data = interpn(axes, wave.data, np.array(np.meshgrid(*axes_new)).T)
             wave.axes = axes_new
             wave.data = data
         if isinstance(wave, DaskWave):
