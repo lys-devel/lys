@@ -86,10 +86,12 @@ class MultiCut(GridAttachedWindow):
     def _filterApplied(self, wave):
         if self.useDask():
             w = wave
-            print("DaskWave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype, ", chunksize = ", wave.data.chunksize)
+            print("DaskWave set. shape = ", wave.data.shape, ", dtype = ",
+                  wave.data.dtype, ", chunksize = ", wave.data.chunksize)
         else:
             w = wave.toWave()
-            print("Wave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype)
+            print("Wave set. shape = ", wave.data.shape,
+                  ", dtype = ", wave.data.dtype)
         self._cut._setWave(w)
         self._ani._setWave(w)
         self._data._setWave(w)
@@ -315,7 +317,8 @@ class controlledWavesGUI(QTreeView):
         menu = QMenu(self)
         menu.addAction(QAction("Display", self, triggered=self._display))
         menu.addAction(QAction("Append", self, triggered=self._append))
-        menu.addAction(QAction("Append Contour", self, triggered=self._contour))
+        menu.addAction(
+            QAction("Append Contour", self, triggered=self._contour))
         menu.addAction(QAction("Enable", self, triggered=self._enable))
         menu.addAction(QAction("Disable", self, triggered=self._disable))
         menu.addAction(QAction("Remove", self, triggered=self._remove))
@@ -533,6 +536,11 @@ class CutTab(QWidget):
         rt = QPushButton("Rect", clicked=self._rect)
         cc = QPushButton("Circle", clicked=self._circle)
         li = QPushButton("Free Line", clicked=self._line)
+
+        self._mc = QComboBox()
+        self._mc.addItems(["Sum", "Mean", "Median", "Max", "Min"])
+        self._mc.currentTextChanged.connect(lambda t: self.__exe.setSumType(t))
+
         grid = QGridLayout()
         grid.addWidget(lx, 0, 0)
         grid.addWidget(ly, 0, 1)
@@ -542,6 +550,7 @@ class CutTab(QWidget):
         grid.addWidget(rt, 2, 1)
         grid.addWidget(cc, 3, 0)
         grid.addWidget(li, 3, 1)
+        grid.addWidget(self._mc, 4, 0)
 
         self.elist = controlledExecutorsGUI(self.__exe)
         hbox = QHBoxLayout()
@@ -612,15 +621,18 @@ class CutTab(QWidget):
                 g = display(w, lib="pyqtgraph")
                 self.canvases.append(g.canvas, ax)
                 g.canvas.deleted.connect(self.canvases.remove)
-                g.canvas.clicked.connect(lambda x, y: self._gridClicked(g.canvas))
+                g.canvas.clicked.connect(
+                    lambda x, y: self._gridClicked(g.canvas))
                 return g.canvas
             else:
                 old = self._getTargetCanvas()
                 if old is not None:
                     msgBox = QMessageBox()
-                    msgBox.setText("There is a graph at this position. Do you really want to proceed?")
+                    msgBox.setText(
+                        "There is a graph at this position. Do you really want to proceed?")
                     yes = msgBox.addButton(QMessageBox.Yes)
-                    graph = msgBox.addButton("Use Graph", QMessageBox.ActionRole)
+                    graph = msgBox.addButton(
+                        "Use Graph", QMessageBox.ActionRole)
                     no = msgBox.addButton(QMessageBox.No)
                     msgBox.exec_()
                     if msgBox.clickedButton() == no:
@@ -644,15 +656,19 @@ class CutTab(QWidget):
         for i in range(4):
             for j in range(4):
                 if self.grid.itemAtPosition(i, j) == canvas:
-                    self._table.setCurrentCell(i, j, QItemSelectionModel.Select)
+                    self._table.setCurrentCell(
+                        i, j, QItemSelectionModel.Select)
                     b = True
                 else:
-                    self._table.setCurrentCell(i, j, QItemSelectionModel.Deselect)
+                    self._table.setCurrentCell(
+                        i, j, QItemSelectionModel.Deselect)
         self._usegraph.setChecked(not b)
 
     def _getGridPos(self):
-        rows = [i.row() for i in self._table.selectionModel().selectedIndexes()]
-        columns = [i.column() for i in self._table.selectionModel().selectedIndexes()]
+        rows = [i.row()
+                for i in self._table.selectionModel().selectedIndexes()]
+        columns = [i.column()
+                   for i in self._table.selectionModel().selectedIndexes()]
         if len(rows) * len(columns) == 0:
             return (0, 0), (self.size, self.size)
         return (np.min(rows), np.min(columns)), (np.max(rows) - np.min(rows) + 1, np.max(columns) - np.min(columns) + 1)
@@ -937,7 +953,8 @@ class AnimationTab(QGroupBox):
         self.__exe.append(self.__pexe)
         params = {}
         if self.__useTime.isChecked():
-            params['time'] = {"unit": self.__timeunit.currentText(), "offset": self.__timeoffset.value()}
+            params['time'] = {"unit": self.__timeunit.currentText(
+            ), "offset": self.__timeoffset.value()}
         if self.__usescale.isChecked():
             params['scale'] = {"size": self.__scalesize.value()}
         file = self.__filename.text() + ".mp4"
@@ -951,12 +968,15 @@ class AnimationTab(QGroupBox):
         for key, value in dic.items():
             c.LoadSetting(key, value)
         for d in data:
-            c.Append(d.wave, appearance=copy.deepcopy(d.appearance), offset=copy.deepcopy(d.offset))
-        ani = animation.FuncAnimation(c.fig, _frame, fargs=(c, axis, params, exe), frames=len(axis), interval=30, repeat=False, init_func=_init)
+            c.Append(d.wave, appearance=copy.deepcopy(
+                d.appearance), offset=copy.deepcopy(d.offset))
+        ani = animation.FuncAnimation(c.fig, _frame, fargs=(
+            c, axis, params, exe), frames=len(axis), interval=30, repeat=False, init_func=_init)
         ani.save(file, writer='ffmpeg')
         self.__exe.remove(self.__pexe)
         self.__exe.restoreEnabledState()
-        QMessageBox.information(None, "Info", "Animation is saved to " + file, QMessageBox.Yes)
+        QMessageBox.information(
+            None, "Info", "Animation is saved to " + file, QMessageBox.Yes)
         logging.info("Animation is saved to " + file)
         return file
 

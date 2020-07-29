@@ -95,6 +95,10 @@ class ExecutorList(controlledObjects):
         super().__init__()
         self._enabled = []
         self._graphs = []
+        self._sumtype = "Sum"
+
+    def setSumType(self, sumtype):
+        self._sumtype = sumtype
 
     def graphRemoved(self, graph):
         for i, g in enumerate(self._graphs):
@@ -219,7 +223,9 @@ class ExecutorList(controlledObjects):
         tmp = wave
         tmp = wave[tuple(slices)]
         if len(sumlist) != 0:
-            tmp = tmp.sum(axis=tuple(sumlist.tolist()))
+            f = self.__getSumFunction(self.__getLib(tmp))
+            tmp.data = f(tmp.data, axis=tuple(sumlist.tolist()))
+            # tmp.sum(axis=tuple(sumlist.tolist()))
         res = tmp
         self.__applyFreeLines(res, axes, applied)
         st1 = time.time()
@@ -232,6 +238,24 @@ class ExecutorList(controlledObjects):
                 res.axes[0] = res.axes[1]
                 res.axes[1] = t
         return res
+
+    def __getSumFunction(self, lib):
+        if self._sumtype == "Sum":
+            return lib.sum
+        elif self._sumtype == "Mean":
+            return lib.mean
+        elif self._sumtype == "Max":
+            return lib.max
+        elif self._sumtype == "Min":
+            return lib.min
+        elif self._sumtype == "Median":
+            return lib.median
+
+    def __getLib(self, wave):
+        if isinstance(wave, DaskWave):
+            return da
+        else:
+            return np
 
 
 class AllExecutor(QObject):
