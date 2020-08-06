@@ -220,12 +220,11 @@ class ExecutorList(controlledObjects):
             if isinstance(slices[len(slices) - 1 - i], int):
                 sumlist[sumlist > len(slices) - 1 - i] -= 1
                 applied.append(i)
-        tmp = wave
         tmp = wave[tuple(slices)]
         if len(sumlist) != 0:
             f = self.__getSumFunction(self.__getLib(tmp))
             tmp.data = f(tmp.data, axis=tuple(sumlist.tolist()))
-            # tmp.sum(axis=tuple(sumlist.tolist()))
+        tmp.axes = [ax for i, ax in enumerate(wave.axes) if not (i in sumlist)]
         res = tmp
         self.__applyFreeLines(res, axes, applied)
         st1 = time.time()

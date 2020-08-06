@@ -516,8 +516,7 @@ class Wave(AutoSaved, WaveMethods):
                     axes.append(None)
                 else:
                     axes.append(ax[s])
-            w = Wave()
-            w.data = data
+            w = Wave(data)
             w.axes = axes
             return w
         else:
