@@ -14,12 +14,14 @@ class InterpFilter(FilterInterface):
             size = self._size
             for i in range(len(size)):
                 if size[i] == 0:
-                    size[i] = len(wave.axes[i])
+                    size[i] = len(wave.getAxis(i))
             axes = [wave.getAxis(i) for i in range(len(self._size))]
-            axes_new = [np.linspace(min(wave.getAxis(i)), max(wave.getAxis(i)), size[i]) for i in range(len(self._size))]
-            data = interpn(axes, wave.data, np.array(np.meshgrid(*axes_new)).T)
-            wave.axes = axes_new
+            axes_new = [np.linspace(min(ax), max(ax), size[i]) for i, ax in enumerate(axes)]
+            order = list(range(1, len(size)+1)) + [0]
+            mesh = np.array(np.meshgrid(*axes_new, indexing="ij")).transpose(*order)
+            data = interpn(axes, wave.data, mesh)
             wave.data = data
+            wave.axes = axes_new
         if isinstance(wave, DaskWave):
             raise NotImplementedError()
         return wave

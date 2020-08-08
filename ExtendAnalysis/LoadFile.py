@@ -206,6 +206,17 @@ except ImportError:
     def __loadDm3(name):
         print("Error: To use .dm3 files, please install dm3_lib module.")
 
+try:
+    import pydicom
+
+    def __loadDcm(name):
+        data = pydicom.read_file(name)
+        # print(data)
+        return Wave(data.pixel_array)
+except ImportError:
+    def __loadDcm(name):
+        print("Error: To use .dcm files, please install dicom module.")
+
 
 def addFileLoader(type, func):
     dic[type] = func
@@ -215,4 +226,6 @@ def getExtentions():
     return dic.keys()
 
 
-dic = dict(zip(['.npz', '.lst', '.str', '.val', '.dic', '.pxt', '.grf', '.tif', '.jpg', '.png', '.dm3'], [__loadNpz, __loadLst, __loadStr, __loadVal, __loadDic, __loadPxt, __loadGraph, __loadImage, __loadImage, __loadImage, __loadDm3]))
+dic = dict(zip(['.npz', '.lst', '.str', '.val', '.dic', '.pxt', '.grf', '.tif', '.jpg', '.png', '.dm3'], [__loadNpz, __loadLst,
+                                                                                                          __loadStr, __loadVal, __loadDic, __loadPxt, __loadGraph, __loadImage, __loadImage, __loadImage, __loadDm3]))
+dic[".dcm"] = __loadDcm
