@@ -101,12 +101,17 @@ def _symmetrze(data, rotation, center):
     s = data.shape
     dx = s[0]/2-center[0]
     dy = s[1]/2-center[1]
-    tmp = ndimage.shift(data, [dx, dy], cval=np.NaN)
-    dlis = np.array([ndimage.rotate(tmp, 360/rotation*i, reshape=False, order=1, cval=np.nan) for i in range(rotation)])
-    sum = np.nan_to_num(dlis, nan=0).sum(axis=0)
-    mask = np.where(np.isnan(dlis), 0, 1).sum(axis=0)
-    mask[mask == 0] = 1
-    return ndimage.shift(sum/mask, [-dx, -dy], cval=np.NaN)
+    tmp = ndimage.shift(data, [dx, dy], cval=np.NaN,order=0)
+    mask = np.where(np.isnan(tmp),0,1)
+    tmp[np.isnan(tmp)]=0
+    dlis = np.array([ndimage.rotate(tmp, 360/rotation*i, reshape=False, cval=0) for i in range(rotation)])
+    mlis = np.array([ndimage.rotate(mask, 360/rotation*i, reshape=False, cval=0) for i in range(rotation)])
+    sum = dlis.sum(axis=0)
+    m_sum = mlis.sum(axis=0)
+    sum[m_sum < 1]=np.nan
+    m_sum[m_sum < 1]=1
+
+    return ndimage.shift(sum/m_sum, [-dx, -dy], cval=np.NaN,order=0)
 
 
 def _symmetrze2(data, rotation, center):
@@ -130,4 +135,17 @@ def _symmetrze2(data, rotation, center):
     #mask[mask < 1] = 1
     tmp = m
     tmp[m == 0] = np.nan
-    return ndimage.shift(tmp, [-dx, -dy], cval=np.NaN)
+
+def _symmetrze3(data, rotation, center):
+    if len(data) <= 2:
+        return np.empty((1,))
+    s = data.shape
+    dx = s[0]/2-center[0]
+    dy = s[1]/2-center[1]
+    tmp = ndimage.shift(data, [dx, dy], cval=np.NaN)
+    dlis = np.array([ndimage.rotate(tmp, 360/rotation*i, reshape=False, order=1, cval=np.nan) for i in range(rotation)])
+    sum = np.nan_to_num(dlis, nan=0).sum(axis=0)
+    mask = np.where(np.isnan(dlis), 0, 1).sum(axis=0)
+    mask[mask == 0] = 1
+    return ndimage.shift(sum/mask, [-dx, -dy], cval=np.NaN)
+
