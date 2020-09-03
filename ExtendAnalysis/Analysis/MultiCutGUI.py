@@ -628,11 +628,9 @@ class CutTab(QWidget):
                 old = self._getTargetCanvas()
                 if old is not None:
                     msgBox = QMessageBox()
-                    msgBox.setText(
-                        "There is a graph at this position. Do you really want to proceed?")
+                    msgBox.setText("There is a graph at this position. Do you really want to proceed?")
                     yes = msgBox.addButton(QMessageBox.Yes)
-                    graph = msgBox.addButton(
-                        "Use Graph", QMessageBox.ActionRole)
+                    graph = msgBox.addButton("Use Graph", QMessageBox.ActionRole)
                     no = msgBox.addButton(QMessageBox.No)
                     msgBox.exec_()
                     if msgBox.clickedButton() == no:

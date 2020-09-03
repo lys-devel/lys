@@ -47,8 +47,8 @@ class controlledObjects(QObject):
         return [self._objs[index], self._axis[index]]
 
     def clear(self):
-        for obj in self._objs:
-            self.remove(obj)
+        while len(self._objs) != 0:
+            self.remove(self._objs[0])
 
 
 class SwitchableObjects(controlledObjects):
@@ -224,7 +224,7 @@ class ExecutorList(controlledObjects):
         if len(sumlist) != 0:
             f = self.__getSumFunction(self.__getLib(tmp))
             tmp.data = f(tmp.data, axis=tuple(sumlist.tolist()))
-        tmp.axes = [ax for i, ax in enumerate(wave.axes) if not (i in sumlist)]
+        tmp.axes = [ax for i, ax in enumerate(tmp.axes) if not (i in sumlist)]
         res = tmp
         self.__applyFreeLines(res, axes, applied)
         st1 = time.time()
