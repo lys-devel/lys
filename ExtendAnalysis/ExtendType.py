@@ -973,6 +973,9 @@ class ExtendMdiSubWindow(AttachableWindow):
         ExtendMdiSubWindow._RemoveWindow(self, self.__floating)
         super().closeEvent(event)
 
+    def isFloating(self):
+        return self.__floating
+
 
 _workspace = "default"
 _windir = home() + '/.lys/workspace/' + _workspace + '/wins'
