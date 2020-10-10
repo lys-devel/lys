@@ -15,13 +15,25 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def _getColormap(self, d):
         return d.appearance.get('Colormap', 'gray')
 
-    def _setColormap(self, d, cmap):
-        colormap = cm.get_cmap(cmap)
-        colormap._init()
+    def _getColorLut(self, cmap, gamma):
+        import copy
+        colormap = copy.deepcopy(cm.get_cmap(cmap))
+        colormap.set_gamma(gamma)
         lut = np.array(colormap._lut * 255)
-        lut = lut[0:lut.shape[0] - 3, :]
+        return lut[0:lut.shape[0] - 3, :]
+
+    def _setColormap(self, d, cmap):
+        lut = self._getColorLut(cmap, self._getColorGamma(d))
         self.__setColor(d, lut)
         d.appearance['Colormap'] = cmap
+
+    def _getColorGamma(self, d):
+        return d.appearance.get("ColorGamma", 1.0)
+
+    def _setColorGamma(self, d, gam):
+        lut = self._getColorLut(self._getColormap(d), 1.0 / gam)
+        self.__setColor(d, lut)
+        d.appearance['ColorGamma'] = gam
 
     def __setColor(self, d, lut):
         if self._isLog(d):

@@ -115,6 +115,7 @@ class ImageColorAdjustBox(QWidget):
         col = self.canvas.getColormap(indexes)[0]
         self.__cmap.setColormap(col)
         self.__cmap.setOpacity(self.canvas.getOpacity(indexes)[0])
+        self.__cmap.setGamma(self.canvas.getColorGamma(indexes)[0])
         mean, var = self.canvas.getAutoColorRange(indexes)[0]
         self.__start.setRange(mean, var * 5.0 / 3.0)
         self.__end.setRange(mean, var * 5.0 / 3.0)
@@ -132,6 +133,7 @@ class ImageColorAdjustBox(QWidget):
         if not self.__flg:
             indexes = self.canvas.getSelectedIndexes(2)
             self.canvas.setColormap(self.__cmap.currentColor(), indexes)
+            self.canvas.setColorGamma(self.__cmap.gamma(), indexes)
             self.canvas.setOpacity(indexes, self.__cmap.opacity())
             self.__changerange()
 

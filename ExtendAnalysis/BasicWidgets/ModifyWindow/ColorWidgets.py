@@ -1,7 +1,5 @@
 import pyqtgraph
 import numpy as np
-from matplotlib.figure import Figure, SubplotParams
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib import cm
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -9,6 +7,8 @@ from PyQt5.QtWidgets import *
 
 import collections
 import matplotlib.cm
+
+from ExtendAnalysis.BasicWidgets.Commons.ScientificSpinBox import *
 
 # Before import this file, be sure that QGuiApplication instance is initialized.
 
@@ -124,15 +124,21 @@ class ColormapSelection(QWidget):
         self.__opacity.setSingleStep(0.1)
         self.__opacity.setDecimals(2)
         self.__opacity.valueChanged.connect(self.__changed)
-        self.__check = QCheckBox("Reverse")
+        self.__gamma = ScientificSpinBox()
+        self.__gamma.setRange(0, 1000)
+        self.__gamma.setDecimals(2)
+        self.__gamma.valueChanged.connect(self.__changed)
+        self.__check = QCheckBox("Rev")
         self.__check.stateChanged.connect(self.__changed)
         self.__log = QCheckBox("Log")
         self.__log.stateChanged.connect(self.__changed)
         layout = QVBoxLayout()
 
         layout_h = QHBoxLayout()
-        layout_h.addWidget(QLabel('Opacity'))
+        layout_h.addWidget(QLabel('Opac'))
         layout_h.addWidget(self.__opacity)
+        layout_h.addWidget(QLabel('Gam'))
+        layout_h.addWidget(self.__gamma)
         layout_h.addWidget(self.__check)
         layout_h.addWidget(self.__log)
 
@@ -168,6 +174,12 @@ class ColormapSelection(QWidget):
 
     def opacity(self):
         return self.__opacity.value()
+
+    def setGamma(self, value):
+        self.__gamma.setValue(value)
+
+    def gamma(self):
+        return self.__gamma.value()
 
 
 def cmapToColormap(cmap, nTicks=16):

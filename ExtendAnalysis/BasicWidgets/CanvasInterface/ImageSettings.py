@@ -16,6 +16,19 @@ class ImageColorAdjustableCanvasBase(MarkerStyleAdjustableCanvasBase):
             res.append(self._getColormap(d))
         return res
 
+    @saveCanvas
+    def setColorGamma(self, gamma, indexes):
+        data = self.getDataFromIndexes(2, indexes)
+        for d in data:
+            self._setColorGamma(d, gamma)
+
+    def getColorGamma(self, indexes):
+        res = []
+        data = self.getDataFromIndexes(2, indexes)
+        for d in data:
+            res.append(self._getColorGamma(d))
+        return res
+
     def getColorRange(self, indexes):
         res = []
         data = self.getDataFromIndexes(2, indexes)
@@ -81,6 +94,7 @@ class ImageColorAdjustableCanvasBase(MarkerStyleAdjustableCanvasBase):
         super().saveAppearance()
         for d in self.getImages():
             d.appearance['Colormap'] = self._getColormap(d)
+            d.appearance['ColorGamma'] = self._getColorGamma(d)
             d.appearance['Range'] = self._getColorRange(d)
             d.appearance['Log'] = self._isLog(d)
             d.appearance['Opacity'] = self._getOpacity(d)
@@ -90,6 +104,8 @@ class ImageColorAdjustableCanvasBase(MarkerStyleAdjustableCanvasBase):
         for d in self.getImages():
             if 'Colormap' in d.appearance:
                 self._setColormap(d, d.appearance['Colormap'])
+            if 'ColorGamma' in d.appearance:
+                self._setColorGamma(d, d.appearance['ColorGamma'])
             if 'Range' in d.appearance:
                 log = d.appearance.get('Log', False)
                 min, max = d.appearance['Range']
