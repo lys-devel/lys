@@ -290,13 +290,105 @@ class TextEditLogger(logging.Handler):
         super().__init__()
         self.widget = QPlainTextEdit(parent)
         self.widget.setReadOnly(True)
+        self.records = []
+        self.messages = []
+        self.maxsize = 3000
+        self.filt = None
+        self.count = 0
+
+    def __update(self):
+        txt = ""
+        for r, m in zip(reversed(self.records), reversed(self.messages)):
+            if self.filt is None:
+                txt += r + "\n"
+            elif self.filt in m:
+                txt += r + "\n"
+        self.widget.setPlainText(txt)
 
     def emit(self, record):
         msg = self.format(record)
-        self.widget.appendPlainText(msg)
+        if len(self.messages) != 0:
+            if record.message == self.messages[len(self.messages) - 1]:
+                self.count += 1
+                self.records[len(self.records) - 1] = msg + " (" + str(self.count) + ")"
+                self.__update()
+                return
+            else:
+                self.count = 1
+        if len(self.records) > self.maxsize:
+            self.records.pop(0)
+            self.messages.pop(0)
+        self.records.append(msg)
+        self.messages.append(record.message)
+        self.__update()
+
+    def setTextFilter(self, filter):
+        self.filt = filter
+        self.__update()
 
     def write(self, m):
         pass
+
+
+class LogWidget(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.__initlog()
+        self.__initlayout()
+
+    def __initlayout(self):
+        self._loglevel = QHBoxLayout()
+        self._loglevel.addWidget(QRadioButton("Error", toggled=lambda: self._debugLevel(40)))
+        war = QRadioButton("Warning", toggled=lambda: self._debugLevel(logging.WARNING))
+        self._loglevel.addWidget(war)
+        inf = QRadioButton("Info", toggled=lambda: self._debugLevel(logging.INFO))
+        self._loglevel.addWidget(inf)
+        self._loglevel.addWidget(QRadioButton("Debug", toggled=lambda: self._debugLevel(10)))
+        inf.toggle()
+
+        self.filt = QLineEdit()
+        self.filt.textChanged.connect(self._filter)
+        h1 = QHBoxLayout()
+        h1.addWidget(QLabel("Filter"))
+        h1.addWidget(self.filt)
+
+        l2 = QVBoxLayout()
+        l2.addLayout(self._loglevel)
+        l2.addLayout(h1)
+        l2.addWidget(self._log.widget)
+        self.setLayout(l2)
+
+    def _filter(self):
+        f = self.filt.text()
+        if len(f) == 0:
+            self._log.setTextFilter(None)
+        else:
+            self._log.setTextFilter(f)
+
+    def _debugLevel(self, level):
+        self._log.setLevel(level)
+
+    def __initlog(self):
+        logging.getLogger().setLevel(logging.DEBUG)
+        logging.getLogger().addHandler(self.__createTextEditLogger())
+        logging.getLogger().addHandler(self.__createFileLogger(logging.DEBUG, "debug"))
+        logging.getLogger().addHandler(self.__createFileLogger(logging.INFO, "info"))
+        logging.getLogger().addHandler(self.__createFileLogger(logging.WARNING, "warning"))
+
+    def __createTextEditLogger(self):
+        self._log = TextEditLogger()
+        self._log.setLevel(20)
+        self._log.setFormatter(logging.Formatter('%(asctime)s [%(levelname).1s] %(message)s', "%m/%d %H:%M:%S"))
+        return self._log
+
+    def __createFileLogger(self, level, name):
+        import logging.handlers
+        mkdir(".lys/log")
+        fh = logging.handlers.RotatingFileHandler(".lys/log/" + name + ".log", maxBytes=100000, backupCount=10)
+        fh.setLevel(level)
+        fh_formatter = logging.Formatter('%(asctime)s-%(levelname)s-%(filename)s-%(name)s-%(funcName)s-%(message)s')
+        fh.setFormatter(fh_formatter)
+        return fh
 
 
 class CommandWindow(QWidget):
@@ -349,23 +441,7 @@ class CommandWindow(QWidget):
         self.output.setReadOnly(True)
         self.output.setUndoRedoEnabled(False)
 
-        self._loglevel = QHBoxLayout()
-        self._loglevel.addWidget(QRadioButton("Error", toggled=lambda: self._debugLevel(40)))
-        war = QRadioButton("Warning", toggled=lambda: self._debugLevel(30))
-        self._loglevel.addWidget(war)
-        inf = QRadioButton("Info", toggled=lambda: self._debugLevel(20))
-        self._loglevel.addWidget(inf)
-        self._loglevel.addWidget(QRadioButton("Debug", toggled=lambda: self._debugLevel(10)))
-        inf.toggle()
-        self._log = TextEditLogger()
-        logging.getLogger().addHandler(self._log)
-        logging.getLogger().setLevel(20)
-        self._log.setFormatter(logging.Formatter('%(asctime)s [%(levelname).1s] %(message)s', "%m/%d %H:%M:%S"))
-        l2 = QVBoxLayout()
-        l2.addLayout(self._loglevel)
-        l2.addWidget(self._log.widget)
-        wid2 = QWidget()
-        wid2.setLayout(l2)
+        wid2 = LogWidget()
 
         self._memo = StringTextEdit(".lys/memo.str")
 
@@ -397,9 +473,6 @@ class CommandWindow(QWidget):
         lay = QHBoxLayout()
         lay.addWidget(layout_h)
         self.setLayout(lay)
-
-    def _debugLevel(self, level):
-        logging.getLogger().setLevel(level)
 
     def __viewContextMenu(self, tree):
         cd = QAction('Set Current Directory', self, triggered=self.__setCurrentDirectory)
