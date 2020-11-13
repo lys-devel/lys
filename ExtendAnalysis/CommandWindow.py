@@ -344,7 +344,7 @@ class LogWidget(QWidget):
         inf = QRadioButton("Info", toggled=lambda: self._debugLevel(logging.INFO))
         self._loglevel.addWidget(inf)
         self._loglevel.addWidget(QRadioButton("Debug", toggled=lambda: self._debugLevel(10)))
-        inf.toggle()
+        war.toggle()
 
         self.filt = QLineEdit()
         self.filt.textChanged.connect(self._filter)
