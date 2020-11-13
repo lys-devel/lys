@@ -241,7 +241,6 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
         else:
             self.setAxisRange([max + mergin, min - mergin], axis, auto=True)
         self.__auto[axis] = True
-        self.axisRangeChanged.emit()
 
     def isAutoScaled(self, axis):
         ax = axis
@@ -633,7 +632,10 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         if isinstance(l, ticker.AutoLocator):
             return 0
         else:
-            return l()[1] - l()[0]
+            try:
+                return l()[1] - l()[0]
+            except:
+                return 0
 
     @saveCanvas
     def setTickDirection(self, axis, direction):
