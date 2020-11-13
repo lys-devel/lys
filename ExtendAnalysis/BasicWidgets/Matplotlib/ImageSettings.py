@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from matplotlib import colors
+from matplotlib import cm
 from .LineSettings import *
 
 
@@ -14,7 +15,19 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
         return d.obj.get_cmap().name
 
     def _setColormap(self, d, cmap):
-        d.obj.set_cmap(cmap)
+        import copy
+        colormap = copy.deepcopy(cm.get_cmap(cmap))
+        colormap.set_gamma(self._getColorGamma(d))
+        d.obj.set_cmap(colormap)
+
+    def _getColorGamma(self, d):
+        return d.appearance.get("ColorGamma", 1.0)
+        return 1.0 / d.obj.get_cmap()._gamma
+
+    def _setColorGamma(self, d, gam):
+        colormap = cm.get_cmap(self._getColormap(d))
+        colormap.set_gamma(1.0 / gam)
+        d.obj.set_cmap(colormap)
 
     def _getColorRange(self, d):
         return d.obj.norm.vmin, d.obj.norm.vmax
