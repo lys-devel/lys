@@ -221,18 +221,34 @@ class CommandLineEdit(QLineEdit):
         self.__logn = 0
         self.completer = rlcompleter.Completer(self.shell.GetDictionary())
 
+    def __findBlock(self):
+        text = self.text()
+        end = self.cursorPosition()
+        i = 1
+        while(True):
+            if text[end - i] in [",", "(", " "] or end == i:
+                start = end - i
+                break
+            i += 1
+        return start, end
+
     def event(self, event):
         if event.type() == QEvent.KeyPress:
             if event.key() == Qt.Key_Tab:
                 if self.__tabn == 0:
-                    self.__txt = self.text()
+                    s, e = self.__findBlock()
+                    self.__prefix = self.text()[:s + 1]
+                    self.__suffix = self.text()[e:]
+                    self.__txt = self.text()[s + 1:e]
+                    print(self.__prefix, self.__txt, self.__suffix)
                 try:
                     tmp = self.completer.complete(self.__txt, self.__tabn)
                     if tmp is None and not self.__tabn == 0:
                         tmp = self.completer.complete(self.__txt, 0)
                         self.__tabn = 0
                     if not tmp is None:
-                        self.setText(tmp)
+                        self.setText(self.__prefix + tmp + self.__suffix)
+                        self.setCursorPosition(len(self.__prefix + tmp))
                         self.__tabn += 1
                 except Exception:
                     print("fail:", self.__txt, self.__tabn)
