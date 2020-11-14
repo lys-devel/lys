@@ -134,6 +134,8 @@ class WorkspaceWidget(FileSystemView):
     def __init__(self, parent):
         self.model = ExtendFileSystemModel()
         super().__init__(parent, self.model)
+        self.model.AddExcludedFilter("winlist.lst")
+        self.model.AddExcludedFilter("wins")
         self.SetPath(home() + "/.lys/workspace")
         self.__viewContextMenu2(self)
 
@@ -194,7 +196,7 @@ class CommandWindow(QWidget):
         self._tab_up.addTab(StringTextEdit(".lys/memo.str"), "Memo")
 
         self._tab = QTabWidget()
-        self._tab.addTab(FileWidget(self), "File")
+        self._tab.addTab(FileWidget(self, self.__shell), "File")
         self._tab.addTab(WorkspaceWidget(self), "Workspace")
         self._tab.addTab(TaskWidget(), "Tasks")
         self._tab.addTab(SettingWidget(), "Settings")

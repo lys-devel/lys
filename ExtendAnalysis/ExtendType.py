@@ -1020,17 +1020,15 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         if os.path.exists(oldpath) and not os.path.exists(newpath):
             copy(oldpath, newpath)
         #################################
-        cls.__list = List(home() + '/.lys/workspace/' +
-                          AutoSavedWindow._workspace + '/winlist.lst')
-        AutoSavedWindow._windir = home() + '/.lys/workspace/' + \
-            AutoSavedWindow._workspace + '/wins'
+        cls.__list = List(home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/winlist.lst')
+        AutoSavedWindow._windir = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/wins'
         print("Workspace: " + AutoSavedWindow._workspace)
         cls._restore = True
-        mkdir(_windir)
+        mkdir(AutoSavedWindow._windir)
         for path in cls.__list.data:
             try:
                 w = LoadFile.load(path)
-                if path.find(_windir) > -1:
+                if path.find(AutoSavedWindow._windir) > -1:
                     w.Disconnect()
             except:
                 pass

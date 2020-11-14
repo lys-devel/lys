@@ -23,9 +23,10 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
 
 
 class FileWidget(FileSystemView):
-    def __init__(self, parent):
+    def __init__(self, parent, shell):
         self.model = ColoredFileSystemModel()
         super().__init__(parent, self.model)
+        self.__shell = shell
         self.SetPath(pwd())
         self.__viewContextMenu(self)
 
