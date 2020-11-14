@@ -1,14 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import sys
 import os
 import glob
-import rlcompleter
-from importlib import import_module, reload
-from pathlib import Path
 from .Tasks import *
-from watchdog.events import FileSystemEvent, PatternMatchingEventHandler
-from watchdog.observers import Observer
 
 from .ExtendType import *
 from .BasicWidgets import *
@@ -16,156 +10,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-
-class Logger(object):
-    def __init__(self, editor, out=None, color=None):
-        self.editor = editor
-        self.out = out
-        if not color:
-            self.color = editor.textColor()
-        else:
-            self.color = color
-
-    def write(self, message):
-        self.editor.moveCursor(QTextCursor.End)
-        self.editor.setTextColor(self.color)
-        self.editor.insertPlainText(message)
-        if self.out:
-            self.out.write(message)
-
-    def flush(self):
-        pass
-
-
-class CommandLineEdit(QLineEdit):
-    def __init__(self, shell):
-        QLineEdit.__init__(self)
-        self.shell = shell
-        self.returnPressed.connect(self.__SendCommand)
-        self.__logn = 0
-        self.completer = rlcompleter.Completer(self.shell.GetDictionary())
-
-    def event(self, event):
-        if event.type() == QEvent.KeyPress:
-            if event.key() == Qt.Key_Tab:
-                if self.__tabn == 0:
-                    self.__txt = self.text()
-                try:
-                    tmp = self.completer.complete(self.__txt, self.__tabn)
-                    if tmp is None and not self.__tabn == 0:
-                        tmp = self.completer.complete(self.__txt, 0)
-                        self.__tabn = 0
-                    if not tmp is None:
-                        self.setText(tmp)
-                        self.__tabn += 1
-                except Exception:
-                    print("fail:", self.__txt, self.__tabn)
-                return True
-            else:
-                self.__tabn = 0
-
-            if event.key() == Qt.Key_Up:
-                log = self.shell.GetCommandLog()
-                if len(log) == 0:
-                    return True
-                if not len(log) == self.__logn:
-                    self.__logn += 1
-                self.setText(log[len(log) - self.__logn])
-                return True
-
-            if event.key() == Qt.Key_Down:
-                log = self.shell.GetCommandLog()
-                if not self.__logn == 0:
-                    self.__logn -= 1
-                if self.__logn == 0:
-                    self.setText("")
-                else:
-                    self.setText(log[max(0, len(log) - self.__logn)])
-                return True
-
-        return QLineEdit.event(self, event)
-
-    def __SendCommand(self):
-        txt = self.text()
-        self.shell.SendCommand(txt)
-        self.clear()
-        self.__logn = 0
-
-
-class ColoredFileSystemModel(ExtendFileSystemModel):
-    def __init__(self):
-        super().__init__()
-        for ext in LoadFile.getExtentions():
-            self.AddAcceptedFilter('*' + ext)
-        self.AddAcceptedFilter('*.py')
-
-    def data(self, index, role=Qt.DisplayRole):
-        if role == Qt.FontRole:
-            if pwd().find(self.filePath(index)) > -1:
-                font = QFont()
-                font.setBold(True)
-                return font
-        if role == Qt.BackgroundRole:
-            if pwd() == self.filePath(index):
-                return QColor(200, 200, 200)
-        return super().data(index, role)
-
-
-class PluginManager:
-    class Handler(PatternMatchingEventHandler):
-        def __init__(self, manager: 'PluginManager', *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.manager = manager
-
-        def on_created(self, event: FileSystemEvent):
-            if event.src_path.endswith('.py'):
-                self.manager.load_plugin(Path(event.src_path))
-
-        def on_modified(self, event):
-            if event.src_path.endswith('.py'):
-                self.manager.load_plugin(Path(event.src_path))
-
-    def __init__(self, path: str, shell):
-        self.plugins = {}
-        self.path = path
-        self.observer = Observer()
-        self.shell = shell
-        sys.path.append(self.path)
-
-    def start(self):
-        self.scan_plugin()
-        self.observer.schedule(self.Handler(self, patterns='*.py'), self.path)
-        self.observer.start()
-
-    def stop(self):
-        self.observer.stop()
-        self.observer.join()
-
-    def scan_plugin(self):
-        for file_path in Path(self.path).glob('*.py'):
-            self.load_plugin(file_path)
-
-    def load_plugin(self, file_path):
-        module_name = file_path.stem
-        if module_name not in self.plugins:
-            if module_name.startswith('.'):
-                return
-            try:
-                self.shell.SendCommand('from importlib import import_module, reload', message=False, save=False)
-                self.shell.SendCommand('from ' + module_name + ' import *', message=True, save=False)
-                self.plugins[module_name] = import_module(module_name)
-                #print('{}.py has been loaded.'.format(module_name))
-            except:
-                print('Error on loading {}.py.'.format(module_name))
-        else:
-            try:
-                self.plugins[module_name] = reload(self.plugins[module_name])
-                self.shell.SendCommand('from ' + module_name + ' import *', message=False, save=False)
-                print('{}.py has been reloaded.'.format(module_name))
-            except Exception as e:
-                import traceback
-                sys.stderr.write('Error on reloading {}.py.'.format(module_name))
-                print(traceback.format_exc())
+from .System import *
 
 
 class TaskWidget(QWidget):
@@ -285,215 +130,12 @@ class SettingWidget(QWidget):
             self._float.setChecked(self.setting["Floating"])
 
 
-class TextEditLogger(logging.Handler):
-    def __init__(self, parent=None):
-        super().__init__()
-        self.records = []
-        self.messages = []
-        self.maxsize = 3000
-        self.filt = None
-        self.count = 0
-        self.parent = parent
-
-    def __update(self):
-        txt = ""
-        for r, m in zip(reversed(self.records), reversed(self.messages)):
-            if self.filt is None:
-                txt += r + "\n"
-            elif self.filt in m:
-                txt += r + "\n"
-        self.parent.updated.emit(txt)
-        # self.widget.setPlainText(txt)
-
-    def emit(self, record):
-        msg = self.format(record)
-        if len(self.messages) != 0:
-            if record.message == self.messages[len(self.messages) - 1]:
-                self.count += 1
-                self.records[len(self.records) - 1] = msg + " (" + str(self.count) + ")"
-                self.__update()
-                return
-            else:
-                self.count = 1
-        if len(self.records) > self.maxsize:
-            self.records.pop(0)
-            self.messages.pop(0)
-        self.records.append(msg)
-        self.messages.append(record.message)
-        self.__update()
-
-    def setTextFilter(self, filter):
-        self.filt = filter
-        self.__update()
-
-    def write(self, m):
-        pass
-
-
-class LogWidget(QWidget):
-    updated = pyqtSignal(str)
-
-    def __init__(self):
-        super().__init__()
-        self.__initlog()
-        self.__initlayout()
-
-    def __initlayout(self):
-        self._loglevel = QHBoxLayout()
-        self._loglevel.addWidget(QRadioButton("Error", toggled=lambda: self._debugLevel(40)))
-        war = QRadioButton("Warning", toggled=lambda: self._debugLevel(logging.WARNING))
-        self._loglevel.addWidget(war)
-        inf = QRadioButton("Info", toggled=lambda: self._debugLevel(logging.INFO))
-        self._loglevel.addWidget(inf)
-        self._loglevel.addWidget(QRadioButton("Debug", toggled=lambda: self._debugLevel(10)))
-        war.toggle()
-
-        self.filt = QLineEdit()
-        self.filt.textChanged.connect(self._filter)
-        h1 = QHBoxLayout()
-        h1.addWidget(QLabel("Filter"))
-        h1.addWidget(self.filt)
-
-        self.widget = QPlainTextEdit(self)
-        self.widget.setReadOnly(True)
-        self.updated.connect(self.widget.setPlainText)
-
-        l2 = QVBoxLayout()
-        l2.addLayout(self._loglevel)
-        l2.addLayout(h1)
-        l2.addWidget(self.widget)
-        self.setLayout(l2)
-
-    def _filter(self):
-        f = self.filt.text()
-        if len(f) == 0:
-            self._log.setTextFilter(None)
-        else:
-            self._log.setTextFilter(f)
-
-    def _debugLevel(self, level):
-        self._log.setLevel(level)
-
-    def __initlog(self):
-        logging.getLogger().setLevel(logging.DEBUG)
-        logging.getLogger().addHandler(self.__createTextEditLogger())
-        logging.getLogger().addHandler(self.__createFileLogger(logging.DEBUG, "debug"))
-        logging.getLogger().addHandler(self.__createFileLogger(logging.INFO, "info"))
-        logging.getLogger().addHandler(self.__createFileLogger(logging.WARNING, "warning"))
-
-    def __createTextEditLogger(self):
-        self._log = TextEditLogger(self)
-        self._log.setLevel(20)
-        self._log.setFormatter(logging.Formatter('%(asctime)s [%(levelname).1s] %(message)s', "%m/%d %H:%M:%S"))
-        return self._log
-
-    def __createFileLogger(self, level, name):
-        import logging.handlers
-        mkdir(".lys/log")
-        fh = logging.handlers.RotatingFileHandler(".lys/log/" + name + ".log", maxBytes=100000, backupCount=10)
-        fh.setLevel(level)
-        fh_formatter = logging.Formatter('%(asctime)s-%(levelname)s-%(filename)s-%(name)s-%(funcName)s-%(message)s')
-        fh.setFormatter(fh_formatter)
-        return fh
-
-
-class CommandWindow(QWidget):
-    def __init__(self, shell, parent=None):
-        super(CommandWindow, self).__init__(parent)
-        self.setWindowTitle("Command Window")
-        self.resize(600, 600)
-        self.__shell = shell
-
-        self.__CreateLayout()
-        sys.stdout = Logger(self.output, sys.stdout)
-        sys.stderr = Logger(self.output, sys.stderr, QColor(255, 0, 0))
-
-        self.__loadData()
-        self.show()
-
-    def __loadData(self):
-        self._savepath = os.path.abspath("./")
-        self.__clog = String(".lys/commandlog.log")
-        self.output.setPlainText(self.__clog.data)
-        self.__log2 = String(".lys/commandlog2.log")
-        if not len(self.__log2.data) == 0:
-            self.__shell.SetCommandLog(eval(self.__log2.data))
-        if not os.path.exists('proc.py'):
-            with open("proc.py", "w") as file:
-                file.write("from ExtendAnalysis import *")
-        print('Welcome to Analysis program lys. Loading .py files...')
-        m = PluginManager(home(), self.__shell)
-        m.start()
-
-    def clearLog(self):
-        self.output.clear()
-
-    def saveData(self):
-        self.__clog.data = self.output.toPlainText()
-        self.__clog.Save()
-        self.__log2.data = str(self.__shell.GetCommandLog())
-        if not PythonEditor.CloseAllEditors():
-            return False
-        AutoSavedWindow.StoreAllWindows()
-        return True
-
-    def closeEvent(self, event):
-        event.ignore()
-
-    def __CreateLayout(self):
-        self._tab_up = QTabWidget()
-        self.input = CommandLineEdit(self.__shell)
-        self.output = QTextEdit(self)
-        self.output.setReadOnly(True)
-        self.output.setUndoRedoEnabled(False)
-
-        wid2 = LogWidget()
-
-        self._memo = StringTextEdit(".lys/memo.str")
-
-        self._tab_up.addTab(self.output, "Command")
-        self._tab_up.addTab(wid2, "Log")
-        self._tab_up.addTab(self._memo, "Memo")
-
-        layout_h = QSplitter(Qt.Vertical)
-        self._tab = QTabWidget()
-
-        self.__dirmodel = ColoredFileSystemModel()
-        self.view = FileSystemView(self, self.__dirmodel)
-        self.__viewContextMenu(self.view)
-        self.view.SetPath(pwd())
-
-        self.__dirmodel2 = ExtendFileSystemModel()
-        self.view2 = FileSystemView(self, self.__dirmodel2)
-        self.__viewContextMenu2(self.view2)
-        self.view2.SetPath(home() + "/.lys/workspace")
-
-        self._tab.addTab(self.view, "File")
-        self._tab.addTab(self.view2, "Workspace")
-        self._tab.addTab(TaskWidget(), "Tasks")
-        self._tab.addTab(SettingWidget(), "Settings")
-        layout_h.addWidget(self._tab_up)
-        layout_h.addWidget(self.input)
-        layout_h.addWidget(self._tab)
-
-        lay = QHBoxLayout()
-        lay.addWidget(layout_h)
-        self.setLayout(lay)
-
-    def __viewContextMenu(self, tree):
-        cd = QAction('Set Current Directory', self, triggered=self.__setCurrentDirectory)
-        ld = QAction('Load', self, triggered=self.__load)
-        op = QAction('Open', self, triggered=self.__openpy)
-        show = QAction('Show all graphs', self, triggered=self.__showgraphs)
-        save = QAction('Save all graphs', self, triggered=self.__savegraphs)
-        menu = {}
-        menu['dir'] = [cd, tree.Action_NewDirectory(), tree.Action_Delete(), show, save]
-        menu['mix'] = [ld, tree.Action_Delete()]
-        menu['other'] = [ld, tree.Action_Delete(), tree.Action_Print()]
-        menu['.npz'] = [tree.Action_Display(), tree.Action_Append(), tree.Action_MultiCut(), tree.Action_Preview(), tree.Action_Edit(), ld, tree.Action_Print(), tree.Action_Delete()]
-        menu['.py'] = [op, tree.Action_Delete()]
-        menu['.lst'] = [op, tree.Action_Edit()]
-        tree.SetContextMenuActions(menu)
+class WorkspaceWidget(FileSystemView):
+    def __init__(self, parent):
+        self.model = ExtendFileSystemModel()
+        super().__init__(parent, self.model)
+        self.SetPath(home() + "/.lys/workspace")
+        self.__viewContextMenu2(self)
 
     def __viewContextMenu2(self, tree):
         ld = QAction('Load workspace', self, triggered=self.__work)
@@ -504,38 +146,64 @@ class CommandWindow(QWidget):
         menu['other'] = [add, tree.Action_Delete()]
         tree.SetContextMenuActions(menu)
 
-    def __setCurrentDirectory(self):
-        cd(self.view.selectedPaths()[0])
-
-    def __load(self):
-        for p in self.view.selectedPaths():
-            self.__shell.Load(p)
-
-    def __openpy(self):
-        for p in self.view.selectedPaths():
-            PythonEditor(p)
-
-    def __showgraphs(self):
-        p = self.view.selectedPaths()[0]
-        for f in glob.glob(p + "/*.grf"):
-            Graph(f)
-
-    def __savegraphs(self):
-        p = self.view.selectedPaths()[0]
-        i = 0
-        while(True):
-            g = Graph.active(i)
-            if g is None:
-                return
-            else:
-                g.Save(p + "/graph" + str(i) + ".grf")
-            i += 1
-
     def __work(self, path):
-        name = self.view2.selectedPaths()[0].replace(AutoSavedWindow.folder_prefix, "")
+        name = self.selectedPaths()[0].replace(AutoSavedWindow.folder_prefix, "")
         AutoSavedWindow.SwitchTo(name)
 
     def __addwork(self):
         text, ok = QInputDialog.getText(self, 'New worksapce', 'Name of workspace')
         if ok:
             AutoSavedWindow.SwitchTo(text)
+
+
+class CommandWindow(QWidget):
+    def __init__(self, parent=None):
+        super(CommandWindow, self).__init__(parent)
+        self.setWindowTitle("Command Window")
+        self.resize(600, 600)
+        self.__loadData()
+        self.__shell = ExtendShell(self, ".lys/commandlog2.log")
+        self.__CreateLayout()
+        self.show()
+
+    def __loadData(self):
+        if not os.path.exists('proc.py'):
+            with open("proc.py", "w") as file:
+                file.write("from ExtendAnalysis import *")
+
+    def clearLog(self):
+        self.output.clear()
+
+    def saveData(self):
+        self.output.save()
+        self.__shell.save()
+        if not PythonEditor.CloseAllEditors():
+            return False
+        AutoSavedWindow.StoreAllWindows()
+        return True
+
+    def closeEvent(self, event):
+        event.ignore()
+
+    def __CreateLayout(self):
+        self.output = CommandLogWidget(self)
+
+        self._tab_up = QTabWidget()
+        self._tab_up.addTab(self.output, "Command")
+        self._tab_up.addTab(LogWidget(), "Log")
+        self._tab_up.addTab(StringTextEdit(".lys/memo.str"), "Memo")
+
+        self._tab = QTabWidget()
+        self._tab.addTab(FileWidget(self), "File")
+        self._tab.addTab(WorkspaceWidget(self), "Workspace")
+        self._tab.addTab(TaskWidget(), "Tasks")
+        self._tab.addTab(SettingWidget(), "Settings")
+
+        layout_h = QSplitter(Qt.Vertical)
+        layout_h.addWidget(self._tab_up)
+        layout_h.addWidget(CommandLineEdit(self.__shell))
+        layout_h.addWidget(self._tab)
+
+        lay = QHBoxLayout()
+        lay.addWidget(layout_h)
+        self.setLayout(lay)
