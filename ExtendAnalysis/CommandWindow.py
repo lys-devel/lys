@@ -288,13 +288,12 @@ class SettingWidget(QWidget):
 class TextEditLogger(logging.Handler):
     def __init__(self, parent=None):
         super().__init__()
-        self.widget = QPlainTextEdit(parent)
-        self.widget.setReadOnly(True)
         self.records = []
         self.messages = []
         self.maxsize = 3000
         self.filt = None
         self.count = 0
+        self.parent = parent
 
     def __update(self):
         txt = ""
@@ -303,7 +302,8 @@ class TextEditLogger(logging.Handler):
                 txt += r + "\n"
             elif self.filt in m:
                 txt += r + "\n"
-        self.widget.setPlainText(txt)
+        self.parent.updated.emit(txt)
+        # self.widget.setPlainText(txt)
 
     def emit(self, record):
         msg = self.format(record)
@@ -331,6 +331,8 @@ class TextEditLogger(logging.Handler):
 
 
 class LogWidget(QWidget):
+    updated = pyqtSignal(str)
+
     def __init__(self):
         super().__init__()
         self.__initlog()
@@ -352,10 +354,14 @@ class LogWidget(QWidget):
         h1.addWidget(QLabel("Filter"))
         h1.addWidget(self.filt)
 
+        self.widget = QPlainTextEdit(self)
+        self.widget.setReadOnly(True)
+        self.updated.connect(self.widget.setPlainText)
+
         l2 = QVBoxLayout()
         l2.addLayout(self._loglevel)
         l2.addLayout(h1)
-        l2.addWidget(self._log.widget)
+        l2.addWidget(self.widget)
         self.setLayout(l2)
 
     def _filter(self):
@@ -376,7 +382,7 @@ class LogWidget(QWidget):
         logging.getLogger().addHandler(self.__createFileLogger(logging.WARNING, "warning"))
 
     def __createTextEditLogger(self):
-        self._log = TextEditLogger()
+        self._log = TextEditLogger(self)
         self._log.setLevel(20)
         self._log.setFormatter(logging.Formatter('%(asctime)s [%(levelname).1s] %(message)s', "%m/%d %H:%M:%S"))
         return self._log
