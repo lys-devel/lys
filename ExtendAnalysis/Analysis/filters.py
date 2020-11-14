@@ -1,3 +1,4 @@
+from ExtendAnalysis import String
 from .filter import *
 import _pickle as cPickle
 
@@ -26,3 +27,12 @@ class Filters(object):
     @staticmethod
     def fromString(str):
         return cPickle.loads(eval(str))
+
+    @staticmethod
+    def fromFile(path):
+        s = String(path)
+        return Filters.fromString(s.data)
+
+    def saveAsFile(self, path):
+        s = String((path + ".fil").replace(".fil.fil", ".fil"))
+        s.data = str(self)

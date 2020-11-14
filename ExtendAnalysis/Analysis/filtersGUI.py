@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from ExtendAnalysis import *
+from .FilterIOGUI import FilterExportDialog, FilterImportDialog
 
 filterGroups = collections.OrderedDict()
 
@@ -196,7 +197,7 @@ class FiltersGUI(QWidget):
     def __insertNewTab(self, dim):
         w = _SubFiltersGUI(dim, self.loader)
         self.__tabs.append(w)
-        self._tab.insertTab(len(self.__tabs)-1, w, "d = "+str(dim))
+        self._tab.insertTab(len(self.__tabs) - 1, w, "d = " + str(dim))
 
     def _tabContext(self, point):
         menu = QMenu(self)
@@ -218,7 +219,7 @@ class FiltersGUI(QWidget):
 
     def setDimension(self, dimension, index=0):
         self.__tabs[index].setDimension(dimension)
-        self._tab.setTabText(index, "d = "+str(dimension))
+        self._tab.setTabText(index, "d = " + str(dimension))
         self.dim = dimension
 
     def clear(self, index=False):
@@ -236,8 +237,8 @@ class FiltersGUI(QWidget):
             return
         self._tab.removeTab(tab)
         self.__tabs.pop(tab)
-        self.__preIndex = tab-1
-        self._tab.setCurrentIndex(tab-1)
+        self.__preIndex = tab - 1
+        self._tab.setCurrentIndex(tab - 1)
 
     def _save(self, index=False):
         self.saveAs(".lys/quickFilter.fil", index)
@@ -246,22 +247,26 @@ class FiltersGUI(QWidget):
         self.loadFrom(".lys/quickFilter.fil", index)
 
     def _export(self, index=-1):
-        fname = QFileDialog.getSaveFileName(self, 'Save Filter', home(), filter="Filter files(*.fil);;All files(*.*)")
-        if fname[0]:
-            self.saveAs((fname[0] + ".fil").replace(".fil.fil", ".fil"), index)
+        d = FilterExportDialog(self)
+        ok = d.exec_()
+        if ok:
+            path = d.getExportPath()
+            self.saveAs(path, index)
 
     def _import(self, index=-1):
-        fname = QFileDialog.getOpenFileName(self, 'Open Filter', home(), filter="Filter files(*.fil);;All files(*.*)")
-        if fname[0]:
-            self.loadFrom(fname[0], index)
+        d = FilterImportDialog(self)
+        ok = d.exec_()
+        if ok:
+            path = d.getImportPath()
+            self.loadFrom(path, index)
 
     def saveAs(self, file, index=False):
         if index == False:
             filt = self.GetFilters()
         else:
             filt = self.__tabs[index].GetFilters()
-        s = String(file)
-        s.data = str(filt)
+        filt.dimension = self.dim
+        filt.saveAsFile(file)
 
     def loadFrom(self, file, index=False):
         s = String(file)
@@ -278,7 +283,7 @@ class FiltersGUI(QWidget):
             dim = self.dim
             for f in fs:
                 tmp.append(f)
-                if f.getRelativeDimension() != 0 and f != fs[len(fs)-1]:
+                if f.getRelativeDimension() != 0 and f != fs[len(fs) - 1]:
                     dim += f.getRelativeDimension()
                     self.__insertNewTab(dim)
                     res.append(tmp)
@@ -359,25 +364,25 @@ class _SubFiltersGUI(QScrollArea):
         index = self._layout.indexOf(item)
         if index == 0 and direction == "up":
             return
-        if index == len(self._flist)-2 and direction == "down":
+        if index == len(self._flist) - 2 and direction == "down":
             return
         self._layout.removeWidget(item)
         self._flist.remove(item)
         if direction == "up":
-            pos = index-1
+            pos = index - 1
         else:
-            pos = index+1
+            pos = index + 1
         self._layout.insertWidget(pos, item)
         self._flist.insert(pos, item)
 
     def _insert(self, item, direction):
         index = self._layout.indexOf(item)
-        if index >= len(self._flist)-2 and direction == "down":
+        if index >= len(self._flist) - 2 and direction == "down":
             return
         if direction == "up":
             pos = index
         else:
-            pos = index+1
+            pos = index + 1
         newitem = self.__makeNewItem()
         self._layout.insertWidget(pos, newitem)
         self._flist.insert(pos, newitem)
@@ -432,6 +437,9 @@ class _DeleteSetting(QWidget):
 
     def getFilter(self):
         return None
+
+    def getRelativeDimension(self):
+        return 0
 
 
 filterGroups[''] = _DeleteSetting

@@ -137,6 +137,13 @@ class _FileSystemViewBase(QWidget):
             res.append(self.Model.filePath(l))
         return res
 
+    def selectedPath(self):
+        ps = self.selectedPaths()
+        if len(ps) != 0:
+            return ps[0]
+        else:
+            return None
+
     def _judgeFileType(self, indexes):
         flg = True
         for i in indexes:
