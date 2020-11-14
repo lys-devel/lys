@@ -2,6 +2,7 @@ import os
 import sys
 import math
 import fnmatch
+import itertools
 from ExtendAnalysis.ExtendType import *
 from ExtendAnalysis.BasicWidgets.GraphWindow import Graph, PreviewWindow, Table
 from ExtendAnalysis import LoadFile
@@ -15,10 +16,15 @@ class ExtendFileSystemModel(QSortFilterProxyModel):
         super().__init__()
         self.mod = model
         self.setSourceModel(self.mod)
+        self.mod.setFilter(QDir.AllDirs | QDir.Files | QDir.NoDotAndDotDot)
         self._exclude = []
         self._include = []
+        self._matched = []
+        self._filters = []
+        self._path = ""
 
     def setRootPath(self, path):
+        self._path = path
         self.mod.setRootPath(path)
 
     def indexFromPath(self, path):
@@ -30,19 +36,54 @@ class ExtendFileSystemModel(QSortFilterProxyModel):
     def AddExcludedFilter(self, filter):
         self._exclude.append(filter)
 
+    def SetNameFilter(self, filters):
+        self._filters = self.__makeFilterString(filters)
+        it = QDirIterator(self._path, self._filters, QDir.Dirs | QDir.Files, QDirIterator.Subdirectories)
+        self._matched = []
+        while it.hasNext():
+            self._matched.append(it.next().replace(home() + "/", ""))
+        self.mod.setNameFilters(["*"])
+        self.setRootPath(self._path)
+
+    def __makeFilterString(self, filters):
+        result = []
+        for fs in itertools.permutations(filters):
+            res = "*"
+            for f in fs:
+                res += f + "*"
+            result.append(res)
+        return result
+
     def filterAcceptsRow(self, row, parent):
         index = self.mod.index(row, 0, parent)
         name = self.mod.data(index, Qt.DisplayRole)
+        path = self.mod.filePath(index).replace(home() + "/", "")
         for exc in self._exclude:
             if fnmatch.fnmatch(name, exc):
                 return False
         if self.mod.isDir(index):
-            return True
+            return self.matchPath(path)
         if len(self._include) == 0:
-            return super().filterAcceptsRow(row, parent)
+            return self.matchPath(path, False)
         for inc in self._include:
             if fnmatch.fnmatch(name, inc):
+                return self.matchPath(path, False)
+        return False
+
+    def matchPath(self, path, dir=True):
+        if len(self._filters) == 0:
+            return True
+        if path == self._path:
+            return True
+        for m in self._matched:
+            if m == path:
                 return True
+            if dir:
+                if m.startswith(path + "/") or m == path:
+                    return True
+            else:
+                if m == path:
+                    return True
         return False
 
     def isDir(self, index):
@@ -207,6 +248,7 @@ class FileSystemView(_FileSystemViewBase):
         self.tree.setColumnHidden(1, True)
         layout.addWidget(self.tree)
         self.edit = QLineEdit()
+        self.edit.textChanged.connect(self.setFilter)
         layout.addWidget(self.edit)
         self.setLayout(layout)
 
@@ -215,6 +257,10 @@ class FileSystemView(_FileSystemViewBase):
         if len(indexes) == 0:
             indexes.append(self.Model.indexFromPath(self._path))
         return indexes
+
+    def setFilter(self, txt):
+        f = [fil for fil in txt.split(" ") if len(fil) != 0]
+        self.Model.SetNameFilter(f)
 
 
 class FileSystemList(QListView, _FileSystemViewBase):
