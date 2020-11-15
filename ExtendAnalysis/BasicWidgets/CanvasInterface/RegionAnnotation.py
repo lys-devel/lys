@@ -18,10 +18,19 @@ class RegionAnnotationCanvasBase(object):
         roi = self._makeRegionAnnot(region, type, axis)
         return self.addAnnotation(type, type, roi, appearance=appearance, id=id)
 
+    def setRegion(self, annot, region):
+        self._setRegion(annot.obj, region)
+
+    def getRegion(self, annot):
+        return self._getRegion(annot.obj)
+
     def _makeRegionAnnot(self, region, type, axis):
         raise NotImplementedError()
 
     def _getRegion(self, obj):
+        raise NotImplementedError()
+
+    def _setRegion(self, obj, region):
         raise NotImplementedError()
 
     def SaveAsDictionary(self, dictionary, path):

@@ -22,6 +22,9 @@ class LineAnnotationCanvasBase(object):
     def getAnnotLinePosition(self, annot):
         return self._getLinePosition(annot.obj)
 
+    def setAnnotLinePosition(self, annot, pos):
+        return self._setLinePosition(annot.obj, pos)
+
     def SaveAsDictionary(self, dictionary, path):
         # super().SaveAsDictionary(dictionary,path)
         dic = {}
@@ -77,6 +80,12 @@ class InfiniteLineAnnotationCanvasBase(object):
             t = "line_h"
         return self.addAnnotation(t, t, line, appearance=appearance, id=id)
 
+    def setInfiniteLinePosition(self, annot, pos):
+        return self._setInfiniteLinePosition(annot.obj, pos)
+
+    def getInfiniteLinePosition(self, annot):
+        return self._getInfiniteLinePosition(annot.obj)
+
     def SaveAsDictionary(self, dictionary, path):
         # super().SaveAsDictionary(dictionary,path)
         dic = {}
@@ -110,4 +119,7 @@ class InfiniteLineAnnotationCanvasBase(object):
         raise NotImplementedError()
 
     def _getInfiniteLinePosition(self, obj):
+        raise NotImplementedError()
+
+    def _setInfiniteLinePosition(self, obj):
         raise NotImplementedError()

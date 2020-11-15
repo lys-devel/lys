@@ -14,6 +14,7 @@ class RectAnnotCanvas(LineAnnotationSettingCanvas, RectAnnotationCanvasBase):
     def __init__(self, dpi):
         super().__init__(dpi)
         RectAnnotationCanvasBase.__init__(self)
+        self.__flg = False
 
     def SaveAsDictionary(self, dictionary, path):
         super().SaveAsDictionary(dictionary, path)
@@ -31,8 +32,22 @@ class RectAnnotCanvas(LineAnnotationSettingCanvas, RectAnnotationCanvasBase):
     def _getRectPosition(self, obj):
         return list(obj.pos())
 
+    def _setRectPosition(self, obj, pos):
+        if self.__flg:
+            return
+        self.__flg = True
+        obj.setPos(pos)
+        self.__flg = False
+
     def _getRectSize(self, obj):
         return list(obj.size())
+
+    def _setRectSize(self, obj, size):
+        if self.__flg:
+            return
+        self.__flg = True
+        obj.setSize(size)
+        self.__flg = False
 
     def _addAnnotCallback(self, obj, callback):
         if isinstance(obj, pg.RectROI):

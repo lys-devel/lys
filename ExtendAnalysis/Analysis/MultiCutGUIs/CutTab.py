@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 from ..MultiCut import *
+from ExtendAnalysis import MainWindow
 
 
 class ControlledObjectsModel(QAbstractItemModel):
@@ -62,8 +63,8 @@ class SwitchableModel(ControlledObjectsModel):
 class controlledWavesGUI(QTreeView):
     updated = pyqtSignal()
 
-    def __init__(self, obj, dispfunc, appendfunc):
-        super().__init__()
+    def __init__(self, obj, dispfunc, appendfunc, parent=None):
+        super().__init__(parent)
         self.obj = obj
         self.disp = dispfunc
         self.apnd = appendfunc
@@ -130,8 +131,9 @@ class controlledWavesGUI(QTreeView):
 
 
 class controlledExecutorsGUI(QTreeView):
-    def __init__(self, obj):
-        super().__init__()
+    def __init__(self, obj, parent=None):
+        super().__init__(parent)
+        self.parent = parent
         self.obj = obj
         self.__model = SwitchableModel(obj)
         self.setModel(self.__model)
@@ -148,7 +150,7 @@ class controlledExecutorsGUI(QTreeView):
 
     def _setting(self):
         i = self.selectionModel().selectedIndexes()[0].row()
-        self.obj.setting(i)
+        self.obj.setting(i, parentWidget=self.parent.parent.parent)
 
     def _remove(self):
         i = self.selectionModel().selectedIndexes()[0].row()
@@ -254,6 +256,7 @@ class _gridTableWidget(QTableWidget):
 class _InteractiveWidget(QGroupBox):
     def __init__(self, exe, canvases, parent):
         super().__init__("Interactive")
+        self.parent = parent
         self.__exe = exe
         self.canvases = canvases
         self.__cut = parent
@@ -284,7 +287,7 @@ class _InteractiveWidget(QGroupBox):
         grid.addWidget(li, 3, 1)
         grid.addWidget(mc, 4, 0)
 
-        elist = controlledExecutorsGUI(self.__exe)
+        elist = controlledExecutorsGUI(self.__exe, self)
         hbox = QHBoxLayout()
         hbox.addLayout(grid)
         hbox.addWidget(elist)
@@ -299,6 +302,7 @@ class _InteractiveWidget(QGroupBox):
         id = c.addCross()
         e = PointExecutor(self.canvases.getAxes(c))
         c.addCallback(id, e.callback)
+        e.updated.connect(lambda x: c.setCrosshairPosition(c.getAnnotations(indexes=id)[0], e.getPosition()))
         self.__exe.append(e, c)
 
     def _rect(self, c=None):
@@ -307,6 +311,7 @@ class _InteractiveWidget(QGroupBox):
         id = c.addRect()
         e = RegionExecutor(self.canvases.getAxes(c))
         c.addCallback(id, e.callback)
+        e.updated.connect(lambda x: c.setRectRegion(c.getAnnotations(indexes=id)[0], e.getRange()))
         self.__exe.append(e, c)
 
     def _circle(self):
@@ -318,6 +323,7 @@ class _InteractiveWidget(QGroupBox):
         id = c.addLine()
         e = FreeLineExecutor(self.canvases.getAxes(c))
         c.addCallback(id, e.callback)
+        e.updated.connect(lambda x: c.setAnnotLinePosition(c.getAnnotations(indexes=id)[0], e.getPosition()))
         self.__exe.append(e, c)
 
     def _regx(self, c=None):
@@ -326,6 +332,7 @@ class _InteractiveWidget(QGroupBox):
         id = c.addRegion()
         e = RegionExecutor(self.canvases.getAxes(c)[0])
         c.addCallback(id, e.callback)
+        e.updated.connect(lambda x: c.setRegion(c.getAnnotations(indexes=id)[0], e.getRange()[0]))
         self.__exe.append(e, c)
 
     def _regy(self, c=None):
@@ -334,6 +341,7 @@ class _InteractiveWidget(QGroupBox):
         id = c.addRegion(type="horizontal")
         e = RegionExecutor(self.canvases.getAxes(c)[1])
         c.addCallback(id, e.callback)
+        e.updated.connect(lambda x: c.setRegion(c.getAnnotations(indexes=id)[0], e.getRange()[0]))
         self.__exe.append(e, c)
 
     def _linex(self, c=None):
@@ -342,6 +350,7 @@ class _InteractiveWidget(QGroupBox):
         id = c.addInfiniteLine()
         e = PointExecutor(self.canvases.getAxes(c)[0])
         c.addCallback(id, e.callback)
+        e.updated.connect(lambda x: c.setInfiniteLinePosition(c.getAnnotations(indexes=id)[0], e.getPosition()[0]))
         self.__exe.append(e, c)
 
     def _liney(self, c=None):
@@ -350,6 +359,7 @@ class _InteractiveWidget(QGroupBox):
         id = c.addInfiniteLine(type='horizontal')
         e = PointExecutor(self.canvases.getAxes(c)[1])
         c.addCallback(id, e.callback)
+        e.updated.connect(lambda x: c.setInfiniteLinePosition(c.getAnnotations(indexes=id)[0], e.getPosition()[0]))
         self.__exe.append(e, c)
 
 

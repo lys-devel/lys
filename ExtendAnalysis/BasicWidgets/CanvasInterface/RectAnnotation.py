@@ -16,13 +16,23 @@ class RectAnnotationCanvasBase(object):
         roi = self._makeRectAnnot(pos, size, axis)
         return self.addAnnotation('rect', 'rect', roi, appearance=appearance, id=id)
 
+    def setRectRegion(self, annot, region):
+        self._setRectPosition(annot.obj, (min(*region[0]), min(*region[1])))
+        self._setRectSize(annot.obj, (max(*region[0]) - min(*region[0]), max(*region[1]) - min(*region[1])))
+
     def _makeRectAnnot(self, pos, axis):
         raise NotImplementedError()
 
     def _getRectPosition(self, obj):
         raise NotImplementedError()
 
+    def _setRectPosition(self, obj, pos):
+        raise NotImplementedError()
+
     def _getRectSize(self, obj):
+        raise NotImplementedError()
+
+    def _setRectSize(self, obj, size):
         raise NotImplementedError()
 
     def SaveAsDictionary(self, dictionary, path):

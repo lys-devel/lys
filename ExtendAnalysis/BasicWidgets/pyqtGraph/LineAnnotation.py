@@ -13,6 +13,7 @@ class LineAnnotCanvas(AnnotationSettingCanvas, LineAnnotationCanvasBase):
     def __init__(self, dpi):
         super().__init__(dpi)
         LineAnnotationCanvasBase.__init__(self)
+        self.__flg = False
 
     def SaveAsDictionary(self, dictionary, path):
         super().SaveAsDictionary(dictionary, path)
@@ -27,8 +28,15 @@ class LineAnnotCanvas(AnnotationSettingCanvas, LineAnnotationCanvasBase):
         line.setPen(pg.mkPen(color='#000000'))
         return line
 
+    def _setLinePosition(self, obj, pos):
+        if self.__flg:
+            return
+        self.__flg = True
+        obj.getHandles()[0].setPos(pos[0][0], pos[1][0])
+        obj.getHandles()[1].setPos(pos[0][1], pos[1][1])
+        self.__flg = False
+
     def _getLinePosition(self, obj):
-        pos = obj.listPoints()
         return [[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[0] + obj.listPoints()[1][0]], [obj.pos()[1] + obj.listPoints()[0][1], obj.pos()[1] + obj.listPoints()[1][1]]]
 
     def _addAnnotCallback(self, obj, callback):
@@ -64,6 +72,9 @@ class InfiniteLineAnnotCanvas(LineAnnotCanvas, InfiniteLineAnnotationCanvasBase)
 
     def _getInfiniteLinePosition(self, obj):
         return obj.value()
+
+    def _setInfiniteLinePosition(self, obj, pos):
+        return obj.setValue(pos)
 
     def _addAnnotCallback(self, obj, callback):
         if isinstance(obj, pg.InfiniteLine):

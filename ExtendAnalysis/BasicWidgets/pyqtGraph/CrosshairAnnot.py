@@ -14,6 +14,7 @@ class CrosshairAnnotCanvas(RegionAnnotCanvas, CrosshairAnnotationCanvasBase):
     def __init__(self, dpi):
         super().__init__(dpi)
         CrosshairAnnotationCanvasBase.__init__(self)
+        self.__flg = False
 
     def SaveAsDictionary(self, dictionary, path):
         super().SaveAsDictionary(dictionary, path)
@@ -26,6 +27,14 @@ class CrosshairAnnotCanvas(RegionAnnotCanvas, CrosshairAnnotationCanvasBase):
     def _makeCrossAnnot(self, pos, axis):
         roi = CrosshairItem(pos)
         return roi
+
+    def _setCrosshairPosition(self, obj, pos):
+        if self.__flg:
+            return
+        self.__flg = True
+        obj.lines[0].setValue(pos[1])
+        obj.lines[1].setValue(pos[0])
+        self.__flg = False
 
     def _getPosition(self, obj):
         return obj.getPosition()

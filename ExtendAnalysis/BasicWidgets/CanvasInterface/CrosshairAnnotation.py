@@ -15,10 +15,16 @@ class CrosshairAnnotationCanvasBase(object):
         roi = self._makeCrossAnnot(pos, axis)
         return self.addAnnotation('cross', 'cross', roi, appearance=appearance, id=id)
 
+    def setCrosshairPosition(self, annot, pos):
+        self._setCrosshairPosition(annot.obj, pos)
+
     def _makeCrossAnnot(self, region, type, axis):
         raise NotImplementedError()
 
     def _getPosition(self, obj):
+        raise NotImplementedError()
+
+    def _setCrosshairPosition(self, obj, pos):
         raise NotImplementedError()
 
     def SaveAsDictionary(self, dictionary, path):
