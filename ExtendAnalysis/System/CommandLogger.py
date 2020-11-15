@@ -29,6 +29,7 @@ class CommandLogWidget(QTextEdit):
         super().__init__(parent)
         self.setReadOnly(True)
         self.setUndoRedoEnabled(False)
+        self.setWordWrapMode(QTextOption.NoWrap)
         self.__clog = String(".lys/commandlog.log")
         self.setPlainText(self.__clog.data)
         sys.stdout = Logger(self, sys.stdout, self.textColor())
@@ -42,3 +43,4 @@ class CommandLogWidget(QTextEdit):
         self.moveCursor(QTextCursor.End)
         self.setTextColor(color)
         self.insertPlainText(message)
+        self.moveCursor(QTextCursor.StartOfLine)

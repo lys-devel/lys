@@ -244,7 +244,6 @@ class _FileSystemViewBase(QWidget):
 
 class FileSystemView(_FileSystemViewBase):
     def __init__(self, parent=None, model=ExtendFileSystemModel(), path=''):
-        layout = QVBoxLayout()
         self.tree = QTreeView(parent=parent)
         super().__init__(self.tree, parent, model, path)
         self.tree.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -253,10 +252,17 @@ class FileSystemView(_FileSystemViewBase):
         self.tree.setColumnHidden(3, True)
         self.tree.setColumnHidden(2, True)
         self.tree.setColumnHidden(1, True)
-        layout.addWidget(self.tree)
+
         self.edit = QLineEdit()
         self.edit.textChanged.connect(self.setFilter)
-        layout.addWidget(self.edit)
+
+        h1 = QHBoxLayout()
+        h1.addWidget(QLabel("Filter"))
+        h1.addWidget(self.edit)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.tree)
+        layout.addLayout(h1)
         self.setLayout(layout)
 
     def selectedIndexes(self):
