@@ -32,8 +32,8 @@ class LineAnnotCanvas(AnnotationSettingCanvas, LineAnnotationCanvasBase):
         if self.__flg:
             return
         self.__flg = True
-        obj.getHandles()[0].setPos(pos[0][0], pos[1][0])
-        obj.getHandles()[1].setPos(pos[0][1], pos[1][1])
+        obj.getHandles()[0].setPos(pos[0][0] - obj.pos()[0], pos[1][0] - obj.pos()[1])
+        obj.getHandles()[1].setPos(pos[0][1] - obj.pos()[0], pos[1][1] - obj.pos()[1])
         self.__flg = False
 
     def _getLinePosition(self, obj):
