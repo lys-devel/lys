@@ -411,11 +411,11 @@ class CutTab(QWidget):
         make = QGroupBox("Waves")
         make.setLayout(self._make)
 
-        grp = _InteractiveWidget(self.__exe, self.canvases, self)
+        self._int = _InteractiveWidget(self.__exe, self.canvases, self)
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(make, 1)
-        self.layout.addWidget(grp, 1)
+        self.layout.addWidget(self._int, 1)
         self.layout.addStretch()
 
         self.setLayout(self.layout)
@@ -560,22 +560,22 @@ class CutTab(QWidget):
     def typical3d(self):
         c1 = self.display(axes=[2], pos=[3, 0], wid=[1, 4])
         c2 = self.display(axes=[0, 1], pos=[0, 0], wid=[3, 4])
-        self._linex(c1)
-        self._rect(c2)
+        self._int._linex(c1)
+        self._int._rect(c2)
 
     def typical4d(self):
         c1 = self.display(axes=[0, 1], pos=[0, 0], wid=[4, 2])
         c2 = self.display(axes=[2, 3], pos=[0, 2], wid=[4, 2])
-        self._rect(c1)
-        self._rect(c2)
+        self._int._rect(c1)
+        self._int._rect(c2)
 
     def typical5d(self):
         c1 = self.display(axes=[0, 1], pos=[0, 0], wid=[3, 2])
         c2 = self.display(axes=[2, 3], pos=[0, 2], wid=[3, 2])
         c3 = self.display(axes=(4,), pos=[3, 0], wid=[1, 4])
-        self._rect(c1)
-        self._rect(c2)
-        self._linex(c3)
+        self._int._rect(c1)
+        self._int._rect(c2)
+        self._int._linex(c3)
 
     def getExecutorList(self):
         return self.__exe
