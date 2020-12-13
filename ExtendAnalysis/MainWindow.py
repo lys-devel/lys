@@ -82,3 +82,7 @@ def addMainMenu(namelist, function):
             act[n] = {}
         act = act[n]
     act[namelist[len(namelist) - 1]] = function
+
+
+def addObject(*args, **kwargs):
+    MainWindow._instance.com.addObject(*args, **kwargs)

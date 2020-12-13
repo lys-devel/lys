@@ -194,6 +194,8 @@ class CommandWindow(QWidget):
         self._tab_up.addTab(self.output, "Command")
         self._tab_up.addTab(LogWidget(), "Log")
         self._tab_up.addTab(StringTextEdit(".lys/memo.str"), "Memo")
+        self._waveViewer = WaveViewer(self.__shell)
+        self._tab_up.addTab(self._waveViewer, "Waves")
 
         self._tab = QTabWidget()
         self._tab.addTab(FileWidget(self, self.__shell), "File")
@@ -209,3 +211,9 @@ class CommandWindow(QWidget):
         lay = QHBoxLayout()
         lay.addWidget(layout_h)
         self.setLayout(lay)
+
+    def addObject(self, obj, name=None):
+        if name is None:
+            name = obj.Name()
+        self.__shell.GetDictionary()[name] = obj
+        self._waveViewer.update()

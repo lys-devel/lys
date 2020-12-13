@@ -12,8 +12,11 @@ from importlib import import_module, reload
 from ExtendAnalysis import *
 
 
-class ExtendShell(object):
+class ExtendShell(QObject):
+    commandExecuted = pyqtSignal(str)
+
     def __init__(self, com, logpath):
+        super().__init__()
         self.__com = com
         self.__comlog = []
         self.__ecom = ExtendCommand(self)
@@ -58,6 +61,7 @@ class ExtendShell(object):
                 except Exception as e:
                     sys.stderr.write('Invalid command.\n')
                     print(err)
+        self.commandExecuted.emit(txt)
 
     def save(self):
         self.__log2.data = str(self.GetCommandLog())
