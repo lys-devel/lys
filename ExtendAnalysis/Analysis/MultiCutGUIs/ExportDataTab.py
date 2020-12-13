@@ -12,6 +12,7 @@ class ExportDataTab(QGroupBox):
         hb = QHBoxLayout()
         hb.addWidget(QPushButton("Export", clicked=self.__export))
         hb.addWidget(QPushButton("MultiCut", clicked=self.__mcut))
+        hb.addWidget(QPushButton("Send to shell", clicked=self.__send))
 
         self.layout = QVBoxLayout()
         self.layout.addLayout(hb)
@@ -32,3 +33,12 @@ class ExportDataTab(QGroupBox):
         path, type = QFileDialog.getSaveFileName(filter=filt)
         if len(path) != 0:
             self.wave.export(path, type=type)
+
+    def __send(self):
+        from ExtendAnalysis import addObject
+        w = self.wave.toWave()
+        text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.Name())
+        if ok:
+            w.SetName(text)
+            addObject(w)
+            print(text + " has been added to shell.")

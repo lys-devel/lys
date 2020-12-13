@@ -403,6 +403,8 @@ class WaveMethods(object):
 
 
 class Wave(AutoSaved, WaveMethods):
+    _nameIndex = 0
+
     class _wavedata(ExtendObject):
 
         def _init(self):
@@ -543,7 +545,15 @@ class Wave(AutoSaved, WaveMethods):
         w.data = copy.copy(self.data)
         w.axes = copy.copy(self.axes)
         w.note = copy.copy(self.note)
+        w.SetName(self.Name())
         return w
+
+    def Name(self):
+        name = super().Name()
+        if name == "untitled":
+            self.SetName("wave" + str(Wave._nameIndex))
+            Wave._nameIndex += 1
+        return super().Name()
 
     def slice(self, pos1, pos2, axis='x', width=1):
         w = Wave()

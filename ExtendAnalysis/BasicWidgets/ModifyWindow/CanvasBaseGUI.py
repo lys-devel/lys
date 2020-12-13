@@ -158,6 +158,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         menu.addAction(QAction('Remove', self, triggered=lambda: self.canvas.Remove(list)))
         menu.addAction(QAction('Print', self, triggered=self.__print))
         menu.addAction(QAction('Process', self, triggered=self.__process))
+
         raw = menu.addMenu("Raw data")
         raw.addAction(QAction('Display', self, triggered=lambda: self.__display("Wave")))
         raw.addAction(QAction('Append', self, triggered=lambda: self.__append("Wave")))
@@ -165,6 +166,8 @@ class RightClickableSelectionBox(DataSelectionBox):
             raw.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("Wave", vector=True)))
         raw.addAction(QAction('Edit', self, triggered=lambda: self.__edit("Wave")))
         raw.addAction(QAction('Export', self, triggered=lambda: self.__export("Wave")))
+        raw.addAction(QAction('Send to shell', self, triggered=lambda: self.__send("Wave")))
+
         pr = menu.addMenu("Processed data")
         pr.addAction(QAction('Display', self, triggered=lambda: self.__display("ProcessedWave")))
         pr.addAction(QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
@@ -172,6 +175,8 @@ class RightClickableSelectionBox(DataSelectionBox):
             pr.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("ProcessedWave", vector=True)))
         pr.addAction(QAction('Edit', self, triggered=lambda: self.__edit("ProcessedWave")))
         pr.addAction(QAction('Export', self, triggered=lambda: self.__export("ProcessedWave")))
+        pr.addAction(QAction('Send to shell', self, triggered=lambda: self.__send("ProcessedWave")))
+
         action = menu.exec_(QCursor.pos())
 
     def __display(self, type, vector=False):
@@ -240,6 +245,19 @@ class RightClickableSelectionBox(DataSelectionBox):
                 d.wave.export(path, type=type)
             else:
                 d.filteredWave.export(path, type=type)
+
+    def __send(self, waveType):
+        from ExtendAnalysis import addObject
+        d = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))[0]
+        if waveType == "Wave":
+            w = d.wave.Duplicate()
+        else:
+            w = d.filteredWave.Duplicate()
+        text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.Name())
+        if ok:
+            w.SetName(text)
+            addObject(w)
+            print(text + " has been added to shell.")
 
 
 class OffsetAdjustBox(QWidget):
