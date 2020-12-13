@@ -68,3 +68,37 @@ class WaveViewer(QTreeView):
         super().__init__(parent)
         self.__model = _WaveModel(shell)
         self.setModel(self.__model)
+        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.buildContextMenu)
+
+    def buildContextMenu(self):
+        menu = QMenu(self)
+        menu.addAction(QAction("Display", self, triggered=self._disp))
+        menu.addAction(QAction("Edit", self, triggered=self._edit))
+        menu.addAction(QAction("MultiCut", self, triggered=self._multicut))
+        menu.exec_(QCursor.pos())
+
+    def __getWaves(self):
+        index = self.selectionModel().selectedIndexes()
+        waves = list(self.__model._getWaves().values())
+        return [waves[i.row()] for i in index if i.column() == 0]
+
+    def _disp(self):
+        from ExtendAnalysis import Graph
+        g = Graph()
+        for w in self.__getWaves():
+            g.Append(w)
+
+    def _edit(self, type):
+        from ExtendAnalysis import Table
+        t = Table()
+        for w in self.__getWaves():
+            t.Append(w)
+
+    def _multicut(self, type):
+        from ExtendAnalysis import MultiCut
+        MultiCut(self.__getWaves()[0])
+
+    def update(self):
+        super().update()
+        self.__model.update()
