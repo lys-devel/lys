@@ -217,3 +217,12 @@ class CommandWindow(QWidget):
             name = obj.Name()
         self.__shell.GetDictionary()[name] = obj
         self._waveViewer.update()
+
+    def getObject(self, name=None):
+        if name is None:
+            return None
+        dict = self.__shell.GetDictionary()
+        if name in dict:
+            return dict[name]
+        else:
+            return None

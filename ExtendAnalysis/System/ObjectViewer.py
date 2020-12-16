@@ -76,12 +76,15 @@ class WaveViewer(QTreeView):
         menu.addAction(QAction("Display", self, triggered=self._disp))
         menu.addAction(QAction("Edit", self, triggered=self._edit))
         menu.addAction(QAction("MultiCut", self, triggered=self._multicut))
+        menu.addAction(QAction("Delete", self, triggered=self._delete))
         menu.exec_(QCursor.pos())
 
     def __getWaves(self):
         index = self.selectionModel().selectedIndexes()
         waves = list(self.__model._getWaves().values())
         return [waves[i.row()] for i in index if i.column() == 0]
+    def __getWaveNames(self):
+        return  list(self.__model._getWaves().keys())
 
     def _disp(self):
         from ExtendAnalysis import Graph
@@ -98,6 +101,9 @@ class WaveViewer(QTreeView):
     def _multicut(self, type):
         from ExtendAnalysis import MultiCut
         MultiCut(self.__getWaves()[0])
+    def _delete(self):
+        for key in self.__getWaveNames():
+            del self.__model._shell.GetDictionary()[key]
 
     def update(self):
         super().update()

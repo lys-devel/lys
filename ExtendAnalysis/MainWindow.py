@@ -86,3 +86,7 @@ def addMainMenu(namelist, function):
 
 def addObject(*args, **kwargs):
     MainWindow._instance.com.addObject(*args, **kwargs)
+
+
+def getObject(*args, **kwargs):
+    return MainWindow._instance.com.getObject(*args, **kwargs)
