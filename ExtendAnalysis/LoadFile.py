@@ -149,7 +149,8 @@ def __loadPxt(name):
     (rec, data) = igor.packed.load(name)
     wav = igor.igorpy.Wave(data['root'][nam.encode('utf-8')])
     w = Wave()
-    w.data = wav.data
+    w.data =np.array(wav.data)
+    w.data.flags.writeable=True
     note = [s.replace(" ", "").replace("\r", "").split("=") for s in wav.notes.decode().replace("\n\n", "\n").split("\n")]
     w.note = {}
     for n in note:
