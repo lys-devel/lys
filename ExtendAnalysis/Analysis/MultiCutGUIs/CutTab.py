@@ -323,7 +323,7 @@ class _InteractiveWidget(QGroupBox):
         id = c.addLine()
         e = FreeLineExecutor(self.canvases.getAxes(c))
         c.addCallback(id, e.callback)
-        e.updated.connect(lambda x: c.setAnnotLinePosition(c.getAnnotations(indexes=id)[0], e.getPosition()))
+        #e.updated.connect(lambda x: c.setAnnotLinePosition(c.getAnnotations(indexes=id)[0], e.getPosition()))
         self.__exe.append(e, c)
 
     def _regx(self, c=None):
