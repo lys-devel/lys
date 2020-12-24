@@ -22,8 +22,6 @@ class FreeLineFilter(FilterInterface):
             return self._execute_dask(wave, self._axes, self._width)
 
     def _execute_dask(self, wave, axes, width):
-        def map(x, coords):
-            return np.sum([ndimage.map_coordinates(x, c, order=1) for c in coords], axis=0)
         coord = []
         for j in range(1 - width, width, 2):
             x, y, size = self.__makeCoordinates(wave, axes, j)
@@ -35,8 +33,6 @@ class FreeLineFilter(FilterInterface):
         return wave
 
     def _execute_wave(self, wave, axes, width):
-        def map(x, coords):
-            return np.sum([ndimage.map_coordinates(x, c, order=1) for c in coords], axis=0)
         coord = []
         for j in range(1 - width, width, 2):
             x, y, size = self.__makeCoordinates(wave, axes, j)
@@ -91,3 +87,12 @@ class FreeLineFilter(FilterInterface):
 
     def getRelativeDimension(self):
         return -1
+
+
+def map(x, coords):
+    if x.dtype == complex:
+        real = np.sum([ndimage.map_coordinates(np.real(x), c, order=1) for c in coords], axis=0)
+        imag = np.sum([ndimage.map_coordinates(np.imag(x), c, order=1) for c in coords], axis=0)
+        return real + imag * 1j
+    else:
+        return np.sum([ndimage.map_coordinates(x, c, order=1) for c in coords], axis=0)
