@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 from .filter.FreeLine import *
+from .filters import Filters
 
 
 class AllExecutor(QObject):
@@ -378,8 +379,7 @@ class FreeLineExecutor(QObject):
 
     def execute(self, wave, axes):
         f = FreeLineFilter(axes, self.position, self.width)
-        f.execute(wave)
-        return
+        Filters([f]).execute(wave)
 
     def callback(self, pos):
         self.setPosition(pos)

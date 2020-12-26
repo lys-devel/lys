@@ -408,6 +408,14 @@ class WaveMethods(object):
     def getObject(self, name):
         return cPickle.loads(self.note[name])
 
+    def addAnalysisLog(self, log):
+        if not "AnalysisLog" in self.note:
+            self.note["AnalysisLog"] = ""
+        self.note["AnalysisLog"] += log
+
+    def getAnalysisLog(self):
+        return self.note["AnalysisLog"]
+
 
 class Wave(AutoSaved, WaveMethods):
     _nameIndex = 0
@@ -517,6 +525,7 @@ class Wave(AutoSaved, WaveMethods):
             return super().__getattribute__(key)
 
     def __getitem__(self, key):
+        import copy
         if isinstance(key, tuple):
             data = self.data[key]
             axes = []
@@ -527,6 +536,8 @@ class Wave(AutoSaved, WaveMethods):
                     axes.append(ax[s])
             w = Wave(data)
             w.axes = axes
+            w.note = copy.deepcopy(self.note)
+            w.addAnalysisLog("Wave sliced: " + str(key) + "\n")
             return w
         else:
             super().__getitem__(key)

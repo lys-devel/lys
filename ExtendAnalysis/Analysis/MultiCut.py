@@ -226,7 +226,7 @@ class ExecutorList(controlledObjects):
             tmp.data = f(tmp.data, axis=tuple(sumlist.tolist()))
         tmp.axes = [ax for i, ax in enumerate(tmp.axes) if not (i in sumlist)]
         res = tmp
-        self.__applyFreeLines(res, axes, applied)
+        self.__applyFreeLines(res, axes, [wave.data.ndim - a for a in applied])
         st1 = time.time()
         if isinstance(res, DaskWave):
             res = res.toWave()

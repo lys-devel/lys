@@ -60,6 +60,7 @@ class DaskWave(WaveMethods):
         return DaskWave(data, axes=axes)
 
     def __getitem__(self, key):
+        import copy
         if isinstance(key, tuple):
             data = self.data[key]
             axes = []
@@ -69,7 +70,9 @@ class DaskWave(WaveMethods):
                         axes.append(None)
                     else:
                         axes.append(ax[s])
-            return DaskWave(data, axes=axes)
+            d = DaskWave(data, axes=axes, note=copy.deepcopy(self.note))
+            d.addAnalysisLog("Wave sliced: " + str(key) + "\n")
+            return d
         else:
             super().__getitem__(key)
 

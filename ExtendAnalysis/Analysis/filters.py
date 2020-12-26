@@ -9,6 +9,11 @@ class Filters(object):
         self._filters.extend(filters)
 
     def execute(self, wave, **kwargs):
+        n = 0
+        while "Filter" + str(n) in wave.note:
+            n += 1
+        wave.addObject("Filter" + str(n), self)
+        wave.addAnalysisLog("Filter Applied:" + "Filter" + str(n) + "\n")
         for f in self._filters:
             f.execute(wave, **kwargs)
 
