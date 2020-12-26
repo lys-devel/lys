@@ -5,6 +5,8 @@ import numpy as np
 
 from ExtendAnalysis import *
 from .MultiCutExecutors import *
+from .filter import *
+from .filters import Filters
 
 
 class controlledObjects(QObject):
@@ -196,7 +198,7 @@ class ExecutorList(controlledObjects):
                 ignore.extend(self.__findFreeLineExecutor(ax).getAxes())
         return ignore
 
-    def __applyFreeLines(self, wave, axes_orig, applied):
+    def __getFreeLineFilter(self, axes_orig, applied):
         for a in axes_orig:
             if a >= 10000:
                 fl = self.__findFreeLineExecutor(a)
@@ -205,10 +207,11 @@ class ExecutorList(controlledObjects):
                     for ax2 in applied:
                         if ax2 < ax:
                             axes[i] -= 1
-                fl.execute(wave, axes)
+                return fl.getFilter(axes)
+        return EmptyFilter()
 
-    def makeWave(self, wave, axes):
-        start = time.time()
+    def makeWave(self, wave_orig, axes):
+        wave = wave_orig.Duplicate()
         slices = [slice(None, None, None)] * wave.data.ndim
         sumlist = []
         for e in self.__exeList(wave):
@@ -220,38 +223,25 @@ class ExecutorList(controlledObjects):
             if isinstance(slices[len(slices) - 1 - i], int):
                 sumlist[sumlist > len(slices) - 1 - i] -= 1
                 applied.append(i)
-        tmp = wave[tuple(slices)]
-        if len(sumlist) != 0:
-            f = self.__getSumFunction(self.__getLib(tmp))
-            tmp.data = f(tmp.data, axis=tuple(sumlist.tolist()))
-        tmp.axes = [ax for i, ax in enumerate(tmp.axes) if not (i in sumlist)]
-        res = tmp
-        self.__applyFreeLines(res, axes, [wave.data.ndim - a for a in applied])
-        st1 = time.time()
+        sl = []
+        for s in slices:
+            if isinstance(s, int):
+                sl.append(s)
+            if isinstance(s, slice):
+                sl.append([s.start, s.stop, s.step])
+        res = wave
+        f1 = SliceFilter(sl)
+        f2 = IntegralAllFilter(sumlist.tolist(), self._sumtype)
+        f3 = self.__getFreeLineFilter(axes, [wave_orig.data.ndim - a for a in applied])
+        f4 = self.__getTransposeFilter(axes)
+        f = Filters([f1, f2, f3, f4])
+        f.execute(res)
         if isinstance(res, DaskWave):
             res = res.toWave()
-        if len(axes) == 2 and axes[0] < 10000:
-            if axes[0] > axes[1] or axes[1] >= 10000:
-                res.data = res.data.T
-                t = res.axes[0]
-                res.axes[0] = res.axes[1]
-                res.axes[1] = t
         return res
 
-    def __getSumFunction(self, lib):
-        if self._sumtype == "Sum":
-            return lib.sum
-        elif self._sumtype == "Mean":
-            return lib.mean
-        elif self._sumtype == "Max":
-            return lib.max
-        elif self._sumtype == "Min":
-            return lib.min
-        elif self._sumtype == "Median":
-            return lib.median
-
-    def __getLib(self, wave):
-        if isinstance(wave, DaskWave):
-            return da
-        else:
-            return np
+    def __getTransposeFilter(self, axes):
+        if len(axes) == 2 and axes[0] < 10000:
+            if axes[0] > axes[1] or axes[1] >= 10000:
+                return TransposeFilter([1, 0])
+        return EmptyFilter()

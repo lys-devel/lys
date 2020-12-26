@@ -23,3 +23,7 @@ class FilterInterface(object):
 
     def getRelativeDimension(self):
         return 0
+
+
+class EmptyFilter(FilterInterface):
+    pass

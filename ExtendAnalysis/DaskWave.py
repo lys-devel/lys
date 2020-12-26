@@ -47,7 +47,10 @@ class DaskWave(WaveMethods):
 
     def __fromda(self, wave, axes, chunks, note):
         import copy
-        self.data = wave.rechunk(chunks)
+        if chunks == "NoRechunk":
+            self.data = wave
+        else:
+            self.data = wave.rechunk(chunks)
         self.axes = copy.deepcopy(axes)
         self.note = copy.deepcopy(note)
 
@@ -82,3 +85,6 @@ class DaskWave(WaveMethods):
 
     def export(self, path, type="Numpy npz (*.npz)"):
         self.toWave().export(path, type)
+
+    def Duplicate(self):
+        return DaskWave(self, chunks="NoRechunk")

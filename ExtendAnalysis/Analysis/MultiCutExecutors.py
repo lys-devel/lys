@@ -381,6 +381,9 @@ class FreeLineExecutor(QObject):
         f = FreeLineFilter(axes, self.position, self.width)
         Filters([f]).execute(wave)
 
+    def getFilter(self, axes):
+        return FreeLineFilter(axes, self.position, self.width)
+
     def callback(self, pos):
         self.setPosition(pos)
 

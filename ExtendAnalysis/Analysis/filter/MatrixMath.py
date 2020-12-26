@@ -75,16 +75,21 @@ class SliceFilter(FilterInterface):
         self._sl = slices
 
     def _execute(self, wave, **kwargs):
-        slices = [slice(*s) for s in self._sl]
+        slices = []
+        for s in self._sl:
+            if isinstance(s, int):
+                slices.append(slice(s, s, 1))
+            else:
+                slices.append(slice(*s))
         axes = []
         for i, s in enumerate(slices):
-            if not s.start == s.stop:
+            if (not s.start == s.stop) or (s.start is None):
                 if wave.axisIsValid(i):
                     axes.append(wave.axes[i][s])
                 else:
                     axes.append(None)
         for i, s in enumerate(slices):
-            if s.start == s.stop:
+            if s.start == s.stop and s.start is not None:
                 slices[i] = s.start
         wave.data = wave.data[tuple(slices)]
         wave.axes = axes
