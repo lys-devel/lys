@@ -9,6 +9,8 @@ class MatrixMathSetting(FilterGroupSetting):
         d = {
             'Select Index': SelectIndexSetting,
             'Index Math': IndexMathSetting,
+            'Transpose': TransposeSetting,
+            'Slice': SliceSetting,
         }
         return d
 
@@ -89,6 +91,90 @@ class IndexMathSetting(FilterSettingBase):
         obj._combo.setCurrentIndex(self._types.index(type))
         obj._index1.setValue(i1)
         obj._index2.setValue(i2)
+        return obj
+
+
+class TransposeSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        l = QHBoxLayout()
+        self.val = QLineEdit()
+        st = ""
+        for d in range(dimension):
+            st += str(d) + ", "
+        self.val.setText(st[:-2])
+
+        l.addWidget(self.val)
+        l.addWidget(QPushButton("Reverse", clicked=self._click))
+        self.setLayout(l)
+
+    def _click(self):
+        vals = [int(v) for v in self.val.text().replace(" ", "").split(",")]
+        st = ""
+        for v in reversed(vals):
+            st += str(v) + ", "
+        self.val.setText(st[:-2])
+
+    def GetFilter(self):
+        st = self.val.text()
+        vals = st.replace(" ", "").split(",")
+        return TransposeFilter([int(v) for v in vals])
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, TransposeFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = TransposeSetting(None, self.dim, self.loader)
+        axes = f.getParams()
+        st = ""
+        for ax in axes:
+            st += str(ax) + ", "
+        st = st[:-2]
+        obj.val.setText(st)
+        return obj
+
+
+class SliceSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        l = QGridLayout()
+        l.addWidget(QLabel("Start"), 0, 1)
+        l.addWidget(QLabel("Stop"), 0, 2)
+        l.addWidget(QLabel("Step"), 0, 3)
+        for d in range(dimension):
+            l.addWidget(QLabel("Axis" + str(d)), 1 + d, 0)
+
+        self._start = [QSpinBox() for d in range(dimension)]
+        self._stop = [QSpinBox() for d in range(dimension)]
+        self._step = [QSpinBox() for d in range(dimension)]
+        for d in range(dimension):
+            self._start[d].setRange(-1000000, 1000000)
+            self._stop[d].setRange(-1000000, 1000000)
+            self._step[d].setRange(-1000000, 1000000)
+            self._step[d].setValue(1)
+            l.addWidget(self._start[d], 1 + d, 1)
+            l.addWidget(self._stop[d], 1 + d, 2)
+            l.addWidget(self._step[d], 1 + d, 3)
+        self.setLayout(l)
+
+    def GetFilter(self):
+        slices = [[self._start[d].value(), self._stop[d].value(), self._step[d].value()] for d in range(self.dim)]
+        return SliceFilter(slices)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, SliceFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = SliceSetting(None, self.dim, self.loader)
+        params = f.getParams()
+        for d in range(self.dim):
+            obj._start[d].setValue(params[d][0])
+            obj._stop[d].setValue(params[d][1])
+            obj._step[d].setValue(params[d][2])
         return obj
 
 

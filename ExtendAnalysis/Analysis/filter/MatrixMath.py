@@ -55,3 +55,42 @@ class IndexMathFilter(FilterInterface):
 
     def getRelativeDimension(self):
         return -1
+
+
+class TransposeFilter(FilterInterface):
+    def __init__(self, axes):
+        self._axes = axes
+
+    def _execute(self, wave, **kwargs):
+        wave.data = wave.data.transpose(self._axes)
+        wave.axes = [wave.axes[i] for i in self._axes]
+        return wave
+
+    def getParams(self):
+        return self._axes
+
+
+class SliceFilter(FilterInterface):
+    def __init__(self, slices):
+        self._sl = slices
+
+    def _execute(self, wave, **kwargs):
+        slices = [slice(*s) for s in self._sl]
+        axes = []
+        for i, s in enumerate(slices):
+            if not s.start == s.stop:
+                if wave.axisIsValid(i):
+                    axes.append(wave.axes[i][s])
+                else:
+                    axes.append(None)
+        for i, s in enumerate(slices):
+            if s.start == s.stop:
+                slices[i] = s.start
+        wave.data = wave.data[tuple(slices)]
+        wave.axes = axes
+
+    def getParams(self):
+        return self._sl
+
+    def getRelativeDimension(self):
+        return -np.sum([1 for s in self._sl if s[0] == s[1]])
