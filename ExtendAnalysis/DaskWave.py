@@ -16,13 +16,13 @@ class DaskWave(WaveMethods):
         except:
             print("[DaskWave] failed to init dask.distributed")
 
-    def __init__(self, wave, axes=None, chunks="auto"):
+    def __init__(self, wave, axes=None, chunks="auto", note={}):
         if isinstance(wave, Wave):
             self.__fromWave(wave, axes, chunks)
         elif isinstance(wave, DArray):
-            self.__fromda(wave, axes, chunks)
+            self.__fromda(wave, axes, chunks, note)
         elif isinstance(wave, DaskWave):
-            self.__fromda(wave.data, wave.axes, chunks)
+            self.__fromda(wave.data, wave.axes, chunks, wave.note)
 
     def __fromWave(self, wave, axes, chunks):
         import copy
@@ -39,15 +39,17 @@ class DaskWave(WaveMethods):
         res = self.data.compute()  # self.client.compute(self.data).result()
         w.data = res
         w.axes = copy.deepcopy(self.axes)
+        w.note = copy.deepcopy(self.note)
         return w
 
     def persist(self):
         self.data = self.data.persist()  # self.client.persist(self.data)
 
-    def __fromda(self, wave, axes, chunks):
+    def __fromda(self, wave, axes, chunks, note):
         import copy
         self.data = wave.rechunk(chunks)
         self.axes = copy.deepcopy(axes)
+        self.note = copy.deepcopy(note)
 
     def sum(self, axis):
         data = self.data.sum(axis)

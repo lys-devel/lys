@@ -8,6 +8,7 @@ import unittest
 import numpy as np
 import scipy.ndimage
 import scipy.signal
+import _pickle as cPickle
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
@@ -400,6 +401,12 @@ class WaveMethods(object):
                 for i in range(min(self.data.shape[dim], val.shape[0])):
                     res[i] = val[i]
                 return res
+
+    def addObject(self, name, obj):
+        self.note[name] = cPickle.dumps(obj)
+
+    def getObject(self, name):
+        return cPickle.loads(self.note[name])
 
 
 class Wave(AutoSaved, WaveMethods):
