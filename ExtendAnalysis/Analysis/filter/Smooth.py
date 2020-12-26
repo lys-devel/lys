@@ -7,52 +7,47 @@ from ExtendAnalysis import Wave, DaskWave
 from .FilterInterface import FilterInterface
 
 
-class MedianFilter(FilterInterface):
+class _SmoothFilterBase(FilterInterface):
+    def getFilterLib(self, wave):
+        if isinstance(wave, DaskWave):
+            return dfilters
+        return filters
+
+
+class MedianFilter(_SmoothFilterBase):
     def __init__(self, kernel):
         self._kernel = [int((k + 1) / 2) for k in kernel]
 
     def _execute(self, wave, **kwargs):
-        if isinstance(wave, Wave):
-            wave.data = filters.median_filter(wave.data, size=self._kernel)
-            return wave
-        if isinstance(wave, DaskWave):
-            wave.data = dfilters.median_filter(wave.data, size=self._kernel)
-            return wave
-        return filters.median_filter(wave, size=self._kernel)
+        f = self.getFilterLib(wave).median_filter
+        wave.data = self._applyFunc(f, wave.data, size=self._kernel)
+        return wave
 
     def getKernel(self):
         return [int(2 * k - 1) for k in self._kernel]
 
 
-class AverageFilter(FilterInterface):
+class AverageFilter(_SmoothFilterBase):
     def __init__(self, kernel):
         self._kernel = [int((k + 1) / 2) for k in kernel]
 
     def _execute(self, wave, **kwargs):
-        if isinstance(wave, Wave):
-            wave.data = filters.uniform_filter(wave.data, size=self._kernel)
-            return wave
-        if isinstance(wave, DaskWave):
-            wave.data = dfilters.uniform_filter(wave.data, size=self._kernel)
-            return wave
-        return filters.uniform_filter(wave, size=self._kernel)
+        f = self.getFilterLib(wave).uniform_filter
+        wave.data = self._applyFunc(f, wave.data, size=self._kernel)
+        return wave
 
     def getKernel(self):
         return [int(2 * k - 1) for k in self._kernel]
 
 
-class GaussianFilter(FilterInterface):
+class GaussianFilter(_SmoothFilterBase):
     def __init__(self, kernel):
         self._kernel = kernel
 
     def _execute(self, wave, **kwargs):
-        if isinstance(wave, Wave):
-            wave.data = filters.gaussian_filter(wave.data, sigma=self._kernel)
-            return wave
-        if isinstance(wave, DaskWave):
-            wave.data = dfilters.gaussian_filter(wave.data, sigma=self._kernel)
-            return wave
-        return filters.gaussian_filter(wave, sigma=self._kernel)
+        f = self.getFilterLib(wave).gaussian_filter
+        wave.data = self._applyFunc(f, wave.data, sigma=self._kernel)
+        return wave
 
     def getKernel(self):
         return self._kernel

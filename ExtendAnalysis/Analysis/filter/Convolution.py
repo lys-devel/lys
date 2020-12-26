@@ -32,9 +32,9 @@ class ConvolutionFilter(FilterInterface):
         for ax in self._axes:
             kernel = self._kernel(wave, ax)
             if isinstance(wave, Wave):
-                wave.data = filters.convolve(wave.data, kernel)
+                wave.data = self._applyFunc(filters.convolve, wave.data, kernel)
             if isinstance(wave, DaskWave):
-                wave.data = dfilters.convolve(wave.data, kernel)
+                wave.data = self._applyFunc(dfilters.convolve, wave.data, kernel)
             else:
                 wave = filters.convolve(wave, kernel)
         return wave
