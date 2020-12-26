@@ -143,9 +143,13 @@ class RegionExecutorDialog(ExtendMdiSubWindow):
         h1 = QHBoxLayout()
         h1.addWidget(QPushButton("O K", clicked=self.accept))
         h1.addWidget(QPushButton("CANCEL", clicked=self.reject))
+        h2 = QHBoxLayout()
+        h2.addWidget(QPushButton("Copy", clicked=self.copy))
+        h2.addWidget(QPushButton("Paste", clicked=self.paste))
 
         v1 = QVBoxLayout()
         v1.addLayout(l)
+        v1.addLayout(h2)
         v1.addLayout(h1)
         w = QWidget()
         w.setLayout(v1)
@@ -175,6 +179,18 @@ class RegionExecutorDialog(ExtendMdiSubWindow):
     def reject(self):
         self.close()
         self.rejected.emit()
+
+    def copy(self):
+        cb = QApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(str(self.__parent.getRange()), mode=cb.Clipboard)
+
+    def paste(self):
+        cb = QApplication.clipboard()
+        v = eval(cb.text(mode=cb.Clipboard))
+        for v, val in zip(self._vals, v):
+            v[0].setValue(val[0])
+            v[1].setValue(val[1])
 
 
 class PointExecutor(QObject):
@@ -268,9 +284,13 @@ class PointExecutorDialog(ExtendMdiSubWindow):
         h1 = QHBoxLayout()
         h1.addWidget(QPushButton("O K", clicked=self.accept))
         h1.addWidget(QPushButton("CANCEL", clicked=self.reject))
+        h2 = QHBoxLayout()
+        h2.addWidget(QPushButton("Copy", clicked=self.copy))
+        h2.addWidget(QPushButton("Paste", clicked=self.paste))
 
         v1 = QVBoxLayout()
         v1.addLayout(l)
+        v1.addLayout(h2)
         v1.addLayout(h1)
         w = QWidget()
         w.setLayout(v1)
@@ -299,6 +319,16 @@ class PointExecutorDialog(ExtendMdiSubWindow):
     def reject(self):
         self.close()
         self.rejected.emit()
+
+    def copy(self):
+        cb = QApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(str(self.__parent.getPosition()), mode=cb.Clipboard)
+
+    def paste(self):
+        cb = QApplication.clipboard()
+        v = eval(cb.text(mode=cb.Clipboard))
+        self.__parent.setPosition(v)
 
 
 class FreeLineExecutor(QObject):
@@ -399,9 +429,13 @@ class FreeLineExecutorDialog(ExtendMdiSubWindow):
         h1 = QHBoxLayout()
         h1.addWidget(QPushButton("O K", clicked=self.accept))
         h1.addWidget(QPushButton("CANCEL", clicked=self.reject))
+        h2 = QHBoxLayout()
+        h2.addWidget(QPushButton("Copy", clicked=self.copy))
+        h2.addWidget(QPushButton("Paste", clicked=self.paste))
 
         v1 = QVBoxLayout()
         v1.addLayout(l)
+        v1.addLayout(h2)
         v1.addLayout(h1)
         w = QWidget()
         w.setLayout(v1)
@@ -434,3 +468,14 @@ class FreeLineExecutorDialog(ExtendMdiSubWindow):
     def reject(self):
         self.close()
         self.rejected.emit()
+
+    def copy(self):
+        cb = QApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(str([self.__parent.getPosition(), self.__parent.getWidth()]), mode=cb.Clipboard)
+
+    def paste(self):
+        cb = QApplication.clipboard()
+        v = eval(cb.text(mode=cb.Clipboard))
+        self.__parent.setPosition(v[0])
+        self.__parent.setWidth(v[1])
