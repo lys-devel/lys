@@ -4,14 +4,35 @@ from ExtendAnalysis import Wave, DaskWave
 from .FilterInterface import FilterInterface
 
 
-class IntegralAllFilter(FilterInterface):
-    def __init__(self, axes):
+class _IntegralBase(FilterInterface):
+    def _getSumFunction(self, lib, sumtype):
+        if sumtype == "Sum":
+            return lib.sum
+        elif sumtype == "Mean":
+            return lib.mean
+        elif sumtype == "Max":
+            return lib.max
+        elif sumtype == "Min":
+            return lib.min
+        elif sumtype == "Median":
+            return lib.median
+
+    def _getLib(self, wave):
+        if isinstance(wave, DaskWave):
+            return da
+        else:
+            return np
+
+
+class IntegralAllFilter(_IntegralBase):
+    def __init__(self, axes, sumtype):
         self._axes = axes
+        self._sumtype = sumtype
 
     def _execute(self, wave, **kwargs):
-        data = wave.data.sum(axis=tuple(self._axes))
-        ax = [wave.axes[i]
-              for i in range(len(wave.axes)) if not i in self._axes]
+        func = self._getSumFunction(self._getLib(wave), self._sumtype)
+        data = func(wave.data, axis=tuple(self._axes))
+        ax = [wave.axes[i] for i in range(len(wave.axes)) if not i in self._axes]
         wave.data = data
         wave.axes = ax
         return wave
@@ -19,13 +40,17 @@ class IntegralAllFilter(FilterInterface):
     def getAxes(self):
         return self._axes
 
+    def getType(self):
+        return self._sumtype
+
     def getRelativeDimension(self):
         return -len(self._axes)
 
 
-class IntegralFilter(FilterInterface):
-    def __init__(self, range):
+class IntegralFilter(_IntegralBase):
+    def __init__(self, range, sumtype):
         self._range = np.array(range)
+        self._sumtype = sumtype
 
     def _execute(self, wave, **kwargs):
         sl = []
@@ -45,12 +70,16 @@ class IntegralFilter(FilterInterface):
                     axes.append(None)
                 else:
                     axes.append(ax[s])
-        wave.data = wave.data[key].sum(axis=tuple(sumaxes))
+        func = self._getSumFunction(self._getLib(wave), self._sumtype)
+        wave.data = func(wave.data[key], axis=tuple(sumaxes))
         wave.axes = axes
         return wave
 
     def getRegion(self):
         return self._range
+
+    def getType(self):
+        return self._sumtype
 
     def getRelativeDimension(self):
         return -len([r for r in self._range if r[0] != 0 or r[1] != 0])

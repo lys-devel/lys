@@ -16,11 +16,18 @@ class IntegrationSetting(FilterGroupSetting):
 
 
 class IntegralAllSetting(FilterSettingBase):
+    _sumtypes = ["Sum", "Mean", "Median", "Max", "Min"]
+
     def __init__(self, parent, dim, loader=None):
         super().__init__(parent, dim, loader)
         self.__parent = parent
+        self.type = QComboBox()
+        self.type.addItems(self._sumtypes)
         self.axes = AxisCheckLayout(dim)
-        self.setLayout(self.axes)
+        lv = QVBoxLayout()
+        lv.addWidget(self.type)
+        lv.addLayout(self.axes)
+        self.setLayout(lv)
 
     @classmethod
     def _havingFilter(cls, f):
@@ -28,20 +35,28 @@ class IntegralAllSetting(FilterSettingBase):
             return True
 
     def GetFilter(self):
-        return IntegralAllFilter(self.axes.GetChecked())
+        return IntegralAllFilter(self.axes.GetChecked(), self.type.currentText())
 
     def parseFromFilter(self, f):
         obj = IntegralAllSetting(None, self.dim, self.loader)
         obj.axes.SetChecked(f.getAxes())
+        obj.type.setCurrentIndex(self._sumtypes.index(f.getType()))
         return obj
 
 
 class IntegralSetting(FilterSettingBase):
+    _sumtypes = ["Sum", "Mean", "Median", "Max", "Min"]
+
     def __init__(self, parent, dim, loader=None):
         super().__init__(parent, dim, loader)
         self.__parent = parent
+        self.type = QComboBox()
+        self.type.addItems(self._sumtypes)
         self.range = RegionSelectWidget(self, dim, loader)
-        self.setLayout(self.range)
+        lv = QVBoxLayout()
+        lv.addWidget(self.type)
+        lv.addLayout(self.range)
+        self.setLayout(lv)
 
     @classmethod
     def _havingFilter(cls, f):
@@ -49,11 +64,12 @@ class IntegralSetting(FilterSettingBase):
             return True
 
     def GetFilter(self):
-        return IntegralFilter(self.range.getRegion())
+        return IntegralFilter(self.range.getRegion(), self.type.currentText())
 
     def parseFromFilter(self, f):
         obj = IntegralSetting(None, self.dim, self.loader)
         region = f.getRegion()
+        obj.type.setCurrentIndex(self._sumtypes.index(f.getType()))
         for i, r in enumerate(region):
             obj.range.setRegion(i, r)
         return obj
@@ -117,4 +133,4 @@ class CircleSetting(FilterSettingBase):
         self.radiuses[1].setValue(r / 100)
 
 
-filterGroups['Integral'] = IntegrationSetting
+filterGroups['Sum, Mean, Median...'] = IntegrationSetting
