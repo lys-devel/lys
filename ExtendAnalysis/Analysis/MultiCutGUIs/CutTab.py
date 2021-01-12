@@ -3,6 +3,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 from ..MultiCut import *
+from ..filtersGUI import *
 from ExtendAnalysis import MainWindow
 
 
@@ -535,12 +536,14 @@ class CutTab(QWidget):
             return
         try:
             wav = self.__exe.makeWave(self.wave, axs)
+            if "MultiCut_PostProcess" in w.note:
+                fstr = w.note["MultiCut_PostProcess"]
+                filt = Filters.fromString(fstr)
+                filt.execute(wav)
+                wav.note["MultiCut_PostProcess"] = fstr
             w.axes = wav.axes
             w.data = wav.data
             w.note = wav.note
-            if "MultiCut_PostProcess" in w.note:
-                filt = Filters.fromString(w.note["MultiCut_PostProcess"])
-                filt.execute(w)
         except:
             import traceback
             traceback.print_exc()
