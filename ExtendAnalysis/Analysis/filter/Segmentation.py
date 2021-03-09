@@ -35,7 +35,7 @@ class ThresholdFilter(FilterInterface):
 
     def _execute(self, wave, **kwargs):
         if isinstance(wave, Wave):
-            wave.data = cv2.threshold(wave.data, self._threshold, 1, cv2.THRESH_BINARY)
+            wave.data = np.where(wave.data > self._threshold, 1, 0)
         if isinstance(wave, DaskWave):
             wave.data = wave.data.copy()
             wave.data[wave.data < self._threshold] = 0
