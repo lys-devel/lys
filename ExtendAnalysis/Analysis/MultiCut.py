@@ -232,7 +232,7 @@ class ExecutorList(controlledObjects):
         res = wave
         f1 = SliceFilter(sl)
         f2 = IntegralAllFilter(sumlist.tolist(), self._sumtype)
-        f3 = self.__getFreeLineFilter(axes, [wave_orig.data.ndim - a for a in applied])
+        f3 = self.__getFreeLineFilter(axes, [wave_orig.data.ndim - 1 - a for a in applied])
         f4 = self.__getTransposeFilter(axes)
         f = Filters([f1, f2, f3, f4])
         f.execute(res)

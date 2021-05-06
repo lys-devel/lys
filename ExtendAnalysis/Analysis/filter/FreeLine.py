@@ -53,8 +53,8 @@ class FreeLineFilter(FilterInterface):
         return newaxes, origaxes
 
     def __makeCoordinates(self, wave, axes, j):
-        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[1][0], axes[0]))
-        pos2 = (wave.posToPoint(self.position[0][1], axes[1]), wave.posToPoint(self.position[1][1], axes[1]))
+        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[1][0], axes[1]))
+        pos2 = (wave.posToPoint(self.position[0][1], axes[0]), wave.posToPoint(self.position[1][1], axes[1]))
         dx = (pos2[0] - pos1[0])
         dy = (pos2[1] - pos1[1])
         size = int(np.sqrt(dx * dx + dy * dy) + 1)
@@ -63,8 +63,8 @@ class FreeLineFilter(FilterInterface):
         return np.linspace(pos1[0], pos2[0], size) + dx * (j * 0.5), np.linspace(pos1[1], pos2[1], size) + dy * (j * 0.5), size
 
     def __setAxesAndData(self, wave, axes, size, res):
-        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[1][0], axes[0]))
-        pos2 = (wave.posToPoint(self.position[0][1], axes[1]), wave.posToPoint(self.position[1][1], axes[1]))
+        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[1][0], axes[1]))
+        pos2 = (wave.posToPoint(self.position[0][1], axes[0]), wave.posToPoint(self.position[1][1], axes[1]))
         replacedAxis = min(*axes)
         if wave.axisIsValid(axes[0]):
             axis1 = wave.axes[axes[0]]
