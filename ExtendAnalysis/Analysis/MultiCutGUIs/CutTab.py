@@ -78,8 +78,8 @@ class controlledWavesGUI(QTreeView):
         menu = QMenu(self)
         menu.addAction(QAction("Display", self, triggered=self._display))
         menu.addAction(QAction("Append", self, triggered=self._append))
-        menu.addAction(
-            QAction("Append Contour", self, triggered=self._contour))
+        menu.addAction(QAction("Append Vector", self, triggered=self._vector))
+        menu.addAction(QAction("Append Contour", self, triggered=self._contour))
         menu.addAction(QAction("Enable", self, triggered=self._enable))
         menu.addAction(QAction("Disable", self, triggered=self._disable))
         menu.addAction(QAction("Remove", self, triggered=self._remove))
@@ -97,6 +97,10 @@ class controlledWavesGUI(QTreeView):
     def _contour(self):
         i = self.selectionModel().selectedIndexes()[0].row()
         self.apnd(*self.obj[i], contour=True)
+
+    def _vector(self):
+        i = self.selectionModel().selectedIndexes()[0].row()
+        self.apnd(*self.obj[i], vector=True)
 
     def _remove(self):
         i = self.selectionModel().selectedIndexes()[0].row()
@@ -508,9 +512,9 @@ class CutTab(QWidget):
                     self._table.setCurrentCell(i, j, QItemSelectionModel.Deselect)
         self._usegraph.setChecked(not b)
 
-    def append(self, wave, axes, contour=False):
+    def append(self, wave, axes, **kwargs):
         c = self.getTargetCanvas()
-        c.Append(wave, contour=contour)
+        c.Append(wave, **kwargs)
 
     def getTargetCanvas(self):
         if self._usegraph.isChecked():
