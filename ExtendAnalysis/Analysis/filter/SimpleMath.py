@@ -46,6 +46,18 @@ class ComplexFilter(FilterInterface):
         return wave
 
 
+class PhaseFilter(FilterInterface):
+    def __init__(self, rot):
+        self._rot = rot
+
+    def _execute(self, wave, **kwargs):
+        wave.data = wave.data * np.exp(1j * self._rot / 180 * np.pi)
+        return wave
+
+    def getValue(self):
+        return self._rot
+
+
 class NanToNumFilter(FilterInterface):
     def __init__(self, value):
         self._value = value
