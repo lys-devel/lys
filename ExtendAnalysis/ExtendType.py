@@ -1042,12 +1042,6 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     def RestoreAllWindows(cls, workspace='default'):
         from . import LoadFile
         AutoSavedWindow._workspace = workspace
-        # please delete after replacing winlist
-        oldpath = home() + './.lys/winlist.lst'
-        newpath = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/winlist.lst'
-        if os.path.exists(oldpath) and not os.path.exists(newpath):
-            copy(oldpath, newpath)
-        #################################
         cls.__list = List(home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/winlist.lst')
         AutoSavedWindow._windir = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/wins'
         print("Workspace: " + AutoSavedWindow._workspace)
@@ -1141,6 +1135,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         self.__isTmp = True
 
     def Save(self, file=None):
+        logging.debug('[AutoSavedWindow] Saved')
         if file is not None:
             AutoSavedWindow._RemoveAutoWindow(self)
             self.__file = os.path.abspath(file)

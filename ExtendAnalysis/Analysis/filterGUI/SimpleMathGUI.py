@@ -14,6 +14,7 @@ class SimpleMathSetting(FilterGroupSetting):
             'Devide': DevideSetting,
             'Pow': PowSetting,
             'Complex': ComplexSetting,
+            'Phase': PhaseSetting,
             'Replace nan': NanToNumSetting,
         }
         return d
@@ -146,6 +147,31 @@ class ComplexSetting(FilterSettingBase):
     def parseFromFilter(self, f):
         obj = ComplexSetting(None, self.dim, self.loader)
         obj._combo.setCurrentIndex(self._combo.indexOf(f._type))
+        return obj
+
+
+class PhaseSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        layout = QHBoxLayout()
+        self._phase = ScientificSpinBox()
+        layout.addWidget(self._phase)
+        layout.addWidget(QLabel("deg"))
+        self.setLayout(layout)
+
+    def GetFilter(self):
+        r = self._phase.value()
+        return PhaseFilter(r)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, PhaseFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = PhaseSetting(None, self.dim, self.loader)
+        val = f.getValue()
+        self._phase.setValue(val)
         return obj
 
 

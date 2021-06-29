@@ -13,6 +13,7 @@ from .FittingWindow import *
 
 class Graph(AutoSavedWindow):
     graphLibrary = "matplotlib"
+
     @classmethod
     def active(cls, n=0):
         list = cls.mdimain.subWindowList(order=QMdiArea.ActivationHistoryOrder)
@@ -131,7 +132,19 @@ class Graph(AutoSavedWindow):
 
 def display(w, lib=None, **kwargs):
     g = Graph(lib=lib)
-    g.Append(w, **kwargs)
+    if isinstance(w, Wave):
+        g.Append(w, **kwargs)
+    else:
+        g.Append(Wave(w), **kwargs)
+    return g
+
+
+def append(w, lib=None, **kwargs):
+    g = Graph.active()
+    if isinstance(w, Wave):
+        g.Append(w, **kwargs)
+    else:
+        g.Append(Wave(w), **kwargs)
     return g
 
 

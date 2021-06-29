@@ -267,6 +267,7 @@ class FiltersGUI(QWidget):
             filt = self.__tabs[index].GetFilters()
         filt.dimension = self.dim
         filt.saveAsFile(file)
+        print("Filter is saved to", file)
 
     def loadFrom(self, file, index=False):
         s = String(file)

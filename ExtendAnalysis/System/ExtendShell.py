@@ -139,22 +139,18 @@ class ExtendCommand(cmd.Cmd):
         print(pwd())
 
     def do_display(self, arg):
-        g = Graph()
         try:
             w = eval(arg, globals())
-            g.Append(w)
         except Exception:
-            g.Append(arg)
+            w = arg
+        display(w)
 
     def do_append(self, arg):
-        g = Graph.active()
-        if g is None:
-            return
         try:
             w = eval(arg, globals())
-            g.Append(w)
         except Exception:
-            g.Append(arg)
+            w = arg
+        append(w)
 
     def do_clear(self, arg):
         self.__shell.clearLog()
@@ -203,7 +199,7 @@ class PluginManager:
                 self.shell.SendCommand('from importlib import import_module, reload', message=False, save=False)
                 self.shell.SendCommand('from ' + module_name + ' import *', message=True, save=False)
                 self.plugins[module_name] = import_module(module_name)
-                #print('{}.py has been loaded.'.format(module_name))
+                # print('{}.py has been loaded.'.format(module_name))
             except:
                 print('Error on loading {}.py.'.format(module_name))
         else:
