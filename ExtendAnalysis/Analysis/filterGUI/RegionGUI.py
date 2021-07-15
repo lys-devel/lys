@@ -148,6 +148,42 @@ class MaskSetting(FilterSettingBase):
         return obj
 
 
+class RefShiftSetting(FilterSettingBase):
+    def __init__(self, parent, dim, loader=None):
+        super().__init__(parent, dim, loader)
+        self.__parent = parent
+        self.range = RegionSelectWidget(self, dim, loader)
+        self.combo = QComboBox()
+        for d in range(dim):
+            self.combo.addItem("Axis" + str(d + 1))
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(QLabel("Axis"))
+        vbox.addWidget(self.combo)
+
+        hbox = QHBoxLayout()
+        hbox.addLayout(vbox)
+        hbox.addLayout(self.range)
+        self.setLayout(hbox)
+
+    def GetFilter(self):
+        return ReferenceShiftFilter(self.combo.currentIndex(), self.range.getRegion())
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, ReferenceShiftFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = RefShiftSetting(None, self.dim, self.loader)
+        axis, region = f.getParams()
+        obj.combo.setCurrentIndex(axis)
+        for i, r in enumerate(region):
+            obj.range.setRegion(i, r)
+        return obj
+
+
 filterGroups['Select region'] = SelectRegionSetting
 filterGroups['Normalization'] = NormalizationSetting
 filterGroups['Masking'] = MaskSetting
+filterGroups['RefShift'] = RefShiftSetting
