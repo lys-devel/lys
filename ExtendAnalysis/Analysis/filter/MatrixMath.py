@@ -72,7 +72,14 @@ class TransposeFilter(FilterInterface):
 
 class SliceFilter(FilterInterface):
     def __init__(self, slices):
-        self._sl = slices
+        self._sl = []
+        for s in slices:
+            if isinstance(s, int):
+                self._sl.append(s)
+            elif isinstance(s, slice):
+                self._sl.append([s.start, s.stop, s.step])
+            elif isinstance(s, list) or isinstance(s, tuple):
+                self._sl.append(s)
 
     def _execute(self, wave, **kwargs):
         slices = []
