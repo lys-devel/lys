@@ -41,8 +41,9 @@ class PeakFilter(FilterInterface):
 
 def relmax(x, order, size):
     data = argrelextrema(x, np.greater_equal, order=order)[0]
-    index = np.argsort([x[i] for i in data])
-    res = [data[i] for i in index[::-1] if data[i] != 0 and data[i] != len(x) - 1]
+    #index = np.argsort([x[i] for i in data])
+    #res = [data[i] for i in index[::-1] if data[i] != 0 and data[i] != len(x) - 1]
+    res = list(data)
     while len(res) < size:
         res.append(0)
     return np.array(res[:size])
@@ -50,63 +51,40 @@ def relmax(x, order, size):
 
 def relmin(x, order, size):
     data = argrelextrema(x, np.less_equal, order=order)[0]
-    index = np.argsort([x[i] for i in data])
-    res = [data[i] for i in index]
+    #index = np.argsort([x[i] for i in data])
+    #res = [data[i] for i in index]
+    res = list(data)
     while len(res) < size:
         res.append(0)
     return np.array(res[:3])
 
 
 class PeakPostFilter(FilterInterface):
-    def __init__(self, axis, axes=(0, 1)):
-        self._axes = axes
+    def __init__(self, axis, medSize):
         self._axis = axis
+        self._size = medSize
 
     def _execute(self, wave, *args, **kwargs):
         if isinstance(wave, Wave):
             wave.data = _find4D(wave.data)
         if isinstance(wave, DaskWave):
-            uf = da.gufunc(_find4D, signature="(i,j,k,l)->(i,j,k,l)", output_dtypes=float, vectorize=True, axes=[(0, 1, 2, 3), (0, 1, 2, 3)], allow_rechunk=True)
-            wave.data = uf(wave.data)
+            uf = da.gufunc(_find4D, signature="(i,j,k,l),(m)->(i,j,k,l)", output_dtypes=float, vectorize=True, axes=[(0, 1, 2, 3), (0), (0, 1, 2, 3)], allow_rechunk=True)
+            wave.data = uf(wave.data, np.array(self._size))
         return wave
 
     def getParams(self):
-        return self._axis, self._axes
+        return self._axis, self._size
 
 
-def _find4D(data):
+def _find4D(data, medSize):
     edge = [_findNearest(data[0, :, :, 0], data[0, 0, n, 0]) for n in range(data.shape[2])]
-    plane = [_findNearest(data.transpose(1, 0, 2, 3)[:, :, :, 0], e).transpose(1, 0) for e in edge]
-    plane = [_correct2D(p, data[:, :, :, 0]) for p in plane]
-    volume = [_findNearest(data.transpose(0, 1, 3, 2), p) for p in plane]
+    plane = [_findNearest(data.transpose(1, 0, 2, 3)[:, :, :, 0], e, medSize[0]).transpose(1, 0) for e in edge]
+    volume = [_findNearest(data.transpose(0, 1, 3, 2), p, medSize[1]) for p in plane]
     return np.array(volume).transpose(1, 2, 0, 3)
 
 
-def _correct2D(target, data, threshold1=0.3, threshold2=3, value=25):
-    ref = _makeReference(target, -value, threshold2, True, 30)
-    ref = _makeReference(ref, value, threshold1, False, 30)
-    ref = np.tile(ref, (data.shape[2], 1, 1)).transpose(1, 2, 0)
-    index = np.argmin(np.abs(data - ref), axis=2)
-    xx, yy = np.meshgrid(range(data.shape[1]), range(data.shape[0]))
-    return data[yy, xx, index]
-
-
-def _makeReference(data, value, threshold, upper, loop):
-    med = median_filter(data, 3)
-    d = percentile_filter(data, value, 5)
-    mask = np.abs(data - med) > threshold
-    if upper:
-        tmp = np.where(mask & (data < med), d, data)
-    else:
-        tmp = np.where(mask & (data > med), d, data)
-    if loop == 0:
-        return tmp
-    else:
-        return _makeReference(tmp, value, threshold, upper, loop - 1)
-
-
-def _findNearest(data, reference):  # reference: n-dim array, data: (n+2)-dim array, return (n+1)-dim array
-    ref = np.array(reference)
+def _findNearest(data, reference, medSize=1):  # reference: n-dim array, data: (n+2)-dim array, return (n+1)-dim array
+    ref = median_filter(np.array(reference), medSize)
     mesh = np.meshgrid(*[range(x) for x in ref.shape], indexing="ij")
     res = []
     for i in range(data.shape[-2]):
@@ -119,4 +97,5 @@ def _findNearest(data, reference):  # reference: n-dim array, data: (n+2)-dim ar
         sl2 = mesh + [i] + [index]
         ref = data[tuple(sl2)]
         res.append(ref)
+        ref = median_filter(ref, medSize)
     return np.array(res).transpose(order)
