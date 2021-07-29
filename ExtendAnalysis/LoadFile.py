@@ -4,7 +4,7 @@ import zipfile
 import numpy as np
 from .ExtendType import *
 from .BasicWidgets.GraphWindow import Graph
-
+from .FileLoader import *
 
 def load(name, load=True, disconnect=False):
     if os.path.isdir(name):

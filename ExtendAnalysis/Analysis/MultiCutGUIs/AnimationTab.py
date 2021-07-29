@@ -51,6 +51,7 @@ class AnimationTab(QGroupBox):
         self.layout.addLayout(hbox1)
         self.layout.addLayout(self.__makeTimeOptionLayout())
         self.layout.addLayout(self.__makeScaleOptionLayout())
+        self.layout.addLayout(self.__makeGeneralFuncLayout())
         self.layout.addWidget(btn)
         self.setLayout(self.layout)
 
@@ -67,7 +68,7 @@ class AnimationTab(QGroupBox):
         return hbox1
 
     def __makeScaleOptionLayout(self):
-        self.__usescale = QCheckBox('Draw scale')
+        self.__usescale = QCheckBox('Draw scale (disabled)')
         self.__scalesize = QDoubleSpinBox()
         self.__scalesize.setValue(1)
         self.__scalesize.setRange(0, float('inf'))
@@ -75,6 +76,14 @@ class AnimationTab(QGroupBox):
         hbox2.addWidget(self.__usescale)
         hbox2.addWidget(self.__scalesize)
         return hbox2
+
+    def __makeGeneralFuncLayout(self):
+        self.__useFunc = QCheckBox("Use general func f(canv, i, axis)")
+        self.__funcName = QLineEdit()
+        h1 = QHBoxLayout()
+        h1.addWidget(self.__useFunc)
+        h1.addWidget(self.__funcName)
+        return h1
 
     def _setWave(self, wave):
         self.wave = wave
@@ -104,15 +113,21 @@ class AnimationTab(QGroupBox):
         self.__pexe = PointExecutor((self.__axis.getAxis(),))
         self.__exe.saveEnabledState()
         self.__exe.append(self.__pexe)
+        params = self.__prepareOptionalParams()
+        file = self.__filename.text() + ".mp4"
+        if file is None:
+            file = "Animation.mp4"
+        self._makeAnime(file, dic, data, axis, params, self.__pexe)
+
+    def __prepareOptionalParams(self):
         params = {}
         if self.__useTime.isChecked():
             params['time'] = {"unit": self.__timeunit.currentText(), "offset": self.__timeoffset.value()}
         if self.__usescale.isChecked():
             params['scale'] = {"size": self.__scalesize.value()}
-        file = self.__filename.text() + ".mp4"
-        if file is None:
-            file = "Animation.mp4"
-        self._makeAnime(file, dic, data, axis, params, self.__pexe)
+        if self.__useFunc.isChecked():
+            params['gfunc'] = self.__funcName.text()
+        return params
 
     def _makeAnime(self, file, dic, data, axis, params, exe):
         import copy
@@ -126,7 +141,7 @@ class AnimationTab(QGroupBox):
         self.__exe.remove(self.__pexe)
         self.__exe.restoreEnabledState()
         QMessageBox.information(None, "Info", "Animation is saved to " + file, QMessageBox.Yes)
-        logging.info("Animation is saved to " + file)
+        logging.info("[Animation] saved to " + file)
         return file
 
 
@@ -138,6 +153,9 @@ def _frame(i, c, axis, params, exe):
     exe.setPosition(axis[i])
     if "time" in params:
         _drawTime(c, axis[i], **params["time"])
+    if "gfunc" in params:
+        f = getObject(params["gfunc"])
+        f(c, i, axis)
 
 
 def _drawTime(c, data=None, unit="", offset=0):
