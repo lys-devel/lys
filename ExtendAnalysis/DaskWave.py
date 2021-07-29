@@ -26,7 +26,7 @@ class DaskWave(WaveMethods):
 
     def __fromWave(self, wave, axes, chunks):
         import copy
-        self.data = da.from_array(wave.data, chunks=chunks)
+        self.data = da.from_array(wave.data.astype(float), chunks=chunks)
         if axes is None:
             self.axes = copy.deepcopy(wave.axes)
         else:

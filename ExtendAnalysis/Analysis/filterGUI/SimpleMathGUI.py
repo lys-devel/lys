@@ -126,13 +126,13 @@ class PowSetting(SimpleMathSettingBase):
 
 
 class ComplexSetting(FilterSettingBase):
+    types = ["absolute", "real", "imag"]
+
     def __init__(self, parent, dimension=2, loader=None):
         super().__init__(parent, dimension, loader)
         layout = QHBoxLayout()
         self._combo = QComboBox()
-        self._combo.addItem("absolute")
-        self._combo.addItem("real")
-        self._combo.addItem("imag")
+        self._combo.addItems(self.types)
         layout.addWidget(self._combo)
         self.setLayout(layout)
 
@@ -146,7 +146,7 @@ class ComplexSetting(FilterSettingBase):
 
     def parseFromFilter(self, f):
         obj = ComplexSetting(None, self.dim, self.loader)
-        obj._combo.setCurrentIndex(self._combo.indexOf(f._type))
+        obj._combo.setCurrentIndex(self.types.index(f._type))
         return obj
 
 

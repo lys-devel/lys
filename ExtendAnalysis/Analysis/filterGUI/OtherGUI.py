@@ -129,15 +129,23 @@ class PeakSetting(FilterSettingBase):
 class PeakPostSetting(FilterSettingBase):
     def __init__(self, parent, dimension=2, loader=None):
         super().__init__(parent, dimension, loader)
-        self._axis = AxisSelectionLayout("Find peak along axis", dimension)
-        self._axes = AxisCheckLayout(dimension)
+        self._axis = AxisSelectionLayout("Find peak along axis (should be 2)", dimension)
+        self._size1 = QSpinBox()
+        self._size1.setValue(15)
+        self._size2 = QSpinBox()
+        self._size2.setValue(5)
+        g = QGridLayout()
+        g.addWidget(QLabel("Median along axis 0"), 0, 0)
+        g.addWidget(self._size1, 0, 1)
+        g.addWidget(QLabel("Median along axis 3"), 1, 0)
+        g.addWidget(self._size2, 1, 1)
         layout = QVBoxLayout()
         layout.addLayout(self._axis)
-        layout.addLayout(self._axes)
+        layout.addLayout(g)
         self.setLayout(layout)
 
     def GetFilter(self):
-        return PeakPostFilter(self._axis.getAxis(), self._axes.GetChecked())
+        return PeakPostFilter(self._axis.getAxis(), (self._size1.value(), self._size2.value()))
 
     @classmethod
     def _havingFilter(cls, f):
@@ -146,9 +154,10 @@ class PeakPostSetting(FilterSettingBase):
 
     def parseFromFilter(self, f):
         obj = PeakPostSetting(None, self.dim, self.loader)
-        axis, axes = f.getParams()
+        axis, size = f.getParams()
         obj._axis.setAxis(axis)
-        obj._axes.SetChecked(axes)
+        obj._size1.setValue(size[0])
+        obj._size2.setValue(size[1])
         return obj
 
 

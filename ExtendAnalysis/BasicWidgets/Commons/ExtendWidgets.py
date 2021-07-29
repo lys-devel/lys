@@ -119,7 +119,10 @@ class _FileSystemViewBase(QWidget):
             tp = 'other'
         if tp in self.__actions:
             for key in self.__actions[tp]:
-                menu.addAction(key)
+                if isinstance(key, QAction):
+                    menu.addAction(key)
+                elif isinstance(key, QMenu):
+                    menu.addMenu(key)
             menu.exec_(QCursor.pos())
 
     def SetPath(self, path):

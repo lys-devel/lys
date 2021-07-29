@@ -79,7 +79,7 @@ class FreeLineFilter(FilterInterface):
         d = np.sqrt(dx * dx + dy * dy)
         axisData = np.linspace(0, d, size)
         wave.axes[replacedAxis] = axisData
-        wave.axes = list(np.delete(wave.axes, max(*axes), 0))
+        wave.axes = list(np.delete(np.array(wave.axes, dtype=object), max(*axes), 0))
         wave.data = res
 
     def getParams(self):

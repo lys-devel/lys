@@ -218,21 +218,15 @@ class ExecutorList(controlledObjects):
             if not isinstance(e, FreeLineExecutor):
                 e.set(wave, slices, sumlist, ignore=self.__ignoreList(axes))
         sumlist = np.array(sumlist)
-        applied = sumlist.tolist()
-        for i in range(len(slices)):
-            if isinstance(slices[len(slices) - 1 - i], int):
-                sumlist[sumlist > len(slices) - 1 - i] -= 1
+        applied = sumlist.tolist()  # summed or integer sliced axes
+        for i in reversed(range(len(slices))):
+            if isinstance(slices[i], int):
+                sumlist[sumlist > i] -= 1
                 applied.append(i)
-        sl = []
-        for s in slices:
-            if isinstance(s, int):
-                sl.append(s)
-            if isinstance(s, slice):
-                sl.append([s.start, s.stop, s.step])
         res = wave
-        f1 = SliceFilter(sl)
+        f1 = SliceFilter(slices)
         f2 = IntegralAllFilter(sumlist.tolist(), self._sumtype)
-        f3 = self.__getFreeLineFilter(axes, [wave_orig.data.ndim - 1 - a for a in applied])
+        f3 = self.__getFreeLineFilter(axes, applied)
         f4 = self.__getTransposeFilter(axes)
         f = Filters([f1, f2, f3, f4])
         f.execute(res)
