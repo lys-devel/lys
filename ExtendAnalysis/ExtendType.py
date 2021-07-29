@@ -744,17 +744,16 @@ class Wave(AutoSaved, WaveMethods):
 
     @staticmethod
     def SupportedFormats():
-        return ["Numpy npz (*.npz)", "Comma-Separated Values (*.csv)"]
+        return ["Numpy npz (*.npz)", "Comma-Separated Values (*.csv)", "Text file (*.txt)"]
 
     def export(self, path, type="Numpy npz (*.npz)"):
         if type == 'Numpy npz (*.npz)':
             np.savez(path + ".npz".replace(".npz.npz", ".npz"),
                      data=self.data, axes=self.axes, note=self.note)
         if type == "Comma-Separated Values (*.csv)":
-            import csv
-            with open(path + ".csv".replace(".csv.csv", ".csv"), 'w') as f:
-                writer = csv.writer(f, lineterminator='\n')
-                writer.writerows(self.data)
+            np.savetxt(path + ".csv".replace(".csv.csv", ".csv"), self.data, delimiter=',')
+        if type == "Text file (*.txt)":
+            np.savetxt(path + ".txt".replace(".txt.txt", ".txt"), self.data)
 
     @staticmethod
     def importFrom(path):
