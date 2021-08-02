@@ -119,14 +119,14 @@ class FourierFilter(FilterInterface):
         func = self.__getFunction(wave, self.process)
         data = self.__applyWindow(wave)
         if self.type == "forward":
-            wave.data = func(lib.fft.fftn(data, axes=self.axes))
+            wave.data = func(lib.fft.fftn(data, axes=tuple(self.axes)))
             if self.roll:
-                wave.data = lib.roll(wave.data, size, axis=self.axes)
+                wave.data = lib.roll(wave.data, size, axis=tuple(self.axes))
         else:
             if self.roll:
                 size_inv = [-s for s in size]
-                wave.data = lib.roll(data, size_inv, axis=self.axes)
-            wave.data = func(lib.fft.ifftn(wave.data, axes=self.axes))
+                wave.data = lib.roll(data, size_inv, axis=tuple(self.axes))
+            wave.data = func(lib.fft.ifftn(wave.data, axes=tuple(self.axes)))
         return wave
 
     def __exeAxes(self, wave):
