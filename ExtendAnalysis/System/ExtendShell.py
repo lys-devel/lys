@@ -179,7 +179,7 @@ class PluginManager:
 
     def start(self):
         self.scan_plugin()
-        self.observer.schedule(self.Handler(self, patterns='*.py'), self.path)
+        self.observer.schedule(self.Handler(self, patterns=['*.py']), self.path)
         self.observer.start()
 
     def stop(self):
@@ -204,8 +204,9 @@ class PluginManager:
                 print('Error on loading {}.py.'.format(module_name))
         else:
             try:
+                print("debug002")
                 self.plugins[module_name] = reload(self.plugins[module_name])
-                self.shell.SendCommand('from ' + module_name + ' import *', message=False, save=False)
+                self.shell.SendCommand('from ' + module_name + ' import *', message=True, save=False)
                 print('{}.py has been reloaded.'.format(module_name))
             except Exception as e:
                 import traceback
