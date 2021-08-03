@@ -197,7 +197,7 @@ class PluginManager:
                 return
             try:
                 self.shell.SendCommand('from importlib import import_module, reload', message=False, save=False)
-                self.shell.SendCommand('from ' + module_name + ' import *', message=True, save=False)
+                self.shell.SendCommand('from ' + module_name + ' import *', message=False, save=False)
                 self.plugins[module_name] = import_module(module_name)
                 # print('{}.py has been loaded.'.format(module_name))
             except:
