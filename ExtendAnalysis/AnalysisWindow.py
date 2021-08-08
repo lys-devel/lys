@@ -22,7 +22,7 @@ class AnalysisWindow(ExtendMdiSubWindow):
         _restore(self, self.__setting)
 
     def save(self):
-        _save(self, self.__setting)
+        return _save(self, self.__setting)
 
     def ProjectFolder(self):
         mkdir(self.__proj)
@@ -88,6 +88,7 @@ def _save(self, file):
             settings[name] = obj.text()
     d = Dict(file)
     d.data = settings
+    return settings
 
 
 def _checkName(name):
