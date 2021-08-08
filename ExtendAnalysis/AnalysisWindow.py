@@ -12,27 +12,88 @@ class AnalysisWindow(ExtendMdiSubWindow):
         else:
             b = False
         super().__init__(title, floating=b)
-        self.__proj = proj
+        if proj is not None:
+            name = proj.replace(home() + "/", "")
+            self.__proj = home() + "/" + name
+            self.__setting = home() + "/.lys/" + name + "/settings.dic"
         self.show()
 
-    def __initMenuBar(self):
-        menu = self.menuBar()
-        fil = menu.addMenu('&File')
-        ex = QAction('Exit', self, triggered=self.close)
-        fil.addAction(ex)
+    def restore(self):
+        _restore(self, self.__setting)
 
-        grf = menu.addMenu('&Graph')
-        self.__prev = QAction('Auto Preview', self, checkable=True)
-        grf.addAction(self.__prev)
-
-    def showPreview(self, wave):
-        if self.__prev.isChecked():
-            PreviewWindow(wave)
+    def save(self):
+        _save(self, self.__setting)
 
     def ProjectFolder(self):
         mkdir(self.__proj)
         return self.__proj
 
     def SettingFolder(self):
-        mkdir(self.ProjectFolder()+'/_settings')
-        return self.ProjectFolder()+'/_settings'
+        print("AnalysisWindow.SettingFolder is deprecated.")
+        mkdir(self.ProjectFolder() + '/_settings')
+        return self.ProjectFolder() + '/_settings'
+
+
+def _restore(self, file):
+    settings = Dict(file).data
+
+    for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                obj.setValue(settings[name])
+
+    for obj in self.findChildren(QCheckBox) + self.findChildren(QRadioButton):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                obj.setChecked(settings[name])
+
+    for obj in self.findChildren(QComboBox):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                i = obj.findText(settings[name])
+                if i != -1:
+                    obj.setCurrentIndex(i)
+
+    for obj in self.findChildren(QLineEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                obj.setText(settings[name])
+
+
+def _save(self, file):
+    settings = {}
+
+    for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.value()
+
+    for obj in self.findChildren(QCheckBox) + self.findChildren(QRadioButton):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.isChecked()
+
+    for obj in self.findChildren(QComboBox):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.currentText()
+
+    for obj in self.findChildren(QLineEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.text()
+    d = Dict(file)
+    d.data = settings
+
+
+def _checkName(name):
+    if name == "":
+        return False
+    elif name.startswith("qt_"):
+        return False
+    else:
+        return True
