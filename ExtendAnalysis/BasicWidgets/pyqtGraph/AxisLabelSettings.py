@@ -147,11 +147,11 @@ class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
     @saveCanvas
     def setTickLabelFont(self, axis, font):
         ax = self.fig.getAxis(axis.lower())
-        ax.tickFont = QFont(font.family, font.size)
+        ax.setStyle(tickFont=QFont(font.family, font.size))
 
     def getTickLabelFont(self, axis):
         ax = self.fig.getAxis(axis.lower())
-        f = ax.tickFont
+        f = ax.style["tickFont"]
         if f is None:
             return FontInfo.defaultFont()
         else:
