@@ -509,9 +509,18 @@ class Wave(AutoSaved, WaveMethods):
             self.setData(data, *args)
 
     def setData(self, data, *axes):
+        if hasattr(data, "__iter__"):
+            if len(data) > 0:
+                if isinstance(data[0], Wave):
+                    self._joinWaves(data, axes)
+                    return
         self.data = data
         if len(axes) == self.data.ndim:
             self.axes = list(axes)
+
+    def _joinWaves(self, waves, axes):
+        self.data = np.array([w.data for w in waves])
+        self.axes = [None] + list(axes)
 
     def _newobj(self, file):
         return self._wavedata(file)
