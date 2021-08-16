@@ -118,7 +118,7 @@ class PrefilterTab(QWidget):
     def _chunk(self):
         if self.wave is None:
             return
-        d = self._chunkDialog(self.wave.data.shape)
+        d = _chunkDialog(self.wave.data.shape)
         d.exec_()
         ok, res = d.getResult()
         if ok:
