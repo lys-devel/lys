@@ -95,7 +95,7 @@ class MultiCut(GridAttachedWindow):
         self._data._setWave(w)
 
     def load(self, file):
-        if file == False:
+        if file is False:
             fname = QFileDialog.getOpenFileName(self, 'Select data file')[0]
         else:
             fname = file
@@ -111,6 +111,8 @@ class MultiCut(GridAttachedWindow):
             self.wave = fname
             self.__file.setText("from memory")
             self._pre.setWave(self.wave)
+        else:
+            self.load(Wave(fname))
 
     def _loadRegion(self, obj):
         g = Graph.active()

@@ -76,31 +76,48 @@ class controlledWavesGUI(QTreeView):
 
     def buildContextMenu(self):
         menu = QMenu(self)
-        menu.addAction(QAction("Display", self, triggered=self._display))
-        menu.addAction(QAction("Append", self, triggered=self._append))
-        menu.addAction(QAction("Append Vector", self, triggered=self._vector))
-        menu.addAction(QAction("Append Contour", self, triggered=self._contour))
+        connected = QMenu("Connected")
+        copied = QMenu("Copied")
+        menu.addMenu(connected)
+        menu.addMenu(copied)
+
+        connected.addAction(QAction("Display", self, triggered=self._display))
+        connected.addAction(QAction("Append", self, triggered=self._append))
+        connected.addAction(QAction("Append Vector", self, triggered=self._vector))
+        connected.addAction(QAction("Append Contour", self, triggered=self._contour))
+
+        copied.addAction(QAction("Display", self, triggered=lambda: self._display(type="copied")))
+        copied.addAction(QAction("Append", self, triggered=lambda: self._append(type="copied")))
+        copied.addAction(QAction("Append Vector", self, triggered=lambda: self._vector(type="copied")))
+        copied.addAction(QAction("Append Contour", self, triggered=lambda: self._contour(type="copied")))
+
+        menu.addSeparator()
+
         menu.addAction(QAction("Enable", self, triggered=self._enable))
         menu.addAction(QAction("Disable", self, triggered=self._disable))
         menu.addAction(QAction("Remove", self, triggered=self._remove))
         menu.addAction(QAction("PostProcess", self, triggered=self._post))
         menu.exec_(QCursor.pos())
 
-    def _display(self):
+    def _getObj(self, type="Connected"):
         i = self.selectionModel().selectedIndexes()[0].row()
-        self.disp(*self.obj[i])
+        res = self.obj[i]
+        if type == "copied":
+            res[0] = res[0].Duplicate()
+        return res
 
-    def _append(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.apnd(*self.obj[i])
+    def _display(self, type="Connected"):
+        self.disp(*self._getObj(type))
 
-    def _contour(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.apnd(*self.obj[i], contour=True)
+    def _append(self, type="Connected"):
+        self.apnd(*self._getObj(type))
 
-    def _vector(self):
+    def _contour(self, type="Connected"):
+        self.apnd(*self._getObj(type), contour=True)
+
+    def _vector(self, type="Connected"):
         i = self.selectionModel().selectedIndexes()[0].row()
-        self.apnd(*self.obj[i], vector=True)
+        self.apnd(*self._getObj(type), vector=True)
 
     def _remove(self):
         i = self.selectionModel().selectedIndexes()[0].row()
@@ -514,7 +531,19 @@ class CutTab(QWidget):
 
     def append(self, wave, axes, **kwargs):
         c = self.getTargetCanvas()
-        c.Append(wave, **kwargs)
+        if not self._usegraph.isChecked():
+            msgBox = QMessageBox()
+            msgBox.setText("The wave will be appended in MultiCut grid. Do you really want to proceed?")
+            yes = msgBox.addButton(QMessageBox.Yes)
+            graph = msgBox.addButton("Use Graph", QMessageBox.ActionRole)
+            no = msgBox.addButton(QMessageBox.No)
+            msgBox.exec_()
+            if msgBox.clickedButton() == no:
+                return
+            elif msgBox.clickedButton() == graph:
+                self._usegraph.setChecked(True)
+                c = self.getTargetCanvas()
+            c.Append(wave, **kwargs)
 
     def getTargetCanvas(self):
         if self._usegraph.isChecked():
