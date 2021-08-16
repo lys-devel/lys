@@ -191,7 +191,7 @@ class RightClickableSelectionBox(DataSelectionBox):
 
     def __append(self, type, vector=False):
         from ExtendAnalysis import Graph
-        g = Graph.active(1)
+        g = Graph.active(exclude=self.canvas)
         data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))
         for d in data:
             if type == "Wave":

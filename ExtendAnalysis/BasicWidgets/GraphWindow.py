@@ -15,11 +15,13 @@ class Graph(AutoSavedWindow):
     graphLibrary = "matplotlib"
 
     @classmethod
-    def active(cls, n=0):
+    def active(cls, n=0, exclude=None):
         list = cls.mdimain.subWindowList(order=QMdiArea.ActivationHistoryOrder)
         m = 0
         for l in reversed(list):
             if isinstance(l, Graph):
+                if exclude==l or exclude==l.canvas:
+                    continue
                 if m == n:
                     return l
                 else:
