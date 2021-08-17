@@ -16,7 +16,7 @@ class SetAxisFilter(FilterInterface):
     def _execute(self, wave, **kwargs):
         if self._type == 'step':
             a = np.linspace(self._val1, self._val1 + self._val2 *
-                            wave.data.shape[self._axis], wave.data.shape[self._axis])
+                            (wave.data.shape[self._axis] - 1), wave.data.shape[self._axis])
         else:
             a = np.linspace(self._val1, self._val1 + self._val2,
                             wave.data.shape[self._axis])
@@ -87,7 +87,7 @@ class SymmetrizeFilter(FilterInterface):
 
     def _execute_dask(self, wave):
         gumap = da.gufunc(_symmetrze, signature="(i,j),(),(m)->(i,j)",
-                          output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(self._axes),  (), (0,), tuple(self._axes)], allow_rechunk=True)
+                          output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(self._axes), (), (0,), tuple(self._axes)], allow_rechunk=True)
         wave.data = gumap(wave.data, self._rotation, np.array(self._center))
         return wave
 
@@ -99,27 +99,27 @@ def _symmetrze(data, rotation, center):
     if len(data) <= 2:
         return np.empty((1,))
     s = data.shape
-    dx = s[0]/2-center[0]
-    dy = s[1]/2-center[1]
-    tmp = ndimage.shift(data, [dx, dy], cval=np.NaN,order=0)
-    mask = np.where(np.isnan(tmp),0,1)
-    tmp[np.isnan(tmp)]=0
-    dlis = np.array([ndimage.rotate(tmp, 360/rotation*i, reshape=False, cval=0) for i in range(rotation)])
-    mlis = np.array([ndimage.rotate(mask, 360/rotation*i, reshape=False, cval=0) for i in range(rotation)])
+    dx = s[0] / 2 - center[0]
+    dy = s[1] / 2 - center[1]
+    tmp = ndimage.shift(data, [dx, dy], cval=np.NaN, order=0)
+    mask = np.where(np.isnan(tmp), 0, 1)
+    tmp[np.isnan(tmp)] = 0
+    dlis = np.array([ndimage.rotate(tmp, 360 / rotation * i, reshape=False, cval=0) for i in range(rotation)])
+    mlis = np.array([ndimage.rotate(mask, 360 / rotation * i, reshape=False, cval=0) for i in range(rotation)])
     sum = dlis.sum(axis=0)
     m_sum = mlis.sum(axis=0)
-    sum[m_sum < 1]=np.nan
-    m_sum[m_sum < 1]=1
+    sum[m_sum < 1] = np.nan
+    m_sum[m_sum < 1] = 1
 
-    return ndimage.shift(sum/m_sum, [-dx, -dy], cval=np.NaN,order=0)
+    return ndimage.shift(sum / m_sum, [-dx, -dy], cval=np.NaN, order=0)
 
 
 def _symmetrze2(data, rotation, center):
     if len(data) <= 2:
         return np.empty((1,))
     s = data.shape
-    dx = s[0]/2-center[0]
-    dy = s[1]/2-center[1]
+    dx = s[0] / 2 - center[0]
+    dy = s[1] / 2 - center[1]
     tmp = ndimage.shift(data, [dx, dy], cval=np.NaN)
     mask = np.array(tmp)
     mask[mask != np.nan] = 1
@@ -129,23 +129,23 @@ def _symmetrze2(data, rotation, center):
     d = np.array(tmp)
     m = np.array(mask)
     for i in range(1, rot):
-        d = d + ndimage.rotate(tmp, 360/rot*i, reshape=False)
-        m = m + ndimage.rotate(mask, 360/rot*i, reshape=False)
+        d = d + ndimage.rotate(tmp, 360 / rot * i, reshape=False)
+        m = m + ndimage.rotate(mask, 360 / rot * i, reshape=False)
     mask = m
     #mask[mask < 1] = 1
     tmp = m
     tmp[m == 0] = np.nan
 
+
 def _symmetrze3(data, rotation, center):
     if len(data) <= 2:
         return np.empty((1,))
     s = data.shape
-    dx = s[0]/2-center[0]
-    dy = s[1]/2-center[1]
+    dx = s[0] / 2 - center[0]
+    dy = s[1] / 2 - center[1]
     tmp = ndimage.shift(data, [dx, dy], cval=np.NaN)
-    dlis = np.array([ndimage.rotate(tmp, 360/rotation*i, reshape=False, order=1, cval=np.nan) for i in range(rotation)])
+    dlis = np.array([ndimage.rotate(tmp, 360 / rotation * i, reshape=False, order=1, cval=np.nan) for i in range(rotation)])
     sum = np.nan_to_num(dlis, nan=0).sum(axis=0)
     mask = np.where(np.isnan(dlis), 0, 1).sum(axis=0)
     mask[mask == 0] = 1
-    return ndimage.shift(sum/mask, [-dx, -dy], cval=np.NaN)
-
+    return ndimage.shift(sum / mask, [-dx, -dy], cval=np.NaN)
