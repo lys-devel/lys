@@ -204,7 +204,6 @@ class PluginManager:
                 print('Error on loading {}.py.'.format(module_name))
         else:
             try:
-                print("debug002")
                 self.plugins[module_name] = reload(self.plugins[module_name])
                 self.shell.SendCommand('from ' + module_name + ' import *', message=True, save=False)
                 print('{}.py has been reloaded.'.format(module_name))
