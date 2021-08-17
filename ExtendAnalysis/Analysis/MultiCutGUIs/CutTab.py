@@ -544,7 +544,7 @@ class CutTab(QWidget):
             elif msgBox.clickedButton() == graph:
                 self._usegraph.setChecked(True)
                 c = self.getTargetCanvas()
-            c.Append(wave, **kwargs)
+        c.Append(wave, **kwargs)
 
     def getTargetCanvas(self):
         if self._usegraph.isChecked():
