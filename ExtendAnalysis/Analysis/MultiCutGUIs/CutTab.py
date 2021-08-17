@@ -401,7 +401,8 @@ class CutTab(QWidget):
         self.canvases = controlledObjects()
         self.canvases.removed.connect(self.__exe.graphRemoved)
         self.__initlayout__()
-        self.ax = None
+        self.ax = _axisLayout(2)
+        self._make.insertWidget(1, self.ax)
         self.wave = None
 
     def __initlayout__(self):
