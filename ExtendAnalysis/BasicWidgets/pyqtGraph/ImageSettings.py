@@ -18,7 +18,8 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def _getColorLut(self, cmap, gamma):
         import copy
         colormap = copy.deepcopy(cm.get_cmap(cmap))
-        colormap.set_gamma(gamma)
+        if hasattr(colormap, "set_gamma"):
+            colormap.set_gamma(gamma)
         lut = np.array(colormap._lut * 255)
         return lut[0:lut.shape[0] - 3, :]
 
