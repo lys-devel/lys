@@ -712,18 +712,14 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
         axes = self.getAxes(axis)
         if axes == None:
             return
-        if tf:
-            value = "on"
-        else:
-            value = "off"
         if (axis == 'Left' and not mirror) or (axis == 'Right' and mirror):
-            axes.get_yaxis().set_tick_params(left=value, which=which)
+            axes.get_yaxis().set_tick_params(left=tf, which=which)
         if (axis == 'Right' and not mirror) or (axis == 'Left' and mirror):
-            axes.get_yaxis().set_tick_params(right=value, which=which)
+            axes.get_yaxis().set_tick_params(right=tf, which=which)
         if (axis == 'Top' and not mirror) or (axis == 'Bottom' and mirror):
-            axes.get_xaxis().set_tick_params(top=value, which=which)
+            axes.get_xaxis().set_tick_params(top=tf, which=which)
         if (axis == 'Bottom' and not mirror) or (axis == 'Top' and mirror):
-            axes.get_xaxis().set_tick_params(bottom=value, which=which)
+            axes.get_xaxis().set_tick_params(bottom=tf, which=which)
         self.draw()
 
     def getTickVisible(self, axis, mirror=False, which='major'):

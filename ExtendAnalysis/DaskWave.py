@@ -5,11 +5,11 @@ import dask.array as da
 
 class DaskWave(WaveMethods):
     @classmethod
-    def initWorkers(cls, n_workers):
+    def initWorkers(cls, n_workers, threads_per_worker=2):
         try:
             import atexit
             from dask.distributed import Client, LocalCluster
-            cluster = LocalCluster(n_workers)
+            cluster = LocalCluster(n_workers=n_workers, threads_per_worker=threads_per_worker)
             cls.client = Client(cluster)
             atexit.register(lambda: cls.client.close())
             print("[DaskWave] Local cluster:", cls.client)

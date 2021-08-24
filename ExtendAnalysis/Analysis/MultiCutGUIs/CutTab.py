@@ -295,7 +295,7 @@ class _InteractiveWidget(QGroupBox):
         li = QPushButton("Free Line", clicked=self._line)
 
         mc = QComboBox()
-        mc.addItems(["Sum", "Mean", "Median", "Max", "Min"])
+        mc.addItems(["Mean", "Sum", "Median", "Max", "Min"])
         mc.currentTextChanged.connect(lambda t: self.__exe.setSumType(t))
 
         grid = QGridLayout()
@@ -401,7 +401,8 @@ class CutTab(QWidget):
         self.canvases = controlledObjects()
         self.canvases.removed.connect(self.__exe.graphRemoved)
         self.__initlayout__()
-        self.ax = None
+        self.ax = _axisLayout(2)
+        self._make.insertWidget(1, self.ax)
         self.wave = None
 
     def __initlayout__(self):
@@ -489,7 +490,7 @@ class CutTab(QWidget):
             w = wave
         if w is not None:
             if self._usegraph.isChecked():
-                g = display(w, lib="pyqtgraph")
+                g = display(w)
                 self.canvases.append(g.canvas, ax)
                 g.canvas.deleted.connect(self.canvases.remove)
                 g.canvas.clicked.connect(lambda x, y: self._gridClicked(g.canvas))
@@ -543,7 +544,7 @@ class CutTab(QWidget):
             elif msgBox.clickedButton() == graph:
                 self._usegraph.setChecked(True)
                 c = self.getTargetCanvas()
-            c.Append(wave, **kwargs)
+        c.Append(wave, **kwargs)
 
     def getTargetCanvas(self):
         if self._usegraph.isChecked():

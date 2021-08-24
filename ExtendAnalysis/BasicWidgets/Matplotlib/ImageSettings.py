@@ -17,16 +17,17 @@ class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
     def _setColormap(self, d, cmap):
         import copy
         colormap = copy.deepcopy(cm.get_cmap(cmap))
-        colormap.set_gamma(self._getColorGamma(d))
+        if hasattr(colormap, "set_gamma"):
+            colormap.set_gamma(self._getColorGamma(d))
         d.obj.set_cmap(colormap)
 
     def _getColorGamma(self, d):
         return d.appearance.get("ColorGamma", 1.0)
-        return 1.0 / d.obj.get_cmap()._gamma
 
     def _setColorGamma(self, d, gam):
         colormap = cm.get_cmap(self._getColormap(d))
-        colormap.set_gamma(1.0 / gam)
+        if hasattr(colormap, "set_gamma"):
+            colormap.set_gamma(1.0 / gam)
         d.obj.set_cmap(colormap)
 
     def _getColorRange(self, d):
