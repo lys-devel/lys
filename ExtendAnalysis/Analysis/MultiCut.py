@@ -97,7 +97,7 @@ class ExecutorList(controlledObjects):
         super().__init__()
         self._enabled = []
         self._graphs = []
-        self._sumtype = "Sum"
+        self._sumtype = "Mean"
 
     def setSumType(self, sumtype):
         self._sumtype = sumtype
