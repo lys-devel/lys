@@ -7,12 +7,34 @@ class DifferentialSetting(FilterGroupSetting):
     @classmethod
     def _filterList(cls):
         d = {
+            'Gradient': GradientSetting,
             'Prewitt': PrewittSetting,
             'Sobel': SobelSetting,
             'Laplacian': LaplacianSetting,
             'Sharpen': SharpenSetting
         }
         return d
+
+
+class GradientSetting(FilterSettingBase):
+    def __init__(self, parent, dim, loader=None):
+        super().__init__(parent, dim, loader)
+        self._layout = AxisCheckLayout(dim)
+        self.setLayout(self._layout)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, GradientFilter):
+            return True
+
+    def GetFilter(self):
+        return GradientFilter(self._layout.GetChecked())
+
+    def parseFromFilter(self, f):
+        obj = GradientSetting(None, self.dim, self.loader)
+        axes = f.getAxes()
+        obj._layout.SetChecked(axes)
+        return obj
 
 
 class PrewittSetting(FilterSettingBase):

@@ -162,6 +162,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         raw = menu.addMenu("Raw data")
         raw.addAction(QAction('Display', self, triggered=lambda: self.__display("Wave")))
         raw.addAction(QAction('Append', self, triggered=lambda: self.__append("Wave")))
+        raw.addAction(QAction('MultiCut', self, triggered=lambda: self.__multicut("Wave")))
         if self.__dim == 3 or self.__dim == "rgb":
             raw.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("Wave", vector=True)))
         raw.addAction(QAction('Edit', self, triggered=lambda: self.__edit("Wave")))
@@ -171,6 +172,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         pr = menu.addMenu("Processed data")
         pr.addAction(QAction('Display', self, triggered=lambda: self.__display("ProcessedWave")))
         pr.addAction(QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
+        pr.addAction(QAction('MultiCut', self, triggered=lambda: self.__multicut("ProcessedWave")))
         if self.__dim == 3 or self.__dim == "rgb":
             pr.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("ProcessedWave", vector=True)))
         pr.addAction(QAction('Edit', self, triggered=lambda: self.__edit("ProcessedWave")))
@@ -198,6 +200,21 @@ class RightClickableSelectionBox(DataSelectionBox):
                 g.Append(d.wave, vector=vector)
             else:
                 g.Append(d.filteredWave, vector=vector)
+
+    def __getWaves(self, type):
+        data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))
+        res = []
+        for d in data:
+            if type == "Wave":
+                res.append(d.wave)
+            else:
+                res.append(d.filteredWave)
+        return res
+
+    def __multicut(self, type):
+        from ExtendAnalysis import MultiCut
+        for d in self.__getWaves(type):
+            MultiCut(d)
 
     def __edit(self, type):
         from ExtendAnalysis import Table
