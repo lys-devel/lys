@@ -7,6 +7,7 @@ from .MainWindow import create, addMainMenu, addObject, getObject
 from .BasicWidgets import *
 from .AnalysisWindow import *
 from .Analysis import filters, filtersGUI, MultiCut
+from .System import setGlobalFileMenu
 
 
 def createMainWindow():

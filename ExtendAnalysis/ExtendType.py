@@ -507,6 +507,8 @@ class Wave(AutoSaved, WaveMethods):
         else:
             super().__init__()
             self.setData(data, *args)
+        if "name" in kwargs:
+            self.SetName(kwargs["name"])
 
     def setData(self, data, *axes):
         if hasattr(data, "__iter__"):

@@ -20,7 +20,7 @@ class Graph(AutoSavedWindow):
         m = 0
         for l in reversed(list):
             if isinstance(l, Graph):
-                if exclude==l or exclude==l.canvas:
+                if exclude == l or exclude == l.canvas:
                     continue
                 if m == n:
                     return l
@@ -132,21 +132,21 @@ class Graph(AutoSavedWindow):
         return g
 
 
-def display(w, lib=None, **kwargs):
+def display(*args, lib=None, **kwargs):
     g = Graph(lib=lib)
-    if isinstance(w, Wave):
-        g.Append(w, **kwargs)
-    else:
-        g.Append(Wave(w), **kwargs)
-    return g
+    return append(*args, graph=g)
 
 
-def append(w, lib=None, **kwargs):
-    g = Graph.active()
-    if isinstance(w, Wave):
-        g.Append(w, **kwargs)
+def append(*args, graph=None, **kwargs):
+    if graph is None:
+        g = Graph.active()
     else:
-        g.Append(Wave(w), **kwargs)
+        g = graph
+    for wave in args:
+        if isinstance(wave, Wave):
+            g.Append(wave, **kwargs)
+        else:
+            g.Append(Wave(wave), **kwargs)
     return g
 
 
