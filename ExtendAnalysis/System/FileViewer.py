@@ -1,12 +1,6 @@
 
 from ..BasicWidgets import *
 
-_menu = {}
-
-
-def setGlobalFileMenu(type, actions):
-    menu[_type] = actions
-
 
 class ColoredFileSystemModel(ExtendFileSystemModel):
     def __init__(self):
@@ -15,8 +9,7 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
             self.AddAcceptedFilter('*' + ext)
         self.AddAcceptedFilter('*.py')
         self.AddAcceptedFilter('*.fil')
-        for m in _menu.keys():
-            self.AddAcceptedFilter("*." + m)
+        self.AddAcceptedFilter('*.cif')
 
     def data(self, index, role=Qt.DisplayRole):
         if role == Qt.FontRole:
@@ -51,8 +44,7 @@ class FileWidget(FileSystemView):
         menu['.npz'] = [tree.Action_Display(), tree.Action_Append(), tree.Action_MultiCut(), tree.Action_Edit(), ld, tree.Action_Print(), tree.Action_Delete()]
         menu['.py'] = [op, tree.Action_Delete()]
         menu['.lst'] = [op, tree.Action_Edit()]
-        for key, item in _menu.items():
-            menu['.' + key] = item
+        menu['.cif'] = [ld, tree.Action_Delete(), tree.Action_Print()]
         tree.SetContextMenuActions(menu)
 
     def __showgraphs(self):

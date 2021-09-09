@@ -161,12 +161,48 @@ class PeakPostSetting(FilterSettingBase):
         return obj
 
 
+class PeakReorderSetting(FilterSettingBase):
+    def __init__(self, parent, dimension=2, loader=None):
+        super().__init__(parent, dimension, loader)
+        self._peak = AxisSelectionLayout("Peak index axis", dimension)
+        self._scan = AxisSelectionLayout("Scan axis", dimension)
+
+        self._size = QSpinBox()
+        self._size.setValue(9)
+        h1 = QHBoxLayout()
+        h1.addWidget(QLabel("Median size"))
+        h1.addWidget(self._size)
+
+        layout = QVBoxLayout()
+        layout.addLayout(self._peak)
+        layout.addLayout(self._scan)
+        layout.addLayout(h1)
+        self.setLayout(layout)
+
+    def GetFilter(self):
+        return PeakReorderFilter(self._peak.getAxis(), self._scan.getAxis(), self._size.value())
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, PeakReorderFilter):
+            return True
+
+    def parseFromFilter(self, f):
+        obj = PeakReorderSetting(None, self.dim, self.loader)
+        peak, scan, size = f.getParams()
+        obj._peak.setAxis(peak)
+        obj._scan.setAxis(scan)
+        obj._size.setValue(size)
+        return obj
+
+
 class FindPeakSetting(FilterGroupSetting):
     @classmethod
     def _filterList(cls):
         d = {
             'Find Peaks': PeakSetting,
             'Postprocess (3+1D)': PeakPostSetting,
+            'Reorder': PeakReorderSetting,
         }
         return d
 

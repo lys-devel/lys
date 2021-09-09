@@ -88,3 +88,38 @@ def _findNearest(data, reference, medSize=1):  # reference: n-dim array, data: (
         res.append(ref)
         ref = median_filter(ref, medSize)
     return np.array(res).transpose(order)
+
+
+class PeakReorderFilter(FilterInterface):
+    def __init__(self, peakAxis, scanAxis, medSize):
+        self._peak = peakAxis
+        self._scan = scanAxis
+        self._size = medSize
+
+    def _execute(self, wave, *args, **kwargs):
+        axes = list(range(len(wave.data.shape)))
+        axes.remove(self._peak)
+        axes.remove(self._scan)
+        axes = [self._peak, self._scan] + axes
+        def f(x): return _reorder(x, self._size)
+        uf = self.generalizedFunction(wave, f, signature="(i,j,k,l)->(i,j,k,l)", axes=[axes, axes])
+        wave.data = uf(wave.data)
+        return wave
+
+    def getParams(self):
+        return self._peak, self._scan, self._size
+
+
+def _reorder(data, size):
+    res = []
+    for n in range(data.shape[0]):
+        ref = data[n][0]
+        mesh = np.meshgrid(*[range(x) for x in ref.shape], indexing="ij")
+        tmp = [ref]
+        for m in range(1, data.shape[1]):
+            diff = np.abs(data[:, m] - median_filter(ref, size))
+            index = np.argmin(diff, axis=0)
+            ref = data[tuple([index, m, *mesh])]
+            tmp.append(ref)
+        res.append(np.array(tmp))
+    return np.array(res)

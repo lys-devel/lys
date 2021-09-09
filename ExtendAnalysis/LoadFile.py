@@ -6,6 +6,7 @@ from .ExtendType import *
 from .BasicWidgets.GraphWindow import Graph
 from .FileLoader import *
 
+
 def load(name, load=True, disconnect=False):
     if os.path.isdir(name):
         mkdir(pwd() + '/' + os.path.basename(name))
@@ -13,7 +14,8 @@ def load(name, load=True, disconnect=False):
     elif os.path.isfile(name):
         path, ext = os.path.splitext(name)
         res = dic[ext](os.path.abspath(name))
-        res.setLoadFile(name)
+        if hasattr(res, "setLoadFile"):
+            res.setLoadFile(name)
         if disconnect:
             res.Disconnect()
         if load:
@@ -149,8 +151,8 @@ def __loadPxt(name):
     (rec, data) = igor.packed.load(name)
     wav = igor.igorpy.Wave(data['root'][nam.encode('utf-8')])
     w = Wave()
-    w.data =np.array(wav.data)
-    w.data.flags.writeable=True
+    w.data = np.array(wav.data)
+    w.data.flags.writeable = True
     note = [s.replace(" ", "").replace("\r", "").split("=") for s in wav.notes.decode().replace("\n\n", "\n").split("\n")]
     w.note = {}
     for n in note:
@@ -212,7 +214,6 @@ try:
 
     def __loadDcm(name):
         data = pydicom.read_file(name)
-        # print(data)
         return Wave(data.pixel_array)
 except ImportError:
     def __loadDcm(name):
