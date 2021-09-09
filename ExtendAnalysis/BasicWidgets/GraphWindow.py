@@ -57,9 +57,7 @@ class Graph(AutoSavedWindow):
         with open(file, 'r') as f:
             d = eval(f.read())
         self.move(d['Graph']['Position_x'], d['Graph']['Position_y'])
-        self.canvas.EnableDraw(False)
         self.canvas.LoadFromDictionary(d, os.path.dirname(file))
-        self.canvas.EnableDraw(True)
 
     def _loadLibType(self, file):
         with open(file, 'r') as f:

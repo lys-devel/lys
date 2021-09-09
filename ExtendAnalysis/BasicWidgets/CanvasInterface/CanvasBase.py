@@ -61,7 +61,7 @@ class CanvasBaseBase(DrawableCanvasBase):
     def Append(self, wave, axis=Axis.BottomLeft, id=None, appearance=None, offset=(0, 0, 0, 0), zindex=0, contour=False, filter=None, vector=False):
         if isinstance(wave, list):
             for w in wave:
-                self.Append(w)
+                self.Append(w, axis=axis, appearance=appearance, offset=offset, contour=contour, filter=filter, vector=vector)
             return
         if isinstance(wave, Wave):
             wav = wave
@@ -357,7 +357,6 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     def LoadFromDictionary(self, dictionary, path):
         from ExtendAnalysis.Analysis.filters import Filters
-        self.EnableSave(False)
         i = 0
         sdir = pwd()
         cd(path)
@@ -399,7 +398,6 @@ class CanvasBaseBase(DrawableCanvasBase):
         if 'Inverted' in dictionary:
             self._inverted = dictionary['Inverted']
         self.loadAppearance()
-        self.EnableSave(True)
         cd(sdir)
 
     def _remove(self, data):
