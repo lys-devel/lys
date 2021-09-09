@@ -57,7 +57,12 @@ class CanvasBaseBase(DrawableCanvasBase):
                 flg = True
         self.loadAppearance()
 
+    @saveCanvas
     def Append(self, wave, axis=Axis.BottomLeft, id=None, appearance=None, offset=(0, 0, 0, 0), zindex=0, contour=False, filter=None, vector=False):
+        if isinstance(wave, list):
+            for w in wave:
+                self.Append(w)
+            return
         if isinstance(wave, Wave):
             wav = wave
         else:

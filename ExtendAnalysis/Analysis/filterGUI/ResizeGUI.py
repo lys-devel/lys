@@ -8,7 +8,7 @@ class ResizeSetting(FilterGroupSetting):
     @classmethod
     def _filterList(cls):
         d = {
-            '*Interporation': InterpSetting,
+            'Interporation': InterpSetting,
             'Reduce size': ReduceSizeSetting,
             'Padding': PaddingSetting,
         }

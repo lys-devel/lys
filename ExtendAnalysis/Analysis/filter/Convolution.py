@@ -1,9 +1,26 @@
 import numpy as np
+import dask.array as da
 from dask_image import ndfilters as dfilters
 from scipy.ndimage import filters
 
-from ExtendAnalysis import Wave, DaskWave
 from .FilterInterface import FilterInterface
+
+
+class GradientFilter(FilterInterface):
+    def __init__(self, axes):
+        self._axes = axes
+
+    def _execute(self, wave, **kwargs):
+        def f(d, x):
+            if len(d) == 1:
+                return x
+            return np.gradient(d, x)
+        for ax in self._axes:
+            wave.data = da.apply_along_axis(f, ax, wave.data, wave.getAxis(ax))
+        return wave
+
+    def getAxes(self):
+        return self._axes
 
 
 class ConvolutionFilter(FilterInterface):
@@ -31,12 +48,7 @@ class ConvolutionFilter(FilterInterface):
     def _execute(self, wave, **kwargs):
         for ax in self._axes:
             kernel = self._kernel(wave, ax)
-            if isinstance(wave, Wave):
-                wave.data = self._applyFunc(filters.convolve, wave.data, kernel)
-            if isinstance(wave, DaskWave):
-                wave.data = self._applyFunc(dfilters.convolve, wave.data, kernel)
-            else:
-                wave = filters.convolve(wave, kernel)
+            wave.data = self._applyFunc(dfilters.convolve, wave.data, kernel)
         return wave
 
     def getAxes(self):
@@ -63,12 +75,7 @@ class LaplacianFilter(ConvolutionFilter):
 
     def _execute(self, wave, **kwargs):
         kernel = self._kernel(wave, None)
-        if isinstance(wave, Wave):
-            wave.data = filters.convolve(wave.data, kernel)
-        if isinstance(wave, DaskWave):
-            wave.data = dfilters.convolve(wave.data, kernel)
-        else:
-            wave = filters.convolve(wave, kernel)
+        wave.data = dfilters.convolve(wave.data, kernel)
         return wave
 
 

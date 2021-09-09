@@ -9,6 +9,7 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
             self.AddAcceptedFilter('*' + ext)
         self.AddAcceptedFilter('*.py')
         self.AddAcceptedFilter('*.fil')
+        self.AddAcceptedFilter('*.cif')
 
     def data(self, index, role=Qt.DisplayRole):
         if role == Qt.FontRole:
@@ -43,6 +44,7 @@ class FileWidget(FileSystemView):
         menu['.npz'] = [tree.Action_Display(), tree.Action_Append(), tree.Action_MultiCut(), tree.Action_Edit(), ld, tree.Action_Print(), tree.Action_Delete()]
         menu['.py'] = [op, tree.Action_Delete()]
         menu['.lst'] = [op, tree.Action_Edit()]
+        menu['.cif'] = [ld, tree.Action_Delete(), tree.Action_Print()]
         tree.SetContextMenuActions(menu)
 
     def __showgraphs(self):

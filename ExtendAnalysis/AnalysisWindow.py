@@ -18,11 +18,17 @@ class AnalysisWindow(ExtendMdiSubWindow):
             self.__setting = home() + "/.lys/" + name + "/settings.dic"
         self.show()
 
-    def restore(self):
-        _restore(self, self.__setting)
+    def restore(self, file=None):
+        if file is None or not isinstance(file, str):
+            _restore(self, self.__setting)
+        else:
+            _restore(self, file)
 
-    def save(self):
-        return _save(self, self.__setting)
+    def save(self, file=None):
+        if file is None or not isinstance(file, str):
+            return _save(self, self.__setting)
+        else:
+            return _save(self, file)
 
     def ProjectFolder(self):
         mkdir(self.__proj)
