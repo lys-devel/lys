@@ -522,7 +522,11 @@ class Wave(AutoSaved, WaveMethods):
 
     def _joinWaves(self, waves, axes):
         self.data = np.array([w.data for w in waves])
-        self.axes = [None] + list(axes)
+        if len(axes) == 1:
+            ax = list(axes)
+        else:
+            ax = [None]
+        self.axes = ax + waves[0].axes
 
     def _newobj(self, file):
         return self._wavedata(file)
