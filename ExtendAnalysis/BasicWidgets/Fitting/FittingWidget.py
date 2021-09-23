@@ -203,7 +203,7 @@ class FittingWidget(QWidget):
         for i in self._items:
             p, ext = os.path.splitext(i)
             if os.path.exists(p + "/FittingResult.dic"):
-                d = Dict(p + "/FittingResult.dic")
+                d = SettingDict(p + "/FittingResult.dic")
             else:
                 continue
             res.append(d['peak' + str(n)]['guess'][index])
@@ -378,7 +378,7 @@ class FittingTree(QTreeView):
 
     def saveResult(self, path):
         os.makedirs(path, exist_ok=True)
-        d = Dict(path + '/FittingResult.dic')
+        d = SettingDict(path + '/FittingResult.dic')
         funcs, guess, bounds = self.getParams()
         d['npeaks'] = len(funcs)
         i = 0
@@ -394,7 +394,7 @@ class FittingTree(QTreeView):
     def loadResult(self, path):
         if os.path.exists(path + '/FittingResult.dic'):
             self.clear()
-            d = Dict(path + '/FittingResult.dic')
+            d = SettingDict(path + '/FittingResult.dic')
             for i in range(d['npeaks']):
                 p = d['peak' + str(i)]
                 self._addParam(p['function'])

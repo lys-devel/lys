@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from .ExtendType import *
+from . import SettingDict
 
 
 class AnalysisWindow(ExtendMdiSubWindow):
@@ -42,7 +43,7 @@ class AnalysisWindow(ExtendMdiSubWindow):
 
 
 def _restore(self, file):
-    settings = Dict(file).data
+    settings = SettingDict(file).data
 
     for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
         name = obj.objectName()
@@ -70,6 +71,13 @@ def _restore(self, file):
             if name in settings:
                 obj.setText(settings[name])
 
+    for obj in self.findChildren(QListWidget):
+        name = obj.objectName()
+        if _checkName(name):
+            obj.clear()
+            if name in settings:
+                obj.addItems(settings[name])
+
 
 def _save(self, file):
     settings = {}
@@ -93,7 +101,13 @@ def _save(self, file):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = obj.text()
-    d = Dict(file)
+
+    for obj in self.findChildren(QListWidget):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = [obj.item(i).text() for i in range(obj.count())]
+
+    d = SettingDict(file)
     d.data = settings
     return settings
 

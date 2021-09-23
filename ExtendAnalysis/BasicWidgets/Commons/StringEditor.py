@@ -1,7 +1,4 @@
-import sys
 import os
-
-import autopep8
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -21,10 +18,11 @@ class StringTextEdit(QPlainTextEdit):
         self.numberArea = QWidget(self)
         self.numberArea.setGeometry(0, 0, self.fontMetrics().width("8") * 8, self.height())
         self.numberArea.installEventFilter(self)
-        # self.widget.setStyleSheet("background-color : #282C34; color: #eeeeee;")
-        #self.highlighter = PythonHighlighter(self.widget.document())
-        self.str = String(file)
-        self.setPlainText(self.str.data)
+        self._file = file
+        if os.path.exists(file):
+            with open(file, 'r') as f:
+                self.str = f.read()
+            self.setPlainText(self.str)
         self.textChanged.connect(self.save)
 
     def keyPressEvent(self, event):
@@ -65,7 +63,8 @@ class StringTextEdit(QPlainTextEdit):
         paint.end()
 
     def save(self):
-        self.str.data = self.toPlainText()
+        with open(self._file, 'w') as f:
+            f.write(self.toPlainText())
 
 
 class StringEditor(ExtendMdiSubWindow):

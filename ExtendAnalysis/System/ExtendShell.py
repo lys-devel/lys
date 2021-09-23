@@ -20,12 +20,20 @@ class ExtendShell(QObject):
         self.__com = com
         self.__comlog = []
         self.__ecom = ExtendCommand(self)
-        self.__log2 = String(logpath)
-        if not len(self.__log2.data) == 0:
-            self.SetCommandLog(eval(self.__log2.data))
+        self.__logFile = logpath
+        self.__load()
         print('Welcome to Analysis program lys. Loading .py files...')
         m = PluginManager(home(), self)
         m.start()
+
+    def __load(self):
+        if os.path.exists(self.__logFile):
+            with open(self.__logFile, 'r') as f:
+                log = eval(f.read())
+        else:
+            log = []
+        if not len(log) == 0:
+            self.SetCommandLog(log)
 
     def SendCommand(self, txt, message=True, save=True):
         if message:
@@ -58,7 +66,8 @@ class ExtendShell(QObject):
         self.commandExecuted.emit(txt)
 
     def save(self):
-        self.__log2.data = str(self.GetCommandLog())
+        with open(self.__logFile, 'w') as f:
+            f.write(str(self.GetCommandLog()))
 
     def GetCommandLog(self):
         return self.__comlog

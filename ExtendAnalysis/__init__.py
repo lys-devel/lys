@@ -1,4 +1,5 @@
 from . import QtSystem
+from .core import SettingDict
 from .ExtendType import *
 from .DaskWave import *
 from .LoadFile import *

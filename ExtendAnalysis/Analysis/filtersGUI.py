@@ -270,8 +270,9 @@ class FiltersGUI(QWidget):
         print("Filter is saved to", file)
 
     def loadFrom(self, file, index=False):
-        s = String(file)
-        self.loadFromString(s.data, index)
+        with open(file, 'r') as f:
+            data = eval(f.read())
+        self.loadFromString(data, index)
 
     def loadFromString(self, str, index=False):
         self.loadFilters(Filters.fromString(str), index)

@@ -1,10 +1,9 @@
 import sys
+import os
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-
-from ExtendAnalysis import String
 
 
 class Logger(object):
@@ -23,6 +22,7 @@ class Logger(object):
 
 
 class CommandLogWidget(QTextEdit):
+    __logFile = ".lys/commandlog.log"
     updated = pyqtSignal(str, QColor)
 
     def __init__(self, parent):
@@ -30,14 +30,25 @@ class CommandLogWidget(QTextEdit):
         self.setReadOnly(True)
         self.setUndoRedoEnabled(False)
         self.setWordWrapMode(QTextOption.NoWrap)
-        self.__clog = String(".lys/commandlog.log")
-        self.setPlainText(self.__clog.data)
+        self.__load()
         sys.stdout = Logger(self, sys.stdout, self.textColor())
         sys.stderr = Logger(self, sys.stderr, QColor(255, 0, 0))
         self.updated.connect(self.update)
 
+    def __load(self):
+        if os.path.exists(self.__logFile):
+            with open(self.__logFile, 'r') as f:
+                self.__clog = f.read()
+        else:
+            self.__clog = ""
+        self.setPlainText(self.__clog)
+
     def save(self):
-        self.__clog.data = self.toPlainText()
+        data = self.toPlainText()
+        if len(data) > 300000:
+            data = data[-300000:]
+        with open(self.__logFile, 'w') as f:
+            f.write(data)
 
     def update(self, message, color):
         self.moveCursor(QTextCursor.End)

@@ -1,4 +1,3 @@
-from ExtendAnalysis import String
 from .filter import *
 import _pickle as cPickle
 
@@ -30,14 +29,17 @@ class Filters(object):
         return str(cPickle.dumps(self))
 
     @staticmethod
-    def fromString(str):
-        return cPickle.loads(eval(str))
+    def fromString(data):
+        if isinstance(data, str):
+            data = eval(data)
+        return cPickle.loads(data)
 
     @staticmethod
     def fromFile(path):
-        s = String(path)
-        return Filters.fromString(s.data)
+        with open(path, 'r') as f:
+            data = f.read()
+        return Filters.fromString(data)
 
     def saveAsFile(self, path):
-        s = String((path + ".fil").replace(".fil.fil", ".fil"))
-        s.data = str(self)
+        with open((path + ".fil").replace(".fil.fil", ".fil"), 'w') as f:
+            f.write(str(self))

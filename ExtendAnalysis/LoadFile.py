@@ -96,14 +96,8 @@ def __loadFolder(name, path):
                 data.Save(path + '/' + nam + '.npz')
             if isinstance(data, Graph):
                 data.Save(path + '/' + nam + '.grf')
-            if isinstance(data, String):
-                data.Save(path + '/' + nam + '.str')
-            if isinstance(data, Variable):
-                data.Save(path + '/' + nam + '.val')
             if isinstance(data, Dict):
                 data.Save(path + '/' + nam + '.dic')
-            if isinstance(data, List):
-                data.Save(path + '/' + nam + '.lst')
 
 
 def __loadNpz(name):
@@ -111,19 +105,9 @@ def __loadNpz(name):
     return Wave(name)
 
 
-def __loadStr(name):
-    nam, ext = os.path.splitext(os.path.basename(name))
-    return String(name)
-
-
-def __loadVal(name):
-    nam, ext = os.path.splitext(os.path.basename(name))
-    return Variable(name)
-
-
 def __loadDic(name):
     nam, ext = os.path.splitext(os.path.basename(name))
-    return Dict(name)
+    return SettingDict(name)
 
 
 def __loadGraph(name):
@@ -223,5 +207,5 @@ def getExtentions():
     return dic.keys()
 
 
-dic = dict(zip(['.npz', '.str', '.val', '.dic', '.pxt', '.grf', '.tif', '.jpg', '.png', '.dm3'], [__loadNpz, __loadStr, __loadVal, __loadDic, __loadPxt, __loadGraph, __loadImage, __loadImage, __loadImage, __loadDm3]))
+dic = dict(zip(['.npz', '.dic', '.pxt', '.grf', '.tif', '.jpg', '.png', '.dm3'], [__loadNpz, __loadDic, __loadPxt, __loadGraph, __loadImage, __loadImage, __loadImage, __loadDm3]))
 dic[".dcm"] = __loadDcm

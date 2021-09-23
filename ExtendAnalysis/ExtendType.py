@@ -11,6 +11,7 @@ import _pickle as cPickle
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
+from . import SettingDict
 __home = os.getcwd()
 sys.path.append(__home)
 
@@ -20,7 +21,7 @@ def home():
 
 
 def globalSetting():
-    return Dict(home() + "/.lys/settings/global.dic")
+    return SettingDict(home() + "/.lys/settings/global.dic")
 
 
 class ExtendObject(object):
@@ -689,63 +690,6 @@ class Wave(AutoSaved, WaveMethods):
             w = Wave()
             w.data = data
             return w
-
-
-class String(AutoSaved):
-    class _stringdata(ExtendObject):
-        def _load(self, file):
-            with open(file, 'r') as f:
-                self.data = f.read()
-
-        def _init(self):
-            self.data = ''
-
-    def _newobj(self, file):
-        return self._stringdata(file)
-
-    def __setattr__(self, key, value):
-        if key == 'data':
-            super().__setattr__(key, str(value))
-        else:
-            super().__setattr__(key, value)
-
-
-class Variable(AutoSaved):
-    class _valdata(ExtendObject):
-        def _init(self):
-            self.data = 0
-
-    def _newobj(self, file):
-        return self._valdata(file)
-
-
-class Dict(AutoSaved):
-    class _dicdata(ExtendObject):
-        def _init(self):
-            self.data = {}
-
-    def _newobj(self, file):
-        return self._dicdata(file)
-
-    def __getitem__(self, key):
-        return self.data[key]
-
-    def __setitem__(self, key, value):
-        self.data[key] = value
-        self.Save()
-
-    def __delitem__(self, key):
-        del self.data[key]
-        self.Save()
-
-    def __missing__(self, key):
-        return None
-
-    def __contains__(self, key):
-        return key in self.data
-
-    def __len__(self):
-        return len(self.data)
 
 
 class ExtendMdiSubWindowBase(QMdiSubWindow):
