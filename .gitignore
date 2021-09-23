@@ -17,3 +17,4 @@ test/proc.py
 build
 dist
 docs/_*
+__pycache__

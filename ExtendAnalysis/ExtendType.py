@@ -27,13 +27,6 @@ def globalSetting():
 class ExtendObject(object):
     __dic = {}
 
-    @classmethod  # TODO
-    def OnMoveFile(cls, file, file_to):
-        if cls.IsUsed(os.path.abspath(file)):
-            cls.__dic[os.path.abspath(file)]()._Connect(
-                os.path.abspath(file_to))
-            cls._Remove(file)
-
     @classmethod
     def _Append(cls, file, data):
         cls.__dic[os.path.abspath(file)] = weakref.ref(data)
@@ -50,18 +43,6 @@ class ExtendObject(object):
         if res is None:
             del cls.__dic[abs]
         return res
-
-    @classmethod
-    def Reload(cls, list=[]):
-        for ref in cls.__dic.values():
-            o = ref()
-            if o is not None:
-                try:
-                    o._load(o._filename())
-                    o._emitDataChanged()
-                except:
-                    logging.error(
-                        "[ExtendObject] Failed to reload. Restart is recommended.")
 
     def __init__(self, file):
         self.__file = file
@@ -117,29 +98,11 @@ class ExtendObject(object):
             else:
                 self._load(file)
 
-    def _init(self):
-        for l in self._vallist():
-            self.__setattr__(l, None)
-
-    def _load(self, file):
-        with open(file, 'r') as f:
-            self.data = eval(f.read())
-
-    def _save(self, file):
-        with open(file, 'w') as f:
-            f.write(str(self.data))
-
-    def _vallist(self):
-        return ['data']
-
     def _filename(self):
         return self.__file
 
 
 class AutoSaved(object):
-    def _newobj(self, file):
-        return ExtendObject(file)
-
     def __init__(self, file=None):
         self.obj = None
         self.__name = None
@@ -149,7 +112,6 @@ class AutoSaved(object):
         res = ExtendObject._GetData(self.__file)
         if res is None:
             self.obj = self._newobj(self.__file)
-            # self.Save()##Note: it is modified 12/24
         else:
             self.obj = res
         self.obj.addDataChangedListener(self._EmitModified)
