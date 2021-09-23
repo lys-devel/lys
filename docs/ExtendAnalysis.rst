@@ -73,10 +73,10 @@ ExtendAnalysis Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`test` Module
+:mod:`core` Module
 ------------------
 
-.. automodule:: ExtendAnalysis.test
+.. automodule:: ExtendAnalysis.core
     :members:
     :undoc-members:
     :show-inheritance:
