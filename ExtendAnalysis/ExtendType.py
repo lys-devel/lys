@@ -1,6 +1,6 @@
 import os
 import sys
-import shutil
+import copy
 import weakref
 import logging
 import unittest
@@ -13,22 +13,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 __home = os.getcwd()
 sys.path.append(__home)
-
-
-def copy(name, name_to):
-    try:
-        if os.path.isdir(name):
-            os.makedirs(name_to, exist_ok=True)
-            lis = os.listdir(name)
-            for item in lis:
-                copy(name + '/' + item, name_to + '/' + item)
-        else:
-            if not os.path.exists(name_to):
-                shutil.copy(name, name_to)
-            else:
-                sys.stderr.write('Error: Cannot copy. This file exists.\n')
-    except:
-        sys.stderr.write('Error: Cannot remove.\n')
 
 
 def remove(name):
@@ -532,7 +516,6 @@ class Wave(AutoSaved, WaveMethods):
         return (path + ".npz").replace(".npz.npz", ".npz")
 
     def Duplicate(self):
-        import copy
         w = Wave()
         w.data = copy.copy(self.data)
         w.axes = copy.copy(self.axes)
@@ -701,14 +684,6 @@ class Wave(AutoSaved, WaveMethods):
             return self.__average1D(args[0])
         if dim == 2:
             return self.__average2D(args[0], args[1])
-
-    def copy(self):
-        w = Wave()
-        w.data = self.data
-        w.x = self.x
-        w.y = self.y
-        w.z = self.z
-        w.note = self.note
 
     def __average1D(self, range):
         return self.data[range[0]:range[1] + 1].sum() / (range[1] - range[0] + 1)
