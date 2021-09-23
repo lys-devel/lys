@@ -1,4 +1,5 @@
 import logging
+import os
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -107,9 +108,8 @@ class LogWidget(QWidget):
         return self._log
 
     def __createFileLogger(self, level, name):
-        from ExtendAnalysis import mkdir
         import logging.handlers
-        mkdir(".lys/log")
+        os.makedirs(".lys/log", exist_ok=True)
         fh = logging.handlers.RotatingFileHandler(".lys/log/" + name + ".log", maxBytes=100000, backupCount=10)
         fh.setLevel(level)
         fh_formatter = logging.Formatter('%(asctime)s-%(levelname)s-%(filename)s-%(name)s-%(funcName)s-%(message)s')

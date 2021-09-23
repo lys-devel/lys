@@ -1,3 +1,4 @@
+import os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -31,12 +32,12 @@ class AnalysisWindow(ExtendMdiSubWindow):
             return _save(self, file)
 
     def ProjectFolder(self):
-        mkdir(self.__proj)
+        os.makedirs(self.__proj, exist_ok=True)
         return self.__proj
 
     def SettingFolder(self):
         print("AnalysisWindow.SettingFolder is deprecated.")
-        mkdir(self.ProjectFolder() + '/_settings')
+        os.makedirs(self.ProjectFolder() + '/_settings', exist_ok=True)
         return self.ProjectFolder() + '/_settings'
 
 

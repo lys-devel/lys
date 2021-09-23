@@ -9,7 +9,7 @@ from .FileLoader import *
 
 def load(name, load=True, disconnect=False):
     if os.path.isdir(name):
-        mkdir(pwd() + '/' + os.path.basename(name))
+        os.makedirs(pwd() + '/' + os.path.basename(name), exist_ok=True)
         __loadFolder(name, pwd() + '/' + os.path.basename(name))
     elif os.path.isfile(name):
         path, ext = os.path.splitext(name)
@@ -87,7 +87,7 @@ def __loadFolder(name, path):
     files = os.listdir(name)
     for file in files:
         if os.path.isdir(name + '/' + file):
-            mkdir(path + '/' + file)
+            os.makedirs(path + '/' + file, exist_ok=True)
             __loadFolder(name + '/' + file, path + '/' + file)
         elif os.path.isfile(name + '/' + file):
             nam, ext = os.path.splitext(file)

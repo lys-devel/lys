@@ -173,7 +173,7 @@ class _FileSystemViewBase(QWidget):
         text, ok = QInputDialog.getText(self, '---Input Dialog---', 'Directory name:')
         if ok and not len(text) == 0:
             for p in paths:
-                mkdir(p + '/' + text)
+                os.makedirs(p + '/' + text, exist_ok=True)
 
     def Action_Delete(self):
         return QAction('Delete', self, triggered=self._Action_Delete)

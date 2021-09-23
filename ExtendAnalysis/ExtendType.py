@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import os
 import sys
 import shutil
@@ -12,25 +11,14 @@ import _pickle as cPickle
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-import inspect
 __home = os.getcwd()
-__CDChangeListener = []
 sys.path.append(__home)
-
-
-def mkdir(name):
-    if os.path.exists(name):
-        return
-    try:
-        os.makedirs(name)
-    except:
-        pass
 
 
 def copy(name, name_to):
     try:
         if os.path.isdir(name):
-            mkdir(name_to)
+            os.makedirs(name_to, exist_ok=True)
             lis = os.listdir(name)
             for item in lis:
                 copy(name + '/' + item, name_to + '/' + item)
@@ -50,7 +38,7 @@ def move(name, name_to):
         return 0
     try:
         if os.path.isdir(name):
-            mkdir(name_to)
+            os.makedirs(name_to, exist_ok=True)
             lis = os.listdir(name)
             for item in lis:
                 move(name + '/' + item, name_to + '/' + item)
@@ -90,17 +78,10 @@ def cd(direct=None):
     if direct is None or len(direct) == 0:
         direct = __home
     os.chdir(direct)
-    for listener in __CDChangeListener:
-        listener.OnCDChanged(pwd())
 
 
 def home():
     return __home
-
-
-def addCDChangeListener(listener):
-    __CDChangeListener.append(listener)
-    listener.OnCDChanged(pwd())
 
 
 def globalSetting():
@@ -170,7 +151,7 @@ class ExtendObject(object):
 
     def Save(self, file):
         abspath = os.path.abspath(file)
-        mkdir(os.path.dirname(abspath))
+        os.makedirs(os.path.dirname(abspath), exist_ok=True)
         obj = ExtendObject._GetData(file)
         if obj is None:
             ExtendObject._Append(file, self)
@@ -1060,7 +1041,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         AutoSavedWindow._windir = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/wins'
         print("Workspace: " + AutoSavedWindow._workspace)
         cls._restore = True
-        mkdir(AutoSavedWindow._windir)
+        os.makedirs(AutoSavedWindow._windir, exist_ok=True)
         for path in cls.__list.data:
             try:
                 w = LoadFile.load(path)
@@ -1087,7 +1068,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         return cls._restore
 
     def NewTmpFilePath(self):
-        mkdir(AutoSavedWindow._windir)
+        os.makedirs(AutoSavedWindow._windir, exist_ok=True)
         for i in range(1000):
             path = AutoSavedWindow._windir + '/' + self._prefix() + str(i).zfill(3) + \
                 self._suffix()
@@ -1153,7 +1134,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         if file is not None:
             AutoSavedWindow._RemoveAutoWindow(self)
             self.__file = os.path.abspath(file)
-            mkdir(os.path.dirname(file))
+            os.makedirs(os.path.dirname(file), exist_ok=True)
             self._save(self.__file)
             self.__isTmp = False
             title = os.path.basename(file)

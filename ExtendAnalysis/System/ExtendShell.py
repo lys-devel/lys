@@ -106,7 +106,7 @@ class ExtendCommand(cmd.Cmd):
         cd(arg)
 
     def do_mkdir(self, arg):
-        mkdir(arg)
+        os.makedirs(arg, exist_ok=True)
 
     def do_rm(self, arg):
         remove(arg)

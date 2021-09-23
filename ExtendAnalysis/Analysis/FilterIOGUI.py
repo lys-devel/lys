@@ -10,9 +10,9 @@ from .filters import Filters
 class FilterViewWidget(FileSystemView):
     def __init__(self, parent):
         super().__init__(parent)
-        mkdir(home()+"/.lys/filters")
+        os.makedirs(home() + "/.lys/filters", exist_ok=True)
         self.Model.AddAcceptedFilter("*.fil")
-        self.SetPath(home()+"/.lys/filters")
+        self.SetPath(home() + "/.lys/filters")
         self.__viewContextMenu(self)
 
     def __viewContextMenu(self, tree):
