@@ -1,6 +1,5 @@
 import os
-import sys
-import math
+import shutil
 import fnmatch
 import itertools
 from ExtendAnalysis.ExtendType import *
@@ -188,7 +187,10 @@ class _FileSystemViewBase(QWidget):
         ok = msg.exec_()
         if ok == QMessageBox.Ok:
             for p in self.selectedPaths():
-                remove(p)
+                if os.path.isfile(p):
+                    os.remove(p)
+                if os.path.isdir(p):
+                    shutil.rmtree(p)
 
     def Action_Display(self):
         return QAction('Display', self, triggered=self.__display)

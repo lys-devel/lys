@@ -15,33 +15,6 @@ __home = os.getcwd()
 sys.path.append(__home)
 
 
-def remove(name):
-    try:
-        if os.path.isdir(name):
-            lis = os.listdir(name)
-            for item in lis:
-                remove(name + '/' + item)
-            os.rmdir(name)
-        else:
-            if ExtendObject._GetData(os.path.abspath(name)) is None:
-                os.remove(name)
-            else:
-                sys.stderr.write(
-                    'Error: Cannot remove. This file is in use.\n')
-    except Exception:
-        sys.stderr.write('Error: Cannot remove.\n')
-
-
-def pwd():
-    return os.getcwd()
-
-
-def cd(direct=None):
-    if direct is None or len(direct) == 0:
-        direct = __home
-    os.chdir(direct)
-
-
 def home():
     return __home
 
@@ -977,7 +950,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         if win.FileName() in cls.__list.data:
             cls.__list.remove(win.FileName())
             if not win.IsConnected():
-                remove(win.FileName())
+                os.remove(win.FileName())
 
     @classmethod
     def SwitchTo(cls, workspace='default'):
@@ -1087,7 +1060,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         if file is not None:
             AutoSavedWindow._RemoveAutoWindow(self)
             self.__file = os.path.abspath(file)
-            os.makedirs(os.path.dirname(file), exist_ok=True)
+            os.makedirs(os.path.dirname(self.__file), exist_ok=True)
             self._save(self.__file)
             self.__isTmp = False
             title = os.path.basename(file)

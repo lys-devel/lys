@@ -9,8 +9,8 @@ from .FileLoader import *
 
 def load(name, load=True, disconnect=False):
     if os.path.isdir(name):
-        os.makedirs(pwd() + '/' + os.path.basename(name), exist_ok=True)
-        __loadFolder(name, pwd() + '/' + os.path.basename(name))
+        os.makedirs(os.getcwd() + '/' + os.path.basename(name), exist_ok=True)
+        __loadFolder(name, os.getcwd() + '/' + os.path.basename(name))
     elif os.path.isfile(name):
         path, ext = os.path.splitext(name)
         res = dic[ext](os.path.abspath(name))

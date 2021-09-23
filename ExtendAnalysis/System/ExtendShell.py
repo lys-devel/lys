@@ -36,12 +36,6 @@ class ExtendShell(QObject):
             while len(self.__comlog) > 3000:
                 self.__comlog.pop(0)
             self.__comlog.append(txt)
-        if txt == "cd":
-            cd()
-            return
-        if txt == "pwd":
-            print(pwd())
-            return
         if txt == "exit()" or txt == "exit":
             self.__com.close()
         flg = False
@@ -102,14 +96,8 @@ class ExtendCommand(cmd.Cmd):
     def __init__(self, shell):
         self.__shell = shell
 
-    def do_cd(self, arg):
-        cd(arg)
-
     def do_mkdir(self, arg):
         os.makedirs(arg, exist_ok=True)
-
-    def do_rm(self, arg):
-        remove(arg)
 
     def do_cp(self, arg):
         lis = arg.split(" ")
@@ -128,7 +116,7 @@ class ExtendCommand(cmd.Cmd):
         self.__shell.Load(arg)
 
     def do_pwd(self, arg):
-        print(pwd())
+        print(os.getcwd())
 
     def do_display(self, arg):
         try:

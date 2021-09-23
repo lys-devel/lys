@@ -358,8 +358,8 @@ class CanvasBaseBase(DrawableCanvasBase):
     def LoadFromDictionary(self, dictionary, path):
         from ExtendAnalysis.Analysis.filters import Filters
         i = 0
-        sdir = pwd()
-        cd(path)
+        sdir = os.getcwd()
+        os.chdir(path)
         if 'Datalist' in dictionary:
             dic = dictionary['Datalist']
             while i in dic:
@@ -398,7 +398,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         if 'Inverted' in dictionary:
             self._inverted = dictionary['Inverted']
         self.loadAppearance()
-        cd(sdir)
+        os.chdir(sdir)
 
     def _remove(self, data):
         raise NotImplementedError()

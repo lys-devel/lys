@@ -117,7 +117,7 @@ class FittingWidget(QWidget):
                 path, ext = os.path.splitext(txt)
                 self.path.setText(path)
             else:
-                self.path.setText(os.path.relpath(pwd() + '/Fit/' + self.wave.Name(), home()))
+                self.path.setText(os.path.relpath(os.getcwd() + '/Fit/' + self.wave.Name(), home()))
 
     def __totadd(self):
         if self.canvas is not None:

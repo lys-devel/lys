@@ -1,4 +1,4 @@
-
+import os
 from ..BasicWidgets import *
 
 
@@ -13,12 +13,12 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
 
     def data(self, index, role=Qt.DisplayRole):
         if role == Qt.FontRole:
-            if pwd().find(self.filePath(index)) > -1:
+            if os.getcwd().find(self.filePath(index)) > -1:
                 font = QFont()
                 font.setBold(True)
                 return font
         if role == Qt.BackgroundRole:
-            if pwd() == self.filePath(index):
+            if os.getcwd() == self.filePath(index):
                 return QColor(200, 200, 200)
         return super().data(index, role)
 
@@ -28,7 +28,7 @@ class FileWidget(FileSystemView):
         self.model = ColoredFileSystemModel()
         super().__init__(parent, self.model)
         self.__shell = shell
-        self.SetPath(pwd())
+        self.SetPath(os.getcwd())
         self.__viewContextMenu(self)
 
     def __viewContextMenu(self, tree):
@@ -64,7 +64,7 @@ class FileWidget(FileSystemView):
             i += 1
 
     def __setCurrentDirectory(self):
-        cd(self.selectedPaths()[0])
+        os.chdir(self.selectedPaths()[0])
 
     def __load(self):
         for p in self.selectedPaths():
