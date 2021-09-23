@@ -748,62 +748,6 @@ class Dict(AutoSaved):
         return len(self.data)
 
 
-class List(AutoSaved):
-    class _listdata(ExtendObject):
-        def _init(self):
-            self.data = []
-
-    def _newobj(self, file):
-        return self._listdata(file)
-
-    def __getitem__(self, key):
-        return self.data[key]
-
-    def __setitem__(self, key, value):
-        self.data[key] = value
-        self.Save()
-
-    def append(self, value):
-        self.data.append(value)
-        self.Save()
-
-    def remove(self, value):
-        self.data.remove(value)
-        self.Save()
-
-    def __contains__(self, key):
-        return key in self.data
-
-    def __len__(self):
-        return len(self.data)
-
-    def shape(self):
-        res = []
-        d = self.data
-        while isinstance(d, list) or isinstance(d, List):
-            res.append(len(d))
-            if len(d) > 0:
-                d = d[0]
-            else:
-                break
-        return tuple(res)
-
-    @staticmethod
-    def SupportedFormats():
-        return ["Lys List file (*.lst)", "Comma-Separated Values (*.csv)"]
-
-    def export(self, path, type="Lys List file (*.lst)"):
-        if type == "Lys List file (*.lst)":
-            l = List()
-            l.data = self.data
-            l.Save(path + ".lst".replace(".lst.lst", ".lst"))
-        if type == "Comma-Separated Values (*.csv)":
-            import csv
-            with open(path + ".csv".replace(".csv.csv", ".csv"), 'w') as f:
-                writer = csv.writer(f, lineterminator='\n')
-                writer.writerows(self.data)
-
-
 class ExtendMdiSubWindowBase(QMdiSubWindow):
     pass
 
@@ -926,10 +870,6 @@ class ExtendMdiSubWindow(AttachableWindow):
         return self.__floating
 
 
-_workspace = "default"
-_windir = home() + '/.lys/workspace/' + _workspace + '/wins'
-
-
 class AutoSavedWindow(ExtendMdiSubWindow):
     __list = None
     _isclosed = False
@@ -937,20 +877,35 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     folder_prefix = home() + '/.lys/workspace/'
 
     @classmethod
+    def _saveWinList(cls):
+        file = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/winlist.lst'
+        with open(file, 'w') as f:
+            f.write(str(cls.__list))
+
+    @classmethod
+    def _loadWinList(cls):
+        file = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/winlist.lst'
+        with open(file, 'r') as f:
+            data = eval(f.read())
+        return data
+
+    @classmethod
     def _IsUsed(cls, path):
-        return path in cls.__list.data
+        return path in cls.__list
 
     @classmethod
     def _AddAutoWindow(cls, win):
-        if not win.FileName() in cls.__list.data:
+        if not win.FileName() in cls.__list:
             cls.__list.append(win.FileName())
+        cls._saveWinList()
 
     @classmethod
     def _RemoveAutoWindow(cls, win):
-        if win.FileName() in cls.__list.data:
+        if win.FileName() in cls.__list:
             cls.__list.remove(win.FileName())
             if not win.IsConnected():
                 os.remove(win.FileName())
+        cls._saveWinList()
 
     @classmethod
     def SwitchTo(cls, workspace='default'):
@@ -963,12 +918,12 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     def RestoreAllWindows(cls, workspace='default'):
         from . import LoadFile
         AutoSavedWindow._workspace = workspace
-        cls.__list = List(home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/winlist.lst')
+        cls.__list = cls._loadWinList()
         AutoSavedWindow._windir = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/wins'
         print("Workspace: " + AutoSavedWindow._workspace)
         cls._restore = True
         os.makedirs(AutoSavedWindow._windir, exist_ok=True)
-        for path in cls.__list.data:
+        for path in cls.__list:
             try:
                 w = LoadFile.load(path)
                 if path.find(AutoSavedWindow._windir) > -1:

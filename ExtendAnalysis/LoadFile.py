@@ -126,11 +126,6 @@ def __loadDic(name):
     return Dict(name)
 
 
-def __loadLst(name):
-    nam, ext = os.path.splitext(os.path.basename(name))
-    return List(name)
-
-
 def __loadGraph(name):
     nam, ext = os.path.splitext(os.path.basename(name))
     return Graph(name)
@@ -228,6 +223,5 @@ def getExtentions():
     return dic.keys()
 
 
-dic = dict(zip(['.npz', '.lst', '.str', '.val', '.dic', '.pxt', '.grf', '.tif', '.jpg', '.png', '.dm3'], [__loadNpz, __loadLst,
-                                                                                                          __loadStr, __loadVal, __loadDic, __loadPxt, __loadGraph, __loadImage, __loadImage, __loadImage, __loadDm3]))
+dic = dict(zip(['.npz', '.str', '.val', '.dic', '.pxt', '.grf', '.tif', '.jpg', '.png', '.dm3'], [__loadNpz, __loadStr, __loadVal, __loadDic, __loadPxt, __loadGraph, __loadImage, __loadImage, __loadImage, __loadDm3]))
 dic[".dcm"] = __loadDcm

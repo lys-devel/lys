@@ -378,10 +378,6 @@ class _ExtendTableTable(QTableView):
                     menu.addMenu(send)
                     send.addAction(
                         QAction("Export", self, triggered=self._export2D))
-                send_l = QMenu("List")
-                send_l.addAction(
-                    QAction("Export", self, triggered=self._exportList))
-                menu.addMenu(send_l)
         menu.exec_(QCursor.pos())
 
     def _export1D(self):
@@ -404,15 +400,5 @@ class _ExtendTableTable(QTableView):
         filt = filt[:len(filt) - 2]
         path, type = QFileDialog.getSaveFileName(filter=filt)
         w = Wave()
-        w.data = self._makeDataFromSelection()
-        w.export(path, type=type)
-
-    def _exportList(self):
-        filt = ""
-        for f in List().SupportedFormats():
-            filt = filt + f + ";;"
-        filt = filt[:len(filt) - 2]
-        path, type = QFileDialog.getSaveFileName(filter=filt)
-        w = List()
         w.data = self._makeDataFromSelection()
         w.export(path, type=type)
