@@ -12,3 +12,8 @@ ExtendAnalysis.egg-info/
 test/.lys/
 test/proc.py
 *.egg
+.eggs
+.lys
+build
+dist
+docs/_*
