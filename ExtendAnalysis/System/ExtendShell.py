@@ -119,14 +119,6 @@ class ExtendCommand(cmd.Cmd):
         w = lis[0].replace(" ", "")
         AutoSavedWindow.SwitchTo(lis[0])
 
-    def do_mv(self, arg):
-        lis = arg.split(" ")
-        move(lis[0], lis[1])
-
-    def do_rename(self, arg):
-        lis = arg.split(" ")
-        move(lis[0], lis[1])
-
     def do_ls(self, arg):
         tmp = os.listdir()
         for file in tmp:

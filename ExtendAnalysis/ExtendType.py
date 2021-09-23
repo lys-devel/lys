@@ -31,28 +31,6 @@ def copy(name, name_to):
         sys.stderr.write('Error: Cannot remove.\n')
 
 
-def move(name, name_to):
-    if os.path.abspath(name_to).find(os.path.abspath(name)) > -1:
-        sys.stderr.write(
-            'Error: Cannot move. The file cannot be moved to this folder.\n')
-        return 0
-    try:
-        if os.path.isdir(name):
-            os.makedirs(name_to, exist_ok=True)
-            lis = os.listdir(name)
-            for item in lis:
-                move(name + '/' + item, name_to + '/' + item)
-            remove(name)
-        else:
-            if not os.path.exists(name_to):
-                shutil.move(name, name_to)
-                ExtendObject.OnMoveFile(name, name_to)
-            else:
-                sys.stderr.write('Error: Cannot move. This file exists.\n')
-    except Exception:
-        sys.stderr.write('Error: Cannot move.\n')
-
-
 def remove(name):
     try:
         if os.path.isdir(name):
