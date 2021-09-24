@@ -104,7 +104,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         id_pos = ids + self._getDefaultId(type)
         self._Datalist.insert(id_pos, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata, vector))
         if not reuse:
-            w.addModifiedListener(self.OnWaveModified)
+            w.modified.connect(self.OnWaveModified)
         self.dataChanged.emit()
         if appearance is not None:
             self.loadAppearance()
@@ -253,7 +253,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                     self._remove(d)
                     self._Datalist.remove(d)
                     if not reuse:
-                        d.wave.removeModifiedListener(self.OnWaveModified)
+                        d.wave.modified.disconnect(self.OnWaveModified)
         self.dataChanged.emit()
 
     @saveCanvas

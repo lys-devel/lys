@@ -186,8 +186,9 @@ class SpreadSheet(object):
         return self._data
 
     def saveAutoSaved(self):
+        raise NotImplementedError
         for w in self.waves:
-            w.Save()
+            w.Save()  # this is deprecated
 
 
 class _ExtendTableTable(QTableView):

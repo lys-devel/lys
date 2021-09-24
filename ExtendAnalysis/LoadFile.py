@@ -7,7 +7,7 @@ from .BasicWidgets.GraphWindow import Graph
 from .FileLoader import *
 
 
-def load(name, load=True, disconnect=False):
+def load(name, load=True):
     if os.path.isdir(name):
         os.makedirs(os.getcwd() + '/' + os.path.basename(name), exist_ok=True)
         __loadFolder(name, os.getcwd() + '/' + os.path.basename(name))
@@ -16,8 +16,6 @@ def load(name, load=True, disconnect=False):
         res = dic[ext](os.path.abspath(name))
         if hasattr(res, "setLoadFile"):
             res.setLoadFile(name)
-        if disconnect:
-            res.Disconnect()
         if load:
             return res
 

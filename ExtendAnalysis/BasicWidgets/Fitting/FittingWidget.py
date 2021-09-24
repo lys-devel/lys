@@ -145,11 +145,6 @@ class FittingWidget(QWidget):
     def __startsave(self):
         if self.save.isChecked():
             self.update()
-        else:
-            self.w_total.Disconnect()
-            self.w_residual.Disconnect()
-            for f in self.w_peaks:
-                f.Disconnect()
 
     def __load(self):
         self._tree.loadResult(home() + '/' + self.path.text())

@@ -242,7 +242,7 @@ class RightClickableSelectionBox(DataSelectionBox):
 
             def __set(self, f):
                 self.data.filter = f
-                self.data.wave.emitModified()
+                self.data.wave.modified.emit()
         data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))[0]
         d = dialog(data)
         if data.filter is not None:
