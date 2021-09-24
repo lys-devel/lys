@@ -335,12 +335,8 @@ class CanvasBaseBase(DrawableCanvasBase):
         self.saveAppearance()
         for data in self._Datalist:
             dic[i] = {}
-            fname = data.wave.FileName()
-            if fname is not None:
-                dic[i]['File'] = os.path.relpath(data.wave.FileName(), path).replace('\\', '/')
-            else:
-                dic[i]['File'] = None
-                dic[i]['Wave'] = cPickle.dumps(data.wave)
+            dic[i]['File'] = None
+            dic[i]['Wave'] = cPickle.dumps(data.wave)
             dic[i]['Axis'] = int(data.axis)
             dic[i]['Appearance'] = str(data.appearance)
             dic[i]['Offset'] = str(data.offset)

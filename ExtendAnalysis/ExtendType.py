@@ -2,6 +2,7 @@ import os
 import sys
 import copy
 import logging
+import weakref
 import numpy as np
 import scipy.ndimage
 import scipy.signal
@@ -22,37 +23,103 @@ def globalSetting():
     return SettingDict(home() + "/.lys/settings/global.dic")
 
 
-def produce(data, axes, note):
-    w = Wave()
-    w.data = data
-    w.axes = axes
-    w.note = note
-    return w
+class WaveMethods:
+    pass
 
 
-class WaveMethods(object):
-    def shape(self):
-        res = []
-        tmp = self.data.shape
-        for i in tmp:
-            if i is not None:
-                res.append(i)
-        return tuple(res)
+class _WaveDataDescriptor:
+    def __set__(self, instance, value):
+        instance._data = np.array(value)
+        instance.axes._update(instance._data)
+        instance.update()
+
+    def __get__(self, instance, objtype=None):
+        return instance._data
+
+
+class _WaveNoteDescriptor:
+    def __set__(self, instance, value):
+        # check type
+        if not isinstance(value, dict):
+            raise TypeError("Axes should be a dictionary")
+        # set actual instance
+        instance._note = WaveNote(value)
+
+    def __get__(self, instance, objtype=None):
+        return instance._note
+
+
+class WaveNote(dict):
+    def addObject(self, name, obj):
+        self[name] = cPickle.dumps(obj)
+
+    def getObject(self, name):
+        return cPickle.loads(self[name])
+
+    def addAnalysisLog(self, log):
+        if not "AnalysisLog" in self:
+            self["AnalysisLog"] = ""
+        self["AnalysisLog"] += log
+
+    def getAnalysisLog(self):
+        return self["AnalysisLog"]
+
+
+class _WaveAxesDescriptor:
+    def __set__(self, instance, value):
+        # check type
+        if not hasattr(value, "__iter__"):
+            raise TypeError("Axes should be a list of 1-dimensional array or None")
+        # set actual instance
+        instance._axes = WaveAxes(instance, [np.array(item) for item in value])
+        instance.update()
+
+    def __get__(self, instance, objtype=None):
+        return instance._axes
+
+
+class WaveAxes(list):
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._parent = weakref.ref(parent)
+
+    def __setitem__(self, key, value):
+        super().__setitem__(key, value)
+        self._parent().update()
+
+    def getAxis(self, dim):
+        data = self._parent().data
+        val = np.array(self[dim])
+        if data.ndim <= dim:
+            return None
+        elif val.ndim == 0:
+            return np.arange(data.shape[dim])
+        else:
+            if data.shape[dim] == val.shape[0]:
+                return val
+            else:
+                res = np.empty((data.shape[dim]))
+                for i in range(data.shape[dim]):
+                    res[i] = np.NaN
+                for i in range(min(data.shape[dim], val.shape[0])):
+                    res[i] = val[i]
+                return res
 
     def axisIsValid(self, dim):
-        tmp = self.axes[dim]
-        if tmp is None or (tmp == np.array(None)).all():
+        ax = self[dim]
+        if ax is None or (ax == np.array(None)).all():
             return False
         return True
 
     def posToPoint(self, pos, axis=None):
+        data = self._parent().data
         if axis is None:
-            x0 = self.x[0]
-            x1 = self.x[len(self.x) - 1]
-            y0 = self.y[0]
-            y1 = self.y[len(self.y) - 1]
-            dx = (x1 - x0) / (len(self.x) - 1)
-            dy = (y1 - y0) / (len(self.y) - 1)
+            x0 = data.x[0]
+            x1 = data.x[len(data.x) - 1]
+            y0 = data.y[0]
+            y1 = data.y[len(data.y) - 1]
+            dx = (x1 - x0) / (len(data.x) - 1)
+            dy = (y1 - y0) / (len(data.y) - 1)
             return (int(round((pos[0] - x0) / dx)), int(round((pos[1] - y0) / dy)))
         else:
             if hasattr(pos, "__iter__"):
@@ -64,13 +131,14 @@ class WaveMethods(object):
             return int(round((pos - x0) / dx))
 
     def pointToPos(self, p, axis=None):
+        data = self._parent().data
         if axis is None:
-            x0 = self.x[0]
-            x1 = self.x[len(self.x) - 1]
-            y0 = self.y[0]
-            y1 = self.y[len(self.y) - 1]
-            dx = (x1 - x0) / (len(self.x) - 1)
-            dy = (y1 - y0) / (len(self.y) - 1)
+            x0 = data.x[0]
+            x1 = data.x[len(data.x) - 1]
+            y0 = data.y[0]
+            y1 = data.y[len(data.y) - 1]
+            dx = (x1 - x0) / (len(data.x) - 1)
+            dy = (y1 - y0) / (len(data.y) - 1)
             return (p[0] * dx + x0, p[1] * dy + y0)
         else:
             if hasattr(p, "__iter__"):
@@ -81,70 +149,48 @@ class WaveMethods(object):
             dx = (x1 - x0) / (len(ax) - 1)
             return p * dx + x0
 
-    def getAxis(self, dim):
-        val = np.array(self.axes[dim])
-        if self.data.ndim <= dim:
-            return None
-        elif val.ndim == 0:
-            return np.arange(self.data.shape[dim])
-        else:
-            if self.data.shape[dim] == val.shape[0]:
-                return val
-            else:
-                res = np.empty((self.data.shape[dim]))
-                for i in range(self.data.shape[dim]):
-                    res[i] = np.NaN
-                for i in range(min(self.data.shape[dim], val.shape[0])):
-                    res[i] = val[i]
-                return res
-
-    def addObject(self, name, obj):
-        self.note[name] = cPickle.dumps(obj)
-
-    def getObject(self, name):
-        return cPickle.loads(self.note[name])
-
-    def addAnalysisLog(self, log):
-        if not "AnalysisLog" in self.note:
-            self.note["AnalysisLog"] = ""
-        self.note["AnalysisLog"] += log
-
-    def getAnalysisLog(self):
-        return self.note["AnalysisLog"]
+    def _update(self, data):
+        while(len(self) < data.ndim):
+            self.append(np.array(None))
+        while(len(self) > data.ndim):
+            self.pop(len(self) - 1)
 
 
-class Wave(QObject, WaveMethods):
-    modified = pyqtSignal(object)
+def _produceWave(data, axes, note):
+    return Wave(data, *axes, note=note)
+
+
+class Wave(QObject):
     _nameIndex = 0
+    modified = pyqtSignal(object)
+    data = _WaveDataDescriptor()
+    axes = _WaveAxesDescriptor()
+    note = _WaveNoteDescriptor()
 
-    def __init__(self, data=None, *args, **kwargs):
+    def __init__(self, data=None, *axes, note={}, name=None, **kwargs):
         super().__init__()
-        self.__name = None
+        self.axes = [np.array(None)]
+        self.data = np.array(None)
+        self.note = note
         if type(data) == str:
-            data = self._parseFilename(data)
-            self._load(data)
+            self.__load(self._parseFilename(data))
         else:
-            self._load(None)
-            self.setData(data, *args)
-        if "name" in kwargs:
-            self.SetName(kwargs["name"])
+            self.setData(data, *axes)
+            if name is not None:
+                self.SetName(name)
 
-    def _load(self, file):
-        if file is None:
-            self.axes = [np.array(None)]
-            self.data = np.array(None)
-            self.note = {}
-        else:
-            tmp = np.load(file, allow_pickle=True)
-            data = tmp['data']
-            self.axes = [np.array(None) for i in range(data.ndim)]
-            self.data = data
-            if 'axes' in tmp:
-                self.axes = [axis for axis in tmp['axes']]
-            if 'note' in tmp:
-                self.note = tmp['note'][()]
-            else:
-                self.note = {}
+    def __load(self, file):
+        tmp = np.load(file, allow_pickle=True)
+        data = tmp['data']
+        self.axes = [np.array(None) for i in range(data.ndim)]
+        self.data = data
+        if 'axes' in tmp:
+            self.axes = [axis for axis in tmp['axes']]
+        if 'note' in tmp:
+            self.note = tmp['note'][()]
+
+    def update(self):
+        self.modified.emit(self)
 
     def setData(self, data, *axes):
         if hasattr(data, "__iter__"):
@@ -164,35 +210,17 @@ class Wave(QObject, WaveMethods):
             ax = [None]
         self.axes = ax + waves[0].axes
 
-    def __setattr__(self, key, value):  # TODO add note and axes
-        if key not in ["x", "y", "z", "data"]:
-            super().__setattr__(key, value)
-        if key == 'x' and len(self.axes) > 0:
-            self.axes[0] = np.array(value)
-        elif key == 'y' and len(self.axes) > 1:
-            self.axes[1] = np.array(value)
-        elif key == 'z' and len(self.axes) > 2:
-            self.axes[2] = np.array(value)
-        elif key in ['data']:
-            if isinstance(value, np.ndarray):
-                super().__setattr__(key, value)
-            else:
-                super().__setattr__(key, np.array(value))
-            while(len(self.axes) < self.data.ndim):
-                self.axes.append(np.array(None))
-            while(len(self.axes) > self.data.ndim):
-                self.axes.pop(len(self.axes) - 1)
-        self.modified.emit(self)
-
-    def __getattribute__(self, key):
-        if key in "xyz":
-            index = ['x', 'y', 'z'].index(key)
-            return self.getAxis(index)
+    def __getattr__(self, key):
+        if hasattr(self.data, key):
+            return self.data.__getattribute__(key)
+        if hasattr(self.axes, key):
+            return self.axes.__getattribute__(key)
+        elif hasattr(self.note, key):
+            return self.note.__getattribute__(key)
         else:
-            return super().__getattribute__(key)
+            return super().__getattr__(key)
 
     def __getitem__(self, key):
-        import copy
         if isinstance(key, tuple):
             data = self.data[key]
             axes = []
@@ -211,9 +239,10 @@ class Wave(QObject, WaveMethods):
 
     def __setitem__(self, key, value):
         self.data[key] = value
+        self.update()
 
     def __reduce_ex__(self, proto):
-        return produce, (self.data, self.axes, self.note)
+        return _produceWave, (self.data, list(self.axes), self.note)
 
     def _parseFilename(self, path):
         if path is None:
@@ -221,33 +250,23 @@ class Wave(QObject, WaveMethods):
         return (path + ".npz").replace(".npz.npz", ".npz")
 
     def Duplicate(self):
-        w = Wave()
-        w.data = copy.copy(self.data)
-        w.axes = copy.copy(self.axes)
-        w.note = copy.copy(self.note)
-        w.SetName(self.Name())
-        return w
+        return Wave(copy.copy(self.data), *copy.copy(self.axes), note=copy.copy(self.note))
 
     def Save(self, file):
         file = os.path.abspath(self._parseFilename(file))
         if file is not None:
-            abspath = os.path.abspath(file)
-            os.makedirs(os.path.dirname(abspath), exist_ok=True)
+            os.makedirs(os.path.dirname(file), exist_ok=True)
             np.savez_compressed(file, data=self.data, axes=self.axes, note=self.note, allow_pickle=True)
             return True
 
     def SetName(self, name):
-        self.__name = name
+        self.note["name"] = name
 
     def Name(self):
-        if self.__name is None:
+        if "name" not in self.note:
             self.SetName("wave" + str(Wave._nameIndex))
             Wave._nameIndex += 1
-        return self.__name
-
-    def FileName(self):
-        print("Wave.FileName is deprecated.")
-        return None
+        return self.note.get("name")
 
     def slice(self, pos1, pos2, axis='x', width=1):
         w = Wave()
@@ -284,8 +303,7 @@ class Wave(QObject, WaveMethods):
 
     def export(self, path, type="Numpy npz (*.npz)"):
         if type == 'Numpy npz (*.npz)':
-            np.savez(path + ".npz".replace(".npz.npz", ".npz"),
-                     data=self.data, axes=self.axes, note=self.note)
+            np.savez(path + ".npz".replace(".npz.npz", ".npz"), data=self.data, axes=self.axes, note=self.note)
         if type == "Comma-Separated Values (*.csv)":
             np.savetxt(path + ".csv".replace(".csv.csv", ".csv"), self.data, delimiter=',')
         if type == "Text file (*.txt)":
@@ -293,15 +311,35 @@ class Wave(QObject, WaveMethods):
 
     @staticmethod
     def importFrom(path):
-        p, ext = os.path.splitext(path)
+        _, ext = os.path.splitext(path)
         if ext == "npz":
-            w = Wave(path)
-            return w
+            return Wave(path)
         else:
-            data = np.loadtxt(path, delimiter=",")
-            w = Wave()
-            w.data = data
-            return w
+            return Wave(np.loadtxt(path, delimiter=","))
+
+    @property
+    def x(self):
+        return self.getAxis(0)
+
+    @x.setter
+    def x(self, value):
+        self.axes[0] = value
+
+    @property
+    def y(self):
+        return self.getAxis(1)
+
+    @y.setter
+    def y(self, value):
+        self.axes[1] = value
+
+    @property
+    def z(self):
+        return self.getAxis(2)
+
+    @z.setter
+    def z(self, value):
+        self.axes[2] = value
 
 
 class ExtendMdiSubWindowBase(QMdiSubWindow):

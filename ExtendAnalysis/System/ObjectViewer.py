@@ -12,7 +12,6 @@ class _WaveModel(QAbstractItemModel):
         self.setHeaderData(0, Qt.Horizontal, 'Name')
         self.setHeaderData(1, Qt.Horizontal, 'Type')
         self.setHeaderData(2, Qt.Horizontal, 'Shape')
-        self.setHeaderData(3, Qt.Horizontal, 'Path')
 
     def data(self, index, role=Qt.DisplayRole):
         if not index.isValid() or not role == Qt.DisplayRole:
@@ -24,8 +23,6 @@ class _WaveModel(QAbstractItemModel):
             return str(list(d.values())[index.row()].data.dtype)
         if index.column() == 2:
             return str(list(d.values())[index.row()].data.shape)
-        if index.column() == 3:
-            list(d.values())[index.row()].FileName()
 
     def rowCount(self, parent):
         if parent.isValid():
@@ -33,7 +30,7 @@ class _WaveModel(QAbstractItemModel):
         return len(self._getWaves())
 
     def columnCount(self, parent):
-        return 4
+        return 3
 
     def index(self, row, column, parent):
         if not parent.isValid():
@@ -51,8 +48,6 @@ class _WaveModel(QAbstractItemModel):
                 return "Type"
             if section == 2:
                 return "Shape"
-            if section == 3:
-                return "Path"
 
     def _getWaves(self):
         from ExtendAnalysis import Wave
@@ -83,8 +78,9 @@ class WaveViewer(QTreeView):
         index = self.selectionModel().selectedIndexes()
         waves = list(self.__model._getWaves().values())
         return [waves[i.row()] for i in index if i.column() == 0]
+
     def __getWaveNames(self):
-        return  list(self.__model._getWaves().keys())
+        return list(self.__model._getWaves().keys())
 
     def _disp(self):
         from ExtendAnalysis import Graph
@@ -101,6 +97,7 @@ class WaveViewer(QTreeView):
     def _multicut(self, type):
         from ExtendAnalysis import MultiCut
         MultiCut(self.__getWaves()[0])
+
     def _delete(self):
         for key in self.__getWaveNames():
             del self.__model._shell.GetDictionary()[key]

@@ -229,7 +229,7 @@ class RightClickableSelectionBox(DataSelectionBox):
     def __print(self):
         data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))
         for d in data:
-            print(d.wave.FileName())
+            print(d.wave)
 
     def __process(self):
         from ExtendAnalysis.Analysis.filtersGUI import FiltersDialog
