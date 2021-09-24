@@ -51,7 +51,7 @@ class CanvasBaseBase(DrawableCanvasBase):
     def OnWaveModified(self, wave):
         self.saveAppearance()
         for d in self._Datalist:
-            if wave.obj == d.wave.obj:
+            if wave == d.wave:
                 self.Remove(d.id, reuse=True)
                 self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, zindex=d.zindex, reuse=True, contour=d.contour, filter=d.filter, wdata=d, vector=d.vector)
                 flg = True

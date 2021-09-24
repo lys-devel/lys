@@ -113,75 +113,38 @@ class WaveMethods(object):
         return self.note["AnalysisLog"]
 
 
-class _wavedata(object):
-    def __init__(self, file):
-        if file is None:
-            self._init()
-        else:
-            self._load(file)
-
-    def Save(self, file):
-        abspath = os.path.abspath(file)
-        os.makedirs(os.path.dirname(abspath), exist_ok=True)
-        np.savez_compressed(file, data=self.data, axes=self.axes, note=self.note, allow_pickle=True)
-        return self
-
-    def _init(self):
-        self.axes = [np.array(None)]
-        self.data = np.array(None)
-        self.note = {}
-
-    def _load(self, file):
-        tmp = np.load(file, allow_pickle=True)
-        data = tmp['data']
-        self.axes = [np.array(None) for i in range(data.ndim)]
-        self.data = data
-        if 'axes' in tmp:
-            self.axes = [axis for axis in tmp['axes']]
-        if 'note' in tmp:
-            self.note = tmp['note'][()]
-        else:
-            self.note = {}
-
-    def _vallist(self):
-        return ['data', 'x', 'y', 'z', 'note', 'axes']
-
-    def __setattr__(self, key, value):
-        if key == 'x' and len(self.axes) > 0:
-            self.axes[0] = np.array(value)
-        elif key == 'y' and len(self.axes) > 1:
-            self.axes[1] = np.array(value)
-        elif key == 'z' and len(self.axes) > 2:
-            self.axes[2] = np.array(value)
-        elif key in ['data']:
-            if isinstance(value, np.ndarray):
-                super().__setattr__(key, value)
-            else:
-                super().__setattr__(key, np.array(value))
-            while(len(self.axes) < self.data.ndim):
-                self.axes.append(np.array(None))
-            while(len(self.axes) > self.data.ndim):
-                self.axes.pop(len(self.axes) - 1)
-        else:
-            super().__setattr__(key, value)
-
-
 class Wave(QObject, WaveMethods):
     modified = pyqtSignal(object)
     _nameIndex = 0
 
     def __init__(self, data=None, *args, **kwargs):
         super().__init__()
-        self.obj = None
         self.__name = None
         if type(data) == str:
-            data = (data + ".npz").replace(".npz.npz", ".npz")
-            self.obj = _wavedata(data)
+            data = self._parseFilename(data)
+            self._load(data)
         else:
-            self.obj = _wavedata(None)
+            self._load(None)
             self.setData(data, *args)
         if "name" in kwargs:
             self.SetName(kwargs["name"])
+
+    def _load(self, file):
+        if file is None:
+            self.axes = [np.array(None)]
+            self.data = np.array(None)
+            self.note = {}
+        else:
+            tmp = np.load(file, allow_pickle=True)
+            data = tmp['data']
+            self.axes = [np.array(None) for i in range(data.ndim)]
+            self.data = data
+            if 'axes' in tmp:
+                self.axes = [axis for axis in tmp['axes']]
+            if 'note' in tmp:
+                self.note = tmp['note'][()]
+            else:
+                self.note = {}
 
     def setData(self, data, *axes):
         if hasattr(data, "__iter__"):
@@ -201,24 +164,31 @@ class Wave(QObject, WaveMethods):
             ax = [None]
         self.axes = ax + waves[0].axes
 
-    def __setattr__(self, key, value):
-        if not key == 'obj':
-            if self.obj is not None:
-                if key in self.obj._vallist():
-                    res = self.obj.__setattr__(key, value)
-                    self.modified.emit(self)
-                    return res
-        super().__setattr__(key, value)
+    def __setattr__(self, key, value):  # TODO add note and axes
+        if key not in ["x", "y", "z", "data"]:
+            super().__setattr__(key, value)
+        if key == 'x' and len(self.axes) > 0:
+            self.axes[0] = np.array(value)
+        elif key == 'y' and len(self.axes) > 1:
+            self.axes[1] = np.array(value)
+        elif key == 'z' and len(self.axes) > 2:
+            self.axes[2] = np.array(value)
+        elif key in ['data']:
+            if isinstance(value, np.ndarray):
+                super().__setattr__(key, value)
+            else:
+                super().__setattr__(key, np.array(value))
+            while(len(self.axes) < self.data.ndim):
+                self.axes.append(np.array(None))
+            while(len(self.axes) > self.data.ndim):
+                self.axes.pop(len(self.axes) - 1)
+        self.modified.emit(self)
 
     def __getattribute__(self, key):
         if key in "xyz":
             index = ['x', 'y', 'z'].index(key)
             return self.getAxis(index)
         else:
-            if key == 'obj':
-                return super().__getattribute__(key)
-            if key in self.obj._vallist():
-                return self.obj.__getattribute__(key)
             return super().__getattribute__(key)
 
     def __getitem__(self, key):
@@ -261,7 +231,9 @@ class Wave(QObject, WaveMethods):
     def Save(self, file):
         file = os.path.abspath(self._parseFilename(file))
         if file is not None:
-            self.obj.Save(file)
+            abspath = os.path.abspath(file)
+            os.makedirs(os.path.dirname(abspath), exist_ok=True)
+            np.savez_compressed(file, data=self.data, axes=self.axes, note=self.note, allow_pickle=True)
             return True
 
     def SetName(self, name):
@@ -272,10 +244,6 @@ class Wave(QObject, WaveMethods):
             self.SetName("wave" + str(Wave._nameIndex))
             Wave._nameIndex += 1
         return self.__name
-
-    def IsConnected(self):
-        print("Wave.IsConnected is deprecated.")
-        return False
 
     def FileName(self):
         print("Wave.FileName is deprecated.")
