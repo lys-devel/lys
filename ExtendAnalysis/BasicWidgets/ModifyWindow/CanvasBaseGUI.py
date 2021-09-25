@@ -272,7 +272,7 @@ class RightClickableSelectionBox(DataSelectionBox):
             w = d.filteredWave.Duplicate()
         text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.Name())
         if ok:
-            w.SetName(text)
+            w.name = text
             addObject(w)
             print(text + " has been added to shell.")
 

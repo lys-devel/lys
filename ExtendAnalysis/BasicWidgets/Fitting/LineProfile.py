@@ -9,6 +9,7 @@ import os
 class LineProfileWidget(QWidget):
     def __init__(self, wavelist, canvas, path=None):
         super().__init__()
+        print("Line profile widget is deprecated.")
         self.__canvas = canvas
         self._waves = wavelist
         self.__initlayout(wavelist, path)

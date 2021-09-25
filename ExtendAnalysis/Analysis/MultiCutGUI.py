@@ -105,7 +105,7 @@ class MultiCut(GridAttachedWindow):
             self._pre.setWave(self.wave)
         elif isinstance(fname, Wave):
             self.wave = DaskWave(fname)
-            self.__file.setText(fname.Name())
+            self.__file.setText(fname.name)
             self._pre.setWave(self.wave)
         elif isinstance(fname, DaskWave):
             self.wave = fname

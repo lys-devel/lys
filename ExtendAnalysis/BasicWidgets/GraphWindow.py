@@ -299,6 +299,7 @@ class PreviewWindow(ExtendMdiSubWindow):
         self.axisflg = False
 
     def OnAnchorChanged(self):
+        print("anchor is deprecated.")
         self.left.Clear()
         self.bottom.Clear()
         flg = False

@@ -39,6 +39,6 @@ class ExportDataTab(QGroupBox):
         w = self.wave.toWave()
         text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.Name())
         if ok:
-            w.SetName(text)
+            w.name = text
             addObject(w)
             print(text + " has been added to shell.")

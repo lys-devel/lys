@@ -3,6 +3,10 @@ from dask.array.core import Array as DArray
 import dask.array as da
 
 
+class WaveMethods:
+    pass
+
+
 class DaskWave(WaveMethods):
     @classmethod
     def initWorkers(cls, n_workers, threads_per_worker=2):

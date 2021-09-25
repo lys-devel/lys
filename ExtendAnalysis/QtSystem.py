@@ -1,10 +1,8 @@
 import sys
 import os
-import PyQt5
-import PyQt5.QtWidgets
-from PyQt5 import QtGui
+from PyQt5 import QtWidgets, QtCore, QtGui
 
-__app = PyQt5.QtWidgets.QApplication([])
+__app = QtWidgets.QApplication([])
 
 
 def systemExit():

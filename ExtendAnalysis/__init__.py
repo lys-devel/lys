@@ -1,5 +1,5 @@
-from . import QtSystem
-from .core import SettingDict
+from . import QtSystem as Qt
+from .core import SettingDict, Wave
 from .ExtendType import *
 from .DaskWave import *
 from .LoadFile import *
@@ -12,7 +12,7 @@ from .Analysis import filters, filtersGUI, MultiCut
 
 def createMainWindow():
     create()
-    QtSystem.systemExit()
+    Qt.systemExit()
 
 
 def makeMainWindow():
@@ -20,4 +20,4 @@ def makeMainWindow():
 
 
 def exitMainWindow():
-    QtSystem.systemExit()
+    Qt.systemExit()
