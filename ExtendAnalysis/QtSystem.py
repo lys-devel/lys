@@ -1,15 +1,13 @@
 import sys
 import os
-from PyQt5 import QtWidgets, QtCore, QtGui
-
-__app = QtWidgets.QApplication([])
+from PyQt5 import QtWidgets, QtGui
 
 
 def systemExit():
     sys.exit(__app.exec())
 
 
-def handle_exception(exc_type, exc_value, exc_traceback):
+def _handle_exception(exc_type, exc_value, exc_traceback):
     """ handle all exceptions """
     if issubclass(exc_type, KeyboardInterrupt):
         if QtGui.qApp:
@@ -23,4 +21,18 @@ def handle_exception(exc_type, exc_value, exc_traceback):
     sys.stderr.write("".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
 
 
-sys.excepthook = handle_exception
+def _set_qt_bindings(package):
+    import builtins
+    __import__ = builtins.__import__
+
+    def hook(name, *args, **kwargs):
+        root, sep, other = name.partition('.')
+        if root == 'LysQt':
+            name = package + sep + other
+        return __import__(name, *args, **kwargs)
+    builtins.__import__ = hook
+
+
+sys.excepthook = _handle_exception
+_set_qt_bindings("PyQt5")
+__app = QtWidgets.QApplication([])
