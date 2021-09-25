@@ -22,7 +22,7 @@ class LineProfileWidget(QWidget):
 
         self._data = QComboBox()
         for w in wavelist:
-            self._data.addItem(w.Name())
+            self._data.addItem(w.name)
 
         self._grf = QCheckBox('Show graph')
         self._save = QCheckBox('Save to')
@@ -30,7 +30,7 @@ class LineProfileWidget(QWidget):
         if path is not None:
             self._path.setText(path)
         else:
-            p, ext = os.path.splitext(wavelist[0].Name())
+            p, ext = os.path.splitext(wavelist[0].name)
             self._path.setText('Analysis/' + p)
 
         hbox5 = QHBoxLayout()

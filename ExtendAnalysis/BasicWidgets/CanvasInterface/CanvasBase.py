@@ -86,7 +86,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                 wd = WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter, filteredWave=filteredWave, vector=vector)
                 return wd
         if filter is not None:
-            wav = w.Duplicate()
+            wav = w.duplicate()
             filter.execute(wav)
         else:
             wav = w
@@ -111,7 +111,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         return ids
 
     def _makeInvertedData(self, wav):
-        w = wav.Duplicate()
+        w = wav.duplicate()
         if w.data.ndim == 1:
             w.data, w.x = w.x, w.data
         if w.data.ndim == 2:
@@ -120,14 +120,14 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     def _makeRGBData(self, wav, appearance):
         if wav.data.ndim == 2:
-            wav = wav.Duplicate()
+            wav = wav.duplicate()
             if 'Range' in appearance:
                 rmin, rmax = appearance['Range']
             else:
                 rmin, rmax = 0, np.max(np.abs(wav.data))
             wav.data = self._Complex2HSV(wav.data, rmin, rmax, appearance.get('ColorRotation', 0))
         elif wav.data.ndim == 3:
-            wav = wav.Duplicate()
+            wav = wav.duplicate()
             if 'Range' in appearance:
                 rmin, rmax = appearance['Range']
                 amp = np.where(wav.data < rmin, rmin, wav.data)

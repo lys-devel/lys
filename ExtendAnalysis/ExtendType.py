@@ -1,16 +1,10 @@
 import os
-import sys
 import logging
 import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from . import SettingDict
-__home = os.getcwd()
-sys.path.append(__home)
-
-
-def home():
-    return __home
+from . import home
 
 
 def globalSetting():

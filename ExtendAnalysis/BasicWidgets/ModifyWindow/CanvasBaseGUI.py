@@ -97,7 +97,7 @@ class DataSelectionBox(QTreeView):
         self.__model.clear()
         i = 1
         for l in list:
-            self.__model.setItem(len(list) - i, 0, QStandardItem(l.wave.Name()))
+            self.__model.setItem(len(list) - i, 0, QStandardItem(l.wave.name))
             self.__model.setItem(len(list) - i, 1, QStandardItem(self.canvas.axesName(l.axes)))
             self.__model.setItem(len(list) - i, 2, QStandardItem(str(l.id)))
             i += 1
@@ -267,10 +267,10 @@ class RightClickableSelectionBox(DataSelectionBox):
         from ExtendAnalysis import addObject
         d = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))[0]
         if waveType == "Wave":
-            w = d.wave.Duplicate()
+            w = d.wave.duplicate()
         else:
-            w = d.filteredWave.Duplicate()
-        text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.Name())
+            w = d.filteredWave.duplicate()
+        text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
         if ok:
             w.name = text
             addObject(w)

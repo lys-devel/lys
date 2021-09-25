@@ -22,6 +22,8 @@ class ControlledObjectsModel(QAbstractItemModel):
         item = index.internalPointer()
         if item is not None:
             if index.column() == 0:
+                if hasattr(item, "name"):
+                    return item.name
                 return item.Name()
             elif index.column() == 1:
                 return str(item)
@@ -103,7 +105,7 @@ class controlledWavesGUI(QTreeView):
         i = self.selectionModel().selectedIndexes()[0].row()
         res = self.obj[i]
         if type == "copied":
-            res[0] = res[0].Duplicate()
+            res[0] = res[0].duplicate()
         return res
 
     def _display(self, type="Connected"):

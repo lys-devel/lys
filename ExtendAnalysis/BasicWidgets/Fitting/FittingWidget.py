@@ -112,7 +112,7 @@ class FittingWidget(QWidget):
     def __setName(self):
         txt = self._target.currentText()
         self.wave = Wave(home() + '/' + txt)
-        if self.wave.Name() is not None:
+        if self.wave.name is not None:
             if txt.startswith('Analysis'):
                 path, ext = os.path.splitext(txt)
                 self.path.setText(path)

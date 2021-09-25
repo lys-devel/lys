@@ -211,7 +211,7 @@ class ExecutorList(controlledObjects):
         return EmptyFilter()
 
     def makeWave(self, wave_orig, axes):
-        wave = wave_orig.Duplicate()
+        wave = wave_orig.duplicate()
         slices = [slice(None, None, None)] * wave.data.ndim
         sumlist = []
         for e in self.__exeList(wave):

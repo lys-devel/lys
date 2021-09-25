@@ -1,13 +1,7 @@
 from ExtendAnalysis import *
-from dask.array.core import Array as DArray
-import dask.array as da
 
 
-class WaveMethods:
-    pass
-
-
-class DaskWave(WaveMethods):
+class DaskWave2:
     @classmethod
     def initWorkers(cls, n_workers, threads_per_worker=2):
         try:
@@ -23,7 +17,7 @@ class DaskWave(WaveMethods):
     def __init__(self, wave, axes=None, chunks="auto", note={}):
         if isinstance(wave, Wave):
             self.__fromWave(wave, axes, chunks)
-        elif isinstance(wave, DArray):
+        elif isinstance(wave, da.core.Array):
             self.__fromda(wave, axes, chunks, note)
         elif isinstance(wave, DaskWave):
             self.__fromda(wave.data, wave.axes, chunks, wave.note)
@@ -81,7 +75,6 @@ class DaskWave(WaveMethods):
                     else:
                         axes.append(ax[s])
             d = DaskWave(data, axes=axes, note=copy.deepcopy(self.note))
-            d.addAnalysisLog("Wave sliced: " + str(key) + "\n")
             return d
         else:
             super().__getitem__(key)
