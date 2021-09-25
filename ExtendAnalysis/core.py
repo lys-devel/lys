@@ -4,7 +4,7 @@ import copy
 import numpy as np
 import _pickle as cPickle
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from LysQt.QtCore import QObject, pyqtSignal
 
 
 class SettingDict(dict):
@@ -20,7 +20,7 @@ class SettingDict(dict):
         file (string): The filename to be loaded and saved
 
     Examples:
-        >>> d = SettingDict() 
+        >>> d = SettingDict()
         >>> d["setting1"] = "SettingString"
         >>> d.Save("Setting.dic")
 
@@ -65,6 +65,8 @@ class SettingDict(dict):
 
 
 class _WaveDataDescriptor:
+    """Descriptor for WaveData"""
+
     def __set__(self, instance, value):
         instance._data = np.array(value)
         instance.axes._update(instance._data)
@@ -74,7 +76,183 @@ class _WaveDataDescriptor:
         return instance._data
 
 
+class _WaveAxesDescriptor:
+    """Descriptor for WaveAxes"""
+
+    def __set__(self, instance, value):
+        # check type
+        if not hasattr(value, "__iter__"):
+            raise TypeError("Axes should be a list of 1-dimensional array or None")
+        for item in value:
+            if (not isinstance(item, np.ndarray)) and (not isinstance(item, list)) and (not isinstance(item, tuple)) and item is not None:
+                raise TypeError("Axes should be a 1-dimensional sequence or None")
+        # set actual instance
+        instance._axes = WaveAxes(instance, [np.array(item) for item in value])
+        instance.update()
+
+    def __get__(self, instance, objtype=None):
+        return instance._axes
+
+
+class WaveAxes(list):
+    """Axes in :class:`Wave` class
+
+    WaveAxes is a list of numpy array that defines axes of the :class:`Wave`.
+    Some usufull functions are added to built-in list.
+
+    WaveAxes should be initialized from :class:`Wave` class. Users SHOULD NOT instantiate this class.
+    """
+
+    def __init__(self, parent, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._parent = weakref.ref(parent)
+
+    def __setitem__(self, key, value):
+        super().__setitem__(key, value)
+        self._parent().update()
+
+    def getAxis(self, dim):
+        """
+
+        Return the axis specified dimension.
+        This function can be accessed directly from :class:`Wave` class.
+
+        If the specified axis is invalid, then the default axis is automatically generated and returned.
+
+        Args:
+            dim (int): The dimension of the axis.
+
+        Returns:
+            numpy.ndarray: The axis of the specified dimension.
+
+        Example:
+            >>> w = Wave(np.ones([2,2]), [1,2], None)
+            >>> w.getAxis(0)
+            [1,2]
+            >>> w.axisIsValid(1)
+            [0,1] # automatically generated axis
+        """
+        data = self._parent().data
+        val = np.array(self[dim])
+        if data.ndim <= dim:
+            return None
+        elif val.ndim == 0:
+            return np.arange(data.shape[dim])
+        else:
+            if data.shape[dim] == val.shape[0]:
+                return val
+            else:
+                res = np.empty((data.shape[dim]))
+                for i in range(data.shape[dim]):
+                    res[i] = np.NaN
+                for i in range(min(data.shape[dim], val.shape[0])):
+                    res[i] = val[i]
+                return res
+
+    def axisIsValid(self, dim):
+        """
+        Check if the axis is valid.
+        This function can be accessed directly from :class:`Wave` class.
+
+        Args:
+            dim (int): The dimension to check the axis is valid.
+
+        Returns:
+            bool: The specified axis is valid or not.
+
+        Example:
+            >>> w = Wave(np.ones([2,2]), [1,2], None)
+            >>> w.axisIsValid(0)
+            True
+            >>> w.axisIsValid(1)
+            False
+        """
+        ax = self[dim]
+        if ax is None or (ax == np.array(None)).all():
+            return False
+        return True
+
+    def posToPoint(self, pos, axis=None):
+        """
+        posToPoint translate the specified position in axis to the nearest index in data.
+        This function can be accessed directly from :class:`Wave` class.
+
+        if axis is None, then pos should be array of size = data.ndim.
+        pos = (x,y,z,...) is translated to indice (n1, n2, n3, ...)
+
+        if axis is not None, then pos is interpreted as position in axis-th dimension.
+        When axis = 1, pos = (y1, y2, y3, ...) is translated to indice (n2_1, n2_2, n2_3, ...)
+
+        Args:
+            pos (numpy.ndarray or float): The position that is translted to indice.
+            axis (None or int): see above description
+
+        Returns:
+            tuple or int: The indice corresponding to pos.
+
+        Example:
+            >>> w = Wave(np.ones([2,2]), [1,2,3], [3,4,5])
+            >>> w.posToPoint((2,4))
+            (1,1) # position (x,y)=(2,4) corresponds index (1,1)
+            >>> w.posToPoint((1,2,3), axis=0)
+            (0,1,2) # position (x1, x2, x3 = 1,2,3) in the 0th dimension correspoinds index (0,1,2)
+            >>> w.posToPoint(2, axis=0)
+            1 # position x = 2  correspoinds index 1 in 0th dimension
+        """
+        if axis is None:
+            axes = [self.getAxis(d) for d in range(len(self))]
+            return tuple(np.abs(ax - val).argmin() for val, ax in zip(pos, axes))
+        else:
+            if hasattr(pos, "__iter__"):
+                return tuple(self.posToPoint(p, axis) for p in pos)
+            return np.abs(self.getAxis(axis) - pos).argmin()
+
+    def pointToPos(self, indice, axis=None):
+        """
+        pointToPos translate the specified indice to the position in data.
+        This function can be accessed directly from :class:`Wave` class.
+
+        If axis is None, then indice should be array of size = data.ndim.
+        indice = (n1, n2, n3, ...) is translated to indice (x, y, z, ...)
+
+        If axis is not None, then indice is interpreted as indice in axis-th dimension.
+        When axis = 1, pos = (n1, n2, n3, ...) is translated to indice (y1, y2, y3, ...)
+
+        Args:
+            indice (array of int): The indice that is translted to position.
+            axis (None or int): see above description
+
+        Returns:
+            tuple or float: The position corresponding to indice.
+
+        Example:
+            >>> w = Wave(np.ones([2,2]), [1,2,3], [3,4,5])
+            >>> w.pointToPos((1,1))
+            (2,4) # index (1,1) corresponds to position (x,y)=(2,4)
+            >>> w.posToPoint((0,1,2), axis=0)
+            (1,2,3) # index (0,1,2) in the 0th dimension correspoinds position (x1, x2, x3 = 1,2,3)
+            >>> w.posToPoint(1, axis=0)
+            2 #  index 1 in 0th dimensions correspoinds position x = 2
+        """
+        if axis is None:
+            axes = [self.getAxis(d) for d in range(len(self))]
+            return tuple(ax[val] for val, ax in zip(indice, axes))
+        else:
+            if hasattr(indice, "__iter__"):
+                return tuple(self.pointToPos(i, axis) for i in indice)
+            ax = self.getAxis(axis)
+            return ax[indice]
+
+    def _update(self, data):
+        while(len(self) < data.ndim):
+            self.append(np.array(None))
+        while(len(self) > data.ndim):
+            self.pop(len(self) - 1)
+
+
 class _WaveNoteDescriptor:
+    """Descriptor for WaveNote"""
+
     def __set__(self, instance, value):
         # check type
         if not isinstance(value, dict):
@@ -100,97 +278,6 @@ class WaveNote(dict):
 
     def getAnalysisLog(self):
         return self["AnalysisLog"]
-
-
-class _WaveAxesDescriptor:
-    def __set__(self, instance, value):
-        # check type
-        if not hasattr(value, "__iter__"):
-            raise TypeError("Axes should be a list of 1-dimensional array or None")
-        # set actual instance
-        instance._axes = WaveAxes(instance, [np.array(item) for item in value])
-        instance.update()
-
-    def __get__(self, instance, objtype=None):
-        return instance._axes
-
-
-class WaveAxes(list):
-    def __init__(self, parent, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._parent = weakref.ref(parent)
-
-    def __setitem__(self, key, value):
-        super().__setitem__(key, value)
-        self._parent().update()
-
-    def getAxis(self, dim):
-        data = self._parent().data
-        val = np.array(self[dim])
-        if data.ndim <= dim:
-            return None
-        elif val.ndim == 0:
-            return np.arange(data.shape[dim])
-        else:
-            if data.shape[dim] == val.shape[0]:
-                return val
-            else:
-                res = np.empty((data.shape[dim]))
-                for i in range(data.shape[dim]):
-                    res[i] = np.NaN
-                for i in range(min(data.shape[dim], val.shape[0])):
-                    res[i] = val[i]
-                return res
-
-    def axisIsValid(self, dim):
-        ax = self[dim]
-        if ax is None or (ax == np.array(None)).all():
-            return False
-        return True
-
-    def posToPoint(self, pos, axis=None):
-        data = self._parent().data
-        if axis is None:
-            x0 = data.x[0]
-            x1 = data.x[len(data.x) - 1]
-            y0 = data.y[0]
-            y1 = data.y[len(data.y) - 1]
-            dx = (x1 - x0) / (len(data.x) - 1)
-            dy = (y1 - y0) / (len(data.y) - 1)
-            return (int(round((pos[0] - x0) / dx)), int(round((pos[1] - y0) / dy)))
-        else:
-            if hasattr(pos, "__iter__"):
-                return [self.posToPoint(p, axis) for p in pos]
-            ax = self.getAxis(axis)
-            x0 = ax[0]
-            x1 = ax[len(ax) - 1]
-            dx = (x1 - x0) / (len(ax) - 1)
-            return int(round((pos - x0) / dx))
-
-    def pointToPos(self, p, axis=None):
-        data = self._parent().data
-        if axis is None:
-            x0 = data.x[0]
-            x1 = data.x[len(data.x) - 1]
-            y0 = data.y[0]
-            y1 = data.y[len(data.y) - 1]
-            dx = (x1 - x0) / (len(data.x) - 1)
-            dy = (y1 - y0) / (len(data.y) - 1)
-            return (p[0] * dx + x0, p[1] * dy + y0)
-        else:
-            if hasattr(p, "__iter__"):
-                return [self.pointToPos(pp, axis) for pp in p]
-            ax = self.getAxis(axis)
-            x0 = ax[0]
-            x1 = ax[len(ax) - 1]
-            dx = (x1 - x0) / (len(ax) - 1)
-            return p * dx + x0
-
-    def _update(self, data):
-        while(len(self) < data.ndim):
-            self.append(np.array(None))
-        while(len(self) > data.ndim):
-            self.pop(len(self) - 1)
 
 
 def _produceWave(data, axes, note):
@@ -281,7 +368,7 @@ class Wave(QObject):
     def __reduce_ex__(self, proto):
         return _produceWave, (self.data, list(self.axes), self.note)
 
-    @staticmethod
+    @ staticmethod
     def SupportedFormats():
         return ["Numpy npz (*.npz)", "Comma-Separated Values (*.csv)", "Text file (*.txt)"]
 
@@ -296,7 +383,7 @@ class Wave(QObject):
         if type in ["Text file (*.txt)", ".txt", "txt"]:
             np.savetxt(path + ".txt".replace(".txt.txt", ".txt"), self.data)
 
-    @staticmethod
+    @ staticmethod
     def importFrom(path):
         _, ext = os.path.splitext(path)
         if ext == "npz":
@@ -310,37 +397,37 @@ class Wave(QObject):
     def Name(self):
         return self.name
 
-    @property
+    @ property
     def name(self):
         if "name" not in self.note:
             self.name = "wave" + str(Wave._nameIndex)
             Wave._nameIndex += 1
         return self.note.get("name")
 
-    @name.setter
+    @ name.setter
     def name(self, value):
         self.note["name"] = value
 
-    @property
+    @ property
     def x(self):
         return self.getAxis(0)
 
-    @x.setter
+    @ x.setter
     def x(self, value):
         self.axes[0] = value
 
-    @property
+    @ property
     def y(self):
         return self.getAxis(1)
 
-    @y.setter
+    @ y.setter
     def y(self, value):
         self.axes[1] = value
 
-    @property
+    @ property
     def z(self):
         return self.getAxis(2)
 
-    @z.setter
+    @ z.setter
     def z(self, value):
         self.axes[2] = value
