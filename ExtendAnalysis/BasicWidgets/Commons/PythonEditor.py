@@ -1,14 +1,16 @@
 # syntax.py
 
-import sys, os
+import os
 
 import autopep8
+import weakref
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from ExtendAnalysis import *
+
 
 def format(color, style=''):
     """Return a QTextCharFormat with the given attributes.
@@ -23,6 +25,7 @@ def format(color, style=''):
         _format.setFontItalic(True)
 
     return _format
+
 
 # Syntax styles that can be shared by all languages
 STYLES = {
@@ -39,6 +42,7 @@ STYLES = {
     'numbers': format('#D19965'),
 }
 
+
 class PythonHighlighter (QSyntaxHighlighter):
     """Syntax highlighter for the Python language.
     """
@@ -52,7 +56,7 @@ class PythonHighlighter (QSyntaxHighlighter):
         'None', 'True', 'False', 'with', 'as'
     ]
     keywords2 = [
-        '__init__','__del__','format','len','super', 'cd', 'home', 'pwd', 'cp', 'mv', 'rm', 'range', 'open'
+        '__init__', '__del__', 'format', 'len', 'super', 'cd', 'home', 'pwd', 'cp', 'mv', 'rm', 'range', 'open'
     ]
     # Python operators
     operators = [
@@ -71,6 +75,7 @@ class PythonHighlighter (QSyntaxHighlighter):
     braces = [
         '\{', '\}', '\(', '\)', '\[', '\]',
     ]
+
     def __init__(self, document):
         QSyntaxHighlighter.__init__(self, document)
 
@@ -84,13 +89,13 @@ class PythonHighlighter (QSyntaxHighlighter):
 
         # Keyword, operator, and brace rules
         rules += [(r'\b%s\b' % w, 0, STYLES['keyword'])
-            for w in PythonHighlighter.keywords]
+                  for w in PythonHighlighter.keywords]
         rules += [(r'\b%s\b' % w, 0, STYLES['keyword2'])
-            for w in PythonHighlighter.keywords2]
+                  for w in PythonHighlighter.keywords2]
         rules += [(r'%s' % o, 0, STYLES['operator'])
-            for o in PythonHighlighter.operators]
+                  for o in PythonHighlighter.operators]
         rules += [(r'%s' % b, 0, STYLES['brace'])
-            for b in PythonHighlighter.braces]
+                  for b in PythonHighlighter.braces]
 
         # All other rules
         rules += [
@@ -118,8 +123,7 @@ class PythonHighlighter (QSyntaxHighlighter):
 
         # Build a QRegExp for each pattern
         self.rules = [(QRegExp(pat), index, fmt)
-            for (pat, index, fmt) in rules]
-
+                      for (pat, index, fmt) in rules]
 
     def highlightBlock(self, text):
         """Apply syntax highlighting to the given block of text.
@@ -141,7 +145,6 @@ class PythonHighlighter (QSyntaxHighlighter):
         in_multiline = self.match_multiline(text, *self.tri_single)
         if not in_multiline:
             in_multiline = self.match_multiline(text, *self.tri_double)
-
 
     def match_multiline(self, text, delimiter, in_state, style):
         """Do highlighting of multi-line strings. ``delimiter`` should be a
@@ -183,36 +186,42 @@ class PythonHighlighter (QSyntaxHighlighter):
         else:
             return False
 
+
 class _PlainTextEdit(QPlainTextEdit):
-    keyPressed=pyqtSignal(QKeyEvent)
-    def __init__(self,parent):
+    keyPressed = pyqtSignal(QKeyEvent)
+
+    def __init__(self, parent):
         super().__init__(parent)
-        self.metrics=self.fontMetrics()
-        self.setTabStopWidth(self.metrics.width(" ")*6)
-        self.setViewportMargins(self.metrics.width("8")*8, 0, 0, 0)
+        self.metrics = self.fontMetrics()
+        self.setTabStopWidth(self.metrics.width(" ") * 6)
+        self.setViewportMargins(self.metrics.width("8") * 8, 0, 0, 0)
         self.numberArea = QWidget(self)
-        self.numberArea.setGeometry(0,0,self.fontMetrics().width("8")*8,self.height())
-        self.numberArea.installEventFilter(self);
-    def keyPressEvent(self,event):
+        self.numberArea.setGeometry(0, 0, self.fontMetrics().width("8") * 8, self.height())
+        self.numberArea.installEventFilter(self)
+
+    def keyPressEvent(self, event):
         self.keyPressed.emit(event)
         super().keyPressEvent(event)
-        if event.key()==Qt.Key_Return:
+        if event.key() == Qt.Key_Return:
             for i in range(self.textCursor().block().previous().text().count('\t')):
                 self.insertPlainText('\t')
-    def paintEvent(self,e):
+
+    def paintEvent(self, e):
         super().paintEvent(e)
         if self.numberArea.height() == self.height():
             num = 1
         else:
             num = 0
-        self.numberArea.setGeometry(0,0,self.fontMetrics().width("8")*8,self.height()+num)
-    def eventFilter(self,obj,event):
+        self.numberArea.setGeometry(0, 0, self.fontMetrics().width("8") * 8, self.height() + num)
+
+    def eventFilter(self, obj, event):
         if obj == self.numberArea and event.type() == QEvent.Paint:
             self.drawLineNumbers(obj)
             return True
-        return False;
-    def drawLineNumbers(self,o):
-        c = self.cursorForPosition(QPoint(0,0))
+        return False
+
+    def drawLineNumbers(self, o):
+        c = self.cursorForPosition(QPoint(0, 0))
         block = c.block()
         paint = QPainter()
         paint.begin(o)
@@ -221,54 +230,63 @@ class _PlainTextEdit(QPlainTextEdit):
         while block.isValid():
             c.setPosition(block.position())
             r = self.cursorRect(c)
-            if r.bottom() > self.height()+10: break
-            paint.drawText(QPoint(10,r.bottom()-3),str(block.blockNumber()+1))
+            if r.bottom() > self.height() + 10:
+                break
+            paint.drawText(QPoint(10, r.bottom() - 3), str(block.blockNumber() + 1))
             block = block.next()
         paint.end()
+
+
 class PythonEditor(ExtendMdiSubWindow):
-    __list=[]
+    __list = []
     updated = False
+
     @classmethod
-    def _Add(cls,win):
+    def _Add(cls, win):
         cls.__list.append(weakref.ref(win))
+
     @classmethod
     def CloseAllEditors(cls):
         for w in cls.__list:
             if w() is not None:
-                res=w().close()
+                res = w().close()
                 if not res:
                     return False
         return True
-    def __init__(self,file):
+
+    def __init__(self, file):
         super().__init__()
-        self.widget=_PlainTextEdit(self)
+        self.widget = _PlainTextEdit(self)
         self.widget.keyPressed.connect(self.keyPressed)
         self.widget.setStyleSheet("background-color : #282C34; color: #eeeeee;")
-        self.highlighter=PythonHighlighter(self.widget.document())
-        self.file=os.path.abspath(file)
+        self.highlighter = PythonHighlighter(self.widget.document())
+        self.file = os.path.abspath(file)
         with open(self.file, 'r') as data:
-            self.widget.setPlainText(autopep8.fix_code(data.read()).replace("    ","\t"))
+            self.widget.setPlainText(autopep8.fix_code(data.read()).replace("    ", "\t"))
         self.setWidget(self.widget)
         self.widget.textChanged.connect(self.updateText)
-        self.resize(600,600)
+        self.resize(600, 600)
         PythonEditor._Add(self)
         self.refreshTitle()
+
     def refreshTitle(self):
         if self.updated:
             self.setWindowTitle(os.path.basename(self.file) + " (modified)")
         else:
             self.setWindowTitle(os.path.basename(self.file))
-    def keyPressed(self,event):
+
+    def keyPressed(self, event):
         if event.key() == Qt.Key_S:
             if (event.modifiers() and Qt.ControlModifier):
                 self.save()
+
     def save(self):
         with open(self.file, 'w') as data:
-            data.write(autopep8.fix_code(self.widget.toPlainText()).replace("    ","\t"))
+            data.write(autopep8.fix_code(self.widget.toPlainText()).replace("    ", "\t"))
         self.updated = False
         self.refreshTitle()
 
-    def closeEvent(self,event):
+    def closeEvent(self, event):
         if not self.updated:
             return
         msg = QMessageBox()
@@ -277,14 +295,15 @@ class PythonEditor(ExtendMdiSubWindow):
         msg.setWindowTitle(os.path.basename(self.file))
         msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
         ok = msg.exec_()
-        if ok==QMessageBox.Cancel:
+        if ok == QMessageBox.Cancel:
             event.ignore()
-        if ok==QMessageBox.No:
+        if ok == QMessageBox.No:
             self.updated = False
             event.accept()
-        if ok==QMessageBox.Yes:
+        if ok == QMessageBox.Yes:
             self.save()
             event.accept()
+
     def updateText(self):
-        self.updated=True
+        self.updated = True
         self.refreshTitle()

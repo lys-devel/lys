@@ -264,7 +264,7 @@ class RightClickableSelectionBox(DataSelectionBox):
                 d.filteredWave.export(path, type=type)
 
     def __send(self, waveType):
-        from ExtendAnalysis import addObject
+        from ExtendAnalysis.plugin import shell
         d = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))[0]
         if waveType == "Wave":
             w = d.wave.duplicate()
@@ -273,8 +273,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
         if ok:
             w.name = text
-            addObject(w)
-            print(text + " has been added to shell.")
+            shell.addObject(w, text)
 
 
 class OffsetAdjustBox(QWidget):

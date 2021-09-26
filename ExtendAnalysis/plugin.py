@@ -14,7 +14,9 @@ Example:
 """
 
 from .LoadFile import _addFileLoader
-from .MainWindow import _getMainMenu
+from .shell import ExtendShell
+
+shell = ExtendShell()
 
 
 def registerFileLoader(type, func):
@@ -62,4 +64,5 @@ def getMainMenu():
         >>> act = plugins.getMainMenu.AddAction("Print")
         >>> act.triggered.connect(lambda: print("test"))
     """
+    from ExtendAnalysis.MainWindow import _getMainMenu
     return _getMainMenu()

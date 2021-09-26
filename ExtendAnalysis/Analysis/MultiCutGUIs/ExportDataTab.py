@@ -35,10 +35,10 @@ class ExportDataTab(QGroupBox):
             self.wave.export(path, type=type)
 
     def __send(self):
-        from ExtendAnalysis import addObject
+        from ExtendAnalysis.plugin import shell
         w = self.wave.compute()
         text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
         if ok:
             w.name = text
-            addObject(w)
+            shell.addObject(w)
             print(text + " has been added to shell.")

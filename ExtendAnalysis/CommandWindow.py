@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 import os
-import glob
 from .Tasks import *
 
 from .ExtendType import *
@@ -159,12 +158,10 @@ class WorkspaceWidget(FileSystemView):
 
 
 class CommandWindow(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, shell, parent=None):
         super(CommandWindow, self).__init__(parent)
-        self.setWindowTitle("Command Window")
-        self.resize(600, 600)
         self.__loadData()
-        self.__shell = ExtendShell(self, ".lys/commandlog2.log")
+        self.__shell = shell
         self.__CreateLayout()
         self.show()
 
@@ -173,12 +170,8 @@ class CommandWindow(QWidget):
             with open("proc.py", "w") as file:
                 file.write("from ExtendAnalysis import *")
 
-    def clearLog(self):
-        self.output.clear()
-
     def saveData(self):
         self.output.save()
-        self.__shell.save()
         if not PythonEditor.CloseAllEditors():
             return False
         AutoSavedWindow.StoreAllWindows()
@@ -211,18 +204,3 @@ class CommandWindow(QWidget):
         lay = QHBoxLayout()
         lay.addWidget(layout_h)
         self.setLayout(lay)
-
-    def addObject(self, obj, name=None):
-        if name is None:
-            name = obj.Name()
-        self.__shell.GetDictionary()[name] = obj
-        self._waveViewer.update()
-
-    def getObject(self, name=None):
-        if name is None:
-            return None
-        dict = self.__shell.GetDictionary()
-        if name in dict:
-            return dict[name]
-        else:
-            return None

@@ -1,6 +1,6 @@
 import os
 from ..BasicWidgets import *
-from ..functions import loadableFiles
+from ..functions import load, loadableFiles
 
 
 class ColoredFileSystemModel(ExtendFileSystemModel):
@@ -69,7 +69,8 @@ class FileWidget(FileSystemView):
 
     def __load(self):
         for p in self.selectedPaths():
-            self.__shell.Load(p)
+            nam, ext = os.path.splitext(os.path.basename(p))
+            self.__shell.addObject(load(p), name=nam)
 
     def __openpy(self):
         for p in self.selectedPaths():

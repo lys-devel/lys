@@ -2,7 +2,7 @@ from LysQt.QtWidgets import QMainWindow, QMdiArea, QSplitter
 from LysQt.QtCore import Qt
 from .CommandWindow import CommandWindow
 from .BasicWidgets import *
-from . import home
+from . import home, plugin
 
 
 class MainWindow(QMainWindow):
@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
     def __initUI(self):
         self.setWindowTitle('lys')
         self.area = QMdiArea()
-        self.com = CommandWindow()
+        self.com = CommandWindow(plugin.shell)
 
         sp = QSplitter(Qt.Horizontal)
         sp.addWidget(self.area)
@@ -57,7 +57,6 @@ class MainWindow(QMainWindow):
         event.accept()
 
     def __showproc(self):
-        #from .BasicWidgets.Commons.PythonEditor import PythonEditor
         PythonEditor(home() + '/proc.py')
 
 
@@ -67,11 +66,3 @@ def addSubWindow(win):
 
 def _getMainMenu():
     return MainWindow._instance.menuBar()
-
-
-def addObject(*args, **kwargs):
-    MainWindow._instance.com.addObject(*args, **kwargs)
-
-
-def getObject(*args, **kwargs):
-    return MainWindow._instance.com.getObject(*args, **kwargs)

@@ -51,7 +51,7 @@ class _WaveModel(QAbstractItemModel):
 
     def _getWaves(self):
         from ExtendAnalysis import Wave
-        return {key: value for key, value in self._shell.GetDictionary().items() if isinstance(value, Wave)}
+        return {key: value for key, value in self._shell.dict.items() if isinstance(value, Wave)}
 
     def update(self):
         size = self.rowCount(parent=QModelIndex())
@@ -100,7 +100,7 @@ class WaveViewer(QTreeView):
 
     def _delete(self):
         for key in self.__getWaveNames():
-            del self.__model._shell.GetDictionary()[key]
+            del self.__model._shell.dict[key]
 
     def update(self):
         super().update()
