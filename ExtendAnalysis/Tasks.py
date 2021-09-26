@@ -2,10 +2,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 
 from concurrent.futures import *
-import time
-import os
-import threading
-import multiprocessing
 from loky import get_reusable_executor
 
 

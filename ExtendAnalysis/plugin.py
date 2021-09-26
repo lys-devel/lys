@@ -14,6 +14,7 @@ Example:
 """
 
 from .LoadFile import _addFileLoader
+from .MainWindow import _getMainMenu
 
 
 def registerFileLoader(type, func):
@@ -44,3 +45,21 @@ def registerFileLoader(type, func):
         numpy.ndarray
     """
     _addFileLoader(type, func)
+
+
+def getMainMenu():
+    """
+    Return main menu of lys.
+
+    This function is used to add new menu.
+
+    Return:
+        QMenuBar: menu bar of lys.
+
+    Example:
+
+        >>> from lys import plugin
+        >>> act = plugins.getMainMenu.AddAction("Print")
+        >>> act.triggered.connect(lambda: print("test"))
+    """
+    return _getMainMenu()

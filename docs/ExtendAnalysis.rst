@@ -49,14 +49,6 @@ ExtendAnalysis Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`QtSystem` Module
-----------------------
-
-.. automodule:: ExtendAnalysis.QtSystem
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`Tasks` Module
 -------------------
 

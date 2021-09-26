@@ -126,10 +126,3 @@ class MultiCut(GridAttachedWindow):
 
     def useDask(self):
         return self.__useDask.isChecked()
-
-
-def create():
-    win = MultiCut()
-
-
-addMainMenu(['Analysis', 'MultiCut'], create)

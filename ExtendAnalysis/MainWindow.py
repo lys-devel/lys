@@ -1,57 +1,53 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from LysQt.QtWidgets import QMainWindow, QMdiArea, QSplitter
+from LysQt.QtCore import Qt
 from .CommandWindow import CommandWindow
 from .BasicWidgets import *
-from .ExtendType import home
-from collections import OrderedDict
+from . import home
 
 
 class MainWindow(QMainWindow):
-    _actions = OrderedDict(File={"Exit": exit})
     _instance = None
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Analysis Program Lys')
         MainWindow._instance = self
-        sp = QSplitter(Qt.Horizontal)
-        self.area = QMdiArea()
+        self.__initUI()
+        self.__initMenu()
         ExtendMdiSubWindow.mdimain = self.area
+        AutoSavedWindow.RestoreAllWindows()
+
+    def __initUI(self):
+        self.setWindowTitle('lys')
+        self.area = QMdiArea()
         self.com = CommandWindow()
+
+        sp = QSplitter(Qt.Horizontal)
         sp.addWidget(self.area)
         sp.addWidget(self.com)
         self.setCentralWidget(sp)
-        self.__prepareMenu()
-        self.__createMenu(self.menuBar(), MainWindow._actions)
         self.show()
-        AutoSavedWindow.RestoreAllWindows()
 
-    def __prepareMenu(self):
-        m = MainWindow._actions
-        m['Window'] = {}
-        m['Window']['Proc'] = QAction('Show proc.py', triggered=self.__showproc)
-        m['Window']['Proc'].setShortcut("Ctrl+P")
-        m['Window']['closeGraphs'] = QAction('Close all graphs', triggered=Graph.closeAllGraphs)
-        m['Window']['closeGraphs'].setShortcut("Ctrl+K")
-        m['Window']['hideSide'] = QAction('CommandWindow', triggered=self._hidecom)
-        m['Window']['hideSide'].setShortcut("Ctrl+J")
+    def __initMenu(self):
+        menu = self.menuBar()
+        file = menu.addMenu("File")
 
-    def _hidecom(self):
-        if self.com.isVisible():
-            self.com.hide()
-        else:
-            self.com.show()
+        act = file.addAction("Exit")
+        act.triggered.connect(exit)
 
-    def __createMenu(self, menu, actions):
-        for key in actions.keys():
-            if not isinstance(actions[key], dict):
-                if isinstance(actions[key], QAction):
-                    menu.addAction(actions[key])
-                else:
-                    menu.addAction(QAction(key, self, triggered=actions[key]))
-            else:
-                item = menu.addMenu(key)
-                self.__createMenu(item, actions[key])
+        win = menu.addMenu("Window")
+
+        act = win.addAction("Show proc.py")
+        act.triggered.connect(self.__showproc)
+        act.setShortcut("Ctrl+P")
+
+        act = win.addAction("Close all graphs")
+        act.triggered.connect(Graph.closeAllGraphs)
+        act.setShortcut("Ctrl+K")
+
+        act = win.addAction("Show/Hide Command Window")
+        act.triggered.connect(lambda: self.com.setVisible(not self.com.isVisible()))
+        act.setShortcut("Ctrl+J")
+        return
 
     def closeEvent(self, event):
         if not self.com.saveData():
@@ -65,23 +61,12 @@ class MainWindow(QMainWindow):
         PythonEditor(home() + '/proc.py')
 
 
-def create():
-    main = MainWindow()
-    return main
-
-
 def addSubWindow(win):
     MainWindow._instance.area.addSubWindow(win)
 
 
-def addMainMenu(namelist, function):
-    act = MainWindow._actions
-    for i in range(0, len(namelist) - 1):
-        n = namelist[i]
-        if not n in act:
-            act[n] = {}
-        act = act[n]
-    act[namelist[len(namelist) - 1]] = function
+def _getMainMenu():
+    return MainWindow._instance.menuBar()
 
 
 def addObject(*args, **kwargs):
