@@ -8,7 +8,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import pyqtgraph as pg
 from ExtendAnalysis import *
-from ExtendAnalysis import LoadFile
 from ..CanvasInterface import *
 
 warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')

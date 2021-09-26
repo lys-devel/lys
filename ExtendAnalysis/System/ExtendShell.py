@@ -1,5 +1,6 @@
 import cmd
 import os
+import sys
 import traceback
 import rlcompleter
 
@@ -93,7 +94,7 @@ class ExtendShell(QObject):
     def Load(self, name):
         nam, ext = os.path.splitext(os.path.basename(name))
         nam = self.__GetValidName(nam).replace(" ", "_")
-        exec(nam + '=LoadFile.load(\'' + name + '\')', globals())
+        exec(nam + '=load(\'' + name + '\')', globals())
         print(nam + ' is loaded from ' + ext + ' file')
         return eval(nam, globals())
 

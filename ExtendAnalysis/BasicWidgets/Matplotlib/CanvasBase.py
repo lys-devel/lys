@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from ..CanvasInterface import *
-from ExtendAnalysis import LoadFile
 from ExtendAnalysis import *
 import weakref
 import sys

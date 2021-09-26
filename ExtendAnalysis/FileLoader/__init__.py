@@ -1,1 +1,0 @@
-from .COMSOL import loadCOMSOL

@@ -1,8 +1,7 @@
 from . import QtSystem
 from .core import SettingDict, Wave, DaskWave
-from .functions import home
+from .functions import home, load
 from .ExtendType import *
-from .LoadFile import *
 from .Tasks import *
 from .MainWindow import create, addMainMenu, addObject, getObject
 from .BasicWidgets import *

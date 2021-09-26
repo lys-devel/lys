@@ -3,11 +3,6 @@
 .com_settings
 _com_settings
 valtest
-*.grf
-*.npz
-*.dic
-*.val
-*.str
 ExtendAnalysis.egg-info/
 test/.lys/
 test/proc.py

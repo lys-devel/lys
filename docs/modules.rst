@@ -6,3 +6,4 @@
 
    ExtendAnalysis
    setup
+   test

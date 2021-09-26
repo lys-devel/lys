@@ -1,11 +1,12 @@
 import os
 from ..BasicWidgets import *
+from ..functions import loadableFiles
 
 
 class ColoredFileSystemModel(ExtendFileSystemModel):
     def __init__(self):
         super().__init__()
-        for ext in LoadFile.getExtentions():
+        for ext in loadableFiles():
             self.AddAcceptedFilter('*' + ext)
         self.AddAcceptedFilter('*.py')
         self.AddAcceptedFilter('*.fil')

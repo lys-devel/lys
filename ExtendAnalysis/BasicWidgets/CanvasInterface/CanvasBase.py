@@ -2,7 +2,7 @@ from enum import IntEnum
 from matplotlib.colors import hsv_to_rgb
 from .SaveCanvas import *
 from ExtendAnalysis import *
-from ExtendAnalysis import LoadFile
+from ExtendAnalysis import load
 import _pickle as cPickle
 
 
@@ -66,7 +66,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         if isinstance(wave, Wave):
             wav = wave
         else:
-            wav = LoadFile.load(wave)
+            wav = load(wave)
         if appearance is None:
             ids = self._Append(wav, axis, id, {}, offset, zindex, contour=contour, filter=filter, vector=vector)
         else:

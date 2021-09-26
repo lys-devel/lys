@@ -5,6 +5,10 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from . import SettingDict
 from . import home
+from .core import _produceWave
+
+produce = _produceWave
+"""only for backward compability"""
 
 
 def globalSetting():
@@ -179,7 +183,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
 
     @classmethod
     def RestoreAllWindows(cls, workspace='default'):
-        from . import LoadFile
+        from . import load
         AutoSavedWindow._workspace = workspace
         cls.__list = cls._loadWinList()
         AutoSavedWindow._windir = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/wins'
@@ -188,7 +192,7 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         os.makedirs(AutoSavedWindow._windir, exist_ok=True)
         for path in cls.__list:
             try:
-                w = LoadFile.load(path)
+                w = load(path)
                 if path.find(AutoSavedWindow._windir) > -1:
                     w.Disconnect()
             except:

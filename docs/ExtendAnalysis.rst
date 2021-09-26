@@ -25,14 +25,6 @@ ExtendAnalysis Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`DaskWave` Module
-----------------------
-
-.. automodule:: ExtendAnalysis.DaskWave
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`ExtendType` Module
 ------------------------
 
@@ -81,6 +73,22 @@ ExtendAnalysis Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`functions` Module
+-----------------------
+
+.. automodule:: ExtendAnalysis.functions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`plugin` Module
+--------------------
+
+.. automodule:: ExtendAnalysis.plugin
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -88,6 +96,5 @@ Subpackages
 
     ExtendAnalysis.Analysis
     ExtendAnalysis.BasicWidgets
-    ExtendAnalysis.FileLoader
     ExtendAnalysis.System
 

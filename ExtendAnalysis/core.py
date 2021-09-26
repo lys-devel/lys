@@ -837,7 +837,7 @@ class DaskWave(QObject):
         elif isinstance(data, DaskWave):
             self.__fromda(data.data, data.axes, chunks, data.note)
         else:
-            self.__fromWave(Wave(wave, *axes, **note), chunks)
+            self.__fromWave(Wave(data, *axes, **note), chunks)
 
     def __fromWave(self, wave, chunks):
         """Load from Wave"""

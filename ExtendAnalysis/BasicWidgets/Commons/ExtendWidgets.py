@@ -4,7 +4,7 @@ import fnmatch
 import itertools
 from ExtendAnalysis.ExtendType import *
 from ExtendAnalysis.BasicWidgets.GraphWindow import Graph, PreviewWindow, Table
-from ExtendAnalysis import LoadFile
+from ExtendAnalysis import load
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -235,7 +235,7 @@ class _FileSystemViewBase(QWidget):
     def __edit(self):
         t = Table()
         for p in self.selectedPaths():
-            w = LoadFile.load(p)
+            w = load(p)
             t.Append(w)
 
     def Action_Print(self):
@@ -243,7 +243,7 @@ class _FileSystemViewBase(QWidget):
 
     def __print(self):
         for p in self.selectedPaths():
-            w = LoadFile.load(p)
+            w = load(p)
             print(w)
 
 
