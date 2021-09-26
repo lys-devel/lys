@@ -75,14 +75,15 @@ class _WaveDataDescriptor:
 
     Example:
         >>> w = Wave([1,2,3])
+        >>> w.data
+        [1,2,3]
         >>> w.data = [2,3,4]
         >>> w.data
         [2,3,4]
-        >>> type(w.data)
-        np.ndarray
     """
 
     def __set__(self, instance, value):
+        """set data and update axes"""
         instance._data = np.array(value)
         if hasattr(instance, "axes"):
             if instance.axes is not None:
@@ -95,39 +96,49 @@ class _WaveDataDescriptor:
 
 class _WaveAxesDescriptor:
     """
-    Axes of :class:`Wave` implemented as :class:`WaveAxes` class.
+    Axes of :class:`Wave` and :class:`DaskWave` implemented as :class:`WaveAxes` class.
 
     *axes* is list of numpy arrays and is used to visualize data.
 
-    All public methods can also be accessed from :class:`Wave`.
+    All public methods in *WaveAxes* class can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.
 
-    The initialization can be done from constructor of :class:`Wave`
+    Example:
 
-        >>> w = Wave(np.ones([3,3]), [1,2,3], [4,5,6])
-        >>> w.axes
-        [[1,2,3],[4,5,6]]
+        The initialization can be done from constructor of :class:`Wave`
 
-    Then the *axes* can be changed as following.
+            >>> w = Wave(np.ones([3,3]), [1,2,3], [4,5,6])
+            >>> w.axes
+            [[1,2,3],[4,5,6]]
 
-        >>> w.axes[0] = [7,8,9]
-        >>> w.axes
-        [[7,8,9],[4,5,6]]
+        Then the *axes* can be changed as following.
 
-    None can also be set to axis.
+            >>> w.axes[0] = [7,8,9]
+            >>> w.axes
+            [[7,8,9],[4,5,6]]
 
-        >>> w.axes[1] = None
-        >>> w.axes
-        [[7,8,9], None]
+        None can also be set to axis.
 
-    Even if the axis is None, valid axis can be obtained by getAxis.
+            >>> w.axes[1] = None
+            >>> w.axes
+            [[7,8,9], None]
 
-        >>> w.getAxis(0)
-        [7,8,9]
-        >>> w.getAxis(1)
-        [0,1,2]
+        Even if the axis is None, automatically-generated axis can be always obtained by *getAxis* method.
+
+            >>> w.getAxis(0)
+            [7,8,9]
+            >>> w.getAxis(1)
+            [0,1,2]
+
+        *x*, *y*, and *z* is shortcut to axes[0], axes[1], and axes[2]
+
+            >>> w = Wave(np.ones([2,3]), [0,1], [2,3,4])
+            >>> w.x
+            [0,1]
+            >>> w.y
+            [2,3,4]
 
     See also:
-        :meth:`WaveAxes.getAxis`, :class:`WaveAxes`, :attr:`x`, :attr:`y`, :attr:`z`
+        :class:`WaveAxes`, :attr:`x`, :attr:`y`, :attr:`z`
     """
 
     def __set__(self, instance, value):
@@ -151,16 +162,18 @@ class _WaveAxesDescriptor:
 
 
 class WaveAxes(list):
-    """Axes in :class:`Wave` class
+    """Axes in :class:`Wave` and :class:`DaskWave` class
 
-    WaveAxes is a list of numpy array that defines axes of the :class:`Wave`.
-    All public methods can also be accessed from :class:`Wave`.
+    *WaveAxes* is a list of numpy array that defines axes of the :class:`Wave` and :class:`DaskWave`.
+
+    All public methods in *WaveAxes* can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.
+
     Some usufull functions are added to built-in list.
 
-    WaveAxes should be initialized from :class:`Wave` class. Users SHOULD NOT instantiate this class.
+    *WaveAxes* should be initialized from :class:`Wave` and :class:`DaskWave` class. Users SHOULD NOT directly instantiate this class.
 
     See also:
-        :class:`Wave`, :attr:`Wave.axes`
+        :class:`Wave`, :attr:`Wave.axes`, :class:`DaskWave`
     """
 
     def __init__(self, parent, *args, **kwargs):
@@ -174,11 +187,11 @@ class WaveAxes(list):
 
     def getAxis(self, dim):
         """
-
         Return the axis specified dimension.
-        This function can be accessed directly from :class:`Wave` class.
 
-        If the specified axis is invalid, then the default axis is automatically generated and returned.
+        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
+
+        If the specified axis is None, then the default axis is automatically generated and returned.
 
         Args:
             dim (int): The dimension of the axis.
@@ -214,6 +227,8 @@ class WaveAxes(list):
         """
         Check if the axis is valid.
 
+        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
+
         Args:
             dim (int): The dimension to check the axis is valid.
 
@@ -234,13 +249,15 @@ class WaveAxes(list):
 
     def posToPoint(self, pos, axis=None):
         """
-        Translate the specified position in axis to the nearest index in data.
+        Translate the specified position in axis to the nearest indice in data.
 
-        if axis is None, then pos should be array of size = data.ndim.
-        pos = (x,y,z,...) is translated to indice (n1, n2, n3, ...)
+        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
 
-        if axis is not None, then pos is interpreted as position in axis-th dimension.
-        When axis = 1, pos = (y1, y2, y3, ...) is translated to indice (n2_1, n2_2, n2_3, ...)
+        If *axis* is None, then *pos* should be array of size = data.ndim.
+        *pos* = (x,y,z,...) is translated to indice (n1, n2, n3, ...)
+
+        if *axis* is not None, then pos is interpreted as position in axis-th dimension.
+        When *axis* = 1, *pos* = (y1, y2, y3, ...) is translated to indice (n1, n2, n3, ...)
 
         Args:
             pos (numpy.ndarray or float): The position that is translted to indice.
@@ -250,7 +267,7 @@ class WaveAxes(list):
             tuple or int: The indice corresponding to pos.
 
         Example:
-            >>> w = Wave(np.ones([2,2]), [1,2,3], [3,4,5])
+            >>> w = Wave(np.ones([3,3]), [1,2,3], [3,4,5])
             >>> w.posToPoint((2,4))
             (1,1) # position (x,y)=(2,4) corresponds index (1,1)
             >>> w.posToPoint((1,2,3), axis=0)
@@ -270,11 +287,13 @@ class WaveAxes(list):
         """
         Translate the specified indice to the position in data.
 
-        If axis is None, then indice should be array of size = data.ndim.
-        indice = (n1, n2, n3, ...) is translated to indice (x, y, z, ...)
+        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
 
-        If axis is not None, then indice is interpreted as indice in axis-th dimension.
-        When axis = 1, pos = (n1, n2, n3, ...) is translated to indice (y1, y2, y3, ...)
+        If *axis* is None, then indice should be array of size = data.ndim.
+        *indice* = (n1, n2, n3, ...) is translated to position (x, y, z, ...)
+
+        If *axis* is not None, then *indice* is interpreted as indice in *axis*-th dimension.
+        When *axis* = 1, *indice* = (n1, n2, n3, ...) is translated to positions (y1, y2, y3, ...)
 
         Args:
             indice (array of int): The indice that is translted to position.
@@ -286,11 +305,11 @@ class WaveAxes(list):
         Example:
             >>> w = Wave(np.ones([2,2]), [1,2,3], [3,4,5])
             >>> w.pointToPos((1,1))
-            (2,4) # index (1,1) corresponds to position (x,y)=(2,4)
+            (2,4)       # index (1,1) corresponds to position (x,y)=(2,4)
             >>> w.posToPoint((0,1,2), axis=0)
-            (1,2,3) # index (0,1,2) in the 0th dimension correspoinds position (x1, x2, x3 = 1,2,3)
+            (1,2,3)     # index (0,1,2) in the 0th dimension correspoinds position (x1, x2, x3 = 1,2,3)
             >>> w.posToPoint(1, axis=0)
-            2 #  index 1 in 0th dimensions correspoinds position x = 2
+            2           #  index 1 in 0th dimensions correspoinds position x = 2
         """
         if axis is None:
             axes = [self.getAxis(d) for d in range(len(self))]
@@ -306,14 +325,14 @@ class WaveAxes(list):
         """
         Shortcut to axes[0]
 
+        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
+
         Example:
             >>> w = Wave([1,2,3], [1,2,3])
             >>> w.x
             [1,2,3]
             >>> w.x = [3,4,5]
             >>> w.x
-            [3,4,5]
-            >>> w.axes[0]
             [3,4,5]
 
         See also:
@@ -327,7 +346,11 @@ class WaveAxes(list):
 
     @ property
     def y(self):
-        """ Shortcut to axes[1]. See :attr:`x`"""
+        """
+        Shortcut to axes[1]. See :attr:`x`
+
+        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
+        """
         return self.getAxis(1)
 
     @ y.setter
@@ -336,7 +359,11 @@ class WaveAxes(list):
 
     @ property
     def z(self):
-        """ Shortcut to axes[2]. See :attr:`x`"""
+        """ 
+        Shortcut to axes[2]. See :attr:`x`
+
+        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
+        """
         return self.getAxis(2)
 
     @ z.setter
@@ -352,10 +379,10 @@ class WaveAxes(list):
 
 class _WaveNoteDescriptor:
     """
-    Metadata of :class:`Wave` implemented as :class:`WaveNote` class.
-    All public methods can also be accessed from :class:`Wave`.
+    Metadata of :class:`Wave` and :class:`DaskWave` implemented as :class:`WaveNote` class.
+    All public methods can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.
 
-    *note* is python dictionary and is used to save metadata in :class:`Wave`.
+    *note* is python dictionary and is used to save metadata in :class:`Wave` :class:`DaskWave` class.
 
     Example:
         >>> w = Wave([1,2,3], key = "item"})
@@ -378,13 +405,13 @@ class _WaveNoteDescriptor:
 
 
 class WaveNote(dict):
-    """Note in :class:`Wave` class
+    """Note in :class:`Wave` and :class:`DaskWave` class
 
-    WaveNote is a dictionary to save metadata in :class:`Wave`.
-    All public methods can also be accessed from :class:`Wave`.
+    WaveNote is a dictionary to save metadata in :class:`Wave` and :class:`DaskWave` class.
+    All public methods can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.
     Some usufull functions are added to built-in dict.
 
-    WaveNote should be initialized from :class:`Wave` class. Users SHOULD NOT instantiate this class.
+    WaveNote should be initialized from :class:`Wave` and :class:`DaskWave` class. Users SHOULD NOT directly instantiate this class.
 
     See also:
         :class:`Wave`, :attr:`Wave.note`
@@ -394,7 +421,9 @@ class WaveNote(dict):
     @ property
     def name(self):
         """
-        Shortcut to note["name"]
+        Shortcut to note["name"], which is frequently used as a name of :class:`Wave` and :class:`DaskWave`.
+
+        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
 
         Example:
             >>> w = Wave([1,2,3], name="wave1")
@@ -428,7 +457,7 @@ class Wave(QObject):
     :attr:`data` is a numpy array of any dimension and :attr:`axes` is a list of numpy arrays with size = data.ndim.
     :attr:`note` is a dictionary, which is used to save metadata.
 
-    All public methods in *data*, *axes*, and *note* are accessible from *Wave* class.
+    All public methods in *data*, *axes*, and *note* are accessible from *Wave* class through __getattr__.
 
     There are several ways to generate Wave. (See Examples).
 
@@ -438,7 +467,7 @@ class Wave(QObject):
         note (dict): metadata for Wave.
 
     Examples:
-        Basic initialization
+        Basic initialization without axses and note
 
             >>> from lys import Wave
             >>> w = Wave([1,2,3])
@@ -457,14 +486,14 @@ class Wave(QObject):
 
         Initialize Wave from array of Wave
 
-            >>> w = Wave([1,2,3], [1,2,3])
-            >>> w2 = Wave([w,w], [4,5])
+            >>> w = Wave([1,2,3], [4,5,6])
+            >>> w2 = Wave([w,w], [7,8])
             >>> w2.data
             [[1,2,3], [1,2,3]]
             >>> w2.x
-            [4,5]
+            [7,8]
             >>> w2.y
-            [1,2,3]
+            [4,5,6]
 
         Save & load numpy npz file
 
@@ -474,13 +503,13 @@ class Wave(QObject):
             >>> w2.data
             [1,2,3]
 
-        Access numpy array methods
+        Direct access numpy array methods
 
             >>> w = Wave(np.zeros((100,100)))
             >>> w.shape
             (100,100)
 
-        Load from various file types by :func:functions.load
+        Load from various file types by :func:`functions.loadWave`
 
             >>> from lys import loadWave
             >>> loadWave("data.png")
@@ -647,9 +676,9 @@ class Wave(QObject):
         Example:
             >>> w = Wave([1,2,3])
             >>> w.modified.connect(lambda: print("modified"))
-            >>> w[1] = 0        # modified is emitted through Wave.__setitem__ is called.
+            >>> w.data = [0, 1, 2]        # modified is emitted when Wave.data is changed.
             modified
-            >>> w.data[1]=0     # modified is NOT emitted through data.__setitem__ is called.
+            >>> w.data[1]=0               # modified is NOT emitted through data.__setitem__ is called.
             >>> w.update()
             modified
         """
@@ -660,6 +689,7 @@ class Wave(QObject):
 
     # deprecated methods
     def Name(self):
+        """deprecated method"""
         import inspect
         print("Wave.Name is deprecated. use Wave.name instead")
         print(inspect.stack()[1].filename)
@@ -667,6 +697,7 @@ class Wave(QObject):
         return self.name
 
     def Save(self, file):
+        """deprecated method"""
         import inspect
         print("Wave.Save is deprecated. use Wave.export instead")
         print(inspect.stack()[1].filename)
@@ -704,7 +735,7 @@ class _DaskWaveDataDescriptor:
     """
     *data* is dask array that represents data of :class:`DaskWave`
 
-    All public methods of *data* can be accessed from :class:`DaskWave`.
+    All public methods of *data* can be accessed from :class:`DaskWave` via __getattr__.
     """
 
     def __set__(self, instance, value):
@@ -718,29 +749,93 @@ class _DaskWaveDataDescriptor:
 
 
 class DaskWave(QObject):
+    """
+    *DaskWave* class is a central data class in lys, which is used for easy parallel computing via dask.
+
+    This class is mainly used for parallel computing of data *with axes and notes*, which enables us to consistent calculation of data and axes.
+    Particularly, *DaskWave* is extensively used in *Multicut* package.
+
+    :attr:`data` is a dask array of any dimension. See :class:`Wave` for :attr:`axes` and :attr:`note`.
+
+    Semi-automatic parallel computing is executed is *lys* is launched with parallel computing option.
+
+    See dask manual in https://docs.dask.org/en/latest/ for detailed usage of dask array.
+
+    All public methods in *data*, *axes*, and *note* are accessible from *DaskWave* class through __getattr__.
+
+    *DaskWave* and *Wave* can easily be converted to each other via construtor of *DaskWave* and :meth:`compute` method.
+
+    Args:
+        data (Wave or array_like or dask array): The data of any dimension
+        axes (list of array_like): The axes of data
+        note (dict): metadata for Wave.
+        chunks ('auto' or tuple): chunks to be used for dask array.
+
+    Example:
+
+        Basic usage
+
+        >>> from lys import Wave, DaskWave
+        >>> w = Wave([1,2,3])       # Initial wave
+        >>> dw = DaskWave(w)        # convert to DaskWave
+        >>> dw.data *= 2
+        >>> result = dw.compute()   # parallel computing is executed through dask
+        >>> type(result)
+        <class 'lys.core.Wave'>
+        >>> result.data
+        [2,4,6]
+
+        Initialization from array
+
+        >>> dw = DaskWave([1,2,3])  # through dask.array.from_array
+        >>> dw.compute().data
+        [1,2,3]
+
+        Initialization from dask array (for large array)
+
+        >>> import dask.array as da
+        >>> arr = da.from_array([1,2,3])   # dask array can be prepared by other mehotds, such as dask.delayed if data is huge
+        >>> dw = DaskWave(arr)
+        >>> dw.compute().data
+        [1,2,3]
+    """
     data = _DaskWaveDataDescriptor()
     axes = _WaveAxesDescriptor()
     note = _WaveNoteDescriptor()
 
     @classmethod
     def initWorkers(cls, n_workers, threads_per_worker=2):
+        """
+        Initializa local cluster. 
+        This method is automatically called when lys is launched with parallel computing option.
+        DO NOT call this method within lys.
+
+        Args:
+            n_workers (int): number of workers to be launched.
+            threads_per_worker (int): number of therads for each worker.
+        """
         try:
             from dask.distributed import Client, LocalCluster
+
+            def closeClient():
+                print("[DaskWave] Closing local cluster...")
+                cls.client.close()
+                print("[DaskWave] Closing local cluster finished")
             cluster = LocalCluster(n_workers=n_workers, threads_per_worker=threads_per_worker)
             cls.client = Client(cluster)
-            atexit.register(lambda: cls.client.close())
+            atexit.register(closeClient)
             print("[DaskWave] Local cluster launched:", cls.client)
         except:
-            print("[DaskWave] failed to init dask.distributed")
+            print("[DaskWave] failed to initialize local cluster for parallel computing.")
 
-    def __init__(self, wave, *axes, chunks="auto", **note):
+    def __init__(self, data, *axes, chunks="auto", **note):
         super().__init__()
-        if isinstance(wave, Wave):
-            self.__fromWave(wave, chunks)
-        elif isinstance(wave, da.core.Array):
-            self.__fromda(wave, axes, chunks, note)
-        elif isinstance(wave, DaskWave):
-            self.__fromda(wave.data, wave.axes, chunks, wave.note)
+        if isinstance(data, Wave):
+            self.__fromWave(data, chunks)
+        elif isinstance(data, da.core.Array):
+            self.__fromda(data, axes, chunks, note)
+        elif isinstance(data, DaskWave):
+            self.__fromda(data.data, data.axes, chunks, data.note)
         else:
             self.__fromWave(Wave(wave, *axes, **note), chunks)
 
@@ -772,12 +867,33 @@ class DaskWave(QObject):
         return super().__getattr__(key)
 
     def compute(self):
+        """
+        Return calculated Wave
+        Wave.data.compute() is called when this method is called.
+        After lazy evaluation is finished, this method returns calculated *Wave*.
+
+        Return:
+            Wave: cauculated result
+        """
         return Wave(self.data.compute(), *self.axes, **self.note)
 
     def persist(self):
+        """Call data.persist"""
         self.data = self.data.persist()
 
     def duplicate(self):
+        """
+        Create duplicated *DaskWave*
+
+        Return:
+            DaskWave: duplicated wave.
+
+        Example:
+            >>> w = DaskWave([1,2,3])
+            >>> w2=w.duplicate()
+            >>> w2.compute().data
+            [1,2,3]
+        """
         return DaskWave(self, chunks="NoRechunk")
 
     def __getitem__(self, key):
