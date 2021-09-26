@@ -12,7 +12,7 @@ class FilterInterface(object):
         if isinstance(wave, Wave):
             dw = DaskWave(wave)
             self._execute(dw, **kwargs)
-            res = dw.toWave()
+            res = dw.compute()
             wave.data = res.data
             wave.axes = res.axes
             return wave

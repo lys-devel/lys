@@ -1,5 +1,7 @@
 import os
 import weakref
+import atexit
+
 import numpy as np
 import dask.array as da
 
@@ -66,9 +68,10 @@ class SettingDict(dict):
 class _WaveDataDescriptor:
     """
     *data* is numpy.ndarray that represents data of :class:`Wave`
-    Any type of sequential array will be automatically converted to numpy.ndarray when it is set as *data*.
 
-    All methods implemented in numpy.ndarray can be accessed from :class:`Wave` 
+    All public methods of *data* can also be accessed from :class:`Wave`.
+
+    Any type of sequential array will be automatically converted to numpy.ndarray when it is set as *data*.
 
     Example:
         >>> w = Wave([1,2,3])
@@ -77,13 +80,13 @@ class _WaveDataDescriptor:
         [2,3,4]
         >>> type(w.data)
         np.ndarray
-        >>> w.shape # equals w.data.shape
-        (3,)
     """
 
     def __set__(self, instance, value):
         instance._data = np.array(value)
-        instance.axes._update(instance._data)
+        if hasattr(instance, "axes"):
+            if instance.axes is not None:
+                instance.axes._update(instance._data)
         instance.update()
 
     def __get__(self, instance, objtype=None):
@@ -96,7 +99,7 @@ class _WaveAxesDescriptor:
 
     *axes* is list of numpy arrays and is used to visualize data.
 
-    axes[0], axes[1], axes[2] can be accessed by :attr:`Wave.x`, :attr:`Wave.y`, and :attr:`Wave.z`
+    All public methods can also be accessed from :class:`Wave`.
 
     The initialization can be done from constructor of :class:`Wave`
 
@@ -110,7 +113,7 @@ class _WaveAxesDescriptor:
         >>> w.axes
         [[7,8,9],[4,5,6]]
 
-    None can also be set to axis. 
+    None can also be set to axis.
 
         >>> w.axes[1] = None
         >>> w.axes
@@ -134,6 +137,10 @@ class _WaveAxesDescriptor:
         for item in value:
             if (not isinstance(item, np.ndarray)) and (not isinstance(item, list)) and (not isinstance(item, tuple)) and item is not None:
                 raise TypeError("Axes should be a 1-dimensional sequence or None")
+        if len(value) == 0:
+            value = [np.array(None) for _ in range(instance.data.ndim)]
+        if len(value) != instance.data.ndim:
+            raise ValueError("length of axes should match data.ndim")
         # set actual instance
         instance._axes = WaveAxes(instance, [np.array(item) for item in value])
         if hasattr(instance, "update"):
@@ -147,6 +154,7 @@ class WaveAxes(list):
     """Axes in :class:`Wave` class
 
     WaveAxes is a list of numpy array that defines axes of the :class:`Wave`.
+    All public methods can also be accessed from :class:`Wave`.
     Some usufull functions are added to built-in list.
 
     WaveAxes should be initialized from :class:`Wave` class. Users SHOULD NOT instantiate this class.
@@ -182,7 +190,7 @@ class WaveAxes(list):
             >>> w = Wave(np.ones([2,2]), [1,2], None)
             >>> w.getAxis(0)
             [1,2]
-            >>> w.axisIsValid(1)
+            >>> w.getAxis(1)
             [0,1] # automatically generated axis
         """
         data = self._parent().data
@@ -205,7 +213,6 @@ class WaveAxes(list):
     def axisIsValid(self, dim):
         """
         Check if the axis is valid.
-        This function can be accessed directly from :class:`Wave` class.
 
         Args:
             dim (int): The dimension to check the axis is valid.
@@ -228,7 +235,6 @@ class WaveAxes(list):
     def posToPoint(self, pos, axis=None):
         """
         Translate the specified position in axis to the nearest index in data.
-        This function can be accessed directly from :class:`Wave` class.
 
         if axis is None, then pos should be array of size = data.ndim.
         pos = (x,y,z,...) is translated to indice (n1, n2, n3, ...)
@@ -258,12 +264,11 @@ class WaveAxes(list):
         else:
             if hasattr(pos, "__iter__"):
                 return tuple(self.posToPoint(p, axis) for p in pos)
-            return np.abs(self.getAxis(axis) - pos).argmin()
+            return int(np.abs(self.getAxis(axis) - pos).argmin())
 
     def pointToPos(self, indice, axis=None):
         """
         Translate the specified indice to the position in data.
-        This function can be accessed directly from :class:`Wave` class.
 
         If axis is None, then indice should be array of size = data.ndim.
         indice = (n1, n2, n3, ...) is translated to indice (x, y, z, ...)
@@ -296,15 +301,9 @@ class WaveAxes(list):
             ax = self.getAxis(axis)
             return ax[indice]
 
-    def _update(self, data):
-        while(len(self) < data.ndim):
-            self.append(np.array(None))
-        while(len(self) > data.ndim):
-            self.pop(len(self) - 1)
-
     @ property
     def x(self):
-        """ 
+        """
         Shortcut to axes[0]
 
         Example:
@@ -344,15 +343,22 @@ class WaveAxes(list):
     def z(self, value):
         self[2] = value
 
+    def _update(self, data):
+        while(len(self) < data.ndim):
+            self.append(np.array(None))
+        while(len(self) > data.ndim):
+            self.pop(len(self) - 1)
+
 
 class _WaveNoteDescriptor:
     """
     Metadata of :class:`Wave` implemented as :class:`WaveNote` class.
+    All public methods can also be accessed from :class:`Wave`.
 
     *note* is python dictionary and is used to save metadata in :class:`Wave`.
 
     Example:
-        >>> w = Wave([1,2,3], note={"key": "item"})
+        >>> w = Wave([1,2,3], key = "item"})
         >>> w.note["key"]
         item
         >>> w.note["key2"] = 1111
@@ -365,10 +371,50 @@ class _WaveNoteDescriptor:
         if not isinstance(value, dict):
             raise TypeError("Note should be a dictionary")
         # set actual instance
-        instance._note = dict(value)
+        instance._note = WaveNote(value)
 
     def __get__(self, instance, objtype=None):
         return instance._note
+
+
+class WaveNote(dict):
+    """Note in :class:`Wave` class
+
+    WaveNote is a dictionary to save metadata in :class:`Wave`.
+    All public methods can also be accessed from :class:`Wave`.
+    Some usufull functions are added to built-in dict.
+
+    WaveNote should be initialized from :class:`Wave` class. Users SHOULD NOT instantiate this class.
+
+    See also:
+        :class:`Wave`, :attr:`Wave.note`
+    """
+    _nameIndex = 0
+
+    @ property
+    def name(self):
+        """
+        Shortcut to note["name"]
+
+        Example:
+            >>> w = Wave([1,2,3], name="wave1")
+            >>> w.note
+            {"name": "wave1"}
+            >>> w.name
+            wave1
+            >>> w.name="wave2"
+            >>> w.name
+            wave2
+        """
+
+        if "name" not in self:
+            self["name"] = "wave" + str(WaveNote._nameIndex)
+            WaveNote._nameIndex += 1
+        return self.get("name")
+
+    @ name.setter
+    def name(self, value):
+        self["name"] = value
 
 
 def _produceWave(data, axes, note):
@@ -381,6 +427,8 @@ class Wave(QObject):
 
     :attr:`data` is a numpy array of any dimension and :attr:`axes` is a list of numpy arrays with size = data.ndim.
     :attr:`note` is a dictionary, which is used to save metadata.
+
+    All public methods in *data*, *axes*, and *note* are accessible from *Wave* class.
 
     There are several ways to generate Wave. (See Examples).
 
@@ -399,7 +447,7 @@ class Wave(QObject):
 
         Basic initialization with axes and note
 
-            >>> w = Wave(np.ones([2,3]), [1,2], [1,2,3], name="wave1") 
+            >>> w = Wave(np.ones([2,3]), [1,2], [1,2,3], name="wave1")
             >>> w.axes          # positional arguments are used for axes
             [[1,2],[1,2,3]]
             >>> w.x             # axes can be accessed from Wave.x, Wave.y etc...
@@ -426,6 +474,12 @@ class Wave(QObject):
             >>> w2.data
             [1,2,3]
 
+        Access numpy array methods
+
+            >>> w = Wave(np.zeros((100,100)))
+            >>> w.shape
+            (100,100)
+
         Load from various file types by :func:functions.load
 
             >>> from lys import loadWave
@@ -434,10 +488,9 @@ class Wave(QObject):
     See also:
         :attr:`data`, :attr:`axes`, :attr:`note`
     """
-    _nameIndex = 0
     modified = pyqtSignal(object)
     """
-    *modified* is a pyqtSignal and is emitted when *Wave* is changed.
+    *modified* is a pyqtSignal, which is emitted when *Wave* is changed.
 
     Example:
         >>> w = Wave([1,2,3], name="wave1")
@@ -451,87 +504,53 @@ class Wave(QObject):
 
     def __init__(self, data=None, *axes, **note):
         super().__init__()
-        self.axes = [np.array(None)]
-        self.data = np.array(None)
-        self.note = note
         if type(data) == str:
             self.__loadData(data)
         else:
-            self.__setData(data, *axes)
+            self.__setData(data, *axes, **note)
 
     def __loadData(self, file):
         """Load data from file"""
         tmp = np.load(file, allow_pickle=True)
-        data = tmp['data']
-        self.axes = [np.array(None) for i in range(data.ndim)]
-        self.data = data
+        self.data = tmp['data']
         if 'axes' in tmp:
             self.axes = [axis for axis in tmp['axes']]
+        else:
+            self.axes = []
         if 'note' in tmp:
             self.note = tmp['note'][()]
 
-    def __setData(self, data, *axes):
-        """Set data from *data* and *axes*"""
+    def __setData(self, data, *axes, **note):
+        """Set data from *data*, *axes*, and *note*"""
         if hasattr(data, "__iter__"):
             if len(data) > 0:
                 if isinstance(data[0], Wave):
-                    self.__joinWaves(data, axes)
+                    self.__joinWaves(data, *axes, **note)
                     return
         self.data = data
-        if len(axes) == self.data.ndim:
-            self.axes = list(axes)
+        self.axes = axes
+        self.note = note
 
-    def __joinWaves(self, waves, axes):
+    def __joinWaves(self, waves, *axes, **note):
         self.data = np.array([w.data for w in waves])
         if len(axes) == 1:
             ax = list(axes)
         else:
             ax = [None]
         self.axes = ax + waves[0].axes
+        self.note = note
 
     def __getattr__(self, key):
-        if hasattr(self.data, key):
-            return self.data.__getattribute__(key)
-        if hasattr(self.axes, key):
-            return self.axes.__getattribute__(key)
-        else:
-            return super().__getattr__(key)
-
-    def __getitem__(self, key):
-        if isinstance(key, tuple):
-            data = self.data[key]
-            axes = []
-            for s, ax in zip(key, self.axes):
-                if ax is None or (ax == np.array(None)).all():
-                    axes.append(None)
-                else:
-                    axes.append(ax[s])
-            w = Wave(data, *axes, **self.note)
-            return w
-        else:
-            super().__getitem__(key)
-
-    def __setitem__(self, key, value):
-        self.data[key] = value
-        self.update()
-
-    def Save(self, file):
-        self.export(file)
-
-    def duplicate(self):
-        """
-        Create duplicated *Wave*
-
-        Return:
-            Wave: duplicated wave.
-
-        Example:
-            >>> w = Wave([1,2,3])
-            >>> w2=w.duplicate()
-            >>> w2.data
-            [1,2,3]
-        """
-        return Wave(self.data, *self.axes, **self.note)
+        if "_data" in self.__dict__:
+            if hasattr(self.data, key):
+                return getattr(self.data, key)
+        if "_axes" in self.__dict__:
+            if hasattr(self.axes, key):
+                return getattr(self.axes, key)
+        if "_note" in self.__dict__:
+            if hasattr(self.note, key):
+                return getattr(self.note, key)
+        return super().__getattr__(key)
 
     def __reduce_ex__(self, proto):
         return _produceWave, (self.data, list(self.axes), self.note)
@@ -603,14 +622,29 @@ class Wave(QObject):
         elif ext == ".txt":
             return Wave(np.loadtxt(path, delimiter=" "))
 
+    def duplicate(self):
+        """
+        Create duplicated *Wave*
+
+        Return:
+            Wave: duplicated wave.
+
+        Example:
+            >>> w = Wave([1,2,3])
+            >>> w2=w.duplicate()
+            >>> w2.data
+            [1,2,3]
+        """
+        return Wave(self.data, *self.axes, **self.note)
+
     def update(self):
-        """ 
+        """
         Emit *modified* signal
 
         When *data* is directly changed by indexing, *modified* signal is not emitted.
         Calling *update()* emit *modified* signal manually.
 
-        Example:   
+        Example:
             >>> w = Wave([1,2,3])
             >>> w.modified.connect(lambda: print("modified"))
             >>> w[1] = 0        # modified is emitted through Wave.__setitem__ is called.
@@ -621,6 +655,10 @@ class Wave(QObject):
         """
         self.modified.emit(self)
 
+    def __str__(self):
+        return "Wave object (name = {0}, dtype = {1}, shape = {2})".format(self.name, self.dtype, self.shape)
+
+    # deprecated methods
     def Name(self):
         import inspect
         print("Wave.Name is deprecated. use Wave.name instead")
@@ -628,114 +666,125 @@ class Wave(QObject):
         print(inspect.stack()[1].function)
         return self.name
 
-    @ property
-    def name(self):
-        """ 
-        Shortcut to note["name"]
+    def Save(self, file):
+        import inspect
+        print("Wave.Save is deprecated. use Wave.export instead")
+        print(inspect.stack()[1].filename)
+        print(inspect.stack()[1].function)
+        self.export(file)
 
-        Example:
-            >>> w = Wave([1,2,3], name="wave1")
-            >>> w.note
-            {"name": "wave1"}
-            >>> w.name
-            wave1
-            >>> w.name="wave2"
-            >>> w.name
-            wave2
-        """
+    def __getitem__(self, key):
+        import inspect
+        print("Wave.__getitem__ is deprecated.")
+        print(inspect.stack()[1].filename)
+        print(inspect.stack()[1].function)
+        if isinstance(key, tuple):
+            data = self.data[key]
+            axes = []
+            for s, ax in zip(key, self.axes):
+                if ax is None or (ax == np.array(None)).all():
+                    axes.append(None)
+                else:
+                    axes.append(ax[s])
+            w = Wave(data, *axes, **self.note)
+            return w
+        else:
+            super().__getitem__(key)
 
-        if "name" not in self.note:
-            self.name = "wave" + str(Wave._nameIndex)
-            Wave._nameIndex += 1
-        return self.note.get("name")
+    def __setitem__(self, key, value):
+        import inspect
+        print("Wave.__setitem__ is deprecated.")
+        print(inspect.stack()[1].filename)
+        print(inspect.stack()[1].function)
+        self.data[key] = value
+        self.update()
 
-    @ name.setter
-    def name(self, value):
-        self.note["name"] = value
 
-    def __str__(self):
-        return "Wave object (name = {0}, dtype = {1}, shape = {2})".format(self.name, self.dtype, self.shape)
+class _DaskWaveDataDescriptor:
+    """
+    *data* is dask array that represents data of :class:`DaskWave`
+
+    All public methods of *data* can be accessed from :class:`DaskWave`.
+    """
+
+    def __set__(self, instance, value):
+        instance._data = value
+        if hasattr(instance, "axes"):
+            if instance.axes is not None:
+                instance.axes._update(instance._data)
+
+    def __get__(self, instance, objtype=None):
+        return instance._data
 
 
 class DaskWave(QObject):
+    data = _DaskWaveDataDescriptor()
     axes = _WaveAxesDescriptor()
     note = _WaveNoteDescriptor()
 
     @classmethod
     def initWorkers(cls, n_workers, threads_per_worker=2):
         try:
-            import atexit
             from dask.distributed import Client, LocalCluster
             cluster = LocalCluster(n_workers=n_workers, threads_per_worker=threads_per_worker)
             cls.client = Client(cluster)
             atexit.register(lambda: cls.client.close())
-            print("[DaskWave] Local cluster:", cls.client)
+            print("[DaskWave] Local cluster launched:", cls.client)
         except:
             print("[DaskWave] failed to init dask.distributed")
 
     def __init__(self, wave, *axes, chunks="auto", **note):
         super().__init__()
-        self.data = np.array(None)
-        self.axes = [np.array(None)]
-        self.note = note
         if isinstance(wave, Wave):
-            self.__fromWave(wave, axes, chunks)
+            self.__fromWave(wave, chunks)
         elif isinstance(wave, da.core.Array):
             self.__fromda(wave, axes, chunks, note)
         elif isinstance(wave, DaskWave):
             self.__fromda(wave.data, wave.axes, chunks, wave.note)
+        else:
+            self.__fromWave(Wave(wave, *axes, **note), chunks)
 
-    def __fromWave(self, wave, axes, chunks):
-        import copy
-        if wave.data.dtype == int:
-            self.data = da.from_array(wave.data.astype(float), chunks=chunks)
-        else:
-            self.data = da.from_array(wave.data, chunks=chunks)
-        if axes is None:
-            self.axes = copy.deepcopy(wave.axes)
-        else:
-            self.axes = copy.deepcopy(axes)
-        self.note = copy.deepcopy(wave.note)
+    def __fromWave(self, wave, chunks):
+        """Load from Wave"""
+        self.data = da.from_array(wave.data, chunks=chunks)
+        self.axes = wave.axes
+        self.note = wave.note
 
     def __fromda(self, wave, axes, chunks, note):
-        import copy
+        """Load from da.core.Array"""
         if chunks == "NoRechunk":
             self.data = wave
         else:
             self.data = wave.rechunk(chunks)
-        self.axes = copy.deepcopy(axes)
-        self.note = copy.deepcopy(note)
+        self.axes = axes
+        self.note = note
 
     def __getattr__(self, key):
-        if hasattr(self.data, key):
-            return self.data.__getattribute__(key)
-        if hasattr(self.axes, key):
-            return self.axes.__getattribute__(key)
-        else:
-            return super().__getattr__(key)
+        if "_note" in self.__dict__:
+            if hasattr(self.note, key):
+                return getattr(self.note, key)
+        if "_axes" in self.__dict__:
+            if hasattr(self.axes, key):
+                return getattr(self.axes, key)
+        if "_data" in self.__dict__:
+            if hasattr(self.data, key):
+                return getattr(self.data, key)
+        return super().__getattr__(key)
 
-    def toWave(self):
-        import copy
-        w = Wave()
-        res = self.data.compute()  # self.client.compute(self.data).result()
-        w.data = res
-        w.axes = copy.deepcopy(self.axes)
-        w.note = copy.deepcopy(self.note)
-        return w
+    def compute(self):
+        return Wave(self.data.compute(), *self.axes, **self.note)
 
     def persist(self):
-        self.data = self.data.persist()  # self.client.persist(self.data)
+        self.data = self.data.persist()
 
-    def sum(self, axis):
-        data = self.data.sum(axis)
-        axes = []
-        for i, ax in enumerate(self.axes):
-            if not (i in axis or i == axis):
-                axes.append(ax)
-        return DaskWave(data, axes=axes)
+    def duplicate(self):
+        return DaskWave(self, chunks="NoRechunk")
 
     def __getitem__(self, key):
-        import copy
+        import inspect
+        print("Wave.__getitem__ is deprecated.")
+        print(inspect.stack()[1].filename)
+        print(inspect.stack()[1].function)
         if isinstance(key, tuple):
             data = self.data[key]
             axes = []
@@ -745,17 +794,7 @@ class DaskWave(QObject):
                         axes.append(None)
                     else:
                         axes.append(ax[s])
-            d = DaskWave(data, axes=axes, note=copy.deepcopy(self.note))
+            d = DaskWave(data, *axes, **self.note)
             return d
         else:
             super().__getitem__(key)
-
-    @staticmethod
-    def SupportedFormats():
-        return Wave.SupportedFormats()
-
-    def export(self, path, type="Numpy npz (*.npz)"):
-        self.toWave().export(path, type)
-
-    def duplicate(self):
-        return DaskWave(self, chunks="NoRechunk")

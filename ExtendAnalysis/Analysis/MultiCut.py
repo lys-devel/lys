@@ -231,7 +231,7 @@ class ExecutorList(controlledObjects):
         f = Filters([f1, f2, f3, f4])
         f.execute(res)
         if isinstance(res, DaskWave):
-            res = res.toWave()
+            res = res.compute()
         return res
 
     def __getTransposeFilter(self, axes):

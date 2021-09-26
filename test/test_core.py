@@ -2,8 +2,9 @@ import unittest
 import os
 import shutil
 import numpy as np
+import dask.array as da
 
-from ExtendAnalysis.core import SettingDict, Wave
+from ExtendAnalysis.core import SettingDict, Wave, DaskWave
 
 
 class core_test(unittest.TestCase):
@@ -44,15 +45,21 @@ class core_test(unittest.TestCase):
         self.assertTrue((w.axes[0] == axis1).all())
         self.assertTrue((w.axes[1] == axis2).all())
 
+        # x,y,z
+        self.assertTrue((w.x == axis1).all())
+        self.assertTrue((w.y == axis2).all())
+        w.x = [3, 4, 5]
+        self.assertTrue(w.x == [3, 4, 5])
+
         # invalid axes specified
         with self.assertRaises(TypeError):
             w = Wave(np.zeros([3, 2]), "aaa", [2, 3])
 
         # axisIsValid method
-        self.assertFalse(noaxes.axes.axisIsValid(0))
-        self.assertFalse(noaxes.axes.axisIsValid(1))
-        self.assertTrue(w.axes.axisIsValid(0))
-        self.assertTrue(w.axes.axisIsValid(1))
+        self.assertFalse(noaxes.axisIsValid(0))
+        self.assertFalse(noaxes.axisIsValid(1))
+        self.assertTrue(w.axisIsValid(0))
+        self.assertTrue(w.axisIsValid(1))
 
         # getAxis method
         self.assertTrue((noaxes.getAxis(0) == [0, 1]).all())
@@ -71,10 +78,11 @@ class core_test(unittest.TestCase):
         self.assertTrue(w.pointToPos(1, axis=0) == 2)
 
     def test_WaveNote(self):
-        w = Wave([1, 2, 3], key1="item1")
+        w = Wave([1, 2, 3], name="wave1", key1="item1")
         self.assertEqual(w.note["key1"], "item1")
         w.note["key2"] = 1111
         self.assertEqual(w.note["key2"], 1111)
+        self.assertEqual(w.name, "wave1")
 
     def test_Wave(self):
         # Basic initialization
@@ -133,3 +141,34 @@ class core_test(unittest.TestCase):
         self.assertTrue((w.axes[0] == w2.axes[0]).all())
         self.assertTrue((w.axes[1] == w2.axes[1]).all())
         self.assertTrue(w.name == w2.name)
+
+    def test_DaskWave(self):
+        w = Wave([1, 2, 3], [4, 5, 6], name="wave1")
+        # initialization
+        dw = DaskWave(w)
+        self.assertTrue(w.shape == dw.shape)
+        self.assertTrue((w.x == dw.x).all())
+        self.assertTrue(w.name == dw.name)
+
+        # compute
+        w = dw.compute()
+        self.assertTrue(w.shape == dw.shape)
+        self.assertTrue((w.x == dw.x).all())
+        self.assertTrue(w.name == dw.name)
+        self.assertTrue((w.data == [1, 2, 3]).all())
+
+        # initializa from array
+        dw = DaskWave([4, 5, 6])
+        self.assertTrue((dw.compute().data == [4, 5, 6]).all())
+
+        # initialize from dask.array
+        dw = DaskWave(da.from_array([7, 8, 9]))
+        self.assertTrue((dw.compute().data == [7, 8, 9]).all())
+
+        # initialize from DaskWave
+        dw = DaskWave(dw)
+        self.assertTrue((dw.compute().data == [7, 8, 9]).all())
+
+        # duplicate
+        dw = dw.duplicate()
+        self.assertTrue((dw.compute().data == [7, 8, 9]).all())

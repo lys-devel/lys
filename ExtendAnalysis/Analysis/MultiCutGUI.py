@@ -88,7 +88,7 @@ class MultiCut(GridAttachedWindow):
             w = wave
             print("DaskWave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype, ", chunksize = ", wave.data.chunksize)
         else:
-            w = wave.toWave()
+            w = wave.compute()
             print("Wave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype)
         self._cut._setWave(w)
         self._ani._setWave(w)

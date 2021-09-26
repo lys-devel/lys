@@ -114,7 +114,7 @@ class MaskFilter(FilterInterface):
         mask = Wave(self._mask)
         if isinstance(wave, DaskWave):
             mask = DaskWave(mask)
-        wave.data = wave.data*mask.data
+        wave.data = wave.data * mask.data
 
     def getParams(self):
         return self._mask
@@ -156,21 +156,21 @@ class ReferenceShiftFilter(FilterInterface):
 
 
 def image_shift(shift, im, ord):
-    x = np.linspace(0, im.shape[0]-1, im.shape[0])
-    y = np.linspace(0, im.shape[1]-1, im.shape[1])
+    x = np.linspace(0, im.shape[0] - 1, im.shape[0])
+    y = np.linspace(0, im.shape[1] - 1, im.shape[1])
     xx, yy = np.meshgrid(x, y)
-    return map_coordinates(im, [yy+shift[1], xx+shift[0]], order=ord)
+    return map_coordinates(im, [yy + shift[1], xx + shift[0]], order=ord)
 
 
 def image_dif(tar, ref, shift, region, ord=3):
     im = image_shift(shift, tar, ord)
-    return np.sum((im[region]-ref[region])**2)
+    return np.sum((im[region] - ref[region])**2)
 
 
 def fit_image(tar, ref, region=None):
     ord = 3
     norm = np.sum(ref)
-    tar_n = tar/norm
-    ref_n = ref/norm
+    tar_n = tar / norm
+    ref_n = ref / norm
     s = minimize(lambda s: image_dif(tar_n, ref_n, s, region, ord), [0, 0], method="Nelder-Mead", options={'xtol': 1e-11})
     return image_shift(s.x, tar, ord)
