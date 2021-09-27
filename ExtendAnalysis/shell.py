@@ -8,38 +8,148 @@ from . import home
 
 
 class ExtendShell(QObject):
+    """
+    Extended shell object that is used for Python Interface in lys.
+
+    This object is basically used to realize custom functionarities of lys from plugins.
+
+    Any expression can be executed and evaluated by :func:`exec` and :func:`eval` functions.
+    Any object can be added by :func:`addObject`
+
+    ExtendShell is basically singleton object. Developers should access the instance of ExtendShell from :func:`.plugin.shell` function.
+
+    Example:
+
+        Execute some commands in lys Python Interface.
+
+        >>> from lys import plugin
+        >>> shell = plugin.shell()
+        >>> shell.exec("a=1")
+        >>> shell.eval(a)
+        1
+
+        Adding new function in lys Python Interface.
+
+        >>> f = lambda: print("hello")
+        >>> shell.addObject(f, name = "hello")
+
+        Import new module in lys Python Interface.
+
+        >>> # define *my_module* that is used in Python Interface
+        >>> shell.importModule("my_module")
+
+    """
+    _instance = None
     commandExecuted = pyqtSignal(str)
+    """
+    *commandExecuted* signal is emitted after when :func:`eval` and :func:`exec` is called.
+    """
 
     def __init__(self):
         super().__init__()
+        ExtendShell._instance = self
         self.__dict = {}
         self.__log = _CommandLog()
         self.__com = _ExtendCommand()
         self.__mod = _ModuleManager(self.__dict)
-        print('Welcome to Analysis program lys. Loading .py files...')
 
-    def eval(self, txt, save=False):
+    def eval(self, expr, save=False):
+        """
+        Evaluate expression in shell.
+
+        Args:
+            expr (str): expression to be evaluated
+            save (bool): if True, *expr* is added to command log.
+
+        Return:
+            Any: Result
+
+        Example:
+
+            >>> from lys import plugin
+            >>> plugin.shell().exec("a=1")
+            >>> plugin.shell().eval("a")
+            1
+        """
         self.__mod.reload()
         if save:
-            self.__log.append(txt)
-        res = eval(txt, self.__dict)
-        self.commandExecuted.emit(txt)
+            self.__log.append(expr)
+        res = eval(expr, self.__dict)
+        self.commandExecuted.emit(expr)
         return res
 
-    def exec(self, txt, save=False):
+    def exec(self, expr, save=False):
+        """
+        Execute expression in shell.
+
+        Args:
+            expr (str): expression to be executed
+            save (bool): if True, *expr* is added to command log.
+
+        Example:
+
+            >>> from lys import plugin
+            >>> plugin.shell().exec("a=1")
+            >>> plugin.shell().eval("a")
+            1
+        """
         self.__mod.reload()
         if save:
-            self.__log.append(txt)
-        exec(txt, self.__dict)
-        self.commandExecuted.emit(txt)
+            self.__log.append(expr)
+        exec(expr, self.__dict)
+        self.commandExecuted.emit(expr)
 
     def importModule(self, module):
+        """
+        Import module
+
+        This function import *module*, i.e. import *module* is called.
+
+        If the module has been imported, it is reloaded by importlib.
+
+        Args:
+            module(str): module to be loaded.
+
+        Example:
+            >>> from lys import plugin
+            >>> plugin.shell().importModule("time")
+
+        """
         self.__mod.importModule(module)
 
     def importAll(self, module):
+        """
+        Import module
+
+        This function import *module*, i.e. from *module* import * is called.
+
+        If the module has been imported, it is reloaded by importlib.
+
+        Args:
+            module(str): module to be loaded.
+
+        Example:
+            >>> from lys import plugin
+            >>> plugin.shell().importAll("time")
+
+        """
         self.__mod.importAll(module)
 
     def addObject(self, obj, name=None, printResult=True):
+        """
+        Add object to shell.
+
+        *name* represents name of object on shell.
+        If None, obj.__name__ and obj.name is used as a name.
+        If both methods are not defined, object is loaded as default name "obj".
+
+        To avoid overlap, name is automatically changed.
+
+        Args:
+            obj(any): object to be loaded
+            name(str): name of object
+            printResult(bool): If True, message is printed after loading.
+        """
         if name is None:
             if hasattr(obj, "__name__"):
                 name = obj.__name__
@@ -57,10 +167,24 @@ class ExtendShell(QObject):
 
     @property
     def commandLog(self):
+        """
+        List of command log that is executed by user.
+
+        Return:
+            list: List of commands
+        """
         return self.__log.get()
 
     @property
     def dict(self):
+        """
+        Global dictionary of shell.
+
+        This is useful when developers want to access local variables in Python Interface.
+
+        Return:
+            dict: Global dictionary of shell
+        """
         return self.__dict
 
     def __GetValidName(self, name):
@@ -160,3 +284,6 @@ class _ExtendCommand(cmd.Cmd):
 
     def default(self, line):
         raise NotImplementedError
+
+
+ExtendShell()

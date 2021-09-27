@@ -8,7 +8,6 @@ class ColoredFileSystemModel(ExtendFileSystemModel):
         super().__init__()
         for ext in loadableFiles():
             self.AddAcceptedFilter('*' + ext)
-        self.AddAcceptedFilter('*.py')
         self.AddAcceptedFilter('*.fil')
         self.AddAcceptedFilter('*.cif')
 
@@ -35,7 +34,6 @@ class FileWidget(FileSystemView):
     def __viewContextMenu(self, tree):
         cd = QAction('Set Current Directory', self, triggered=self.__setCurrentDirectory)
         ld = QAction('Load', self, triggered=self.__load)
-        op = QAction('Open', self, triggered=self.__openpy)
         show = QAction('Show all graphs', self, triggered=self.__showgraphs)
         save = QAction('Save all graphs', self, triggered=self.__savegraphs)
         menu = {}
@@ -43,8 +41,6 @@ class FileWidget(FileSystemView):
         menu['mix'] = [ld, tree.Action_Delete()]
         menu['other'] = [ld, tree.Action_Delete(), tree.Action_Print()]
         menu['.npz'] = [tree.Action_Display(), tree.Action_Append(), tree.Action_MultiCut(), tree.Action_Edit(), ld, tree.Action_Print(), tree.Action_Delete()]
-        menu['.py'] = [op, tree.Action_Delete()]
-        menu['.lst'] = [op, tree.Action_Edit()]
         menu['.cif'] = [ld, tree.Action_Delete(), tree.Action_Print()]
         tree.SetContextMenuActions(menu)
 
@@ -71,7 +67,3 @@ class FileWidget(FileSystemView):
         for p in self.selectedPaths():
             nam, ext = os.path.splitext(os.path.basename(p))
             self.__shell.addObject(load(p), name=nam)
-
-    def __openpy(self):
-        for p in self.selectedPaths():
-            PythonEditor(p)

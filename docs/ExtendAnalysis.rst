@@ -57,6 +57,22 @@ ExtendAnalysis Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`_QtSystem` Module
+-----------------------
+
+.. automodule:: ExtendAnalysis._QtSystem
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`__main__` Module
+----------------------
+
+.. automodule:: ExtendAnalysis.__main__
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 :mod:`core` Module
 ------------------
 
@@ -77,6 +93,14 @@ ExtendAnalysis Package
 --------------------
 
 .. automodule:: ExtendAnalysis.plugin
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`shell` Module
+-------------------
+
+.. automodule:: ExtendAnalysis.shell
     :members:
     :undoc-members:
     :show-inheritance:

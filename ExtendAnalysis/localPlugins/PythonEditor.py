@@ -1,15 +1,12 @@
-# syntax.py
-
 import os
 
 import autopep8
-import weakref
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from ExtendAnalysis import *
+from ExtendAnalysis import ExtendMdiSubWindow, plugin, home
 
 
 def format(color, style=''):
@@ -43,7 +40,7 @@ STYLES = {
 }
 
 
-class PythonHighlighter (QSyntaxHighlighter):
+class PythonHighlighter(QSyntaxHighlighter):
     """Syntax highlighter for the Python language.
     """
     # Python keywords
@@ -243,16 +240,21 @@ class PythonEditor(ExtendMdiSubWindow):
 
     @classmethod
     def _Add(cls, win):
-        cls.__list.append(weakref.ref(win))
+        cls.__list.append(win)
 
     @classmethod
-    def CloseAllEditors(cls):
-        for w in cls.__list:
-            if w() is not None:
-                res = w().close()
-                if not res:
-                    return False
-        return True
+    def _Remove(cls, win):
+        cls.__list.remove(win)
+
+    @classmethod
+    def CloseAllEditors(cls, event):
+        if not event.isAccepted():
+            return
+        for editor in cls.__list:
+            res = editor.close()
+            if not res:
+                event.ignore()
+                return
 
     def __init__(self, file):
         super().__init__()
@@ -260,14 +262,23 @@ class PythonEditor(ExtendMdiSubWindow):
         self.widget.keyPressed.connect(self.keyPressed)
         self.widget.setStyleSheet("background-color : #282C34; color: #eeeeee;")
         self.highlighter = PythonHighlighter(self.widget.document())
-        self.file = os.path.abspath(file)
-        with open(self.file, 'r') as data:
-            self.widget.setPlainText(autopep8.fix_code(data.read()).replace("    ", "\t"))
+        self.__load(file)
         self.setWidget(self.widget)
         self.widget.textChanged.connect(self.updateText)
         self.resize(600, 600)
         PythonEditor._Add(self)
         self.refreshTitle()
+
+    def __load(self, file):
+        self.file = os.path.abspath(file)
+        if not os.path.exists(self.file):
+            with open(self.file, 'w') as data:
+                if file.endswith("proc.py"):
+                    data.write("# All .py files in module directory are automatically loaded in lys Python Interpreter.\nfrom ExtendAnalysis import *")
+                else:
+                    data.write("from ExtendAnalysis import *")
+        with open(self.file, 'r') as data:
+            self.widget.setPlainText(autopep8.fix_code(data.read()).replace("    ", "\t"))
 
     def refreshTitle(self):
         if self.updated:
@@ -297,13 +308,37 @@ class PythonEditor(ExtendMdiSubWindow):
         ok = msg.exec_()
         if ok == QMessageBox.Cancel:
             event.ignore()
+            return
         if ok == QMessageBox.No:
             self.updated = False
-            event.accept()
         if ok == QMessageBox.Yes:
             self.save()
-            event.accept()
+        event.accept()
+        PythonEditor._Remove(self)
 
     def updateText(self):
         self.updated = True
         self.refreshTitle()
+
+
+def _makeNewPy(name):
+    if not os.path.exists(home() + "/module/__init__.py"):
+        os.makedirs(home() + "/module", exist_ok=True)
+        with open(home() + "/module/__init__.py", 'w') as data:
+            data.write("")
+    PythonEditor(home() + "/module/" + name)
+
+
+def _register():
+    plugin.registerFileLoader(".py", PythonEditor)
+    plugin.mainWindow().closed.connect(PythonEditor.CloseAllEditors)
+
+    menu = plugin.mainWindow().menuBar()
+    prog = menu.addMenu("Python")
+
+    proc = prog.addAction("Open default proc.py")
+    proc.triggered.connect(lambda: _makeNewPy("proc.py"))
+    proc.setShortcut("Ctrl+P")
+
+
+_register()

@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
+from ExtendAnalysis import plugin
+
 
 class TextEditLogger(logging.Handler):
     def __init__(self, parent=None):
@@ -115,3 +117,7 @@ class LogWidget(QWidget):
         fh_formatter = logging.Formatter('%(asctime)s-%(levelname)s-%(filename)s-%(name)s-%(funcName)s-%(message)s')
         fh.setFormatter(fh_formatter)
         return fh
+
+
+_instance = LogWidget()
+plugin.mainWindow().addTab(_instance, "Log", "up")

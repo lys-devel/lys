@@ -1,16 +1,16 @@
 """Basic hook and launch QApplication"""
 import sys
 import os
+import traceback
 from PyQt5 import QtWidgets, QtGui
 
 
-def __handle_exception(exc_type, exc_value, exc_traceback):
+def _handle_exception(exc_type, exc_value, exc_traceback):
     """ handle all exceptions """
     if issubclass(exc_type, KeyboardInterrupt):
         if QtGui.qApp:
             QtGui.qApp.quit()
         return
-    import traceback
     filename, line, dummy, dummy = traceback.extract_tb(exc_traceback).pop()
     filename = os.path.basename(filename)
 
@@ -30,6 +30,6 @@ def __set_qt_bindings(package):
     builtins.__import__ = hook
 
 
-sys.excepthook = __handle_exception
+sys.excepthook = _handle_exception
 __set_qt_bindings("PyQt5")
 app = QtWidgets.QApplication([])

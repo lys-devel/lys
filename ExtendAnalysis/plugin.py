@@ -1,9 +1,10 @@
 """
-*plugin* module gives functions for developers.
+*plugin* module gives tools for developers.
 
 Functions used by general users are given in :mod:`.functions` module.
 
 All plugin functions can NOT be directly imported from lys.
+
 Developers should import plugin functions from lys.plugin module
 
 Example:
@@ -15,8 +16,29 @@ Example:
 
 from .LoadFile import _addFileLoader
 from .shell import ExtendShell
+from .MainWindow import MainWindow
 
-shell = ExtendShell()
+_main = None
+
+
+def mainWindow():
+    return _main
+
+
+def shell():
+    """
+    Return :class:`.shell.ExtendShell` object.
+
+    ExtendShell object is used to realize new functionalities in lys Python Interface.
+    See :class:`.shell.ExtendShell` for detailed description.
+
+    """
+    return ExtendShell._instance
+
+
+def _createMainWindow():
+    global _main
+    _main = MainWindow()
 
 
 def registerFileLoader(type, func):
@@ -47,22 +69,3 @@ def registerFileLoader(type, func):
         numpy.ndarray
     """
     _addFileLoader(type, func)
-
-
-def getMainMenu():
-    """
-    Return main menu of lys.
-
-    This function is used to add new menu.
-
-    Return:
-        QMenuBar: menu bar of lys.
-
-    Example:
-
-        >>> from lys import plugin
-        >>> act = plugins.getMainMenu.AddAction("Print")
-        >>> act.triggered.connect(lambda: print("test"))
-    """
-    from ExtendAnalysis.MainWindow import _getMainMenu
-    return _getMainMenu()

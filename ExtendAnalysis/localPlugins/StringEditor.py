@@ -67,10 +67,5 @@ class StringTextEdit(QPlainTextEdit):
             f.write(self.toPlainText())
 
 
-class StringEditor(ExtendMdiSubWindow):
-    def __init__(self, file):
-        super().__init__()
-        self.widget = StringTextEdit(file, self)
-        self.setWidget(self.widget)
-        self.resize(600, 600)
-        self.setWindowTitle(os.path.basename(file))
+_instance = StringTextEdit(".lys/memo.str")
+plugin.mainWindow().addTab(_instance, "Memo", "up")
