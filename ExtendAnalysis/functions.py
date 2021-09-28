@@ -3,18 +3,16 @@
 
 Functions related to making plugins are given in :mod:`.plugin` module.
 
-Most of functions can be directly imported from lys:
+Most of functions can be directly imported from lys Package:
 
 >>> from lys import home
 """
 
 import os
-import sys
 
 from .LoadFile import _load, _getExtentions
 
 __home = os.getcwd()
-sys.path.append(__home)
 
 
 def home():

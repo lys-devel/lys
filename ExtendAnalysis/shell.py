@@ -1,4 +1,3 @@
-import cmd
 import os
 import glob
 
@@ -50,7 +49,6 @@ class ExtendShell(QObject):
         ExtendShell._instance = self
         self.__dict = {}
         self.__log = _CommandLog()
-        self.__com = _ExtendCommand()
         self.__mod = _ModuleManager(self.__dict)
 
     def eval(self, expr, save=False):
@@ -162,9 +160,6 @@ class ExtendShell(QObject):
         if printResult:
             print(name, "is added to shell.")
 
-    def _do(self, txt):
-        return self.__com.onecmd(txt)
-
     @property
     def commandLog(self):
         """
@@ -255,35 +250,6 @@ class _ModuleManager:
         for f in files:
             f = os.path.splitext(os.path.basename(f))[0]
             self.importAll("module." + f)
-
-
-class _ExtendCommand(cmd.Cmd):
-    """Extend shell commands (display, append, etc)"""
-
-    def do_mkdir(self, arg):
-        os.makedirs(arg, exist_ok=True)
-
-    def do_ls(self, arg):
-        tmp = os.listdir()
-        for file in tmp:
-            print(file)
-
-    def do_display(self, arg):
-        try:
-            w = eval(arg, globals())
-        except Exception:
-            w = arg
-        display(w)
-
-    def do_append(self, arg):
-        try:
-            w = eval(arg, globals())
-        except Exception:
-            w = arg
-        append(w)
-
-    def default(self, line):
-        raise NotImplementedError
 
 
 ExtendShell()
