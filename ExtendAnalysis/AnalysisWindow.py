@@ -3,17 +3,12 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from .ExtendType import *
-from . import SettingDict
+from . import SettingDict, home
 
 
 class AnalysisWindow(ExtendMdiSubWindow):
-    def __init__(self, title, proj=None):
-        set = globalSetting()
-        if "Floating" in set:
-            b = set["Floating"]
-        else:
-            b = False
-        super().__init__(title, floating=b)
+    def __init__(self, title, proj=None, floating=False):
+        super().__init__(title, floating=floating)
         if proj is not None:
             name = proj.replace(home() + "/", "")
             self.__proj = home() + "/" + name

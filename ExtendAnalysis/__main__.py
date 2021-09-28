@@ -27,7 +27,7 @@ ExtendAnalysis.plugin._createMainWindow()
 
 # Load local Plugins
 if not args.noplugin:
-    import ExtendAnalysis.localPlugins
+    import ExtendAnalysis.localPlugins.init
 
     # Load Plugins
     if args.plugin is not None:

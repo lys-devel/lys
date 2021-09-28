@@ -3,16 +3,11 @@ import logging
 import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-from . import SettingDict
 from . import home
 from .core import _produceWave
 
 produce = _produceWave
 """only for backward compability"""
-
-
-def globalSetting():
-    return SettingDict(home() + "/.lys/settings/global.dic")
 
 
 class ExtendMdiSubWindowBase(QMdiSubWindow):
