@@ -9,10 +9,13 @@ def _load(name, *args, **kwargs):
     """see lys.functions.load"""
     if os.path.isfile(name):
         path, ext = os.path.splitext(name)
-        res = _dic[ext](os.path.abspath(name), *args, **kwargs)
-        if hasattr(res, "setLoadFile"):
-            res.setLoadFile(name)
-        return res
+        if ext in _dic:
+            res = _dic[ext](os.path.abspath(name), *args, **kwargs)
+            if hasattr(res, "setLoadFile"):
+                res.setLoadFile(name)
+            return res
+        else:
+            return None
 
 
 def __loadNpz(name):

@@ -70,3 +70,7 @@ def loadableFiles():
         [".npz", ".png", ".tif"]
     """
     return _getExtentions()
+
+
+def edit(data):
+    pass

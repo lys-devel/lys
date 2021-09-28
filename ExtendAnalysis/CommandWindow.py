@@ -1,15 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import os
 from .Tasks import *
 
-from .ExtendType import *
 from .BasicWidgets import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-
-from .System import *
 
 
 class TaskWidget(QWidget):
@@ -132,7 +128,7 @@ class SettingWidget(QWidget):
 class WorkspaceWidget(FileSystemView):
     def __init__(self, parent):
         self.model = ExtendFileSystemModel()
-        super().__init__(parent, self.model)
+        super().__init__(parent)
         self.model.AddExcludedFilter("winlist.lst")
         self.model.AddExcludedFilter("wins")
         self.SetPath(home() + "/.lys/workspace")

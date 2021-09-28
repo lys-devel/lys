@@ -1,6 +1,6 @@
 from . import QtSystem
 from .core import SettingDict, Wave, DaskWave
-from .functions import home, load
+from .functions import home, load, edit
 from .ExtendType import *
 from .Tasks import *
 from .BasicWidgets import *

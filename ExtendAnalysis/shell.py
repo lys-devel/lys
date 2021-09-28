@@ -250,7 +250,7 @@ class _ModuleManager:
 
     def reload(self):
         if os.path.exists(home() + "/proc.py"):
-            self.importAll("proc")
+            print("proc.py in home folder is deprecated. move it in module folder.")
         files = glob.glob(home() + "/module/*.py")
         for f in files:
             f = os.path.splitext(os.path.basename(f))[0]
