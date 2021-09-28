@@ -8,12 +8,9 @@ import os
 def _load(name, *args, **kwargs):
     """see lys.functions.load"""
     if os.path.isfile(name):
-        path, ext = os.path.splitext(name)
+        _, ext = os.path.splitext(name)
         if ext in _dic:
-            res = _dic[ext](os.path.abspath(name), *args, **kwargs)
-            if hasattr(res, "setLoadFile"):
-                res.setLoadFile(name)
-            return res
+            return _dic[ext](os.path.abspath(name), *args, **kwargs)
         else:
             return None
 

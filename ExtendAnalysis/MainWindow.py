@@ -262,7 +262,3 @@ class _CommandLineEdit(QLineEdit):
             except Exception:
                 sys.stderr.write('Invalid command.\n')
                 print(err)
-
-
-def addSubWindow(win):
-    MainWindow._instance.area.addSubWindow(win)

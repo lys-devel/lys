@@ -1,8 +1,8 @@
 import os
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from .ExtendType import *
+
+from LysQt.QtWidgets import QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget
+
+from .ExtendType import ExtendMdiSubWindow
 from . import SettingDict, home
 
 
@@ -38,7 +38,7 @@ class AnalysisWindow(ExtendMdiSubWindow):
 
 
 def _restore(self, file):
-    settings = SettingDict(file).data
+    settings = SettingDict(file)
 
     for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
         name = obj.objectName()
@@ -75,7 +75,7 @@ def _restore(self, file):
 
 
 def _save(self, file):
-    settings = {}
+    settings = SettingDict(file)
 
     for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
         name = obj.objectName()
@@ -101,9 +101,6 @@ def _save(self, file):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = [obj.item(i).text() for i in range(obj.count())]
-
-    d = SettingDict(file)
-    d.data = settings
     return settings
 
 

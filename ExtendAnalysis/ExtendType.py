@@ -19,7 +19,6 @@ class SizeAdjustableWindow(ExtendMdiSubWindowBase):
         super().__init__()
         # Mode #0 : Auto, 1 : heightForWidth, 2 : widthForHeight
         self.__mode = 0
-        self.__aspect = 0
         self.setWidth(0)
         self.setHeight(0)
         self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -116,20 +115,9 @@ class ExtendMdiSubWindow(AttachableWindow):
         if not floating:
             cls.mdimain.removeSubWindow(win)
 
-    @classmethod
-    def _Contains(cls, win):
-        return win in cls.__wins
-
-    @classmethod
-    def AllWindows(cls):
-        return cls.__wins
-
     def closeEvent(self, event):
         ExtendMdiSubWindow._RemoveWindow(self, self.__floating)
         super().closeEvent(event)
-
-    def isFloating(self):
-        return self.__floating
 
 
 class AutoSavedWindow(ExtendMdiSubWindow):
@@ -255,9 +243,6 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             else:
                 self._init(**kwargs)
             AutoSavedWindow._AddAutoWindow(self)
-
-    def setLoadFile(self, file):
-        self.__loadFile = os.path.abspath(file)
 
     def FileName(self):
         return self.__file
