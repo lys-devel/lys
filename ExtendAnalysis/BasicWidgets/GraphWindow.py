@@ -16,7 +16,7 @@ class Graph(AutoSavedWindow):
 
     @classmethod
     def active(cls, n=0, exclude=None):
-        list = cls.mdimain.subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        list = cls.main.area.subWindowList(order=QMdiArea.ActivationHistoryOrder)
         m = 0
         for l in reversed(list):
             if isinstance(l, Graph):
@@ -29,7 +29,7 @@ class Graph(AutoSavedWindow):
 
     @classmethod
     def closeAllGraphs(cls):
-        list = cls.mdimain.subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        list = cls.main.area.subWindowList(order=QMdiArea.ActivationHistoryOrder)
         for l in reversed(list):
             if isinstance(l, Graph):
                 l.close(force=True)

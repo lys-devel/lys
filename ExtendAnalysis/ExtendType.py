@@ -1,5 +1,4 @@
 import os
-import logging
 import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -7,14 +6,10 @@ from . import home
 from .core import _produceWave
 
 produce = _produceWave
-"""only for backward compability"""
+"""only for backward compability. DO NOT DELETE!"""
 
 
-class ExtendMdiSubWindowBase(QMdiSubWindow):
-    pass
-
-
-class SizeAdjustableWindow(ExtendMdiSubWindowBase):
+class SizeAdjustableWindow(QMdiSubWindow):
     def __init__(self):
         super().__init__()
         # Mode #0 : Auto, 1 : heightForWidth, 2 : widthForHeight
@@ -61,13 +56,6 @@ class AttachableWindow(SizeAdjustableWindow):
         self.moved.emit()
         return super().moveEvent(event)
 
-    def _attach(self, parent):
-        self._parent = parent
-        if isinstance(parent, ExtendMdiSubWindow):
-            self._parent.moved.connect(self.attachTo)
-            self._parent.resized.connect(self.attachTo)
-            self._parent.closed.connect(self.close)
-
     def closeEvent(self, event):
         if self._parent is not None:
             self._parent.moved.disconnect(self.attachTo)
@@ -75,6 +63,13 @@ class AttachableWindow(SizeAdjustableWindow):
             self._parent.closed.disconnect(self.close)
         self.closed.emit(self)
         return super().closeEvent(event)
+
+    def _attach(self, parent):
+        self._parent = parent
+        if isinstance(parent, ExtendMdiSubWindow):
+            self._parent.moved.connect(self.attachTo)
+            self._parent.resized.connect(self.attachTo)
+            self._parent.closed.connect(self.close)
 
     def attachTo(self):
         if self._parent is not None:
@@ -84,58 +79,38 @@ class AttachableWindow(SizeAdjustableWindow):
 
 
 class ExtendMdiSubWindow(AttachableWindow):
-    mdimain = None
-    __wins = []
+    main = None
+    __win = []
 
     def __init__(self, title=None, floating=False):
-        logging.debug('[ExtendMdiSubWindow] __init__')
         super().__init__()
-        self.__floating = floating
-        ExtendMdiSubWindow._AddWindow(self, floating)
+        if floating:
+            ExtendMdiSubWindow.__win.append(self)
+            ExtendMdiSubWindow.main.closed.connect(self.close)
+        else:
+            ExtendMdiSubWindow.main.addSubWindow(self)
         self.setAttribute(Qt.WA_DeleteOnClose)
         if title is not None:
             self.setWindowTitle(title)
         self.updateGeometry()
         self.show()
 
-    @classmethod
-    def CloseAllWindows(cls):
-        for g in cls.__wins:
-            g.close()
-
-    @classmethod
-    def _AddWindow(cls, win, floating):
-        cls.__wins.append(win)
-        if cls.mdimain is not None and not floating:
-            cls.mdimain.addSubWindow(win)
-
-    @classmethod
-    def _RemoveWindow(cls, win, floating):
-        cls.__wins.remove(win)
-        if not floating:
-            cls.mdimain.removeSubWindow(win)
-
-    def closeEvent(self, event):
-        ExtendMdiSubWindow._RemoveWindow(self, self.__floating)
-        super().closeEvent(event)
-
 
 class AutoSavedWindow(ExtendMdiSubWindow):
     __list = None
     _isclosed = False
     _restore = False
-    folder_prefix = home() + '/.lys/workspace/'
+    _folder = home() + '/.lys/workspace/default/winlist.lst'
+    _windir = home() + '/.lys/workspace/default/wins'
 
     @classmethod
     def _saveWinList(cls):
-        file = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/winlist.lst'
-        with open(file, 'w') as f:
+        with open(cls._folder, 'w') as f:
             f.write(str(cls.__list))
 
     @classmethod
     def _loadWinList(cls):
-        file = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/winlist.lst'
-        with open(file, 'r') as f:
+        with open(cls._folder, 'r') as f:
             data = eval(f.read())
         return data
 
@@ -158,26 +133,16 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         cls._saveWinList()
 
     @classmethod
-    def SwitchTo(cls, workspace='default'):
-        if workspace == "":
-            workspace = "default"
-        cls.StoreAllWindows()
-        cls.RestoreAllWindows(workspace)
-
-    @classmethod
-    def RestoreAllWindows(cls, workspace='default'):
+    def RestoreAllWindows(cls):
         from . import load
-        AutoSavedWindow._workspace = workspace
         cls.__list = cls._loadWinList()
-        AutoSavedWindow._windir = home() + '/.lys/workspace/' + AutoSavedWindow._workspace + '/wins'
-        print("Workspace: " + AutoSavedWindow._workspace)
         cls._restore = True
         os.makedirs(AutoSavedWindow._windir, exist_ok=True)
         for path in cls.__list:
             try:
                 w = load(path)
                 if path.find(AutoSavedWindow._windir) > -1:
-                    w.Disconnect()
+                    w._Disconnect()
             except:
                 pass
         cls._restore = False
@@ -185,64 +150,46 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     @classmethod
     def StoreAllWindows(cls):
         cls._isclosed = True
-        list = cls.mdimain.subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        list = cls.main.area.subWindowList(order=QMdiArea.ActivationHistoryOrder)
         for l in reversed(list):
             if isinstance(l, AutoSavedWindow):
                 l.close(force=True)
         cls._isclosed = False
 
-    @classmethod
-    def _IsClosed(cls):
-        return cls._isclosed
-
-    def _onRestore(cls):
-        return cls._restore
-
-    def NewTmpFilePath(self):
-        os.makedirs(AutoSavedWindow._windir, exist_ok=True)
-        for i in range(1000):
-            path = AutoSavedWindow._windir + '/' + self._prefix() + str(i).zfill(3) + \
-                self._suffix()
-            if not AutoSavedWindow._IsUsed(path):
-                return path
-        print('Too many windows.')
-
     def __new__(cls, file=None, title=None, **kwargs):
-        logging.debug('[AutoSavedWindow] __new__ called.')
         if cls._restore:
             return super().__new__(cls)
         if AutoSavedWindow._IsUsed(file):
-            logging.debug('[AutoSavedWindow] found loaded window.', file)
             return None
         return super().__new__(cls)
 
     def __init__(self, file=None, title=None, **kwargs):
-        logging.debug('[AutoSavedWindow] __init__ called.')
         try:
             self.__file
         except Exception:
-            logging.debug('[AutoSavedWindow] new window will be created.')
             self.__closeflg = True
-            if file is None:
-                logging.debug(
-                    '[AutoSavedWindow] file is None. New temporary window is created.')
-                self.__isTmp = True
-                self.__file = self.NewTmpFilePath()
+            self.__isTmp = file is None
+            if self.__isTmp:
+                self.__file = self._NewTmpFilePath()
             else:
-                logging.debug('[AutoSavedWindow] file is ' + file + '.')
-                self.__isTmp = False
-                self.__file = file
+                self.__file = os.path.abspath(file)
             if title is not None:
                 super().__init__(title)
             else:
                 super().__init__(self.Name())
-            if file is not None:
-                self.__file = os.path.abspath(file)
             if os.path.exists(self.__file) and not self.__isTmp:
                 self._init(self.__file, **kwargs)
             else:
                 self._init(**kwargs)
             AutoSavedWindow._AddAutoWindow(self)
+
+    def _NewTmpFilePath(self):
+        os.makedirs(AutoSavedWindow._windir, exist_ok=True)
+        for i in range(1000):
+            path = AutoSavedWindow._windir + '/' + self._prefix() + str(i).zfill(3) + self._suffix()
+            if not AutoSavedWindow._IsUsed(path):
+                return path
+        print('Too many windows.')
 
     def FileName(self):
         return self.__file
@@ -254,11 +201,10 @@ class AutoSavedWindow(ExtendMdiSubWindow):
     def IsConnected(self):
         return not self.__isTmp
 
-    def Disconnect(self):
+    def _Disconnect(self):
         self.__isTmp = True
 
     def Save(self, file=None):
-        logging.debug('[AutoSavedWindow] Saved')
         if file is not None:
             AutoSavedWindow._RemoveAutoWindow(self)
             self.__file = os.path.abspath(file)
@@ -272,18 +218,14 @@ class AutoSavedWindow(ExtendMdiSubWindow):
             self._save(self.__file)
 
     def close(self, force=False):
-        if force:
-            self.__closeflg = False
-        else:
-            self.__closeflg = True
+        self.__closeflg = not force
         super().close()
 
     def closeEvent(self, event):
-        if (not AutoSavedWindow._IsClosed()) and (not self.IsConnected()) and self.__closeflg:
+        if (not self.IsConnected()) and self.__closeflg:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
-            msg.setText(
-                "This window is not saved. Do you really want to close it?")
+            msg.setText("This window is not saved. Do you really want to close it?")
             msg.setWindowTitle("Caution")
             msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             ok = msg.exec_()
@@ -291,6 +233,6 @@ class AutoSavedWindow(ExtendMdiSubWindow):
                 event.ignore()
                 return
         self.Save()
-        if not AutoSavedWindow._IsClosed():
+        if not AutoSavedWindow._isClosed:
             AutoSavedWindow._RemoveAutoWindow(self)
         return super().closeEvent(event)

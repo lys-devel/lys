@@ -15,7 +15,8 @@ from .ExtendType import ExtendMdiSubWindow, AutoSavedWindow
 
 
 class MainWindow(QMainWindow):
-    closed = pyqtSignal(object)
+    beforeClosed = pyqtSignal(QEvent)
+    closed = pyqtSignal()
     _instance = None
 
     def __init__(self):
@@ -23,15 +24,15 @@ class MainWindow(QMainWindow):
         MainWindow._instance = self
         self.__initUI()
         self.__initMenu()
-        ExtendMdiSubWindow.mdimain = self.area
+        ExtendMdiSubWindow.main = self
         AutoSavedWindow.RestoreAllWindows()
 
     def closeEvent(self, event):
         AutoSavedWindow.StoreAllWindows()
-        self.closed.emit(event)
+        self.beforeClosed.emit(event)
         if not event.isAccepted():
             return
-        ExtendMdiSubWindow.CloseAllWindows()
+        self.closed.emit()
 
     def __initUI(self):
         self.setWindowTitle('lys')
@@ -95,6 +96,10 @@ class MainWindow(QMainWindow):
 
     def addSettingWidget(self, widget):
         self._setting.insertWidget(self._setting.count() - 1, widget)
+
+    def addSubWindow(self, window):
+        self.area.addSubWindow(window)
+        window.closed.connect(lambda: self.area.removeSubWindow(window))
 
     @property
     def fileView(self):

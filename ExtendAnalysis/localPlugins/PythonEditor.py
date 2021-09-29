@@ -331,7 +331,7 @@ def _makeNewPy(name):
 
 def _register():
     plugin.registerFileLoader(".py", PythonEditor)
-    plugin.mainWindow().closed.connect(PythonEditor.CloseAllEditors)
+    plugin.mainWindow().beforeClosed.connect(PythonEditor.CloseAllEditors)
 
     menu = plugin.mainWindow().menuBar()
     prog = menu.addMenu("Python")
