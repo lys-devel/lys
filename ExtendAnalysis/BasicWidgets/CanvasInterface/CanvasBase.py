@@ -1,3 +1,4 @@
+import os
 from enum import IntEnum
 from matplotlib.colors import hsv_to_rgb
 from .SaveCanvas import *

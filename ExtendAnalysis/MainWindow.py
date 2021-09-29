@@ -4,43 +4,51 @@ import traceback
 import rlcompleter
 
 
-from LysQt.QtWidgets import QMainWindow, QMdiArea, QSplitter, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QTextEdit
+from LysQt.QtWidgets import QMainWindow, QSplitter, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QTextEdit, QTabBar
 from LysQt.QtGui import QColor, QTextCursor, QTextOption
 from LysQt.QtCore import Qt, pyqtSignal, QEvent
 
-from . import plugin, home, Graph
-from .FileView import FileSystemView
+from . import plugin, home, Graph, SettingDict
 
-from .ExtendType import ExtendMdiSubWindow, AutoSavedWindow
+from .FileView import FileSystemView
+from .MdiWindow import LysMdiArea
 
 
 class MainWindow(QMainWindow):
     beforeClosed = pyqtSignal(QEvent)
     closed = pyqtSignal()
-    _instance = None
 
     def __init__(self):
         super().__init__()
-        MainWindow._instance = self
+        self._workspace = []
+        self._settingDict = SettingDict(home() + "/.lys/workspace/works.dic")
         self.__initUI()
         self.__initMenu()
-        ExtendMdiSubWindow.main = self
-        AutoSavedWindow.RestoreAllWindows()
 
     def closeEvent(self, event):
-        AutoSavedWindow.StoreAllWindows()
         self.beforeClosed.emit(event)
         if not event.isAccepted():
             return
         self.closed.emit()
+        self._settingDict["workspaces"] = [w._workspace for w in self._workspace]
 
     def __initUI(self):
         self.setWindowTitle('lys')
-        self.area = QMdiArea()
+
+        self._mainTab = QTabWidget()
+        self._mainTab.setTabsClosable(True)
+        self.__addWorkspace("default")
+        self._mainTab.addTab(QWidget(), "+")
+        self._mainTab.tabBar().tabButton(0, QTabBar.RightSide).resize(0, 0)
+        self._mainTab.tabBar().tabButton(1, QTabBar.RightSide).resize(0, 0)
+        self.__loadWorkspace()
+        self._mainTab.setCurrentIndex(0)
+        self._mainTab.currentChanged.connect(self._changeTab)
+        self._mainTab.tabCloseRequested.connect(self._closeTab)
         self._side = self.__sideBar()
 
         sp = QSplitter(Qt.Horizontal)
-        sp.addWidget(self.area)
+        sp.addWidget(self._mainTab)
         sp.addWidget(self._side)
         self.setCentralWidget(sp)
         self.show()
@@ -70,6 +78,20 @@ class MainWindow(QMainWindow):
         w.setLayout(lay)
         return w
 
+    def __addWorkspace(self, workspace="default"):
+        work = LysMdiArea(self, workspace)
+        self._workspace.append(work)
+        self._mainTab.insertTab(max(0, self._mainTab.count() - 1), work, workspace)
+        self._mainTab.setCurrentIndex(self._mainTab.count() - 1)
+        work.RestoreAllWindows()
+        self.closed.connect(work.StoreAllWindows)
+
+    def __loadWorkspace(self):
+        list = self._settingDict.get("workspaces", [])
+        for w in list:
+            if w != "default":
+                self.__addWorkspace(w)
+
     def __initMenu(self):
         menu = self.menuBar()
         file = menu.addMenu("File")
@@ -88,6 +110,24 @@ class MainWindow(QMainWindow):
         act.setShortcut("Ctrl+J")
         return
 
+    def _changeTab(self, index):
+        def getName():
+            for i in range(1, 1000):
+                name = "workspace" + str(i)
+                if name not in [w._workspace for w in self._workspace]:
+                    return name
+
+        if index == self._mainTab.count() - 1:
+            name = getName()
+            self.__addWorkspace(name)
+            self._mainTab.setCurrentIndex(index)
+
+    def _closeTab(self, index):
+        self._workspace[index].CloseAllWindows()
+        self._workspace.pop(index)
+        self._mainTab.setCurrentIndex(index - 1)
+        self._mainTab.removeTab(index)
+
     def addTab(self, widget, name, position):
         if position == "up":
             self._tab_up.addTab(widget, name)
@@ -97,13 +137,15 @@ class MainWindow(QMainWindow):
     def addSettingWidget(self, widget):
         self._setting.insertWidget(self._setting.count() - 1, widget)
 
-    def addSubWindow(self, window):
-        self.area.addSubWindow(window)
-        window.closed.connect(lambda: self.area.removeSubWindow(window))
-
     @property
     def fileView(self):
         return self._fileView
+
+    def _mdiArea(self, workspace="default"):
+        i = self._mainTab.currentIndex()
+        if i > len(self._workspace) - 1:
+            i = len(self._workspace) - 1
+        return self._workspace[i]
 
 
 class _CommandLogWidget(QTextEdit):

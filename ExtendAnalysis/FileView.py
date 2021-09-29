@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 import fnmatch
 import itertools
@@ -254,7 +255,11 @@ class _contextMenuBuilder:
     def __load(self):
         for p in self._paths:
             nam, ext = os.path.splitext(os.path.basename(p))
-            plugin.shell().addObject(load(p), name=nam)
+            obj = load(p)
+            if obj is not None:
+                plugin.shell().addObject(obj, name=nam)
+            else:
+                print("Failed to load " + p, file=sys.stderr)
 
     def __newdir(self):
         text, ok = QInputDialog.getText(None, 'Create directory', 'Directory name:')

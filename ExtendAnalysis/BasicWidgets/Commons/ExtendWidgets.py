@@ -3,9 +3,8 @@ import shutil
 import fnmatch
 import itertools
 from ExtendAnalysis import Wave
-from ExtendAnalysis.ExtendType import *
 from ExtendAnalysis.BasicWidgets.GraphWindow import Graph, PreviewWindow, Table
-from ExtendAnalysis import load
+from ExtendAnalysis import load, home
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *

@@ -144,10 +144,10 @@ class _WaveAxesDescriptor:
     def __set__(self, instance, value):
         # check type
         if not hasattr(value, "__iter__"):
-            raise TypeError("Axes should be a list of 1-dimensional array or None")
+            raise TypeError("Axes should be a list of 1-dimensional array or None: Present value = " + str(value))
         for item in value:
             if (not isinstance(item, np.ndarray)) and (not isinstance(item, list)) and (not isinstance(item, tuple)) and item is not None:
-                raise TypeError("Axes should be a 1-dimensional sequence or None")
+                raise TypeError("Axes should be a 1-dimensional sequence or None: Present value = " + str(value))
         if len(value) == 0:
             value = [np.array(None) for _ in range(instance.data.ndim)]
         if len(value) != instance.data.ndim:
@@ -447,7 +447,7 @@ class WaveNote(dict):
 
 
 def _produceWave(data, axes, note):
-    return Wave(data, *axes, *note)
+    return Wave(data, *axes, **note)
 
 
 class Wave(QObject):

@@ -16,7 +16,7 @@ class Graph(AutoSavedWindow):
 
     @classmethod
     def active(cls, n=0, exclude=None):
-        list = cls.main.area.subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        list = LysMdiArea.current().subWindowList(order=QMdiArea.ActivationHistoryOrder)
         m = 0
         for l in reversed(list):
             if isinstance(l, Graph):
@@ -29,7 +29,7 @@ class Graph(AutoSavedWindow):
 
     @classmethod
     def closeAllGraphs(cls):
-        list = cls.main.area.subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        list = LysMdiArea.current().subWindowList(order=QMdiArea.ActivationHistoryOrder)
         for l in reversed(list):
             if isinstance(l, Graph):
                 l.close(force=True)
@@ -39,6 +39,28 @@ class Graph(AutoSavedWindow):
 
     def _suffix(self):
         return '.grf'
+
+    def __init__(self, file=None, lib=None, **kwargs):
+        super().__init__(file, **kwargs)
+        if file is not None:
+            lib = self._loadLibType(file)
+        if lib is None:
+            lib = Graph.graphLibrary
+        if lib == "matplotlib":
+            self.canvas = ExtendCanvas()
+        elif lib == "pyqtgraph":
+            self.canvas = pyqtCanvas()
+        self.setWidget(self.canvas)
+        if file is not None:
+            self._load(file)
+        self.canvas.keyPressed.connect(self.keyPress)
+        self.closed.connect(self.canvas.emitCloseEvent)
+        self.resized.connect(self.canvas.parentResized)
+        self.canvas.setSaveFunction(self.Save)
+        if file is not None:
+            self.canvas.RestoreSize()
+        else:
+            self.canvas.RestoreSize(init=True)
 
     def _save(self, file):
         d = {}
@@ -66,27 +88,6 @@ class Graph(AutoSavedWindow):
             return d["Library"]
         else:
             return "matplotlib"
-
-    def _init(self, file=None, lib=None):
-        if file is not None:
-            lib = self._loadLibType(file)
-        if lib is None:
-            lib = Graph.graphLibrary
-        if lib == "matplotlib":
-            self.canvas = ExtendCanvas()
-        elif lib == "pyqtgraph":
-            self.canvas = pyqtCanvas()
-        self.setWidget(self.canvas)
-        if file is not None:
-            self._load(file)
-        self.canvas.keyPressed.connect(self.keyPress)
-        self.closed.connect(self.canvas.emitCloseEvent)
-        self.resized.connect(self.canvas.parentResized)
-        self.canvas.setSaveFunction(self.Save)
-        if file is not None:
-            self.canvas.RestoreSize()
-        else:
-            self.canvas.RestoreSize(init=True)
 
     def keyPress(self, e):
         if e.key() == Qt.Key_G:

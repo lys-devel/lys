@@ -1,6 +1,7 @@
 import unittest
 import os
 import shutil
+import _pickle as cPickle
 import numpy as np
 import dask.array as da
 
@@ -140,6 +141,14 @@ class core_test(unittest.TestCase):
         self.assertTrue((w.data == w2.data).all())
         self.assertTrue((w.axes[0] == w2.axes[0]).all())
         self.assertTrue((w.axes[1] == w2.axes[1]).all())
+        self.assertTrue(w.name == w2.name)
+
+        # pickle
+        w = Wave([1, 2, 3], None, name="name")
+        data = cPickle.dumps(w)
+        w2 = cPickle.loads(data)
+        self.assertTrue((w.data == w2.data).all())
+        self.assertTrue((w.axes[0] == w2.axes[0]).all())
         self.assertTrue(w.name == w2.name)
 
     def test_DaskWave(self):

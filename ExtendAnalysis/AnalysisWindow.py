@@ -2,7 +2,7 @@ import os
 
 from LysQt.QtWidgets import QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget
 
-from .ExtendType import ExtendMdiSubWindow
+from . import ExtendMdiSubWindow
 from . import SettingDict, home
 
 
