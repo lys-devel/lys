@@ -1,4 +1,8 @@
-"""Basic hook and launch QApplication"""
+"""
+Basic hook and launch QApplication. 
+No pulic function and class in this file
+"""
+
 import sys
 import os
 import traceback

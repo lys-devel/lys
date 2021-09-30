@@ -58,14 +58,14 @@ class ExtendCanvas(AnnotGUICanvas):
         loc = self.__GlobalToRatio(x, y, ax)
         xlim = ax.get_xlim()
         ylim = ax.get_ylim()
-        x_ax = xlim[0]+(xlim[1]-xlim[0])*loc[0]
-        y_ax = ylim[0]+(ylim[1]-ylim[0])*loc[1]
+        x_ax = xlim[0] + (xlim[1] - xlim[0]) * loc[0]
+        y_ax = ylim[0] + (ylim[1] - ylim[0]) * loc[1]
         return [x_ax, y_ax]
 
     def __GlobalToRatio(self, x, y, ax):
         ran = ax.get_position()
-        x_loc = (x - ran.x0 * self.width())/((ran.x1 - ran.x0)*self.width())
-        y_loc = (y - ran.y0 * self.height())/((ran.y1 - ran.y0)*self.height())
+        x_loc = (x - ran.x0 * self.width()) / ((ran.x1 - ran.x0) * self.width())
+        y_loc = (y - ran.y0 * self.height()) / ((ran.y1 - ran.y0) * self.height())
         return [x_loc, y_loc]
 
     def _onClick(self, event):
@@ -88,8 +88,8 @@ class ExtendCanvas(AnnotGUICanvas):
                 d = self.__GlobalToRatio(event.x, event.y, self.axes)
             elif mode == 'Relative':
                 d = self.__GlobalToAxis(event.x, event.y, self.axes)
-            self.setAnnotPosition(self.annotindex, (self.textPosStart[0]+d[0] -
-                                                    self.cursorPosStart[0], self.textPosStart[1]+d[1]-self.cursorPosStart[1]))
+            self.setAnnotPosition(self.annotindex, (self.textPosStart[0] + d[0] -
+                                                    self.cursorPosStart[0], self.textPosStart[1] + d[1] - self.cursorPosStart[1]))
             self.draw()
         else:
             return super().OnMouseMove(event)
@@ -149,7 +149,7 @@ class ExtendCanvas(AnnotGUICanvas):
         from ExtendAnalysis import ModifyWindow, Graph
         parent = self.parentWidget()
         while(parent is not None):
-            if isinstance(parent, ExtendMdiSubWindow):
+            if isinstance(parent, LysSubWindow):
                 mod = ModifyWindow(self, parent, showArea=isinstance(parent, Graph))
                 mod.selectTab(tab)
                 break

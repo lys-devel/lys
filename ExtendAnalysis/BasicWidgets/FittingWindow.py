@@ -4,10 +4,10 @@ import os
 from PyQt5.QtGui import *
 from .Fitting.FittingWidget import FittingWidget
 from .Fitting.LineProfile import LineProfileWidget
-from ExtendAnalysis import ExtendMdiSubWindow
+from ExtendAnalysis.widgets import LysSubWindow
 
 
-class FittingWindow(ExtendMdiSubWindow):
+class FittingWindow(LysSubWindow):
     def __init__(self, parent, wavelist, canvas=None):
         super().__init__()
         self._initlayout(wavelist, canvas)
@@ -23,7 +23,7 @@ class FittingWindow(ExtendMdiSubWindow):
         self.setWidget(w)
 
 
-class LineProfileWindow(ExtendMdiSubWindow):
+class LineProfileWindow(LysSubWindow):
     def __init__(self, parent, wavelist, canvas=None):
         super().__init__()
         self._initlayout(wavelist, canvas)

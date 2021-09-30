@@ -5,6 +5,7 @@ from .SaveCanvas import *
 from ExtendAnalysis import *
 from ExtendAnalysis import load
 import _pickle as cPickle
+import numpy as np
 
 
 class Axis(IntEnum):

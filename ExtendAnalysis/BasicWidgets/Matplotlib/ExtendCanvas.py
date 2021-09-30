@@ -136,7 +136,7 @@ class ExtendCanvas(SaveSettingCanvas):
         from ExtendAnalysis import ModifyWindow, Graph
         parent = self.parentWidget()
         while(parent is not None):
-            if isinstance(parent, ExtendMdiSubWindow):
+            if isinstance(parent, LysSubWindow):
                 mod = ModifyWindow(self, parent, showArea=isinstance(parent, Graph))
                 mod.selectTab(tab)
                 break

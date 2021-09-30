@@ -23,7 +23,7 @@ if args.ncore is not None:
 
 # Create main window
 print('Welcome to Analysis program lys. Launching main window...')
-ExtendAnalysis.plugin._createMainWindow()
+ExtendAnalysis.plugin.createMainWindow()
 
 # Load local Plugins
 if not args.noplugin:

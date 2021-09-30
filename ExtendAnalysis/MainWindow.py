@@ -11,12 +11,43 @@ from LysQt.QtCore import Qt, pyqtSignal, QEvent
 from . import plugin, home, Graph, SettingDict
 
 from .FileView import FileSystemView
-from .MdiWindow import LysMdiArea
+from .widgets import _ExtendMdiArea
 
 
 class MainWindow(QMainWindow):
+    """
+    *Main window* class gives several methods to customize lys GUI.
+
+    New tabs in side bar can be added by :meth:`addTab` method.
+
+    Developers can access :class:`.FileView.FileSystemView` by :attr:`fileView` property.
+    """
     beforeClosed = pyqtSignal(QEvent)
+    """
+    beforeClosed(event) signal is submitted when close button of lys is clicked.
+
+    Developers can connect any functions/methods to this signal.
+
+    If the main window should not be closed, call event.ignore() in the connected functions/methods.
+
+    Example:
+
+        >>> from lys import plugin
+        >>> main = plugin.mainWindow()
+        >>> main.beforeClosed.connect(lambda event: print("Main window closed."))
+    """
     closed = pyqtSignal()
+    """
+    beforeClosed(event) signal is submitted when main window of lys is closed.
+
+    Developers can connect any functions/methods to this signal for finalization.
+
+    Example:
+
+        >>> from lys import plugin
+        >>> main = plugin.mainWindow()
+        >>> main.closed.connect(lambda: print("Main window closed."))
+    """
 
     def __init__(self):
         super().__init__()
@@ -26,6 +57,9 @@ class MainWindow(QMainWindow):
         self.__initMenu()
 
     def closeEvent(self, event):
+        """
+        Reimplementation of closeEvent in QMainWindow.closeEvent for realization of beforeClosed and closed signals.
+        """
         self.beforeClosed.emit(event)
         if not event.isAccepted():
             return
@@ -79,7 +113,7 @@ class MainWindow(QMainWindow):
         return w
 
     def __addWorkspace(self, workspace="default"):
-        work = LysMdiArea(self, workspace)
+        work = _ExtendMdiArea(self, workspace)
         self._workspace.append(work)
         self._mainTab.insertTab(max(0, self._mainTab.count() - 1), work, workspace)
         self._mainTab.setCurrentIndex(self._mainTab.count() - 1)
@@ -129,6 +163,21 @@ class MainWindow(QMainWindow):
         self._mainTab.removeTab(index)
 
     def addTab(self, widget, name, position):
+        """
+        This method adds tab in the side bar.
+
+        Args:
+            widget(QWidget): widget to be added.
+            name(str): Name of a tab.
+            position('up' or 'down'): TabWidget to be added to.
+
+        Example:
+
+            >>> from ExtendAnalysis import plugin
+            >>> main = plugin.mainWindow()
+            >>> main.addTab(QWidget(), "TestTab", "up")
+
+        """
         if position == "up":
             self._tab_up.addTab(widget, name)
         if position == "down":
@@ -139,6 +188,13 @@ class MainWindow(QMainWindow):
 
     @property
     def fileView(self):
+        """
+        Returns :class:`.FileView.FileSystemView` object in main window.
+
+        Developers can get selected paths and add new context menu in FileSystemView.
+
+        See :class:`.FileView.FileSystemView` for detail.
+        """
         return self._fileView
 
     def _mdiArea(self, workspace="default"):

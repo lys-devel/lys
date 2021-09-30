@@ -6,7 +6,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from ExtendAnalysis import ExtendMdiSubWindow, plugin, home
+from ExtendAnalysis import plugin, home
+from ExtendAnalysis.widgets import LysSubWindow
 
 
 def format(color, style=''):
@@ -234,7 +235,7 @@ class _PlainTextEdit(QPlainTextEdit):
         paint.end()
 
 
-class PythonEditor(ExtendMdiSubWindow):
+class PythonEditor(LysSubWindow):
     __list = []
     updated = False
 

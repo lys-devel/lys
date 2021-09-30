@@ -10,6 +10,8 @@ Developers should import plugin functions from lys.plugin module
 Example:
 
     >>> from lys import plugin
+    >>> shell = plugin.shell()
+    >>> main = plugin.mainWindow()
     >>> plugin.registerFileLoader(".txt", function_to_load_txt)
 
 """
@@ -22,6 +24,13 @@ _main = None
 
 
 def mainWindow():
+    """
+    Return :class:`.MainWindow.MainWindow` object.
+
+    *MainWindow* is used to realize new GUI functionalities in lys.
+    See :class:`.MainWindow.MainWindow` for detailed description.
+
+    """
     return _main
 
 
@@ -36,7 +45,14 @@ def shell():
     return ExtendShell._instance
 
 
-def _createMainWindow():
+def createMainWindow():
+    """
+    Create main window.
+
+    This function is called by lys automatically, and thus users and developers need not to use this function.
+
+    If you want to make custom launch script of lys, see :mod:`.__main__` module.
+    """
     global _main
     _main = MainWindow()
 

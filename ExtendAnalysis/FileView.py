@@ -15,6 +15,19 @@ from . import plugin, load
 
 
 class FileSystemView(QWidget):
+    """
+    *FileSystemView* is a custom widget to see files in lys, which is mainly used in main window.
+
+    Developers can get selected paths by :meth:`selectedPaths` method.
+    Context menu for specified type can be registered by :meth:`registerFileMenu` method.
+
+    See :meth:`selectedPaths` and :meth:`registerFileMenu` for detail and examples
+
+    Args:
+        path(str): path to see files.
+
+    """
+
     def __init__(self, path):
         super().__init__()
         self._path = path
@@ -55,6 +68,19 @@ class FileSystemView(QWidget):
         self._builder.build(self.selectedPaths())
 
     def selectedPaths(self):
+        """
+        Returns selected paths.
+
+        Return:
+            list of str: paths selected
+
+        Example:
+
+            >>> from lys import plugin
+            >>> view = plugin.mainWindow().fileView     # access global fileview in main window.
+            >>> view.selectedPaths()
+            ["path selected", "path selected2, ..."]
+        """
         list = self._tree.selectedIndexes()
         res = []
         for item in list:
@@ -64,6 +90,22 @@ class FileSystemView(QWidget):
         return res
 
     def registerFileMenu(self, ext, menu, add_default=True):
+        """register new context menu to filetype specified by *ext*
+
+        Args:
+            ext(str): extension of file type, e.g. "txt", "csv", etc...
+            menu(QMenu): context menu to be added.
+            add_default: if True, default menus such as Cut, Copy is automatically added at the end of menu.
+
+        Example:
+
+            >>> from lys import plugin
+            >>> view = plugin.mainWindow().fileView     # access global fileview in main window.
+            >>> menu = QMenu()
+            >>> action = QAction("Print", triggered = lambda: print("test"))
+            >>> menu.addAction(action)
+            >>> view.registerFileMenu(".txt", menu)
+        """
         self._builder.register(ext, menu, add_default=add_default)
 
 

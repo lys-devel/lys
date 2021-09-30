@@ -3,7 +3,7 @@ import sys
 import os
 from PyQt5.QtGui import *
 
-from ExtendAnalysis.ExtendType import *
+from ExtendAnalysis.widgets import LysSubWindow
 from ExtendAnalysis.BasicWidgets.pyqtGraph.ExtendCanvas import ExtendCanvas as pyqtCanvas
 from ExtendAnalysis.BasicWidgets.Matplotlib.ExtendCanvas import *
 from .LineSettingsGUI import *
@@ -18,7 +18,7 @@ from .LineAnnotationGUI import *
 from .InfoGUI import *
 
 
-class ModifyWindow(ExtendMdiSubWindow):
+class ModifyWindow(LysSubWindow):
     instance = None
 
     def __init__(self, canvas, parent=None, showArea=True):

@@ -390,7 +390,7 @@ class _SubFiltersGUI(QScrollArea):
         self._flist.insert(pos, newitem)
 
 
-class FiltersDialog(ExtendMdiSubWindow):
+class FiltersDialog(LysSubWindow):
     applied = pyqtSignal(object)
 
     def __init__(self, dim):

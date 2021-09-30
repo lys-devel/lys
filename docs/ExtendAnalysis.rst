@@ -9,26 +9,18 @@ ExtendAnalysis Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`AnalysisWindow` Module
-----------------------------
-
-.. automodule:: ExtendAnalysis.AnalysisWindow
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`CommandWindow` Module
----------------------------
-
-.. automodule:: ExtendAnalysis.CommandWindow
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`ExtendType` Module
 ------------------------
 
 .. automodule:: ExtendAnalysis.ExtendType
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`FileView` Module
+----------------------
+
+.. automodule:: ExtendAnalysis.FileView
     :members:
     :undoc-members:
     :show-inheritance:
@@ -49,18 +41,18 @@ ExtendAnalysis Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`Tasks` Module
--------------------
+:mod:`QtSystem` Module
+----------------------
 
-.. automodule:: ExtendAnalysis.Tasks
+.. automodule:: ExtendAnalysis.QtSystem
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`_QtSystem` Module
------------------------
+:mod:`Tasks` Module
+-------------------
 
-.. automodule:: ExtendAnalysis._QtSystem
+.. automodule:: ExtendAnalysis.Tasks
     :members:
     :undoc-members:
     :show-inheritance:
@@ -105,6 +97,14 @@ ExtendAnalysis Package
     :undoc-members:
     :show-inheritance:
 
+:mod:`widgets` Module
+---------------------
+
+.. automodule:: ExtendAnalysis.widgets
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -112,5 +112,4 @@ Subpackages
 
     ExtendAnalysis.Analysis
     ExtendAnalysis.BasicWidgets
-    ExtendAnalysis.System
 

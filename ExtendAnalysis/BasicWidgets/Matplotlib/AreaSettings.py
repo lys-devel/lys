@@ -17,6 +17,8 @@ from ExtendAnalysis.ExtendType import *
 from .AxisLabelSettings import *
 from .CanvasBase import saveCanvas, notSaveCanvas
 
+from ExtendAnalysis.widgets import SizeAdjustableWindow
+
 
 class MarginAdjustableCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):

@@ -2,12 +2,15 @@ import os
 import sys
 import traceback
 
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from . import home, load
+from PyQt5.QtWidgets import QMdiArea, QMdiSubWindow, QSizePolicy, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget
+from PyQt5.QtCore import Qt, pyqtSignal, QPoint
+from . import home, load, SettingDict
 
 
-class LysMdiArea(QMdiArea):
+class _ExtendMdiArea(QMdiArea):
+    """
+    MdiArea that manage AutoSavedWindows.
+    """
     _main = None
 
     @classmethod
@@ -16,7 +19,7 @@ class LysMdiArea(QMdiArea):
 
     def __init__(self, parent, workspace="default"):
         super().__init__()
-        LysMdiArea._main = parent
+        _ExtendMdiArea._main = parent
         self._workspace = workspace
         self.__list = []
         self._folder = home() + '/.lys/workspace/' + workspace + '/winlist.lst'
@@ -124,37 +127,57 @@ class SizeAdjustableWindow(QMdiSubWindow):
             self.setMaximumHeight(val)
 
 
-class ExtendMdiSubWindow(SizeAdjustableWindow):
+class LysSubWindow(SizeAdjustableWindow):
+    """
+    LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.
+
+    When a *AutoSavedWindow* is instantiated, it is automatically added to current MdiArea.
+
+    It is recommended to inherit this class when developers implement new sub windows in lys.
+
+    Args:
+        floating(bool): Whether the window in in the current mdi area, or floating out side the medi area.
+    """
     __win = []
 
     resized = pyqtSignal()
+    """
+    *resized* signal is emitted when the window is resized.
+    """
     moved = pyqtSignal()
+    """
+    *moved* signal is emitted when the window is moved.
+    """
     closed = pyqtSignal(object)
+    """
+    *closed* signal is emitted when the window is closed.
+    """
 
-    def __init__(self, title=None, floating=False):
+    def __init__(self, floating=False, saveName=None):
         from . import plugin
         super().__init__()
         self._parent = None
         if floating:
-            ExtendMdiSubWindow.__win.append(self)
+            LysSubWindow.__win.append(self)
             plugin.mainWindow().closed.connect(self.close)
         else:
-            LysMdiArea.current().addSubWindow(self)
+            _ExtendMdiArea.current().addSubWindow(self)
         self.setAttribute(Qt.WA_DeleteOnClose)
-        if title is not None:
-            self.setWindowTitle(title)
         self.updateGeometry()
         self.show()
 
     def resizeEvent(self, event):
+        """Reimplementation of resizeEvent in QMdiSubWindow"""
         self.resized.emit()
         return super().resizeEvent(event)
 
     def moveEvent(self, event):
+        """Reimplementation of moveEvent in QMdiSubWindow"""
         self.moved.emit()
         return super().moveEvent(event)
 
     def closeEvent(self, event):
+        """Reimplementation of closeEvent in QMdiSubWindow"""
         if self._parent is not None:
             self._parent.moved.disconnect(self.attachTo)
             self._parent.resized.disconnect(self.attachTo)
@@ -164,7 +187,7 @@ class ExtendMdiSubWindow(SizeAdjustableWindow):
 
     def _attach(self, parent):
         self._parent = parent
-        if isinstance(parent, ExtendMdiSubWindow):
+        if isinstance(parent, LysSubWindow):
             self._parent.moved.connect(self.attachTo)
             self._parent.resized.connect(self.attachTo)
             self._parent.closed.connect(self.close)
@@ -175,12 +198,125 @@ class ExtendMdiSubWindow(SizeAdjustableWindow):
             frm = self._parent.frameGeometry()
             self.move(QPoint(pos.x() + frm.width(), pos.y()))
 
+    def saveSettings(self, file):
+        """
+        Export all widgets settings from default setting file specified by name.
+        User input on various widgets are easily loaded from file by :meth:`restoreSettings`.
+        """
+        _restore(self, file)
 
-class AutoSavedWindow(ExtendMdiSubWindow):
+    def restoreSettings(self, file):
+        """
+        Import all widgets settings from default setting file specified by name.
+        User input on various widgets are easily exported to file by :meth:`saveSettings`.
+        """
+        return _save(self, file)
+
+
+def _restore(self, file):
+    settings = SettingDict(file)
+
+    for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                obj.setValue(settings[name])
+
+    for obj in self.findChildren(QCheckBox) + self.findChildren(QRadioButton):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                obj.setChecked(settings[name])
+
+    for obj in self.findChildren(QComboBox):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                i = obj.findText(settings[name])
+                if i != -1:
+                    obj.setCurrentIndex(i)
+
+    for obj in self.findChildren(QLineEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                obj.setText(settings[name])
+
+    for obj in self.findChildren(QListWidget):
+        name = obj.objectName()
+        if _checkName(name):
+            obj.clear()
+            if name in settings:
+                obj.addItems(settings[name])
+
+
+def _save(self, file):
+    settings = SettingDict(file)
+
+    for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.value()
+
+    for obj in self.findChildren(QCheckBox) + self.findChildren(QRadioButton):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.isChecked()
+
+    for obj in self.findChildren(QComboBox):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.currentText()
+
+    for obj in self.findChildren(QLineEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.text()
+
+    for obj in self.findChildren(QListWidget):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = [obj.item(i).text() for i in range(obj.count())]
+    return settings
+
+
+def _checkName(name):
+    if name == "":
+        return False
+    elif name.startswith("qt_"):
+        return False
+    else:
+        return True
+
+
+class AutoSavedWindow(LysSubWindow):
+    """
+    This is a base widget class for auto save feature, which is mainly used for Graph class.
+
+    When a *AutoSavedWindow* is instantiated, it is automatically added to current MdiArea.
+
+    At the same time, the window is connected to a temporary file in .lys/workspace/
+
+    When :meth:`Save` is called without *file* argument, data is automatically saved in the temprary file.
+
+    This functionarity is realized by calling :meth:`_save` method, which should be implemented in class that inherit *AutoSavedWindow*
+
+    To gives default file name, the class should also implement :meth:`_prefix` and :meth:`_suffix` methods, in addition to :meth:`save` method.
+
+    Note:
+        Functionarity of *AutoSavedWindow* is basically not preffered in usual program.
+
+        However, since users can execute any commands in lys Python Interface, sometimes lys crashes.
+
+        In such case, *AutoSavedWindow* is useful because the edited files (mainly Graph) have been automatically saved in temporary files.
+
+        Even if users kill lys by [kill] command in linux (This is usually caused by infinite loop in program), the edited graphs maintain by this functionarity.
+    """
     saved = pyqtSignal()
+    """*saved* signal is emitted when it is saved."""
 
     def __new__(cls, file=None, title=None, **kwargs):
-        obj = LysMdiArea.current().loadedWindow(file)
+        obj = _ExtendMdiArea.current().loadedWindow(file)
         if obj is not None:
             return obj
         return super().__new__(cls)
@@ -189,13 +325,13 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         self.__closeflg = True
         self.__isTmp = file is None
         if self.__isTmp:
-            self.__file = LysMdiArea.current().tmpFilePath(self._prefix(), self._suffix())
+            self.__file = _ExtendMdiArea.current().tmpFilePath(self._prefix(), self._suffix())
         else:
             self.__file = os.path.abspath(file)
-        if title is not None:
-            super().__init__(title)
-        else:
-            super().__init__(self.Name())
+        super().__init__()
+        if title is None:
+            title = self.Name()
+        self.setWindowTitle(title)
 
     def _IsConnected(self):
         return not self.__isTmp
@@ -204,6 +340,17 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         self.__isTmp = True
 
     def Save(self, file=None):
+        """
+        Save the content of the window.
+
+        If *file* is given, the content of the window is saved via _save method.
+
+        If *file* is not given, it is saved in the last-saved file if it exists.
+        If the file has not been saved, it is saved in the temporary file in .lys/workspace/ automatically.
+
+        Args:
+            file(str): the file to be saved.
+        """
         if file is not None:
             self.__file = os.path.abspath(file)
             os.makedirs(os.path.dirname(self.__file), exist_ok=True)
@@ -216,10 +363,12 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         self.saved.emit()
 
     def close(self, force=False):
+        """Reimplementation of close in QMdiSubWindow"""
         self.__closeflg = not force
         super().close()
 
     def closeEvent(self, event):
+        """Reimplementation of closeEvent in QMdiSubWindow"""
         if self.__isTmp and self.__closeflg:
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
@@ -233,9 +382,11 @@ class AutoSavedWindow(ExtendMdiSubWindow):
         return super().closeEvent(event)
 
     def FileName(self):
+        """Return filename that saves content of the window"""
         return self.__file
 
     def Name(self):
+        """Return name of the window, which is automatically determined by filename."""
         nam, ext = os.path.splitext(os.path.basename(self.FileName()))
         return nam
 

@@ -113,7 +113,7 @@ class RegionExecutor(QObject):
         self.setRange(self._oldval)
 
 
-class RegionExecutorDialog(ExtendMdiSubWindow):
+class RegionExecutorDialog(LysSubWindow):
     accepted = pyqtSignal()
     rejected = pyqtSignal()
 
@@ -257,7 +257,7 @@ class PointExecutor(QObject):
         self.setPosition(self._oldval)
 
 
-class PointExecutorDialog(ExtendMdiSubWindow):
+class PointExecutorDialog(LysSubWindow):
     accepted = pyqtSignal()
     rejected = pyqtSignal()
 
@@ -394,7 +394,7 @@ class FreeLineExecutor(QObject):
         return self.id
 
 
-class FreeLineExecutorDialog(ExtendMdiSubWindow):
+class FreeLineExecutorDialog(LysSubWindow):
     accepted = pyqtSignal()
     rejected = pyqtSignal()
 

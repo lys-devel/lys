@@ -4,7 +4,7 @@ from .MultiCut import *
 from .MultiCutGUIs import *
 
 
-class GridAttachedWindow(ExtendMdiSubWindow):
+class GridAttachedWindow(LysSubWindow):
     def __init__(self, title):
         super().__init__(title)
         self.grid = MultipleGrid()

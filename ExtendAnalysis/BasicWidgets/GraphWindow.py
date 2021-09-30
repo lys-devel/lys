@@ -5,7 +5,7 @@ import os
 from enum import Enum
 from PyQt5.QtGui import *
 
-from ExtendAnalysis.ExtendType import *
+from ExtendAnalysis.widgets import AutoSavedWindow
 from .Commons.ExtendTable import *
 from .ModifyWindow.ModifyWindow import *
 from .FittingWindow import *
@@ -149,7 +149,7 @@ def append(*args, graph=None, **kwargs):
     return g
 
 
-class MultipleGrid(ExtendMdiSubWindow):
+class MultipleGrid(LysSubWindow):
     def __init__(self):
         super().__init__()
         self.__initlayout()
@@ -185,13 +185,13 @@ class MultipleGrid(ExtendMdiSubWindow):
             return None
 
 
-class PreviewWindow(ExtendMdiSubWindow):
+class PreviewWindow(LysSubWindow):
     instance = None
 
     def __new__(cls, list):
         if cls.__checkInstance():
             return cls.instance()
-        return ExtendMdiSubWindow.__new__(cls)
+        return LysSubWindow.__new__(cls)
 
     @classmethod
     def __checkInstance(cls):
@@ -369,7 +369,7 @@ class PreviewWindow(ExtendMdiSubWindow):
                 return (obj.wave.posToPoint(anc1[1]), obj.wave.posToPoint(anc2[1]))
 
 
-class Table(ExtendMdiSubWindow):
+class Table(LysSubWindow):
     def __init__(self, wave=None):
         super().__init__()
         self.setWindowTitle("Table Window")
