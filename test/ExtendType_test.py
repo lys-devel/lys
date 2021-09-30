@@ -2,7 +2,7 @@ import unittest
 import os
 import shutil
 import numpy as np
-from ExtendAnalysis import *
+from lys import *
 
 
 class Wave_test(unittest.TestCase):

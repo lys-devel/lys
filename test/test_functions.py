@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from ExtendAnalysis.functions import load, loadableFiles, registerFileLoader
+from lys.functions import load, loadableFiles, registerFileLoader
 
 
 class functions_test(unittest.TestCase):

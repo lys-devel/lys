@@ -1,6 +1,6 @@
 import unittest
 
-from ExtendAnalysis import glb
+from lys import glb
 
 
 class functions_test(unittest.TestCase):

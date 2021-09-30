@@ -1,6 +1,6 @@
 import unittest
 
-from ExtendAnalysis.glb import shell
+from lys.glb import shell
 
 
 class core_test(unittest.TestCase):

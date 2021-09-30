@@ -1,11 +1,12 @@
 import unittest
 import os
+import io
 import shutil
 import _pickle as cPickle
 import numpy as np
 import dask.array as da
 
-from ExtendAnalysis.core import SettingDict, Wave, DaskWave
+from lys.core import SettingDict, Wave, DaskWave
 
 
 class core_test(unittest.TestCase):
@@ -150,6 +151,18 @@ class core_test(unittest.TestCase):
         self.assertTrue((w.data == w2.data).all())
         self.assertTrue((w.axes[0] == w2.axes[0]).all())
         self.assertTrue(w.name == w2.name)
+
+        # save in ByteIO
+        b = io.BytesIO()
+        w.export(b)
+        w2 = Wave(b)
+        w3 = Wave(io.BytesIO(b.getvalue()))
+        self.assertTrue((w.data == w2.data).all())
+        self.assertTrue((w.x == w2.x).all())
+        self.assertEqual(w.name, w2.name)
+        self.assertTrue((w.data == w3.data).all())
+        self.assertTrue((w.x == w3.x).all())
+        self.assertEqual(w.name, w3.name)
 
     def test_DaskWave(self):
         w = Wave([1, 2, 3], [4, 5, 6], name="wave1")

@@ -5,8 +5,8 @@ from pathlib import Path
 
 from LysQt.QtWidgets import QAction, QMenu
 
-from ExtendAnalysis import home, glb
-from ExtendAnalysis.FileView import _moveFiles
+from lys import home, glb
+from lys.FileView import _moveFiles
 
 
 class FileView_test(unittest.TestCase):

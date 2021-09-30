@@ -4,8 +4,8 @@ import shutil
 
 from LysQt.QtWidgets import QSpinBox
 
-from ExtendAnalysis import glb, home, registerFileLoader
-from ExtendAnalysis.widgets import LysSubWindow, AutoSavedWindow, _ExtendMdiArea
+from lys import glb, home, registerFileLoader
+from lys.widgets import LysSubWindow, AutoSavedWindow, _ExtendMdiArea
 
 
 class testSubWindow(LysSubWindow):

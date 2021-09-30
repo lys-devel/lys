@@ -1,6 +1,6 @@
 import unittest
 
-from ExtendAnalysis import load
+from lys import load
 
 
 class ExtendType_test(unittest.TestCase):
