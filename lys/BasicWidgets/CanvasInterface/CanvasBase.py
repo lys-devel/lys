@@ -1,9 +1,10 @@
 import os
+import io
 from enum import IntEnum
 from matplotlib.colors import hsv_to_rgb
 from .SaveCanvas import *
 from lys import *
-from lys import load
+from lys import load, Wave
 import _pickle as cPickle
 import numpy as np
 
@@ -338,7 +339,9 @@ class CanvasBaseBase(DrawableCanvasBase):
         for data in self._Datalist:
             dic[i] = {}
             dic[i]['File'] = None
-            dic[i]['Wave'] = cPickle.dumps(data.wave)
+            b = io.BytesIO()
+            data.wave.export(b)
+            dic[i]['Wave_npz'] = b.getvalue()
             dic[i]['Axis'] = int(data.axis)
             dic[i]['Appearance'] = str(data.appearance)
             dic[i]['Offset'] = str(data.offset)
@@ -363,7 +366,10 @@ class CanvasBaseBase(DrawableCanvasBase):
             while i in dic:
                 w = dic[i]['File']
                 if w is None:
-                    w = cPickle.loads(dic[i]['Wave'])
+                    if 'Wave' in dic[i]:  # for backward compability
+                        w = cPickle.loads(dic[i]['Wave'])
+                    elif 'Wave_npz' in dic[i]:
+                        w = Wave(io.BytesIO(dic[i]['Wave_npz']))
                 axis = Axis(dic[i]['Axis'])
                 if 'Appearance' in dic[i]:
                     ap = eval(dic[i]['Appearance'])
