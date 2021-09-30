@@ -1,14 +1,18 @@
 import unittest
-import numpy as np
 
-from ExtendAnalysis import load, plugin
+from ExtendAnalysis import glb
 
 
 class functions_test(unittest.TestCase):
     path = "test/DataFiles"
 
-    def test_registerFileLoader(self):
-        def loader(f): return np.loadtxt(f)
-        plugin.registerFileLoader(".txt", loader)
-        w = load(self.path + "/test.txt")
-        self.assertEqual(w.data[0], 1)
+    def setUp(self):
+        if glb.mainWindow() is None:
+            shutil.rmtree(home() + "/.lys")
+            glb.createMainWindow(show=False)
+
+    def test_mainAndShell(self):
+        main = glb.mainWindow()
+        self.assertTrue(main is not None)
+        shell = glb.shell()
+        self.assertTrue(shell is not None)

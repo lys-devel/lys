@@ -125,7 +125,7 @@ class RegionExecutorDialog(LysSubWindow):
         self.__parent.updated.connect(self._parentUpdated)
         self._axes = axes
         self.__initlayout()
-        self._attach(parentWidget)
+        self.attach(parentWidget)
         self.attachTo()
         self.show()
 
@@ -270,7 +270,7 @@ class PointExecutorDialog(LysSubWindow):
         self._axes = axes
         self.__initlayout()
         self.show()
-        self._attach(parentWidget)
+        self.attach(parentWidget)
         self.attachTo()
 
     def __initlayout(self):
@@ -406,7 +406,7 @@ class FreeLineExecutorDialog(LysSubWindow):
         self.__parent.updated.connect(self._parentUpdated)
         self._axes = axes
         self.__initlayout()
-        self._attach(parentWidget)
+        self.attach(parentWidget)
         self.attachTo()
         self.show()
 

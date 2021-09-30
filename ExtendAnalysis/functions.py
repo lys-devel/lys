@@ -1,7 +1,7 @@
 """
-*functions* module gives general functions for users.
+*functions* module gives general functions for users and developers.
 
-Functions related to making plugins are given in :mod:`.plugin` module.
+Functions related to global variables, such as main window, are given in :mod:`.glb` module.
 
 Most of functions can be directly imported from lys Package:
 
@@ -9,10 +9,13 @@ Most of functions can be directly imported from lys Package:
 """
 
 import os
+import sys
 
-from .LoadFile import _load, _getExtentions
 
 __home = os.getcwd()
+"""home directory of lys"""
+_dic = dict()
+"""loader dictionary"""
 
 
 def home():
@@ -33,7 +36,7 @@ def load(file, *args, **kwargs):
 
     Loadable file extensions are given by :func:`loadableFiles`
 
-    This function is extended by :func:`.plugin.registerFileLoader`
+    This function can be extended by :func:`registerFileLoader`
 
     Args:
         file (str): file path
@@ -50,9 +53,17 @@ def load(file, *args, **kwargs):
         <lys.core.Wave>
 
     See also:
-         :func:`.plugin.registerFileLoader`, :func:`loadableFiles`
+         :func:`registerFileLoader`, :func:`loadableFiles`
     """
-    return _load(file, *args, **kwargs)
+    if os.path.isfile(file):
+        _, ext = os.path.splitext(file)
+        if ext in _dic:
+            return _dic[ext](os.path.abspath(file), *args, **kwargs)
+        else:
+            print("Error on load because the loader for " + ext + " file is not registered.", file=sys.stderr)
+            print("To load " + ext + " file, you should call registerFileLoader function.", file=sys.stderr)
+            print("Type help(registerFileLoader) for detail.", file=sys.stderr)
+            return None
 
 
 def loadableFiles():
@@ -65,9 +76,38 @@ def loadableFiles():
     Example:
         >>> from lys import loadableFiles
         >>> loadableFiles()
-        [".npz", ".png", ".tif"]
+        [".npz", ".png", ".tif", "jpg", ".grf", ".dic"]
     """
-    return _getExtentions()
+    return _dic.keys()
+
+
+def registerFileLoader(type, func):
+    """
+    Register file loader.
+
+    This function extend :func:`load` function and enables lys to load various file types.
+
+    Users should implement file loader and register it by this function.
+
+    Args:
+        type (str): file extention, such as ".txt"
+        func (function): function to load file.
+
+    Example:
+        Add file loader for .txt file using numpy.loadtxt.
+
+        >>> import numpy as np
+        >>> from lys import registerFileLoader
+        >>> registerFileLoader(".txt", np.loadtxt)
+
+        After executing above commands, :func:`load` function can load .txt files as numpy array.
+
+        >>> from lys import load
+        >>> arr = load("data.txt")
+        >>> type(arr)
+        numpy.ndarray
+    """
+    _dic[type] = func
 
 
 def edit(data):

@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from ExtendAnalysis import home, SettingDict, Graph, plugin
+from ExtendAnalysis import home, SettingDict, Graph, glb
 
 
 class GraphSetting(QGroupBox):
@@ -46,6 +46,6 @@ class GraphSetting(QGroupBox):
 
 
 _instance = GraphSetting()
-plugin.mainWindow().addSettingWidget(_instance)
+glb.mainWindow().addSettingWidget(_instance)
 _instance2 = GraphSetting()
-plugin.mainWindow().addSettingWidget(_instance2)
+glb.mainWindow().addSettingWidget(_instance2)

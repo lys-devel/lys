@@ -3,8 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from ExtendAnalysis import display, Table, MultiCut
-from ExtendAnalysis import plugin
+from ExtendAnalysis import display, Table, MultiCut, glb
 
 
 class _WaveModel(QAbstractItemModel):
@@ -64,7 +63,7 @@ class _WaveModel(QAbstractItemModel):
 class WaveViewer(QTreeView):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.__model = _WaveModel(plugin.shell())
+        self.__model = _WaveModel(glb.shell())
         self.setModel(self.__model)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
@@ -106,4 +105,4 @@ class WaveViewer(QTreeView):
 
 
 _instance = WaveViewer()
-plugin.mainWindow().addTab(_instance, "Waves", "up")
+glb.mainWindow().addTab(_instance, "Waves", "up")

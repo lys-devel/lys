@@ -6,7 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 from ExtendAnalysis import *
-from ExtendAnalysis import plugin
+from ExtendAnalysis import glb
 from ..MultiCut import PointExecutor
 
 
@@ -155,7 +155,7 @@ def _frame(i, c, axis, params, exe):
     if "time" in params:
         _drawTime(c, axis[i], **params["time"])
     if "gfunc" in params:
-        f = plugin.shell().eval(params["gfunc"])
+        f = glb.shell().eval(params["gfunc"])
         f(c, i, axis)
 
 

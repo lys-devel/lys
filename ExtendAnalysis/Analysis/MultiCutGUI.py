@@ -10,7 +10,7 @@ class GridAttachedWindow(LysSubWindow):
         self.grid = MultipleGrid()
         self.closeforce = False
         self.grid.closed.connect(self.forceclose)
-        self._attach(self.grid)
+        self.attach(self.grid)
         self.attachTo()
         self.adjustSize()
         self.updateGeometry()

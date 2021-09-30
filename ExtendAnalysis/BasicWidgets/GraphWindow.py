@@ -5,6 +5,7 @@ import os
 from enum import Enum
 from PyQt5.QtGui import *
 
+from ExtendAnalysis import registerFileLoader
 from ExtendAnalysis.widgets import AutoSavedWindow
 from .Commons.ExtendTable import *
 from .ModifyWindow.ModifyWindow import *
@@ -389,3 +390,6 @@ class Table(LysSubWindow):
 
     def SetSize(self, size):
         self._etable.SetSize(size)
+
+
+registerFileLoader(".grf", Graph)

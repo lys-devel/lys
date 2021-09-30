@@ -12,7 +12,7 @@ class core_test(unittest.TestCase):
     path = "test/testData"
 
     def setUp(self):
-        os.mkdir(self.path)
+        os.makedirs(self.path, exist_ok=True)
 
     def tearDown(self):
         shutil.rmtree(self.path)

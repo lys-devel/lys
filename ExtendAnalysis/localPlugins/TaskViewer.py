@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from ExtendAnalysis import plugin, tasks
+from ExtendAnalysis import glb, tasks
 
 
 class TaskWidget(QWidget):
@@ -68,4 +68,4 @@ class TaskWidget(QWidget):
 
 
 _instance = TaskWidget()
-plugin.mainWindow().addTab(_instance, "Tasks", "down")
+glb.mainWindow().addTab(_instance, "Tasks", "down")

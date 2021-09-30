@@ -1,6 +1,6 @@
 import unittest
 
-from ExtendAnalysis.plugin import shell
+from ExtendAnalysis.glb import shell
 
 
 class core_test(unittest.TestCase):

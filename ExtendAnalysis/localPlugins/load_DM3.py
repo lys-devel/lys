@@ -1,7 +1,7 @@
 import dm3_lib as dm3
 import numpy as np
 
-from ExtendAnalysis import Wave, plugin
+from ExtendAnalysis import Wave, registerFileLoader
 
 
 def __loadDm3(name):
@@ -38,4 +38,4 @@ def __loadDm3(name):
     return w
 
 
-plugin.registerFileLoader(".dm3", __loadDm3)
+registerFileLoader(".dm3", __loadDm3)

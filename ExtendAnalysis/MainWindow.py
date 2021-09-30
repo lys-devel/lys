@@ -8,7 +8,7 @@ from LysQt.QtWidgets import QMainWindow, QSplitter, QLineEdit, QWidget, QVBoxLay
 from LysQt.QtGui import QColor, QTextCursor, QTextOption
 from LysQt.QtCore import Qt, pyqtSignal, QEvent
 
-from . import plugin, home, Graph, SettingDict
+from . import glb, home, Graph, SettingDict
 
 from .FileView import FileSystemView
 from .widgets import _ExtendMdiArea
@@ -32,8 +32,8 @@ class MainWindow(QMainWindow):
 
     Example:
 
-        >>> from lys import plugin
-        >>> main = plugin.mainWindow()
+        >>> from lys import glb
+        >>> main = glb.mainWindow()
         >>> main.beforeClosed.connect(lambda event: print("Main window closed."))
     """
     closed = pyqtSignal()
@@ -44,17 +44,19 @@ class MainWindow(QMainWindow):
 
     Example:
 
-        >>> from lys import plugin
-        >>> main = plugin.mainWindow()
+        >>> from lys import glb
+        >>> main = glb.mainWindow()
         >>> main.closed.connect(lambda: print("Main window closed."))
     """
 
-    def __init__(self):
+    def __init__(self, show=True):
         super().__init__()
         self._workspace = []
         self._settingDict = SettingDict(home() + "/.lys/workspace/works.dic")
         self.__initUI()
         self.__initMenu()
+        if show:
+            self.show()
 
     def closeEvent(self, event):
         """
@@ -85,7 +87,6 @@ class MainWindow(QMainWindow):
         sp.addWidget(self._mainTab)
         sp.addWidget(self._side)
         self.setCentralWidget(sp)
-        self.show()
 
     def __sideBar(self):
         self._fileView = FileSystemView(home())
@@ -103,7 +104,7 @@ class MainWindow(QMainWindow):
 
         layout_h = QSplitter(Qt.Vertical)
         layout_h.addWidget(self._tab_up)
-        layout_h.addWidget(_CommandLineEdit(plugin.shell()))
+        layout_h.addWidget(_CommandLineEdit(glb.shell()))
         layout_h.addWidget(self._tab)
 
         lay = QHBoxLayout()
@@ -173,8 +174,8 @@ class MainWindow(QMainWindow):
 
         Example:
 
-            >>> from ExtendAnalysis import plugin
-            >>> main = plugin.mainWindow()
+            >>> from ExtendAnalysis import glb
+            >>> main = glb.mainWindow()
             >>> main.addTab(QWidget(), "TestTab", "up")
 
         """
@@ -228,8 +229,8 @@ class _CommandLogWidget(QTextEdit):
         self.setUndoRedoEnabled(False)
         self.setWordWrapMode(QTextOption.NoWrap)
         self.__load()
-        sys.stdout = self._Logger(self, sys.stdout, self.textColor())
-        sys.stderr = self._Logger(self, sys.stderr, QColor(255, 0, 0))
+        sys.stdout = self._out = self._Logger(self, sys.stdout, self.textColor())
+        sys.stderr = self._err = self._Logger(self, sys.stderr, QColor(255, 0, 0))
         self.updated.connect(self._update)
 
     def __load(self):

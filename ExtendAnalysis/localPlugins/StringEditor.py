@@ -68,4 +68,4 @@ class StringTextEdit(QPlainTextEdit):
 
 
 _instance = StringTextEdit(".lys/memo.str")
-plugin.mainWindow().addTab(_instance, "Memo", "up")
+glb.mainWindow().addTab(_instance, "Memo", "up")

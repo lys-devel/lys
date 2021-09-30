@@ -2,7 +2,7 @@ import igor.packed
 import igor.igorpy
 import numpy as np
 
-from ExtendAnalysis import Wave, plugin
+from ExtendAnalysis import Wave, registerFileLoader
 
 
 def __loadPxt(name):
@@ -29,4 +29,4 @@ def __loadPxt(name):
     return w
 
 
-plugin.registerFileLoader(".pxt", __loadPxt)
+registerFileLoader(".pxt", __loadPxt)

@@ -1,6 +1,7 @@
 import os
 import sys
 import traceback
+from pathlib import Path
 
 from PyQt5.QtWidgets import QMdiArea, QMdiSubWindow, QSizePolicy, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget
 from PyQt5.QtCore import Qt, pyqtSignal, QPoint
@@ -59,8 +60,10 @@ class _ExtendMdiArea(QMdiArea):
             self._AddAutoWindow(window)
 
     def loadedWindow(self, path):
+        if path is None:
+            return None
         for win in self.__list:
-            if win.FileName() == path:
+            if Path(win.FileName()) == Path(path).absolute():
                 return win
 
     def RestoreAllWindows(self):
@@ -135,6 +138,10 @@ class LysSubWindow(SizeAdjustableWindow):
 
     It is recommended to inherit this class when developers implement new sub windows in lys.
 
+    User input on several QWidgets can be saved and restored from file. See :meth:`saveSettings` and :meth:`restoreSettings` for detail.
+
+    LysSubWindow can be attached to different LysSubWindow. See :meth:`attach` for detail. 
+
     Args:
         floating(bool): Whether the window in in the current mdi area, or floating out side the medi area.
     """
@@ -154,12 +161,12 @@ class LysSubWindow(SizeAdjustableWindow):
     """
 
     def __init__(self, floating=False, saveName=None):
-        from . import plugin
+        from . import glb
         super().__init__()
         self._parent = None
         if floating:
             LysSubWindow.__win.append(self)
-            plugin.mainWindow().closed.connect(self.close)
+            glb.mainWindow().closed.connect(self.close)
         else:
             _ExtendMdiArea.current().addSubWindow(self)
         self.setAttribute(Qt.WA_DeleteOnClose)
@@ -185,7 +192,14 @@ class LysSubWindow(SizeAdjustableWindow):
         self.closed.emit(self)
         return super().closeEvent(event)
 
-    def _attach(self, parent):
+    def attach(self, parent):
+        """
+        Attach *self* to *parent*
+
+        After it is attached, the window follows the *parent* widget automatically.
+
+        This functionarity is usually used for several setting widgets (such as ModifyWindow of Graph), which should follow the parent (such as Graph) 
+        """
         self._parent = parent
         if isinstance(parent, LysSubWindow):
             self._parent.moved.connect(self.attachTo)
@@ -193,6 +207,13 @@ class LysSubWindow(SizeAdjustableWindow):
             self._parent.closed.connect(self.close)
 
     def attachTo(self):
+        """
+        Attach *self* to pre-registered parent by :meth:`attach`.
+
+        When the parent window is move programatically by :func:`move`, the window does not follow.
+
+        Developers should call this method to intentionally attach it to parent.
+        """
         if self._parent is not None:
             pos = self._parent.pos()
             frm = self._parent.frameGeometry()
@@ -203,14 +224,14 @@ class LysSubWindow(SizeAdjustableWindow):
         Export all widgets settings from default setting file specified by name.
         User input on various widgets are easily loaded from file by :meth:`restoreSettings`.
         """
-        _restore(self, file)
+        _save(self, file)
 
     def restoreSettings(self, file):
         """
         Import all widgets settings from default setting file specified by name.
         User input on various widgets are easily exported to file by :meth:`saveSettings`.
         """
-        return _save(self, file)
+        return _restore(self, file)
 
 
 def _restore(self, file):
@@ -321,7 +342,7 @@ class AutoSavedWindow(LysSubWindow):
             return obj
         return super().__new__(cls)
 
-    def __init__(self, file=None, title=None, **kwargs):
+    def __init__(self, file=None, **kwargs):
         self.__closeflg = True
         self.__isTmp = file is None
         if self.__isTmp:
@@ -329,9 +350,7 @@ class AutoSavedWindow(LysSubWindow):
         else:
             self.__file = os.path.abspath(file)
         super().__init__()
-        if title is None:
-            title = self.Name()
-        self.setWindowTitle(title)
+        self.setWindowTitle(self.Name())
 
     def _IsConnected(self):
         return not self.__isTmp
@@ -387,8 +406,7 @@ class AutoSavedWindow(LysSubWindow):
 
     def Name(self):
         """Return name of the window, which is automatically determined by filename."""
-        nam, ext = os.path.splitext(os.path.basename(self.FileName()))
-        return nam
+        return os.path.basename(self.FileName())
 
     def _save(self, file):
         raise NotImplementedError

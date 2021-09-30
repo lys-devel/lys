@@ -1,7 +1,7 @@
-from ExtendAnalysis import plugin, load, display, append, edit, MultiCut
+from ExtendAnalysis import glb, load, display, append, edit, MultiCut
 from LysQt.QtWidgets import QAction, QMenu
 
-fileView = plugin.mainWindow().fileView
+fileView = glb.mainWindow().fileView
 
 
 def _display():
@@ -31,13 +31,13 @@ def _edit():
 disp = QAction('Display', triggered=_display)
 apnd = QAction('Append', triggered=_append)
 mcut = QAction('MultiCut', triggered=_multicut)
-edit = QAction('Edit', triggered=_edit)
+edits = QAction('Edit', triggered=_edit)
 
 menu = QMenu()
 menu.addAction(disp)
 menu.addAction(apnd)
 menu.addAction(mcut)
-menu.addAction(edit)
+menu.addAction(edits)
 
 fileView.registerFileMenu(".npz", menu)
 fileView.registerFileMenu(".png", menu)

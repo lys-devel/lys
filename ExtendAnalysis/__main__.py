@@ -1,4 +1,10 @@
+"""
+lys main module.
+To see help of lys, type [python -m lys -h]
+"""
+
 import sys
+import shutil
 import argparse
 from importlib import import_module
 
@@ -13,9 +19,15 @@ parser.add_argument("-n", "--ncore", help="Launch local cluster with NCORE", typ
 parser.add_argument("-p", "--plugin", help="Import plugins", nargs="*", required=False)
 # NoPlugins
 parser.add_argument("-np", "--noplugin", help="Do not import local plugins", action="store_true")
+# Clean
+parser.add_argument("--clean", help="Delete all settings. Try it when lys is broken", action="store_true")
 
 # parse args
 args = parser.parse_args()
+
+if args.clean:
+    print("Cleanup all settings...")
+    shutil.rmtree(".lys")
 
 # Launch local cluster
 if args.ncore is not None:
@@ -23,7 +35,7 @@ if args.ncore is not None:
 
 # Create main window
 print('Welcome to Analysis program lys. Launching main window...')
-ExtendAnalysis.plugin.createMainWindow()
+ExtendAnalysis.glb.createMainWindow()
 
 # Load local Plugins
 if not args.noplugin:

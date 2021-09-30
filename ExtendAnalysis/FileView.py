@@ -11,7 +11,7 @@ from LysQt.QtWidgets import QFileSystemModel, QHBoxLayout, QVBoxLayout, QLabel, 
 from LysQt.QtCore import Qt, QDir, QDirIterator, QSortFilterProxyModel, QUrl
 from LysQt.QtGui import QCursor
 
-from . import plugin, load
+from . import glb, load
 
 
 class FileSystemView(QWidget):
@@ -76,8 +76,8 @@ class FileSystemView(QWidget):
 
         Example:
 
-            >>> from lys import plugin
-            >>> view = plugin.mainWindow().fileView     # access global fileview in main window.
+            >>> from lys import glb
+            >>> view = glb.mainWindow().fileView     # access global fileview in main window.
             >>> view.selectedPaths()
             ["path selected", "path selected2, ..."]
         """
@@ -99,8 +99,8 @@ class FileSystemView(QWidget):
 
         Example:
 
-            >>> from lys import plugin
-            >>> view = plugin.mainWindow().fileView     # access global fileview in main window.
+            >>> from lys import glb
+            >>> view = glb.mainWindow().fileView     # access global fileview in main window.
             >>> menu = QMenu()
             >>> action = QAction("Print", triggered = lambda: print("test"))
             >>> menu.addAction(action)
@@ -275,6 +275,9 @@ class _contextMenuBuilder:
         tp = self._judgeFileType(self._paths)
         self.__actions[tp].exec_(QCursor.pos())
 
+    def _test(self, tp):
+        return self.__actions[tp]
+
     def _judgeFileType(self, paths):
         if all([os.path.isdir(p) for p in paths]):
             res = "dir"
@@ -299,7 +302,7 @@ class _contextMenuBuilder:
             nam, ext = os.path.splitext(os.path.basename(p))
             obj = load(p)
             if obj is not None:
-                plugin.shell().addObject(obj, name=nam)
+                glb.shell().addObject(obj, name=nam)
             else:
                 print("Failed to load " + p, file=sys.stderr)
 
@@ -353,7 +356,7 @@ class _contextMenuBuilder:
 
 def _moveFiles(files, targets, copy=False):
     if isinstance(files, Path):
-        return _moveFiles([files], [targets])
+        return _moveFiles([files], [targets], copy=copy)
     state = None
     pair = []
     for orig, newfile in zip(files, targets):

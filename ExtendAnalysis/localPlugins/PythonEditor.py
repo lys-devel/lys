@@ -6,7 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from ExtendAnalysis import plugin, home
+from ExtendAnalysis import glb, home, registerFileLoader
 from ExtendAnalysis.widgets import LysSubWindow
 
 
@@ -331,10 +331,10 @@ def _makeNewPy(name):
 
 
 def _register():
-    plugin.registerFileLoader(".py", PythonEditor)
-    plugin.mainWindow().beforeClosed.connect(PythonEditor.CloseAllEditors)
+    registerFileLoader(".py", PythonEditor)
+    glb.mainWindow().beforeClosed.connect(PythonEditor.CloseAllEditors)
 
-    menu = plugin.mainWindow().menuBar()
+    menu = glb.mainWindow().menuBar()
     prog = menu.addMenu("Python")
 
     proc = prog.addAction("Open default proc.py")

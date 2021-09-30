@@ -13,7 +13,7 @@ class FittingWindow(LysSubWindow):
         self._initlayout(wavelist, canvas)
         self.adjustSize()
         self.updateGeometry()
-        self._attach(parent)
+        self.attach(parent)
         self.show()
         self.attachTo()
 
@@ -29,7 +29,7 @@ class LineProfileWindow(LysSubWindow):
         self._initlayout(wavelist, canvas)
         self.adjustSize()
         self.updateGeometry()
-        self._attach(parent)
+        self.attach(parent)
         self.show()
         self.attachTo()
 

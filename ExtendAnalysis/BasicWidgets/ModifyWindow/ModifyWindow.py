@@ -32,7 +32,7 @@ class ModifyWindow(LysSubWindow):
         self.show()
         self.canvas = canvas
         self._parent = parent
-        self._attach(parent)
+        self.attach(parent)
         self.attachTo()
         ModifyWindow.instance = weakref.ref(self)
 

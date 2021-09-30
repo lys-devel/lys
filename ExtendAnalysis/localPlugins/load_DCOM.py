@@ -1,6 +1,6 @@
 import pydicom
 
-from ExtendAnalysis import Wave, plugin
+from ExtendAnalysis import Wave, registerFileLoader
 
 
 def __loadDcm(name):
@@ -8,4 +8,4 @@ def __loadDcm(name):
     return Wave(data.pixel_array)
 
 
-plugin.registerFileLoader(".pxt", __loadDcm)
+registerFileLoader(".pxt", __loadDcm)

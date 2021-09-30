@@ -15,14 +15,14 @@ class ExtendShell(QObject):
     Any expression can be executed and evaluated by :func:`exec` and :func:`eval` functions.
     Any object can be added by :func:`addObject`
 
-    ExtendShell is basically singleton object. Developers should access the instance of ExtendShell from :func:`.plugin.shell` function.
+    ExtendShell is basically singleton object. Developers should access the instance of ExtendShell from :func:`.glb.shell` function.
 
     Example:
 
         Execute some commands in lys Python Interface.
 
-        >>> from lys import plugin
-        >>> shell = plugin.shell()
+        >>> from lys import glb
+        >>> shell = glb.shell()
         >>> shell.exec("a=1")
         >>> shell.eval(a)
         1
@@ -64,9 +64,9 @@ class ExtendShell(QObject):
 
         Example:
 
-            >>> from lys import plugin
-            >>> plugin.shell().exec("a=1")
-            >>> plugin.shell().eval("a")
+            >>> from lys import glb
+            >>> glb.shell().exec("a=1")
+            >>> glb.shell().eval("a")
             1
         """
         self.__mod.reload()
@@ -86,9 +86,9 @@ class ExtendShell(QObject):
 
         Example:
 
-            >>> from lys import plugin
-            >>> plugin.shell().exec("a=1")
-            >>> plugin.shell().eval("a")
+            >>> from lys import glb
+            >>> glb.shell().exec("a=1")
+            >>> glb.shell().eval("a")
             1
         """
         self.__mod.reload()
@@ -109,8 +109,8 @@ class ExtendShell(QObject):
             module(str): module to be loaded.
 
         Example:
-            >>> from lys import plugin
-            >>> plugin.shell().importModule("time")
+            >>> from lys import glb
+            >>> glb.shell().importModule("time")
 
         """
         self.__mod.importModule(module)
@@ -127,8 +127,8 @@ class ExtendShell(QObject):
             module(str): module to be loaded.
 
         Example:
-            >>> from lys import plugin
-            >>> plugin.shell().importAll("time")
+            >>> from lys import glb
+            >>> glb.shell().importAll("time")
 
         """
         self.__mod.importAll(module)

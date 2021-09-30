@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from ExtendAnalysis import plugin
+from ExtendAnalysis import glb
 
 
 class TextEditLogger(logging.Handler):
@@ -120,4 +120,4 @@ class LogWidget(QWidget):
 
 
 _instance = LogWidget()
-plugin.mainWindow().addTab(_instance, "Log", "up")
+glb.mainWindow().addTab(_instance, "Log", "up")
