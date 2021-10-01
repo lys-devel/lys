@@ -368,7 +368,6 @@ class CanvasBaseBase(DrawableCanvasBase):
                 if w is None:
                     if 'Wave' in dic[i]:  # for backward compability
                         waveData = dic[i]['Wave']
-                        print(waveData)
                         waveData = waveData.replace(b'ExtendAnalysis.core', b'lys.core')
                         waveData = waveData.replace(b'ExtendAnalysis.ExtendType', b'lys.core')
                         waveData = waveData.replace(b'produce', b'_produceWave')
