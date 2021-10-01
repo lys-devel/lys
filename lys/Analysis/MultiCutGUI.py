@@ -6,7 +6,8 @@ from .MultiCutGUIs import *
 
 class GridAttachedWindow(LysSubWindow):
     def __init__(self, title):
-        super().__init__(title)
+        super().__init__()
+        self.setWindowTitle(title)
         self.grid = MultipleGrid()
         self.closeforce = False
         self.grid.closed.connect(self.forceclose)

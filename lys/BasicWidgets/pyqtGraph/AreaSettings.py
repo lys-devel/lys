@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from .AxisLabelSettings import *
+from lys.widgets import SizeAdjustableWindow
 
 
 class MarginAdjustableCanvas(AxisSettingCanvas):

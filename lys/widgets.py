@@ -160,7 +160,7 @@ class LysSubWindow(SizeAdjustableWindow):
     *closed* signal is emitted when the window is closed.
     """
 
-    def __init__(self, floating=False, saveName=None):
+    def __init__(self, floating=False):
         from . import glb
         super().__init__()
         self._parent = None

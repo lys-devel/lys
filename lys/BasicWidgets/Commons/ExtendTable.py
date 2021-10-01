@@ -4,6 +4,7 @@ from PyQt5.QtCore import *
 
 from lys import *
 import numpy
+import numpy as np
 import scipy.constants
 
 

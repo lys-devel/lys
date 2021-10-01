@@ -154,8 +154,8 @@ class _WaveAxesDescriptor:
                 raise TypeError("Axes should be a 1-dimensional sequence or None: Present value = " + str(value))
         if len(value) == 0:
             value = [np.array(None) for _ in range(instance.data.ndim)]
-        if len(value) != instance.data.ndim:
-            raise ValueError("length of axes should match data.ndim")
+        # if len(value) != instance.data.ndim:
+        #    raise ValueError("length of axes should match data.ndim")
         # set actual instance
         instance._axes = WaveAxes(instance, [np.array(item) for item in value])
         if hasattr(instance, "update"):
@@ -513,10 +513,11 @@ class Wave(QObject):
             >>> w.shape
             (100,100)
 
-        Load from various file types by :func:`functions.loadWave`
+        Load from various file types by :func:`.functions.load`
 
-            >>> from lys import loadWave
-            >>> loadWave("data.png")
+            >>> from lys import load
+            >>> w = load("data.png")
+            >>> display(w)
 
     See also:
         :attr:`data`, :attr:`axes`, :attr:`note`

@@ -7,6 +7,7 @@ from . import StringEditor
 from . import WaveViewer
 from . import PythonEditor
 from . import TaskViewer
+from . import manualView
 
 # Basic file menus
 from . import fileMenu

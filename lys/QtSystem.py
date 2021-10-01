@@ -7,6 +7,8 @@ import sys
 import os
 import traceback
 from PyQt5 import QtWidgets, QtGui
+from PyQt5.QtWebEngineWidgets import QWebEnginePage
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 
 def _handle_exception(exc_type, exc_value, exc_traceback):

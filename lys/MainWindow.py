@@ -89,7 +89,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(sp)
 
     def __sideBar(self):
-        self._fileView = FileSystemView(home())
+        self._fileView = FileSystemView(home(), drop=True)
         self._setting = QVBoxLayout()
         self._setting.addStretch()
         setting = QWidget()

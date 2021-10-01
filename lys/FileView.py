@@ -25,17 +25,19 @@ class FileSystemView(QWidget):
 
     Args:
         path(str): path to see files.
+        model(QFileSystemModel): model used in this view
+        drop: Accept drag & drop or not
 
     """
 
-    def __init__(self, path):
+    def __init__(self, path, model=QFileSystemModel(), drop=False):
         super().__init__()
         self._path = path
-        self.__initUI(self._path)
+        self.__initUI(self._path, model, drop)
         self._builder = _contextMenuBuilder()
 
-    def __initUI(self, path):
-        self._Model = _FileSystemModel(path)
+    def __initUI(self, path, model, drop=False):
+        self._Model = _FileSystemModel(path, model, drop)
 
         self._tree = QTreeView()
         self._tree.setModel(self._Model)
@@ -108,20 +110,35 @@ class FileSystemView(QWidget):
         """
         self._builder.register(ext, menu, add_default=add_default)
 
+    def setPath(self, path):
+        """
+        Set root directory of file system.
+        Args:
+            path(str): root path
+        """
+        self._Model.setPath(path)
+        self._tree.setRootIndex(self._Model.indexFromPath(path))
+
 
 class _FileSystemModel(QSortFilterProxyModel):
     """Model class for FileSystemView"""
 
-    def __init__(self, path):
+    def __init__(self, path, model, drop=False):
         super().__init__()
         self._path = path
-        self.mod = QFileSystemModel()
+        self._drop = drop
+        self.mod = model
         self.mod.setFilter(QDir.AllDirs | QDir.Files | QDir.NoDotAndDotDot)
         self.mod.setRootPath(self._path)
         self.setSourceModel(self.mod)
         self._exclude = ["*__pycache__", "*dask-worker-space"]
         self._matched = []
         self._filters = []
+
+    def setPath(self, path):
+        self._path = path
+        self.mod.setRootPath(path)
+        self.mod.setNameFilters(["*"])
 
     def indexFromPath(self, path):
         return self.mapFromSource(self.mod.index(path))
@@ -173,7 +190,10 @@ class _FileSystemModel(QSortFilterProxyModel):
         return False
 
     def flags(self, index):
-        return super().flags(index) | Qt.ItemIsDropEnabled | Qt.ItemIsDragEnabled
+        if self._drop:
+            return super().flags(index) | Qt.ItemIsDropEnabled | Qt.ItemIsDragEnabled
+        else:
+            return super().flags(index)
 
     def supportedDropActions(self):
         return Qt.MoveAction
