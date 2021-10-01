@@ -1,7 +1,7 @@
 import collections
 import numpy as np
 
-from .filters import Filters
+from . import Filters
 
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QComboBox, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout, QMenu, QAction, QTabWidget, QPushButton, QInputDialog
@@ -278,7 +278,7 @@ class FiltersGUI(QWidget):
         self.loadFilters(Filters.fromString(str), index)
 
     def loadFilters(self, filt, index=False):
-        if index == False:
+        if index is False:
             self.clear()
             fs = filt.getFilters()
             res, tmp = [], []

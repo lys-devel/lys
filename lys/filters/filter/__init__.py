@@ -1,3 +1,5 @@
+from .FilterInterface import EmptyFilter
+from .filters import Filters
 from .SimpleMath import *
 from .Transform import *
 from .Segmentation import *
@@ -12,4 +14,3 @@ from .FreeLine import FreeLineFilter
 from .FindPeak import *
 from .Integral import *
 from .MatrixMath import *
-from .FilterInterface import EmptyFilter

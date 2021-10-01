@@ -3,7 +3,7 @@ import unittest
 from lys.glb import shell
 
 
-class core_test(unittest.TestCase):
+class shell_test(unittest.TestCase):
     def test_ExtendShell(self):
         s = shell()
         # exec, eval

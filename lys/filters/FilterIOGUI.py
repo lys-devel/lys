@@ -1,10 +1,10 @@
 import os
 
-from PyQt5.QtWidgets import QAction, QFileDialog, QMessageBox, QInputDialog, QDialog, QPushButton, QHBoxLayout, QVBoxLayout
+from LysQt.QtWidgets import QAction, QFileDialog, QMessageBox, QInputDialog, QDialog, QPushButton, QHBoxLayout, QVBoxLayout
 
 from lys import home
 from lys.FileView import FileSystemView
-from .filters import Filters
+from . import Filters
 
 
 class FilterViewWidget(FileSystemView):

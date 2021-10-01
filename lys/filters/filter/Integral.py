@@ -5,23 +5,17 @@ from .FilterInterface import FilterInterface
 
 
 class _IntegralBase(FilterInterface):
-    def _getSumFunction(self, lib, sumtype):
+    def _getSumFunction(self, sumtype):
         if sumtype == "Sum":
-            return lib.sum
+            return da.sum
         elif sumtype == "Mean":
-            return lib.mean
+            return da.mean
         elif sumtype == "Max":
-            return lib.max
+            return da.max
         elif sumtype == "Min":
-            return lib.min
+            return da.min
         elif sumtype == "Median":
-            return lib.median
-
-    def _getLib(self, wave):
-        if isinstance(wave, DaskWave):
-            return da
-        else:
-            return np
+            return da.median
 
 
 class IntegralAllFilter(_IntegralBase):
@@ -30,18 +24,13 @@ class IntegralAllFilter(_IntegralBase):
         self._sumtype = sumtype
 
     def _execute(self, wave, **kwargs):
-        func = self._getSumFunction(self._getLib(wave), self._sumtype)
+        func = self._getSumFunction(self._sumtype)
         data = func(wave.data, axis=tuple(self._axes))
-        ax = [wave.axes[i] for i in range(len(wave.axes)) if not i in self._axes]
-        wave.data = data
-        wave.axes = ax
-        return wave
+        ax = [wave.axes[i] for i in range(len(wave.axes)) if i not in self._axes]
+        return DaskWave(data, *ax)
 
-    def getAxes(self):
-        return self._axes
-
-    def getType(self):
-        return self._sumtype
+    def getParameters(self):
+        return {"axes": self._axes, "sumtype": self._sumtype}
 
     def getRelativeDimension(self):
         return -len(self._axes)
@@ -65,7 +54,7 @@ class IntegralFilter(_IntegralBase):
         key = tuple(sl)
         axes = []
         for i, (s, ax) in enumerate(zip(key, wave.axes)):
-            if not i in sumaxes:
+            if i not in sumaxes:
                 if ax is None or (ax == np.array(None)).all():
                     axes.append(None)
                 else:

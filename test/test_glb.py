@@ -3,7 +3,7 @@ import unittest
 from lys import glb
 
 
-class functions_test(unittest.TestCase):
+class global_test(unittest.TestCase):
     path = "test/DataFiles"
 
     def setUp(self):
