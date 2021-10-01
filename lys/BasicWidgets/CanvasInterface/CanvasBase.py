@@ -357,7 +357,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         dictionary['Inverted'] = self._inverted
 
     def LoadFromDictionary(self, dictionary, path):
-        from lys.Analysis.filters import Filters
+        from lys.filters import Filters
         i = 0
         sdir = os.getcwd()
         os.chdir(path)

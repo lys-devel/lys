@@ -1,7 +1,7 @@
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from lys import ScientificSpinBox, Graph
+from lys.widgets import ScientificSpinBox
 
 
 class SpinBoxOverOne(QSpinBox):
@@ -186,6 +186,7 @@ class RegionSelectWidget(QGridLayout):
         self.loadClicked.emit(self)
 
     def __load(self, obj):
+        from lys import Graph
         c = Graph.active().canvas
         if c is not None:
             r = c.SelectedRange()

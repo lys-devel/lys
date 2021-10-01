@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QVBoxLayout
 from ..filter.Segmentation import *
 from ..filtersGUI import *
-from lys import ScientificSpinBox
+from lys.widgets import ScientificSpinBox
 from .CommonWidgets import *
 
 

@@ -1,7 +1,5 @@
-import sys
 from .filter import *
 import _pickle as cPickle
-import lys
 
 
 class Filters(object):
@@ -10,10 +8,6 @@ class Filters(object):
         self._filters.extend(filters)
 
     def execute(self, wave, **kwargs):
-        n = 0
-        # while "Filter" + str(n) in wave.note:
-        #    n += 1
-        #wave.note.addObject("Filter" + str(n), self)
         for f in self._filters:
             f.execute(wave, **kwargs)
 

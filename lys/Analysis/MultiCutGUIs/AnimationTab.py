@@ -7,7 +7,7 @@ from PyQt5.QtCore import *
 
 from lys import *
 from lys import glb
-from ..MultiCut import PointExecutor
+from ..MultiCutExecutors import PointExecutor
 
 
 class AnimationTab(QGroupBox):

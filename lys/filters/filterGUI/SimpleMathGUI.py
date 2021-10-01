@@ -1,7 +1,7 @@
 from ..filter.SimpleMath import *
 from ..filtersGUI import *
 from .CommonWidgets import *
-from lys import ScientificSpinBox
+from lys.widgets import ScientificSpinBox
 
 
 class SimpleMathSetting(FilterGroupSetting):

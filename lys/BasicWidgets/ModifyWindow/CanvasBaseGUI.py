@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 
 import numpy as np
 from lys import *
-from lys.BasicWidgets.Commons.ScientificSpinBox import *
+from lys.widgets import ScientificSpinBox
 
 
 class DataSelectionBox(QTreeView):

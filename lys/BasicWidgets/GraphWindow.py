@@ -5,7 +5,7 @@ import os
 from enum import Enum
 from PyQt5.QtGui import *
 
-from lys import registerFileLoader
+from lys import registerFileLoader, glb
 from lys.widgets import AutoSavedWindow, _ExtendMdiArea
 from .Commons.ExtendTable import *
 from .ModifyWindow.ModifyWindow import *

@@ -11,7 +11,7 @@ from LysQt.QtWidgets import QFileSystemModel, QHBoxLayout, QVBoxLayout, QLabel, 
 from LysQt.QtCore import Qt, QDir, QDirIterator, QSortFilterProxyModel, QUrl
 from LysQt.QtGui import QCursor
 
-from . import glb, load
+from . import load
 
 
 class FileSystemView(QWidget):
@@ -318,6 +318,7 @@ class _contextMenuBuilder:
         return res
 
     def __load(self):
+        from lys import glb
         for p in self._paths:
             nam, ext = os.path.splitext(os.path.basename(p))
             obj = load(p)

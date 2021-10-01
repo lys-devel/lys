@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from .ColorWidgets import *
 
-from lys.BasicWidgets.Commons.ScientificSpinBox import *
+from lys.widgets import ScientificSpinBox
 
 
 class _rangeWidget(QGroupBox):

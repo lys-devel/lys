@@ -1,7 +1,7 @@
 from ..filter.Region import *
 from ..filtersGUI import *
 from .CommonWidgets import *
-from lys import ScientificSpinBox
+from lys.widgets import ScientificSpinBox
 
 
 class NormalizationSetting(FilterGroupSetting):

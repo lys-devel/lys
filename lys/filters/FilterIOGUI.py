@@ -1,9 +1,9 @@
 import os
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from lys import *
+from PyQt5.QtWidgets import QAction, QFileDialog, QMessageBox, QInputDialog, QDialog, QPushButton, QHBoxLayout, QVBoxLayout
+
+from lys import home
+from lys.FileView import FileSystemView
 from .filters import Filters
 
 

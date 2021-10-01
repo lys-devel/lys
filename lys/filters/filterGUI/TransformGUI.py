@@ -1,6 +1,6 @@
 from ..filter.Transform import *
 from ..filtersGUI import *
-from lys import ScientificSpinBox
+from lys.widgets import ScientificSpinBox
 
 
 class TransformSetting(FilterGroupSetting):

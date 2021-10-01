@@ -1,12 +1,11 @@
-import itertools
-import time
-import dask.array as da
 import numpy as np
 
-from lys import *
-from .MultiCutExecutors import *
-from .filter import *
-from .filters import Filters
+from LysQt.QtCore import QObject, pyqtSignal
+
+from lys import DaskWave
+from lys.filters import Filters, SliceFilter, EmptyFilter, IntegralAllFilter, TransposeFilter
+
+from .MultiCutExecutors import FreeLineExecutor, DefaultExecutor
 
 
 class controlledObjects(QObject):
@@ -180,7 +179,7 @@ class ExecutorList(controlledObjects):
                     axes.extend(e.getAxes())
                     res.append(e)
         for i in range(wave.data.ndim):
-            if not i in axes:
+            if i not in axes:
                 res.append(DefaultExecutor(i))
         return res
 

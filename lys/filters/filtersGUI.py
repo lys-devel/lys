@@ -1,10 +1,11 @@
 import collections
-from .filters import *
+import numpy as np
 
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from lys import *
+from .filters import Filters
+
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QWidget, QComboBox, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout, QMenu, QAction, QTabWidget, QPushButton, QInputDialog
+from lys.widgets import LysSubWindow
 from .FilterIOGUI import FilterExportDialog, FilterImportDialog
 
 filterGroups = collections.OrderedDict()
@@ -222,7 +223,7 @@ class FiltersGUI(QWidget):
         self.dim = dimension
 
     def clear(self, index=False):
-        if index == False:
+        if index is False:
             while len(self.__tabs) > 1:
                 self.__preIndex = 1
                 self._delete()
@@ -260,7 +261,7 @@ class FiltersGUI(QWidget):
             self.loadFrom(path, index)
 
     def saveAs(self, file, index=False):
-        if index == False:
+        if index is False:
             filt = self.GetFilters()
         else:
             filt = self.__tabs[index].GetFilters()

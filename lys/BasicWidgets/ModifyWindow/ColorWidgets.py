@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import *
 import collections
 import matplotlib.cm
 
-from lys.BasicWidgets.Commons.ScientificSpinBox import *
+from lys.widgets import ScientificSpinBox
 
 # Before import this file, be sure that QGuiApplication instance is initialized.
 

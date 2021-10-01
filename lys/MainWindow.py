@@ -8,7 +8,7 @@ from LysQt.QtWidgets import QMainWindow, QSplitter, QLineEdit, QWidget, QVBoxLay
 from LysQt.QtGui import QColor, QTextCursor, QTextOption
 from LysQt.QtCore import Qt, pyqtSignal, QEvent
 
-from . import glb, home, Graph, SettingDict
+from . import glb, home, SettingDict
 
 from .FileView import FileSystemView
 from .widgets import _ExtendMdiArea
@@ -134,11 +134,7 @@ class MainWindow(QMainWindow):
         act = file.addAction("Exit")
         act.triggered.connect(exit)
 
-        win = menu.addMenu("Window")
-
-        act = win.addAction("Close all graphs")
-        act.triggered.connect(Graph.closeAllGraphs)
-        act.setShortcut("Ctrl+K")
+        win = menu.addMenu("Sidebar")
 
         act = win.addAction("Show/Hide Sidebar")
         act.triggered.connect(lambda: self._side.setVisible(not self._side.isVisible()))

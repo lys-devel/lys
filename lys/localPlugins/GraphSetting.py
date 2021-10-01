@@ -49,3 +49,11 @@ _instance = GraphSetting()
 glb.mainWindow().addSettingWidget(_instance)
 _instance2 = GraphSetting()
 glb.mainWindow().addSettingWidget(_instance2)
+
+
+menu = glb.mainWindow().menuBar()
+graph = menu.addMenu("Graph")
+
+close = graph.addAction("Close all Graphs")
+close.triggered.connect(Graph.closeAllGraphs)
+close.setShortcut("Ctrl+K")

@@ -1,9 +1,8 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QSpinBox
+from PyQt5.QtCore import Qt, QObject, pyqtSignal
 
-from .filter.FreeLine import *
-from .filters import Filters
+from lys.widgets import LysSubWindow, ScientificSpinBox
+from lys.filters import FreeLineFilter
 
 
 class AllExecutor(QObject):
@@ -76,7 +75,7 @@ class RegionExecutor(QObject):
 
     def set(self, wave, slices, sumlist, ignore=[]):
         for i, r in zip(self.axes, self.range):
-            if not i in ignore:
+            if i not in ignore:
                 p1 = min(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
                 p2 = max(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
                 if p1 < 0:
@@ -136,11 +135,11 @@ class RegionExecutorDialog(LysSubWindow):
             v[1].setValue(val[1])
             v[0].valueChanged.connect(self._updateValues)
             v[1].valueChanged.connect(self._updateValues)
-        l = QGridLayout()
+        grid = QGridLayout()
         for n, i in enumerate(self._axes):
-            l.addWidget(QLabel("Axis " + str(i)), n, 0)
-            l.addWidget(self._vals[n][0], n, 1)
-            l.addWidget(self._vals[n][1], n, 2)
+            grid.addWidget(QLabel("Axis " + str(i)), n, 0)
+            grid.addWidget(self._vals[n][0], n, 1)
+            grid.addWidget(self._vals[n][1], n, 2)
         h1 = QHBoxLayout()
         h1.addWidget(QPushButton("O K", clicked=self.accept))
         h1.addWidget(QPushButton("CANCEL", clicked=self.reject))
@@ -149,7 +148,7 @@ class RegionExecutorDialog(LysSubWindow):
         h2.addWidget(QPushButton("Paste", clicked=self.paste))
 
         v1 = QVBoxLayout()
-        v1.addLayout(l)
+        v1.addLayout(grid)
         v1.addLayout(h2)
         v1.addLayout(h1)
         w = QWidget()
@@ -226,7 +225,7 @@ class PointExecutor(QObject):
 
     def set(self, wave, slices, sumlist, ignore=[]):
         for i, p in zip(self.axes, self.position):
-            if not i in ignore:
+            if i not in ignore:
                 p = wave.posToPoint(p, i)
                 if p < 0:
                     p = 0
@@ -278,10 +277,10 @@ class PointExecutorDialog(LysSubWindow):
         for v, val in zip(self._vals, self.__parent.getPosition()):
             v.setValue(val)
             v.valueChanged.connect(self._updateValues)
-        l = QGridLayout()
+        grid = QGridLayout()
         for n, i in enumerate(self._axes):
-            l.addWidget(QLabel("Axis " + str(i)), n, 0)
-            l.addWidget(self._vals[n], n, 1)
+            grid.addWidget(QLabel("Axis " + str(i)), n, 0)
+            grid.addWidget(self._vals[n], n, 1)
         h1 = QHBoxLayout()
         h1.addWidget(QPushButton("O K", clicked=self.accept))
         h1.addWidget(QPushButton("CANCEL", clicked=self.reject))
@@ -290,7 +289,7 @@ class PointExecutorDialog(LysSubWindow):
         h2.addWidget(QPushButton("Paste", clicked=self.paste))
 
         v1 = QVBoxLayout()
-        v1.addLayout(l)
+        v1.addLayout(grid)
         v1.addLayout(h2)
         v1.addLayout(h1)
         w = QWidget()

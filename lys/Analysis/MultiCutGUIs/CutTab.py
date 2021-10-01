@@ -3,8 +3,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 from ..MultiCut import *
-from ..filtersGUI import *
-from lys import MainWindow
 
 
 class ControlledObjectsModel(QAbstractItemModel):
