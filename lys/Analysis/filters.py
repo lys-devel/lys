@@ -1,5 +1,7 @@
+import sys
 from .filter import *
 import _pickle as cPickle
+import lys
 
 
 class Filters(object):
@@ -31,7 +33,9 @@ class Filters(object):
     def fromString(data):
         if isinstance(data, str):
             data = eval(data)
-        return cPickle.loads(data)
+        data = data.replace(b"ExtendAnalysis", b"lys")
+        res = cPickle.loads(data)
+        return res
 
     @staticmethod
     def fromFile(path):

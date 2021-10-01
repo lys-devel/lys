@@ -6,7 +6,7 @@ from enum import Enum
 from PyQt5.QtGui import *
 
 from lys import registerFileLoader
-from lys.widgets import AutoSavedWindow
+from lys.widgets import AutoSavedWindow, _ExtendMdiArea
 from .Commons.ExtendTable import *
 from .ModifyWindow.ModifyWindow import *
 from .FittingWindow import *
@@ -17,7 +17,7 @@ class Graph(AutoSavedWindow):
 
     @classmethod
     def active(cls, n=0, exclude=None):
-        list = LysMdiArea.current().subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        list = _ExtendMdiArea.current().subWindowList(order=QMdiArea.ActivationHistoryOrder)
         m = 0
         for l in reversed(list):
             if isinstance(l, Graph):
@@ -30,7 +30,7 @@ class Graph(AutoSavedWindow):
 
     @classmethod
     def closeAllGraphs(cls):
-        list = LysMdiArea.current().subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        list = _ExtendMdiArea.current().subWindowList(order=QMdiArea.ActivationHistoryOrder)
         for l in reversed(list):
             if isinstance(l, Graph):
                 l.close(force=True)

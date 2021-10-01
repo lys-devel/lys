@@ -32,6 +32,8 @@ def __set_qt_bindings(package):
         root, sep, other = name.partition('.')
         if root == 'LysQt':
             name = package + sep + other
+        # if root == "ExtendAnalysis":
+        #    name = "lys" + sep + other
         return __import__(name, *args, **kwargs)
     builtins.__import__ = hook
 

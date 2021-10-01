@@ -8,6 +8,7 @@ from PyQt5.QtCore import *
 import pyqtgraph as pg
 from .AnnotGUICanvas import *
 from lys import *
+from lys.widgets import LysSubWindow
 
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
