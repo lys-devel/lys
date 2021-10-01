@@ -621,7 +621,7 @@ class Wave(QObject):
                     path = path + ".npz"
                 path = os.path.abspath(path)
                 os.makedirs(os.path.dirname(path), exist_ok=True)
-            np.savez_compressed(path, data=self.data, axes=np.array(self.axes, dtype=object), note=self.note, allow_pickle=True)
+            np.savez_compressed(path, data=self.data, axes=np.array(self.axes, dtype=object), note=dict(self.note), allow_pickle=False)
         if type in ["Comma-Separated Values (*.csv)", ".csv", "csv"]:
             if isinstance(path, str):
                 if not path.endswith(".csv"):

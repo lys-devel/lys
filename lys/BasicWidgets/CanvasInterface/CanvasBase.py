@@ -367,7 +367,12 @@ class CanvasBaseBase(DrawableCanvasBase):
                 w = dic[i]['File']
                 if w is None:
                     if 'Wave' in dic[i]:  # for backward compability
-                        w = cPickle.loads(dic[i]['Wave'])
+                        waveData = dic[i]['Wave']
+                        print(waveData)
+                        waveData = waveData.replace(b'ExtendAnalysis.core', b'lys.core')
+                        waveData = waveData.replace(b'ExtendAnalysis.ExtendType', b'lys.core')
+                        waveData = waveData.replace(b'produce', b'_produceWave')
+                        w = cPickle.loads(waveData)
                     elif 'Wave_npz' in dic[i]:
                         w = Wave(io.BytesIO(dic[i]['Wave_npz']))
                 axis = Axis(dic[i]['Axis'])

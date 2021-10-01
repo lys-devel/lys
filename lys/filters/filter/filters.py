@@ -46,7 +46,8 @@ class Filters(FilterInterface):
         if isinstance(data, list):
             res = Filters._restoreFilter(data)
         else:  # backward compability
-            data = data.replace(b"ExtendAnalysis", b"lys")
+            data = data.replace(b"ExtendAnalysis.Analysis.filters", b"lys.filters")
+            data = data.replace(b"ExtendAnalysis.Analysis.filter", b"lys.filters.filter")
             res = cPickle.loads(data)
         return res
 
