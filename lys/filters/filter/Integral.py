@@ -23,7 +23,7 @@ class IntegralAllFilter(_IntegralBase):
         self._axes = axes
         self._sumtype = sumtype
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
         func = self._getSumFunction(self._sumtype)
         data = func(wave.data, axis=tuple(self._axes))
         ax = [wave.axes[i] for i in range(len(wave.axes)) if i not in self._axes]
@@ -41,7 +41,7 @@ class IntegralFilter(_IntegralBase):
         self._range = np.array(range)
         self._sumtype = sumtype
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
         sl = []
         sumaxes = []
         for i, r in enumerate(self._range):
@@ -53,22 +53,19 @@ class IntegralFilter(_IntegralBase):
                 sumaxes.append(i)
         key = tuple(sl)
         axes = []
-        for i, (s, ax) in enumerate(zip(key, wave.axes)):
+        for i, s in enumerate(key):
             if i not in sumaxes:
-                if ax is None or (ax == np.array(None)).all():
+                if wave.axisIsValid(i):
                     axes.append(None)
                 else:
-                    axes.append(ax[s])
-        func = self._getSumFunction(self._getLib(wave), self._sumtype)
+                    axes.append(wave.axes[i][s])
+        func = self._getSumFunction(self._sumtype)
         wave.data = func(wave.data[key], axis=tuple(sumaxes))
         wave.axes = axes
         return wave
 
-    def getRegion(self):
-        return self._range
-
-    def getType(self):
-        return self._sumtype
+    def getParameters(self):
+        return {"range": self._range, "sumtype": self._sumtype}
 
     def getRelativeDimension(self):
         return -len([r for r in self._range if r[0] != 0 or r[1] != 0])
@@ -81,13 +78,8 @@ class IntegralCircleFilter(FilterInterface):
         self._axes = np.array(axes)
 
     def _execute(self, wave, **kwargs):
-        region, rad = _translate_unit(
-            wave, self._center, self._radiuses, self._axes)
-        if isinstance(wave, Wave):
-            return self._execute_wave(wave, region, rad, **kwargs)  # TODO
-        if isinstance(wave, DaskWave):
-            return self._execute_dask(wave, region, rad, **kwargs)
-        return wave
+        region, rad = _translate_unit(wave, self._center, self._radiuses, self._axes)
+        return self._execute_dask(wave, region, rad, **kwargs)
 
     def _execute_dask(self, wave, region, rad, **kwargs):
         gumap = da.gufunc(_integrate_tangent, signature="(i,j),(p)->(m)",
@@ -116,14 +108,11 @@ def _translate_unit(wave, center, radiuses, axes):
     cx = wave.posToPoint(center[0], axis=axes[0])
     cy = wave.posToPoint(center[1], axis=axes[1])
     r = np.abs(wave.posToPoint(center[0] + radiuses[0], axis=axes[0]) - cx)
-    dr = max(np.abs(wave.posToPoint(
-        center[0] + radiuses[1], axis=axes[0]) - cx), 1)
+    dr = max(np.abs(wave.posToPoint(center[0] + radiuses[1], axis=axes[0]) - cx), 1)
     dr = int(dr)
     r = np.floor(r / dr) * dr
-    pdr = np.abs(wave.pointToPos(
-        dr, axis=axes[0]) - wave.pointToPos(0, axis=axes[0]))
-    pr = np.abs(wave.pointToPos(
-        r, axis=axes[0]) - wave.pointToPos(0, axis=axes[0]))
+    pdr = np.abs(wave.pointToPos(dr, axis=axes[0]) - wave.pointToPos(0, axis=axes[0]))
+    pr = np.abs(wave.pointToPos(r, axis=axes[0]) - wave.pointToPos(0, axis=axes[0]))
     return (cx, cy, 0, r, dr), (pr, pdr)
 
 

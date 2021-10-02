@@ -1,8 +1,13 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QTreeView, QMenu, QAction, QWidget, QButtonGroup, QRadioButton, QLabel, QPushButton, QComboBox
+from PyQt5.QtWidgets import QTableWidget, QGridLayout, QHeaderView, QGroupBox, QHBoxLayout, QVBoxLayout, QMessageBox, QCheckBox
+from PyQt5.QtGui import QBrush, QColor, QCursor
+from PyQt5.QtCore import Qt, QAbstractItemModel, QVariant, QModelIndex, pyqtSignal, QSize, QItemSelectionModel
 
-from ..MultiCut import *
+import numpy as np
+from lys import filters, display, Wave, Graph, pyqtCanvas, CanvasBaseBase
+
+from ..MultiCutExecutors import PointExecutor, RegionExecutor, FreeLineExecutor
+from ..MultiCut import ExecutorList, SwitchableObjects, controlledObjects
 
 
 class ControlledObjectsModel(QAbstractItemModel):
@@ -116,7 +121,7 @@ class controlledWavesGUI(QTreeView):
         self.apnd(*self._getObj(type), contour=True)
 
     def _vector(self, type="Connected"):
-        i = self.selectionModel().selectedIndexes()[0].row()
+        self.selectionModel().selectedIndexes()[0].row()
         self.apnd(*self._getObj(type), vector=True)
 
     def _remove(self):
@@ -124,7 +129,7 @@ class controlledWavesGUI(QTreeView):
         self.obj.removeAt(i)
 
     def _post(self):
-        class dialog(FiltersDialog):
+        class dialog(filters.FiltersDialog):
             def __init__(self, wave):
                 super().__init__(wave.data.ndim)
                 self.wave = wave
@@ -137,7 +142,7 @@ class controlledWavesGUI(QTreeView):
         self.d = d = dialog(w)
         d.applied.connect(self.updated.emit)
         if 'MultiCut_PostProcess' in w.note:
-            d.setFilter(Filters.fromString(w.note['MultiCut_PostProcess']))
+            d.setFilter(filters.fromString(w.note['MultiCut_PostProcess']))
         d.show()
 
     def _enable(self):
@@ -262,9 +267,9 @@ class _gridTableWidget(QTableWidget):
 
     def _tableContext(self, pos):
         menu = QMenu(self)
-        togrid = menu.addAction("Graph -> Grid (Not implemented)")
-        tograph = menu.addAction("Grid -> Graph (Not implemented)")
-        intergrid = menu.addAction("Grid -> Grid (Not implemented)")
+        menu.addAction("Graph -> Grid (Not implemented)")
+        menu.addAction("Grid -> Graph (Not implemented)")
+        menu.addAction("Grid -> Grid (Not implemented)")
         menu.exec_(self.mapToGlobal(pos))
 
     def getGridPos(self):
@@ -499,7 +504,7 @@ class CutTab(QWidget):
                 if self.getTargetCanvas() is not None:
                     msgBox = QMessageBox()
                     msgBox.setText("There is a graph at this position. Do you really want to proceed?")
-                    yes = msgBox.addButton(QMessageBox.Yes)
+                    msgBox.addButton(QMessageBox.Yes)
                     graph = msgBox.addButton("Use Graph", QMessageBox.ActionRole)
                     no = msgBox.addButton(QMessageBox.No)
                     msgBox.exec_()
@@ -535,7 +540,7 @@ class CutTab(QWidget):
         if not self._usegraph.isChecked():
             msgBox = QMessageBox()
             msgBox.setText("The wave will be appended in MultiCut grid. Do you really want to proceed?")
-            yes = msgBox.addButton(QMessageBox.Yes)
+            msgBox.addButton(QMessageBox.Yes)
             graph = msgBox.addButton("Use Graph", QMessageBox.ActionRole)
             no = msgBox.addButton(QMessageBox.No)
             msgBox.exec_()
@@ -572,13 +577,13 @@ class CutTab(QWidget):
             wav = self.__exe.makeWave(self.wave, axs)
             if "MultiCut_PostProcess" in w.note:
                 fstr = w.note["MultiCut_PostProcess"]
-                filt = Filters.fromString(fstr)
+                filt = filters.fromString(fstr)
                 filt.execute(wav)
                 wav.note["MultiCut_PostProcess"] = fstr
             w.axes = wav.axes
             w.data = wav.data
             w.note = wav.note
-        except:
+        except Exception:
             import traceback
             traceback.print_exc()
 
@@ -593,7 +598,7 @@ class CutTab(QWidget):
             self.typical5d()
 
     def typical2d(self):
-        c1 = self.display(axes=[0, 1], pos=[0, 0], wid=[4, 4])
+        self.display(axes=[0, 1], pos=[0, 0], wid=[4, 4])
 
     def typical3d(self):
         c1 = self.display(axes=[2], pos=[3, 0], wid=[1, 4])

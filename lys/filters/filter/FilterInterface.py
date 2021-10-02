@@ -3,15 +3,15 @@ from lys import Wave, DaskWave
 
 
 class FilterInterface(object):
-    def execute(self, wave, **kwargs):
+    def execute(self, wave, *args, **kwargs):
         if isinstance(wave, DaskWave):
-            return self._execute(wave, **kwargs)
+            return self._execute(wave, *args, **kwargs)
         elif isinstance(wave, Wave):
             dw = DaskWave(wave)
-            result = self._execute(dw, **kwargs)
+            result = self._execute(dw, *args, **kwargs)
             return result.compute()
         else:
-            return self.execute(Wave(wave), **kwargs).data
+            return self.execute(Wave(wave), *args, **kwargs).data
 
     def _applyFunc(self, func, data, *args, **kwargs):
         if data.dtype == complex:

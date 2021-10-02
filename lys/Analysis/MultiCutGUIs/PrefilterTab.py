@@ -1,8 +1,7 @@
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QDialog, QSpinBox, QRadioButton, QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QMessageBox
+from PyQt5.QtCore import pyqtSignal
 
-from lys.filters import filtersGUI
+from lys import DaskWave, filters
 
 
 class _chunkDialog(QDialog):
@@ -87,7 +86,7 @@ class PrefilterTab(QWidget):
     def __initlayout__(self, loader):
         self.layout = QVBoxLayout()
 
-        self.filt = FiltersGUI(regionLoader=loader)
+        self.filt = filters.FiltersGUI(regionLoader=loader)
         self.layout.addWidget(self.filt)
         h1 = QHBoxLayout()
         h1.addWidget(QPushButton("Rechunk", clicked=self._chunk))

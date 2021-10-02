@@ -1,6 +1,6 @@
 import inspect
 from .filter import *
-from . import filtersGUI
+from .filtersGUI import FiltersGUI, FiltersDialog
 from . import filterGUI
 
 
