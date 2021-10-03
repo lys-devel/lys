@@ -179,7 +179,7 @@ class _FileSystemViewBase(QWidget):
 
     def _Action_Delete(self):
         paths = self.selectedPaths()
-        msg = QMessageBox()
+        msg = QMessageBox(parent=self)
         msg.setIcon(QMessageBox.Warning)
         msg.setText("Are you really want to delete " + str(len(paths)) + " items?")
         msg.setWindowTitle("Caution")

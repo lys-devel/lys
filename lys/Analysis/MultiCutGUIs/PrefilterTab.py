@@ -104,10 +104,9 @@ class PrefilterTab(QWidget):
 
     def _click(self):
         waves = DaskWave(self.wave, chunks=self.__chunk)
-        self.filt.GetFilters().execute(waves)
+        waves = self.filt.GetFilters().execute(waves)
         if self.__outputShape != waves.data.shape and self.__outputShape is not None:
-            ret = QMessageBox.information(
-                None, "Caution", "The shape of the processed wave will be changed and the graphs will be disconnected. Do you really want to proceed?", QMessageBox.Yes, QMessageBox.No)
+            ret = QMessageBox.information(self, "Caution", "The shape of the processed wave will be changed and the graphs will be disconnected. Do you really want to proceed?", QMessageBox.Yes, QMessageBox.No)
             if ret == QMessageBox.No:
                 return
         self.__outputShape = waves.data.shape

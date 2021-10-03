@@ -15,3 +15,4 @@ from .FindPeak import *
 from .Integral import *
 from .Differentiate import *
 from .MatrixMath import *
+from .Dask import *

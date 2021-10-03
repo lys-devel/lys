@@ -156,6 +156,7 @@ class _WaveAxesDescriptor:
             value = [np.array(None) for _ in range(instance.data.ndim)]
         # if len(value) != instance.data.ndim:
         #    raise ValueError("length of axes should match data.ndim")
+
         # set actual instance
         instance._axes = WaveAxes(instance, [np.array(item) for item in value])
         if hasattr(instance, "update"):

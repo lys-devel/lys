@@ -11,9 +11,9 @@ class Filters(FilterInterface):
         else:
             self._filters.extend(filters)
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
         for f in self._filters:
-            wave = f.execute(wave, **kwargs)
+            wave = f.execute(wave, *args, **kwargs)
         return wave
 
     def getParameters(self):

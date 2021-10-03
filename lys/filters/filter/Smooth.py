@@ -51,13 +51,3 @@ class GaussianFilter(_SmoothFilterBase):
 
     def getKernel(self):
         return self._kernel
-
-
-class BilateralFilter(FilterInterface):
-    def __init__(self, kernel, s_color, s_space):
-        self._kernel = kernel
-        self._sc = s_color
-        self._ss = s_space
-
-    def _execute(self, wave, **kwargs):
-        wave.data = cv2.bilateralFilter(np.array(wave.data, dtype=np.float32), self._kernel, self._sc, self._ss)

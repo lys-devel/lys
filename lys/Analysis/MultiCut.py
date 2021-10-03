@@ -222,13 +222,12 @@ class ExecutorList(controlledObjects):
             if isinstance(slices[i], int):
                 sumlist[sumlist > i] -= 1
                 applied.append(i)
-        res = wave
         f1 = SliceFilter(slices)
         f2 = IntegralAllFilter(sumlist.tolist(), self._sumtype)
         f3 = self.__getFreeLineFilter(axes, applied)
         f4 = self.__getTransposeFilter(axes)
         f = Filters([f1, f2, f3, f4])
-        f.execute(res)
+        res = f.execute(wave)
         if isinstance(res, DaskWave):
             res = res.compute()
         return res

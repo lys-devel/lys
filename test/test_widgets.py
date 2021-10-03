@@ -16,7 +16,7 @@ class testSubWindow(LysSubWindow):
 
 
 class testAutoSavedWindow(AutoSavedWindow):
-    def __init__(self, file=None):
+    def __init__(self, file=None, **kwargs):
         super().__init__(file)
         if file is None:
             self.text = ""
@@ -80,8 +80,8 @@ class FileView_test(unittest.TestCase):
         win2.Save(self.path + "/text2.txt")
         self.assertEqual(win2.Name(), "text2.txt")
 
-        win3 = testAutoSavedWindow(self.path + "/text2.txt")
-        self.assertEqual(win2, win3)
+        win3 = testAutoSavedWindow(self.path + "/text2.txt", warn=False)
+        self.assertTrue(win3 is None)
 
         _ExtendMdiArea.current().StoreAllWindows()
 

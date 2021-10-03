@@ -1,5 +1,4 @@
 import numpy as np
-from numpy.core.records import array
 import dask.array as da
 from scipy.optimize import minimize
 from scipy.ndimage import map_coordinates

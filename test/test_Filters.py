@@ -2,8 +2,11 @@ import unittest
 import os
 import warnings
 import shutil
+
 import numpy as np
-from numpy.testing import assert_array_equal
+from scipy import signal
+
+from numpy.testing import assert_array_equal, assert_array_almost_equal
 
 from lys import Wave, DaskWave, filters
 
@@ -59,30 +62,6 @@ class Filters_test(unittest.TestCase):
         loaded = filters.fromFile(self.path + "/test2.fil")
         self.assertEqual(str(loaded), str(fs))
 
-    def test_Integral(self):
-        # IntegralAllFilter
-        w = Wave(np.ones([3, 4]), [1, 2, 3], [1, 2, 3, 4], name="wave")
-        f = filters.IntegralAllFilter(axes=[0], sumtype="Sum")
-        f1 = filters.IntegralAllFilter(**f.getParameters())
-        self.assertEqual(f1.getRelativeDimension(), -1)
-        result = f1.execute(w)
-        assert_array_equal(result.data, [3, 3, 3, 3])
-        assert_array_equal(result.x, [1, 2, 3, 4])
-        self.assertEqual(result.name, "wave")
-
-        # IntegralFilter
-        w = Wave(np.ones([5, 5, 5]), [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6], name="wave")
-        f = filters.IntegralFilter([(1, 4), (2, 4), (0, 0)], sumtype="Sum")
-        f1 = filters.IntegralFilter(**f.getParameters())
-        self.assertEqual(f1.getRelativeDimension(), -2)
-        result = f1.execute(w)
-        assert_array_equal(result.data, [6, 6, 6, 6, 6])
-        assert_array_equal(result.x, [2, 3, 4, 5, 6])
-        self.assertEqual(result.name, "wave")
-
-        # IntegralCircleFilter
-        print("TODO: IntegralCircleFilter is not tested.")
-
     def test_convolution(self):
         # PrewittFilter
         w = Wave([1, 2, 3, 4, 5], [1, 2, 3, 4, 5], name="wave")
@@ -113,6 +92,14 @@ class Filters_test(unittest.TestCase):
         assert_array_equal(result.data, [1, 0, 0, 0, -1])
         assert_array_equal(result.x, [1, 2, 3, 4, 5])
         self.assertEqual(result.name, "wave")
+
+    def test_dask(self):
+        w = DaskWave(np.ones([100, 100]))
+        f = filters.RechunkFilter(chunks=(50, 50))
+        f1 = filters.RechunkFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f.execute(w)
+        self.assertEqual(result.data.chunks, ((50, 50), (50, 50)))
 
     def test_differentiate(self):
         # GradientFilter
@@ -161,3 +148,141 @@ class Filters_test(unittest.TestCase):
         result = f2.execute(w)
         assert_array_equal(result.data, [1, 3, 5])
         assert_array_equal(result.x, [0, np.sqrt(2), 2 * np.sqrt(2)])
+
+    def test_freqency(self):
+        # prepare data
+        x = np.linspace(0, 100, 100)
+        w = Wave(x, x, name="wave")
+
+        # LowPassFilter
+        f = filters.LowPassFilter(order=3, cutoff=0.1, axes=[0])
+        f1 = filters.LowPassFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        b, a = signal.butter(3, 0.1)
+        assert_array_equal(result.data, signal.filtfilt(b, a, w.data))
+        assert_array_equal(result.x, x)
+        self.assertEqual(result.name, "wave")
+
+        # HighPassFilter
+        f = filters.HighPassFilter(order=3, cutoff=0.1, axes=[0])
+        f1 = filters.HighPassFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        b, a = signal.butter(3, 0.1, btype="highpass")
+        assert_array_equal(result.data, signal.filtfilt(b, a, w.data))
+        assert_array_equal(result.x, x)
+        self.assertEqual(result.name, "wave")
+
+        # BandPassFilter
+        f = filters.BandPassFilter(order=3, cutoff=[0.1, 0.3], axes=[0])
+        f1 = filters.BandPassFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        b, a = signal.butter(3, [0.1, 0.3], btype="bandpass")
+        assert_array_equal(result.data, signal.filtfilt(b, a, w.data))
+        assert_array_equal(result.x, x)
+        self.assertEqual(result.name, "wave")
+
+        # BandStopFilter
+        f = filters.BandStopFilter(order=3, cutoff=[0.1, 0.3], axes=[0])
+        f1 = filters.BandStopFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        b, a = signal.butter(3, [0.1, 0.3], btype="bandstop")
+        assert_array_equal(result.data, signal.filtfilt(b, a, w.data))
+        assert_array_equal(result.x, x)
+        self.assertEqual(result.name, "wave")
+
+        # check original wave is not modified
+        assert_array_equal(w.data, x)
+
+    def test_fft(self):
+        w = Wave(np.ones([3, 3]), [0, 1, 2], [0, 1, 2], name="wave")
+        f = filters.FourierFilter(axes=[0, 1])
+        f1 = filters.FourierFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        ans = np.zeros([3, 3])
+        ans[1, 1] = 9
+        assert_array_equal(result.data, ans)
+        assert_array_equal(result.x, [-0.75, 0, 0.75])
+        self.assertEqual(result.name, "wave")
+
+    def test_integral(self):
+        # IntegralAllFilter
+        w = Wave(np.ones([3, 4]), [1, 2, 3], [1, 2, 3, 4], name="wave")
+        f = filters.IntegralAllFilter(axes=[0], sumtype="Sum")
+        f1 = filters.IntegralAllFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), -1)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [3, 3, 3, 3])
+        assert_array_equal(result.x, [1, 2, 3, 4])
+        self.assertEqual(result.name, "wave")
+
+        # IntegralFilter
+        w = Wave(np.ones([5, 5, 5]), [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6], name="wave")
+        f = filters.IntegralFilter([(1, 4), (2, 4), (0, 0)], sumtype="Sum")
+        f1 = filters.IntegralFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), -2)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [6, 6, 6, 6, 6])
+        assert_array_equal(result.x, [2, 3, 4, 5, 6])
+        self.assertEqual(result.name, "wave")
+
+        # IntegralCircleFilter TODO
+
+    def test_interp(self):
+        # InterpFilter
+        x = np.linspace(0, 100, 100)
+        w = Wave(x**2, x, name="wave")
+        f = filters.InterpFilter(size=(200,))
+        f1 = filters.InterpFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_almost_equal(result.data, result.x**2)
+        assert_array_equal(result.x, np.linspace(0, 100, 200))
+        self.assertEqual(result.name, "wave")
+
+    def test_index(self):
+        # SelectIndexFilter
+        w = Wave([[1, 2, 3], [4, 5, 6]], [7, 8], [9, 10, 11], name="wave")
+        f = filters.SelectIndexFilter(axis=0, index=1)
+        f1 = filters.SelectIndexFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), -1)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [4, 5, 6])
+        assert_array_equal(result.x, [9, 10, 11])
+        self.assertEqual(result.name, "wave")
+
+        # SliceFilter
+        w = Wave([[1, 2, 3], [4, 5, 6]], [7, 8], [9, 10, 11], name="wave")
+        f = filters.SliceFilter([slice(None), slice(1, 3)])
+        f1 = filters.SliceFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), -1)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [[2, 3], [5, 6]])
+        assert_array_equal(result.x, [7, 8])
+        assert_array_equal(result.y, [10, 11])
+        self.assertEqual(result.name, "wave")
+
+        # IndexMathFilter
+        w = Wave([[1, 2, 3], [4, 5, 6]], [7, 8], [9, 10, 11], name="wave")
+        f = filters.IndexMathFilter(axis=0, type="+", index1=0, index2=1)
+        f1 = filters.IndexMathFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), -1)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [5, 7, 9])
+        assert_array_equal(result.x, [9, 10, 11])
+        self.assertEqual(result.name, "wave")
+
+        # TranposeFilter
+        data = np.array([[1, 2, 3], [4, 5, 6]])
+        w = Wave(data, [7, 8], [9, 10, 11], name="wave")
+        f = filters.TransposeFilter(axes=[1, 0])
+        f1 = filters.TransposeFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, data.T)
+        assert_array_equal(result.x, [9, 10, 11])
+        self.assertEqual(result.name, "wave")

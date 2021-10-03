@@ -34,7 +34,7 @@ class FileSystemView(QWidget):
         super().__init__()
         self._path = path
         self.__initUI(self._path, model, drop)
-        self._builder = _contextMenuBuilder()
+        self._builder = _contextMenuBuilder(self)
 
     def __initUI(self, path, model, drop=False):
         self._Model = _FileSystemModel(path, model, drop)
@@ -223,7 +223,8 @@ class _FileSystemModel(QSortFilterProxyModel):
 class _contextMenuBuilder:
     """Builder of context menu in FileSystemView"""
 
-    def __init__(self):
+    def __init__(self, parent):
+        self._parent = parent
         self._SetDefaultMenu()
 
     def _SetDefaultMenu(self):
@@ -335,7 +336,7 @@ class _contextMenuBuilder:
 
     def __del(self):
         paths = self._paths
-        msg = QMessageBox()
+        msg = QMessageBox(parent=self._parent)
         msg.setIcon(QMessageBox.Warning)
         msg.setText("Are you really want to delete " + str(len(paths)) + " items?")
         msg.setWindowTitle("Caution")
@@ -389,7 +390,8 @@ def _moveFiles(files, targets, copy=False):
             elif state == "noall":
                 pass
             else:
-                msgBox = QMessageBox()
+                from . import glb
+                msgBox = QMessageBox(glb.mainWindow())
                 msgBox.setIcon(QMessageBox.Warning)
                 msgBox.setWindowTitle("Caution")
                 msgBox.setText(str(newfile.absolute()) + " exists. Do you want to overwrite it?")

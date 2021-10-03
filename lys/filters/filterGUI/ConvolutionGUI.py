@@ -1,4 +1,5 @@
 from ..filter.Convolution import *
+from ..filter.Differentiate import *
 from ..filtersGUI import *
 from .CommonWidgets import *
 
@@ -8,10 +9,11 @@ class DifferentialSetting(FilterGroupSetting):
     def _filterList(cls):
         d = {
             'Gradient': GradientSetting,
+            'Nabla': NablaSetting,
+            'Laplacian': LaplacianSetting,
             'Prewitt': PrewittSetting,
             'Sobel': SobelSetting,
-            'Laplacian': LaplacianSetting,
-            'Sharpen': SharpenSetting
+            'Laplacian by Convolution': LaplacianConvSetting,
         }
         return d
 
@@ -34,6 +36,40 @@ class GradientSetting(FilterSettingBase):
         obj = GradientSetting(None, self.dim, self.loader)
         axes = f.getAxes()
         obj._layout.SetChecked(axes)
+        return obj
+
+
+class NablaSetting(FilterSettingBase):
+    def __init__(self, parent, dim, loader=None):
+        super().__init__(parent, dim, loader)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, NablaFilter):
+            return True
+
+    def GetFilter(self):
+        return NablaFilter()
+
+    def parseFromFilter(self, f):
+        obj = NablaSetting(None, self.dim, self.loader)
+        return obj
+
+
+class LaplacianSetting(FilterSettingBase):
+    def __init__(self, parent, dim, loader=None):
+        super().__init__(parent, dim, loader)
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if isinstance(f, LaplacianFilter):
+            return True
+
+    def GetFilter(self):
+        return LaplacianFilter()
+
+    def parseFromFilter(self, f):
+        obj = LaplacianSetting(None, self.dim, self.loader)
         return obj
 
 
@@ -79,7 +115,7 @@ class SobelSetting(FilterSettingBase):
         return obj
 
 
-class LaplacianSetting(FilterSettingBase):
+class LaplacianConvSetting(FilterSettingBase):
     def __init__(self, parent, dim, loader=None):
         super().__init__(parent, dim, loader)
         self._layout = AxisCheckLayout(dim)
@@ -87,35 +123,14 @@ class LaplacianSetting(FilterSettingBase):
 
     @classmethod
     def _havingFilter(cls, f):
-        if type(f) == LaplacianFilter:
+        if type(f) == LaplacianConvFilter:
             return True
 
     def GetFilter(self):
-        return LaplacianFilter(self._layout.GetChecked())
+        return LaplacianConvFilter(self._layout.GetChecked())
 
     def parseFromFilter(self, f):
-        obj = LaplacianSetting(None, self.dim, self.loader)
-        axes = f.getAxes()
-        obj._layout.SetChecked(axes)
-        return obj
-
-
-class SharpenSetting(FilterSettingBase):
-    def __init__(self, parent, dim, loader=None):
-        super().__init__(parent, dim, loader)
-        self._layout = AxisCheckLayout(dim)
-        self.setLayout(self._layout)
-
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, SharpenFilter):
-            return True
-
-    def GetFilter(self):
-        return SharpenFilter(self._layout.GetChecked())
-
-    def parseFromFilter(self, f):
-        obj = SharpenSetting(None, self.dim, self.loader)
+        obj = LaplacianConvSetting(None, self.dim, self.loader)
         axes = f.getAxes()
         obj._layout.SetChecked(axes)
         return obj

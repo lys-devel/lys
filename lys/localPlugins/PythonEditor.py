@@ -322,7 +322,7 @@ class PythonEditor(LysSubWindow):
         if not self.updated:
             PythonEditor._Remove(self)
             return
-        msg = QMessageBox()
+        msg = QMessageBox(self)
         msg.setIcon(QMessageBox.Warning)
         msg.setText("Do you want to save changes?")
         msg.setWindowTitle(os.path.basename(self.file))

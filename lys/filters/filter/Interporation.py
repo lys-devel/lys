@@ -1,12 +1,31 @@
 import numpy as np
 from scipy.interpolate import interpn, interp2d, interp1d
 
-
-from lys import Wave, DaskWave
 from .FilterInterface import FilterInterface
 
 
 class InterpFilter(FilterInterface):
+    """
+    Interpolate data by scipy.interpolate
+
+    Args:
+        size(tuple of int): new shape
+
+    Example:
+
+        Interpolate quadrutic function::
+
+        import numpy as np
+        from lys import Wave, filters
+        x = np.linspace(0, 100, 100)
+        w = Wave(x**2, x)
+        f = filters.InterpFilter(size=(200,))
+        result = f.execute(w)
+        print(w.shape, result.shape)
+        # (100,), (200,)
+
+    """
+
     def __init__(self, size):
         self._size = size
 
@@ -16,7 +35,7 @@ class InterpFilter(FilterInterface):
         if len(indice) == 0:
             return
         sig = "(" + sigList1[:len(indice) * 2 - 1] + ")->(" + sigList2[:len(indice) * 2 - 1] + ")"
-        newAxes = self.getNewAxes(wave)
+        newAxes = self._getNewAxes(wave)
         oldAxes = [wave.getAxis(i) for i in indice]
         axes_used = [newAxes[i] for i in indice]
         if len(indice) in [1, 2]:
@@ -37,7 +56,7 @@ class InterpFilter(FilterInterface):
         wave.axes = newAxes
         return wave
 
-    def getNewAxes(self, wave):
+    def _getNewAxes(self, wave):
         axes = []
         for i in range(len(self._size)):
             ax = wave.getAxis(i)
@@ -46,3 +65,6 @@ class InterpFilter(FilterInterface):
             else:
                 axes.append(np.linspace(min(ax), max(ax), self._size[i]))
         return axes
+
+    def getParameters(self):
+        return {"size": self._size}

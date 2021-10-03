@@ -236,8 +236,8 @@ class _axisLayout(QWidget):
                 if l.Name() == old:
                     c.setCurrentIndex(i)
         self._lineids = {}
-        for l in lines:
-            self._lineids[l.Name()] = l.ID()
+        for item in lines:
+            self._lineids[item.Name()] = item.ID()
 
     def getAxes(self):
         ax1 = self._btn1.index(self.grp1.checkedButton())
@@ -502,7 +502,7 @@ class CutTab(QWidget):
                 return g.canvas
             else:
                 if self.getTargetCanvas() is not None:
-                    msgBox = QMessageBox()
+                    msgBox = QMessageBox(parent=self)
                     msgBox.setText("There is a graph at this position. Do you really want to proceed?")
                     msgBox.addButton(QMessageBox.Yes)
                     graph = msgBox.addButton("Use Graph", QMessageBox.ActionRole)
@@ -513,7 +513,7 @@ class CutTab(QWidget):
                     elif msgBox.clickedButton() == graph:
                         self._usegraph.setChecked(True)
                         return self.display(wave, axes, pos, wid)
-                if pos == None or wid == None:
+                if pos is None or wid is None:
                     pos, wid = self._table.getGridPos()
                 c = pyqtCanvas()
                 c.Append(w)
@@ -538,7 +538,7 @@ class CutTab(QWidget):
     def append(self, wave, axes, **kwargs):
         c = self.getTargetCanvas()
         if not self._usegraph.isChecked():
-            msgBox = QMessageBox()
+            msgBox = QMessageBox(parent=self)
             msgBox.setText("The wave will be appended in MultiCut grid. Do you really want to proceed?")
             msgBox.addButton(QMessageBox.Yes)
             graph = msgBox.addButton("Use Graph", QMessageBox.ActionRole)

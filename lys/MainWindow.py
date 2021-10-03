@@ -187,6 +187,8 @@ class MainWindow(QMainWindow):
         return self._fileView
 
     def _mdiArea(self, workspace="default"):
+        if workspace == "__all__":
+            return self._workspace
         i = self._mainTab.currentIndex()
         if i > len(self._workspace) - 1:
             i = len(self._workspace) - 1

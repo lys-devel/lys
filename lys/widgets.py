@@ -63,12 +63,14 @@ class _ExtendMdiArea(QMdiArea):
         if isinstance(window, AutoSavedWindow):
             self._AddAutoWindow(window)
 
-    def loadedWindow(self, path):
+    @classmethod
+    def loadedWindow(cls, path):
         if path is None:
             return None
-        for win in self.__list:
-            if Path(win.FileName()) == Path(path).absolute():
-                return win
+        for work in cls._main._mdiArea("__all__"):
+            for win in work.__list:
+                if Path(win.FileName()) == Path(path).absolute():
+                    return win
 
     def RestoreAllWindows(self):
         # load windos paths to restore
@@ -99,7 +101,7 @@ class _ExtendMdiArea(QMdiArea):
         os.makedirs(self._windir, exist_ok=True)
         for i in range(1000):
             path = self._windir + '/' + prefix + str(i).zfill(3) + suffix
-            if self.loadedWindow(path) is None:
+            if _ExtendMdiArea.loadedWindow(path) is None:
                 return path
         print('Too many windows.', file=sys.stderr)
 
@@ -340,13 +342,29 @@ class AutoSavedWindow(LysSubWindow):
     saved = pyqtSignal()
     """*saved* signal is emitted when it is saved."""
 
-    def __new__(cls, file=None, title=None, **kwargs):
-        obj = _ExtendMdiArea.current().loadedWindow(file)
+    def __new__(cls, file=None, title=None, warn=True, **kwargs):
+        obj = _ExtendMdiArea.loadedWindow(file)
         if obj is not None:
-            return obj
+            obj.raise_()
+            if obj._mdiArea() == _ExtendMdiArea.current():
+                if warn:
+                    print(file + " has been loaded in " + obj._mdiArea()._workspace, file=sys.stderr)
+                return None
+            elif warn:
+                msg = QMessageBox(parent=_ExtendMdiArea.current())
+                msg.setIcon(QMessageBox.Warning)
+                msg.setText(file + " has been loaded in " + obj._mdiArea()._workspace + ". Do you want to move it to current workspace?")
+                msg.setWindowTitle("Caution")
+                msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+                ok = msg.exec_()
+                if ok == QMessageBox.Cancel:
+                    return None
+                else:
+                    obj.close(force=True)
+                    return super().__new__(cls)
         return super().__new__(cls)
 
-    def __init__(self, file=None, **kwargs):
+    def __init__(self, file=None, *args, **kwargs):
         self.__closeflg = True
         self.__isTmp = file is None
         if self.__isTmp:
@@ -361,6 +379,12 @@ class AutoSavedWindow(LysSubWindow):
 
     def _Disconnect(self):
         self.__isTmp = True
+
+    def _mdiArea(self):
+        parent = self
+        while not isinstance(parent, _ExtendMdiArea):
+            parent = parent.parent()
+        return parent
 
     def Save(self, file=None):
         """
@@ -393,7 +417,7 @@ class AutoSavedWindow(LysSubWindow):
     def closeEvent(self, event):
         """Reimplementation of closeEvent in QMdiSubWindow"""
         if self.__isTmp and self.__closeflg:
-            msg = QMessageBox()
+            msg = QMessageBox(parent=_ExtendMdiArea.current())
             msg.setIcon(QMessageBox.Warning)
             msg.setText("This window is not saved. Do you really want to close it?")
             msg.setWindowTitle("Caution")
