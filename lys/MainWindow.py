@@ -90,17 +90,12 @@ class MainWindow(QMainWindow):
 
     def __sideBar(self):
         self._fileView = FileSystemView(home(), drop=True)
-        self._setting = QVBoxLayout()
-        self._setting.addStretch()
-        setting = QWidget()
-        setting.setLayout(self._setting)
 
         self._tab_up = QTabWidget()
         self._tab_up.addTab(_CommandLogWidget(self), "Command")
 
         self._tab = QTabWidget()
         self._tab.addTab(self._fileView, "File")
-        self._tab.addTab(setting, "Settings")
 
         layout_h = QSplitter(Qt.Vertical)
         layout_h.addWidget(self._tab_up)
@@ -179,9 +174,6 @@ class MainWindow(QMainWindow):
             self._tab_up.addTab(widget, name)
         if position == "down":
             self._tab.addTab(widget, name)
-
-    def addSettingWidget(self, widget):
-        self._setting.insertWidget(self._setting.count() - 1, widget)
 
     @property
     def fileView(self):

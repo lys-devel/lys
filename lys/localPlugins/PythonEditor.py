@@ -2,9 +2,9 @@ import os
 
 import autopep8
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt, QRegExp, pyqtSignal, QEvent, QPoint
+from PyQt5.QtGui import QSyntaxHighlighter, QColor, QFont, QTextCharFormat, QKeyEvent, QPainter
+from PyQt5.QtWidgets import QMessageBox, QPlainTextEdit, QWidget, QInputDialog
 
 from lys import glb, home, registerFileLoader
 from lys.widgets import LysSubWindow
@@ -248,14 +248,34 @@ class PythonEditor(LysSubWindow):
         cls.__list.remove(win)
 
     @classmethod
-    def CloseAllEditors(cls, event):
-        if not event.isAccepted():
-            return
+    def _loadedEditor(cls, file):
         for editor in cls.__list:
-            res = editor.close()
-            if not res:
-                event.ignore()
+            if editor.file == file:
+                return editor
+        return None
+
+    @classmethod
+    def CloseAllEditors(cls, event=None):
+        if hasattr(event, "isAccepted"):
+            if not event.isAccepted():
                 return
+        for editor in cls.__list:
+            try:
+                res = editor.close()
+                if not res:
+                    if hasattr(event, "ignore"):
+                        event.ignore()
+                    return
+            # Editor has been closed
+            except RuntimeError:
+                pass
+
+    def __new__(cls, file):
+        loaded = PythonEditor._loadedEditor(file)
+        if loaded is not None:
+            loaded.raise_()
+            return None
+        return super().__new__(cls)
 
     def __init__(self, file):
         super().__init__()
@@ -283,7 +303,7 @@ class PythonEditor(LysSubWindow):
 
     def refreshTitle(self):
         if self.updated:
-            self.setWindowTitle(os.path.basename(self.file) + " (modified)")
+            self.setWindowTitle(os.path.basename(self.file) + " (modified, Press Ctrl+S to save)")
         else:
             self.setWindowTitle(os.path.basename(self.file))
 
@@ -300,6 +320,7 @@ class PythonEditor(LysSubWindow):
 
     def closeEvent(self, event):
         if not self.updated:
+            PythonEditor._Remove(self)
             return
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
@@ -322,6 +343,14 @@ class PythonEditor(LysSubWindow):
         self.refreshTitle()
 
 
+def _enterName():
+    txt, ok = QInputDialog.getText(glb.mainWindow(), "New .py file", "Enter filename")
+    if ok and len(txt) != 0:
+        if not txt.endswith(".py"):
+            txt = txt + ".py"
+        _makeNewPy(txt)
+
+
 def _makeNewPy(name):
     if not os.path.exists(home() + "/module/__init__.py"):
         os.makedirs(home() + "/module", exist_ok=True)
@@ -340,6 +369,13 @@ def _register():
     proc = prog.addAction("Open default proc.py")
     proc.triggered.connect(lambda: _makeNewPy("proc.py"))
     proc.setShortcut("Ctrl+P")
+
+    makeNew = prog.addAction("Create new .py file")
+    makeNew.triggered.connect(_enterName)
+    makeNew.setShortcut("Ctrl+Shift+P")
+
+    closeAll = prog.addAction("Close all editors")
+    closeAll.triggered.connect(PythonEditor.CloseAllEditors)
 
 
 _register()

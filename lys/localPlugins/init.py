@@ -5,12 +5,12 @@ from . import ImageLoad
 from . import Logger
 from . import StringEditor
 from . import WaveViewer
-from . import PythonEditor
 from . import TaskViewer
+
+# Menus
+from . import PythonEditor
+from . import GraphSetting
 from . import manualView
 
 # Basic file menus
 from . import fileMenu
-
-# Setting : should be deleted
-from . import GraphSetting
