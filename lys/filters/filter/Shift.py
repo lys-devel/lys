@@ -1,99 +1,118 @@
-import scipy
+from scipy.ndimage import interpolation
 import numpy as np
 import dask.array as da
-from dask.array import flip, roll
 
-from lys import Wave, DaskWave
+from lys import DaskWave
 from .FilterInterface import FilterInterface
 
 
 class ShiftFilter(FilterInterface):
+    """
+    Shift data by scipy.ndimage.interpolation.shift.
+
+    Args:
+        shift(tuple of float): The shift along the axes.
+    """
+
     def __init__(self, shift=None):
         self._s = shift
 
-    def _execute(self, wave, shift=None, **kwargs):
-        if wave.data.ndim > 3:
-            order = 0
-        else:
-            order = 3
+    def _execute(self, wave, *args, shift=None, **kwargs):
+        order = 1
         if shift is None:
             shi = self._s
         else:
             shi = shift
-        if isinstance(wave, Wave):
-            if shift is None:
-                wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), self._s[0:wave.data.ndim], order=order, cval=0))
-            else:
-                wave.data = (scipy.ndimage.interpolation.shift(np.array(wave.data, dtype=np.float32), shift[0:wave.data.ndim], order=order, cval=0))
-        elif isinstance(wave, DaskWave):
-            for ax, s in enumerate(shi):
-                wave.data = da.apply_along_axis(scipy.ndimage.interpolation.shift, ax, wave.data, s, dtype=wave.data.dtype, shape=(wave.data.shape[ax],), order=order, cval=0)
+        for i, s in enumerate(shi):
+            ax = wave.getAxis(i)
+            dx = (ax[-1] - ax[0]) / (len(ax) - 1)
+            shi[i] = shi[i] / dx
+        data = wave.data
+        for ax, s in enumerate(shi):
+            data = da.apply_along_axis(interpolation.shift, ax, data.astype(float), s, dtype=float, shape=(data.shape[ax],), order=order, cval=0)
+        return DaskWave(data, *wave.axes, **wave.note)
 
-    def getParams(self):
-        return self._s
+    def getParameters(self):
+        return {"shift": self._s}
 
 
 class ReverseFilter(FilterInterface):
+    """
+    Reverse data by dask.array.flip
+
+    Args:
+        axes(list of int): axes to be reversed.
+    """
+
     def __init__(self, axes):
         self.axes = axes
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
+        data = wave.data
         for a in self.axes:
-            if isinstance(wave, Wave):
-                wave.data = np.flip(wave.data, a)
-            else:
-                wave.data = flip(wave.data, a)
-        return wave
+            data = da.flip(data, a)
+        return DaskWave(data, *wave.axes, **wave.note)
 
-    def getAxes(self):
-        return self.axes
+    def getParameters(self):
+        return {"axes": self.axes}
 
 
 class RollFilter(FilterInterface):
+    """
+    Reverse data by dask.array.roll
+
+    Args:
+        amount('1/2' or '1/4' or '-1/4'): amount of roll.
+        axes(list of int): axes to be rolled.
+    """
+
     def __init__(self, amount, axes):
         self.axes = axes
         self.amount = amount
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
+        data = wave.data
         for a in self.axes:
             if self.amount == "1/2":
-                amount = wave.data.shape[a] / 2
+                amount = data.shape[a] / 2
             if self.amount == "1/4":
-                amount = wave.data.shape[a] / 4
+                amount = data.shape[a] / 4
             if self.amount == "-1/4":
-                amount = -wave.data.shape[a] / 4
-            if isinstance(wave, Wave):
-                wave.data = np.roll(wave.data, amount, axis=a)
-            else:
-                wave.data = roll(wave.data, amount, axis=a)
-        return wave
+                amount = -data.shape[a] / 4
+            data = da.roll(data, amount, axis=a)
+        return DaskWave(data, *wave.axes, **wave.note)
 
-    def getParams(self):
-        return self.amount, self.axes
+    def getParameters(self):
+        return {"amount": self.amount, "axes": self.axes}
 
 
 class ReflectFilter(FilterInterface):
+    """
+    Reflect data.
+
+    type('center' or 'first' or 'last'): specifies where the data is reflected.
+    axes(tuple of int): specifies axes reflected.
+    """
+
     def __init__(self, type, axes):
         self.axes = axes
         self.type = type
 
-    def _execute(self, wave, **kwargs):
-        if isinstance(wave, Wave):
-            lib = np
-        elif isinstance(wave, DaskWave):
-            lib = da
+    def _execute(self, wave, *args, **kwargs):
+        data = wave.data
+        axes = list(wave.axes)
         for a in self.axes:
-            sl = [slice(None)] * wave.data.ndim
+            sl = [slice(None)] * data.ndim
             sl[a] = slice(None, None, -1)
             if self.type == "center":
-                wave.data = wave.data + wave.data[tuple(sl)]
+                data = data + data[tuple(sl)]
             if self.type == "first":
-                wave.data = lib.concatenate([wave.data[tuple(sl)], wave.data], axis=a)
-                wave.axes[a] = self._elongateAxis(wave.axes[a], self.type)
+                data = da.concatenate([data[tuple(sl)], data], axis=a)
+                axes[a] = self._elongateAxis(axes[a], self.type)
             if self.type == "last":
-                wave.data = lib.concatenate([wave.data, wave.data[tuple(sl)]], axis=a)
-                wave.axes[a] = self._elongateAxis(wave.axes[a], self.type)
-        return wave
+                data = da.concatenate([data, data[tuple(sl)]], axis=a)
+                axes[a] = self._elongateAxis(axes[a], self.type)
+        return DaskWave(data, *axes, **wave.note)
 
     def _elongateAxis(self, axis, type):
         if axis is None:
@@ -106,5 +125,5 @@ class ReflectFilter(FilterInterface):
         if type == "first":
             return np.linspace(end - d * (2 * len(axis) - 1), end, 2 * len(axis))
 
-    def getParams(self):
-        return self.type, self.axes
+    def getParameters(self):
+        return {"type": self.type, "axes": self.axes}

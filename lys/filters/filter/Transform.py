@@ -1,6 +1,5 @@
 import numpy as np
 import dask.array as da
-import cv2
 from scipy import ndimage
 from lys import Wave, DaskWave
 from .FilterInterface import FilterInterface

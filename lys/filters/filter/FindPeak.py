@@ -23,7 +23,7 @@ class PeakFilter(FilterInterface):
         uf = self._generalizedFunction(wave, f, signature="(i)->(j)", axes=[(self._axis,), (self._axis)], output_dtypes=float, output_sizes={"j": self._size})
         return DaskWave(uf(wave.data), *axes, **wave.note)
 
-    def getParams(self):
+    def getParameters(self):
         return {"axis": self._axis, "order": self._order, "type": self._type, "size": self._size}
 
 
@@ -53,7 +53,7 @@ class PeakPostFilter(FilterInterface):
         uf = self._generalizedFunction(wave, _find4D, signature="(i,j,k,l),(m)->(i,j,k,l)", axes=[(0, 1, 2, 3), (0), (0, 1, 2, 3)])
         return DaskWave(uf(wave.data, np.array(self._size)), *wave.axes, **wave.note)
 
-    def getParams(self):
+    def getParameters(self):
         return {"axis": self._axis, "size": self._size}
 
 
@@ -97,7 +97,7 @@ class PeakReorderFilter(FilterInterface):
         uf = self._generalizedFunction(wave, f, signature="(i,j,k,l)->(i,j,k,l)", axes=[axes, axes])
         return DaskWave(uf(wave.data), *wave.axes, **wave.note)
 
-    def getParams(self):
+    def getParameters(self):
         return {"peakAxis": self._peak, "scanAxis": self._scan, "medSize": self._size}
 
 
