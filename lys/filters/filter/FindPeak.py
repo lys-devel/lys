@@ -1,12 +1,9 @@
 import numpy as np
-import time
-from scipy.signal import *
-from scipy.ndimage import *
+from scipy.signal import argrelextrema
+from scipy.ndimage import median_filter
 
-from lys import Wave, DaskWave
+from lys import DaskWave
 from .FilterInterface import FilterInterface
-
-import dask.array as da
 
 
 class PeakFilter(FilterInterface):
@@ -18,37 +15,33 @@ class PeakFilter(FilterInterface):
 
     def _execute(self, wave, *args, **kwargs):
         if self._type == "ArgRelMax":
-            def f(x): return relmax(x, self._order, self._size)
+            def f(x): return _relmax(x, self._order, self._size)
         else:
-            def f(x): return relmin(x, self._order, self._size)
+            def f(x): return _relmin(x, self._order, self._size)
         axes = [ax for ax in wave.axes]
         axes[self._axis] = None
-        uf = self.generalizedFunction(wave, f, signature="(i)->(j)", axes=[(self._axis,), (self._axis)], output_dtypes=float, output_sizes={"j": self._size})
-        wave.data = uf(wave.data)
-        wave.axes = axes
-        return wave
+        uf = self._generalizedFunction(wave, f, signature="(i)->(j)", axes=[(self._axis,), (self._axis)], output_dtypes=float, output_sizes={"j": self._size})
+        return DaskWave(uf(wave.data), *axes, **wave.note)
 
     def getParams(self):
-        return self._axis, self._order, self._type, self._size
+        return {"axis": self._axis, "order": self._order, "type": self._type, "size": self._size}
 
 
-def relmax(x, order, size):
+def _relmax(x, order, size):
     data = argrelextrema(x, np.greater_equal, order=order)[0]
-    #index = np.argsort([x[i] for i in data])
     res = [d for d in data if d != 0 and d != len(x) - 1]
     while len(res) < size:
         res.append(0)
     return np.array(res[:size])
 
 
-def relmin(x, order, size):
+def _relmin(x, order, size):
     data = argrelextrema(x, np.less_equal, order=order)[0]
-    #index = np.argsort([x[i] for i in data])
     res = [d for d in data if d != 0 and d != len(x) - 1]
     res = list(data)
     while len(res) < size:
         res.append(0)
-    return np.array(res[:3])
+    return np.array(res[:size])
 
 
 class PeakPostFilter(FilterInterface):
@@ -57,12 +50,11 @@ class PeakPostFilter(FilterInterface):
         self._size = medSize
 
     def _execute(self, wave, *args, **kwargs):
-        uf = self.generalizedFunction(wave, _find4D, signature="(i,j,k,l),(m)->(i,j,k,l)", axes=[(0, 1, 2, 3), (0), (0, 1, 2, 3)])
-        wave.data = uf(wave.data, np.array(self._size))
-        return wave
+        uf = self._generalizedFunction(wave, _find4D, signature="(i,j,k,l),(m)->(i,j,k,l)", axes=[(0, 1, 2, 3), (0), (0, 1, 2, 3)])
+        return DaskWave(uf(wave.data, np.array(self._size)), *wave.axes, **wave.note)
 
     def getParams(self):
-        return self._axis, self._size
+        return {"axis": self._axis, "size": self._size}
 
 
 def _find4D(data, medSize):
@@ -102,12 +94,11 @@ class PeakReorderFilter(FilterInterface):
         axes.remove(self._scan)
         axes = [self._peak, self._scan] + axes
         def f(x): return _reorder(x, self._size)
-        uf = self.generalizedFunction(wave, f, signature="(i,j,k,l)->(i,j,k,l)", axes=[axes, axes])
-        wave.data = uf(wave.data)
-        return wave
+        uf = self._generalizedFunction(wave, f, signature="(i,j,k,l)->(i,j,k,l)", axes=[axes, axes])
+        return DaskWave(uf(wave.data), *wave.axes, **wave.note)
 
     def getParams(self):
-        return self._peak, self._scan, self._size
+        return {"peakAxis": self._peak, "scanAxis": self._scan, "medSize": self._size}
 
 
 def _reorder(data, size):

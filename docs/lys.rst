@@ -9,6 +9,7 @@ Subpackages
 
    lys.Analysis
    lys.BasicWidgets
+   lys.filters
 
 Submodules
 ----------
@@ -17,14 +18,6 @@ lys.FileView module
 -------------------
 
 .. automodule:: lys.FileView
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.LoadFile module
--------------------
-
-.. automodule:: lys.LoadFile
    :members:
    :undoc-members:
    :show-inheritance:

@@ -3,31 +3,18 @@ import dask.array as da
 from dask_image import ndfilters as dfilters
 from scipy.ndimage import filters
 
+from lys import DaskWave
 from .FilterInterface import FilterInterface
 
 
-class GradientFilter(FilterInterface):
+class _ConvolutionFilter(FilterInterface):
     def __init__(self, axes):
-        self._axes = axes
+        if not hasattr(axes, "__iter__"):
+            self._axes = [axes]
+        else:
+            self._axes = axes
 
-    def _execute(self, wave, **kwargs):
-        def f(d, x):
-            if len(d) == 1:
-                return x
-            return np.gradient(d, x)
-        for ax in self._axes:
-            wave.data = da.apply_along_axis(f, ax, wave.data, wave.getAxis(ax))
-        return wave
-
-    def getAxes(self):
-        return self._axes
-
-
-class ConvolutionFilter(FilterInterface):
-    def __init__(self, axes):
-        self._axes = axes
-
-    def makeCore(self, dim):
+    def _makeCore(self, dim):
         core = np.zeros([3 for i in range(dim)])
         core[tuple([1 for i in range(dim)])] = 1
         return core
@@ -36,36 +23,80 @@ class ConvolutionFilter(FilterInterface):
         raise NotImplementedError()
 
     def _kernel(self, wave, axis):
-        core = self.makeCore(self._getDim(wave))
+        core = self._makeCore(wave.data.ndim)
         return self._getKernel(core, axis)
 
     def _getDim(self, wave):
-        if isinstance(wave, np.ndarray):
-            return wave.ndim
-        else:
-            return wave.data.ndim
+        return wave.data.ndim
 
-    def _execute(self, wave, **kwargs):
-        for ax in self._axes:
-            kernel = self._kernel(wave, ax)
-            wave.data = self._applyFunc(dfilters.convolve, wave.data, kernel)
-        return wave
+    def _execute(self, wave, *args, **kwargs):
+        results = [self._applyFunc(dfilters.convolve, wave.data, self._kernel(wave, ax)) for ax in self._axes]
+        data = da.sum(da.stack(results), axis=0)
+        return DaskWave(data, *wave.axes, **wave.note)
 
-    def getAxes(self):
-        return self._axes
+    def getParameters(self):
+        return {"axes": self._axes}
 
 
-class PrewittFilter(ConvolutionFilter):
+class PrewittFilter(_ConvolutionFilter):
+    """
+    Apply prewitt filter.
+
+    Args:
+        axes(tuple of int): axes of wave along which to apply.
+
+    Example:
+
+        >>> w = Wave([1, 2, 3, 4, 5])
+        >>> f = filters.PrewittFilter(axes=[0])
+        >>> result = f.execute(w)
+        >>> result.data
+        >>> # [1,2,2,2,1]
+
+    """
+
     def _getKernel(self, core, axis):
         return filters.prewitt(core, axis=axis)
 
 
-class SobelFilter(ConvolutionFilter):
+class SobelFilter(_ConvolutionFilter):
+    """
+    Apply prewitt filter.
+
+    Args:
+        axes(tuple of int): axes of wave along which to apply.
+
+    Example:
+
+        >>> w = Wave([1, 2, 3, 4, 5])
+        >>> f = filters.SobelFilter(axes=[0])
+        >>> result = f.execute(w)
+        >>> result.data
+        >>> # [1,2,2,2,1]
+
+    """
+
     def _getKernel(self, core, axis):
         return filters.sobel(core, axis=axis)
 
 
-class LaplacianFilter(ConvolutionFilter):
+class LaplacianConvFilter(_ConvolutionFilter):
+    """
+    Apply Laplacian by convolution.
+
+    Args:
+        axes(tuple of int): axes of wave along which to apply.
+
+    Example:
+
+        >>> w = Wave([1, 2, 3, 4, 5])
+        >>> f = filters.LaplacianConvFilter(axes=[0])
+        >>> result = f.execute(w)
+        >>> result.data
+        >>> # [1,0,0,0,-1]
+
+    """
+
     def _getKernel(self, core, axis):
         res = np.array(core)
         for ax in self._axes:
@@ -77,10 +108,3 @@ class LaplacianFilter(ConvolutionFilter):
         kernel = self._kernel(wave, None)
         wave.data = dfilters.convolve(wave.data, kernel)
         return wave
-
-
-class SharpenFilter(LaplacianFilter):
-    def _getKernel(self, core, axis):
-        res = super()._getKernel(core, axis)
-        res[tuple([1 for i in range(core.ndim)])] -= 1
-        return res

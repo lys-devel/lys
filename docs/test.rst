@@ -4,14 +4,6 @@ test package
 Submodules
 ----------
 
-test.ExtendType\_test module
-----------------------------
-
-.. automodule:: test.ExtendType_test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 test.test\_ExtendType module
 ----------------------------
 
@@ -24,6 +16,14 @@ test.test\_FileView module
 --------------------------
 
 .. automodule:: test.test_FileView
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+test.test\_Filters module
+-------------------------
+
+.. automodule:: test.test_Filters
    :members:
    :undoc-members:
    :show-inheritance:
@@ -44,10 +44,10 @@ test.test\_functions module
    :undoc-members:
    :show-inheritance:
 
-test.test\_plugin module
-------------------------
+test.test\_glb module
+---------------------
 
-.. automodule:: test.test_plugin
+.. automodule:: test.test_glb
    :members:
    :undoc-members:
    :show-inheritance:

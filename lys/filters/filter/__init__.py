@@ -13,4 +13,5 @@ from .Smooth import *
 from .FreeLine import FreeLineFilter
 from .FindPeak import *
 from .Integral import *
+from .Differentiate import *
 from .MatrixMath import *

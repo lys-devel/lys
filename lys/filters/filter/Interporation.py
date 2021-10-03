@@ -32,7 +32,7 @@ class InterpFilter(FilterInterface):
             mesh = np.array(np.meshgrid(*axes_used, indexing="ij")).transpose(*order)
             def func(x): return interpn(oldAxes, x, mesh)
         output_sizes = {sigList2[j * 2]: len(newAxes[i]) for j, i in enumerate(indice)}
-        uf = self.generalizedFunction(wave, func, sig, [indice, indice], output_sizes=output_sizes)
+        uf = self._generalizedFunction(wave, func, sig, [indice, indice], output_sizes=output_sizes)
         wave.data = self._applyFunc(uf, wave.data)
         wave.axes = newAxes
         return wave

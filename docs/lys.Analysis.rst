@@ -8,19 +8,9 @@ Subpackages
    :maxdepth: 4
 
    lys.Analysis.MultiCutGUIs
-   lys.Analysis.filter
-   lys.Analysis.filterGUI
 
 Submodules
 ----------
-
-lys.Analysis.FilterIOGUI module
--------------------------------
-
-.. automodule:: lys.Analysis.FilterIOGUI
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 lys.Analysis.MultiCut module
 ----------------------------
@@ -42,22 +32,6 @@ lys.Analysis.MultiCutGUI module
 -------------------------------
 
 .. automodule:: lys.Analysis.MultiCutGUI
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.Analysis.filters module
----------------------------
-
-.. automodule:: lys.Analysis.filters
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.Analysis.filtersGUI module
-------------------------------
-
-.. automodule:: lys.Analysis.filtersGUI
    :members:
    :undoc-members:
    :show-inheritance:

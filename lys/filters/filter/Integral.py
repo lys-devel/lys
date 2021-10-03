@@ -1,33 +1,57 @@
 import numpy as np
 import dask.array as da
-from lys import Wave, DaskWave
+from lys import DaskWave
 from .FilterInterface import FilterInterface
 
 
-class _IntegralBase(FilterInterface):
-    def _getSumFunction(self, sumtype):
-        if sumtype == "Sum":
-            return da.sum
-        elif sumtype == "Mean":
-            return da.mean
-        elif sumtype == "Max":
-            return da.max
-        elif sumtype == "Min":
-            return da.min
-        elif sumtype == "Median":
-            return da.median
+def _getSumFunction(sumtype):
+    if sumtype == "Sum":
+        return da.sum
+    elif sumtype == "Mean":
+        return da.mean
+    elif sumtype == "Max":
+        return da.max
+    elif sumtype == "Min":
+        return da.min
+    elif sumtype == "Median":
+        return da.median
 
 
-class IntegralAllFilter(_IntegralBase):
+class IntegralAllFilter(FilterInterface):
+    """
+    Integrate wave along *axes* (implementation of np.sum, mean, max, min, and median in lys)
+
+    See :class:`.FilterInterface.FilterInterface` for general description of Filters.
+
+    Args:
+        axes(list of int): axes to be integrated
+        sumtype('Sum', 'Mean', 'Max', 'Min', or 'Median')
+
+    Example:
+
+        >>> from lys import Wave, filters
+        >>> w = Wave(np.ones(3,4), [2,3,4], [5,6,7,8])
+        >>> f = filters.IntegralAllFilter(axes=[0], sumtype="Sum")
+        >>> result = f.execute(w)
+        >>> result.data
+        >>> # [3,3,3,3]
+        >>> result.x
+        >>> # [5,6,7,8]
+
+    See also:
+        :class:`IntegralFilter`
+
+    """
+
     def __init__(self, axes, sumtype):
         self._axes = axes
         self._sumtype = sumtype
 
     def _execute(self, wave, *args, **kwargs):
-        func = self._getSumFunction(self._sumtype)
+        func = _getSumFunction(self._sumtype)
         data = func(wave.data, axis=tuple(self._axes))
         ax = [wave.axes[i] for i in range(len(wave.axes)) if i not in self._axes]
-        return DaskWave(data, *ax)
+        return DaskWave(data, *ax, **wave.note)
 
     def getParameters(self):
         return {"axes": self._axes, "sumtype": self._sumtype}
@@ -36,33 +60,67 @@ class IntegralAllFilter(_IntegralBase):
         return -len(self._axes)
 
 
-class IntegralFilter(_IntegralBase):
+class IntegralFilter(FilterInterface):
+    """
+    Integrate wave.
+
+    Range of integration is specified by *range*.
+
+    Note that the *range* is specified in the units of *axes* of (Dask)Wave.
+    If axes is not specified, *range* should be specified by indice.
+
+    See :class:`.FilterInterface.FilterInterface` for general description of Filters.
+
+    Args:
+        range(list of tuple of size 2): region to be integrated
+        sumtype('Sum', 'Mean', 'Max', 'Min', or 'Median')
+
+    Example:
+
+        >>> w = Wave(np.ones([5, 5, 5]), [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6])
+        >>> f = filters.IntegralFilter([(1, 4), (2, 4), (0, 0)], sumtype="Sum")
+        >>> result = f.execute(w)
+        >>> # print(result.data)
+        >>> [6, 6, 6, 6, 6]
+        >>> print(result.x)
+        >>> # [2, 3, 4, 5, 6]
+
+
+    See also:
+        :class:`IntegralAllFilter`
+
+    """
+
     def __init__(self, range, sumtype):
         self._range = np.array(range)
         self._sumtype = sumtype
 
     def _execute(self, wave, *args, **kwargs):
+        key, sumaxes = self._getIndexAnsSumAxes(wave, self._range)
+        axes = []
+        for i in range(wave.ndim):
+            if i not in sumaxes:
+                if wave.axisIsValid(i):
+                    axes.append(wave.axes[i])
+                else:
+                    axes.append(None)
+        func = _getSumFunction(self._sumtype)
+        return DaskWave(func(wave.data[key], axis=tuple(sumaxes)), *axes, **wave.note)
+
+    def _getIndexAnsSumAxes(self, wave, rang):
         sl = []
         sumaxes = []
-        for i, r in enumerate(self._range):
-            if r[0] == 0 and r[1] == 0:
+        for i, r in enumerate(rang):
+            if r is None:
+                sl.append(slice(None))
+            elif r[0] == 0 and r[1] == 0:
                 sl.append(slice(None))
             else:
-                ind = wave.posToPoint(r, i)
+                ind = wave.posToPoint(r, axis=i)
                 sl.append(slice(*ind))
                 sumaxes.append(i)
         key = tuple(sl)
-        axes = []
-        for i, s in enumerate(key):
-            if i not in sumaxes:
-                if wave.axisIsValid(i):
-                    axes.append(None)
-                else:
-                    axes.append(wave.axes[i][s])
-        func = self._getSumFunction(self._sumtype)
-        wave.data = func(wave.data[key], axis=tuple(sumaxes))
-        wave.axes = axes
-        return wave
+        return key, tuple(sumaxes)
 
     def getParameters(self):
         return {"range": self._range, "sumtype": self._sumtype}
@@ -72,7 +130,25 @@ class IntegralFilter(_IntegralBase):
 
 
 class IntegralCircleFilter(FilterInterface):
-    def __init__(self, center, radiuses, axes):
+    """
+    Circular integration of wave.
+
+    Circularly integrate *f*(*x*,*y*) and returns *f*(*r*).
+
+    This filter is under development. 
+
+    See :class:`.FilterInterface.FilterInterface` for general description of Filters.
+
+    Args:
+        center(tuple of size 2): position where *r* = 0
+        radiuses(tuple of size 2):
+        axes(tuple of size 2): axes to be integrated, i.e. (x,y)
+
+
+
+    """
+
+    def __init__(self, center, radiuses, axes=(0, 1)):
         self._center = np.array(center)
         self._radiuses = np.array(radiuses)
         self._axes = np.array(axes)
@@ -85,10 +161,8 @@ class IntegralCircleFilter(FilterInterface):
         gumap = da.gufunc(_integrate_tangent, signature="(i,j),(p)->(m)",
                           output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(self._axes), (0,), (min(self._axes),)], allow_rechunk=True, output_sizes={"m": int(region[3] / region[4])})
         res = gumap(wave.data, da.from_array(region))
-        wave.data = res
-        wave.axes = self.__makeAxes(
-            wave, *rad, self._axes)
-        return wave
+        axes = self.__makeAxes(wave, *rad, self._axes)
+        return DaskWave(res, *axes, **wave.note)
 
     def __makeAxes(self, wave, r, dr, axes):
         result = list(np.array(wave.axes))
@@ -97,8 +171,8 @@ class IntegralCircleFilter(FilterInterface):
         result.insert(min(*axes), np.linspace(0, r, int(r / dr)))
         return result
 
-    def getParams(self):
-        return self._center, self._radiuses, self._axes
+    def getParameters(self):
+        return {"Center": self._center, "Radiuses": self._radiuses, "axes": self._axes}
 
     def getRelativeDimension(self):
         return -1
