@@ -423,3 +423,180 @@ class Filters_test(unittest.TestCase):
         assert_array_equal(result.data, [4, 3, 2, 1, 1, 2, 3, 4])
         assert_array_equal(result.x, [-3, -2, -1, 0, 1, 2, 3, 4])
         self.assertEqual(result.name, "wave")
+
+    def test_math(self):
+        # simple math
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.SimpleMathFilter(type="+", value=1)
+        f1 = filters.SimpleMathFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [2, 3, 4])
+        assert_array_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.SimpleMathFilter(type="-", value=1)
+        f1 = filters.SimpleMathFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [0, 1, 2])
+        assert_array_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.SimpleMathFilter(type="*", value=2)
+        f1 = filters.SimpleMathFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [2, 4, 6])
+        assert_array_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.SimpleMathFilter(type="/", value=2)
+        f1 = filters.SimpleMathFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [0.5, 1, 1.5])
+        assert_array_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+        # ComplexFilter
+        w = Wave([1 + 2j, 2 + 3j, 3 + 4j], [1, 2, 3], name="wave")
+        f = filters.ComplexFilter(type="absolute")
+        f1 = filters.ComplexFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_almost_equal(result.data, [np.sqrt(5), np.sqrt(13), 5])
+        assert_array_almost_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+        w = Wave([1 + 2j, 2 + 3j, 3 + 4j], [1, 2, 3], name="wave")
+        f = filters.ComplexFilter(type="real")
+        f1 = filters.ComplexFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_almost_equal(result.data, [1, 2, 3])
+        assert_array_almost_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+        w = Wave([1 + 2j, 2 + 3j, 3 + 4j], [1, 2, 3], name="wave")
+        f = filters.ComplexFilter(type="imag")
+        f1 = filters.ComplexFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_almost_equal(result.data, [2, 3, 4])
+        assert_array_almost_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+        # PhaseFilter
+        w = Wave([1, 1j], [1, 2], name="wave")
+        f = filters.PhaseFilter(rot=90)
+        f1 = filters.PhaseFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_almost_equal(result.data, [1j, -1])
+        assert_array_almost_equal(result.x, [1, 2])
+        self.assertEqual(result.name, "wave")
+
+        # NanToNumFilter
+        w = Wave([1, np.nan], [1, 2], name="wave")
+        f = filters.NanToNumFilter(value=0)
+        f1 = filters.NanToNumFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [1, 0])
+        assert_array_equal(result.x, [1, 2])
+        self.assertEqual(result.name, "wave")
+
+    def test_smooth(self):
+        # MedianFilter
+        w = Wave([1, 2, 1], [1, 2, 3], name="wave")
+        f = filters.MedianFilter(kernel=[2])
+        f1 = filters.MedianFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [1, 2, 2])
+        assert_array_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+        # AverageFilter
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.AverageFilter(kernel=[3])
+        f1 = filters.AverageFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [1 + 1 / 3, 2, 2 + 2 / 3])
+        assert_array_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+        # GaussianFilter
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.GaussianFilter(kernel=[0.5])
+        f1 = filters.GaussianFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [1, 2, 2])
+        assert_array_equal(result.x, [1, 2, 3])
+        self.assertEqual(result.name, "wave")
+
+    def test_axis(self):
+        # SetAxisFilter
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.SetAxisFilter(0, 0, 0.1, "step")
+        f1 = filters.SetAxisFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [1, 2, 3])
+        assert_array_equal(result.x, [0, 0.1, 0.2])
+        self.assertEqual(result.name, "wave")
+
+        # SetAxisFilter
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.SetAxisFilter(0, 0, 0.2, "stop")
+        f1 = filters.SetAxisFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [1, 2, 3])
+        assert_array_equal(result.x, [0, 0.1, 0.2])
+        self.assertEqual(result.name, "wave")
+
+        # ShiftAxisFilter
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.AxisShiftFilter(shift=[1], axes=[0])
+        f1 = filters.AxisShiftFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [1, 2, 3])
+        assert_array_equal(result.x, [2, 3, 4])
+        self.assertEqual(result.name, "wave")
+
+        # MagnificationFilter
+        w = Wave([1, 2, 3], [1, 2, 3], name="wave")
+        f = filters.MagnificationFilter(mag=[2], axes=[0])
+        f1 = filters.MagnificationFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [1, 2, 3])
+        assert_array_equal(result.x, [1, 3, 5])
+        self.assertEqual(result.name, "wave")
+
+    def test_rotate(self):
+        # Rotation2D
+        w = Wave([[1, 2, 3], [4, 5, 6], [7, 8, 9]], name="wave")
+        f = filters.Rotation2DFilter(angle=90)
+        f1 = filters.Rotation2DFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_equal(result.data, [[3, 6, 9], [2, 5, 8], [1, 4, 7]])
+        self.assertEqual(result.name, "wave")
+
+        # Symmetrize
+        w = Wave([[1, 2, 3], [4, 5, 6], [7, 8, 9]], name="wave")
+        f = filters.SymmetrizeFilter(rotation=90, center=(1, 1))
+        f1 = filters.SymmetrizeFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_almost_equal(result.data, np.ones([3, 3]) * 5)
+        self.assertEqual(result.name, "wave")

@@ -6,100 +6,145 @@ from .FilterInterface import FilterInterface
 
 
 class SetAxisFilter(FilterInterface):
+    """
+    Set axis value.
+
+    When type='step', then the new axis is val1, val1 + val2, val1 + 2 * val2, ...
+    When type='stop', then the new axis is val1, ..., val2.
+
+    Args:
+        axis(int): axis to be set.
+        val1(float): see description above.
+        val2(float): see description above.
+        type('step' or 'stop'): see description above.
+    """
+
     def __init__(self, axis, val1, val2, type):
         self._axis = axis
         self._val1 = val1
         self._val2 = val2
         self._type = type
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
         if self._type == 'step':
             a = np.linspace(self._val1, self._val1 + self._val2 *
                             (wave.data.shape[self._axis] - 1), wave.data.shape[self._axis])
         else:
-            a = np.linspace(self._val1, self._val1 + self._val2,
-                            wave.data.shape[self._axis])
-        wave.axes[self._axis] = a
-        return wave
+            a = np.linspace(self._val1, self._val1 + self._val2, wave.data.shape[self._axis])
+        axes = list(wave.axes)
+        axes[self._axis] = a
+        return DaskWave(wave.data, *axes, **wave.note)
 
-    def getParams(self):
-        return self._axis, self._val1, self._val2, self._type
+    def getParameters(self):
+        return {"axis": self._axis, "val1": self._val1, "val2": self._val2, "type": self._type}
 
 
 class AxisShiftFilter(FilterInterface):
+    """
+    Shit axes by *shift*
+
+    Args:
+        shift(list of float): The values to be added to the axes.
+        axes(list of int): The shifted axes.
+    """
+
     def __init__(self, shift, axes):
         self._shift = shift
         self._axes = axes
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
+        axes = list(wave.axes)
         for s, ax in zip(self._shift, self._axes):
-            wave.axes[ax] = wave.getAxis(ax) + s
-        return wave
+            axes[ax] = wave.getAxis(ax) + s
+        return DaskWave(wave.data, *axes, **wave.note)
 
-    def getParams(self):
-        return self._shift, self._axes
+    def getParameters(self):
+        return {"shift": self._shift, "axes": self._axes}
 
 
 class MagnificationFilter(FilterInterface):
-    def __init__(self, shift, axes):
-        self._shift = shift
+    """
+    Magnify axes by *mag*
+
+    Args:
+        shift(list of float): The values to be added to the axes.
+        axes(list of int): The shifted axes.
+    """
+
+    def __init__(self, mag, axes):
+        self._shift = mag
         self._axes = axes
 
     def _execute(self, wave, **kwargs):
+        axes = list(wave.axes)
         for s, ax in zip(self._shift, self._axes):
             tmp = wave.getAxis(ax)
             start = tmp[0]
             tmp = tmp - start
             tmp = tmp * s
             tmp = tmp + start
-            wave.axes[ax] = tmp
-        return wave
+            axes[ax] = tmp
+        return DaskWave(wave.data, *axes, **wave.note)
 
-    def getParams(self):
-        return self._shift, self._axes
+    def getParameters(self):
+        return {"mag": self._shift, "axes": self._axes}
 
 
 class Rotation2DFilter(FilterInterface):
-    def __init__(self, angle):
+    """
+    The array is rotated in the plane defined by the two axes given by the axes parameter using spline interpolation.
+
+    Args:
+        angle(float): The rotation angle in degrees
+        axes:(tuple of 2 ints): The two axes that define the plane of rotation.
+    """
+
+    def __init__(self, angle, axes=(0, 1)):
         self._angle = angle
+        self._axes = axes
 
-    def _execute(self, wave, **kwargs):
-        wave.data = ndimage.rotate(wave.data, self._angle, reshape=False)
-        return wave
+    def _execute(self, wave, *args, **kwargs):
+        def f(x):
+            return ndimage.rotate(x, self._angle, reshape=False)
+        gumap = da.gufunc(f, signature="(i,j)->(i,j)",
+                          output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(self._axes), tuple(self._axes)], allow_rechunk=True)
+        data = gumap(wave.data)
+        return DaskWave(data, *wave.axes, **wave.note)
 
-    def getParams(self):
-        return self._angle
+    def getParameters(self):
+        return {"angle": self._angle, "axes": self._axes}
 
 
 class SymmetrizeFilter(FilterInterface):
-    def __init__(self, rotation, center, axes):
+    """
+    Symmetrize data.
+    """
+
+    def __init__(self, rotation, center, axes=(0, 1)):
         self._rotation = int(rotation)
         self._center = center
         self._axes = np.array(axes)
 
     def _execute(self, wave, **kwargs):
-        if isinstance(wave, Wave):
-            return self._execute_wave(wave)  # TODO
-        if isinstance(wave, DaskWave):
-            return self._execute_dask(wave)
-        return wave
+        return self._execute_dask(wave)
 
     def _execute_dask(self, wave):
+        center = wave.posToPoint(self._center[0], self._axes[0]), wave.posToPoint(self._center[1], self._axes[1])
         gumap = da.gufunc(_symmetrze, signature="(i,j),(),(m)->(i,j)",
-                          output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(self._axes), (), (0,), tuple(self._axes)], allow_rechunk=True)
-        wave.data = gumap(wave.data, self._rotation, np.array(self._center))
-        return wave
+                          output_dtypes=float, vectorize=True, axes=[tuple(self._axes), (), (0,), tuple(self._axes)], allow_rechunk=True)
+        data = gumap(wave.data.astype(float), self._rotation, np.array(center))
+        return DaskWave(data, *wave.axes, **wave.note)
 
-    def getParams(self):
-        return str(self._rotation), self._center, self._axes
+    def getParameters(self):
+        return {"rotation": str(self._rotation), "center": self._center, "axes": self._axes}
 
 
 def _symmetrze(data, rotation, center):
     if len(data) <= 2:
         return np.empty((1,))
     s = data.shape
-    dx = s[0] / 2 - center[0]
-    dy = s[1] / 2 - center[1]
+    dx = (s[0] - 1) / 2 - center[0]
+    dy = (s[1] - 1) / 2 - center[1]
     tmp = ndimage.shift(data, [dx, dy], cval=np.NaN, order=0)
     mask = np.where(np.isnan(tmp), 0, 1)
     tmp[np.isnan(tmp)] = 0
@@ -111,40 +156,3 @@ def _symmetrze(data, rotation, center):
     m_sum[m_sum < 1] = 1
 
     return ndimage.shift(sum / m_sum, [-dx, -dy], cval=np.NaN, order=0)
-
-
-def _symmetrze2(data, rotation, center):
-    if len(data) <= 2:
-        return np.empty((1,))
-    s = data.shape
-    dx = s[0] / 2 - center[0]
-    dy = s[1] / 2 - center[1]
-    tmp = ndimage.shift(data, [dx, dy], cval=np.NaN)
-    mask = np.array(tmp)
-    mask[mask != np.nan] = 1
-    mask = np.nan_to_num(mask, nan=0)
-    tmp = np.nan_to_num(tmp, nan=0)
-    rot = rotation
-    d = np.array(tmp)
-    m = np.array(mask)
-    for i in range(1, rot):
-        d = d + ndimage.rotate(tmp, 360 / rot * i, reshape=False)
-        m = m + ndimage.rotate(mask, 360 / rot * i, reshape=False)
-    mask = m
-    #mask[mask < 1] = 1
-    tmp = m
-    tmp[m == 0] = np.nan
-
-
-def _symmetrze3(data, rotation, center):
-    if len(data) <= 2:
-        return np.empty((1,))
-    s = data.shape
-    dx = s[0] / 2 - center[0]
-    dy = s[1] / 2 - center[1]
-    tmp = ndimage.shift(data, [dx, dy], cval=np.NaN)
-    dlis = np.array([ndimage.rotate(tmp, 360 / rotation * i, reshape=False, order=1, cval=np.nan) for i in range(rotation)])
-    sum = np.nan_to_num(dlis, nan=0).sum(axis=0)
-    mask = np.where(np.isnan(dlis), 0, 1).sum(axis=0)
-    mask[mask == 0] = 1
-    return ndimage.shift(sum / mask, [-dx, -dy], cval=np.NaN)

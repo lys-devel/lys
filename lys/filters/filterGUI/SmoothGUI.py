@@ -75,34 +75,4 @@ class GaussianSetting(FilterSettingBase):
         return obj
 
 
-class BilateralSetting(QWidget):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent)
-        self._layout = QHBoxLayout()
-        self._kernel = QSpinBox()
-        self._kernel.setMinimum(3)
-        self._kernel.setValue(5)
-        self._s_color = QSpinBox()
-        self._s_color.setMinimum(1)
-        self._s_color.setValue(7)
-        self._s_space = QSpinBox()
-        self._s_space.setMinimum(1)
-        self._s_space.setValue(7)
-        self._layout.addWidget(QLabel('Kernel Size'))
-        self._layout.addWidget(self._kernel)
-        self._layout.addWidget(QLabel('Sigma color'))
-        self._layout.addWidget(self._s_color)
-        self._layout.addWidget(QLabel('Sigma space'))
-        self._layout.addWidget(self._s_space)
-        self.setLayout(self._layout)
-
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, BilateralFilter):
-            return True
-
-    def GetFilter(self):
-        return BilateralFilter(self._kernel.value(), self._s_color.value(), self._s_space.value())
-
-
 filterGroups['Smoothing Filter'] = SmoothingSetting
