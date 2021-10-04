@@ -26,16 +26,20 @@ class FileSystemView(QWidget):
     Args:
         path(str): path to see files.
         model(QFileSystemModel): model used in this view
-        drop: Accept drag & drop or not.
-        filter: Enable filtering or not.
+        drop(bool): Accept drag & drop or not.
+        filter(bool): Enable filtering or not.
+        menu(bool): Enable context menu or not.
 
     """
 
-    def __init__(self, path, model=QFileSystemModel(), drop=False, filter=True):
+    def __init__(self, path, model=QFileSystemModel(), drop=False, filter=True, menu=True):
         super().__init__()
         self._path = path
         self.__initUI(self._path, model, drop, filter)
-        self._builder = _contextMenuBuilder(self)
+        if menu:
+            self._builder = _contextMenuBuilder(self)
+        else:
+            self._builder = None
 
     def __initUI(self, path, model, drop=False, filter=True):
         self._Model = _FileSystemModel(path, model, drop)
@@ -69,7 +73,8 @@ class FileSystemView(QWidget):
         self.setLayout(layout)
 
     def _buildContextMenu(self, qPoint):
-        self._builder.build(self.selectedPaths())
+        if self._builder is not None:
+            self._builder.build(self.selectedPaths())
 
     def selectedPaths(self):
         """

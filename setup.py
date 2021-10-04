@@ -1,7 +1,6 @@
 from setuptools import setup
 import sys
 sys.path.append('./lys')
-sys.path.append('./ExtendAnalysis')
 sys.path.append('./test')
 
 setup(

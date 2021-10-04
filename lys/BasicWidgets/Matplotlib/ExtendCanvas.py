@@ -5,6 +5,8 @@ import os
 from enum import Enum
 from PyQt5.QtGui import *
 
+from lys.widgets import LysSubWindow
+
 from .SaveSettings import *
 from .CanvasBase import saveCanvas
 

@@ -112,6 +112,8 @@ class Rotation2DFilter(FilterInterface):
         return DaskWave(data, *wave.axes, **wave.note)
 
     def getParameters(self):
+        if not hasattr(self, "_axes"):
+            self._axes = (0, 1)
         return {"angle": self._angle, "axes": self._axes}
 
 
