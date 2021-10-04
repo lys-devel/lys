@@ -1,7 +1,6 @@
-from ..filter.Region import *
-from ..filtersGUI import *
+from lys import filters
+from ..filtersGUI import filterGroups, FilterGroupSetting, FilterSettingBase, filterGUI
 from .CommonWidgets import *
-from lys.widgets import ScientificSpinBox
 
 
 class IntegrationSetting(FilterGroupSetting):
@@ -15,12 +14,12 @@ class IntegrationSetting(FilterGroupSetting):
         return d
 
 
+@filterGUI(filters.IntegralAllFilter)
 class IntegralAllSetting(FilterSettingBase):
     _sumtypes = ["Sum", "Mean", "Median", "Max", "Min"]
 
-    def __init__(self, parent, dim, loader=None):
-        super().__init__(parent, dim, loader)
-        self.__parent = parent
+    def __init__(self, dim):
+        super().__init__(dim)
         self.type = QComboBox()
         self.type.addItems(self._sumtypes)
         self.axes = AxisCheckLayout(dim)
@@ -29,58 +28,42 @@ class IntegralAllSetting(FilterSettingBase):
         lv.addLayout(self.axes)
         self.setLayout(lv)
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, IntegralAllFilter):
-            return True
+    def getParameters(self):
+        return {"axes": self.axes.GetChecked(), "sumtype": self.type.currentText()}
 
-    def GetFilter(self):
-        return IntegralAllFilter(self.axes.GetChecked(), self.type.currentText())
-
-    def parseFromFilter(self, f):
-        obj = IntegralAllSetting(None, self.dim, self.loader)
-        obj.axes.SetChecked(f.getAxes())
-        obj.type.setCurrentIndex(self._sumtypes.index(f.getType()))
-        return obj
+    def setParameters(self, axes, sumtype):
+        self.axes.SetChecked(axes)
+        self.type.setCurrentIndex(self._sumtypes.index(sumtype))
 
 
+@filterGUI(filters.IntegralFilter)
 class IntegralSetting(FilterSettingBase):
     _sumtypes = ["Sum", "Mean", "Median", "Max", "Min"]
 
-    def __init__(self, parent, dim, loader=None):
-        super().__init__(parent, dim, loader)
-        self.__parent = parent
+    def __init__(self, dim):
+        super().__init__(dim)
         self.type = QComboBox()
         self.type.addItems(self._sumtypes)
-        self.range = RegionSelectWidget(self, dim, loader)
+        self.range = RegionSelectWidget(self, dim)
         lv = QVBoxLayout()
         lv.addWidget(self.type)
         lv.addLayout(self.range)
         self.setLayout(lv)
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, IntegralFilter):
-            return True
+    def getParameters(self):
+        return {"range": self.range.getRegion(), "sumtype": self.type.currentText()}
 
-    def GetFilter(self):
-        return IntegralFilter(self.range.getRegion(), self.type.currentText())
-
-    def parseFromFilter(self, f):
-        obj = IntegralSetting(None, self.dim, self.loader)
-        region = f.getRegion()
-        obj.type.setCurrentIndex(self._sumtypes.index(f.getType()))
-        for i, r in enumerate(region):
-            obj.range.setRegion(i, r)
-        return obj
+    def setParameters(self, range, sumtype):
+        self.type.setCurrentIndex(self._sumtypes.index(sumtype))
+        for i, r in enumerate(range):
+            self.range.setRegion(i, r)
 
 
+@filterGUI(filters.IntegralCircleFilter)
 class CircleSetting(FilterSettingBase):
-    def __init__(self, parent, dim, loader=None):
-        super().__init__(parent, dim, loader)
-        self.__parent = parent
-        self.axes = [AxisSelectionLayout(
-            "Axis1", dim=dim, init=0), AxisSelectionLayout("Axis2", dim=dim, init=1)]
+    def __init__(self, dim):
+        super().__init__(dim)
+        self.axes = [AxisSelectionLayout("Axis1", dim=dim, init=0), AxisSelectionLayout("Axis2", dim=dim, init=1)]
         self.center = [ScientificSpinBox(), ScientificSpinBox()]
         self.radiuses = [ScientificSpinBox(), ScientificSpinBox()]
         l0 = QGridLayout()
@@ -92,35 +75,23 @@ class CircleSetting(FilterSettingBase):
         l0.addWidget(self.radiuses[0], 1, 2)
         l0.addWidget(QLabel("dr"), 0, 3)
         l0.addWidget(self.radiuses[1], 1, 3)
-        l0.addWidget(QPushButton("Load from freeline",
-                                 clicked=self._LoadFromFreeLine), 1, 4)
+        l0.addWidget(QPushButton("Load from freeline", clicked=self._LoadFromFreeLine), 1, 4)
         lh = QVBoxLayout()
         lh.addLayout(self.axes[0])
         lh.addLayout(self.axes[1])
         lh.addLayout(l0)
         self.setLayout(lh)
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, IntegralCircleFilter):
-            return True
+    def getParameters(self):
+        return {"center": [c.value() for c in self.center], "radiuses": [c.value() for c in self.radiuses], "axes": [c.getAxis() for c in self.axes]}
 
-    def GetFilter(self):
-        center = [c.value() for c in self.center]
-        radiuses = [c.value() for c in self.radiuses]
-        axes = [c.getAxis() for c in self.axes]
-        return IntegralCircleFilter(center, radiuses, axes)
-
-    def parseFromFilter(self, f):
-        obj = CircleSetting(None, self.dim, self.loader)
-        center, radius, axes = f.getParams()
-        for c, i in zip(obj.center, center):
+    def setParameters(self, center, radiuses, axes):
+        for c, i in zip(self.center, center):
             c.setValue(i)
-        for c, i in zip(obj.radiuses, radius):
+        for c, i in zip(self.radiuses, radiuses):
             c.setValue(i)
-        for c, i in zip(obj.axes, axes):
+        for c, i in zip(self.axes, axes):
             c.setAxis(i)
-        return obj
 
     def _LoadFromFreeLine(self):
         c = Graph.active().canvas

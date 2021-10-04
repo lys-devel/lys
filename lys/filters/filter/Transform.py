@@ -1,7 +1,7 @@
 import numpy as np
 import dask.array as da
 from scipy import ndimage
-from lys import Wave, DaskWave
+from lys import DaskWave
 from .FilterInterface import FilterInterface
 
 
@@ -123,9 +123,9 @@ class SymmetrizeFilter(FilterInterface):
     def __init__(self, rotation, center, axes=(0, 1)):
         self._rotation = int(rotation)
         self._center = center
-        self._axes = np.array(axes)
+        self._axes = axes
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
         return self._execute_dask(wave)
 
     def _execute_dask(self, wave):

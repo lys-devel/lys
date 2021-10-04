@@ -92,7 +92,7 @@ class IntegralFilter(FilterInterface):
     """
 
     def __init__(self, range, sumtype):
-        self._range = np.array(range)
+        self._range = range
         self._sumtype = sumtype
 
     def _execute(self, wave, *args, **kwargs):
@@ -149,15 +149,12 @@ class IntegralCircleFilter(FilterInterface):
     """
 
     def __init__(self, center, radiuses, axes=(0, 1)):
-        self._center = np.array(center)
-        self._radiuses = np.array(radiuses)
-        self._axes = np.array(axes)
+        self._center = center
+        self._radiuses = radiuses
+        self._axes = axes
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
         region, rad = _translate_unit(wave, self._center, self._radiuses, self._axes)
-        return self._execute_dask(wave, region, rad, **kwargs)
-
-    def _execute_dask(self, wave, region, rad, **kwargs):
         gumap = da.gufunc(_integrate_tangent, signature="(i,j),(p)->(m)",
                           output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(self._axes), (0,), (min(self._axes),)], allow_rechunk=True, output_sizes={"m": int(region[3] / region[4])})
         res = gumap(wave.data, da.from_array(region))
@@ -172,7 +169,7 @@ class IntegralCircleFilter(FilterInterface):
         return result
 
     def getParameters(self):
-        return {"Center": self._center, "Radiuses": self._radiuses, "axes": self._axes}
+        return {"center": self._center, "radiuses": self._radiuses, "axes": self._axes}
 
     def getRelativeDimension(self):
         return -1

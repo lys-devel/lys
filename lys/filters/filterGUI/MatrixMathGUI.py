@@ -1,5 +1,5 @@
-from ..filter.MatrixMath import *
-from ..filtersGUI import *
+from lys import filters
+from ..filtersGUI import filterGroups, FilterGroupSetting, FilterSettingBase, filterGUI
 from .CommonWidgets import *
 
 
@@ -34,33 +34,28 @@ class IndexLayout(QHBoxLayout):
         self._index.setValue(value)
 
 
+@filterGUI(filters.SelectIndexFilter)
 class SelectIndexSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._index = IndexLayout(dimension)
         self.setLayout(self._index)
 
-    def GetFilter(self):
-        return SelectIndexFilter(*self._index.getAxisAndIndex())
+    def getParameters(self):
+        axis, index = self._index.getAxisAndIndex()
+        return {"axis": axis, "index": index}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, SelectIndexFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = SelectIndexSetting(None, self.dim, self.loader)
-        axis, index = f.getParams()
-        obj._index.setAxis(axis)
-        obj._index.setValue(index)
-        return obj
+    def setParameters(self, axis, index):
+        self._index.setAxis(axis)
+        self._index.setValue(index)
 
 
+@filterGUI(filters.IndexMathFilter)
 class IndexMathSetting(FilterSettingBase):
     _types = ["+", "-", "*", "/"]
 
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._combo = QComboBox()
         self._combo.addItems(self._types)
         self._axis = AxisSelectionLayout("Axis", dimension)
@@ -76,27 +71,20 @@ class IndexMathSetting(FilterSettingBase):
         layout.addLayout(h1)
         self.setLayout(layout)
 
-    def GetFilter(self):
-        return IndexMathFilter(self._axis.getAxis(), self._combo.currentText(), self._index1.value(), self._index2.value())
+    def getParameters(self):
+        return {"axis": self._axis.getAxis(), "type": self._combo.currentText(), "index1": self._index1.value(), "index2": self._index2.value()}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, IndexMathFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = IndexMathSetting(None, self.dim, self.loader)
-        axis, type, i1, i2 = f.getParams()
-        obj._axis.setAxis(axis)
-        obj._combo.setCurrentIndex(self._types.index(type))
-        obj._index1.setValue(i1)
-        obj._index2.setValue(i2)
-        return obj
+    def setParameters(self, axis, type, index1, index2):
+        self._axis.setAxis(axis)
+        self._combo.setCurrentIndex(self._types.index(type))
+        self._index1.setValue(index1)
+        self._index2.setValue(index2)
 
 
+@filterGUI(filters.TransposeFilter)
 class TransposeSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         l = QHBoxLayout()
         self.val = QLineEdit()
         st = ""
@@ -115,30 +103,21 @@ class TransposeSetting(FilterSettingBase):
             st += str(v) + ", "
         self.val.setText(st[:-2])
 
-    def GetFilter(self):
-        st = self.val.text()
-        vals = st.replace(" ", "").split(",")
-        return TransposeFilter([int(v) for v in vals])
+    def getParameters(self):
+        return {"axes": eval(self.val.text())}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, TransposeFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = TransposeSetting(None, self.dim, self.loader)
-        axes = f.getParams()
+    def setParameters(self, axes):
         st = ""
         for ax in axes:
             st += str(ax) + ", "
         st = st[:-2]
-        obj.val.setText(st)
-        return obj
+        self.val.setText(st)
 
 
+@filterGUI(filters.SliceFilter)
 class SliceSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         l = QGridLayout()
         l.addWidget(QLabel("Start"), 0, 1)
         l.addWidget(QLabel("Stop"), 0, 2)
@@ -159,23 +138,14 @@ class SliceSetting(FilterSettingBase):
             l.addWidget(self._step[d], 1 + d, 3)
         self.setLayout(l)
 
-    def GetFilter(self):
-        slices = [[self._start[d].value(), self._stop[d].value(), self._step[d].value()] for d in range(self.dim)]
-        return SliceFilter(slices)
+    def getParameters(self):
+        return {"slices": [[self._start[d].value(), self._stop[d].value(), self._step[d].value()] for d in range(self.dim)]}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, SliceFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = SliceSetting(None, self.dim, self.loader)
-        params = f.getParams()
+    def setParameters(self, slices):
         for d in range(self.dim):
-            obj._start[d].setValue(params[d][0])
-            obj._stop[d].setValue(params[d][1])
-            obj._step[d].setValue(params[d][2])
-        return obj
+            self._start[d].setValue(slices[d].start)
+            self._stop[d].setValue(slices[d].stop)
+            self._step[d].setValue(slices[d].step)
 
 
 filterGroups['Wave Process'] = MatrixMathSetting

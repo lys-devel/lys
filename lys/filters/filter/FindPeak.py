@@ -54,7 +54,7 @@ class PeakPostFilter(FilterInterface):
         return DaskWave(uf(wave.data, np.array(self._size)), *wave.axes, **wave.note)
 
     def getParameters(self):
-        return {"axis": self._axis, "size": self._size}
+        return {"axis": self._axis, "medSize": self._size}
 
 
 def _find4D(data, medSize):

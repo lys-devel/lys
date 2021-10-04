@@ -1,11 +1,12 @@
-
-from ..filtersGUI import *
+from lys import filters
+from ..filtersGUI import filterGroups, FilterGroupSetting, FilterSettingBase, filterGUI
 from .CommonWidgets import *
 
 
+@filterGUI(filters.FreeLineFilter)
 class FreeLineSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self.__initlayout()
 
     def __initlayout(self):
@@ -60,37 +61,30 @@ class FreeLineSetting(FilterSettingBase):
         self.from2.setValue(p[1][0])
         self.to2.setValue(p[1][1])
 
-    def GetFilter(self):
+    def getParameters(self):
         axes = [self.axis1.getAxis(), self.axis2.getAxis()]
         range = [[self.from1.value(), self.to1.value()], [self.from2.value(), self.to2.value()]]
         width = self.width.value()
-        return FreeLineFilter(axes, range, width)
+        return {"axes": axes, "range": range, "width": width}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, FreeLineFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = FreeLineSetting(None, self.dim, self.loader)
-        axes, range, width = f.getParams()
-        obj.axis1.setAxis(axes[0])
-        obj.axis2.setAxis(axes[1])
-        obj.from1.setValue(range[0][0])
-        obj.to1.setValue(range[0][1])
-        obj.from2.setValue(range[1][0])
-        obj.to2.setValue(range[1][1])
-        obj.width.setValue(width)
-        return obj
+    def setParameters(self, axes, range, width):
+        self.axis1.setAxis(axes[0])
+        self.axis2.setAxis(axes[1])
+        self.from1.setValue(range[0][0])
+        self.to1.setValue(range[0][1])
+        self.from2.setValue(range[1][0])
+        self.to2.setValue(range[1][1])
+        self.width.setValue(width)
 
 
+@filterGUI(filters.PeakFilter)
 class PeakSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._combo = QComboBox()
-        self._combo.addItem("ArgRelMax")
-        self._combo.addItem("ArgRelMin")
+        self._combo.addItems(["ArgRelMax", "ArgRelMin"])
         self._order = QSpinBox()
+        self._order.setValue(1)
         self._value = QSpinBox()
         self._value.setValue(3)
         self._axis = AxisSelectionLayout("Axis", dimension)
@@ -105,30 +99,23 @@ class PeakSetting(FilterSettingBase):
         layout.addLayout(h1)
         self.setLayout(layout)
 
-    def GetFilter(self):
-        return PeakFilter(self._axis.getAxis(), self._order.value(), self._combo.currentText(), self._value.value())
+    def getParameters(self):
+        return {"axis": self._axis.getAxis(), "order": self._order.value(), "type": self._combo.currentText(), "size": self._value.value()}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, PeakFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = PeakSetting(None, self.dim, self.loader)
-        params = f.getParams()
-        obj._axis.setAxis(params[0])
-        obj._order.setValue(params[1])
-        obj._value.setValue(params[3])
-        if params[2] == "ArgRelMax":
-            obj._combo.setCurrentIndex(0)
+    def setParameters(self, axis, order, type, size):
+        self._axis.setAxis(axis)
+        self._order.setValue(order)
+        self._value.setValue(size)
+        if type == "ArgRelMax":
+            self._combo.setCurrentIndex(0)
         else:
-            obj._combo.setCurrentIndex(1)
-        return obj
+            self._combo.setCurrentIndex(1)
 
 
+@filterGUI(filters.PeakPostFilter)
 class PeakPostSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._axis = AxisSelectionLayout("Find peak along axis (should be 2)", dimension)
         self._size1 = QSpinBox()
         self._size1.setValue(15)
@@ -144,26 +131,19 @@ class PeakPostSetting(FilterSettingBase):
         layout.addLayout(g)
         self.setLayout(layout)
 
-    def GetFilter(self):
-        return PeakPostFilter(self._axis.getAxis(), (self._size1.value(), self._size2.value()))
+    def getParameters(self):
+        return {"axis": self._axis.getAxis(), "medSize": (self._size1.value(), self._size2.value())}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, PeakPostFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = PeakPostSetting(None, self.dim, self.loader)
-        axis, size = f.getParams()
-        obj._axis.setAxis(axis)
-        obj._size1.setValue(size[0])
-        obj._size2.setValue(size[1])
-        return obj
+    def setParameters(self, axis, medSize):
+        self._axis.setAxis(axis)
+        self._size1.setValue(medSize[0])
+        self._size2.setValue(medSize[1])
 
 
+@filterGUI(filters.PeakReorderFilter)
 class PeakReorderSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._peak = AxisSelectionLayout("Peak index axis", dimension)
         self._scan = AxisSelectionLayout("Scan axis", dimension)
 
@@ -179,21 +159,32 @@ class PeakReorderSetting(FilterSettingBase):
         layout.addLayout(h1)
         self.setLayout(layout)
 
-    def GetFilter(self):
-        return PeakReorderFilter(self._peak.getAxis(), self._scan.getAxis(), self._size.value())
+    def getParameters(self):
+        return {"peakAxis": self._peak.getAxis(), "scanAxis": self._scan.getAxis(), "medSize": self._size.value()}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, PeakReorderFilter):
-            return True
+    def setParameters(self, peakAxis, scanAxis, medSize):
+        self._peak.setAxis(peakAxis)
+        self._scan.setAxis(scanAxis)
+        self._size.setValue(medSize)
 
-    def parseFromFilter(self, f):
-        obj = PeakReorderSetting(None, self.dim, self.loader)
-        peak, scan, size = f.getParams()
-        obj._peak.setAxis(peak)
-        obj._scan.setAxis(scan)
-        obj._size.setValue(size)
-        return obj
+
+@filterGUI(filters.RechunkFilter)
+class RechunkSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._chunk = [QSpinBox() for _ in range(dimension)]
+        grid = QGridLayout()
+        for i in range(dimension):
+            grid.addWidget(QLabel("Dim " + str(i + 1)), 0, i)
+            grid.addWidget(self._chunk[i], 1, i)
+        self.setLayout(grid)
+
+    def getParameters(self):
+        return {"chunks": [s.value() for s in self._chunk]}
+
+    def setParameters(self, chunks):
+        for c, s in zip(chunks, self._chunk):
+            s.setValue(c)
 
 
 class FindPeakSetting(FilterGroupSetting):
@@ -208,4 +199,5 @@ class FindPeakSetting(FilterGroupSetting):
 
 
 filterGroups['Cut along line'] = FreeLineSetting
+filterGroups['Rechunk'] = RechunkSetting
 filterGroups['Peak'] = FindPeakSetting

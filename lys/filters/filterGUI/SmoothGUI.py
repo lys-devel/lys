@@ -1,5 +1,5 @@
-from ..filter.Smooth import *
-from ..filtersGUI import *
+from lys import filters
+from ..filtersGUI import filterGroups, FilterGroupSetting, FilterSettingBase, filterGUI
 from .CommonWidgets import *
 
 
@@ -10,69 +10,50 @@ class SmoothingSetting(FilterGroupSetting):
             'Median': MedianSetting,
             'Average': AverageSetting,
             'Gaussian': GaussianSetting
-            # 'Bilateral': BilateralSetting
         }
         return d
 
 
+@filterGUI(filters.MedianFilter)
 class MedianSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._layout = kernelSizeLayout(dimension)
         self.setLayout(self._layout)
 
-    def GetFilter(self):
-        return MedianFilter(self._layout.getKernelSize())
+    def getParameters(self):
+        return {"kernel": self._layout.getKernelSize()}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, MedianFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = MedianSetting(None, self.dim, self.loader)
-        obj._layout.setKernelSize(f.getKernel())
-        return obj
+    def setParameters(self, kernel):
+        self._layout.setKernelSize(kernel)
 
 
+@filterGUI(filters.AverageFilter)
 class AverageSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._layout = kernelSizeLayout(dimension)
         self.setLayout(self._layout)
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, AverageFilter):
-            return True
+    def getParameters(self):
+        return {"kernel": self._layout.getKernelSize()}
 
-    def GetFilter(self):
-        return AverageFilter(self._layout.getKernelSize())
-
-    def parseFromFilter(self, f):
-        obj = AverageSetting(None, self.dim, self.loader)
-        obj._layout.setKernelSize(f.getKernel())
-        return obj
+    def setParameters(self, kernel):
+        self._layout.setKernelSize(kernel)
 
 
+@filterGUI(filters.GaussianFilter)
 class GaussianSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._layout = kernelSigmaLayout(dimension)
         self.setLayout(self._layout)
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, GaussianFilter):
-            return True
+    def getParameters(self):
+        return {"kernel": self._layout.getKernelSigma()}
 
-    def GetFilter(self):
-        return GaussianFilter(self._layout.getKernelSigma())
-
-    def parseFromFilter(self, f):
-        obj = GaussianSetting(None, self.dim, self.loader)
-        obj._layout.setKernelSigma(f.getKernel())
-        return obj
+    def setParameters(self, kernel):
+        self._layout.setKernelSigma(kernel)
 
 
 filterGroups['Smoothing Filter'] = SmoothingSetting

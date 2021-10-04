@@ -1,7 +1,6 @@
 from PyQt5.QtWidgets import QVBoxLayout
-from ..filter.Segmentation import *
-from ..filtersGUI import *
-from lys.widgets import ScientificSpinBox
+from lys import filters
+from ..filtersGUI import filterGroups, FilterGroupSetting, FilterSettingBase, filterGUI
 from .CommonWidgets import *
 
 
@@ -15,11 +14,12 @@ class SegmentSetting(FilterGroupSetting):
         return d
 
 
+@filterGUI(filters.AdaptiveThresholdFilter)
 class AdaptiveThresholdSetting(FilterSettingBase):
     finished = pyqtSignal()
 
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._method = QComboBox()
         self._method.addItem('Median')
         self._method.addItem('Gaussian')
@@ -48,32 +48,24 @@ class AdaptiveThresholdSetting(FilterSettingBase):
         lv.addLayout(self.axes[1])
         self.setLayout(lv)
 
-    def GetFilter(self):
-        axes = [c.getAxis() for c in self.axes]
-        return AdaptiveThresholdFilter(self._bsize.value(), self._c.value(), self._method.currentText(), self._output.currentText(), axes)
+    def getParameters(self):
+        return {"size": self._bsize.value(), "c": self._c.value(), "mode": self._method.currentText(), "output": self._output.currentText(), "axes": [c.getAxis() for c in self.axes]}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, AdaptiveThresholdFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        params = f.getParams()
-        obj = AdaptiveThresholdSetting(None, self.dim, self.loader)
-        obj._bsize.setValue(params[0])
-        obj._c.setValue(params[1])
-        obj._method.setCurrentText(params[2])
-        obj._output.setCurrentText(params[3])
-        for c, i in zip(obj.axes, params[4]):
+    def setParameters(self, size, c, mode, output, axes):
+        self._bsize.setValue(size)
+        self._c.setValue(c)
+        self._method.setCurrentText(mode)
+        self._output.setCurrentText(output)
+        for c, i in zip(self.axes, axes):
             c.setAxis(i)
-        return obj
 
 
+@filterGUI(filters.ThresholdFilter)
 class ThresholdSetting(FilterSettingBase):
     finished = pyqtSignal()
 
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._layout = QHBoxLayout()
         self._c = ScientificSpinBox()
         self._c.setValue(1)
@@ -81,19 +73,11 @@ class ThresholdSetting(FilterSettingBase):
         self._layout.addWidget(self._c)
         self.setLayout(self._layout)
 
-    def GetFilter(self):
-        return ThresholdFilter(self._c.value())
+    def getParameters(self):
+        return {"threshold": self._c.value(), "output": "Mask"}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, ThresholdFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        param = f.getParams()
-        obj = ThresholdSetting(None, self.dim, self.loader)
-        obj._c.setValue(param)
-        return obj
+    def setParameters(self, threshold, output):
+        self._c.setValue(threshold)
 
 
 filterGroups['Segmentation'] = SegmentSetting

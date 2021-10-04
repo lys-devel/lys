@@ -121,7 +121,7 @@ class SelectRegionFilter(FilterInterface):
     """
 
     def __init__(self, range):
-        self._range = np.array(range)
+        self._range = range
 
     def _execute(self, wave, *axes, **kwargs):
         key = self._makeSlice(wave)
@@ -178,7 +178,7 @@ class ReferenceShiftFilter(FilterInterface):
                 sl.append(slice(*ind))
         return tuple(sl)
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
         region = self._makeSlice(wave)
 
         def _fit_image(tar, ref):

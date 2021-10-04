@@ -1,6 +1,6 @@
-from ..filter.Transform import *
-from ..filtersGUI import *
-from lys.widgets import ScientificSpinBox
+from lys import filters
+from ..filtersGUI import filterGroups, FilterGroupSetting, FilterSettingBase, filterGUI
+from .CommonWidgets import *
 
 
 class TransformSetting(FilterGroupSetting):
@@ -16,9 +16,10 @@ class TransformSetting(FilterGroupSetting):
         return d
 
 
+@filterGUI(filters.SetAxisFilter)
 class SetAxisSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._layout = QGridLayout()
         self._axis = QComboBox()
         for i in range(dimension):
@@ -39,34 +40,27 @@ class SetAxisSetting(FilterSettingBase):
         self._layout.addWidget(self._val2, 1, 3)
         self.setLayout(self._layout)
 
-    def GetFilter(self):
+    def getParameters(self):
         if self._type.currentIndex() == 0:
             type = "stop"
         else:
             type = "step"
-        return SetAxisFilter(self._axis.currentIndex(), self._val1.value(), self._val2.value(), type)
+        return {"axis": self._axis.currentIndex(), "val1": self._val1.value(), "val2": self._val2.value(), "type": type}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, SetAxisFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = SetAxisSetting(None, self.dim, self.loader)
-        axis, val1, val2, type = f.getParams()
-        obj._axis.setCurrentIndex(axis)
+    def setParameters(self, axis, val1, val2, type):
+        self._axis.setCurrentIndex(axis)
         if type == "stop":
-            obj._type.setCurrentIndex(0)
+            self._type.setCurrentIndex(0)
         else:
-            obj._type.setCurrentIndex(1)
-        obj._val1.setValue(val1)
-        obj._val2.setValue(val2)
-        return obj
+            self._type.setCurrentIndex(1)
+        self._val1.setValue(val1)
+        self._val2.setValue(val2)
 
 
+@filterGUI(filters.AxisShiftFilter)
 class ShiftSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._layout = QGridLayout()
         self._dim = dimension
         self._values = []
@@ -77,25 +71,18 @@ class ShiftSetting(FilterSettingBase):
             self._layout.addWidget(wid, 1, i)
         self.setLayout(self._layout)
 
-    def GetFilter(self):
-        return AxisShiftFilter([v.value() for v in self._values], list(range(self._dim)))
+    def getParameters(self):
+        return {"shift": [v.value() for v in self._values], "axes": list(range(self._dim))}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, AxisShiftFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = ShiftSetting(None, self.dim, self.loader)
-        shift, axes = f.getParams()
+    def setParameters(self, shift, axes):
         for s, ax in zip(shift, axes):
-            obj._values[ax].setValue(s)
-        return obj
+            self._values[ax].setValue(s)
 
 
+@filterGUI(filters.ShiftFilter)
 class ImageShiftSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._layout = QGridLayout()
         self._dim = dimension
         self._values = []
@@ -107,25 +94,18 @@ class ImageShiftSetting(FilterSettingBase):
             self._layout.addWidget(wid, 1, i)
         self.setLayout(self._layout)
 
-    def GetFilter(self):
-        return ShiftFilter([v.value() for v in self._values])
+    def getParameters(self):
+        return {"shift": [v.value() for v in self._values]}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, ShiftFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = ImageShiftSetting(None, self.dim, self.loader)
-        shift = f.getParams()
+    def setParameters(self, shift):
         for ax, s in enumerate(shift):
-            obj._values[ax].setValue(s)
-        return obj
+            self._values[ax].setValue(s)
 
 
+@filterGUI(filters.MagnificationFilter)
 class MagnificationSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._layout = QGridLayout()
         self._dim = dimension
         self._values = []
@@ -137,44 +117,39 @@ class MagnificationSetting(FilterSettingBase):
             self._layout.addWidget(wid, 1, i)
         self.setLayout(self._layout)
 
-    def GetFilter(self):
-        return MagnificationFilter([v.value() for v in self._values], list(range(self._dim)))
+    def getParameters(self):
+        return {"mag": [v.value() for v in self._values], "axes": list(range(self._dim))}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, MagnificationFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = MagnificationSetting(None, self.dim, self.loader)
-        shift, axes = f.getParams()
-        for s, ax in zip(shift, axes):
-            obj._values[ax].setValue(s)
-        return obj
+    def setParameters(self, mag, axes):
+        for s, ax in zip(mag, axes):
+            self._values[ax].setValue(s)
 
 
+@filterGUI(filters.Rotation2DFilter)
 class Rotation2DSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
-        self._layout = QHBoxLayout()
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._rot = ScientificSpinBox()
+        self._layout = QHBoxLayout()
         self._layout.addWidget(QLabel('Rotation'))
         self._layout.addWidget(self._rot)
-        self.setLayout(self._layout)
 
-    def GetFilter(self):
-        return Rotation2DFilter(self._rot.value())
+        self.axis1 = AxisSelectionLayout("Axis 1", self.dim, 0)
+        self.axis2 = AxisSelectionLayout("Axis 2", self.dim, 1)
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, Rotation2DFilter):
-            return True
+        lay = QVBoxLayout()
+        lay.addLayout(self._layout)
+        lay.addLayout(self.axis1)
+        lay.addLayout(self.axis2)
+        self.setLayout(lay)
 
-    def parseFromFilter(self, f):
-        obj = Rotation2DSetting(None, self.dim, self.loader)
-        r = f.getParams()
-        obj._rot.setValue(r)
-        return obj
+    def getParameters(self):
+        return {"angle": self._rot.value(), "axes": (self.axis1.getAxis(), self.axis2.getAxis())}
+
+    def setParameters(self, angle, axes):
+        self._rot.setValue(angle)
+        self.axis1.setAxis(axes[0])
+        self.axis2.setAxis(axes[1])
 
 
 filterGroups["Transform"] = TransformSetting

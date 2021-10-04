@@ -1,6 +1,5 @@
-from ..filter.Interporation import *
-from ..filter.Resize import *
-from ..filtersGUI import *
+from lys import filters
+from ..filtersGUI import filterGroups, FilterGroupSetting, FilterSettingBase, filterGUI
 from .CommonWidgets import *
 
 
@@ -15,9 +14,10 @@ class ResizeSetting(FilterGroupSetting):
         return d
 
 
+@filterGUI(filters.InterpFilter)
 class InterpSetting(FilterSettingBase):
-    def __init__(self, parent, dim, loader=None):
-        super().__init__(parent, dim, loader)
+    def __init__(self, dim):
+        super().__init__(dim)
         self._vals = []
         self._layout = QGridLayout()
         for d in range(dim):
@@ -28,45 +28,32 @@ class InterpSetting(FilterSettingBase):
             self._layout.addWidget(v, 1, d)
         self.setLayout(self._layout)
 
-    def GetFilter(self):
-        size = [v.value() for v in self._vals]
-        return InterpFilter(size)
+    def getParameters(self):
+        return {"size": [v.value() for v in self._vals]}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, InterpFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = InterpSetting(None, self.dim, self.loader)
-        for v, s in zip(obj._vals, f._size):
+    def setParameters(self, size):
+        for v, s in zip(self._vals, size):
             v.setValue(s)
-        return obj
 
 
+@filterGUI(filters.ReduceSizeFilter)
 class ReduceSizeSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._layout = kernelSizeLayout(dimension, odd=False)
         self.setLayout(self._layout)
 
-    def GetFilter(self):
-        return ReduceSizeFilter(self._layout.getKernelSize())
+    def getParameters(self):
+        return {"kernel": self._layout.getKernelSize()}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, ReduceSizeFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = ReduceSizeSetting(None, self.dim, self.loader)
-        obj._layout.setKernelSize(f.getKernel())
-        return obj
+    def setParameters(self, kernel):
+        self._layout.setKernelSize(kernel)
 
 
+@filterGUI(filters.PaddingFilter)
 class PaddingSetting(FilterSettingBase):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(parent, dimension, loader)
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
         self._axes = AxisCheckLayout(dimension)
         self._size = QSpinBox()
         self._size.setRange(1, 100000)
@@ -85,25 +72,17 @@ class PaddingSetting(FilterSettingBase):
         self._layout.addWidget(self._value, 1, 3)
         self.setLayout(self._layout)
 
-    def GetFilter(self):
-        return PaddingFilter(self._axes.GetChecked(), self._value.value(), self._size.value(), self._direction.currentText())
+    def getParameters(self):
+        return {"axes": self._axes.GetChecked(), "value": self._value.value(), "size": self._size.value(), "position": self._direction.currentText()}
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if isinstance(f, PaddingFilter):
-            return True
-
-    def parseFromFilter(self, f):
-        obj = PaddingSetting(None, self.dim, self.loader)
-        axes, value, size, direction = f.getParams()
-        obj._axes.SetChecked(axes)
-        obj._size.setValue(size)
-        obj._value.setValue(value)
-        if direction == "first":
-            obj._direction.setCurrentIndex(0)
+    def setParameters(self, axes, value, size, position):
+        self._axes.SetChecked(axes)
+        self._size.setValue(size)
+        self._value.setValue(value)
+        if position == "first":
+            self._direction.setCurrentIndex(0)
         else:
-            obj._direction.setCurrentIndex(1)
-        return obj
+            self._direction.setCurrentIndex(1)
 
 
 filterGroups["Resize and interporation"] = ResizeSetting

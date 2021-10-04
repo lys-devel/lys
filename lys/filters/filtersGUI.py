@@ -11,21 +11,49 @@ from .FilterIOGUI import FilterExportDialog, FilterImportDialog
 filterGroups = collections.OrderedDict()
 
 
+def filterGUI(filterClass):
+    def _filterGUI(cls):
+        cls._filClass = filterClass
+        return cls
+    return _filterGUI
+
+
 class FilterSettingBase(QWidget):
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__(None)
+    def __init__(self, dimension):
+        super().__init__()
         self.dim = dimension
-        self.loader = loader
+
+    @classmethod
+    def _havingFilter(cls, f):
+        if not hasattr(cls, "_filClass"):
+            raise TypeError("FilterGUI should decorated by @filterGUI.")
+        if isinstance(f, cls._filClass):
+            return True
+
+    def GetFilter(self):
+        return self._filClass(**self.getParameters())
+
+    def parseFromFilter(self, f):
+        gui = type(self)(self.dim)
+        gui.setParameters(**f.getParameters())
+        return gui
+
+    def setParameters(self, **kwargs):
+        raise NotImplementedError("Method setParameters should be implemented.")
+
+    def getParameters(self):
+        raise NotImplementedError("Method getParameters should be implemented.")
 
 
 # interface for setting group GUI
+
+
 class FilterGroupSetting(QWidget):
     filterChanged = pyqtSignal(QWidget)
 
-    def __init__(self, parent, dimension=2, loader=None, layout=None):
+    def __init__(self, dimension=2, layout=None):
         super().__init__()
         self.dim = dimension
-        self.loader = loader
         self._filters = self._filterList()
 
         self._combo = QComboBox()
@@ -54,10 +82,10 @@ class FilterGroupSetting(QWidget):
         if text in self._filters:
             self._removeChildGroup()
             if issubclass(self._filters[text], FilterGroupSetting):
-                self.filter = self._filters[text](None, self.dim, loader=self.loader, layout=self._layout)
+                self.filter = self._filters[text](self.dim, layout=self._layout)
                 self._addGroup(self.filter)
             else:
-                self.filter = self._filters[text](None, self.dim, loader=self.loader)
+                self.filter = self._filters[text](self.dim)
                 self.filterChanged.emit(self.filter)
 
     def _addGroup(self, g):
@@ -99,7 +127,7 @@ class _PreFilterSetting(QWidget):
     def __init__(self, parent, dimension=2, loader=None):
         super().__init__()
         h1 = QHBoxLayout()
-        self.root = _RootSetting(self, dimension, loader, h1)
+        self.root = _RootSetting(dimension, h1)
         self.root.filterChanged.connect(self._filt)
         self._layout = QVBoxLayout()
         self._layout.addLayout(h1)
@@ -271,7 +299,9 @@ class FiltersGUI(QWidget):
 
     def loadFrom(self, file, index=False):
         with open(file, 'r') as f:
-            data = eval(f.read())
+            txt = f.read()
+            print(txt)
+            data = eval(txt)
         self.loadFromString(data, index)
 
     def loadFromString(self, str, index=False):

@@ -1,6 +1,6 @@
 import numpy as np
 import dask.array as da
-from lys import Wave, DaskWave
+from lys import DaskWave
 from .FilterInterface import FilterInterface
 
 
