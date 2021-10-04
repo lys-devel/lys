@@ -97,7 +97,7 @@ class FileSystemView(QWidget):
         """register new context menu to filetype specified by *ext*
 
         Args:
-            ext(str): extension of file type, e.g. "txt", "csv", etc...
+            ext(str): extension of file type, e.g. ".txt", ".csv", etc...
             menu(QMenu): context menu to be added.
             add_default: if True, default menus such as Cut, Copy is automatically added at the end of menu.
 
@@ -254,6 +254,9 @@ class _contextMenuBuilder:
         menu_s = self._duplicateMenu(menu)
         menu_m = self._duplicateMenu(menu)
         if add_default:
+            if ext == "dir":
+                menu_s.addAction(self._new)
+                menu_m.addAction(self._new)
             menu_s.addSeparator()
             menu_s.addAction(self._load)
             menu_s.addAction(self._prt)

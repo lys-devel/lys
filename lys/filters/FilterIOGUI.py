@@ -14,14 +14,16 @@ class FilterViewWidget(FileSystemView):
         self.__addContextMenu()
 
     def __addContextMenu(self):
-        save = QAction('Save to file', self, triggered=self._Action_Save)
-        load = QAction('Load from file', self, triggered=self._Action_Load)
+        save = QAction('Save to external file', self, triggered=self._Action_Save)
+        load = QAction('Load from external file', self, triggered=self._Action_Load)
         print = QAction('Print', self, triggered=self._Action_Print)
         menu = QMenu()
         menu.addAction(save)
-        menu.addAction(load)
         menu.addAction(print)
-        self.registerFileMenu("fil", menu)
+        menu2 = QMenu()
+        menu2.addAction(load)
+        self.registerFileMenu(".fil", menu)
+        self.registerFileMenu("dir", menu2)
 
     def _Action_Save(self):
         path = self.selectedPaths()[0]
@@ -41,15 +43,13 @@ class FilterViewWidget(FileSystemView):
         if path is not None:
             fname = QFileDialog.getOpenFileName(self, 'Open Filter', home(), filter="Filter files(*.fil);;All files(*.*)")
             if fname[0]:
-                f = Filters.fromFile(fname[0])
-                text, ok = QInputDialog.getText(self, 'Import Filter', 'Enter filter name:')
-                path += "/" + text
-                if not ok:
-                    return
+                name = os.path.basename(fname[0])
+                path += "/" + name
                 if os.path.exists(path) or os.path.exists(path + ".fil"):
-                    res = QMessageBox.information(None, "Confirmation", "The old filter will be deleted. Do you really want to overwrite?", QMessageBox.Yes, QMessageBox.No)
+                    res = QMessageBox.information(None, "Confirmation", "File " + name + " already exits. Do you want to overwrite it?", QMessageBox.Yes, QMessageBox.No)
                     if res == QMessageBox.No:
                         return
+                f = Filters.fromFile(fname[0])
                 f.saveAsFile(path)
 
     def _Action_Print(self):
