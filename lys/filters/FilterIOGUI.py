@@ -1,6 +1,6 @@
 import os
 
-from LysQt.QtWidgets import QAction, QFileDialog, QMessageBox, QInputDialog, QDialog, QPushButton, QHBoxLayout, QVBoxLayout
+from LysQt.QtWidgets import QMenu, QAction, QFileDialog, QMessageBox, QInputDialog, QDialog, QPushButton, QHBoxLayout, QVBoxLayout
 
 from lys import home
 from lys.FileView import FileSystemView
@@ -9,24 +9,22 @@ from . import Filters
 
 class FilterViewWidget(FileSystemView):
     def __init__(self, parent):
-        super().__init__(parent)
         os.makedirs(home() + "/.lys/filters", exist_ok=True)
-        self.Model.AddAcceptedFilter("*.fil")
-        self.SetPath(home() + "/.lys/filters")
-        self.__viewContextMenu(self)
+        super().__init__(home() + "/.lys/filters", filter=False, drop=True)
+        self.__addContextMenu()
 
-    def __viewContextMenu(self, tree):
+    def __addContextMenu(self):
         save = QAction('Save to file', self, triggered=self._Action_Save)
         load = QAction('Load from file', self, triggered=self._Action_Load)
         print = QAction('Print', self, triggered=self._Action_Print)
-        menu = {}
-        menu['dir'] = [tree.Action_NewDirectory(), load, tree.Action_Delete()]
-        menu['mix'] = [tree.Action_Delete()]
-        menu['.fil'] = [print, save, tree.Action_Delete()]
-        tree.SetContextMenuActions(menu)
+        menu = QMenu()
+        menu.addAction(save)
+        menu.addAction(load)
+        menu.addAction(print)
+        self.registerFileMenu("fil", menu)
 
     def _Action_Save(self):
-        path = self.selectedPath()
+        path = self.selectedPaths()[0]
         if path is None:
             return
         f = Filters.fromFile(path)
@@ -39,7 +37,7 @@ class FilterViewWidget(FileSystemView):
             f.saveAsFile(fname[0])
 
     def _Action_Load(self):
-        path = self.selectedPath()
+        path = self.selectedPaths()[0]
         if path is not None:
             fname = QFileDialog.getOpenFileName(self, 'Open Filter', home(), filter="Filter files(*.fil);;All files(*.*)")
             if fname[0]:
@@ -56,7 +54,7 @@ class FilterViewWidget(FileSystemView):
 
     def _Action_Print(self):
         res = ""
-        path = self.selectedPath()
+        path = self.selectedPaths()[0]
         if path is None:
             print("Invalid path")
             return
@@ -92,7 +90,7 @@ class FilterExportDialog(QDialog):
         self.setLayout(v1)
 
     def __ok(self):
-        self.path = self.view.selectedPath()
+        self.path = self.view.selectedPaths()[0]
         if os.path.isdir(self.path):
             text, ok = QInputDialog.getText(self, 'Export Filter', 'Enter filter name:')
             self.path += "/" + text
@@ -129,7 +127,7 @@ class FilterImportDialog(QDialog):
         self.setLayout(v1)
 
     def __ok(self):
-        self.path = self.view.selectedPath()
+        self.path = self.view.selectedPaths()[0]
         if os.path.isdir(self.path):
             QMessageBox.information(None, "Caution", "Please select .fil file!", QMessageBox.Yes)
             return

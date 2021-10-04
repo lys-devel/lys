@@ -26,17 +26,18 @@ class FileSystemView(QWidget):
     Args:
         path(str): path to see files.
         model(QFileSystemModel): model used in this view
-        drop: Accept drag & drop or not
+        drop: Accept drag & drop or not.
+        filter: Enable filtering or not.
 
     """
 
-    def __init__(self, path, model=QFileSystemModel(), drop=False):
+    def __init__(self, path, model=QFileSystemModel(), drop=False, filter=True):
         super().__init__()
         self._path = path
-        self.__initUI(self._path, model, drop)
+        self.__initUI(self._path, model, drop, filter)
         self._builder = _contextMenuBuilder(self)
 
-    def __initUI(self, path, model, drop=False):
+    def __initUI(self, path, model, drop=False, filter=True):
         self._Model = _FileSystemModel(path, model, drop)
 
         self._tree = QTreeView()
@@ -63,7 +64,8 @@ class FileSystemView(QWidget):
 
         layout = QVBoxLayout()
         layout.addWidget(self._tree)
-        layout.addLayout(h1)
+        if filter:
+            layout.addLayout(h1)
         self.setLayout(layout)
 
     def _buildContextMenu(self, qPoint):

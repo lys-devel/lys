@@ -299,9 +299,7 @@ class FiltersGUI(QWidget):
 
     def loadFrom(self, file, index=False):
         with open(file, 'r') as f:
-            txt = f.read()
-            print(txt)
-            data = eval(txt)
+            data = eval(f.read())
         self.loadFromString(data, index)
 
     def loadFromString(self, str, index=False):
