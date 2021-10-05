@@ -1,3 +1,4 @@
+
 import os
 
 import autopep8
@@ -317,6 +318,7 @@ class PythonEditor(LysSubWindow):
             data.write(autopep8.fix_code(self.widget.toPlainText()).replace("    ", "\t"))
         self.updated = False
         self.refreshTitle()
+        glb.shell().refresh()
 
     def closeEvent(self, event):
         if not self.updated:
@@ -351,12 +353,32 @@ def _enterName():
         _makeNewPy(txt)
 
 
-def _makeNewPy(name):
+def _prepareInit():
     if not os.path.exists(home() + "/module/__init__.py"):
         os.makedirs(home() + "/module", exist_ok=True)
         with open(home() + "/module/__init__.py", 'w') as data:
             data.write("")
+
+
+def _makeNewPy(name, text=""):
+    _prepareInit()
     PythonEditor(home() + "/module/" + name)
+
+
+def _makeFilterTemplate():
+    name, ok = QInputDialog.getText(glb.mainWindow(), "New filter", "Enter new filter name", text="Filter")
+    if ok:
+        pyfile = home() + "/module/" + name + ".py"
+        if os.path.exists(pyfile):
+            QMessageBox.information(glb.mainWindow(), "Caution", "File " + name + ".py already exists.")
+            return
+        filename = os.path.dirname(__file__) + "/templates/template_filter.py"
+        with open(filename, "r") as f:
+            txt = f.read().replace("FilterName", name)
+        _prepareInit()
+        with open(pyfile, "w") as f:
+            f.write(txt)
+        PythonEditor(pyfile)
 
 
 def _register():
@@ -370,9 +392,16 @@ def _register():
     proc.triggered.connect(lambda: _makeNewPy("proc.py"))
     proc.setShortcut("Ctrl+P")
 
+    prog.addSeparator()
+
     makeNew = prog.addAction("Create new .py file")
     makeNew.triggered.connect(_enterName)
     makeNew.setShortcut("Ctrl+Shift+P")
+
+    makeFil = prog.addAction("Create new filter from template")
+    makeFil.triggered.connect(_makeFilterTemplate)
+
+    prog.addSeparator()
 
     closeAll = prog.addAction("Close all editors")
     closeAll.triggered.connect(PythonEditor.CloseAllEditors)

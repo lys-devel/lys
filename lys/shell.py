@@ -133,6 +133,10 @@ class ExtendShell(QObject):
         """
         self.__mod.importAll(module)
 
+    def refresh(self):
+        """Refresh all modules in module directory."""
+        self.__mod.reload()
+
     def addObject(self, obj, name=None, printResult=True):
         """
         Add object to shell.
