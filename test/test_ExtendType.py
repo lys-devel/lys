@@ -1,5 +1,6 @@
 import unittest
 import shutil
+import os
 
 from lys import load, filters, glb, home, Graph
 
@@ -9,8 +10,9 @@ class ExtendType_test(unittest.TestCase):
 
     def setUp(self):
         if glb.mainWindow() is None:
-            shutil.rmtree(home() + "/.lys")
-            glb.createMainWindow(show=False)
+            if os.path.exists(home() + "/.lys"):
+                shutil.rmtree(home() + "/.lys")
+            glb.createMainWindow(show=False, restore=True)
 
     def test_ExtendType(self):
         # load old type Wave

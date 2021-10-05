@@ -8,8 +8,9 @@ class global_test(unittest.TestCase):
 
     def setUp(self):
         if glb.mainWindow() is None:
-            shutil.rmtree(home() + "/.lys")
-            glb.createMainWindow(show=False)
+            if os.path.exists(home() + "/.lys"):
+                shutil.rmtree(home() + "/.lys")
+            glb.createMainWindow(show=False, restore=True)
 
     def test_mainAndShell(self):
         main = glb.mainWindow()

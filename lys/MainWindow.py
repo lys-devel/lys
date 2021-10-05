@@ -49,12 +49,14 @@ class MainWindow(QMainWindow):
         >>> main.closed.connect(lambda: print("Main window closed."))
     """
 
-    def __init__(self, show=True):
+    def __init__(self, show=True, restore=False):
         super().__init__()
         self._workspace = []
         self._settingDict = SettingDict(home() + "/.lys/workspace/works.dic")
         self.__initUI()
         self.__initMenu()
+        if restore:
+            self._restoreWorkspaces()
         if show:
             self.show()
 

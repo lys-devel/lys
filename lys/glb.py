@@ -43,7 +43,7 @@ def shell():
     return ExtendShell._instance
 
 
-def createMainWindow(show=True):
+def createMainWindow(*args, **kwargs):
     """
     Create main window.
 
@@ -52,7 +52,7 @@ def createMainWindow(show=True):
     If you want to make custom launch script of lys, see :mod:`.__main__` module.
     """
     global _main
-    _main = MainWindow(show)
+    _main = MainWindow(*args, **kwargs)
 
 
 def restoreWorkspaces():

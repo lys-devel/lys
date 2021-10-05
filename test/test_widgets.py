@@ -45,8 +45,9 @@ class FileView_test(unittest.TestCase):
     def setUp(self):
         os.makedirs(self.path, exist_ok=True)
         if glb.mainWindow() is None:
-            shutil.rmtree(home() + "/.lys")
-            glb.createMainWindow(show=False)
+            if os.path.exists(home() + "/.lys"):
+                shutil.rmtree(home() + "/.lys")
+            glb.createMainWindow(show=False, restore=True)
         registerFileLoader(".txt", testAutoSavedWindow)
 
     def tearDown(self):
