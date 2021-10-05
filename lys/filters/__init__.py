@@ -1,6 +1,9 @@
 from .filter import *
-from .filtersGUI import FiltersGUI, FiltersDialog
-from . import filterGUI
+from .filtersGUI import FiltersGUI, FiltersDialog, FilterSettingBase, filterGUI
+from . import defaultFilterGUI
+
+# all filter classes
+_filterClasses = {}
 
 
 def __register():
@@ -12,8 +15,10 @@ def __register():
                 _filterClasses[key] = item
 
 
-# all filter classes
-_filterClasses = {}
+def addFilter(obj, name, group, gui=None):
+    pass
+
+
 __register()
 
 fromFile = Filters.fromFile

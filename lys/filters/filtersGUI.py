@@ -1,13 +1,13 @@
 import collections
 import numpy as np
 
-from . import Filters
 
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QWidget, QComboBox, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout, QMenu, QAction, QTabWidget, QPushButton, QInputDialog
 from lys.widgets import LysSubWindow
-from .FilterIOGUI import FilterExportDialog, FilterImportDialog
 
+from .FilterIOGUI import FilterExportDialog, FilterImportDialog
+from . import Filters
 filterGroups = collections.OrderedDict()
 
 
@@ -458,7 +458,7 @@ class FiltersDialog(LysSubWindow):
 
 
 class _DeleteSetting(QWidget):
-    def __init__(self, parent, dimension=2, loader=None):
+    def __init__(self, dimension=2):
         super().__init__(None)
 
     @classmethod
