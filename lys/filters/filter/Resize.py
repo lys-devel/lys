@@ -1,8 +1,12 @@
 import numpy as np
 import dask.array as da
 import itertools
+
 from lys import DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .CommonWidgets import kernelSizeLayout, AxisCheckLayout, QSpinBox, ScientificSpinBox, QComboBox, QLabel, QGridLayout
 
 
 class ReduceSizeFilter(FilterInterface):
@@ -120,3 +124,56 @@ class PaddingFilter(FilterInterface):
 
     def getParameters(self):
         return {"axes": self.axes, "value": self.value, "size": self.size, "position": self.direction}
+
+
+@filterGUI(ReduceSizeFilter)
+class _ReduceSizeSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._layout = kernelSizeLayout(dimension, odd=False)
+        self.setLayout(self._layout)
+
+    def getParameters(self):
+        return {"kernel": self._layout.getKernelSize()}
+
+    def setParameters(self, kernel):
+        self._layout.setKernelSize(kernel)
+
+
+@filterGUI(PaddingFilter)
+class _PaddingSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._axes = AxisCheckLayout(dimension)
+        self._size = QSpinBox()
+        self._size.setRange(1, 100000)
+        self._size.setValue(200)
+        self._value = ScientificSpinBox()
+        self._direction = QComboBox()
+        self._direction.addItems(["first", "last", "both"])
+        self._layout = QGridLayout()
+        self._layout.addWidget(QLabel("axes"), 0, 0)
+        self._layout.addWidget(QLabel("direction"), 0, 1)
+        self._layout.addWidget(QLabel("size"), 0, 2)
+        self._layout.addWidget(QLabel("value"), 0, 3)
+        self._layout.addLayout(self._axes, 1, 0)
+        self._layout.addWidget(self._direction, 1, 1)
+        self._layout.addWidget(self._size, 1, 2)
+        self._layout.addWidget(self._value, 1, 3)
+        self.setLayout(self._layout)
+
+    def getParameters(self):
+        return {"axes": self._axes.GetChecked(), "value": self._value.value(), "size": self._size.value(), "position": self._direction.currentText()}
+
+    def setParameters(self, axes, value, size, position):
+        self._axes.SetChecked(axes)
+        self._size.setValue(size)
+        self._value.setValue(value)
+        if position == "first":
+            self._direction.setCurrentIndex(0)
+        else:
+            self._direction.setCurrentIndex(1)
+
+
+addFilter(ReduceSizeFilter, gui=_ReduceSizeSetting, guiName="Reduce size", guiGroup="Resize and interpolation")
+addFilter(PaddingFilter, gui=_PaddingSetting, guiName="Padding", guiGroup="Resize and interpolation")

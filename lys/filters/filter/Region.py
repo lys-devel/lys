@@ -4,7 +4,10 @@ from scipy.optimize import minimize
 from scipy.ndimage import map_coordinates
 
 from lys import Wave, DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .CommonWidgets import RegionSelectWidget, QComboBox, QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QLineEdit, AxisSelectionLayout, QFileDialog
 
 
 class NormalizeFilter(FilterInterface):
@@ -215,3 +218,140 @@ def _fit_image_(tar, ref, region=None):
     ref_n = ref / norm
     s = minimize(lambda s: _image_dif(tar_n, ref_n, s, region, ord), [0, 0], method="Nelder-Mead", options={'xtol': 1e-11})
     return _image_shift(s.x, tar, ord)
+
+
+@filterGUI(NormalizeFilter)
+class _NormalizeSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        self.range = RegionSelectWidget(self, dim)
+        self.combo = QComboBox()
+        self.combo.addItem("Whole")
+        for d in range(dim):
+            self.combo.addItem("Axis" + str(d + 1))
+
+        vbox = QHBoxLayout()
+        vbox.addWidget(QLabel("Normalization direction"))
+        vbox.addWidget(self.combo)
+
+        hbox = QVBoxLayout()
+        hbox.addLayout(vbox)
+        hbox.addLayout(self.range)
+        self.setLayout(hbox)
+
+    def getParameters(self):
+        return {"range": self.range.getRegion(), "axis": self.combo.currentIndex() - 1}
+
+    def setParameters(self, range, axis):
+        self.combo.setCurrentIndex(axis + 1)
+        for i, r in enumerate(range):
+            self.range.setRegion(i, r)
+
+
+@filterGUI(ReferenceNormalizeFilter)
+class _ReferenceNormalizeSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        self.__axis = AxisSelectionLayout("Axis", dim)
+        self.__type = QComboBox()
+        self.__type.addItems(["Diff", "Divide"])
+        self.__ref = QComboBox()
+        self.__ref.addItems(["First", "Last"])
+        hbox = QHBoxLayout()
+        hbox.addLayout(self.__axis)
+        hbox.addWidget(self.__type)
+        hbox.addWidget(self.__ref)
+        self.setLayout(hbox)
+
+    def getParameters(self):
+        ref = self.__ref.currentText()
+        if ref == "First":
+            ref = 0
+        else:
+            ref = -1
+        return {"axis": self.__axis.getAxis(), "type": self.__type.currentText(), "refIndex": ref}
+
+    def setParameters(self, axis, type, refIndex):
+        self.__axis.setAxis(axis)
+        if type == "Diff":
+            self.__type.setCurrentIndex(0)
+        else:
+            self.__type.setCurrentIndex(1)
+        if refIndex == 0:
+            self.__ref.setCurrentIndex(0)
+        else:
+            self.__ref.setCurrentIndex(1)
+
+
+@filterGUI(SelectRegionFilter)
+class _SelectRegionSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        self.range = RegionSelectWidget(self, dim)
+        self.setLayout(self.range)
+
+    def getParameters(self):
+        return {"range": self.range.getRegion()}
+
+    def setParameters(self, range):
+        for i, r in enumerate(range):
+            self.range.setRegion(i, r)
+
+
+@filterGUI(MaskFilter)
+class _MaskSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        self.__filename = QLineEdit()
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.__filename)
+        hbox.addWidget(QPushButton("Load", clicked=self._LoadMask))
+        self.setLayout(hbox)
+
+    def _LoadMask(self):
+        file, _ = QFileDialog.getOpenFileName(None, 'Open file', filter="npz(*.npz)")
+        if 0 != len(file):
+            self.__filename.setText(file)
+
+    def getParameters(self):
+        return {"filename": self.__filename.text()}
+
+    def setParameters(self, filename):
+        self.__filename.setText(filename)
+
+
+@filterGUI(ReferenceShiftFilter)
+class _RefShiftSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        self.range = RegionSelectWidget(self, dim)
+        self.combo = QComboBox()
+        for d in range(dim):
+            self.combo.addItem("Axis" + str(d + 1))
+
+        vbox = QVBoxLayout()
+        vbox.addWidget(QLabel("Axis"))
+        vbox.addWidget(self.combo)
+
+        hbox = QHBoxLayout()
+        hbox.addLayout(vbox)
+        hbox.addLayout(self.range)
+        self.setLayout(hbox)
+
+    def getParameters(self):
+        return {"axis": self.combo.currentIndex(), "region": self.range.getRegion()}
+
+    def setParameters(self, axis, region):
+        self.combo.setCurrentIndex(axis)
+        for i, r in enumerate(region):
+            self.range.setRegion(i, r)
+
+
+addFilter(ReferenceNormalizeFilter, gui=_ReferenceNormalizeSetting, guiName="Normalize by ref.", guiGroup="Normalize")
+addFilter(NormalizeFilter, gui=_NormalizeSetting, guiName="Normalize by area", guiGroup="Normalize")
+
+addFilter(SelectRegionFilter, gui=_SelectRegionSetting, guiName="Select Region", guiGroup="Resize and interpolation")
+
+addFilter(MaskFilter, gui=_MaskSetting, guiName="Masking", guiGroup="UDAnalysis")
+addFilter(ReferenceShiftFilter, gui=_RefShiftSetting, guiName="Reference Shift", guiGroup="UDAnalysis")

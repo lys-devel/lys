@@ -3,7 +3,10 @@ from scipy.signal import argrelextrema
 from scipy.ndimage import median_filter
 
 from lys import DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .CommonWidgets import QComboBox, QSpinBox, AxisSelectionLayout, QHBoxLayout, QLabel, QVBoxLayout, QGridLayout
 
 
 class PeakFilter(FilterInterface):
@@ -93,7 +96,9 @@ class PeakReorderFilter(FilterInterface):
         axes.remove(self._peak)
         axes.remove(self._scan)
         axes = [self._peak, self._scan] + axes
-        def f(x): return _reorder(x, self._size)
+
+        def f(x):
+            return _reorder(x, self._size)
         uf = self._generalizedFunction(wave, f, signature="(i,j,k,l)->(i,j,k,l)", axes=[axes, axes])
         return DaskWave(uf(wave.data), *wave.axes, **wave.note)
 
@@ -114,3 +119,99 @@ def _reorder(data, size):
             tmp.append(ref)
         res.append(np.array(tmp))
     return np.array(res)
+
+
+@filterGUI(PeakFilter)
+class _PeakSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._combo = QComboBox()
+        self._combo.addItems(["ArgRelMax", "ArgRelMin"])
+        self._order = QSpinBox()
+        self._order.setValue(1)
+        self._value = QSpinBox()
+        self._value.setValue(3)
+        self._axis = AxisSelectionLayout("Axis", dimension)
+        h1 = QHBoxLayout()
+        h1.addWidget(self._combo)
+        h1.addWidget(QLabel("order"))
+        h1.addWidget(self._order)
+        h1.addWidget(QLabel("size"))
+        h1.addWidget(self._value)
+        layout = QVBoxLayout()
+        layout.addLayout(self._axis)
+        layout.addLayout(h1)
+        self.setLayout(layout)
+
+    def getParameters(self):
+        return {"axis": self._axis.getAxis(), "order": self._order.value(), "type": self._combo.currentText(), "size": self._value.value()}
+
+    def setParameters(self, axis, order, type, size):
+        self._axis.setAxis(axis)
+        self._order.setValue(order)
+        self._value.setValue(size)
+        if type == "ArgRelMax":
+            self._combo.setCurrentIndex(0)
+        else:
+            self._combo.setCurrentIndex(1)
+
+
+@filterGUI(PeakPostFilter)
+class _PeakPostSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._axis = AxisSelectionLayout("Find peak along axis (should be 2)", dimension)
+        self._size1 = QSpinBox()
+        self._size1.setValue(15)
+        self._size2 = QSpinBox()
+        self._size2.setValue(5)
+        g = QGridLayout()
+        g.addWidget(QLabel("Median along axis 0"), 0, 0)
+        g.addWidget(self._size1, 0, 1)
+        g.addWidget(QLabel("Median along axis 3"), 1, 0)
+        g.addWidget(self._size2, 1, 1)
+        layout = QVBoxLayout()
+        layout.addLayout(self._axis)
+        layout.addLayout(g)
+        self.setLayout(layout)
+
+    def getParameters(self):
+        return {"axis": self._axis.getAxis(), "medSize": (self._size1.value(), self._size2.value())}
+
+    def setParameters(self, axis, medSize):
+        self._axis.setAxis(axis)
+        self._size1.setValue(medSize[0])
+        self._size2.setValue(medSize[1])
+
+
+@filterGUI(PeakReorderFilter)
+class _PeakReorderSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._peak = AxisSelectionLayout("Peak index axis", dimension)
+        self._scan = AxisSelectionLayout("Scan axis", dimension)
+
+        self._size = QSpinBox()
+        self._size.setValue(9)
+        h1 = QHBoxLayout()
+        h1.addWidget(QLabel("Median size"))
+        h1.addWidget(self._size)
+
+        layout = QVBoxLayout()
+        layout.addLayout(self._peak)
+        layout.addLayout(self._scan)
+        layout.addLayout(h1)
+        self.setLayout(layout)
+
+    def getParameters(self):
+        return {"peakAxis": self._peak.getAxis(), "scanAxis": self._scan.getAxis(), "medSize": self._size.value()}
+
+    def setParameters(self, peakAxis, scanAxis, medSize):
+        self._peak.setAxis(peakAxis)
+        self._scan.setAxis(scanAxis)
+        self._size.setValue(medSize)
+
+
+addFilter(PeakFilter, gui=_PeakSetting, guiName="Find Peak", guiGroup="Peak")
+addFilter(PeakPostFilter, gui=_PeakPostSetting, guiName="Peak Postprocess", guiGroup="Peak")
+addFilter(PeakReorderFilter, gui=_PeakReorderSetting, guiName="Peak Reorder", guiGroup="Peak")

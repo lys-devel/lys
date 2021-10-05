@@ -1,6 +1,10 @@
 import numpy as np
+
 from lys import DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .CommonWidgets import QHBoxLayout, QComboBox, AxisSelectionLayout, QSpinBox, QGridLayout, QPushButton, QLineEdit, QLabel, QVBoxLayout
 
 
 class SelectIndexFilter(FilterInterface):
@@ -165,3 +169,142 @@ class TransposeFilter(FilterInterface):
 
     def getParameters(self):
         return {"axes": self._axes}
+
+
+class _IndexLayout(QHBoxLayout):
+    def __init__(self, dim):
+        super().__init__()
+        self._axis = AxisSelectionLayout("Axis", dim)
+        self._index = QSpinBox()
+        self.addLayout(self._axis)
+        self.addWidget(QLabel("Index"))
+        self.addWidget(self._index)
+
+    def getAxisAndIndex(self):
+        return self._axis.getAxis(), self._index.value()
+
+    def setAxis(self, axis):
+        self._axis.setAxis(axis)
+
+    def setValue(self, value):
+        self._index.setValue(value)
+
+
+@filterGUI(SelectIndexFilter)
+class _SelectIndexSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._index = _IndexLayout(dimension)
+        self.setLayout(self._index)
+
+    def getParameters(self):
+        axis, index = self._index.getAxisAndIndex()
+        return {"axis": axis, "index": index}
+
+    def setParameters(self, axis, index):
+        self._index.setAxis(axis)
+        self._index.setValue(index)
+
+
+@filterGUI(IndexMathFilter)
+class _IndexMathSetting(FilterSettingBase):
+    _types = ["+", "-", "*", "/"]
+
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._combo = QComboBox()
+        self._combo.addItems(self._types)
+        self._axis = AxisSelectionLayout("Axis", dimension)
+        self._index1 = QSpinBox()
+        self._index2 = QSpinBox()
+        h1 = QHBoxLayout()
+        h1.addWidget(QLabel("Indices"))
+        h1.addWidget(self._index1)
+        h1.addWidget(self._combo)
+        h1.addWidget(self._index2)
+        layout = QVBoxLayout()
+        layout.addLayout(self._axis)
+        layout.addLayout(h1)
+        self.setLayout(layout)
+
+    def getParameters(self):
+        return {"axis": self._axis.getAxis(), "type": self._combo.currentText(), "index1": self._index1.value(), "index2": self._index2.value()}
+
+    def setParameters(self, axis, type, index1, index2):
+        self._axis.setAxis(axis)
+        self._combo.setCurrentIndex(self._types.index(type))
+        self._index1.setValue(index1)
+        self._index2.setValue(index2)
+
+
+@filterGUI(TransposeFilter)
+class _TransposeSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        lay = QHBoxLayout()
+        self.val = QLineEdit()
+        st = ""
+        for d in range(dimension):
+            st += str(d) + ", "
+        self.val.setText(st[:-2])
+
+        lay.addWidget(self.val)
+        lay.addWidget(QPushButton("Reverse", clicked=self._click))
+        self.setLayout(lay)
+
+    def _click(self):
+        vals = [int(v) for v in self.val.text().replace(" ", "").split(",")]
+        st = ""
+        for v in reversed(vals):
+            st += str(v) + ", "
+        self.val.setText(st[:-2])
+
+    def getParameters(self):
+        return {"axes": eval(self.val.text())}
+
+    def setParameters(self, axes):
+        st = ""
+        for ax in axes:
+            st += str(ax) + ", "
+        st = st[:-2]
+        self.val.setText(st)
+
+
+@filterGUI(SliceFilter)
+class _SliceSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        lay = QGridLayout()
+        lay.addWidget(QLabel("Start"), 0, 1)
+        lay.addWidget(QLabel("Stop"), 0, 2)
+        lay.addWidget(QLabel("Step"), 0, 3)
+        for d in range(dimension):
+            lay.addWidget(QLabel("Axis" + str(d)), 1 + d, 0)
+
+        self._start = [QSpinBox() for d in range(dimension)]
+        self._stop = [QSpinBox() for d in range(dimension)]
+        self._step = [QSpinBox() for d in range(dimension)]
+        for d in range(dimension):
+            self._start[d].setRange(-1000000, 1000000)
+            self._stop[d].setRange(-1000000, 1000000)
+            self._step[d].setRange(-1000000, 1000000)
+            self._step[d].setValue(1)
+            lay.addWidget(self._start[d], 1 + d, 1)
+            lay.addWidget(self._stop[d], 1 + d, 2)
+            lay.addWidget(self._step[d], 1 + d, 3)
+        self.setLayout(lay)
+
+    def getParameters(self):
+        return {"slices": [[self._start[d].value(), self._stop[d].value(), self._step[d].value()] for d in range(self.dim)]}
+
+    def setParameters(self, slices):
+        for d in range(self.dim):
+            self._start[d].setValue(slices[d].start)
+            self._stop[d].setValue(slices[d].stop)
+            self._step[d].setValue(slices[d].step)
+
+
+addFilter(SelectIndexFilter, gui=_SelectIndexSetting, guiName="Select Index", guiGroup="Indices")
+addFilter(IndexMathFilter, gui=_IndexMathSetting, guiName="Inter-index calc.", guiGroup="Indices")
+addFilter(TransposeFilter, gui=_TransposeSetting, guiName="Transpose", guiGroup="Indices")
+addFilter(SliceFilter, gui=_SliceSetting, guiName="Slicing", guiGroup="Resize and interpolation")

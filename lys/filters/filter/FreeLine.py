@@ -2,8 +2,12 @@ import numpy as np
 from scipy import ndimage
 import dask.array as da
 
+
 from lys import DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .CommonWidgets import QHBoxLayout, QSpinBox, QPushButton, QLabel, ScientificSpinBox, AxisSelectionLayout, QVBoxLayout, QHBoxLayout, AxesSelectionDialog
 
 
 class FreeLineFilter(FilterInterface):
@@ -85,3 +89,81 @@ def map(x, coords):
         return real + imag * 1j
     else:
         return np.sum([ndimage.map_coordinates(x, c, order=1) for c in coords], axis=0)
+
+
+@filterGUI(FreeLineFilter)
+class _FreeLineSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self.__initlayout()
+
+    def __initlayout(self):
+        h3 = QHBoxLayout()
+        self.width = QSpinBox()
+        self.width.setValue(3)
+        self.load = QPushButton("Load from Graph", clicked=self.__load)
+        h3.addWidget(QLabel("Width"))
+        h3.addWidget(self.width)
+        h3.addWidget(self.load)
+        self.axis1 = AxisSelectionLayout("Axis 1", self.dim, 0)
+        self.from1 = ScientificSpinBox()
+        self.to1 = ScientificSpinBox()
+        h1 = QHBoxLayout()
+        h1.addLayout(self.axis1)
+        h1.addWidget(self.from1)
+        h1.addWidget(self.to1)
+        self.axis2 = AxisSelectionLayout("Axis 2", self.dim, 1)
+        self.from2 = ScientificSpinBox()
+        self.to2 = ScientificSpinBox()
+        h2 = QHBoxLayout()
+        h2.addLayout(self.axis2)
+        h2.addWidget(self.from2)
+        h2.addWidget(self.to2)
+        self._layout = QVBoxLayout()
+        self._layout.addLayout(h3)
+        self._layout.addLayout(h1)
+        self._layout.addLayout(h2)
+        self.setLayout(self._layout)
+
+    def __load(self):
+        from lys import Graph
+        g = Graph.active()
+        if g is None:
+            return
+        c = g.canvas
+        lines = c.getAnnotations("line")
+        if len(lines) == 0:
+            return
+        if self.dim != 2:
+            d = AxesSelectionDialog(self.dim)
+            value = d.exec_()
+            if value:
+                ax = d.getAxes()
+                self.axis1.setAxis(ax[0])
+                self.axis2.setAxis(ax[1])
+            else:
+                return
+        line = lines[0]
+        p = c.getAnnotLinePosition(line)
+        self.from1.setValue(p[0][0])
+        self.to1.setValue(p[0][1])
+        self.from2.setValue(p[1][0])
+        self.to2.setValue(p[1][1])
+
+    def getParameters(self):
+        axes = [self.axis1.getAxis(), self.axis2.getAxis()]
+        range = [[self.from1.value(), self.to1.value()], [self.from2.value(), self.to2.value()]]
+        width = self.width.value()
+        return {"axes": axes, "range": range, "width": width}
+
+    def setParameters(self, axes, range, width):
+        self.axis1.setAxis(axes[0])
+        self.axis2.setAxis(axes[1])
+        self.from1.setValue(range[0][0])
+        self.to1.setValue(range[0][1])
+        self.from2.setValue(range[1][0])
+        self.to2.setValue(range[1][1])
+        self.width.setValue(width)
+
+
+addFilter(FreeLineFilter, gui=_FreeLineSetting, guiName="Cut along line")

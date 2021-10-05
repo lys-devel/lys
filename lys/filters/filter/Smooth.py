@@ -1,7 +1,10 @@
 from dask_image import ndfilters
 
 from lys import DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .CommonWidgets import kernelSizeLayout, kernelSigmaLayout
 
 
 class MedianFilter(FilterInterface):
@@ -59,3 +62,50 @@ class GaussianFilter(FilterInterface):
 
     def getParameters(self):
         return {"kernel": self._kernel}
+
+
+@filterGUI(MedianFilter)
+class _MedianSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._layout = kernelSizeLayout(dimension)
+        self.setLayout(self._layout)
+
+    def getParameters(self):
+        return {"kernel": self._layout.getKernelSize()}
+
+    def setParameters(self, kernel):
+        self._layout.setKernelSize(kernel)
+
+
+@filterGUI(AverageFilter)
+class _AverageSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._layout = kernelSizeLayout(dimension)
+        self.setLayout(self._layout)
+
+    def getParameters(self):
+        return {"kernel": self._layout.getKernelSize()}
+
+    def setParameters(self, kernel):
+        self._layout.setKernelSize(kernel)
+
+
+@filterGUI(GaussianFilter)
+class _GaussianSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._layout = kernelSigmaLayout(dimension)
+        self.setLayout(self._layout)
+
+    def getParameters(self):
+        return {"kernel": self._layout.getKernelSigma()}
+
+    def setParameters(self, kernel):
+        self._layout.setKernelSigma(kernel)
+
+
+addFilter(MedianFilter, gui=_MedianSetting, guiName="Median", guiGroup="Smoothing")
+addFilter(AverageFilter, gui=_AverageSetting, guiName="Average", guiGroup="Smoothing")
+addFilter(GaussianFilter, gui=_GaussianSetting, guiName="Gaussian", guiGroup="Smoothing")

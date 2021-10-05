@@ -4,7 +4,7 @@ import traceback
 import rlcompleter
 
 
-from LysQt.QtWidgets import QMainWindow, QSplitter, QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QTextEdit, QTabBar
+from LysQt.QtWidgets import QMainWindow, QSplitter, QLineEdit, QWidget, QHBoxLayout, QTabWidget, QTextEdit, QTabBar
 from LysQt.QtGui import QColor, QTextCursor, QTextOption
 from LysQt.QtCore import Qt, pyqtSignal, QEvent
 
@@ -113,14 +113,19 @@ class MainWindow(QMainWindow):
         self._workspace.append(work)
         self._mainTab.insertTab(max(0, self._mainTab.count() - 1), work, workspace)
         self._mainTab.setCurrentIndex(self._mainTab.count() - 1)
-        work.RestoreAllWindows()
-        self.closed.connect(work.StoreAllWindows)
 
     def __loadWorkspace(self):
         list = self._settingDict.get("workspaces", [])
         for w in list:
             if w != "default":
                 self.__addWorkspace(w)
+
+    def _restoreWorkspaces(self):
+        for i, work in enumerate(self._workspace):
+            self._mainTab.setCurrentIndex(i)
+            work.RestoreAllWindows()
+            self.closed.connect(work.StoreAllWindows)
+        self._mainTab.setCurrentIndex(0)
 
     def __initMenu(self):
         menu = self.menuBar()

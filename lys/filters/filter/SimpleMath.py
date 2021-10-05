@@ -1,7 +1,11 @@
 import numpy as np
 import dask.array as da
+
 from lys import DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .CommonWidgets import QLineEdit, QComboBox, QHBoxLayout, QLabel, ScientificSpinBox
 
 
 class SimpleMathFilter(FilterInterface):
@@ -98,3 +102,88 @@ class NanToNumFilter(FilterInterface):
 
     def getParameters(self):
         return {"value": self._value}
+
+
+@filterGUI(SimpleMathFilter)
+class _SimpleMathSetting(FilterSettingBase):
+    _ops = ["+", "-", "*", "/", "**"]
+
+    def __init__(self, dim):
+        super().__init__(dim)
+        self._val = QLineEdit()
+        self._val.setText("0")
+        self._type = QComboBox()
+        self._type.addItems(self._ops)
+
+        self._layout = QHBoxLayout()
+        self._layout.addWidget(QLabel('data'))
+        self._layout.addWidget(self._type)
+        self._layout.addWidget(self._val)
+        self.setLayout(self._layout)
+
+    def getParameters(self):
+        return {"type": self._type.currentText(), "value": eval(self._val.text())}
+
+    def setParameters(self, type, value):
+        self._val.setText(str(value))
+        self._type.setCurrentIndex(self._ops.index(type))
+
+
+@filterGUI(ComplexFilter)
+class _ComplexSetting(FilterSettingBase):
+    types = ["absolute", "real", "imag"]
+
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        layout = QHBoxLayout()
+        self._combo = QComboBox()
+        self._combo.addItems(self.types)
+        layout.addWidget(self._combo)
+        self.setLayout(layout)
+
+    def getParameters(self):
+        return {"type": self._combo.currentText()}
+
+    def setParameters(self, type):
+        self._combo.setCurrentIndex(self.types.index(type))
+
+
+@filterGUI(PhaseFilter)
+class _PhaseSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        layout = QHBoxLayout()
+        self._phase = ScientificSpinBox()
+        layout.addWidget(self._phase)
+        layout.addWidget(QLabel("deg"))
+        self.setLayout(layout)
+
+    def getParameters(self):
+        return {"rot": self._phase.value(), "unit": "deg"}
+
+    def setParameters(self, rot):
+        self._phase.setValue(rot)
+
+
+@filterGUI(NanToNumFilter)
+class _NanToNumSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._val = QLineEdit()
+        self._val.setText("0")
+        layout = QHBoxLayout()
+        layout.addWidget(QLabel("Value: "))
+        layout.addWidget(self._val)
+        self.setLayout(layout)
+
+    def getParameters(self):
+        return {"value": eval(self._val.text())}
+
+    def setParameters(self, value):
+        self._val.setText(str(value))
+
+
+addFilter(SimpleMathFilter, gui=_SimpleMathSetting, guiName="Simple Math", guiGroup="Simple Math")
+addFilter(ComplexFilter, gui=_ComplexSetting, guiName="Complex", guiGroup="Simple Math")
+addFilter(PhaseFilter, gui=_PhaseSetting, guiName="Rotate phase", guiGroup="Simple Math")
+addFilter(NanToNumFilter, gui=_NanToNumSetting, guiName="Replace NaN", guiGroup="Simple Math")

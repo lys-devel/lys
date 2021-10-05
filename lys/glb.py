@@ -53,3 +53,15 @@ def createMainWindow(show=True):
     """
     global _main
     _main = MainWindow(show)
+
+
+def restoreWorkspaces():
+    """
+    Restore workspaces.
+
+    This function is called by lys automatically, and thus users and developers need not to use this function.
+
+    If you want to make custom launch script of lys, see :mod:`.__main__` module.
+    """
+    global _main
+    _main._restoreWorkspaces()

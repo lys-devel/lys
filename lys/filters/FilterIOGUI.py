@@ -2,9 +2,8 @@ import os
 
 from LysQt.QtWidgets import QMenu, QAction, QFileDialog, QMessageBox, QInputDialog, QDialog, QPushButton, QHBoxLayout, QVBoxLayout
 
-from lys import home
+from lys import home, filters
 from lys.FileView import FileSystemView
-from . import Filters
 
 
 class FilterViewWidget(FileSystemView):
@@ -29,7 +28,7 @@ class FilterViewWidget(FileSystemView):
         path = self.selectedPaths()[0]
         if path is None:
             return
-        f = Filters.fromFile(path)
+        f = filters.fromFile(path)
         fname = QFileDialog.getSaveFileName(self, 'Save Filter', home(), filter="Filter files(*.fil);;All files(*.*)")
         if fname[0]:
             if os.path.exists(fname[0] + ".fil"):
@@ -49,7 +48,7 @@ class FilterViewWidget(FileSystemView):
                     res = QMessageBox.information(None, "Confirmation", "File " + name + " already exits. Do you want to overwrite it?", QMessageBox.Yes, QMessageBox.No)
                     if res == QMessageBox.No:
                         return
-                f = Filters.fromFile(fname[0])
+                f = filters.fromFile(fname[0])
                 f.saveAsFile(path)
 
     def _Action_Print(self):
@@ -58,7 +57,7 @@ class FilterViewWidget(FileSystemView):
         if path is None:
             print("Invalid path")
             return
-        filt = Filters.fromFile(path)
+        filt = filters.fromFile(path)
         if hasattr(filt, "dimension"):
             res += "Dimension: " + str(filt.dimension) + ", "
         filt = filt.getFilters()

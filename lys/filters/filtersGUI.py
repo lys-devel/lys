@@ -1,14 +1,12 @@
-import collections
 import numpy as np
 
+from LysQt.QtCore import Qt, pyqtSignal
+from LysQt.QtWidgets import QWidget, QComboBox, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout, QMenu, QAction, QTabWidget, QPushButton, QInputDialog
 
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QComboBox, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout, QMenu, QAction, QTabWidget, QPushButton, QInputDialog
+from lys import filters
 from lys.widgets import LysSubWindow
 
 from .FilterIOGUI import FilterExportDialog, FilterImportDialog
-from . import Filters
-filterGroups = collections.OrderedDict()
 
 
 def filterGUI(filterClass):
@@ -51,13 +49,17 @@ class FilterSettingBase(QWidget):
 class FilterGroupSetting(QWidget):
     filterChanged = pyqtSignal(QWidget)
 
-    def __init__(self, dimension=2, layout=None):
+    def __init__(self, dimension=2, layout=None, filterDict=None):
+        from .FilterManager import _filterGroups
         super().__init__()
         self.dim = dimension
-        self._filters = self._filterList()
+        if filterDict is None:
+            self._filters = _filterGroups
+        else:
+            self._filters = filterDict
 
         self._combo = QComboBox()
-        for f in self._filters.keys():
+        for f in sorted(self._filters.keys()):
             self._combo.addItem(f, f)
         self._combo.currentTextChanged.connect(self._update)
         vlayout = QVBoxLayout()
@@ -72,17 +74,13 @@ class FilterGroupSetting(QWidget):
     def _initControlLayout(self):
         return None
 
-    @classmethod
-    def _filterList(cls):
-        return filterGroups
-
     def _update(self, text=None):
         if text is None:
             text = self._combo.currentText()
         if text in self._filters:
             self._removeChildGroup()
-            if issubclass(self._filters[text], FilterGroupSetting):
-                self.filter = self._filters[text](self.dim, layout=self._layout)
+            if isinstance(self._filters[text], dict):
+                self.filter = FilterGroupSetting(self.dim, layout=self._layout, filterDict=self._filters[text])
                 self._addGroup(self.filter)
             else:
                 self.filter = self._filters[text](self.dim)
@@ -103,13 +101,16 @@ class FilterGroupSetting(QWidget):
             self._childGroup = None
 
     @classmethod
-    def _havingFilter(cls, f):
-        for key, s in cls._filterList().items():
-            if s._havingFilter(f) is not None:
+    def _havingFilter(cls, f, dic):
+        for key, s in dic.items():
+            if isinstance(s, dict):
+                if cls._havingFilter(f, dic=s) is not None:
+                    return key
+            elif s._havingFilter(f) is not None:
                 return key
 
     def parseFromFilter(self, f):
-        name = self._havingFilter(f)
+        name = self._havingFilter(f, self._filters)
         if name is not None:
             self._combo.setCurrentIndex(self._combo.findData(name))
         return self.filter.parseFromFilter(f)
@@ -184,7 +185,7 @@ class FiltersGUI(QWidget):
         res = []
         for t in self.__tabs:
             res.extend(t.GetFilters().getFilters())
-        return Filters(res)
+        return filters.Filters(res)
 
     def __initLayout(self):
         self._tab = QTabWidget()
@@ -303,7 +304,7 @@ class FiltersGUI(QWidget):
         self.loadFromString(data, index)
 
     def loadFromString(self, str, index=False):
-        self.loadFilters(Filters.fromString(str), index)
+        self.loadFilters(filters.Filters.fromString(str), index)
 
     def loadFilters(self, filt, index=False):
         if index is False:
@@ -320,7 +321,7 @@ class FiltersGUI(QWidget):
                     tmp = []
             res.append(tmp)
             for tab, fil in zip(self.__tabs, res):
-                tab.SetFilters(Filters(fil))
+                tab.SetFilters(filters.Filters(fil))
         else:
             self.__tabs[index].SetFilters(filt)
 
@@ -349,7 +350,7 @@ class _SubFiltersGUI(QScrollArea):
             filt = f.GetFilter()
             if filt is not None:
                 res.append(filt)
-        return Filters(res)
+        return filters.Filters(res)
 
     def SetFilters(self, filt):
         self.clear()
@@ -455,21 +456,3 @@ class FiltersDialog(LysSubWindow):
 
     def setFilter(self, filt):
         self.filters.loadFilters(filt)
-
-
-class _DeleteSetting(QWidget):
-    def __init__(self, dimension=2):
-        super().__init__(None)
-
-    @classmethod
-    def _havingFilter(cls, f):
-        return None
-
-    def getFilter(self):
-        return None
-
-    def getRelativeDimension(self):
-        return 0
-
-
-filterGroups[''] = _DeleteSetting

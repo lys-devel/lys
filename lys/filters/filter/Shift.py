@@ -3,7 +3,10 @@ import numpy as np
 import dask.array as da
 
 from lys import DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .CommonWidgets import QGridLayout, QSpinBox, QLabel, AxisCheckLayout, QHBoxLayout, QComboBox
 
 
 class ShiftFilter(FilterInterface):
@@ -127,3 +130,89 @@ class ReflectFilter(FilterInterface):
 
     def getParameters(self):
         return {"type": self.type, "axes": self.axes}
+
+
+@filterGUI(ShiftFilter)
+class _ImageShiftSetting(FilterSettingBase):
+    def __init__(self, dimension=2):
+        super().__init__(dimension)
+        self._layout = QGridLayout()
+        self._dim = dimension
+        self._values = []
+        for i in range(dimension):
+            wid = QSpinBox()
+            wid.setRange(-1000000, 1000000)
+            self._values.append(wid)
+            self._layout.addWidget(QLabel('Axis' + str(i + 1)), 0, i)
+            self._layout.addWidget(wid, 1, i)
+        self.setLayout(self._layout)
+
+    def getParameters(self):
+        return {"shift": [v.value() for v in self._values]}
+
+    def setParameters(self, shift):
+        for ax, s in enumerate(shift):
+            self._values[ax].setValue(s)
+
+
+@filterGUI(ReverseFilter)
+class _ReverseSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        self._axes = AxisCheckLayout(dim)
+        self.setLayout(self._axes)
+
+    def getParameters(self):
+        return {"axes": self._axes.GetChecked()}
+
+    def setParameters(self, axes):
+        self._axes.SetChecked(axes)
+
+
+@filterGUI(RollFilter)
+class _RollSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        layout = QHBoxLayout()
+        self._combo = QComboBox()
+        self._combo.addItems(["1/2", "1/4", "-1/4"])
+        self._axes = AxisCheckLayout(dim)
+        layout.addWidget(self._combo)
+        layout.addLayout(self._axes)
+        self.setLayout(layout)
+
+    def getParameters(self):
+        return {"amount": self._combo.currentText(), "axes": self._axes.GetChecked()}
+
+    def setParameters(self, amount, axes):
+        self._axes.SetChecked(axes)
+        self._combo.setCurrentText(amount)
+
+
+@ filterGUI(ReflectFilter)
+class _ReflectSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        layout = QHBoxLayout()
+        self._combo = QComboBox()
+        self._combo.addItem("first")
+        self._combo.addItem("last")
+        self._combo.addItem("center")
+        self._axes = AxisCheckLayout(dim)
+        layout.addWidget(self._combo)
+        layout.addLayout(self._axes)
+        self.setLayout(layout)
+
+    def getParameters(self):
+        return {"type": self._combo.currentText(), "axes": self._axes.GetChecked()}
+
+    def setParameters(self, type, axes):
+        self._axes.SetChecked(axes)
+        self._combo.setCurrentText(type)
+
+
+addFilter(ShiftFilter, gui=_ImageShiftSetting, guiName="Shift image", guiGroup="Image transformation")
+
+addFilter(ReverseFilter, gui=_ReverseSetting, guiName="Reverse", guiGroup="Symmetric operation")
+addFilter(RollFilter, gui=_RollSetting, guiName="Roll", guiGroup="Symmetric operation")
+addFilter(ReflectFilter, gui=_ReflectSetting, guiName="Reflect", guiGroup="Symmetric operation")

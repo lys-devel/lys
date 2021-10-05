@@ -1,7 +1,11 @@
 import numpy as np
 import dask.array as da
+
 from lys import DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .CommonWidgets import AxisCheckLayout
 
 
 class GradientFilter(FilterInterface):
@@ -112,3 +116,44 @@ class LaplacianFilter(FilterInterface):
 
     def getParameters(self):
         return {}
+
+
+class _AxisCheckSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        self._layout = AxisCheckLayout(dim)
+        self.setLayout(self._layout)
+
+    def setParameters(self, axes):
+        self._layout.SetChecked(axes)
+
+    def getParameters(self):
+        return {"axes": self._layout.GetChecked()}
+
+
+@filterGUI(GradientFilter)
+class _GradientSetting(_AxisCheckSetting):
+    pass
+
+
+@filterGUI(NablaFilter)
+class _NablaSetting(FilterSettingBase):
+    def setParameters(self):
+        pass
+
+    def getParameters(self):
+        return {}
+
+
+@filterGUI(LaplacianFilter)
+class _LaplacianSetting(FilterSettingBase):
+    def setParameters(self):
+        pass
+
+    def getParameters(self):
+        return {}
+
+
+addFilter(GradientFilter, gui=_GradientSetting, guiName="Gradient", guiGroup="Differentiate")
+addFilter(NablaFilter, gui=_NablaSetting, guiName="Nabla vector", guiGroup="Differentiate")
+addFilter(LaplacianFilter, gui=_LaplacianSetting, guiName="Laplacian", guiGroup="Differentiate")

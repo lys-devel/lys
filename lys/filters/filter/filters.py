@@ -1,6 +1,7 @@
 import sys
 import _pickle as cPickle
 from .FilterInterface import FilterInterface
+from ..FilterManager import getFilter
 
 
 class Filters(FilterInterface):
@@ -53,14 +54,14 @@ class Filters(FilterInterface):
 
     @staticmethod
     def _restoreFilter(data):
-        from lys import filters
         # parse from list of parameter dictionary
         result = []
         for f in data:
             fname = f["filterName"]
             del f["filterName"]
-            if fname in filters._filterClasses:
-                result.append(filters._filterClasses[fname](**f))
+            filt = getFilter(fname)
+            if filt is not None:
+                result.append(filt(**f))
             else:
                 print("Could not load " + fname + ". The filter class may be deleted or not loaded. Check plugins and their version.", file=sys.stderr)
                 return None

@@ -1,6 +1,6 @@
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from LysQt.QtGui import *
+from LysQt.QtCore import *
+from LysQt.QtWidgets import *
 from lys.widgets import ScientificSpinBox
 
 
@@ -163,8 +163,7 @@ class RegionSelectWidget(QGridLayout):
         self.__initLayout(dim, loader)
 
     def __initLayout(self, dim, loader):
-        self.__loadPrev = QPushButton(
-            'Load from Graph', clicked=self.__loadFromPrev)
+        self.__loadPrev = QPushButton('Load from Graph', clicked=self.__loadFromPrev)
         if loader is None:
             self.loadClicked.connect(self.__load)
         else:

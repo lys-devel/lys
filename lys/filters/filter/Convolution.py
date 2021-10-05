@@ -4,7 +4,11 @@ from dask_image import ndfilters as dfilters
 from scipy.ndimage import filters
 
 from lys import DaskWave
+from lys.filters import FilterSettingBase, filterGUI, addFilter
+
 from .FilterInterface import FilterInterface
+from .Differentiate import _AxisCheckSetting
+from .CommonWidgets import *
 
 
 class _ConvolutionFilter(FilterInterface):
@@ -108,3 +112,23 @@ class LaplacianConvFilter(_ConvolutionFilter):
         kernel = self._kernel(wave, None)
         wave.data = dfilters.convolve(wave.data, kernel)
         return wave
+
+
+@filterGUI(PrewittFilter)
+class _PrewittSetting(_AxisCheckSetting):
+    pass
+
+
+@filterGUI(SobelFilter)
+class _SobelSetting(_AxisCheckSetting):
+    pass
+
+
+@filterGUI(LaplacianConvFilter)
+class _LaplacianConvSetting(_AxisCheckSetting):
+    pass
+
+
+addFilter(PrewittFilter, gui=_PrewittSetting, guiName="Prewitt filter", guiGroup="Differentiate")
+addFilter(SobelFilter, gui=_SobelSetting, guiName="Sobel filter", guiGroup="Differentiate")
+addFilter(LaplacianConvFilter, gui=_LaplacianConvSetting, guiName="Laplacian by convolution", guiGroup="Differentiate")
