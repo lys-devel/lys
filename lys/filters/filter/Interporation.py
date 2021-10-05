@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.interpolate import interpn, interp2d, interp1d
 
+from lys import DaskWave
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
@@ -32,7 +33,7 @@ class InterpFilter(FilterInterface):
     def __init__(self, size):
         self._size = size
 
-    def _execute(self, wave, **kwargs):
+    def _execute(self, wave, *args, **kwargs):
         sigList1, sigList2 = "a,b,c,d,e,f,g,h", "i,j,k,l,m,n,o,p"
         indice = [i for i in range(len(self._size)) if self._size[i] != 0]
         if len(indice) == 0:
@@ -57,9 +58,7 @@ class InterpFilter(FilterInterface):
                 return interpn(oldAxes, x, mesh)
         output_sizes = {sigList2[j * 2]: len(newAxes[i]) for j, i in enumerate(indice)}
         uf = self._generalizedFunction(wave, func, sig, [indice, indice], output_sizes=output_sizes)
-        wave.data = self._applyFunc(uf, wave.data)
-        wave.axes = newAxes
-        return wave
+        return DaskWave(self._applyFunc(uf, wave.data), *newAxes, **wave.note)
 
     def _getNewAxes(self, wave):
         axes = []

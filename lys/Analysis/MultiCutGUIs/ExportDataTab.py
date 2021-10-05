@@ -2,6 +2,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
+from lys import Wave
+
 
 class ExportDataTab(QGroupBox):
     def __init__(self):
@@ -27,12 +29,12 @@ class ExportDataTab(QGroupBox):
 
     def __export(self):
         filt = ""
-        for f in self.wave.SupportedFormats():
+        for f in Wave.SupportedFormats():
             filt = filt + f + ";;"
         filt = filt[:len(filt) - 2]
         path, type = QFileDialog.getSaveFileName(filter=filt)
         if len(path) != 0:
-            self.wave.export(path, type=type)
+            self.wave.compute().export(path, type=type)
 
     def __send(self):
         from lys import glb
@@ -41,4 +43,3 @@ class ExportDataTab(QGroupBox):
         if ok:
             w.name = text
             glb.shell().addObject(w)
-            print(text + " has been added to shell.")

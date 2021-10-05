@@ -29,9 +29,8 @@ class SelectIndexFilter(FilterInterface):
         axes.pop(self._axis)
         sl = [slice(None)] * wave.data.ndim
         sl[self._axis] = self._index
-        wave.data = wave.data[tuple(sl)]
-        wave.axes = axes
-        return wave
+        data = wave.data[tuple(sl)]
+        return DaskWave(data, *axes, **wave.note)
 
     def getParameters(self):
         return {"axis": self._axis, "index": self._index}
