@@ -80,9 +80,9 @@ class ReferenceNormalizeFilter(FilterInterface):
     def _execute(self, wave, *axes, **kwargs):
         ref = self.__makeReference(wave)
         if self._type == "Diff":
-            data = wave.data - ref
+            data = wave.data.astype(float) - ref
         if self._type == "Divide":
-            data = wave.data / ref
+            data = wave.data.astype(float) / ref
         return DaskWave(data, *wave.axes, **wave.note)
 
     def __makeReference(self, wave):
