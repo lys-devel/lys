@@ -9,27 +9,41 @@ from PyQt5.QtWidgets import *
 def saveCanvas(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        if args[0].saveflg:
+        if isinstance(args[0], CanvasPart):
+            canvas = args[0]._canvas
+        else:
+            canvas = args[0]
+        if canvas.saveflg:
             res = func(*args, **kwargs)
         else:
-            args[0].saveflg = True
+            canvas.saveflg = True
             res = func(*args, **kwargs)
-            args[0].Save()
-            args[0].draw()
-            args[0].saveflg = False
+            canvas.Save()
+            canvas.draw()
+            canvas.saveflg = False
         return res
     return wrapper
 
 
 def notSaveCanvas(func):
-    @functools.wraps(func)
+    @ functools.wraps(func)
     def wrapper(*args, **kwargs):
-        saved = args[0].saveflg
-        args[0].saveflg = True
+        if isinstance(args[0], CanvasPart):
+            canvas = args[0]._canvas
+        else:
+            canvas = args[0]
+        saved = canvas.saveflg
+        canvas.saveflg = True
         res = func(*args, **kwargs)
-        args[0].saveflg = saved
+        canvas.saveflg = saved
         return res
     return wrapper
+
+
+class CanvasPart(QObject):
+    def __init__(self, canvas):
+        super().__init__()
+        self._canvas = canvas
 
 
 class BasicEventCanvasBase(object):

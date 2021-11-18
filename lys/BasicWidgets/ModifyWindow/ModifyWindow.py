@@ -73,14 +73,17 @@ class _AreaTab(QWidget):
     def _initlayout(self, canvas):
         self._size = ResizeBox(canvas)
         self._margin = MarginAdjustBox(canvas)
-        self.layout = QVBoxLayout(self)
-        self.layout.addWidget(self._size)
-        self.layout.addWidget(self._margin)
+
         sav = QPushButton('Save', clicked=self._save)
         lod = QPushButton('Load', clicked=self._load)
         hbox = QHBoxLayout()
         hbox.addWidget(sav)
         hbox.addWidget(lod)
+
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(self._size)
+        self.layout.addWidget(self._margin)
+        self.layout.addStretch()
         self.layout.addLayout(hbox)
         self.setLayout(self.layout)
 

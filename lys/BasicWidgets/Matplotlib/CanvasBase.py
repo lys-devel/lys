@@ -71,6 +71,22 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
                 self.axes_txy.minorticks_on()
             return self.axes_txy
 
+    def axisIsValid(self, axis):
+        if axis in ["Left", "Bottom"]:
+            return True
+        elif axis == "Right":
+            return (self.axes_tx is not None) or (self.axes_txy is not None)
+        elif axis == "Top":
+            return (self.axes_ty is not None) or (self.axes_txy is not None)
+        elif axis == "BottomLeft" or axis == Axis.BottomLeft:
+            return True
+        elif axis == "TopLeft" or axis == Axis.TopLeft:
+            return self.axes_ty is not None
+        elif axis == "BottomRight" or axis == Axis.BottomLeft:
+            return self.axes_tx is not None
+        elif axis == "TopRight" or axis == Axis.BottomLeft:
+            return self.axes_tyy is not None
+
     def _append1d(self, xdata, ydata, axis, zorder):
         ax = self.__getAxes(axis)
         line, = ax.plot(xdata, ydata, picker=5)

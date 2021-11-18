@@ -1,90 +1,30 @@
 #!/usr/bin/env python
-import random
 import weakref
-import gc
-import sys
-import os
-import math
-import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure, SubplotParams
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import colors
 
 from .AxisLabelSettings import *
 from .CanvasBase import saveCanvas, notSaveCanvas
+from ..CanvasInterface import MarginBase
 
 from lys.widgets import SizeAdjustableWindow
 
 
-class MarginAdjustableCanvas(AxisSettingCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.__listener = []
-        self.setMargin()
+class _MatplotlibMargin(MarginBase):
+    """Implementation of MarginBase for matplotlib"""
 
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dictionary['Margin'] = self.margins
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'Margin' in dictionary:
-            m = dictionary['Margin']
-            self.setMargin(left=m[0], right=m[1], bottom=m[2], top=m[3])
-
-    @saveCanvas
-    def setMargin(self, left=0, right=0, bottom=0, top=0):
-        l = left
-        r = right
-        t = top
-        b = bottom
-        if l == 0:
-            l = 0.2
-        if r == 0:
-            if self.axes_tx is None and self.axes_txy is None:
-                r = 0.85
-            else:
-                r = 0.80
-        if b == 0:
-            b = 0.2
-        if t == 0:
-            if self.axes_ty is None and self.axes_txy is None:
-                t = 0.85
-            else:
-                t = 0.80
-        if l >= r:
-            r = l + 0.05
-        if b >= t:
-            t = b + 0.05
-        self.fig.subplots_adjust(left=l, right=r, top=t, bottom=b)
-        self.margins = [left, right, bottom, top]
-        self.margins_act = [l, r, b, t]
-        for l in self.__listener:
-            if l() is not None:
-                l().OnMarginAdjusted()
-            else:
-                self.__listener.remove(l)
-        self.draw()
-
-    def getMargin(self):
-        return self.margins
-
-    def getActualMargin(self):
-        return self.margins_act
-
-    def addMarginAdjustedListener(self, listener):
-        self.__listener.append(weakref.ref(listener))
+    def _setMargin(self, l, r, t, b):
+        self._canvas.fig.subplots_adjust(left=l, right=r, top=t, bottom=b)
 
 
 unit = 0.3937007874  # inch->cm
 
 
-class ResizableCanvas(MarginAdjustableCanvas):
+class ResizableCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
+        self.margin = _MatplotlibMargin(self)
         self.__wmode = 'Auto'
         self.__hmode = 'Auto'
         self.__wvalue = 0
@@ -96,7 +36,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
         self.__listener = []
         self.setAbsoluteSize(4, 4)
         self.setAutoSize()
-        self.addMarginAdjustedListener(self)
+        self.margin.marginChanged.connect(self._onMarginAdjusted)
         self.axisRangeChanged.connect(self.OnAxisRangeChanged)
 
     def SaveAsDictionary(self, dictionary, path):
@@ -122,7 +62,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
                 self.setSizeByArray(dic['Width'], 'Width', True)
                 self.setSizeByArray(dic['Height'], 'Height', True)
 
-    def OnMarginAdjusted(self):
+    def _onMarginAdjusted(self):
         self.setSizeByArray([self.__wmode, self.__wvalue, self.__waxis1, self.__waxis2], 'Width')
         self.setSizeByArray([self.__hmode, self.__hvalue, self.__haxis1, self.__haxis2], 'Height')
 
@@ -163,7 +103,7 @@ class ResizableCanvas(MarginAdjustableCanvas):
                 self.setHeightPlan(self.__hvalue, self.__haxis1, self.__haxis2)
 
     def getMarginRatio(self):
-        m = self.getActualMargin()
+        m = self.margin.getMargin()
         wr = 1 / (m[1] - m[0])
         hr = 1 / (m[3] - m[2])
         return (wr, hr)

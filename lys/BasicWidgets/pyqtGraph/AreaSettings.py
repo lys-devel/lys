@@ -1,79 +1,28 @@
 #!/usr/bin/env python
 import weakref
-import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from .AxisLabelSettings import *
 from lys.widgets import SizeAdjustableWindow
+from ..CanvasInterface import MarginBase
 
 
-class MarginAdjustableCanvas(AxisSettingCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.__listener = []
-        self.setMargin()
+class _PyqtGraphMargin(MarginBase):
+    """Implementation of MarginBase for pyqtGraph"""
 
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dictionary['Margin'] = self.margins
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'Margin' in dictionary:
-            m = dictionary['Margin']
-            self.setMargin(left=m[0], right=m[1], bottom=m[2], top=m[3])
-
-    @saveCanvas
-    def setMargin(self, left=0, right=0, bottom=0, top=0):
-        l = left
-        r = right
-        t = top
-        b = bottom
-        if l == 0:
-            l = 0.2
-        if r == 0:
-            if self.axes_tx is None and self.axes_txy is None:
-                r = 0.85
-            else:
-                r = 0.80
-        if b == 0:
-            b = 0.2
-        if t == 0:
-            if self.axes_ty is None and self.axes_txy is None:
-                t = 0.85
-            else:
-                t = 0.80
-        if l >= r:
-            r = l + 0.05
-        if b >= t:
-            t = b + 0.05
-        self.setContentsMargins(l, r, t, b)
-        self.margins = [left, right, bottom, top]
-        self.margins_act = [l, r, b, t]
-        for l in self.__listener:
-            if l() is not None:
-                l().OnMarginAdjusted()
-            else:
-                self.__listener.remove(l)
-
-    def getMargin(self):
-        return self.margins
-
-    def getActualMargin(self):
-        return self.margins_act
-
-    def addMarginAdjustedListener(self, listener):
-        self.__listener.append(weakref.ref(listener))
+    def _setMargin(self, l, r, t, b):
+        self._canvas.setContentsMargins(l, r, t, b)
 
 
 unit = 2.54 / QDesktopWidget().physicalDpiX()  # cm/pixel
 
 
-class ResizableCanvas(MarginAdjustableCanvas):
+class ResizableCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
+        self.margin = _PyqtGraphMargin(self)
         self.__wmode = 'Auto'
         self.__hmode = 'Auto'
         self.__wvalue = 0

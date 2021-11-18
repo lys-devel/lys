@@ -9,52 +9,33 @@ from .AxisSettingsGUI import *
 
 class MarginAdjustBox(QGroupBox):
     def __init__(self, canvas):
-        super().__init__("Margin (0 means auto)")
+        super().__init__("Margin")
         self.canvas = canvas
         self._initlayout(canvas)
 
-    def _valueChanged(self):
-        self.canvas.setMargin(self._left.value(), self._right.value(), self._bottom.value(), self._top.value())
-
     def _initlayout(self, canvas):
-        m = canvas.getMargin()
-        lv = QVBoxLayout()
+        m = canvas.margin.getMargin(raw=True)
+        self._vals = [QDoubleSpinBox() for _ in range(4)]
+        for v, mv in zip(self._vals, m):
+            v.setRange(0, 1)
+            v.setSingleStep(0.05)
+            v.setSpecialValueText("Auto")
+            v.setValue(mv)
+            v.valueChanged.connect(self._valueChanged)
 
-        lh1 = QHBoxLayout()
-        lh1.addWidget(QLabel('Left'))
-        self._left = QDoubleSpinBox()
-        self._left.setRange(0, 1)
-        self._left.setSingleStep(0.05)
-        self._left.setValue(m[0])
-        self._left.valueChanged.connect(self._valueChanged)
-        lh1.addWidget(self._left)
-        lh1.addWidget(QLabel('Right'))
-        self._right = QDoubleSpinBox()
-        self._right.setRange(0, 1)
-        self._right.setSingleStep(0.05)
-        self._right.setValue(m[1])
-        self._right.valueChanged.connect(self._valueChanged)
-        lh1.addWidget(self._right)
+        grid = QGridLayout()
+        grid.addWidget(QLabel('Left'), 0, 0)
+        grid.addWidget(QLabel('Right'), 0, 2)
+        grid.addWidget(QLabel('Bottom'), 1, 0)
+        grid.addWidget(QLabel('Top'), 1, 2)
+        grid.addWidget(self._vals[0], 0, 1)
+        grid.addWidget(self._vals[1], 0, 3)
+        grid.addWidget(self._vals[2], 1, 1)
+        grid.addWidget(self._vals[3], 1, 3)
+        self.setLayout(grid)
 
-        lh2 = QHBoxLayout()
-        lh2.addWidget(QLabel('Bottom'))
-        self._bottom = QDoubleSpinBox()
-        self._bottom.setRange(0, 1)
-        self._bottom.setSingleStep(0.05)
-        self._bottom.setValue(m[2])
-        self._bottom.valueChanged.connect(self._valueChanged)
-        lh2.addWidget(self._bottom)
-        lh2.addWidget(QLabel('Top'))
-        self._top = QDoubleSpinBox()
-        self._top.setRange(0, 1)
-        self._top.setSingleStep(0.05)
-        self._top.setValue(m[3])
-        self._top.valueChanged.connect(self._valueChanged)
-        lh2.addWidget(self._top)
-
-        lv.addLayout(lh1)
-        lv.addLayout(lh2)
-        self.setLayout(lv)
+    def _valueChanged(self):
+        self.canvas.margin.setMargin(*[v.value() for v in self._vals])
 
 
 class ResizeBox(QGroupBox):

@@ -3,7 +3,7 @@ import shutil
 import fnmatch
 import itertools
 from lys import Wave
-from lys.BasicWidgets.GraphWindow import Graph, PreviewWindow, Table
+from lys.BasicWidgets.GraphWindow import Graph, Table
 from lys import load, home
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -219,15 +219,6 @@ class _FileSystemViewBase(QWidget):
         for p in self.selectedPaths():
             w = Wave(p)
             g.Append(w)
-
-    def Action_Preview(self):
-        return QAction('Preview', self, triggered=self.__preview)
-
-    def __preview(self):
-        list = []
-        for p in self.selectedPaths():
-            list.append(Wave(p))
-        PreviewWindow(list)
 
     def Action_Edit(self):
         return QAction('Edit', self, triggered=self.__edit)
