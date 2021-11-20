@@ -4,8 +4,17 @@ from .SaveCanvas import CanvasPart, saveCanvas
 
 class MarginBase(CanvasPart):
     """
-    Base class for Margin. 
-    Developers should implement a method _setMargin(left, right, bottom, top).
+    Abstract base class for Margin. 
+    All methods in this interface can be accessed from :class:`CanvasBase` instance.
+    Developers should implement a abstract method _setMargin(left, right, bottom, top).
+
+    Examples::
+
+        from lys import display
+        g = display([1,2,3])
+        g.canvas.setMargin(0, 0.3, 0.8, 0.9) # 0 means auto
+        print(g.canvas.getMargin())
+        # (0.2, 0.3, 0.8, 0.9)
     """
 
     marginChanged = pyqtSignal()
@@ -26,12 +35,6 @@ class MarginBase(CanvasPart):
             right (float): The position of the right edge of the subplots, as a fraction of the figure width.
             bottom (float): The position of the bottom edge of the subplots, as a fraction of the figure height.
             top (float): The position of the top edge of the subplots, as a fraction of the figure height.
-
-        Examples:
-
-            from lys import display
-            g = display([1,2,3])
-            g.canvas.margin.setMargin(0.2, 0.3, 0.8, 0.9)
         """
         l, r, t, b = self._calculateActualMargin(left, right, top, bottom)
         self._setMargin(l, r, t, b)
@@ -61,10 +64,10 @@ class MarginBase(CanvasPart):
         return le, r, t, b
 
     def getMargin(self, raw=False):
-        """Set margin of canvas.
+        """Get margin of canvas.
 
         Return:
-            margin (float of length 4): The value of margin. If raw is False, actual margin used for display is returned. 
+            float of length 4: The value of margin. If *raw* is False, actual margin used for display is returned. 
         """
         if raw:
             return self._margins
@@ -85,11 +88,22 @@ class MarginBase(CanvasPart):
 
 class CanvasSizeBase(CanvasPart):
     """
-    Base class for CanvasSize.
-    Developers should implement.
+    Abstract base class of CanvasSize. 
+    All methods in this interface can be accessed from :class:`CanvasBase` instance.
+    Developers should implement abstract methods _setAuto, _setAbsolute, _setAspect, and _getSize.
+
+    Examples::
+
+        from lys import display
+        g = display([1,2,3])
+        g.canvas.setCanvasSize("Width", "Absolute", 4)
+        g.canvas.setCanvasSize("Height", "Absolute", 5)
+        print(g.canvas.getCanvasSize())
+        # (4, 5)
     """
 
     canvasResized = pyqtSignal(object)
+    """Emitted when canvas size is changed."""
 
     def __init__(self, canvas):
         super().__init__(canvas)
@@ -109,6 +123,27 @@ class CanvasSizeBase(CanvasPart):
 
     @saveCanvas
     def setCanvasSize(self, type, mode, value=0, axis1=None, axis2=None):
+        """
+        Set the size of the canvas.
+
+        When *mode* is 'Auto', the canvas size is set to *value*, and is changed freely.
+        If *value* is zero, it remains present canvas size.
+
+        When *mode* is 'Absolute', the canvas size is set to *value* in cm.
+
+        When *mode* is 'Per Unit', the canvas size is set to *value* \* (range of *axis1*).
+
+        When *mode* is 'Aspect', the aspect ratio is set to *value*.
+
+        When *mode* is 'Plan', the canvas size is set to *value* \* (range of *axis1*) / (range of *axis2*).
+
+        Args:
+            type ('Width' or 'Height'): specify which size is set.
+            mode ('Auto' or 'Absolute' or 'Per Unit' or 'Aspect' or 'Plan'): see description.
+            value (float): the value to be set.
+            axis1 ('Left' or 'Right' or 'Bottom' or 'Top'): see description. 
+            axis2 ('Left' or 'Right' or 'Bottom' or 'Top'): see description. 
+        """
         other = {"Height": "Width", "Width": "Height"}
         if type == "Both":
             self.setCanvasSize("Width", mode, value, axis1, axis2)
@@ -141,9 +176,22 @@ class CanvasSizeBase(CanvasPart):
         self.canvasResized.emit(self.canvas())
 
     def getCanvasSize(self):
+        """Get canvas size.
+
+         Return:
+            float of length 2: Canvas size. 
+         """
         return self._getSize()
 
     def getSizeParams(self, type):
+        """
+        Get size parameters (mode, value, axis1, axis2) as dictionary. 
+
+        See :meth:`setCanvasSize` for the description of each parameters
+
+        Return:
+            dictionary: size parameters. 
+        """
         return self.__dic[type]
 
     @ saveCanvas
@@ -175,3 +223,15 @@ class CanvasSizeBase(CanvasPart):
             else:
                 self.setCanvasSize('Width', *dic['Width'])
                 self.setCanvasSize('Height', *dic['Height'])
+
+    def _setAuto(self, axis):
+        raise NotImplementedError
+
+    def _setAbsolute(self, type, value):
+        raise NotImplementedError
+
+    def _setAspect(self, type, aspect):
+        raise NotImplementedError
+
+    def _getSize(self):
+        raise NotImplementedError

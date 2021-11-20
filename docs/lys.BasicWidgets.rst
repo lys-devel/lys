@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   lys.BasicWidgets.CanvasInterface
    lys.BasicWidgets.Fitting
 
 Submodules
