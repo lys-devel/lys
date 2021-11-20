@@ -151,13 +151,14 @@ class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
                     if auto:
                         self.setAutoScaleAxis(l)
                     else:
-                        self.setAxisRange(dic[l], l)
+                        self.setAxisRange(l, dic[l])
 
     @saveCanvas
-    def setAxisRange(self, range, axis):
+    def setAxisRange(self, axis, range):
         axes = self.getAxes(axis)
         if axes is None:
-            return self.setAxisRange(range, Opposite[axis])
+            print(axis, range)
+            return self.setAxisRange(Opposite[axis], range)
         if axis in ['Left', 'Right']:
             axes.setYRange(*range, padding=0)
             axes.disableAutoRange(axis='y')

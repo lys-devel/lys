@@ -10,6 +10,7 @@ from .RegionAnnotation import *
 from .CrosshairAnnotation import *
 from .AnnotGUICanvas import *
 from .RGBSettings import *
+from .Axes import CanvasAxes
 from .Margin import MarginBase, CanvasSizeBase
 
 

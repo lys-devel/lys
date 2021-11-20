@@ -1,21 +1,13 @@
 #!/usr/bin/env python
-import random
 import weakref
-import sys
-import os
-import numpy as np
-from enum import Enum
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure, SubplotParams
-import matplotlib as mpl
-import matplotlib.font_manager as fm
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import lines, markers, ticker
+from matplotlib import ticker
 
 from lys import *
 from .VectorSettings import *
+from ..CanvasInterface import CanvasAxes
 
 
 class RangeSelectableCanvas(VectorSettingCanvas):
@@ -116,146 +108,39 @@ class AxisSelectableCanvas(RangeSelectableCanvas):
             else:
                 self.__listener.remove(l)
 
-    def getAxes(self, axis='Left'):
-        ax = axis
-        if ax in ['Left', 'Bottom']:
-            return self.axes
-        if ax == 'Top':
-            if self.axes_ty is not None:
-                return self.axes_ty
-            else:
-                return self.axes_txy
-        if ax == 'Right':
-            if self.axes_tx is not None:
-                return self.axes_tx
-            else:
-                return self.axes_txy
 
-    def axisIsValid(self, axis):
-        if axis in ['Left', 'Bottom']:
-            return True
-        if axis in ['Top']:
-            return self.axes_ty is not None or self.axes_txy is not None
-        if axis in ['Right']:
-            return self.axes_tx is not None or self.axes_txy is not None
+class _MatplotlibAxes(CanvasAxes):
+    def _isValid(self, axis):
+        return self.canvas().getAxes(axis) is not None
 
-    def axisList(self):
-        res = ['Left']
-        if self.axisIsValid('Right'):
-            res.append('Right')
-        res.append('Bottom')
-        if self.axisIsValid('Top'):
-            res.append('Top')
-        return res
-
-
-class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
-    axisRangeChanged = pyqtSignal()
-
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.__listener = []
-        self.__auto = {"Left": True, "Right": True, "Top": True, "Bottom": True}
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dic = {}
-        list = ['Left', 'Right', 'Top', 'Bottom']
-        for l in list:
-            if self.axisIsValid(l):
-                dic[l + "_auto"] = self.isAutoScaled(l)
-                dic[l] = self.getAxisRange(l)
-            else:
-                dic[l + "_auto"] = None
-                dic[l] = None
-        dictionary['AxisRange'] = dic
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'AxisRange' in dictionary:
-            dic = dictionary['AxisRange']
-            for l in ['Left', 'Right', 'Top', 'Bottom']:
-                auto = dic[l + "_auto"]
-                if auto is not None:
-                    if auto:
-                        self.setAutoScaleAxis(l)
-                    else:
-                        self.setAxisRange(dic[l], l)
-
-    @saveCanvas
-    def setAxisRange(self, range, axis, auto=False):
-        ax = axis
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if ax in ['Left', 'Right']:
+    def _setRange(self, axis, range):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
             axes.set_ylim(range)
-        if ax in ['Top', 'Bottom']:
+        if axis in ['Top', 'Bottom']:
             axes.set_xlim(range)
-        if not auto:
-            self.__auto[axis] = False
-        self.axisRangeChanged.emit()
 
-    def getAxisRange(self, axis):
-        ax = axis
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if ax in ['Left', 'Right']:
+    def _getRange(self, axis):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
             return axes.get_ylim()
-        if ax in ['Top', 'Bottom']:
+        if axis in ['Top', 'Bottom']:
             return axes.get_xlim()
 
-    @saveCanvas
-    def setAutoScaleAxis(self, axis):
-        ax = axis
-        axes = self.getAxes(axis=ax)
-        if axes is None:
-            return
-        max = np.NaN
-        min = np.NaN
-        with np.errstate(invalid='ignore'):
-            if ax in ['Left', 'Right']:
-                for l in self.getLines():
-                    max = np.nanmax([*l.wave.data, max])
-                    min = np.nanmin([*l.wave.data, min])
-                for im in self.getImages():
-                    max = np.nanmax([*im.wave.y, max])
-                    min = np.nanmin([*im.wave.y, min])
-            if ax in ['Top', 'Bottom']:
-                for l in self.getLines():
-                    max = np.nanmax([*l.wave.x, max])
-                    min = np.nanmin([*l.wave.x, min])
-                for im in self.getImages():
-                    max = np.nanmax([*im.wave.x, max])
-                    min = np.nanmin([*im.wave.x, min])
-        if np.isnan(max) or np.isnan(min):
-            return
-        if len(self.getImages()) == 0:
-            mergin = (max - min) / 20
-        else:
-            mergin = 0
-        r = self.getAxisRange(axis)
-        if r[0] < r[1]:
-            self.setAxisRange([min - mergin, max + mergin], axis, auto=True)
-        else:
-            self.setAxisRange([max + mergin, min - mergin], axis, auto=True)
-        self.__auto[axis] = True
 
-    def isAutoScaled(self, axis):
-        ax = axis
-        axes = self.getAxes(axis=ax)
-        if axes is None:
-            return
-        else:
-            return self.__auto[axis]
-        if ax in ['Left', 'Right']:
-            return axes.get_autoscaley_on()
-        if ax in ['Top', 'Bottom']:
-            return axes.get_autoscalex_on()
+class AxesCanvas(AxisSelectableCanvas):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self._axs = _MatplotlibAxes(self)
+
+    def __getattr__(self, key):
+        if "_axs" in self.__dict__:
+            if hasattr(self._axs, key):
+                return getattr(self._axs, key)
+        return super().__getattr__(key)
 
 
-class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
+class AxisRangeRightClickCanvas(AxesCanvas):
     def __GlobalToAxis(self, x, y, ax):
         loc = self.__GlobalToRatio(x, y, ax)
         xlim = ax.get_xlim()

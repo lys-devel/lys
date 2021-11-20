@@ -46,14 +46,14 @@ class MarginBase(CanvasPart):
         if le == 0:
             le = 0.2
         if r == 0:
-            if self._canvas.axisIsValid("Right"):
+            if self.canvas().axisIsValid("Right"):
                 r = 0.80
             else:
                 r = 0.85
         if b == 0:
             b = 0.2
         if t == 0:
-            if self._canvas.axisIsValid("Top"):
+            if self.canvas().axisIsValid("Top"):
                 t = 0.80
             else:
                 t = 0.85

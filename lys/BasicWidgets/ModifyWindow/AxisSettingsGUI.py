@@ -48,7 +48,7 @@ class AxisRangeAdjustBox(QGroupBox):
         self.__initlayout()
         self.__loadstate(canvas)
         self.canvas.addAxisSelectedListener(self)
-        self.canvas.axisRangeChanged.connect(self.OnAxisRangeChanged)
+        self.canvas.axisRangeChanged.connect(lambda: self.__loadstate(self.canvas))
 
     def __initlayout(self):
         layout = QVBoxLayout()
@@ -92,9 +92,6 @@ class AxisRangeAdjustBox(QGroupBox):
         self.__spin2.setValue(ran[1])
         self.__loadflg = False
 
-    def OnAxisRangeChanged(self):
-        self.__loadstate(self.canvas)
-
     def OnAxisSelected(self, axis):
         self.__loadstate(self.canvas)
 
@@ -106,7 +103,7 @@ class AxisRangeAdjustBox(QGroupBox):
         if type == "Auto":
             self.canvas.setAutoScaleAxis(axis)
         else:
-            self.canvas.setAxisRange(self.canvas.getAxisRange(axis), axis)
+            self.canvas.setAxisRange(axis, self.canvas.getAxisRange(axis))
         self.__loadstate(self.canvas)
 
     def __spinChanged(self):
@@ -114,12 +111,12 @@ class AxisRangeAdjustBox(QGroupBox):
             return
         mi = self.__spin1.value()
         ma = self.__spin2.value()
-        self.canvas.setAxisRange([mi, ma], self.canvas.getSelectedAxis())
+        self.canvas.setAxisRange(self.canvas.getSelectedAxis(), [mi, ma])
 
     def __reverse(self):
         mi = self.__spin1.value()
         ma = self.__spin2.value()
-        self.canvas.setAxisRange([ma, mi], self.canvas.getSelectedAxis())
+        self.canvas.setAxisRange(self.canvas.getSelectedAxis(), [ma, mi])
 
 
 opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}

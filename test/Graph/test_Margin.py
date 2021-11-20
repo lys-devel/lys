@@ -17,7 +17,7 @@ class Graph_test(unittest.TestCase):
         self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
         #self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
 
-    def test_Margin(self):
+    def test_Area(self):
         for g in self.graphs:
             d = {}
             c = g.canvas
@@ -52,3 +52,42 @@ class Graph_test(unittest.TestCase):
             self.assertAlmostEqual(d["Size"]["Width"][1], 0.5)
             c.LoadFromDictionary(d, home())
             assert_array_almost_equal(c.getCanvasSize(), [2, 4])
+
+    def test_Axes(self):
+        for g in self.graphs:
+            d = {}
+            c = g.canvas
+
+            # axisIsValid
+            self.assertTrue(c.axisIsValid("Left"))
+            self.assertFalse(c.axisIsValid("Top"))
+
+            # set/get
+            c.setAxisRange("Left", [0, 1])
+            c.setAxisRange("Bottom", [0, 2])
+            assert_array_almost_equal(c.getAxisRange("Left"), (0, 1))
+            assert_array_almost_equal(c.getAxisRange("Bottom"), (0, 2))
+
+            self.assertFalse(c.isAutoScaled('Left'))
+            self.assertFalse(c.isAutoScaled('Bottom'))
+
+            # save and load
+            c.SaveAsDictionary(d, home())
+            assert_array_almost_equal(d["AxisRange"]["Left"], (0, 1))
+            assert_array_almost_equal(d["AxisRange"]["Bottom"], (0, 2))
+            self.assertFalse(d["AxisRange"]['Left_auto'])
+            self.assertFalse(d["AxisRange"]['Bottom_auto'])
+            c.setAxisRange("Left", [0, 2])
+            c.setAxisRange("Bottom", [0, 1])
+            c.LoadFromDictionary(d, home())
+            assert_array_almost_equal(c.getAxisRange("Left"), (0, 1))
+            assert_array_almost_equal(c.getAxisRange("Bottom"), (0, 2))
+
+            # signal
+            c.b = False
+
+            def dummy():
+                c.b = True
+            c.axisRangeChanged.connect(dummy)
+            c.setAxisRange("Bottom", [0, 1])
+            self.assertTrue(c.b)
