@@ -63,7 +63,7 @@ class ReferenceNormalizeFilter(FilterInterface):
     """
     Normalize data by reference specified by refIndex.
 
-    When data.ndim=2 and *axis*=1, type="Divide", refIndex=5, data is normalized as
+    When data.ndim=2 and *axis* = 1, type='Divide', refIndex=5, data is normalized as
     data[:,0] = data[:,0]/data[:,5], data[:,1]=data[:,1]/dsata[:,5], ...
 
     Args:
@@ -110,7 +110,7 @@ class SelectRegionFilter(FilterInterface):
 
     Example:
 
-        Select region of 5*5 data::
+        Select region of 5\*5 data::
 
             w = Wave(np.ones([5, 5]), [1, 2, 3, 4, 5], [11, 12, 13, 14, 15])
             f = filters.SelectRegionFilter(range=[(2, 4), (11, 14)]) # range is given in axes unit

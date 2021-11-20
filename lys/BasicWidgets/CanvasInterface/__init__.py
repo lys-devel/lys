@@ -10,15 +10,12 @@ from .RegionAnnotation import *
 from .CrosshairAnnotation import *
 from .AnnotGUICanvas import *
 from .RGBSettings import *
-from .Margin import MarginBase
+from .Margin import MarginBase, CanvasSizeBase
 
 
 class TemporaryCanvasBase(ImageColorAdjustableCanvasBase):
     saveCanvas = pyqtSignal(dict)
     loadCanvas = pyqtSignal(dict)
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def SaveAsDictionary(self, dictionary, path):
         super().SaveAsDictionary(dictionary, path)

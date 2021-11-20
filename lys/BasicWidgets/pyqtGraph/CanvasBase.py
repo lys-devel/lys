@@ -32,9 +32,6 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         self.fig.canvas = None
         self.npen = 0
 
-    def RestoreSize(self):
-        pass
-
     def _draw(self):
         self.update()
 

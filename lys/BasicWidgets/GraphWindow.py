@@ -49,16 +49,16 @@ class Graph(AutoSavedWindow):
         elif lib == "pyqtgraph":
             self.canvas = pyqtCanvas()
         self.setWidget(self.canvas)
-        if file is not None:
-            self._load(file)
+        self.canvas.show()
+        self.canvas.canvasResized.connect(self._resizeCanvas)
         self.canvas.keyPressed.connect(self.keyPress)
         self.closed.connect(self.canvas.emitCloseEvent)
         self.resized.connect(self.canvas.parentResized)
         self.canvas.setSaveFunction(self.Save)
         if file is not None:
-            self.canvas.RestoreSize()
+            self._load(file)
         else:
-            self.canvas.RestoreSize(init=True)
+            self.canvas.setCanvasSize("Both", "Auto", 4)
 
     def _save(self, file):
         d = {}
@@ -86,6 +86,21 @@ class Graph(AutoSavedWindow):
             return d["Library"]
         else:
             return "matplotlib"
+
+    def _resizeCanvas(self, canvas):
+        self.setWidth(0)
+        self.setHeight(0)
+        self.adjustSize()
+        wmode = canvas.getSizeParams('Width')['mode']
+        hmode = canvas.getSizeParams('Height')['mode']
+        if wmode in ["Absolute", "Per Unit"]:
+            self.setWidth(self.width())
+        elif wmode in ["Plan", "Aspect"] and hmode in ["Absolute", "Per Unit"]:
+            self.setWidth(self.width())
+        if hmode in ["Absolute", "Per Unit"]:
+            self.setHeight(self.height())
+        elif hmode in ["Plan", "Aspect"] and wmode in ["Absolute", "Per Unit"]:
+            self.setHeight(self.height())
 
     def keyPress(self, e):
         if e.key() == Qt.Key_G:

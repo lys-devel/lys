@@ -109,28 +109,22 @@ class _ExtendMdiArea(QMdiArea):
 class SizeAdjustableWindow(QMdiSubWindow):
     def __init__(self):
         super().__init__()
-        # Mode #0 : Auto, 1 : heightForWidth, 2 : widthForHeight
-        self.__mode = 0
         self.setWidth(0)
         self.setHeight(0)
-        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
 
     def setWidth(self, val):
-        if self.__mode == 2:
-            self.__mode = 0
         if val == 0:
             self.setMinimumWidth(35)
-            self.setMaximumWidth(100000)
+            self.setMaximumWidth(10000)
         else:
             self.setMinimumWidth(val)
             self.setMaximumWidth(val)
 
     def setHeight(self, val):
-        if self.__mode == 1:
-            self.__mode = 0
         if val == 0:
             self.setMinimumHeight(35)
-            self.setMaximumHeight(100000)
+            self.setMaximumHeight(10000)
         else:
             self.setMinimumHeight(val)
             self.setMaximumHeight(val)

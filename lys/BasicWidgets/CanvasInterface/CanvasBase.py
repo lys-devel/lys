@@ -430,8 +430,8 @@ class CanvasBaseBase(DrawableCanvasBase):
 class DataSelectableCanvasBase(CanvasBaseBase):
     dataSelected = pyqtSignal()
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.__indexes = {}
 
     def setSelectedIndexes(self, dim, indexes):

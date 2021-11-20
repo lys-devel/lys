@@ -81,3 +81,97 @@ class MarginBase(CanvasPart):
 
     def _setMargin(self):
         raise NotImplementedError()
+
+
+class CanvasSizeBase(CanvasPart):
+    """
+    Base class for CanvasSize.
+    Developers should implement.
+    """
+
+    canvasResized = pyqtSignal(object)
+
+    def __init__(self, canvas):
+        super().__init__(canvas)
+        self.__dic = {}
+        self.__dic['Width'] = {'mode': 'Auto', 'value': 0, 'axis1': 'Left', 'axis2': 'Bottom'}
+        self.__dic['Height'] = {'mode': 'Auto', 'value': 0, 'axis1': 'Left', 'axis2': 'Bottom'}
+
+        canvas.marginChanged.connect(self._onAdjusted)
+        canvas.axisRangeChanged.connect(self._onAdjusted)
+        canvas.saveCanvas.connect(self._save)
+        canvas.loadCanvas.connect(self._load)
+
+    @saveCanvas
+    def _onAdjusted(self):
+        self.setCanvasSize('Width', **self.__dic['Width'])
+        self.setCanvasSize('Height', **self.__dic['Height'])
+
+    @saveCanvas
+    def setCanvasSize(self, type, mode, value=0, axis1=None, axis2=None):
+        other = {"Height": "Width", "Width": "Height"}
+        if type == "Both":
+            self.setCanvasSize("Width", mode, value, axis1, axis2)
+            self.setCanvasSize("Height", mode, value, axis1, axis2)
+            return
+        if mode in ["Aspect", "Plan"] and self.__dic[other[type]]["mode"] in ["Aspect", "Plan"]:
+            return
+        self.__dic[type] = {"mode": mode, "value": value, "axis1": axis1, "axis2": axis2}
+        if mode == "Auto":
+            if value != 0:
+                self._setAbsolute(type, value)
+            self._setAuto(type)
+        elif value == 0:
+            return
+        elif mode == 'Absolute':
+            self._setAbsolute(type, value)
+            if self.__dic[other[type]]["mode"] in ["Aspect", "Plan"]:
+                self.setCanvasSize(other[type], **self.__dic[other[type]])
+        elif mode == 'Per Unit':
+            ran = self.canvas().getAxisRange(axis1)
+            self._setAbsolute(type, value * abs(ran[1] - ran[0]))
+            if self.__dic[other[type]]["mode"] in ["Aspect", "Plan"]:
+                self.setCanvasSize(other[type], **self.__dic[other[type]])
+        elif mode == 'Aspect':
+            self._setAspect(type, value)
+        elif mode == 'Plan':
+            ran1 = self.canvas().getAxisRange(axis1)
+            ran2 = self.canvas().getAxisRange(axis2)
+            self._setAspect(type, value * abs(ran1[1] - ran1[0]) / abs(ran2[1] - ran2[0]))
+        self.canvasResized.emit(self.canvas())
+
+    def getCanvasSize(self):
+        return self._getSize()
+
+    def getSizeParams(self, type):
+        return self.__dic[type]
+
+    @ saveCanvas
+    def parentResized(self):
+        wp = self.__dic['Width']['mode']
+        hp = self.__dic['Height']['mode']
+        if wp in ['Aspect', 'Plan'] and hp == 'Auto':
+            self.setCanvasSize('Width', **self.__dic['Width'])
+        if hp in ['Aspect', 'Plan'] and wp == 'Auto':
+            self.setCanvasSize('Height', **self.__dic['Height'])
+
+    def _save(self, dictionary):
+        dic = {}
+        size = self.getCanvasSize()
+        if self.__dic['Width']['mode'] == 'Auto':
+            self.__dic['Width']['value'] = size[0]
+        if self.__dic['Height']['mode'] == 'Auto':
+            self.__dic['Height']['value'] = size[1]
+        dic['Width'] = [self.__dic['Width']['mode'], self.__dic['Width']['value'], self.__dic['Width']['axis1'], self.__dic['Width']['axis2']]
+        dic['Height'] = [self.__dic['Height']['mode'], self.__dic['Height']['value'], self.__dic['Height']['axis1'], self.__dic['Height']['axis2']]
+        dictionary['Size'] = dic
+
+    def _load(self, dictionary):
+        if 'Size' in dictionary:
+            dic = dictionary['Size']
+            if dic['Width'][0] in ['Aspect', 'Plan']:
+                self.setCanvasSize('Height', *dic['Height'])
+                self.setCanvasSize('Width', *dic['Width'])
+            else:
+                self.setCanvasSize('Width', *dic['Width'])
+                self.setCanvasSize('Height', *dic['Height'])

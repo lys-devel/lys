@@ -118,7 +118,7 @@ class FourierFilter(FilterInterface):
     Apply fast Fourier transformation (FFT).
 
     If *process* is not complex, postprocessing is applied to FFT data.
-    For example, when *process*="real", real part of FFT data is returned.
+    For example, when *process* ="real", real part of FFT data is returned.
 
     Note:
         dask.array.fft requires chunk along *axes* along which the FFT is applied should be one.

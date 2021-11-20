@@ -14,7 +14,7 @@ class MarginAdjustBox(QGroupBox):
         self._initlayout(canvas)
 
     def _initlayout(self, canvas):
-        m = canvas.margin.getMargin(raw=True)
+        m = canvas.getMargin(raw=True)
         self._vals = [QDoubleSpinBox() for _ in range(4)]
         for v, mv in zip(self._vals, m):
             v.setRange(0, 1)
@@ -35,7 +35,7 @@ class MarginAdjustBox(QGroupBox):
         self.setLayout(grid)
 
     def _valueChanged(self):
-        self.canvas.margin.setMargin(*[v.value() for v in self._vals])
+        self.canvas.setMargin(*[v.value() for v in self._vals])
 
 
 class ResizeBox(QGroupBox):
@@ -96,18 +96,18 @@ class ResizeBox(QGroupBox):
                 param = self.canvas.getSizeParams('Width')
             else:
                 param = self.canvas.getSizeParams('Height')
-            self.cw.setCurrentIndex(lis1.index(param[0]))
-            self.spin1.setValue(param[1])
+            self.cw.setCurrentIndex(lis1.index(param['mode']))
+            self.spin1.setValue(param['value'])
             lis2 = self.canvas.axisList()
             try:
-                self.combo2.setCurrentIndex(lis2.index(param[2]))
+                self.combo2.setCurrentIndex(lis2.index(param['value1']))
             except:
                 self.combo2.setCurrentIndex(lis2.index('Left'))
             try:
-                self.combo3.setCurrentIndex(lis2.index(param[3]))
+                self.combo3.setCurrentIndex(lis2.index(param['value2']))
             except:
                 self.combo3.setCurrentIndex(lis2.index('Bottom'))
-            self._setLook(param[0])
+            self._setLook(param['mode'])
             self.__loadflg = False
 
         def __ModeChanged(self):
@@ -115,7 +115,7 @@ class ResizeBox(QGroupBox):
                 return
             self.__loadflg = True
             type = self.cw.currentText()
-            size = self.canvas.getSize()
+            size = self.canvas.getCanvasSize()
             if type == 'Absolute':
                 if self._axis == 0:
                     self.spin1.setValue(size[0])
@@ -161,9 +161,9 @@ class ResizeBox(QGroupBox):
             axis1 = self.combo2.currentText()
             axis2 = self.combo3.currentText()
             if self._axis == 0:
-                self.canvas.setSizeByArray([type, val, axis1, axis2], 'Width')
+                self.canvas.setCanvasSize('Width', mode=type, value=val, axis1=axis1, axis2=axis2)
             else:
-                self.canvas.setSizeByArray([type, val, axis1, axis2], 'Height')
+                self.canvas.setCanvasSize('Height', mode=type, value=val, axis1=axis1, axis2=axis2)
 
         def _setPartnerComboBox(self, type):
             part = self._partner()

@@ -10,7 +10,7 @@ from .CommonWidgets import QLineEdit, QComboBox, QHBoxLayout, QLabel, Scientific
 
 class SimpleMathFilter(FilterInterface):
     """
-    Calculate data [+-*\] value.
+    Apply simple mathematical calculation.
 
     Args:
         type('+' or '-' or '*' or '/'): operator type.

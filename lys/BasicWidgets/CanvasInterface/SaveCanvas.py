@@ -1,6 +1,5 @@
 import functools
 import weakref
-import logging
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -45,6 +44,9 @@ class CanvasPart(QObject):
         super().__init__()
         self._canvas = canvas
 
+    def canvas(self):
+        return self._canvas
+
 
 class BasicEventCanvasBase(object):
     deleted = pyqtSignal(object)
@@ -55,6 +57,7 @@ class BasicEventCanvasBase(object):
 
 class SavableCanvasBase(BasicEventCanvasBase):
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.saveflg = False
         self.savef = None
 

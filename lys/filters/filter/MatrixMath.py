@@ -13,7 +13,7 @@ class SelectIndexFilter(FilterInterface):
 
     For example, when *axis* = 1 and index=4, data[:,4] is returned.
 
-    For more complex indexing, use `class``SliceFilter`.
+    For more complex indexing, use :class:`SliceFilter`.
 
     Args:
         index(int): index to be evaluated.
@@ -100,11 +100,11 @@ class SliceFilter(FilterInterface):
 
 class IndexMathFilter(FilterInterface):
     """
-    Calculate wave[*index1*] op wave[*index2*] (op = +-*/).
+    Calculate wave[*index1*] op wave[*index2*] (op = +-\*/).
 
     Args:
         axis(int): axis to be calculated
-        type('+' or '-' or '*' or '/'): operator type
+        type('+' or '-' or '\*' or '/'): operator type
         index1(int): index1 along *axis*
         index2(int): index2 along *axis*
 
