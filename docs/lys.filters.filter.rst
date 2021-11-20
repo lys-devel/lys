@@ -4,10 +4,26 @@ lys.filters.filter package
 Submodules
 ----------
 
+lys.filters.filter.CommonWidgets module
+---------------------------------------
+
+.. automodule:: lys.filters.filter.CommonWidgets
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lys.filters.filter.Convolution module
 -------------------------------------
 
 .. automodule:: lys.filters.filter.Convolution
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lys.filters.filter.Dask module
+------------------------------
+
+.. automodule:: lys.filters.filter.Dask
    :members:
    :undoc-members:
    :show-inheritance:

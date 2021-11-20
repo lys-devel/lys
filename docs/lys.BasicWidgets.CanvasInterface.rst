@@ -60,6 +60,14 @@ lys.BasicWidgets.CanvasInterface.LineSettings module
    :undoc-members:
    :show-inheritance:
 
+lys.BasicWidgets.CanvasInterface.Margin module
+----------------------------------------------
+
+.. automodule:: lys.BasicWidgets.CanvasInterface.Margin
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 lys.BasicWidgets.CanvasInterface.RGBSettings module
 ---------------------------------------------------
 

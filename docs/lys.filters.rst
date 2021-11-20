@@ -8,7 +8,6 @@ Subpackages
    :maxdepth: 4
 
    lys.filters.filter
-   lys.filters.filterGUI
 
 Submodules
 ----------
@@ -17,6 +16,14 @@ lys.filters.FilterIOGUI module
 ------------------------------
 
 .. automodule:: lys.filters.FilterIOGUI
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+lys.filters.FilterManager module
+--------------------------------
+
+.. automodule:: lys.filters.FilterManager
    :members:
    :undoc-members:
    :show-inheritance:
