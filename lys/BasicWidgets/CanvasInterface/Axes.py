@@ -47,6 +47,7 @@ class CanvasAxes(CanvasPart):
         self.__auto[axis] = True
 
     def _calculateAutoRange(self, axis):
+        return [0, 1]
         max = np.nan
         min = np.nan
         with np.errstate(invalid='ignore'):
@@ -82,6 +83,42 @@ class CanvasAxes(CanvasPart):
         else:
             return None
 
+    @saveCanvas
+    def setAxisThick(self, axis, thick):
+        if self.axisIsValid(axis):
+            self._setAxisThick(axis, thick)
+
+    def getAxisThick(self, axis):
+        if self.axisIsValid(axis):
+            return self._getAxisThick(axis)
+
+    @saveCanvas
+    def setAxisColor(self, axis, color):
+        if self.axisIsValid(axis):
+            self._setAxisColor(axis, color)
+
+    def getAxisColor(self, axis):
+        if self.axisIsValid(axis):
+            return self._getAxisColor(axis)
+
+    @saveCanvas
+    def setMirrorAxis(self, axis, value):
+        if self.axisIsValid(axis):
+            self._setMirrorAxis(axis, value)
+
+    def getMirrorAxis(self, axis):
+        if self.axisIsValid(axis):
+            return self._getMirrorAxis(axis)
+
+    @saveCanvas
+    def setAxisMode(self, axis, mod):
+        if self.axisIsValid(axis):
+            self._setAxisMode(axis, mod)
+
+    def getAxisMode(self, axis):
+        if self.axisIsValid(axis):
+            return self._getAxisMode(axis)
+
     def _save(self, dictionary):
         dic = {}
         list = ['Left', 'Right', 'Top', 'Bottom']
@@ -94,6 +131,20 @@ class CanvasAxes(CanvasPart):
                 dic[ax] = None
         dictionary['AxisRange'] = dic
 
+        dic = {}
+        for ax in ['Left', 'Right', 'Top', 'Bottom']:
+            if self.axisIsValid(ax):
+                dic[ax + "_mode"] = self.getAxisMode(ax)
+                dic[ax + "_mirror"] = self.getMirrorAxis(ax)
+                dic[ax + "_color"] = self.getAxisColor(ax)
+                dic[ax + "_thick"] = self.getAxisThick(ax)
+            else:
+                dic[ax + "_mode"] = None
+                dic[ax + "_mirror"] = None
+                dic[ax + "_color"] = None
+                dic[ax + "_thick"] = None
+        dictionary['AxisSetting'] = dic
+
     def _load(self, dictionary):
         if 'AxisRange' in dictionary:
             dic = dictionary['AxisRange']
@@ -104,3 +155,45 @@ class CanvasAxes(CanvasPart):
                         self.setAutoScaleAxis(ax)
                     else:
                         self.setAxisRange(ax, dic[ax])
+
+        if 'AxisSetting' in dictionary:
+            dic = dictionary['AxisSetting']
+            for ax in ['Left', 'Right', 'Top', 'Bottom']:
+                if self.axisIsValid(ax):
+                    self.setAxisMode(ax, dic[ax + "_mode"])
+                    self.setMirrorAxis(ax, dic[ax + "_mirror"])
+                    self.setAxisColor(ax, dic[ax + "_color"])
+                    self.setAxisThick(ax, dic[ax + "_thick"])
+
+    def _isValid(self, axis):
+        raise NotImplementedError()
+
+    def _setRange(self, axis, range):
+        raise NotImplementedError()
+
+    def _getRange(self, axis):
+        raise NotImplementedError()
+
+    def _setAxisThick(self, axis, thick):
+        raise NotImplementedError()
+
+    def _getAxisThick(self, axis):
+        raise NotImplementedError()
+
+    def _setAxisColor(self, axis, color):
+        raise NotImplementedError()
+
+    def _getAxisColor(self, axis):
+        raise NotImplementedError()
+
+    def _setMirrorAxis(self, axis, value):
+        raise NotImplementedError()
+
+    def _getMirrorAxis(self, axis):
+        raise NotImplementedError()
+
+    def _setAxisMode(self, axis, mod):
+        raise NotImplementedError()
+
+    def _getAxisMode(self, axis):
+        raise NotImplementedError()

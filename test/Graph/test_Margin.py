@@ -62,6 +62,9 @@ class Graph_test(unittest.TestCase):
             self.assertTrue(c.axisIsValid("Left"))
             self.assertFalse(c.axisIsValid("Top"))
 
+            # axisList
+            self.assertEqual(c.axisList(), ["Left", 'Bottom'])
+
             # set/get
             c.setAxisRange("Left", [0, 1])
             c.setAxisRange("Bottom", [0, 2])
@@ -83,6 +86,11 @@ class Graph_test(unittest.TestCase):
             assert_array_almost_equal(c.getAxisRange("Left"), (0, 1))
             assert_array_almost_equal(c.getAxisRange("Bottom"), (0, 2))
 
+            # autoscale
+            c.setAutoScaleAxis("Left")
+            self.assertTrue(c.isAutoScaled("Left"))
+            self.assertFalse(c.isAutoScaled("Bottom"))
+
             # signal
             c.b = False
 
@@ -91,3 +99,39 @@ class Graph_test(unittest.TestCase):
             c.axisRangeChanged.connect(dummy)
             c.setAxisRange("Bottom", [0, 1])
             self.assertTrue(c.b)
+
+            # thick
+            c.setAxisThick('Left', 3)
+            self.assertEqual(c.getAxisThick('Left'), 3)
+
+            # color
+            c.setAxisColor('Left', (0.5, 0.5, 0.5, 1))
+            res = c.getAxisColor('Left')
+            self.assertTrue(res == (0.5, 0.5, 0.5, 1) or res == "#7f7f7f")
+
+            # mirror
+            c.setMirrorAxis("Left", False)
+            self.assertFalse(c.getMirrorAxis("Left"))
+
+            # mode
+            c.setAxisMode("Left", "linear")
+            self.assertEqual(c.getAxisMode("Left"), "linear")
+
+            # save and load
+            c.SaveAsDictionary(d, home())
+            self.assertEqual(d['AxisSetting']['Left_thick'], 3)
+            res = d['AxisSetting']['Left_color']
+            self.assertTrue(res == (0.5, 0.5, 0.5, 1) or res == "#7f7f7f")
+            self.assertFalse(d['AxisSetting']['Left_mirror'])
+            self.assertEqual(d['AxisSetting']['Left_mode'], 'linear')
+
+            c.setAxisThick('Left', 4)
+            c.setAxisColor('Left', (0, 0, 0, 1))
+            c.setMirrorAxis("Left", True)
+
+            c.LoadFromDictionary(d, home())
+            self.assertEqual(c.getAxisThick('Left'), 3)
+            res = c.getAxisColor('Left')
+            self.assertTrue(res == (0.5, 0.5, 0.5, 1) or res == "#7f7f7f")
+            self.assertFalse(c.getMirrorAxis("Left"))
+            self.assertEqual(c.getAxisMode("Left"), "linear")

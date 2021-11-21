@@ -103,15 +103,20 @@ class _AxisTab(QWidget):
         self._initlayout(canvas)
 
     def _initlayout(self, canvas):
-        layout = QVBoxLayout(self)
+        self._axis = AxisSelectionWidget(canvas)
+
+        self._all = QCheckBox("Apply to all axes")
+        self._all.setChecked(False)
+
         h1 = QHBoxLayout()
-        h1.addWidget(AxisSelectionWidget(canvas))
-        inv = QCheckBox("Swap X/Y", stateChanged=self.__invert)
-        inv.setChecked(self.canvas.inverted())
-        h1.addWidget(inv, alignment=Qt.AlignRight)
-        layout.addLayout(h1)
+        h1.addWidget(self._axis)
+        h1.addWidget(self._all, alignment=Qt.AlignRight)
+
+        ax_tick = AxisAndTickBox(self, canvas)
+        self._axis.activated.connect(ax_tick.update)
+
         tab = QTabWidget()
-        tab.addTab(AxisAndTickBox(canvas), 'Main')
+        tab.addTab(ax_tick, 'Main')
         tab.addTab(AxisAndTickLabelBox(canvas), 'Label')
         tab.addTab(AxisFontBox(canvas), 'Font')
         sav = QPushButton('Save', clicked=self._save)
@@ -119,10 +124,19 @@ class _AxisTab(QWidget):
         hbox = QHBoxLayout()
         hbox.addWidget(sav)
         hbox.addWidget(lod)
+
+        layout = QVBoxLayout(self)
+        layout.addLayout(h1)
         layout.addWidget(tab)
         layout.addLayout(hbox)
 
         self.setLayout(layout)
+
+    def getCurrentAxis(self):
+        return self._axis.currentText()
+
+    def isApplyAll(self):
+        return self._all.isChecked()
 
     def _save(self):
         for t in ['AxisSetting', 'TickSetting', 'AxisRange', 'LabelSetting', 'TickLabelSetting']:
@@ -131,9 +145,6 @@ class _AxisTab(QWidget):
     def _load(self):
         for t in ['AxisSetting', 'TickSetting', 'AxisRange', 'LabelSetting', 'TickLabelSetting']:
             self.canvas.LoadSetting(t)
-
-    def __invert(self, b):
-        self.canvas.setInverted(b)
 
 
 class _LineTab(QWidget):

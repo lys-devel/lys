@@ -108,6 +108,21 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
                 self.axisChanged.emit('Top')
             return self.axes_txy
 
+    def getAxes(self, axis='Left'):
+        ax = axis
+        if ax in ['Left', 'Bottom']:
+            return self.axes
+        if ax == 'Top':
+            if self.axes_ty is not None:
+                return self.axes_ty
+            else:
+                return self.axes_txy
+        if ax == 'Right':
+            if self.axes_tx is not None:
+                return self.axes_tx
+            else:
+                return self.axes_txy
+
     def _nextPen(self):
         list = ["#17becf", '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', "#7f7f7f"]
         self.npen += 1

@@ -9,46 +9,22 @@ from lys.widgets import ScientificSpinBox
 class AxisSelectionWidget(QComboBox):
     def __init__(self, canvas):
         super().__init__()
-        self.canvas = canvas
-        self.canvas.axisChanged.connect(self.OnAxisChanged)
-        self.canvas.addAxisSelectedListener(self)
-        self.flg = False
-        self.__setItem()
-        self.activated.connect(self._activated)
+        canvas.axisChanged.connect(lambda: self.__setItem(canvas))
+        self.__setItem(canvas)
 
-    def __setItem(self):
-        self.addItem('Left')
-        if self.canvas.axisIsValid('Right'):
-            self.addItem('Right')
-        self.addItem('Bottom')
-        if self.canvas.axisIsValid('Top'):
-            self.addItem('Top')
-
-    def _activated(self):
-        self.flg = True
-        self.canvas.setSelectedAxis(self.currentText())
-        self.flg = False
-
-    def OnAxisChanged(self, axis):
+    def __setItem(self, canvas):
         self.clear()
-        self.__setItem()
-
-    def OnAxisSelected(self, axis):
-        if self.flg:
-            return
-        else:
-            Items = [self.itemText(i) for i in range(self.count())]
-            self.setCurrentIndex(Items.index(axis))
+        self.addItems(canvas.axisList())
 
 
 class AxisRangeAdjustBox(QGroupBox):
-    def __init__(self, canvas):
+    def __init__(self, parent, canvas):
         super().__init__('Axis Range')
+        self._parent = parent
         self.canvas = canvas
         self.__initlayout()
-        self.__loadstate(canvas)
-        self.canvas.addAxisSelectedListener(self)
-        self.canvas.axisRangeChanged.connect(lambda: self.__loadstate(self.canvas))
+        self.update()
+        self.canvas.axisRangeChanged.connect(self.update)
 
     def __initlayout(self):
         layout = QVBoxLayout()
@@ -77,46 +53,50 @@ class AxisRangeAdjustBox(QGroupBox):
         layout.addWidget(rev)
         self.setLayout(layout)
 
-    def __loadstate(self, canvas):
+    def update(self):
         self.__loadflg = True
-        axis = canvas.getSelectedAxis()
-        mod = canvas.isAutoScaled(axis)
+        axis = self._parent.getCurrentAxis()
+        mod = self.canvas.isAutoScaled(axis)
         if mod:
             self.__combo.setCurrentIndex(0)
         else:
             self.__combo.setCurrentIndex(1)
-        self.__spin1.setReadOnly(mod)
-        self.__spin2.setReadOnly(mod)
-        ran = canvas.getAxisRange(axis)
+        ran = self.canvas.getAxisRange(axis)
         self.__spin1.setValue(ran[0])
         self.__spin2.setValue(ran[1])
         self.__loadflg = False
-
-    def OnAxisSelected(self, axis):
-        self.__loadstate(self.canvas)
 
     def __OnModeChanged(self):
         if self.__loadflg:
             return
         type = self.__combo.currentText()
-        axis = self.canvas.getSelectedAxis()
         if type == "Auto":
-            self.canvas.setAutoScaleAxis(axis)
-        else:
-            self.canvas.setAxisRange(axis, self.canvas.getAxisRange(axis))
-        self.__loadstate(self.canvas)
+            if self._parent.isApplyAll():
+                for axis in self.canvas.axisList():
+                    self.canvas.setAutoScaleAxis(axis)
+            else:
+                axis = self._parent.getCurrentAxis()
+                self.canvas.setAutoScaleAxis(axis)
+        self.update()
 
     def __spinChanged(self):
         if self.__loadflg:
             return
         mi = self.__spin1.value()
         ma = self.__spin2.value()
-        self.canvas.setAxisRange(self.canvas.getSelectedAxis(), [mi, ma])
+        self.__applyChange(ma, mi)
 
     def __reverse(self):
         mi = self.__spin1.value()
         ma = self.__spin2.value()
-        self.canvas.setAxisRange(self.canvas.getSelectedAxis(), [ma, mi])
+        self.__applyChange(mi, ma)
+
+    def __applyChange(self, ma, mi):
+        if self._parent.isApplyAll():
+            for ax in self.canvas.axisList():
+                self.canvas.setAxisRange(ax, [mi, ma])
+        else:
+            self.canvas.setAxisRange(self._parent.getCurrentAxis(), [mi, ma])
 
 
 opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
@@ -124,24 +104,20 @@ Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom'}
 
 
 class AxisAdjustBox(QGroupBox):
-    def __init__(self, canvas):
+    def __init__(self, parent, canvas):
         super().__init__("Axis Setting")
         self.canvas = canvas
+        self._parent = parent
         self.__flg = False
         self.__initlayout()
-        self.__loadstate()
-        self.canvas.addAxisSelectedListener(self)
+        self.update()
 
     def __initlayout(self):
         gl = QGridLayout()
 
-        self.__all = QCheckBox('All axes')
-        self.__all.setChecked(True)
-        gl.addWidget(self.__all, 0, 0)
-
         self.__mirror = QCheckBox("Mirror")
         self.__mirror.stateChanged.connect(self.__mirrorChanged)
-        gl.addWidget(self.__mirror, 0, 1)
+        gl.addWidget(self.__mirror, 0, 0)
 
         gl.addWidget(QLabel('Mode'), 1, 0)
         self.__mode = QComboBox()
@@ -161,33 +137,24 @@ class AxisAdjustBox(QGroupBox):
 
         self.setLayout(gl)
 
-    def __loadstate(self):
+    def update(self):
         self.__flg = True
-        axis = self.canvas.getSelectedAxis()
+        axis = self._parent.getCurrentAxis()
         self.__spin1.setValue(self.canvas.getAxisThick(axis))
         self.__color.setColor(self.canvas.getAxisColor(axis))
         list = ['linear', 'log']
         self.__mode.setCurrentIndex(list.index(self.canvas.getAxisMode(axis)))
-        if self.canvas.axisIsValid(Opposite[axis]):
-            self.__mirror.setEnabled(False)
-        else:
-            self.__mirror.setEnabled(True)
         self.__mirror.setChecked(self.canvas.getMirrorAxis(axis))
         self.__flg = False
-
-    def OnAxisSelected(self, axis):
-        self.__loadstate()
 
     def __mirrorChanged(self):
         if self.__flg:
             return
-        axis = self.canvas.getSelectedAxis()
+        axis = self._parent.getCurrentAxis()
         value = self.__mirror.isChecked()
-        if self.__all.isChecked():
-            if not self.canvas.axisIsValid('Right'):
-                self.canvas.setMirrorAxis('Left', value)
-            if not self.canvas.axisIsValid('Top'):
-                self.canvas.setMirrorAxis('Bottom', value)
+        if self._parent.isApplyAll():
+            for ax in self.canvas.axisList():
+                self.canvas.setMirrorAxis(ax, value)
         else:
             self.canvas.setMirrorAxis(axis, value)
 
@@ -195,36 +162,30 @@ class AxisAdjustBox(QGroupBox):
         if self.__flg:
             return
         mod = self.__mode.currentText()
-        axis = self.canvas.getSelectedAxis()
-        if self.__all.isChecked():
-            self.canvas.setAxisMode('Left', mod)
-            self.canvas.setAxisMode('Right', mod)
-            self.canvas.setAxisMode('Top', mod)
-            self.canvas.setAxisMode('Bottom', mod)
+        axis = self._parent.getCurrentAxis()
+        if self._parent.isApplyAll():
+            for ax in self.canvas.axisList():
+                self.canvas.setAxisMode(ax, mod)
         else:
             self.canvas.setAxisMode(axis, mod)
 
     def __setThick(self):
         if self.__flg:
             return
-        axis = self.canvas.getSelectedAxis()
-        if self.__all.isChecked():
-            self.canvas.setAxisThick('Left', self.__spin1.value())
-            self.canvas.setAxisThick('Right', self.__spin1.value())
-            self.canvas.setAxisThick('Top', self.__spin1.value())
-            self.canvas.setAxisThick('Bottom', self.__spin1.value())
+        axis = self._parent.getCurrentAxis()
+        if self._parent.isApplyAll():
+            for ax in self.canvas.axisList():
+                self.canvas.setAxisThick(ax, self.__spin1.value())
         else:
             self.canvas.setAxisThick(axis, self.__spin1.value())
 
     def __changeColor(self):
         if self.__flg:
             return
-        axis = self.canvas.getSelectedAxis()
-        if self.__all.isChecked():
-            self.canvas.setAxisColor('Left', self.__color.getColor())
-            self.canvas.setAxisColor('Right', self.__color.getColor())
-            self.canvas.setAxisColor('Top', self.__color.getColor())
-            self.canvas.setAxisColor('Bottom', self.__color.getColor())
+        axis = self._parent.getCurrentAxis()
+        if self._parent.isApplyAll():
+            for ax in self.canvas.axisList():
+                self.canvas.setAxisColor(ax, self.__color.getColor())
         else:
             self.canvas.setAxisColor(axis, self.__color.getColor())
 
@@ -423,12 +384,20 @@ class TickAdjustBox(QGroupBox):
 
 
 class AxisAndTickBox(QWidget):
-    def __init__(self, canvas):
+    def __init__(self, parent, canvas):
         super().__init__()
-        layout = QVBoxLayout(self)
+        self._range = AxisRangeAdjustBox(parent, canvas)
+        self._axis = AxisAdjustBox(parent, canvas)
+
         layout_h1 = QHBoxLayout()
-        layout_h1.addWidget(AxisRangeAdjustBox(canvas))
-        layout_h1.addWidget(AxisAdjustBox(canvas))
+        layout_h1.addWidget(self._range)
+        layout_h1.addWidget(self._axis)
+
+        layout = QVBoxLayout(self)
         layout.addLayout(layout_h1)
         layout.addWidget(TickAdjustBox(canvas))
         self.setLayout(layout)
+
+    def update(self):
+        self._range.update()
+        self._axis.update()

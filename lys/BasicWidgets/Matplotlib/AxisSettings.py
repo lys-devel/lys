@@ -127,6 +127,46 @@ class _MatplotlibAxes(CanvasAxes):
         if axis in ['Top', 'Bottom']:
             return axes.get_xlim()
 
+    def _setAxisThick(self, axis, thick):
+        axes = self.canvas().getAxes(axis)
+        axes.spines[axis.lower()].set_linewidth(thick)
+        axes.spines[opposite[axis]].set_linewidth(thick)
+
+    def _getAxisThick(self, axis):
+        return self.canvas().getAxes(axis).spines[axis.lower()].get_linewidth()
+
+    def _setAxisColor(self, axis, color):
+        axes = self.canvas().getAxes(axis)
+        axes.spines[axis.lower()].set_edgecolor(color)
+        axes.spines[opposite[axis]].set_edgecolor(color)
+        if axis in ['Left', 'Right']:
+            axes.get_yaxis().set_tick_params(color=color, which='both')
+        if axis in ['Top', 'Bottom']:
+            axes.get_xaxis().set_tick_params(color=color, which='both')
+
+    def _getAxisColor(self, axis):
+        return self.canvas().getAxes(axis).spines[axis.lower()].get_edgecolor()
+
+    def _setMirrorAxis(self, axis, value):
+        self.canvas().getAxes(axis).spines[opposite[axis]].set_visible(value)
+
+    def _getMirrorAxis(self, axis):
+        return self.canvas().getAxes(axis).spines[opposite[axis]].get_visible()
+
+    def _setAxisMode(self, axis, mod):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
+            axes.set_yscale(mod)
+        else:
+            axes.set_xscale(mod)
+
+    def _getAxisMode(self, axis):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
+            return axes.get_yscale()
+        else:
+            return axes.get_xscale()
+
 
 class AxesCanvas(AxisSelectableCanvas):
     def __init__(self, dpi=100):
@@ -171,14 +211,14 @@ class AxisRangeRightClickCanvas(AxesCanvas):
             if mode in ['Expand', 'Horizontal Expand']:
                 minVal = min(pos[0], pos[0] + width)
                 maxVal = max(pos[0], pos[0] + width)
-                self.setAxisRange([minVal, maxVal], axis)
+                self.setAxisRange(axis, [minVal, maxVal])
             if mode in ['Shrink', 'Horizontal Shrink']:
                 ratio = abs((xlim[1] - xlim[0]) / width)
                 a = min(pos[0], pos[0] + width)
                 b = max(pos[0], pos[0] + width)
                 minVal = xlim[0] - ratio * (a - xlim[0])
                 maxVal = xlim[1] + ratio * (xlim[1] - b)
-                self.setAxisRange([minVal, maxVal], axis)
+                self.setAxisRange(axis, [minVal, maxVal])
         else:
             if mode in ['Vertical Expand', 'Expand']:
                 if ylim[1] < ylim[0]:
@@ -187,7 +227,7 @@ class AxisRangeRightClickCanvas(AxesCanvas):
                 else:
                     minVal = min(pos[1], pos[1] + height)
                     maxVal = max(pos[1], pos[1] + height)
-                self.setAxisRange([minVal, maxVal], axis)
+                self.setAxisRange(axis, [minVal, maxVal])
             if mode in ['Shrink', 'Vertical Shrink']:
                 ratio = abs((ylim[1] - ylim[0]) / height)
                 if ylim[1] < ylim[0]:
@@ -198,7 +238,7 @@ class AxisRangeRightClickCanvas(AxesCanvas):
                     b = max(pos[1], pos[1] + height)
                 minVal = ylim[0] - ratio * (a - ylim[0])
                 maxVal = ylim[1] + ratio * (ylim[1] - b)
-                self.setAxisRange([minVal, maxVal], axis)
+                self.setAxisRange(axis, [minVal, maxVal])
 
     def constructContextMenu(self):
         menu = super().constructContextMenu()
@@ -249,6 +289,7 @@ class AxisRangeScrollableCanvas(AxisRangeRightClickCanvas):
         super().__init__(dpi)
         self.mpl_connect('scroll_event', self.onScroll)
 
+    @saveCanvas
     def onScroll(self, event):
         region = self.__FindRegion(event.x, event.y)
         if region == "OnGraph":
@@ -256,7 +297,6 @@ class AxisRangeScrollableCanvas(AxisRangeRightClickCanvas):
             self.__ExpandGraph(event.x, event.y, "Left", event.step)
         elif not region == "OutOfFigure":
             self.__ExpandGraph(event.x, event.y, region, event.step)
-        self.draw()
 
     def __GlobalToAxis(self, x, y, ax):
         loc = self.__GlobalToRatio(x, y, ax)
@@ -278,19 +318,19 @@ class AxisRangeScrollableCanvas(AxisRangeRightClickCanvas):
         if axis in {"Bottom"}:
             old = self.getAxisRange('Bottom')
             cent = (old[1] - old[0]) * loc[0] + old[0]
-            self.setAxisRange([cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio], 'Bottom')
+            self.setAxisRange('Bottom', [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio])
         if axis in {"Left"}:
             old = self.getAxisRange('Left')
             cent = (old[1] - old[0]) * loc[1] + old[0]
-            self.setAxisRange([cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio], 'Left')
+            self.setAxisRange('Left', [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio])
         if axis in {"Right", "Left"} and self.axisIsValid('Right'):
             old = self.getAxisRange('Right')
             cent = (old[1] - old[0]) * loc[1] + old[0]
-            self.setAxisRange([cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio], 'Right')
+            self.setAxisRange('Right', [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio])
         if axis in {"Top", "Bottom"} and self.axisIsValid('Top'):
             old = self.getAxisRange('Top')
             cent = (old[1] - old[0]) * loc[0] + old[0]
-            self.setAxisRange([cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio], 'Top')
+            self.setAxisRange('Top', [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio])
 
     def __FindRegion(self, x, y):
         ran = self.axes.get_position()
@@ -318,114 +358,7 @@ opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom'}
 
 
-class AxisAdjustableCanvas(AxisRangeScrollableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.axisChanged.connect(self.OnAxisChanged)
-
-    def OnAxisChanged(self, axis):
-        if self.axisIsValid('Right'):
-            self.setMirrorAxis('Left', False)
-            self.setMirrorAxis('Right', False)
-        if self.axisIsValid('Top'):
-            self.setMirrorAxis('Bottom', False)
-            self.setMirrorAxis('Top', False)
-        self._emitAxisSelected()
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dic = {}
-        for l in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(l):
-                dic[l + "_mode"] = self.getAxisMode(l)
-                dic[l + "_mirror"] = self.getMirrorAxis(l)
-                dic[l + "_color"] = self.getAxisColor(l)
-                dic[l + "_thick"] = self.getAxisThick(l)
-            else:
-                dic[l + "_mode"] = None
-                dic[l + "_mirror"] = None
-                dic[l + "_color"] = None
-                dic[l + "_thick"] = None
-
-        dictionary['AxisSetting'] = dic
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'AxisSetting' in dictionary:
-            dic = dictionary['AxisSetting']
-            for l in ['Left', 'Right', 'Top', 'Bottom']:
-                if self.axisIsValid(l):
-                    self.setAxisMode(l, dic[l + "_mode"])
-                    self.setMirrorAxis(l, dic[l + "_mirror"])
-                    self.setAxisColor(l, dic[l + "_color"])
-                    self.setAxisThick(l, dic[l + "_thick"])
-
-    @saveCanvas
-    def setAxisMode(self, axis, mod):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            axes.set_yscale(mod)
-        else:
-            axes.set_xscale(mod)
-        axes.minorticks_on()
-        self.draw()
-
-    def getAxisMode(self, axis):
-        axes = self.getAxes(axis)
-        if axis in ['Left', 'Right']:
-            return axes.get_yscale()
-        else:
-            return axes.get_xscale()
-
-    @saveCanvas
-    def setAxisThick(self, axis, thick):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        axes.spines[axis.lower()].set_linewidth(thick)
-        axes.spines[opposite[axis]].set_linewidth(thick)
-        self.draw()
-
-    def getAxisThick(self, axis):
-        axes = self.getAxes(axis)
-        return axes.spines[axis.lower()].get_linewidth()
-
-    @saveCanvas
-    def setAxisColor(self, axis, color):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        axes.spines[axis.lower()].set_edgecolor(color)
-        axes.spines[opposite[axis]].set_edgecolor(color)
-        if axis in ['Left', 'Right']:
-            axes.get_yaxis().set_tick_params(color=color, which='both')
-        if axis in ['Top', 'Bottom']:
-            axes.get_xaxis().set_tick_params(color=color, which='both')
-        self.draw()
-
-    def getAxisColor(self, axis):
-        axes = self.getAxes(axis)
-        color = axes.spines[axis.lower()].get_edgecolor()
-        return color
-
-    @saveCanvas
-    def setMirrorAxis(self, axis, value):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        axes.spines[opposite[axis]].set_visible(value)
-        self.draw()
-
-    def getMirrorAxis(self, axis):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        return axes.spines[opposite[axis]].get_visible()
-
-
-class TickAdjustableCanvas(AxisAdjustableCanvas):
+class TickAdjustableCanvas(AxisRangeScrollableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.__data = {}

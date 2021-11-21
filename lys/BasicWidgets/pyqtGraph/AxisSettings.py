@@ -1,10 +1,7 @@
 #!/usr/bin/env python
-import random
 import weakref
-import sys
-import os
+import warnings
 import numpy as np
-from enum import Enum
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -87,118 +84,99 @@ class AxisSelectableCanvas(RangeSelectableCanvas):
             else:
                 self.__listener.remove(l)
 
-    def getAxes(self, axis='Left'):
-        ax = axis
-        if ax in ['Left', 'Bottom']:
-            return self.axes
-        if ax == 'Top':
-            if self.axes_ty is not None:
-                return self.axes_ty
-            else:
-                return self.axes_txy
-        if ax == 'Right':
-            if self.axes_tx is not None:
-                return self.axes_tx
-            else:
-                return self.axes_txy
 
-    def axisIsValid(self, axis):
-        if axis in ['Left', 'Bottom']:
-            return True
-        if axis in ['Top']:
-            return self.axes_ty is not None or self.axes_txy is not None
-        if axis in ['Right']:
-            return self.axes_tx is not None or self.axes_txy is not None
+class _pyqtGraphAxes(CanvasAxes):
+    def _isValid(self, axis):
+        return self.canvas().getAxes(axis) is not None
 
-    def axisList(self):
-        res = ['Left']
-        if self.axisIsValid('Right'):
-            res.append('Right')
-        res.append('Bottom')
-        if self.axisIsValid('Top'):
-            res.append('Top')
-        return res
-
-
-class AxisRangeAdjustableCanvas(AxisSelectableCanvas):
-    axisRangeChanged = pyqtSignal()
-
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.__listener = []
-        self.fig.vb.sigRangeChanged.connect(self.axisRangeChanged)
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dic = {}
-        list = ['Left', 'Right', 'Top', 'Bottom']
-        for l in list:
-            if self.axisIsValid(l):
-                dic[l + "_auto"] = self.isAutoScaled(l)
-                dic[l] = self.getAxisRange(l)
-            else:
-                dic[l + "_auto"] = None
-                dic[l] = None
-        dictionary['AxisRange'] = dic
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'AxisRange' in dictionary:
-            dic = dictionary['AxisRange']
-            for l in ['Left', 'Right', 'Top', 'Bottom']:
-                auto = dic[l + "_auto"]
-                if auto is not None:
-                    if auto:
-                        self.setAutoScaleAxis(l)
-                    else:
-                        self.setAxisRange(l, dic[l])
-
-    @saveCanvas
-    def setAxisRange(self, axis, range):
-        axes = self.getAxes(axis)
-        if axes is None:
-            print(axis, range)
-            return self.setAxisRange(Opposite[axis], range)
+    def _setRange(self, axis, range):
+        axes = self.canvas().getAxes(axis)
         if axis in ['Left', 'Right']:
             axes.setYRange(*range, padding=0)
             axes.disableAutoRange(axis='y')
         if axis in ['Top', 'Bottom']:
             axes.setXRange(*range, padding=0)
             axes.disableAutoRange(axis='x')
-        self.axisRangeChanged.emit()
 
-    def getAxisRange(self, axis):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return self.getAxisRange(Opposite[axis])
+    def _getRange(self, axis):
+        axes = self.canvas().getAxes(axis)
         r = axes.viewRange()
         if axis in ['Left', 'Right']:
             return r[1]
         if axis in ['Top', 'Bottom']:
             return r[0]
 
-    @saveCanvas
-    def setAutoScaleAxis(self, axis):
-        axes = self.getAxes(axis=axis)
-        if axes is None:
-            return self.setAutoScaleAxis(Opposite[axis])
-        if axis in ['Left', 'Right']:
-            axes.enableAutoRange(axis='y')
-        if axis in ['Top', 'Bottom']:
-            axes.enableAutoRange(axis='x')
-        self.axisRangeChanged.emit()
+    def _setAxisThick(self, axis, thick):
+        ax = self._getAxisList(axis)
+        for a in ax:
+            pen = a.pen()
+            pen.setWidth(thick)
+            c = pen.color()
+            if thick == 0:
+                c.setAlphaF(0)
+            else:
+                c.setAlphaF(1)
+            pen.setColor(c)
+            a.setPen(pen)
 
-    def isAutoScaled(self, axis):
-        axes = self.getAxes(axis=axis)
-        if axes is None:
-            return self.isAutoScaled(Opposite[axis])
-        if axis in ['Left', 'Right']:
-            return axes.autoRangeEnabled()[1] != False
-        if axis in ['Top', 'Bottom']:
-            return axes.autoRangeEnabled()[0] != False
+    def _getAxisThick(self, axis):
+        ax = self.canvas().fig.axes[axis.lower()]['item']
+        return ax.pen().width()
+
+    def _setAxisColor(self, axis, color):
+        ax = self._getAxisList(axis)
+        for a in ax:
+            pen = a.pen()
+            if isinstance(color, tuple):
+                col = [c * 255 for c in color]
+                pen.setColor(QColor(*col))
+            else:
+                pen.setColor(QColor(color))
+            a.setPen(pen)
+
+    def _getAxisColor(self, axis):
+        ax = self.canvas().fig.axes[axis.lower()]['item']
+        return ax.pen().color().name()
+
+    def _setMirrorAxis(self, axis, value):
+        warnings.warn("pyqtGraph does not support show/hide mirror axes.")
+
+    def _getMirrorAxis(self, axis):
+        return False
+
+    def _getAxisList(self, axis):
+        res = [self.canvas().fig.axes[axis.lower()]['item']]
+        if not self.axisIsValid(Opposite[axis]):
+            res.append(self.canvas().fig.axes[opposite[axis]]['item'])
+        return res
+
+    def _setAxisMode(self, axis, mod):
+        if mod == 'log':
+            warnings.warn("pyqtGraph does not support log scale.")
+
+    def _getAxisMode(self, axis):
+        return 'linear'
 
 
-class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
+class AxesCanvas(AxisSelectableCanvas):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self._axs = _pyqtGraphAxes(self)
+
+    def __getattr__(self, key):
+        if "_axs" in self.__dict__:
+            if hasattr(self._axs, key):
+                return getattr(self._axs, key)
+        return super().__getattr__(key)
+
+
+class AxisRangeRightClickCanvas(AxesCanvas):
+
+    """
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self.fig.vb.sigRangeChanged.connect(self.axisRangeChanged)
+    """
     @saveCanvas
     def __ExpandAndShrink(self, mode, axis):
         if not self.axisIsValid(axis):
@@ -214,14 +192,14 @@ class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
             if mode in ['Expand', 'Horizontal Expand']:
                 minVal = min(pos[0], pos[0] + width)
                 maxVal = max(pos[0], pos[0] + width)
-                self.setAxisRange([minVal, maxVal], axis)
+                self.setAxisRange(axis, [minVal, maxVal])
             if mode in ['Shrink', 'Horizontal Shrink']:
                 ratio = abs((xlim[1] - xlim[0]) / width)
                 a = min(pos[0], pos[0] + width)
                 b = max(pos[0], pos[0] + width)
                 minVal = xlim[0] - ratio * (a - xlim[0])
                 maxVal = xlim[1] + ratio * (xlim[1] - b)
-                self.setAxisRange([minVal, maxVal], axis)
+                self.setAxisRange(axis, [minVal, maxVal])
         else:
             if mode in ['Vertical Expand', 'Expand']:
                 if ylim[1] < ylim[0]:
@@ -230,7 +208,7 @@ class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
                 else:
                     minVal = min(pos[1], pos[1] + height)
                     maxVal = max(pos[1], pos[1] + height)
-                self.setAxisRange([minVal, maxVal], axis)
+                self.setAxisRange(axis, [minVal, maxVal])
             if mode in ['Shrink', 'Vertical Shrink']:
                 ratio = abs((ylim[1] - ylim[0]) / height)
                 if ylim[1] < ylim[0]:
@@ -241,7 +219,7 @@ class AxisRangeRightClickCanvas(AxisRangeAdjustableCanvas):
                     b = max(pos[1], pos[1] + height)
                 minVal = ylim[0] - ratio * (a - ylim[0])
                 maxVal = ylim[1] + ratio * (ylim[1] - b)
-                self.setAxisRange([minVal, maxVal], axis)
+                self.setAxisRange(axis, [minVal, maxVal])
 
     def constructContextMenu(self):
         menu = super().constructContextMenu()
@@ -289,109 +267,7 @@ opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom', 'left': 'Right', 'right': 'Left', 'bottom': 'Top', 'top': 'Bottom'}
 
 
-class AxisAdjustableCanvas(AxisRangeRightClickCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.axisChanged.connect(self.OnAxisChanged)
-
-    def OnAxisChanged(self, axis):
-        if self.axisIsValid('Right'):
-            self.setMirrorAxis('Left', False)
-            self.setMirrorAxis('Right', False)
-        if self.axisIsValid('Top'):
-            self.setMirrorAxis('Bottom', False)
-            self.setMirrorAxis('Top', False)
-        self._emitAxisSelected()
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dic = {}
-        for l in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(l):
-                dic[l + "_mode"] = self.getAxisMode(l)
-                dic[l + "_mirror"] = self.getMirrorAxis(l)
-                dic[l + "_color"] = self.getAxisColor(l)
-                dic[l + "_thick"] = self.getAxisThick(l)
-            else:
-                dic[l + "_mode"] = None
-                dic[l + "_mirror"] = None
-                dic[l + "_color"] = None
-                dic[l + "_thick"] = None
-
-        dictionary['AxisSetting'] = dic
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'AxisSetting' in dictionary:
-            dic = dictionary['AxisSetting']
-            for l in ['Left', 'Right', 'Top', 'Bottom']:
-                if self.axisIsValid(l):
-                    self.setAxisMode(l, dic[l + "_mode"])
-                    self.setMirrorAxis(l, dic[l + "_mirror"])
-                    self.setAxisColor(l, dic[l + "_color"])
-                    self.setAxisThick(l, dic[l + "_thick"])
-
-    def _getAxisList(self, axis):
-        res = [self.fig.axes[axis.lower()]['item']]
-        if not self.axisIsValid(Opposite[axis]):
-            res.append(self.fig.axes[opposite[axis]]['item'])
-        return res
-
-    @saveCanvas
-    def setAxisMode(self, axis, mod):
-        ax = self._getAxisList(axis)
-        for a in ax:
-            if mod == 'log':
-                a.setLogMode(True)
-            else:
-                a.setLogMode(False)
-
-    def getAxisMode(self, axis):
-        ax = self.fig.axes[axis.lower()]['item']
-        if ax.logMode:
-            return 'log'
-        else:
-            return 'linear'
-
-    @saveCanvas
-    def setAxisThick(self, axis, thick):
-        ax = self._getAxisList(axis)
-        for a in ax:
-            pen = a.pen()
-            pen.setWidth(thick)
-            a.setPen(pen)
-
-    def getAxisThick(self, axis):
-        ax = self.fig.axes[axis.lower()]['item']
-        return ax.pen().width()
-
-    @saveCanvas
-    def setAxisColor(self, axis, color):
-        ax = self._getAxisList(axis)
-        for a in ax:
-            pen = a.pen()
-            if isinstance(color, tuple):
-                col = [c * 255 for c in color]
-                pen.setColor(QColor(*col))
-            else:
-                pen.setColor(QColor(color))
-            a.setPen(pen)
-
-    def getAxisColor(self, axis):
-        ax = self.fig.axes[axis.lower()]['item']
-        return ax.pen().color().name()
-
-    @saveCanvas
-    def setMirrorAxis(self, axis, value):
-        ax = self.fig.axes[opposite[axis]]['item']
-        ax.setVisible(value)
-
-    def getMirrorAxis(self, axis):
-        ax = self.fig.axes[opposite[axis]]['item']
-        return ax.isVisible()
-
-
-class TickAdjustableCanvas(AxisAdjustableCanvas):
+class TickAdjustableCanvas(AxisRangeRightClickCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.__data = {}
@@ -470,6 +346,8 @@ class TickAdjustableCanvas(AxisAdjustableCanvas):
             self._setAutoLocator(Opposite[axis], n, which)
 
     def _setAutoLocator(self, axis, n, which='major'):
+        if not self.axisIsValid(axis):
+            return
         ax = self.fig.axes[axis.lower()]['item']
         range = self.getAxisRange(axis)
         dr = range[1] - range[0]
