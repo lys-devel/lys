@@ -8,9 +8,24 @@ class CanvasAxes(CanvasPart):
 
     def __init__(self, canvas):
         super().__init__(canvas)
+        canvas.axisChanged.connect(lambda ax: self.setAutoScaleAxis(ax))
         canvas.saveCanvas.connect(self._save)
         canvas.loadCanvas.connect(self._load)
+        self.__initialize()
+
+    def __initialize(self):
         self.__auto = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
+        self.__range = {'Left': None, 'Right': None, 'Top': None, 'Bottom': None}
+        self.__thick = {'Left': 1, 'Right': 1, 'Top': 1, 'Bottom': 1}
+        self.__color = {'Left': "#000000", 'Right': "#000000", 'Top': "#000000", 'Bottom': "#000000"}
+        self.__mirror = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
+        self.__mode = {'Left': "linear", 'Right': "linear", 'Top': "linear", 'Bottom': "linear"}
+        for ax in self.axisList():
+            self.setAutoScaleAxis(ax)
+            self.setAxisThick(ax, 1)
+            self.setAxisColor(ax, "#000000")
+            self.setMirrorAxis(ax, True)
+            self.setAxisMode(ax, "linear")
 
     def axisIsValid(self, axis):
         return self._isValid(axis)
@@ -26,17 +41,15 @@ class CanvasAxes(CanvasPart):
 
     @saveCanvas
     def setAxisRange(self, axis, range):
-        if not self.axisIsValid(axis):
-            return
-        self._setRange(axis, range)
-        self.__auto[axis] = False
-        self.axisRangeChanged.emit()
+        if self.axisIsValid(axis):
+            self._setRange(axis, range)
+            self.__auto[axis] = False
+            self.__range[axis] = range
+            self.axisRangeChanged.emit()
 
     def getAxisRange(self, axis):
-        if not self.axisIsValid(axis):
-            return None
-        else:
-            return self._getRange(axis)
+        if self.axisIsValid(axis):
+            return self.__range[axis]
 
     @saveCanvas
     def setAutoScaleAxis(self, axis):
@@ -80,44 +93,46 @@ class CanvasAxes(CanvasPart):
     def isAutoScaled(self, axis):
         if self.axisIsValid(axis):
             return self.__auto[axis]
-        else:
-            return None
 
     @saveCanvas
     def setAxisThick(self, axis, thick):
         if self.axisIsValid(axis):
             self._setAxisThick(axis, thick)
+            self.__thick[axis] = thick
 
     def getAxisThick(self, axis):
         if self.axisIsValid(axis):
-            return self._getAxisThick(axis)
+            return self.__thick[axis]
 
     @saveCanvas
     def setAxisColor(self, axis, color):
         if self.axisIsValid(axis):
             self._setAxisColor(axis, color)
+            self.__color[axis] = color
 
     def getAxisColor(self, axis):
         if self.axisIsValid(axis):
-            return self._getAxisColor(axis)
+            return self.__color[axis]
 
     @saveCanvas
     def setMirrorAxis(self, axis, value):
         if self.axisIsValid(axis):
             self._setMirrorAxis(axis, value)
+            self.__mirror[axis] = value
 
     def getMirrorAxis(self, axis):
         if self.axisIsValid(axis):
-            return self._getMirrorAxis(axis)
+            return self.__mirror[axis]
 
     @saveCanvas
-    def setAxisMode(self, axis, mod):
+    def setAxisMode(self, axis, mode):
         if self.axisIsValid(axis):
-            self._setAxisMode(axis, mod)
+            self._setAxisMode(axis, mode)
+            self.__mode[axis] = mode
 
     def getAxisMode(self, axis):
         if self.axisIsValid(axis):
-            return self._getAxisMode(axis)
+            return self.__mode[axis]
 
     def _save(self, dictionary):
         dic = {}
@@ -171,29 +186,227 @@ class CanvasAxes(CanvasPart):
     def _setRange(self, axis, range):
         raise NotImplementedError()
 
-    def _getRange(self, axis):
-        raise NotImplementedError()
-
     def _setAxisThick(self, axis, thick):
-        raise NotImplementedError()
-
-    def _getAxisThick(self, axis):
         raise NotImplementedError()
 
     def _setAxisColor(self, axis, color):
         raise NotImplementedError()
 
-    def _getAxisColor(self, axis):
-        raise NotImplementedError()
-
     def _setMirrorAxis(self, axis, value):
-        raise NotImplementedError()
-
-    def _getMirrorAxis(self, axis):
         raise NotImplementedError()
 
     def _setAxisMode(self, axis, mod):
         raise NotImplementedError()
 
-    def _getAxisMode(self, axis):
+
+class CanvasTicks(CanvasPart):
+    def __init__(self, canvas):
+        super().__init__(canvas)
+        self.__initialize()
+        canvas.axisRangeChanged.connect(self._refreshTicks)
+        canvas.dataChanged.connect(self._refreshTicks)
+        canvas.saveCanvas.connect(self._save)
+        canvas.loadCanvas.connect(self._load)
+
+    def _refreshTicks(self):
+        for ax in ['Left', 'Right', 'Top', 'Bottom']:
+            for t in ['major', 'minor']:
+                self.setTickInterval(ax, self.getTickInterval(ax, t), t)
+
+    def __initialize(self):
+        self.__width = {}
+        self.__width['major'] = {'Left': 1, 'Right': 1, 'Top': 1, 'Bottom': 1}
+        self.__width['minor'] = {'Left': 1, 'Right': 1, 'Top': 1, 'Bottom': 1}
+
+        self.__length = {}
+        self.__length['major'] = {'Left': 3.5, 'Right': 3.5, 'Top': 3.5, 'Bottom': 3.5}
+        self.__length['minor'] = {'Left': 2, 'Right': 2, 'Top': 2, 'Bottom': 2}
+
+        self.__interval = {}
+        self.__interval['major'] = {'Left': 0, 'Right': 0, 'Top': 0, 'Bottom': 0}
+        self.__interval['minor'] = {'Left': 0, 'Right': 0, 'Top': 0, 'Bottom': 0}
+
+        self.__visible = {}
+        self.__visible['major'] = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
+        self.__visible['major_mirror'] = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
+        self.__visible['minor'] = {'Left': False, 'Right': False, 'Top': False, 'Bottom': False}
+        self.__visible['minor_mirror'] = {'Left': False, 'Right': False, 'Top': False, 'Bottom': False}
+
+        self.__direction = {'Left': 'in', 'Right': 'in', 'Top': 'in', 'Bottom': 'in'}
+
+        for ax in self.canvas().axisList():
+            self.setTickWidth(ax, 1, which='both')
+            self.setTickLength(ax, 2, which='minor')
+            self.setTickLength(ax, 3.5, which='major')
+            self.setTickInterval(ax, 0, which='both')
+            self.setTickVisible(ax, True, mirror=False, which='major')
+            self.setTickVisible(ax, False, mirror=False, which='minor')
+            self.setTickVisible(ax, False, mirror=True, which='both')
+            self.setTickDirection(ax, "in")
+
+    @saveCanvas
+    def setTickWidth(self, axis, value, which='major'):
+        if not self.canvas().axisIsValid(axis):
+            return
+        if which == 'both':
+            self.setTickWidth(axis, value, 'major')
+            self.setTickWidth(axis, value, 'minor')
+            return
+        self._setTickWidth(axis, value, which)
+        self.__width[which][axis] = value
+
+    def getTickWidth(self, axis, which='major'):
+        if not self.canvas().axisIsValid(axis):
+            return
+        return self.__width[which][axis]
+
+    @saveCanvas
+    def setTickLength(self, axis, value, which='major'):
+        if not self.canvas().axisIsValid(axis):
+            return
+        if which == 'both':
+            self.setTickLength(axis, value, 'major')
+            self.setTickLength(axis, value, 'minor')
+            return
+        self._setTickLength(axis, value, which)
+        self.__length[which][axis] = value
+
+    def getTickLength(self, axis, which='major'):
+        if not self.canvas().axisIsValid(axis):
+            return
+        return self.__length[which][axis]
+
+    @saveCanvas
+    def setTickInterval(self, axis, value=0, which='major'):
+        if not self.canvas().axisIsValid(axis):
+            return
+        if which == 'both':
+            self.setTickInterval(axis, value, 'major')
+            self.setTickInterval(axis, value, 'minor')
+            return
+        self._setTickInterval(axis, self._getInterval(axis, value, which), which)
+        self.__interval[which][axis] = value
+
+    def getTickInterval(self, axis, which='major', raw=True):
+        if not self.canvas().axisIsValid(axis):
+            return
+        if raw:
+            return self.__interval[which][axis]
+        else:
+            return self._getInterval(axis, self.__interval[which][axis], which)
+
+    def _getInterval(self, axis, value, which):
+        if value == 0:
+            return self._calculateAutoInterval(axis, which)
+        else:
+            range = self.canvas().getAxisRange(axis)
+            if (abs(range[1] - range[0]) / value) < 100:
+                return value
+            else:
+                return self._calculateAutoInterval(axis, which)
+
+    def _calculateAutoInterval(self, axis, which):
+        range = self.canvas().getAxisRange(axis)
+        d = abs(range[1] - range[0]) / 4
+        p = 10**(np.floor(np.log10(d)))
+        if d / p < 2:
+            d = 1
+        if d / p < 3:
+            d = 2
+        elif d / p < 8:
+            d = 5
+        else:
+            d = 10
+        if which == 'major':
+            return d * p
+        else:
+            if d == 2:
+                return d * p / 4
+            return d * p / 5
+
+    @saveCanvas
+    def setTickVisible(self, axis, value, mirror=False, which='both'):
+        if not self.canvas().axisIsValid(axis):
+            return
+        if which == 'both':
+            self.setTickVisible(axis, value, mirror, 'major')
+            self.setTickVisible(axis, value, mirror, 'minor')
+            return
+        self._setTickVisible(axis, value, mirror, which)
+        if mirror:
+            self.__visible[which + "_mirror"][axis] = value
+        else:
+            self.__visible[which][axis] = value
+
+    def getTickVisible(self, axis, mirror=False, which='major'):
+        if not self.canvas().axisIsValid(axis):
+            return
+        if mirror:
+            return self.__visible[which + "_mirror"][axis]
+        else:
+            return self.__visible[which][axis]
+
+    @saveCanvas
+    def setTickDirection(self, axis, direction):
+        if not self.canvas().axisIsValid(axis):
+            return
+        if direction == 1:
+            direction = "in"
+        if direction == -1:
+            direction = "out"
+        self._setTickDirection(axis, direction)
+        self.__direction[axis] = direction
+
+    def getTickDirection(self, axis):
+        if not self.canvas().axisIsValid(axis):
+            return
+        return self.__direction[axis]
+
+    def _save(self, dictionary):
+        dic = {}
+        for ax in ['Left', 'Right', 'Top', 'Bottom']:
+            if self.canvas().axisIsValid(ax):
+                dic[ax + "_major_on"] = self.getTickVisible(ax, mirror=False, which='major')
+                dic[ax + "_majorm_on"] = self.getTickVisible(ax, mirror=True, which='major')
+                dic[ax + "_ticklen"] = self.getTickLength(ax)
+                dic[ax + "_tickwid"] = self.getTickWidth(ax)
+                dic[ax + "_ticknum"] = self.getTickInterval(ax)
+                dic[ax + "_minor_on"] = self.getTickVisible(ax, mirror=False, which='minor')
+                dic[ax + "_minorm_on"] = self.getTickVisible(ax, mirror=True, which='minor')
+                dic[ax + "_ticklen2"] = self.getTickLength(ax, which='minor')
+                dic[ax + "_tickwid2"] = self.getTickWidth(ax, which='minor')
+                dic[ax + "_ticknum2"] = self.getTickInterval(ax, which='minor')
+                dic[ax + "_tickdir"] = self.getTickDirection(ax)
+        dictionary['TickSetting'] = dic
+
+    def _load(self, dictionary):
+        if 'TickSetting' in dictionary:
+            dic = dictionary['TickSetting']
+            for ax in ['Left', 'Right', 'Top', 'Bottom']:
+                if self.canvas().axisIsValid(ax):
+                    self.setTickVisible(ax, dic[ax + "_major_on"], mirror=False, which='major')
+                    self.setTickVisible(ax, dic[ax + "_majorm_on"], mirror=True, which='major')
+                    self.setTickLength(ax, dic[ax + "_ticklen"])
+                    self.setTickWidth(ax, dic[ax + "_tickwid"])
+                    self.setTickInterval(ax, dic[ax + "_ticknum"])
+                    self.setTickVisible(ax, dic[ax + "_minor_on"], mirror=False, which='minor')
+                    self.setTickVisible(ax, dic[ax + "_minorm_on"], mirror=True, which='minor')
+                    self.setTickLength(ax, dic[ax + "_ticklen2"], which='minor')
+                    self.setTickWidth(ax, dic[ax + "_tickwid2"], which='minor')
+                    self.setTickInterval(ax, dic[ax + "_ticknum2"], which='minor')
+                    self.setTickDirection(ax, dic[ax + "_tickdir"])
+
+    def _setTickWidth(self, axis, value, which):
+        raise NotImplementedError()
+
+    def _setTickLength(self, axis, value, which):
+        raise NotImplementedError()
+
+    def _setTickInterval(self, axis, interval, which='major'):
+        raise NotImplementedError()
+
+    def _setTickVisible(self, axis, tf, mirror, which='both'):
+        raise NotImplementedError()
+
+    def _setTickDirection(self, axis, direction):
         raise NotImplementedError()

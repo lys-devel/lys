@@ -10,6 +10,12 @@ from lys import *
 from .CanvasBase import saveCanvas
 from .RGBSettings import *
 
+from ..CanvasInterface import CanvasAxes, CanvasTicks
+
+
+opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
+Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom', 'left': 'Right', 'right': 'Left', 'bottom': 'Top', 'top': 'Bottom'}
+
 
 class RangeSelectableCanvas(RGBSettingCanvas):
     selectedRangeChanged = pyqtSignal(object)
@@ -98,14 +104,6 @@ class _pyqtGraphAxes(CanvasAxes):
             axes.setXRange(*range, padding=0)
             axes.disableAutoRange(axis='x')
 
-    def _getRange(self, axis):
-        axes = self.canvas().getAxes(axis)
-        r = axes.viewRange()
-        if axis in ['Left', 'Right']:
-            return r[1]
-        if axis in ['Top', 'Bottom']:
-            return r[0]
-
     def _setAxisThick(self, axis, thick):
         ax = self._getAxisList(axis)
         for a in ax:
@@ -119,10 +117,6 @@ class _pyqtGraphAxes(CanvasAxes):
             pen.setColor(c)
             a.setPen(pen)
 
-    def _getAxisThick(self, axis):
-        ax = self.canvas().fig.axes[axis.lower()]['item']
-        return ax.pen().width()
-
     def _setAxisColor(self, axis, color):
         ax = self._getAxisList(axis)
         for a in ax:
@@ -134,15 +128,8 @@ class _pyqtGraphAxes(CanvasAxes):
                 pen.setColor(QColor(color))
             a.setPen(pen)
 
-    def _getAxisColor(self, axis):
-        ax = self.canvas().fig.axes[axis.lower()]['item']
-        return ax.pen().color().name()
-
     def _setMirrorAxis(self, axis, value):
         warnings.warn("pyqtGraph does not support show/hide mirror axes.")
-
-    def _getMirrorAxis(self, axis):
-        return False
 
     def _getAxisList(self, axis):
         res = [self.canvas().fig.axes[axis.lower()]['item']]
@@ -154,19 +141,82 @@ class _pyqtGraphAxes(CanvasAxes):
         if mod == 'log':
             warnings.warn("pyqtGraph does not support log scale.")
 
-    def _getAxisMode(self, axis):
-        return 'linear'
+
+class _pyqtGraphTicks(CanvasTicks):
+    def _setTickWidth(self, axis, value, which='major'):
+        warnings.warn("pyqtGraph does not support setting width axes. Use axis thick instead.")
+
+    def __alist(self, axis):
+        res = [axis]
+        if not self.canvas().axisIsValid(Opposite[axis]):
+            res.append(Opposite[axis])
+        return res
+
+    def __set(self, axis, visible, direction, length):
+        dir = {"in": -1, "out": 1, 1: 1, -1: -1, None: 0}
+        direction = dir[direction]
+        if visible:
+            visible = 1
+        else:
+            visible = 0
+        ax = self.canvas().fig.axes[axis.lower()]['item']
+        ax.setStyle(tickLength=int(direction * length * visible))
+
+    def _setTickInterval(self, axis, value, which='major'):
+        for ax in self.__alist(axis):
+            ax = self.canvas().fig.axes[ax.lower()]['item']
+            if which == 'major':
+                ax.setTickSpacing(major=value, minor=self.getTickInterval(axis, which="minor", raw=False))
+            else:
+                ax.setTickSpacing(major=self.getTickInterval(axis, which="major", raw=False), minor=value)
+
+    def _setTickDirection(self, axis, direction):
+        self.__set(axis, self.getTickVisible(axis), direction, self.getTickLength(axis))
+        if not self.canvas().axisIsValid(Opposite[axis]):
+            self.__set(Opposite[axis], self.getTickVisible(axis, mirror=True), direction, self.getTickLength(axis))
+
+    def _setTickLength(self, axis, value, which='major'):
+        if which == 'minor':
+            warnings.warn("pyqtGraph does not support setting tick length of minor axes.")
+            return
+        self.__set(axis, self.getTickVisible(axis), self.getTickDirection(axis), int(value))
+        if not self.canvas().axisIsValid(Opposite[axis]):
+            self.__set(Opposite[axis], self.getTickVisible(axis, mirror=True), self.getTickDirection(axis), int(value))
+
+    def _setTickVisible(self, axis, tf, mirror=False, which='both'):
+        if which in ['both', 'major']:
+            if mirror:
+                if not self.canvas().axisIsValid(Opposite[axis]):
+                    self.__set(Opposite[axis], tf, self.getTickDirection(axis), self.getTickLength(axis))
+            else:
+                self.__set(axis, tf, self.getTickDirection(axis), self.getTickLength(axis))
+        if which in ['both', 'minor']:
+            if tf:
+                w = "minor"
+            else:
+                w = "major"
+            if mirror:
+                if not self.canvas().axisIsValid(Opposite[axis]):
+                    ax = self.canvas().fig.axes[Opposite[axis].lower()]['item']
+                    ax.setTickSpacing(major=self.getTickInterval(axis, which="major", raw=False), minor=self.getTickInterval(axis, which=w, raw=False))
+            else:
+                ax = self.canvas().fig.axes[axis.lower()]['item']
+                ax.setTickSpacing(major=self.getTickInterval(axis, which="major", raw=False), minor=self.getTickInterval(axis, which=w, raw=False))
 
 
 class AxesCanvas(AxisSelectableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self._axs = _pyqtGraphAxes(self)
+        self._ticks = _pyqtGraphTicks(self)
 
     def __getattr__(self, key):
         if "_axs" in self.__dict__:
             if hasattr(self._axs, key):
                 return getattr(self._axs, key)
+        if "_ticks" in self.__dict__:
+            if hasattr(self._ticks, key):
+                return getattr(self._ticks, key)
         return super().__getattr__(key)
 
 
@@ -263,208 +313,5 @@ class AxisRangeRightClickCanvas(AxesCanvas):
         self.ClearSelectedRange()
 
 
-opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
-Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom', 'left': 'Right', 'right': 'Left', 'bottom': 'Top', 'top': 'Bottom'}
-
-
 class TickAdjustableCanvas(AxisRangeRightClickCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.__data = {}
-        self._direction = {'Left': -1, 'Right': -1, 'Top': -1, 'Bottom': -1}
-        self._length = {'Left': 5, 'Right': 5, 'Top': 5, 'Bottom': 5}
-        self._major = {'Left': 0, 'Right': 0, 'Top': 0, 'Bottom': 0}
-        self._minor = {'Left': 0, 'Right': 0, 'Top': 0, 'Bottom': 0}
-        self._major_visible = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
-        self._minor_visible = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
-        self.setTickDirection('Left', 'in')
-        self.setTickDirection('Bottom', 'in')
-        self.setTickVisible('Left', False, which='minor')
-        self.setTickVisible('Bottom', False, which='minor')
-        self.axisRangeChanged.connect(self._refreshTicks)
-        self.dataChanged.connect(self._refreshTicks)
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dic = {}
-        for l in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(l):
-                dic[l + "_major_on"] = self.getTickVisible(l, mirror=False, which='major')
-                dic[l + "_majorm_on"] = self.getTickVisible(l, mirror=True, which='major')
-                dic[l + "_ticklen"] = self.getTickLength(l)
-                dic[l + "_tickwid"] = self.getTickWidth(l)
-                dic[l + "_ticknum"] = self.getAutoLocator(l)
-                dic[l + "_minor_on"] = self.getTickVisible(l, mirror=False, which='minor')
-                dic[l + "_minorm_on"] = self.getTickVisible(l, mirror=True, which='minor')
-                dic[l + "_ticklen2"] = self.getTickLength(l, which='minor')
-                dic[l + "_tickwid2"] = self.getTickWidth(l, which='minor')
-                dic[l + "_ticknum2"] = self.getAutoLocator(l, which='minor')
-                dic[l + "_tickdir"] = self.getTickDirection(l)
-        dictionary['TickSetting'] = dic
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'TickSetting' in dictionary:
-            dic = dictionary['TickSetting']
-            for l in ['Left', 'Right', 'Top', 'Bottom']:
-                if self.axisIsValid(l):
-                    self.setTickVisible(l, dic[l + "_major_on"], mirror=False, which='major')
-                    self.setTickVisible(l, dic[l + "_majorm_on"], mirror=True, which='major')
-                    self.setTickLength(l, dic[l + "_ticklen"])
-                    self.setTickWidth(l, dic[l + "_tickwid"])
-                    self.setAutoLocator(l, dic[l + "_ticknum"])
-                    self.setTickVisible(l, dic[l + "_minor_on"], mirror=False, which='minor')
-                    self.setTickVisible(l, dic[l + "_minorm_on"], mirror=True, which='minor')
-                    self.setTickLength(l, dic[l + "_ticklen2"], which='minor')
-                    self.setTickWidth(l, dic[l + "_tickwid2"], which='minor')
-                    self.setAutoLocator(l, dic[l + "_ticknum2"], which='minor')
-                    self.setTickDirection(l, dic[l + "_tickdir"])
-
-    def _refreshTicks(self):
-        for l in ['Left', 'Right', 'Top', 'Bottom']:
-            for t in ['major', 'minor']:
-                self.setAutoLocator(l, self.getAutoLocator(l, t), t)
-
-    def __alist(self, axis):
-        res = [axis]
-        if not self.axisIsValid(Opposite[axis]):
-            res.append(Opposite[axis])
-        return res
-
-    def __set(self):
-        for axis in ['Left', 'Right', 'Bottom', 'Top']:
-            ax = self.fig.axes[axis.lower()]['item']
-            if self._major_visible[axis]:
-                ax.setStyle(tickLength=self._direction[axis] * self._length[axis])
-            else:
-                ax.setStyle(tickLength=0)
-
-    @saveCanvas
-    def setAutoLocator(self, axis, n, which='major'):
-        self._setAutoLocator(axis, n, which)
-        if not self.axisIsValid(Opposite[axis]):
-            self._setAutoLocator(Opposite[axis], n, which)
-
-    def _setAutoLocator(self, axis, n, which='major'):
-        if not self.axisIsValid(axis):
-            return
-        ax = self.fig.axes[axis.lower()]['item']
-        range = self.getAxisRange(axis)
-        dr = range[1] - range[0]
-        if which == 'major':
-            self._major[axis] = n
-            if self._minor_visible[axis]:
-                if self._minor[axis] == 0:
-                    # major: auto, minor: auto
-                    if n == 0:
-                        ax.setTickSpacing()
-                    # major: n, minor: auto
-                    else:
-                        if dr / n < 100:
-                            ax.setTickSpacing(major=n, minor=n / 5)
-                        else:
-                            ax.setTickSpacing()
-                else:
-                    # major:auto, minor, specified
-                    if n == 0:
-                        if dr / (self._minor[axis] * 5) < 100:
-                            ax.setTickSpacing(major=self._minor[axis] * 5, minor=self._minor[axis])
-                        else:
-                            ax.setTickSpacing()
-                    # major:n, minor: specified
-                    else:
-                        if dr / n < 100:
-                            ax.setTickSpacing(major=n, minor=self._minor[axis])
-                        else:
-                            ax.setTickSpacing(major=self._minor[axis] * 5, minor=self._minor[axis])
-            else:
-                if n == 0 or dr / n >= 100:
-                    ax.setTickSpacing()
-                    space = ax.tickSpacing(*self.getAxisRange(axis), 100)
-                    if space is not None:
-                        n = space[1][0] / 5
-                    else:
-                        n = 5
-                    ax.setTickSpacing(levels=[(n, 0)])
-                else:
-                    ax.setTickSpacing(levels=[(n, 0)])
-        else:
-            self._minor[axis] = n
-            if not self._minor_visible[axis]:
-                return
-            if self._major[axis] == 0:
-                if n == 0:
-                    ax.setTickSpacing()
-                else:
-                    if dr / (n * 5) < 100:
-                        ax.setTickSpacing(major=n * 5, minor=n)
-                    else:
-                        ax.setTickSpacing()
-            else:
-                if n == 0:
-                    if dr / self._major[axis] < 100:
-                        ax.setTickSpacing(major=self._major[axis], minor=self._major[axis] / 5)
-                    else:
-                        ax.setTickSpacing()
-                else:
-                    if dr / n < 500:
-                        ax.setTickSpacing(major=self._major[axis], minor=n)
-                    else:
-                        ax.setTickSpacing(major=self._major[axis], minor=self._major[axis] / 5)
-
-    def getAutoLocator(self, axis, which='major'):
-        if which == 'major':
-            return self._major[axis]
-        else:
-            return self._minor[axis]
-
-    @saveCanvas
-    def setTickDirection(self, axis, direction):
-        data = {"in": -1, "out": 1}
-        for a in self.__alist(axis):
-            self._direction[a] = data[direction]
-        self.__set()
-
-    def getTickDirection(self, axis):
-        if self._direction[axis] > 0:
-            return 'out'
-        else:
-            return 'in'
-
-    @saveCanvas
-    def setTickWidth(self, axis, value, which='major'):
-        self.setAxisThick(axis, value)
-
-    def getTickWidth(self, axis, which='major'):
-        return self.getAxisThick(axis)
-
-    @saveCanvas
-    def setTickLength(self, axis, value, which='major'):
-        for a in self.__alist(axis):
-            self._length[a] = int(value)
-        self.__set()
-
-    def getTickLength(self, axis, which='major'):
-        return self._length[axis]
-
-    @saveCanvas
-    def setTickVisible(self, axis, tf, mirror=False, which='both'):
-        if which in ['both', 'major']:
-            if not mirror:
-                self._major_visible[axis] = tf
-            else:
-                self._major_visible[Opposite[axis]] = tf
-        if which in ['both', 'minor']:
-            if not mirror:
-                self._minor_visible[axis] = tf
-                self._setAutoLocator(axis, self._major[axis], 'major')
-            else:
-                self._minor_visible[Opposite[axis]] = tf
-                self._setAutoLocator(Opposite[axis], self._major[axis], 'major')
-        self.__set()
-
-    def getTickVisible(self, axis, mirror=False, which='major'):
-        if which == 'major':
-            return self._major_visible[axis]
-        else:
-            return self._minor_visible[axis]
+    pass

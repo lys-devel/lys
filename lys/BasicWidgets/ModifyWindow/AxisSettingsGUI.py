@@ -1,8 +1,8 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+import numpy as np
 
-from .ColorWidgets import *
+from LysQt.QtWidgets import QComboBox, QGroupBox, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton, QCheckBox, QDoubleSpinBox
+
+from .ColorWidgets import ColorSelection
 from lys.widgets import ScientificSpinBox
 
 
@@ -99,10 +99,6 @@ class AxisRangeAdjustBox(QGroupBox):
             self.canvas.setAxisRange(self._parent.getCurrentAxis(), [mi, ma])
 
 
-opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
-Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom'}
-
-
 class AxisAdjustBox(QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__("Axis Setting")
@@ -147,149 +143,105 @@ class AxisAdjustBox(QGroupBox):
         self.__mirror.setChecked(self.canvas.getMirrorAxis(axis))
         self.__flg = False
 
-    def __mirrorChanged(self):
+    def __axis(self):
         if self.__flg:
-            return
-        axis = self._parent.getCurrentAxis()
-        value = self.__mirror.isChecked()
-        if self._parent.isApplyAll():
-            for ax in self.canvas.axisList():
-                self.canvas.setMirrorAxis(ax, value)
+            return []
+        elif self._parent.isApplyAll():
+            return self.canvas.axisList()
         else:
-            self.canvas.setMirrorAxis(axis, value)
+            return [self._parent.getCurrentAxis()]
+
+    def __mirrorChanged(self):
+        for ax in self.__axis():
+            self.canvas.setMirrorAxis(ax, self.__mirror.isChecked())
 
     def __chgmod(self):
-        if self.__flg:
-            return
-        mod = self.__mode.currentText()
-        axis = self._parent.getCurrentAxis()
-        if self._parent.isApplyAll():
-            for ax in self.canvas.axisList():
-                self.canvas.setAxisMode(ax, mod)
-        else:
-            self.canvas.setAxisMode(axis, mod)
+        for ax in self.__axis():
+            self.canvas.setAxisMode(ax, self.__mode.currentText())
 
     def __setThick(self):
-        if self.__flg:
-            return
-        axis = self._parent.getCurrentAxis()
-        if self._parent.isApplyAll():
-            for ax in self.canvas.axisList():
-                self.canvas.setAxisThick(ax, self.__spin1.value())
-        else:
-            self.canvas.setAxisThick(axis, self.__spin1.value())
+        for ax in self.__axis():
+            self.canvas.setAxisThick(ax, self.__spin1.value())
 
     def __changeColor(self):
-        if self.__flg:
-            return
-        axis = self._parent.getCurrentAxis()
-        if self._parent.isApplyAll():
-            for ax in self.canvas.axisList():
-                self.canvas.setAxisColor(ax, self.__color.getColor())
-        else:
-            self.canvas.setAxisColor(axis, self.__color.getColor())
+        for ax in self.__axis():
+            self.canvas.setAxisColor(ax, self.__color.getColor())
 
 
 class TickAdjustBox(QGroupBox):
-    def __init__(self, canvas):
+    def __init__(self, parent, canvas):
         super().__init__("Tick Setting")
         self.canvas = canvas
+        self._parent = parent
         self.__flg = False
         self.__initlayout()
-        self.__loadstate()
-        self.canvas.addAxisSelectedListener(self)
+        self.update()
 
     def __initlayout(self):
-        layout = QVBoxLayout()
-
-        layout_h = QHBoxLayout()
-        self.__all = QCheckBox('All axes')
-        self.__all.setChecked(False)
-        layout_h.addWidget(self.__all)
-
-        self.__mir = QCheckBox('Mirror')
-        self.__mir.stateChanged.connect(self.__chon)
-        layout_h.addWidget(self.__mir)
-
-        layout.addLayout(layout_h)
-
-        gl = QGridLayout()
-
-        gl.addWidget(QLabel('Location'), 0, 0)
         self.__mode = QComboBox()
         self.__mode.addItems(['in', 'out', 'none'])
-        self.__mode.activated.connect(self.__chgmod)
-        gl.addWidget(self.__mode, 0, 1)
+        self.__mir = QCheckBox('Mirror')
+        self.__mir.stateChanged.connect(self.__chon)
 
-        gl.addWidget(QLabel('Interval'), 1, 0)
+        self.__mode.activated.connect(self.__chgmod)
         self.__spin1 = ScientificSpinBox()
         self.__spin1.valueChanged.connect(self.__chnum)
         self.__spin1.setRange(0, np.inf)
-        gl.addWidget(self.__spin1, 1, 1)
-
-        gl.addWidget(QLabel('Length'), 2, 0)
         self.__spin2 = QDoubleSpinBox()
         self.__spin2.valueChanged.connect(self.__chlen)
         self.__spin2.setRange(0, np.inf)
-        gl.addWidget(self.__spin2, 2, 1)
-
-        gl.addWidget(QLabel('Width'), 3, 0)
         self.__spin3 = QDoubleSpinBox()
         self.__spin3.valueChanged.connect(self.__chwid)
         self.__spin3.setRange(0, np.inf)
-        gl.addWidget(self.__spin3, 3, 1)
 
         self.__minor = QCheckBox('Minor')
         self.__minor.stateChanged.connect(self.__minorChanged)
-        gl.addWidget(self.__minor, 0, 2)
-
-        gl.addWidget(QLabel('Interval'), 1, 2)
         self.__spin4 = ScientificSpinBox()
         self.__spin4.valueChanged.connect(self.__chnum2)
-        gl.addWidget(self.__spin4, 1, 3)
-
-        gl.addWidget(QLabel('Length'), 2, 2)
         self.__spin5 = QDoubleSpinBox()
         self.__spin5.valueChanged.connect(self.__chlen2)
-        gl.addWidget(self.__spin5, 2, 3)
-
-        gl.addWidget(QLabel('Width'), 3, 2)
         self.__spin6 = QDoubleSpinBox()
         self.__spin6.valueChanged.connect(self.__chwid2)
-        gl.addWidget(self.__spin6, 3, 3)
 
-        layout.addLayout(gl)
-        self.setLayout(layout)
-        self.__loadstate()
+        gl = QGridLayout()
+        gl.addWidget(QLabel('Location'), 0, 0)
+        gl.addWidget(self.__mode, 0, 1)
+        gl.addWidget(self.__mir, 0, 2)
+
+        gl.addWidget(QLabel('Major'), 1, 0)
+        gl.addWidget(QLabel('Interval'), 2, 0)
+        gl.addWidget(self.__spin1, 2, 1)
+        gl.addWidget(QLabel('Length'), 3, 0)
+        gl.addWidget(self.__spin2, 3, 1)
+        gl.addWidget(QLabel('Width'), 4, 0)
+        gl.addWidget(self.__spin3, 4, 1)
+
+        gl.addWidget(self.__minor, 1, 2)
+        gl.addWidget(QLabel('Interval'), 2, 2)
+        gl.addWidget(self.__spin4, 2, 3)
+        gl.addWidget(QLabel('Length'), 3, 2)
+        gl.addWidget(self.__spin5, 3, 3)
+        gl.addWidget(QLabel('Width'), 4, 2)
+        gl.addWidget(self.__spin6, 4, 3)
+        self.setLayout(gl)
 
     def __axis(self):
-        if self.__all.isChecked():
-            res = ['Left', 'Bottom']
-            if self.canvas.axisIsValid('Right'):
-                res.append('Right')
-            if self.canvas.axisIsValid('Top'):
-                res.append('Top')
-            return res
+        if self.__flg:
+            return []
+        elif self._parent.isApplyAll():
+            return self.canvas.axisList()
         else:
-            return [self.canvas.getSelectedAxis()]
+            return [self._parent.getCurrentAxis()]
 
     def __chnum(self):
-        if self.__flg:
-            return
-        value = self.__spin1.value()
         for ax in self.__axis():
-            self.canvas.setAutoLocator(ax, value)
+            self.canvas.setTickInterval(ax, self.__spin1.value())
 
     def __chnum2(self):
-        if self.__flg:
-            return
-        value = self.__spin4.value()
         for ax in self.__axis():
-            self.canvas.setAutoLocator(ax, value, which='minor')
+            self.canvas.setTickInterval(ax, self.__spin4.value(), which='minor')
 
     def __chon(self):
-        if self.__flg:
-            return
         value = self.__mir.isChecked()
         for ax in self.__axis():
             if not self.__mode.currentText() == "none":
@@ -320,38 +272,22 @@ class TickAdjustBox(QGroupBox):
                 self.canvas.setTickDirection(ax, value)
 
     def __chlen(self):
-        if self.__flg:
-            return
-        value = self.__spin2.value()
         for ax in self.__axis():
-            self.canvas.setTickLength(ax, value)
+            self.canvas.setTickLength(ax, self.__spin2.value())
 
     def __chlen2(self):
-        if self.__flg:
-            return
-        value = self.__spin5.value()
         for ax in self.__axis():
-            self.canvas.setTickLength(ax, value, which='minor')
+            self.canvas.setTickLength(ax, self.__spin5.value(), which='minor')
 
     def __chwid(self):
-        if self.__flg:
-            return
-        axis = self.canvas.getSelectedAxis()
-        value = self.__spin3.value()
         for ax in self.__axis():
-            self.canvas.setTickWidth(ax, value)
+            self.canvas.setTickWidth(ax, self.__spin3.value())
 
     def __chwid2(self):
-        if self.__flg:
-            return
-        axis = self.canvas.getSelectedAxis()
-        value = self.__spin6.value()
         for ax in self.__axis():
-            self.canvas.setTickWidth(ax, value, which='minor')
+            self.canvas.setTickWidth(ax, self.__spin6.value(), which='minor')
 
     def __minorChanged(self):
-        if self.__flg:
-            return
         value = self.__minor.isChecked()
         if self.__mode.currentText() == "none":
             value = False
@@ -362,8 +298,8 @@ class TickAdjustBox(QGroupBox):
             else:
                 self.canvas.setTickVisible(ax, False, mirror=True, which='minor')
 
-    def __loadstate(self):
-        axis = self.canvas.getSelectedAxis()
+    def update(self):
+        axis = self._parent.getCurrentAxis()
         self.__flg = True
         self.__mir.setChecked(self.canvas.getTickVisible(axis, mirror=True))
         self.__minor.setChecked(self.canvas.getTickVisible(axis, which='minor'))
@@ -371,16 +307,13 @@ class TickAdjustBox(QGroupBox):
             self.__mode.setCurrentIndex(['in', 'out', 'none'].index(self.canvas.getTickDirection(axis)))
         else:
             self.__mode.setCurrentIndex(2)
-        self.__spin1.setValue(self.canvas.getAutoLocator(axis))
+        self.__spin1.setValue(self.canvas.getTickInterval(axis))
         self.__spin2.setValue(self.canvas.getTickLength(axis, 'major'))
         self.__spin3.setValue(self.canvas.getTickWidth(axis, 'major'))
-        self.__spin4.setValue(self.canvas.getAutoLocator(axis, which='minor'))
+        self.__spin4.setValue(self.canvas.getTickInterval(axis, which='minor'))
         self.__spin5.setValue(self.canvas.getTickLength(axis, 'minor'))
         self.__spin6.setValue(self.canvas.getTickWidth(axis, 'minor'))
         self.__flg = False
-
-    def OnAxisSelected(self, axis):
-        self.__loadstate()
 
 
 class AxisAndTickBox(QWidget):
@@ -388,6 +321,7 @@ class AxisAndTickBox(QWidget):
         super().__init__()
         self._range = AxisRangeAdjustBox(parent, canvas)
         self._axis = AxisAdjustBox(parent, canvas)
+        self._tick = TickAdjustBox(parent, canvas)
 
         layout_h1 = QHBoxLayout()
         layout_h1.addWidget(self._range)
@@ -395,9 +329,10 @@ class AxisAndTickBox(QWidget):
 
         layout = QVBoxLayout(self)
         layout.addLayout(layout_h1)
-        layout.addWidget(TickAdjustBox(canvas))
+        layout.addWidget(self._tick)
         self.setLayout(layout)
 
     def update(self):
         self._range.update()
         self._axis.update()
+        self._tick.update()

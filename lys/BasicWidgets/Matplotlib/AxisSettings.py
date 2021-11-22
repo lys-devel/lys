@@ -7,7 +7,10 @@ from matplotlib import ticker
 
 from lys import *
 from .VectorSettings import *
-from ..CanvasInterface import CanvasAxes
+from ..CanvasInterface import CanvasAxes, CanvasTicks
+
+opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
+Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom'}
 
 
 class RangeSelectableCanvas(VectorSettingCanvas):
@@ -120,20 +123,10 @@ class _MatplotlibAxes(CanvasAxes):
         if axis in ['Top', 'Bottom']:
             axes.set_xlim(range)
 
-    def _getRange(self, axis):
-        axes = self.canvas().getAxes(axis)
-        if axis in ['Left', 'Right']:
-            return axes.get_ylim()
-        if axis in ['Top', 'Bottom']:
-            return axes.get_xlim()
-
     def _setAxisThick(self, axis, thick):
         axes = self.canvas().getAxes(axis)
         axes.spines[axis.lower()].set_linewidth(thick)
         axes.spines[opposite[axis]].set_linewidth(thick)
-
-    def _getAxisThick(self, axis):
-        return self.canvas().getAxes(axis).spines[axis.lower()].get_linewidth()
 
     def _setAxisColor(self, axis, color):
         axes = self.canvas().getAxes(axis)
@@ -144,14 +137,8 @@ class _MatplotlibAxes(CanvasAxes):
         if axis in ['Top', 'Bottom']:
             axes.get_xaxis().set_tick_params(color=color, which='both')
 
-    def _getAxisColor(self, axis):
-        return self.canvas().getAxes(axis).spines[axis.lower()].get_edgecolor()
-
     def _setMirrorAxis(self, axis, value):
         self.canvas().getAxes(axis).spines[opposite[axis]].set_visible(value)
-
-    def _getMirrorAxis(self, axis):
-        return self.canvas().getAxes(axis).spines[opposite[axis]].get_visible()
 
     def _setAxisMode(self, axis, mod):
         axes = self.canvas().getAxes(axis)
@@ -160,23 +147,66 @@ class _MatplotlibAxes(CanvasAxes):
         else:
             axes.set_xscale(mod)
 
-    def _getAxisMode(self, axis):
+
+class _MatplotlibTicks(CanvasTicks):
+    def _setTickWidth(self, axis, value, which):
         axes = self.canvas().getAxes(axis)
         if axis in ['Left', 'Right']:
-            return axes.get_yscale()
-        else:
-            return axes.get_xscale()
+            axes.get_yaxis().set_tick_params(width=value, which=which)
+        if axis in ['Top', 'Bottom']:
+            axes.get_xaxis().set_tick_params(width=value, which=which)
+
+    def _setTickLength(self, axis, value, which):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
+            axes.get_yaxis().set_tick_params(length=value, which=which)
+        if axis in ['Top', 'Bottom']:
+            axes.get_xaxis().set_tick_params(length=value, which=which)
+
+    def _setTickInterval(self, axis, interval, which='major'):
+        axs = self.canvas().getAxes(axis)
+        loc = ticker.MultipleLocator(interval)
+        if axis in ['Left', 'Right']:
+            ax = axs.get_yaxis()
+        if axis in ['Bottom', 'Top']:
+            ax = axs.get_xaxis()
+        if which == 'major':
+            ax.set_major_locator(loc)
+        elif which == 'minor':
+            ax.set_minor_locator(loc)
+
+    def _setTickVisible(self, axis, tf, mirror, which='both'):
+        axes = self.canvas().getAxes(axis)
+        if (axis == 'Left' and not mirror) or (axis == 'Right' and mirror):
+            axes.get_yaxis().set_tick_params(left=tf, which=which)
+        if (axis == 'Right' and not mirror) or (axis == 'Left' and mirror):
+            axes.get_yaxis().set_tick_params(right=tf, which=which)
+        if (axis == 'Top' and not mirror) or (axis == 'Bottom' and mirror):
+            axes.get_xaxis().set_tick_params(top=tf, which=which)
+        if (axis == 'Bottom' and not mirror) or (axis == 'Top' and mirror):
+            axes.get_xaxis().set_tick_params(bottom=tf, which=which)
+
+    def _setTickDirection(self, axis, direction):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
+            axes.get_yaxis().set_tick_params(direction=direction, which='both')
+        if axis in ['Top', 'Bottom']:
+            axes.get_xaxis().set_tick_params(direction=direction, which='both')
 
 
 class AxesCanvas(AxisSelectableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self._axs = _MatplotlibAxes(self)
+        self._ticks = _MatplotlibTicks(self)
 
     def __getattr__(self, key):
         if "_axs" in self.__dict__:
             if hasattr(self._axs, key):
                 return getattr(self._axs, key)
+        if "_ticks" in self.__dict__:
+            if hasattr(self._ticks, key):
+                return getattr(self._ticks, key)
         return super().__getattr__(key)
 
 
@@ -354,217 +384,5 @@ class AxisRangeScrollableCanvas(AxisRangeRightClickCanvas):
         return pos_mode
 
 
-opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
-Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom'}
-
-
 class TickAdjustableCanvas(AxisRangeScrollableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.__data = {}
-        self.setTickDirection('Left', 'in')
-        self.setTickDirection('Bottom', 'in')
-        self.setTickVisible('Left', False, which='minor')
-        self.setTickVisible('Bottom', False, which='minor')
-        self.axisRangeChanged.connect(self._refreshTicks)
-        self.dataChanged.connect(self._refreshTicks)
-
-    def _refreshTicks(self):
-        for l in ['Left', 'Right', 'Top', 'Bottom']:
-            for t in ['major', 'minor']:
-                try:
-                    self.setAutoLocator(l, self.getAutoLocator(l, t), t)
-                except:
-                    pass
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dic = {}
-        for l in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(l):
-                dic[l + "_major_on"] = self.getTickVisible(l, mirror=False, which='major')
-                dic[l + "_majorm_on"] = self.getTickVisible(l, mirror=True, which='major')
-                dic[l + "_ticklen"] = self.getTickLength(l)
-                dic[l + "_tickwid"] = self.getTickWidth(l)
-                dic[l + "_ticknum"] = self.getAutoLocator(l)
-                dic[l + "_minor_on"] = self.getTickVisible(l, mirror=False, which='minor')
-                dic[l + "_minorm_on"] = self.getTickVisible(l, mirror=True, which='minor')
-                dic[l + "_ticklen2"] = self.getTickLength(l, which='minor')
-                dic[l + "_tickwid2"] = self.getTickWidth(l, which='minor')
-                dic[l + "_ticknum2"] = self.getAutoLocator(l, which='minor')
-                dic[l + "_tickdir"] = self.getTickDirection(l)
-        dictionary['TickSetting'] = dic
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'TickSetting' in dictionary:
-            dic = dictionary['TickSetting']
-            for l in ['Left', 'Right', 'Top', 'Bottom']:
-                if self.axisIsValid(l):
-                    self.setTickVisible(l, dic[l + "_major_on"], mirror=False, which='major')
-                    self.setTickVisible(l, dic[l + "_majorm_on"], mirror=True, which='major')
-                    self.setTickLength(l, dic[l + "_ticklen"])
-                    self.setTickWidth(l, dic[l + "_tickwid"])
-                    self.setAutoLocator(l, dic[l + "_ticknum"])
-                    self.setTickVisible(l, dic[l + "_minor_on"], mirror=False, which='minor')
-                    self.setTickVisible(l, dic[l + "_minorm_on"], mirror=True, which='minor')
-                    self.setTickLength(l, dic[l + "_ticklen2"], which='minor')
-                    self.setTickWidth(l, dic[l + "_tickwid2"], which='minor')
-                    self.setAutoLocator(l, dic[l + "_ticknum2"], which='minor')
-                    self.setTickDirection(l, dic[l + "_tickdir"])
-
-    @saveCanvas
-    def setAutoLocator(self, axis, n, which='major'):
-        axs = self.getAxes(axis)
-        if axs is None:
-            return
-        if n == 0:
-            loc = ticker.AutoLocator()
-        else:
-            range = self.getAxisRange(axis)
-            if (abs(range[1] - range[0]) / n) < 100:
-                loc = ticker.MultipleLocator(n)
-            else:
-                loc = ticker.AutoLocator()
-        if axis in ['Left', 'Right']:
-            ax = axs.get_yaxis()
-        if axis in ['Bottom', 'Top']:
-            ax = axs.get_xaxis()
-        if which == 'major':
-            ax.set_major_locator(loc)
-        elif which == 'minor':
-            ax.set_minor_locator(loc)
-
-    def getAutoLocator(self, axis, which='major'):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            ax = axes.get_yaxis()
-        if axis in ['Bottom', 'Top']:
-            ax = axes.get_xaxis()
-        if which == 'major':
-            l = ax.get_major_locator()
-        elif which == 'minor':
-            l = ax.get_minor_locator()
-        if isinstance(l, ticker.AutoLocator):
-            return 0
-        else:
-            try:
-                return l()[1] - l()[0]
-            except:
-                return 0
-
-    @saveCanvas
-    def setTickDirection(self, axis, direction):
-        axes = self.getAxes(axis)
-        if axes == None:
-            return
-        if axis in ['Left', 'Right']:
-            axes.get_yaxis().set_tick_params(direction=direction, which='both')
-        if axis in ['Top', 'Bottom']:
-            axes.get_xaxis().set_tick_params(direction=direction, which='both')
-
-    def getTickDirection(self, axis):
-        data = ['in', 'out', 'inout']
-        marker = self._getTickLine(axis, 'major').get_marker()
-        if axis == 'Left':
-            list = [1, 0, '_']
-        if axis == 'Right':
-            list = [0, 1, '_']
-        elif axis == 'Bottom':
-            list = [2, 3, '|']
-        elif axis == 'Top':
-            list = [3, 2, '|']
-        return data[list.index(marker)]
-
-    @saveCanvas
-    def setTickWidth(self, axis, value, which='major'):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            axes.get_yaxis().set_tick_params(width=value, which=which)
-        if axis in ['Top', 'Bottom']:
-            axes.get_xaxis().set_tick_params(width=value, which=which)
-        self.draw()
-
-    def getTickWidth(self, axis, which='major'):
-        return self._getTickLine(axis, which).get_markeredgewidth()
-
-    @saveCanvas
-    def setTickLength(self, axis, value, which='major'):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            axes.get_yaxis().set_tick_params(length=value, which=which)
-        if axis in ['Top', 'Bottom']:
-            axes.get_xaxis().set_tick_params(length=value, which=which)
-        self.draw()
-
-    def getTickLength(self, axis, which='major'):
-        return self._getTickLine(axis, which).get_markersize()
-
-    def _getTickLine(self, axis, which):
-        axs = self.getAxes(axis)
-        if axis in ['Left', 'Right']:
-            ax = axs.get_yaxis()
-        if axis in ['Bottom', 'Top']:
-            ax = axs.get_xaxis()
-        if which == 'major':
-            tick = ax.get_major_ticks()[0]
-        elif which == 'minor':
-            ticks = ax.get_minor_ticks()
-            if len(ticks) == 0:
-                tick = ax.get_major_ticks()[0]
-            else:
-                tick = ticks[0]
-        if axis in ['Left', 'Bottom']:
-            return tick.tick1line
-        else:
-            return tick.tick2line
-
-    @saveCanvas
-    def setTickVisible(self, axis, tf, mirror=False, which='both'):
-        axes = self.getAxes(axis)
-        if axes == None:
-            return
-        if (axis == 'Left' and not mirror) or (axis == 'Right' and mirror):
-            axes.get_yaxis().set_tick_params(left=tf, which=which)
-        if (axis == 'Right' and not mirror) or (axis == 'Left' and mirror):
-            axes.get_yaxis().set_tick_params(right=tf, which=which)
-        if (axis == 'Top' and not mirror) or (axis == 'Bottom' and mirror):
-            axes.get_xaxis().set_tick_params(top=tf, which=which)
-        if (axis == 'Bottom' and not mirror) or (axis == 'Top' and mirror):
-            axes.get_xaxis().set_tick_params(bottom=tf, which=which)
-        self.draw()
-
-    def getTickVisible(self, axis, mirror=False, which='major'):
-        axs = self.getAxes(axis)
-        if axis in ['Left', 'Right']:
-            ax = axs.get_yaxis()
-        if axis in ['Bottom', 'Top']:
-            ax = axs.get_xaxis()
-        if which == 'major':
-            tick = ax.get_major_ticks()[0]
-        elif which == 'minor':
-            ticks = ax.get_minor_ticks()
-            if len(ticks) == 0:
-                tick = ax.get_major_ticks()[0]
-            else:
-                tick = ticks[0]
-        if axis in ['Left', 'Bottom']:
-            if mirror:
-                res = tick.tick2line.get_visible()  # tick.tick2On
-            else:
-                res = tick.tick1line.get_visible()  # tick.tick1On
-        else:
-            if mirror:
-                res = tick.tick1line.get_visible()  # tick.tick1On
-            else:
-                res = tick.tick2line.get_visible()  # tick.tick2On
-        if isinstance(res, bool):
-            return res
-        elif isinstance(res, str):
-            return res == "on"
+    pass
