@@ -5,6 +5,7 @@ CanvasInterface package
    :maxdepth: 4
 
    graph/Area
+   graph/Axes
 
 Submodules
 ----------

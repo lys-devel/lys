@@ -1,18 +1,8 @@
 #!/usr/bin/env python
-import random
-import weakref
-import sys
-import os
-import numpy as np
-from enum import Enum
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure, SubplotParams
-import matplotlib as mpl
-import matplotlib.font_manager as fm
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import lines, markers, ticker
 
 from lys import *
 from .FontSettings import *
