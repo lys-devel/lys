@@ -150,7 +150,9 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
     @_suppressNumpyWarnings
     def _append3d(self, wave, offset, axis, zorder):
         ax = self.__getAxes(axis)
+        print(wave.data.shape)
         im = pg.ImageItem(image=wave.data, levels=(0, 1))
+        print(im)
         shift, mag = self.calcExtent2D(wave, offset)
         im.scale(*mag)
         im.translate(*shift)
