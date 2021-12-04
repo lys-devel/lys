@@ -9,6 +9,7 @@ class CanvasAxes(CanvasPart):
     def __init__(self, canvas):
         super().__init__(canvas)
         canvas.axisChanged.connect(lambda ax: self.setAutoScaleAxis(ax))
+        canvas.dataChanged.connect(self._update)
         canvas.saveCanvas.connect(self._save)
         canvas.loadCanvas.connect(self._load)
         self.__initialize()
@@ -26,6 +27,11 @@ class CanvasAxes(CanvasPart):
             self.setAxisColor(ax, "#000000")
             self.setMirrorAxis(ax, True)
             self.setAxisMode(ax, "linear")
+
+    def _update(self):
+        for ax in self.canvas().axisList():
+            if self.isAutoScaled(ax):
+                self.setAutoScaleAxis(ax)
 
     def axisIsValid(self, axis):
         return self._isValid(axis)

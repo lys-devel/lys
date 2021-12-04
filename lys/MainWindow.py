@@ -324,8 +324,9 @@ class _CommandLineEdit(QLineEdit):
                 log = self.shell.commandLog
                 if len(log) == 0:
                     return True
-                if not len(log) - 2 == self.__logn:
-                    self.__logn += 1
+                self.__logn += 1
+                if len(log) < self.__logn:
+                    self.__logn = len(log)
                 self.setText(log[len(log) - self.__logn])
                 return True
 
