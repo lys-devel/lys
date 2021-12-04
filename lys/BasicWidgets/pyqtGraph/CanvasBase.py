@@ -81,23 +81,23 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         self.axes.sigResized.connect(self.__updateViews)
 
     def __getAxes(self, axis):
-        if axis == Axis.BottomLeft:
+        if axis == "BottomLeft":
             return self.axes
-        if axis == Axis.TopLeft:
+        if axis == "TopLeft":
             if self.axes_ty is None:
                 self.axes_ty_com.setXLink(None)
                 self.axes_ty = self.axes_ty_com
                 self.fig.getAxis('right').setStyle(showValues=False)
                 self.axisChanged.emit('Top')
             return self.axes_ty
-        if axis == Axis.BottomRight:
+        if axis == "BottomRight":
             if self.axes_tx is None:
                 self.axes_tx_com.setYLink(None)
                 self.axes_tx = self.axes_tx_com
                 self.fig.getAxis('top').setStyle(showValues=False)
                 self.axisChanged.emit('Right')
             return self.axes_tx
-        if axis == Axis.TopRight:
+        if axis == "TopRight":
             if self.axes_txy is None:
                 self.axes_ty_com.setXLink(None)
                 self.axes_tx_com.setYLink(None)

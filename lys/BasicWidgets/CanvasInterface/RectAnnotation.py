@@ -7,7 +7,7 @@ class RectAnnotationCanvasBase(object):
         self._registerType('rect')
 
     @saveCanvas
-    def addRect(self, pos=None, size=None, axis=Axis.BottomLeft, appearance=None, id=None):
+    def addRect(self, pos=None, size=None, axis="BottomLeft", appearance=None, id=None):
         if pos is None or size is None:
             rl = self.getAxisRange('Left')
             rb = self.getAxisRange('Bottom')

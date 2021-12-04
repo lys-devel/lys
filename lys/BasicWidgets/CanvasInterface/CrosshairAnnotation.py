@@ -7,7 +7,7 @@ class CrosshairAnnotationCanvasBase(object):
         self._registerType('cross')
 
     @saveCanvas
-    def addCross(self, pos=None, axis=Axis.BottomLeft, appearance=None, id=None):
+    def addCross(self, pos=None, axis="BottomLeft", appearance=None, id=None):
         if pos is None:
             rb = self.getAxisRange('Bottom')
             rl = self.getAxisRange('Left')

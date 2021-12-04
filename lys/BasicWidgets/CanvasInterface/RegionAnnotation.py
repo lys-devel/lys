@@ -8,7 +8,7 @@ class RegionAnnotationCanvasBase(object):
         self._registerType('vertical')
 
     @saveCanvas
-    def addRegion(self, region=None, type='vertical', axis=Axis.BottomLeft, appearance=None, id=None):
+    def addRegion(self, region=None, type='vertical', axis="BottomLeft", appearance=None, id=None):
         if region is None:
             if type == 'vertical':
                 r = self.getAxisRange('Bottom')

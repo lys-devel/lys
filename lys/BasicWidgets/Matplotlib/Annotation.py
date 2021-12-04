@@ -29,13 +29,13 @@ class AnnotatableCanvas(AreaSettingCanvas, AnnotLineStyleAdjustableCanvas):
 
     def _getAnnotAxis(self, obj):
         if obj.axes == self.axes:
-            return Axis.BottomLeft
+            return "BottomLeft"
         if obj.axes == self.axes_ty:
-            return Axis.TopLeft
+            return "TopLeft"
         if obj.axes == self.axes_tx:
-            return Axis.BottomRight
+            return "BottomRight"
         if obj.axes == self.axes_txy:
-            return Axis.TopRight
+            return "TopRight"
 
     def _setLineColor(self, obj, color):
         obj.set_color(color)

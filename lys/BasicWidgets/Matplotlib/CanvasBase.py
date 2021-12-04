@@ -39,9 +39,9 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         return self.__getAxes(axis)
 
     def __getAxes(self, axis):
-        if axis == Axis.BottomLeft:
+        if axis == "BottomLeft":
             return self.axes
-        if axis == Axis.TopLeft:
+        if axis == "TopLeft":
             if self.axes_ty is None:
                 self.axes_ty = self.axes.twiny()
                 self.axes_ty.spines['left'].set_visible(False)
@@ -51,7 +51,7 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
                 self.axes_ty.minorticks_on()
                 self.axisChanged.emit('Top')
             return self.axes_ty
-        if axis == Axis.BottomRight:
+        if axis == "BottomRight":
             if self.axes_tx is None:
                 self.axes_tx = self.axes.twinx()
                 self.axes_tx.spines['top'].set_visible(False)
@@ -61,7 +61,7 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
                 self.axes_tx.minorticks_on()
                 self.axisChanged.emit('Right')
             return self.axes_tx
-        if axis == Axis.TopRight:
+        if axis == "TopRight":
             if self.axes_txy is None:
                 self.axes_txy = self.axes.twinx().twiny()
                 self.axisChanged.emit('Right')

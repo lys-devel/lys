@@ -15,7 +15,7 @@ class CanvasAxes(CanvasPart):
 
     def __initialize(self):
         self.__auto = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
-        self.__range = {'Left': None, 'Right': None, 'Top': None, 'Bottom': None}
+        self.__range = {'Left': [0, 1], 'Right': None, 'Top': None, 'Bottom': [0, 1]}
         self.__thick = {'Left': 1, 'Right': 1, 'Top': 1, 'Bottom': 1}
         self.__color = {'Left': "#000000", 'Right': "#000000", 'Top': "#000000", 'Bottom': "#000000"}
         self.__mirror = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
@@ -60,27 +60,20 @@ class CanvasAxes(CanvasPart):
         self.__auto[axis] = True
 
     def _calculateAutoRange(self, axis):
-        return [0, 1]
         max = np.nan
         min = np.nan
-        with np.errstate(invalid='ignore'):
-            if axis in ['Left', 'Right']:
-                for l in self.canvas().getLines():
-                    max = np.nanmax([*l.wave.data, max])
-                    min = np.nanmin([*l.wave.data, min])
-                for im in self.canvas().getImages():
-                    max = np.nanmax([*im.wave.y, max])
-                    min = np.nanmin([*im.wave.y, min])
-            if axis in ['Top', 'Bottom']:
-                for l in self.canvas().getLines():
-                    max = np.nanmax([*l.wave.x, max])
-                    min = np.nanmin([*l.wave.x, min])
-                for im in self.canvas().getImages():
-                    max = np.nanmax([*im.wave.x, max])
-                    min = np.nanmin([*im.wave.x, min])
-        if np.isnan(max) or np.isnan(min):
-            return None
-        if len(self.canvas().getImages()) == 0:
+        data = [wdata for wdata in self.canvas().getWaveData() if axis in wdata.axis]
+        if len(data) == 0:
+            return [0, 1]
+        index = {"Left": 1, "Right": 1, "Bottom": 0, "Top": 0}[axis]
+        for d in data:
+            if d.filteredWave.data.ndim == 1 and index == 1:
+                ax = d.filteredWave.data
+            else:
+                ax = d.filteredWave.getAxis(index)
+            max = np.nanmax([*ax, max])
+            min = np.nanmin([*ax, min])
+        if len(self.canvas().getWaveData(dim=1)) == len(data):
             mergin = (max - min) / 20
         else:
             mergin = 0
@@ -308,6 +301,8 @@ class CanvasTicks(CanvasPart):
     def _calculateAutoInterval(self, axis, which):
         range = self.canvas().getAxisRange(axis)
         d = abs(range[1] - range[0]) / 4
+        if d == 0:
+            return 1
         p = 10**(np.floor(np.log10(d)))
         if d / p < 2:
             d = 1

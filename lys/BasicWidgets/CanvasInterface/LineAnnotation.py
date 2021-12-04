@@ -7,7 +7,7 @@ class LineAnnotationCanvasBase(object):
         self._registerType('line')
 
     @saveCanvas
-    def addLine(self, pos=None, axis=Axis.BottomLeft, appearance=None, id=None):
+    def addLine(self, pos=None, axis="BottomLeft", appearance=None, id=None):
         if pos is None:
             rl = self.getAxisRange('Left')
             rb = self.getAxisRange('Bottom')
@@ -66,7 +66,7 @@ class InfiniteLineAnnotationCanvasBase(object):
         self._registerType('line_v')
 
     @saveCanvas
-    def addInfiniteLine(self, pos=None, type='vertical', axis=Axis.BottomLeft, appearance=None, id=None):
+    def addInfiniteLine(self, pos=None, type='vertical', axis="BottomLeft", appearance=None, id=None):
         if pos is None:
             if type == 'vertical':
                 r = self.getAxisRange('Bottom')

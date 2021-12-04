@@ -23,7 +23,7 @@ class AnnotatableCanvas(AreaSettingCanvas, AnnotationCallbackCanvasBase):
         self.axes.removeItem(obj)
 
     def _getAnnotAxis(self, obj):
-        return Axis.BottomLeft
+        return "BottomLeft"
 
     def _setLineColor(self, obj, color):
         obj.pen.setColor(QColor(color))

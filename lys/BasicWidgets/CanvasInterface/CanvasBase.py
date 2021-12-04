@@ -1,19 +1,11 @@
 import os
 import io
-from enum import IntEnum
 from matplotlib.colors import hsv_to_rgb
 from .SaveCanvas import *
 from lys import *
 from lys import load, Wave
 import _pickle as cPickle
 import numpy as np
-
-
-class Axis(IntEnum):
-    BottomLeft = 1
-    TopLeft = 2
-    BottomRight = 3
-    TopRight = 4
 
 
 class WaveData(object):
@@ -61,7 +53,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         self.loadAppearance()
 
     @saveCanvas
-    def Append(self, wave, axis=Axis.BottomLeft, id=None, appearance=None, offset=(0, 0, 0, 0), zindex=0, contour=False, filter=None, vector=False):
+    def Append(self, wave, axis="BottomLeft", id=None, appearance=None, offset=(0, 0, 0, 0), zindex=0, contour=False, filter=None, vector=False):
         if isinstance(wave, list):
             for w in wave:
                 self.Append(w, axis=axis, appearance=appearance, offset=offset, contour=contour, filter=filter, vector=vector)
@@ -342,7 +334,7 @@ class CanvasBaseBase(DrawableCanvasBase):
             b = io.BytesIO()
             data.wave.export(b)
             dic[i]['Wave_npz'] = b.getvalue()
-            dic[i]['Axis'] = int(data.axis)
+            dic[i]['Axis'] = data.axis
             dic[i]['Appearance'] = str(data.appearance)
             dic[i]['Offset'] = str(data.offset)
             dic[i]['ZIndex'] = str(data.zindex)
@@ -358,6 +350,7 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     def LoadFromDictionary(self, dictionary, path):
         from lys.filters import Filters
+        axisDict = {1: "BottomLeft", 2: "TopLeft", 3: "BottomRight", 4: "TopRight", "BottomLeft": "BottomLeft", "TopLeft": "TopLeft", "BottomRight": "BottomRight", "TopRight": "TopRight"}
         i = 0
         sdir = os.getcwd()
         os.chdir(path)
@@ -374,7 +367,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                         w = cPickle.loads(waveData)
                     elif 'Wave_npz' in dic[i]:
                         w = Wave(io.BytesIO(dic[i]['Wave_npz']))
-                axis = Axis(dic[i]['Axis'])
+                axis = axisDict[dic[i]['Axis']]
                 if 'Appearance' in dic[i]:
                     ap = eval(dic[i]['Appearance'])
                 else:

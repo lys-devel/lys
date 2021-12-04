@@ -14,7 +14,7 @@ class AnnotationData(object):
         self.obj = obj
         self.id = idn
         self.appearance = appearance
-        self.axes = Axis.BottomLeft
+        self.axes = "BottomLeft"
 
 
 class AnnotatableCanvasBase(object):
