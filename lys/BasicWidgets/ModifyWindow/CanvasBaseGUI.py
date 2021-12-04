@@ -232,7 +232,7 @@ class RightClickableSelectionBox(DataSelectionBox):
             print(d.wave)
 
     def __process(self):
-        from lys.Analysis.filtersGUI import FiltersDialog
+        from lys.filters import FiltersDialog
 
         class dialog(FiltersDialog):
             def __init__(self, data):
@@ -242,7 +242,7 @@ class RightClickableSelectionBox(DataSelectionBox):
 
             def __set(self, f):
                 self.data.filter = f
-                self.data.wave.modified.emit()
+                self.data.wave.modified.emit(self.data.wave)
         data = self.canvas.getDataFromIndexes(self.__dim, self.canvas.getSelectedIndexes(self.__dim))[0]
         d = dialog(data)
         if data.filter is not None:

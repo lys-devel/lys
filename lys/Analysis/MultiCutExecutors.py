@@ -376,9 +376,9 @@ class FreeLineExecutor(QObject):
         self.width = w
         self.updated.emit((self.id,))
 
-    def execute(self, wave, axes):
-        f = FreeLineFilter(axes, self.position, self.width)
-        Filters([f]).execute(wave)
+    # def execute(self, wave, axes):
+    #    f = FreeLineFilter(axes, self.position, self.width)
+    #    Filters([f]).execute(wave)
 
     def getFilter(self, axes):
         return FreeLineFilter(axes, self.position, self.width)

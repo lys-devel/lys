@@ -82,7 +82,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                 return wd
         if filter is not None:
             wav = w.duplicate()
-            filter.execute(wav)
+            wav = filter.execute(wav)
         else:
             wav = w
         filteredWave = wav

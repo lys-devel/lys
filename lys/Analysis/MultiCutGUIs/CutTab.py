@@ -578,7 +578,7 @@ class CutTab(QWidget):
             if "MultiCut_PostProcess" in w.note:
                 fstr = w.note["MultiCut_PostProcess"]
                 filt = filters.fromString(fstr)
-                filt.execute(wav)
+                wav = filt.execute(wav)
                 wav.note["MultiCut_PostProcess"] = fstr
             w.axes = wav.axes
             w.data = wav.data
