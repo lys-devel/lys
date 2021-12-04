@@ -7,7 +7,7 @@ from lys import Wave, DaskWave
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import RegionSelectWidget, QComboBox, QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QLineEdit, AxisSelectionLayout, QFileDialog
+from .CommonWidgets import RegionSelectWidget, QComboBox, QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QLineEdit, AxisSelectionLayout, QFileDialog, QSpinBox
 
 
 class NormalizeFilter(FilterInterface):
@@ -166,10 +166,10 @@ class MaskFilter(FilterInterface):
 
 
 class ReferenceShiftFilter(FilterInterface):
-    def __init__(self, axis, region):
+    def __init__(self, axis, region, order=3):
         self._region = region
         self._axis = axis
-        self._order = 3
+        self._order = order
 
     def _makeSlice(self, wave):
         sl = []
@@ -185,7 +185,7 @@ class ReferenceShiftFilter(FilterInterface):
         region = self._makeSlice(wave)
 
         def _fit_image(tar, ref):
-            return _fit_image_(tar, ref, region=region)
+            return _fit_image_(tar, ref, region=region, order=self._order)
         gumap2 = da.gufunc(_fit_image, signature="(i,j),(i,j)->(i,j)", output_dtypes=wave.data.dtype, vectorize=True, axes=[(0, 1), (0, 1), (0, 1)], allow_rechunk=True)
 
         def array_fit(x):
@@ -196,7 +196,7 @@ class ReferenceShiftFilter(FilterInterface):
         return DaskWave(gumap1(wave.data), *wave.axes, **wave.note)
 
     def getParameters(self):
-        return {"axis": self._axis, "region": self._region}
+        return {"axis": self._axis, "region": self._region, "order": self._order}
 
 
 def _image_shift(shift, im, ord):
@@ -211,12 +211,12 @@ def _image_dif(tar, ref, shift, region, ord=3):
     return np.sum((im[region] - ref[region])**2)
 
 
-def _fit_image_(tar, ref, region=None):
-    ord = 3
+def _fit_image_(tar, ref, region=None, order=3):
+    ord = order
     norm = np.sum(ref)
     tar_n = tar / norm
     ref_n = ref / norm
-    s = minimize(lambda s: _image_dif(tar_n, ref_n, s, region, ord), [0, 0], method="Nelder-Mead", options={'xtol': 1e-11})
+    s = minimize(lambda s: _image_dif(tar_n, ref_n, s, region, ord), [0, 0], method="Nelder-Mead", options={'xatol': 1e-4})
     return _image_shift(s.x, tar, ord)
 
 
@@ -329,21 +329,27 @@ class _RefShiftSetting(FilterSettingBase):
         self.combo = QComboBox()
         for d in range(dim):
             self.combo.addItem("Axis" + str(d + 1))
-
-        vbox = QVBoxLayout()
-        vbox.addWidget(QLabel("Axis"))
-        vbox.addWidget(self.combo)
+        self._order = QSpinBox()
+        self._order.setValue(3)
+        self._order.setRange(1, 5)
 
         hbox = QHBoxLayout()
-        hbox.addLayout(vbox)
-        hbox.addLayout(self.range)
-        self.setLayout(hbox)
+        hbox.addWidget(QLabel("Axis"))
+        hbox.addWidget(self.combo)
+        hbox.addWidget(QLabel("Order"))
+        hbox.addWidget(self._order)
+
+        vbox = QVBoxLayout()
+        vbox.addLayout(hbox)
+        vbox.addLayout(self.range)
+        self.setLayout(vbox)
 
     def getParameters(self):
-        return {"axis": self.combo.currentIndex(), "region": self.range.getRegion()}
+        return {"axis": self.combo.currentIndex(), "region": self.range.getRegion(), "order": self._order.value()}
 
-    def setParameters(self, axis, region):
+    def setParameters(self, axis, region, order=3):
         self.combo.setCurrentIndex(axis)
+        self._order.setValue(order)
         for i, r in enumerate(region):
             self.range.setRegion(i, r)
 
