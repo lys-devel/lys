@@ -4,7 +4,13 @@ from .SaveCanvas import CanvasPart, saveCanvas
 
 
 class CanvasAxes(CanvasPart):
+    """
+    Interface to access axes of canvas. 
+    All methods in this interface can be accessed from :class:`CanvasBase` instance.
+    Developers should implement a abstract methods.
+    """
     axisRangeChanged = pyqtSignal()
+    """Emitted when the range of axes is changed."""
 
     def __init__(self, canvas):
         super().__init__(canvas)
@@ -34,9 +40,43 @@ class CanvasAxes(CanvasPart):
                 self.setAutoScaleAxis(ax)
 
     def axisIsValid(self, axis):
+        """
+        Return if the specified *axis* is valid.
+
+        Args:
+
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The name of axis.
+
+        Return:
+
+            bool: The axis is valid or not.
+
+        Example::
+
+            from lys import display
+            g = display([1,2,3])
+            g.canvas.axisIsValid("Left")
+            # True
+            g.canvas.axisIsValid("Right")
+            # False
+        """
         return self._isValid(axis)
 
     def axisList(self):
+        """
+        Return list of valid axes.
+
+        Return:
+
+            list of axis name: The list of valid axes.
+
+        Example::
+
+            from lys import display
+            g = display([1,2,3])
+            g.canvas.axisList()
+            # ['Left', 'Bottom']
+        """
         res = ['Left']
         if self.axisIsValid('Right'):
             res.append('Right')
@@ -47,6 +87,24 @@ class CanvasAxes(CanvasPart):
 
     @saveCanvas
     def setAxisRange(self, axis, range):
+        """
+        Set the axis view limits.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose range is changed.
+            range (length 2 sequence): minimum and maximum range of view.
+
+        Example::
+
+            from lys import display
+            g = display([1,2,3])
+            g.canvas.setAxisRange('Left', [0, 5])
+            g.canvas.getAxisRange('Left')
+            # [0, 5]
+
+        See also:
+            :meth:`getAxisRange`, :meth:`setAutoScaleAxis`
+        """
         if self.axisIsValid(axis):
             self._setRange(axis, range)
             self.__auto[axis] = False
@@ -54,11 +112,37 @@ class CanvasAxes(CanvasPart):
             self.axisRangeChanged.emit()
 
     def getAxisRange(self, axis):
+        """
+        Get the axis view limits.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose range is changed.
+
+        See also:
+            :meth:`setAxisRange`, :meth:`setAutoScaleAxis`
+        """
         if self.axisIsValid(axis):
             return self.__range[axis]
 
     @saveCanvas
     def setAutoScaleAxis(self, axis):
+        """
+        Autoscale the axis view to the data.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose range is changed.
+
+        Example::
+
+            from lys import display
+            g = display([1,2,3])
+            g.canvas.setAutoScaleAxis('Left')
+            g.canvas.getAxisRange('Left')
+            # [-0.1, 2,1]
+
+        See also:
+            :meth:`setAxisRange`, :meth:`getAxisRange`, :meth:`isAutoScaled`
+        """
         if not self.axisIsValid(axis):
             return
         r = self._calculateAutoRange(axis)
@@ -90,46 +174,159 @@ class CanvasAxes(CanvasPart):
             return [max + mergin, min - mergin]
 
     def isAutoScaled(self, axis):
+        """
+        Return if the specified *axis* is auto-scaled.
+
+        Args:
+
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The name of axis.
+
+        Return:
+
+            bool: The axis is auto-scaled or not.
+
+        Example::
+
+            from lys import display
+            g = display([1,2,3])
+            g.canvas.setRange('Bottom', [0, 3])
+            g.canvas.isAutoScaled('Left')
+            # True
+            g.canvas.isAutoScaled('Bottom')
+            # False
+
+        See also:
+            :meth:`setAxisRange`, :meth:`getAxisRange`, :meth:`setAutoScaleAxis`
+
+        """
         if self.axisIsValid(axis):
             return self.__auto[axis]
 
     @saveCanvas
     def setAxisThick(self, axis, thick):
+        """
+        Set thick of axis.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose thick is changed.
+            thick (float): The thickness of the axis.
+
+        See also:
+            :meth:`getAxisThick`
+        """
         if self.axisIsValid(axis):
             self._setAxisThick(axis, thick)
             self.__thick[axis] = thick
 
     def getAxisThick(self, axis):
+        """
+        Get thick of axis.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose thick is obtained.
+
+        Return:
+            float: The thickness of the axis.
+
+        See also:
+            :meth:`setAxisThick`
+        """
         if self.axisIsValid(axis):
             return self.__thick[axis]
 
     @saveCanvas
     def setAxisColor(self, axis, color):
+        """
+        Set color of axis.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose thick is changed.
+            color (str): The color code of the axis, such as '#123456'.
+
+        See also:
+            :meth:`getAxisColor`
+        """
         if self.axisIsValid(axis):
             self._setAxisColor(axis, color)
             self.__color[axis] = color
 
     def getAxisColor(self, axis):
+        """
+        Get color of axis.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose thick is changed.
+
+        Return:
+            str: The color code of the axis, such as '#123456'.
+
+        See also:
+            :meth:`setAxisColor`
+        """
         if self.axisIsValid(axis):
             return self.__color[axis]
 
     @saveCanvas
     def setMirrorAxis(self, axis, value):
+        """
+        Enable/disable mirror axis.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose mirror axis is enabled/disabled.
+            value (bool): If *value* is True (False), the mirror axis is shown (hidden).
+
+        See also:
+            :meth:`getMirrorAxis`
+        """
         if self.axisIsValid(axis):
             self._setMirrorAxis(axis, value)
             self.__mirror[axis] = value
 
     def getMirrorAxis(self, axis):
+        """
+        Get the state of mirror axis.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose mirror axis state is checked.
+
+        Return:
+            bool: If *value* is True (False), the mirror axis is shown (hidden).
+
+        See also:
+            :meth:`setMirrorAxis`
+        """
         if self.axisIsValid(axis):
             return self.__mirror[axis]
 
     @saveCanvas
     def setAxisMode(self, axis, mode):
+        """
+        Set axis mode.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose mirror axis is enabled/disabled.
+            mode ('linear' or 'log'): The scale of the axis is set to *mode*.
+
+        See also:
+            :meth:`setAxisMode`
+        """
         if self.axisIsValid(axis):
             self._setAxisMode(axis, mode)
             self.__mode[axis] = mode
 
     def getAxisMode(self, axis):
+        """
+        Get axis mode.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose mode is changed.
+
+        Return:
+            'linear' or 'log': The scale mode of the axis.
+
+        See also:
+            :meth:`getAxisMode`
+        """
         if self.axisIsValid(axis):
             return self.__mode[axis]
 
@@ -199,6 +396,12 @@ class CanvasAxes(CanvasPart):
 
 
 class CanvasTicks(CanvasPart):
+    """
+    Interface to access ticks of canvas. 
+    All methods in this interface can be accessed from :class:`CanvasBase` instance.
+    Developers should implement a abstract methods.
+    """
+
     def __init__(self, canvas):
         super().__init__(canvas)
         self.__initialize()
@@ -245,6 +448,17 @@ class CanvasTicks(CanvasPart):
 
     @saveCanvas
     def setTickWidth(self, axis, value, which='major'):
+        """
+        Set thick of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+            value (float): The width of the axis.
+            which ('major' or 'minor' or 'both'): Change major (minor) tick width depending on *which*.
+
+        See also:
+            :meth:`getTickWidth`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         if which == 'both':
@@ -255,12 +469,36 @@ class CanvasTicks(CanvasPart):
         self.__width[which][axis] = value
 
     def getTickWidth(self, axis, which='major'):
+        """
+        Get thick of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+            which ('major' or 'minor'): Return major (minor) tick width depending on *which*.
+
+        Return:
+            float: The width of the ticks.
+
+        See also:
+            :meth:`setTickWidth`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         return self.__width[which][axis]
 
     @saveCanvas
     def setTickLength(self, axis, value, which='major'):
+        """
+        Set length of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+            value (float): The length of the axis.
+            which ('major' or 'minor' or 'both'): Change major (minor) tick length depending on *which*.
+
+        See also:
+            :meth:`getTickLength`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         if which == 'both':
@@ -271,12 +509,36 @@ class CanvasTicks(CanvasPart):
         self.__length[which][axis] = value
 
     def getTickLength(self, axis, which='major'):
+        """
+        Get length of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+            which ('major' or 'minor' or 'both'): Return major (minor) tick length depending on *which*.
+
+        Return:
+            float: The length of the ticks.
+
+        See also:
+            :meth:`setTickLength`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         return self.__length[which][axis]
 
     @saveCanvas
     def setTickInterval(self, axis, value=0, which='major'):
+        """
+        Set interval of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+            value (float): The length of the axis. Zero means automatic interval.
+            which ('major' or 'minor' or 'both'): Change major (minor) tick length depending on *which*.
+
+        See also:
+            :meth:`getTickInterval`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         if which == 'both':
@@ -287,6 +549,19 @@ class CanvasTicks(CanvasPart):
         self.__interval[which][axis] = value
 
     def getTickInterval(self, axis, which='major', raw=True):
+        """
+        Get interval of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+            which ('major' or 'minor'): Return major (minor) tick interval depending on *which*.
+
+        Return:
+            float: The interval of the ticks.
+
+        See also:
+            :meth:`setTickInterval`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         if raw:
@@ -312,7 +587,7 @@ class CanvasTicks(CanvasPart):
         p = 10**(np.floor(np.log10(d)))
         if d / p < 2:
             d = 1
-        if d / p < 3:
+        elif d / p < 3:
             d = 2
         elif d / p < 8:
             d = 5
@@ -327,6 +602,17 @@ class CanvasTicks(CanvasPart):
 
     @saveCanvas
     def setTickVisible(self, axis, value, mirror=False, which='both'):
+        """
+        Set visibility of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+            value (bool): If it is True (False), the ticks are shown (hidden).
+            which ('major' or 'minor' or 'both'): Change major (minor) tick length depending on *which*.
+
+        See also:
+            :meth:`getTickVisible`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         if which == 'both':
@@ -340,6 +626,16 @@ class CanvasTicks(CanvasPart):
             self.__visible[which][axis] = value
 
     def getTickVisible(self, axis, mirror=False, which='major'):
+        """
+        Get visibility of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+            which ('major' or 'minor'): This method returns major (minor) tick visibility depending on *which*.
+
+        See also:
+            :meth:`setTickVisible`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         if mirror:
@@ -349,6 +645,16 @@ class CanvasTicks(CanvasPart):
 
     @saveCanvas
     def setTickDirection(self, axis, direction):
+        """
+        Set direction of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+            value ('in' or 'out'): Whether the ticks are shown in the box.
+
+        See also:
+            :meth:`getTickDirection`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         if direction == 1:
@@ -359,6 +665,18 @@ class CanvasTicks(CanvasPart):
         self.__direction[axis] = direction
 
     def getTickDirection(self, axis):
+        """
+        Get direction of ticks.
+
+        Args:
+            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose ticks are changed.
+
+        Return:
+            'in' or 'out': This method returns whether the ticks are shown in the box.
+
+        See also:
+            :meth:`setTickDirection`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         return self.__direction[axis]
