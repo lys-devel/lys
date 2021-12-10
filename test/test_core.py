@@ -7,6 +7,7 @@ import numpy as np
 import dask.array as da
 
 from lys.core import SettingDict, Wave, DaskWave
+from numpy.testing import assert_array_equal, assert_array_almost_equal
 
 
 class core_test(unittest.TestCase):
@@ -48,10 +49,10 @@ class core_test(unittest.TestCase):
         self.assertTrue((w.axes[1] == axis2).all())
 
         # x,y,z
-        self.assertTrue((w.x == axis1).all())
-        self.assertTrue((w.y == axis2).all())
+        assert_array_equal(w.x, axis1)
+        assert_array_equal(w.y, axis2)
         w.x = [3, 4, 5]
-        self.assertTrue(w.x == [3, 4, 5])
+        assert_array_equal(w.x, [3, 4, 5])
 
         # invalid axes specified
         with self.assertRaises(TypeError):
@@ -64,8 +65,8 @@ class core_test(unittest.TestCase):
         self.assertTrue(w.axisIsValid(1))
 
         # getAxis method
-        self.assertTrue((noaxes.getAxis(0) == [0, 1]).all())
-        self.assertTrue((w.getAxis(0) == axis1).all())
+        assert_array_equal(noaxes.getAxis(0), [0, 1])
+        assert_array_equal(w.getAxis(0), [3, 4, 5])
 
         # posToPoint method
         w = Wave(np.ones([3, 2]), [1, 2, 3], [3, 4, 5])
@@ -112,6 +113,7 @@ class core_test(unittest.TestCase):
 
         # check save &" load
         path = self.path + "/wave1.npz"
+        path2 = self.path + "/wave2.npz"
         csv = self.path + "/wave1.csv"
         txt = self.path + "/wave1.txt"
         w = Wave(np.ones([2, 3]), [1, 2], [3, 4, 5], name="wave1")
@@ -136,6 +138,13 @@ class core_test(unittest.TestCase):
 
         w2 = Wave.importFrom(txt)
         self.assertTrue((w.data == w2.data).all())
+
+        w3 = Wave([1, 2, 3])
+        w3.x = [2, 3, 4]
+        w3.export(path2)
+
+        w4 = Wave.importFrom(path2)
+        assert_array_equal(w4.x, [2, 3, 4])
 
         # duplicate
         w2 = w.duplicate()

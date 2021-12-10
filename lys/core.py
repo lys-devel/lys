@@ -4,7 +4,6 @@ import weakref
 import atexit
 
 import numpy as np
-from numpy.lib.arraysetops import isin
 import dask.array as da
 
 from LysQt.QtCore import QObject, pyqtSignal
@@ -325,56 +324,6 @@ class WaveAxes(list):
             ax = self.getAxis(axis)
             return ax[indice]
 
-    @ property
-    def x(self):
-        """
-        Shortcut to axes[0]
-
-        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
-
-        Example:
-            >>> w = Wave([1,2,3], [1,2,3])
-            >>> w.x
-            [1,2,3]
-            >>> w.x = [3,4,5]
-            >>> w.x
-            [3,4,5]
-
-        See also:
-            :meth:`getAxis`
-        """
-        return self.getAxis(0)
-
-    @ x.setter
-    def x(self, value):
-        self[0] = value
-
-    @ property
-    def y(self):
-        """
-        Shortcut to axes[1]. See :attr:`x`
-
-        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
-        """
-        return self.getAxis(1)
-
-    @ y.setter
-    def y(self, value):
-        self[1] = value
-
-    @ property
-    def z(self):
-        """ 
-        Shortcut to axes[2]. See :attr:`x`
-
-        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
-        """
-        return self.getAxis(2)
-
-    @ z.setter
-    def z(self, value):
-        self[2] = value
-
     def _update(self, data):
         while(len(self) < data.ndim):
             self.append(np.array(None))
@@ -455,7 +404,59 @@ def _produceWave(data, axes, note):
     return Wave(data, *axes, **note)
 
 
-class Wave(QObject):
+class WaveBase(QObject):
+    """
+    Base class of :class:`Wave` and :class:`DaskWave`.
+
+    This class implement some useful shortcuts to functionarities of :class:`Wave` and :class:`DaskWave`.
+
+    """
+
+    @ property
+    def x(self):
+        """
+        Shortcut to axes[0]
+
+        Example::
+
+            from lys import Wave
+            w = Wave([1,2,3], [1,2,3])
+            w.x
+            # [1,2,3]
+            w.x = [3,4,5]
+            w.x
+            # [3,4,5]
+        """
+        return self.getAxis(0)
+
+    @ x.setter
+    def x(self, value):
+        self.axes[0] = value
+
+    @ property
+    def y(self):
+        """
+        Shortcut to axes[1]. See :attr:`x`
+        """
+        return self.getAxis(1)
+
+    @ y.setter
+    def y(self, value):
+        self.axes[1] = value
+
+    @ property
+    def z(self):
+        """ 
+        Shortcut to axes[2]. See :attr:`x`
+        """
+        return self.getAxis(2)
+
+    @ z.setter
+    def z(self, value):
+        self.axes[2] = value
+
+
+class Wave(WaveBase):
     """
     Wave class is a central data class in lys, which is composed of :attr:`data`, :attr:`axes`, and :attr:`note`.
 
@@ -760,7 +761,7 @@ class _DaskWaveDataDescriptor:
         return instance._data
 
 
-class DaskWave(QObject):
+class DaskWave(WaveBase):
     """
     *DaskWave* class is a central data class in lys, which is used for easy parallel computing via dask.
 
@@ -843,13 +844,16 @@ class DaskWave(QObject):
     def __init__(self, data, *axes, chunks="auto", **note):
         super().__init__()
         if isinstance(data, Wave):
-            self.__fromWave(data, chunks)
+            return self.__fromWave(data, chunks)
         elif isinstance(data, da.core.Array):
-            self.__fromda(data, axes, chunks, note)
+            return self.__fromda(data, axes, chunks, note)
         elif isinstance(data, DaskWave):
-            self.__fromda(data.data, data.axes, chunks, data.note)
-        else:
-            self.__fromWave(Wave(data, *axes, **note), chunks)
+            return self.__fromda(data.data, data.axes, chunks, data.note)
+        elif isinstance(data, list) or isinstance(data, tuple):
+            if len(data) > 0:
+                if isinstance(data[0], DaskWave):
+                    return self.__joinWaves(data, *axes, **note)
+        self.__fromWave(Wave(data, *axes, **note), chunks)
 
     def __fromWave(self, wave, chunks):
         """Load from Wave"""
@@ -864,6 +868,15 @@ class DaskWave(QObject):
         else:
             self.data = wave.rechunk(chunks)
         self.axes = axes
+        self.note = note
+
+    def __joinWaves(self, waves, *axes, **note):
+        self.data = da.stack([w.data for w in waves])
+        if len(axes) == 1:
+            ax = list(axes)
+        else:
+            ax = [None]
+        self.axes = ax + waves[0].axes
         self.note = note
 
     def __getattr__(self, key):

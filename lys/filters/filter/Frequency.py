@@ -183,12 +183,15 @@ class FourierFilter(FilterInterface):
 
     def __exeAxes(self, wave):
         axes = []
-        for ax in self.axes:
-            a = wave.getAxis(ax)
-            axis = np.linspace(0, len(a) / (np.max(a) - np.min(a)), len(a))
-            if self.roll:
-                axis = axis - axis[len(a) // 2]
-            axes.append(axis)
+        for ax in range(wave.data.ndim):
+            if ax in self.axes:
+                a = wave.getAxis(ax)
+                axis = np.linspace(0, len(a) / (np.max(a) - np.min(a)), len(a))
+                if self.roll:
+                    axis = axis - axis[len(a) // 2]
+                axes.append(axis)
+            else:
+                axes.append(wave.axes[ax])
         return axes
 
     def __applyWindow(self, wave):

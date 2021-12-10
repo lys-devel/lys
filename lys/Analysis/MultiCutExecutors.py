@@ -117,7 +117,8 @@ class RegionExecutorDialog(LysSubWindow):
     rejected = pyqtSignal()
 
     def __init__(self, axes, parent, parentWidget):
-        super().__init__("Region Executor Setting")
+        super().__init__()
+        self.setWindowTitle("Region Executor Setting")
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.flg = False
         self.__parent = parent
@@ -261,7 +262,8 @@ class PointExecutorDialog(LysSubWindow):
     rejected = pyqtSignal()
 
     def __init__(self, axes, parent, parentWidget):
-        super().__init__("Point Executor Setting")
+        super().__init__()
+        self.setWindowTitle("Point Executor Setting")
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.flg = False
         self.__parent = parent
@@ -398,7 +400,8 @@ class FreeLineExecutorDialog(LysSubWindow):
     rejected = pyqtSignal()
 
     def __init__(self, axes, parent, parentWidget):
-        super().__init__("Free Line Executor Setting")
+        super().__init__()
+        self.setWindowTitle("Free Line Executor Setting")
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.flg = False
         self.__parent = parent

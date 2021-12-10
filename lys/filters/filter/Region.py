@@ -183,6 +183,7 @@ class ReferenceShiftFilter(FilterInterface):
 
     def _execute(self, wave, *args, **kwargs):
         region = self._makeSlice(wave)
+        axs = [i for i, r in enumerate(self._region) if r[0] != r[1]]
 
         def _fit_image(tar, ref):
             return _fit_image_(tar, ref, region=region, order=self._order)
@@ -192,7 +193,7 @@ class ReferenceShiftFilter(FilterInterface):
             if len(x) == 0:
                 return np.array([])
             return gumap2(x, x[:, :, 0])
-        gumap1 = da.gufunc(array_fit, signature="(i,j,k)->(i,j,k)", output_dtypes=wave.data.dtype, vectorize=True, axes=[(0, 1, self._axis), (0, 1, self._axis)], allow_rechunk=True)
+        gumap1 = da.gufunc(array_fit, signature="(i,j,k)->(i,j,k)", output_dtypes=wave.data.dtype, vectorize=True, axes=[(*axs, self._axis), (*axs, self._axis)], allow_rechunk=True)
         return DaskWave(gumap1(wave.data), *wave.axes, **wave.note)
 
     def getParameters(self):

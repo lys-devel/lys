@@ -100,9 +100,11 @@ class _pyqtGraphAxes(CanvasAxes):
         if axis in ['Left', 'Right']:
             axes.setYRange(*range, padding=0)
             axes.disableAutoRange(axis='y')
+            axes.invertY(range[0] > range[1])
         if axis in ['Top', 'Bottom']:
             axes.setXRange(*range, padding=0)
             axes.disableAutoRange(axis='x')
+            axes.invertX(range[0] > range[1])
 
     def _setAxisThick(self, axis, thick):
         ax = self._getAxisList(axis)
