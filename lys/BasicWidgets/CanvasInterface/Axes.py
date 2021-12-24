@@ -22,7 +22,7 @@ class CanvasAxes(CanvasPart):
 
     def __initialize(self):
         self.__auto = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
-        self.__range = {'Left': [0, 1], 'Right': None, 'Top': None, 'Bottom': [0, 1]}
+        self.__range = {'Left': [0, 1], 'Right': [0, 1], 'Top': [0, 1], 'Bottom': [0, 1]}
         self.__thick = {'Left': 1, 'Right': 1, 'Top': 1, 'Bottom': 1}
         self.__color = {'Left': "#000000", 'Right': "#000000", 'Top': "#000000", 'Bottom': "#000000"}
         self.__mirror = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
@@ -411,7 +411,7 @@ class CanvasTicks(CanvasPart):
         canvas.loadCanvas.connect(self._load)
 
     def _refreshTicks(self):
-        for ax in ['Left', 'Right', 'Top', 'Bottom']:
+        for ax in self.canvas().axisList():
             for t in ['major', 'minor']:
                 self.setTickInterval(ax, self.getTickInterval(ax, t), t)
 
@@ -703,17 +703,17 @@ class CanvasTicks(CanvasPart):
             dic = dictionary['TickSetting']
             for ax in ['Left', 'Right', 'Top', 'Bottom']:
                 if self.canvas().axisIsValid(ax):
-                    self.setTickVisible(ax, dic[ax + "_major_on"], mirror=False, which='major')
-                    self.setTickVisible(ax, dic[ax + "_majorm_on"], mirror=True, which='major')
                     self.setTickLength(ax, dic[ax + "_ticklen"])
                     self.setTickWidth(ax, dic[ax + "_tickwid"])
                     self.setTickInterval(ax, dic[ax + "_ticknum"])
-                    self.setTickVisible(ax, dic[ax + "_minor_on"], mirror=False, which='minor')
-                    self.setTickVisible(ax, dic[ax + "_minorm_on"], mirror=True, which='minor')
                     self.setTickLength(ax, dic[ax + "_ticklen2"], which='minor')
                     self.setTickWidth(ax, dic[ax + "_tickwid2"], which='minor')
                     self.setTickInterval(ax, dic[ax + "_ticknum2"], which='minor')
                     self.setTickDirection(ax, dic[ax + "_tickdir"])
+                    self.setTickVisible(ax, dic[ax + "_major_on"], mirror=False, which='major')
+                    self.setTickVisible(ax, dic[ax + "_majorm_on"], mirror=True, which='major')
+                    self.setTickVisible(ax, dic[ax + "_minor_on"], mirror=False, which='minor')
+                    self.setTickVisible(ax, dic[ax + "_minorm_on"], mirror=True, which='minor')
 
     def _setTickWidth(self, axis, value, which):
         raise NotImplementedError()

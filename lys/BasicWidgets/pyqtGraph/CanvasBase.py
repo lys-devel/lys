@@ -24,10 +24,12 @@ def _suppressNumpyWarnings(func):
 
 class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
     axisChanged = pyqtSignal(str)
+    pgRangeChanged = pyqtSignal(str)
 
     def __init__(self, dpi=100):
         AbstractCanvasBase.__init__(self)
         super().__init__()
+        self.__resizing = False
         self.__initAxes()
         self.fig.canvas = None
         self.npen = 0
@@ -39,15 +41,21 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         return self.__getAxes(axis)
 
     def __updateViews(self):
+        self.__resizing = True
         self.axes_tx_com.setGeometry(self.axes.sceneBoundingRect())
-        self.axes_tx_com.linkedViewChanged(self.axes, self.axes_tx_com.XAxis)
+        #self.axes_tx_com.linkedViewChanged(self.axes, self.axes_tx_com.XAxis)
 
         self.axes_ty_com.setGeometry(self.axes.sceneBoundingRect())
-        self.axes_ty_com.linkedViewChanged(self.axes, self.axes_ty_com.YAxis)
+        #self.axes_ty_com.linkedViewChanged(self.axes, self.axes_ty_com.YAxis)
 
         self.axes_txy_com.setGeometry(self.axes.sceneBoundingRect())
-        self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.XAxis)
-        self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.YAxis)
+        #self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.XAxis)
+        #self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.YAxis)
+        self.__resizing = False
+
+    def __viewRangeChanged(self, axis):
+        if not self.__resizing:
+            self.pgRangeChanged.emit(axis)
 
     def __initAxes(self):
         self.fig = self.plotItem
@@ -79,6 +87,10 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         self.fig.getAxis('right').setStyle(showValues=False)
 
         self.axes.sigResized.connect(self.__updateViews)
+        self.axes.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Left"))
+        self.axes.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Bottom"))
+        self.axes_txy_com.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Top"))
+        self.axes_txy_com.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Right"))
 
     def __getAxes(self, axis):
         if axis == "BottomLeft":
@@ -87,14 +99,14 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
             if self.axes_ty is None:
                 self.axes_ty_com.setXLink(None)
                 self.axes_ty = self.axes_ty_com
-                self.fig.getAxis('right').setStyle(showValues=False)
+                self.fig.getAxis('top').setStyle(showValues=True)
                 self.axisChanged.emit('Top')
             return self.axes_ty
         if axis == "BottomRight":
             if self.axes_tx is None:
                 self.axes_tx_com.setYLink(None)
                 self.axes_tx = self.axes_tx_com
-                self.fig.getAxis('top').setStyle(showValues=False)
+                self.fig.getAxis('right').setStyle(showValues=True)
                 self.axisChanged.emit('Right')
             return self.axes_tx
         if axis == "TopRight":
@@ -102,8 +114,8 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
                 self.axes_ty_com.setXLink(None)
                 self.axes_tx_com.setYLink(None)
                 self.axes_txy = self.axes_txy_com
-                self.fig.getAxis('top').setStyle(showValues=False)
-                self.fig.getAxis('right').setStyle(showValues=False)
+                self.fig.getAxis('top').setStyle(showValues=True)
+                self.fig.getAxis('right').setStyle(showValues=True)
                 self.axisChanged.emit('Right')
                 self.axisChanged.emit('Top')
             return self.axes_txy

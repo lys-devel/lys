@@ -92,6 +92,28 @@ class AxisSelectableCanvas(RangeSelectableCanvas):
 
 
 class _pyqtGraphAxes(CanvasAxes):
+    def __init__(self, canvas):
+        super().__init__(canvas)
+        self.canvas().pgRangeChanged.connect(self._rangeChanged)
+
+    def _rangeChanged(self, axis):
+        if "Left" in axis and self.axisIsValid("Left"):
+            _, yrange = self.canvas().getAxes("Left").viewRange()
+            if yrange != self.getAxisRange("Left"):
+                self.setAxisRange("Left", yrange)
+        if "Right" in axis and self.axisIsValid("Right"):
+            _, yrange = self.canvas().getAxes("Right").viewRange()
+            if yrange != self.getAxisRange("Right"):
+                self.setAxisRange("Right", yrange)
+        if "Bottom" in axis and self.axisIsValid("Bottom"):
+            xrange, _ = self.canvas().getAxes("Bottom").viewRange()
+            if xrange != self.getAxisRange("Bottom"):
+                self.setAxisRange("Bottom", xrange)
+        if "Top" in axis and self.axisIsValid("Top"):
+            xrange, _ = self.canvas().getAxes("Top").viewRange()
+            if xrange != self.getAxisRange("Top"):
+                self.setAxisRange("Top", xrange)
+
     def _isValid(self, axis):
         return self.canvas().getAxes(axis) is not None
 
@@ -168,8 +190,11 @@ class _pyqtGraphTicks(CanvasTicks):
         for ax in self.__alist(axis):
             ax = self.canvas().fig.axes[ax.lower()]['item']
             if which == 'major':
-                ax.setTickSpacing(major=value, minor=self.getTickInterval(axis, which="minor", raw=False))
-            else:
+                if self.getTickVisible(axis, which='minor'):
+                    ax.setTickSpacing(major=value, minor=self.getTickInterval(axis, which="minor", raw=False))
+                else:
+                    ax.setTickSpacing(major=value, minor=value)
+            elif self.getTickVisible(axis, which='minor'):
                 ax.setTickSpacing(major=self.getTickInterval(axis, which="major", raw=False), minor=value)
 
     def _setTickDirection(self, axis, direction):
@@ -224,12 +249,12 @@ class AxesCanvas(AxisSelectableCanvas):
 
 class AxisRangeRightClickCanvas(AxesCanvas):
 
-    """
     def __init__(self, dpi=100):
+        import logging
         super().__init__(dpi=dpi)
-        self.fig.vb.sigRangeChanged.connect(self.axisRangeChanged)
-    """
-    @saveCanvas
+        self.fig.vb.sigRangeChanged.connect(lambda: logging.info("debug001"))
+
+    @ saveCanvas
     def __ExpandAndShrink(self, mode, axis):
         if not self.axisIsValid(axis):
             return
