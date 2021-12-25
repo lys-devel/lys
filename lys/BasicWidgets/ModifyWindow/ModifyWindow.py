@@ -117,7 +117,9 @@ class _AxisTab(QWidget):
 
         tab = QTabWidget()
         tab.addTab(ax_tick, 'Main')
-        tab.addTab(AxisAndTickLabelBox(canvas), 'Label')
+        ax_label = AxisAndTickLabelBox(self, canvas)
+        self._axis.activated.connect(ax_label.update)
+        tab.addTab(ax_label, 'Label')
         tab.addTab(AxisFontBox(canvas), 'Font')
         sav = QPushButton('Save', clicked=self._save)
         lod = QPushButton('Load', clicked=self._load)
