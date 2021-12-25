@@ -1,8 +1,9 @@
 import unittest
 import shutil
 import os
+import warnings
 
-from lys import glb, home, Graph
+from lys import glb, home, Graph, errors
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 
 
@@ -10,6 +11,7 @@ class Graph_test(unittest.TestCase):
     path = "test/DataFiles"
 
     def setUp(self):
+        warnings.simplefilter("ignore", errors.NotSupportedWarning)
         if glb.mainWindow() is None:
             if os.path.exists(home() + "/.lys"):
                 shutil.rmtree(home() + "/.lys")

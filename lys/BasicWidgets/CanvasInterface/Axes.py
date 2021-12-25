@@ -1,5 +1,7 @@
+import warnings
 import numpy as np
 from LysQt.QtCore import pyqtSignal
+from lys.errors import NotImplementedWarning
 from .SaveCanvas import CanvasPart, saveCanvas
 
 
@@ -377,22 +379,22 @@ class CanvasAxes(CanvasPart):
                     self.setAxisThick(ax, dic[ax + "_thick"])
 
     def _isValid(self, axis):
-        raise NotImplementedError()
+        raise NotImplementedError(str(type(self)) + " does not implement _isValid(axis) method.")
 
     def _setRange(self, axis, range):
-        raise NotImplementedError()
+        raise NotImplementedError(str(type(self)) + " does not implement _setRange(axis, range) method.")
 
     def _setAxisThick(self, axis, thick):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _setRange(axis, range) method.", NotImplementedWarning)
 
     def _setAxisColor(self, axis, color):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _setAxisColor(axis, color) method.", NotImplementedWarning)
 
     def _setMirrorAxis(self, axis, value):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _setMirrorAxis(axis, value) method.", NotImplementedWarning)
 
     def _setAxisMode(self, axis, mod):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _setAxisMode(axis, mode) method.", NotImplementedWarning)
 
 
 class CanvasTicks(CanvasPart):
@@ -716,16 +718,16 @@ class CanvasTicks(CanvasPart):
                     self.setTickVisible(ax, dic[ax + "_minorm_on"], mirror=True, which='minor')
 
     def _setTickWidth(self, axis, value, which):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _setTickWidth(axis, value, which) method.", NotImplementedWarning)
 
     def _setTickLength(self, axis, value, which):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _setTickLength(axis, value, which) method.", NotImplementedWarning)
 
     def _setTickInterval(self, axis, interval, which='major'):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _setTickInterval(axis, interval, which) method.", NotImplementedWarning)
 
     def _setTickVisible(self, axis, tf, mirror, which='both'):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _setTickVisible(axis, tf, mirror, which) method.", NotImplementedWarning)
 
     def _setTickDirection(self, axis, direction):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _setTIckDirection(axis, direction) method.", NotImplementedWarning)

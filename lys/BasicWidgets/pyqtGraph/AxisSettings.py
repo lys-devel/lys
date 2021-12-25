@@ -7,11 +7,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from lys import *
+from lys.errors import NotSupportedWarning
 from .CanvasBase import saveCanvas
 from .RGBSettings import *
 
 from ..CanvasInterface import CanvasAxes, CanvasTicks
-
 
 opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom', 'left': 'Right', 'right': 'Left', 'bottom': 'Top', 'top': 'Bottom'}
@@ -153,7 +153,7 @@ class _pyqtGraphAxes(CanvasAxes):
             a.setPen(pen)
 
     def _setMirrorAxis(self, axis, value):
-        warnings.warn("pyqtGraph does not support show/hide mirror axes.")
+        warnings.warn("pyqtGraph does not support show/hide mirror axes.", NotSupportedWarning)
 
     def _getAxisList(self, axis):
         res = [self.canvas().fig.axes[axis.lower()]['item']]
@@ -163,12 +163,12 @@ class _pyqtGraphAxes(CanvasAxes):
 
     def _setAxisMode(self, axis, mod):
         if mod == 'log':
-            warnings.warn("pyqtGraph does not support log scale.")
+            warnings.warn("pyqtGraph does not support log scale.", NotSupportedWarning)
 
 
 class _pyqtGraphTicks(CanvasTicks):
     def _setTickWidth(self, axis, value, which='major'):
-        warnings.warn("pyqtGraph does not support setting width axes. Use axis thick instead.")
+        warnings.warn("pyqtGraph does not support setting width axes. Use axis thick instead.", NotSupportedWarning)
 
     def __alist(self, axis):
         res = [axis]
@@ -204,7 +204,7 @@ class _pyqtGraphTicks(CanvasTicks):
 
     def _setTickLength(self, axis, value, which='major'):
         if which == 'minor':
-            warnings.warn("pyqtGraph does not support setting tick length of minor axes.")
+            warnings.warn("pyqtGraph does not support setting tick length of minor axes.", NotSupportedWarning)
             return
         self.__set(axis, self.getTickVisible(axis), self.getTickDirection(axis), int(value))
         if not self.canvas().axisIsValid(Opposite[axis]):
@@ -248,12 +248,6 @@ class AxesCanvas(AxisSelectableCanvas):
 
 
 class AxisRangeRightClickCanvas(AxesCanvas):
-
-    def __init__(self, dpi=100):
-        import logging
-        super().__init__(dpi=dpi)
-        self.fig.vb.sigRangeChanged.connect(lambda: logging.info("debug001"))
-
     @ saveCanvas
     def __ExpandAndShrink(self, mode, axis):
         if not self.axisIsValid(axis):

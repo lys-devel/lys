@@ -1,10 +1,11 @@
 import unittest
 import os
 import shutil
+import warnings
 
 from LysQt.QtWidgets import QSpinBox
 
-from lys import glb, home, registerFileLoader
+from lys import glb, home, registerFileLoader, errors
 from lys.widgets import LysSubWindow, AutoSavedWindow, _ExtendMdiArea
 
 
@@ -43,6 +44,7 @@ class FileView_test(unittest.TestCase):
     path = "test/MainWindow"
 
     def setUp(self):
+        warnings.simplefilter("ignore", errors.NotSupportedWarning)
         os.makedirs(self.path, exist_ok=True)
         if glb.mainWindow() is None:
             if os.path.exists(home() + "/.lys"):

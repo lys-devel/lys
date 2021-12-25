@@ -1,3 +1,6 @@
+# Errors and warnings
+from . import ErrorHandling
+
 # File loaders
 from . import ImageLoad
 
