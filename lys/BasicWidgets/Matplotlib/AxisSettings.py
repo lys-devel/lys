@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import weakref
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -88,30 +87,6 @@ class RangeSelectableCanvas(VectorSettingCanvas):
             return (start, end)
 
 
-class AxisSelectableCanvas(RangeSelectableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.axis_selected = 'Left'
-        self.__listener = []
-
-    def setSelectedAxis(self, axis):
-        self.axis_selected = axis
-        self._emitAxisSelected()
-
-    def getSelectedAxis(self):
-        return self.axis_selected
-
-    def addAxisSelectedListener(self, listener):
-        self.__listener.append(weakref.ref(listener))
-
-    def _emitAxisSelected(self):
-        for l in self.__listener:
-            if l() is not None:
-                l().OnAxisSelected(self.axis_selected)
-            else:
-                self.__listener.remove(l)
-
-
 class _MatplotlibAxes(CanvasAxes):
     def _isValid(self, axis):
         return self.canvas().getAxes(axis) is not None
@@ -194,7 +169,7 @@ class _MatplotlibTicks(CanvasTicks):
             axes.get_xaxis().set_tick_params(direction=direction, which='both')
 
 
-class AxesCanvas(AxisSelectableCanvas):
+class AxesCanvas(RangeSelectableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self._axs = _MatplotlibAxes(self)

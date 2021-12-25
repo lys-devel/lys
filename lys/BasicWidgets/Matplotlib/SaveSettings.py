@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-import random
-import sys
 import os
-import math
 import io
 from PyQt5.QtGui import *
 from .AnchorSettings import *

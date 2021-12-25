@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import weakref
 import warnings
 import numpy as np
 from PyQt5.QtCore import *
@@ -65,30 +64,6 @@ class RangeSelectableCanvas(RGBSettingCanvas):
             return (np.array([self._roi_start.x(), self._roi_start.y()]), np.array([self._roi_end.x(), self._roi_end.y()]))
         else:
             return None
-
-
-class AxisSelectableCanvas(RangeSelectableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.axis_selected = 'Left'
-        self.__listener = []
-
-    def setSelectedAxis(self, axis):
-        self.axis_selected = axis
-        self._emitAxisSelected()
-
-    def getSelectedAxis(self):
-        return self.axis_selected
-
-    def addAxisSelectedListener(self, listener):
-        self.__listener.append(weakref.ref(listener))
-
-    def _emitAxisSelected(self):
-        for l in self.__listener:
-            if l() is not None:
-                l().OnAxisSelected(self.axis_selected)
-            else:
-                self.__listener.remove(l)
 
 
 class _pyqtGraphAxes(CanvasAxes):
@@ -231,7 +206,7 @@ class _pyqtGraphTicks(CanvasTicks):
                 ax.setTickSpacing(major=self.getTickInterval(axis, which="major", raw=False), minor=self.getTickInterval(axis, which=w, raw=False))
 
 
-class AxesCanvas(AxisSelectableCanvas):
+class AxesCanvas(RangeSelectableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self._axs = _pyqtGraphAxes(self)
@@ -252,7 +227,6 @@ class AxisRangeRightClickCanvas(AxesCanvas):
     def __ExpandAndShrink(self, mode, axis):
         if not self.axisIsValid(axis):
             return
-        ax = self.getAxes(axis)
         pos, pos2 = self.SelectedRange()
         width = pos2[0] - pos[0]
         height = pos2[1] - pos[1]
