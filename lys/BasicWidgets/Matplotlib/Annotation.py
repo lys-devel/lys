@@ -83,7 +83,7 @@ class TextAnnotationCanvas(AnnotatableCanvas, TextAnnotationCanvasBase):
 class AnnotationEditableCanvas(TextAnnotationCanvas):
     def __init__(self, dpi):
         super().__init__(dpi)
-        self.addFontChangeListener(self)
+        self.fontChanged.connect(self.__onFontChanged)
 
     def loadAnnotAppearance(self):
         super().loadAnnotAppearance()
@@ -92,13 +92,12 @@ class AnnotationEditableCanvas(TextAnnotationCanvas):
             if 'Font' in d.appearance:
                 self._setFont(d, FontInfo.FromDict(d.appearance['Font']))
 
-    def OnFontChanged(self, name):
-        super().OnFontChanged(name)
+    def __onFontChanged(self, name):
         list = self.getAnnotations('text')
         for l in list:
             if 'Font_def' in l.appearance:
                 if l.appearance['Font_def'] is not None and name in [l.appearance['Font_def'], 'Default']:
-                    f = self.getFont(name)
+                    f = self.getCanvasFont(name)
                     l.obj.set_family(f.family)
                     l.obj.set_size(f.size)
                     l.obj.set_color(f.color)
@@ -106,7 +105,7 @@ class AnnotationEditableCanvas(TextAnnotationCanvas):
 
     def _setFont(self, annot, font):
         if not isinstance(font, FontInfo):
-            f = self.getFont(font)
+            f = self.getCanvasFont(font)
         else:
             f = font
         annot.obj.set_family(f.family)

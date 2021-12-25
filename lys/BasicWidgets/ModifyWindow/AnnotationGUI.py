@@ -180,7 +180,7 @@ class AnnotationEditBox(QWidget):
             tmp = self.canvas.getAnnotationFontDefault(indexes)[0]
             self.__font.setFontDefault(tmp)
             tmp = self.canvas.getAnnotationFont(indexes)[0]
-            self.__font.setFont(tmp)
+            self.__font.setCanvasFont(tmp)
         self.__flg = False
 
     def __txtChanged(self):

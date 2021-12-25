@@ -12,6 +12,8 @@ from .AnnotGUICanvas import *
 from .RGBSettings import *
 from .Axes import CanvasAxes, CanvasTicks
 from .Area import MarginBase, CanvasSizeBase
+from .AxisLabel import CanvasAxisLabel
+from .Font import FontInfo, CanvasFont
 
 
 class TemporaryCanvasBase(ImageColorAdjustableCanvasBase):

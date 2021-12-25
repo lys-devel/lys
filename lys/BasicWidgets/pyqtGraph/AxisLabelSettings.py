@@ -1,17 +1,29 @@
 #!/usr/bin/env python
-import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from .FontSettings import *
 from .CanvasBase import saveCanvas
+from .AxisSettings import *
+from ..CanvasInterface import CanvasFont
+
+
+class FontSelectableCanvas(TickAdjustableCanvas):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self._font = CanvasFont(self)
+
+    def __getattr__(self, key):
+        if "_font" in self.__dict__:
+            if hasattr(self._font, key):
+                return getattr(self._font, key)
+        return super().__getattr__(key)
 
 
 class AxisLabelAdjustableCanvas(FontSelectableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
-        self.addFontChangeListener(self)
+        self.fontChanged.connect(self.__onFontChanged)
 
     def SaveAsDictionary(self, dictionary, path):
         super().SaveAsDictionary(dictionary, path)
@@ -35,10 +47,10 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
                     self.setAxisLabelFont(l, FontInfo.FromDict(dic[l + "_font"]))
                     self.setAxisLabelCoords(l, dic[l + "_pos"])
 
-    def OnFontChanged(self, name):
+    def __onFontChanged(self, name):
         for axis in ['Left', 'Right', 'Top', 'Bottom']:
             if self.axisIsValid(axis):
-                self.setAxisLabelFont(axis, self.getFont('Axis'))
+                self.setAxisLabelFont(axis, self.getCanvasFont('Axis'))
 
     @saveCanvas
     def setAxisLabel(self, axis, text):
@@ -103,7 +115,7 @@ class AxisLabelAdjustableCanvas(FontSelectableCanvas):
 class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
-        self.addFontChangeListener(self)
+        self.fontChanged.connect(self.__onFontChanged)
 
     def SaveAsDictionary(self, dictionary, path):
         super().SaveAsDictionary(dictionary, path)
@@ -123,11 +135,10 @@ class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
                     self.setTickLabelVisible(l, dic[l + "_label_on"])
                     self.setTickLabelFont(l, FontInfo.FromDict(dic[l + "_font"]))
 
-    def OnFontChanged(self, name):
-        super().OnFontChanged(name)
+    def __onFontChanged(self, name):
         for axis in ['Left', 'Right', 'Top', 'Bottom']:
             if self.axisIsValid(axis):
-                self.setTickLabelFont(axis, self.getFont('Tick'))
+                self.setTickLabelFont(axis, self.getCanvasFont('Tick'))
 
     @saveCanvas
     def setTickLabelVisible(self, axis, tf, mirror=False, which='both'):
