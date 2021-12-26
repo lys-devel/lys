@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -7,147 +5,68 @@ from PyQt5.QtWidgets import *
 from lys import *
 from .CanvasBase import saveCanvas
 from .AxisSettings import *
-from ..CanvasInterface import CanvasFont
+from ..CanvasInterface import CanvasFont, CanvasAxisLabel, CanvasTickLabel
+
+
+class _MatplotlibAxisLabel(CanvasAxisLabel):
+    def _setAxisLabel(self, axis, text):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
+            axes.get_yaxis().get_label().set_text(text)
+        else:
+            axes.get_xaxis().get_label().set_text(text)
+
+    def _setAxisLabelVisible(self, axis, b):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
+            axes.get_yaxis().get_label().set_visible(b)
+        else:
+            axes.get_xaxis().get_label().set_visible(b)
+
+    def _setAxisLabelCoords(self, axis, pos):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
+            axes.get_yaxis().set_label_coords(pos, 0.5)
+        else:
+            axes.get_xaxis().set_label_coords(0.5, pos)
+
+    def _setAxisLabelFont(self, axis, family, size, color):
+        axes = self.canvas().getAxes(axis)
+        if axis in ['Left', 'Right']:
+            axes.get_yaxis().get_label().set_family(family)
+            axes.get_yaxis().get_label().set_size(size)
+            axes.get_yaxis().get_label().set_color(color)
+        else:
+            axes.get_xaxis().get_label().set_family(family)
+            axes.get_xaxis().get_label().set_size(size)
+            axes.get_xaxis().get_label().set_color(color)
+
+
+class _MatplotlibTickLabel(CanvasTickLabel):
+    pass
 
 
 class FontSelectableCanvas(TickAdjustableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self._font = CanvasFont(self)
+        self._axisLabel = _MatplotlibAxisLabel(self)
+        self._tickLabel = _MatplotlibTickLabel(self)
 
     def __getattr__(self, key):
         if "_font" in self.__dict__:
             if hasattr(self._font, key):
                 return getattr(self._font, key)
+        if "_axisLabel" in self.__dict__:
+            if hasattr(self._axisLabel, key):
+                return getattr(self._axisLabel, key)
+        if "_tickLabel" in self.__dict__:
+            if hasattr(self._tickLabel, key):
+                return getattr(self._tickLabel, key)
         return super().__getattr__(key)
 
 
-class AxisLabelAdjustableCanvas(FontSelectableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.fontChanged.connect(self.__onFontChanged)
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dic = {}
-        for l in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(l):
-                dic[l + "_label_on"] = self.getAxisLabelVisible(l)
-                dic[l + "_label"] = self.getAxisLabel(l)
-                dic[l + "_font"] = self.getAxisLabelFont(l).ToDict()
-                dic[l + "_pos"] = self.getAxisLabelCoords(l)
-        dictionary['LabelSetting'] = dic
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'LabelSetting' in dictionary:
-            dic = dictionary['LabelSetting']
-            for l in ['Left', 'Right', 'Top', 'Bottom']:
-                if self.axisIsValid(l):
-                    self.setAxisLabelVisible(l, dic[l + "_label_on"])
-                    self.setAxisLabel(l, dic[l + '_label'])
-                    self.setAxisLabelFont(l, FontInfo.FromDict(dic[l + "_font"]))
-                    self.setAxisLabelCoords(l, dic[l + "_pos"])
-
-    def __onFontChanged(self, name):
-        for axis in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(axis):
-                self.setAxisLabelFont(axis, self.getCanvasFont('Axis'))
-
-    @saveCanvas
-    def setAxisLabel(self, axis, text):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            axes.get_yaxis().get_label().set_text(text)
-        else:
-            axes.get_xaxis().get_label().set_text(text)
-
-    def getAxisLabel(self, axis):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            return axes.get_ylabel()
-        else:
-            return axes.get_xlabel()
-
-    @saveCanvas
-    def setAxisLabelFont(self, axis, font):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            axes.get_yaxis().get_label().set_family(font.family)
-            axes.get_yaxis().get_label().set_size(font.size)
-            axes.get_yaxis().get_label().set_color(font.color)
-        else:
-            axes.get_xaxis().get_label().set_family(font.family)
-            axes.get_xaxis().get_label().set_size(font.size)
-            axes.get_xaxis().get_label().set_color(font.color)
-        self.draw()
-
-    def getAxisLabelFont(self, axis):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            label = axes.get_yaxis().get_label()
-        else:
-            label = axes.get_xaxis().get_label()
-        return FontInfo(label.get_family()[0], label.get_size(), label.get_color())
-
-    @saveCanvas
-    def setAxisLabelVisible(self, axis, b):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            axes.get_yaxis().get_label().set_visible(b)
-        else:
-            axes.get_xaxis().get_label().set_visible(b)
-        self.draw()
-
-    def getAxisLabelVisible(self, axis):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            return axes.get_yaxis().get_label().get_visible()
-        else:
-            return axes.get_xaxis().get_label().get_visible()
-
-    @saveCanvas
-    def setAxisLabelCoords(self, axis, pos):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            axes.get_yaxis().set_label_coords(pos, 0.5)
-        else:
-            axes.get_xaxis().set_label_coords(0.5, pos)
-        self.draw()
-
-    def getAxisLabelCoords(self, axis):
-        axes = self.getAxes(axis)
-        if axes is None:
-            return
-        if axis in ['Left', 'Right']:
-            pos = axes.get_yaxis().get_label().get_position()
-            if pos[0] > 1:
-                return axes.transAxes.inverted().transform(pos)[0]
-            else:
-                return pos[0]
-        else:
-            pos = axes.get_xaxis().get_label().get_position()
-            if pos[1] > 1:
-                return axes.transAxes.inverted().transform(pos)[1]
-            else:
-                return pos[1]
-
-
-class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
+class TickLabelAdjustableCanvas(FontSelectableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.fontChanged.connect(self.__onFontChanged)
@@ -180,19 +99,14 @@ class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
         axes = self.getAxes(axis)
         if axes is None:
             return
-        if tf:
-            value = "on"
-        else:
-            value = "off"
         if (axis == 'Left' and not mirror) or (axis == 'Right' and mirror):
-            axes.get_yaxis().set_tick_params(labelleft=value, which=which)
+            axes.get_yaxis().set_tick_params(labelleft=tf, which=which)
         if (axis == 'Right' and not mirror) or (axis == 'Left' and mirror):
-            axes.get_yaxis().set_tick_params(labelright=value, which=which)
+            axes.get_yaxis().set_tick_params(labelright=tf, which=which)
         if (axis == 'Top' and not mirror) or (axis == 'Bottom' and mirror):
-            axes.get_xaxis().set_tick_params(labeltop=value, which=which)
+            axes.get_xaxis().set_tick_params(labeltop=tf, which=which)
         if (axis == 'Bottom' and not mirror) or (axis == 'Top' and mirror):
-            axes.get_xaxis().set_tick_params(labelbottom=value, which=which)
-        self.draw()
+            axes.get_xaxis().set_tick_params(labelbottom=tf, which=which)
 
     def getTickLabelVisible(self, axis, mirror=False, which='major'):
         axs = self.getAxes(axis)

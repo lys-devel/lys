@@ -40,6 +40,26 @@ class FontInfo(object):
                 pass
 
     @classmethod
+    def fonts(cls):
+        if cls._fonts is None:
+            fonts = fm.findSystemFonts()
+            cls._fonts = []
+            for f in fonts:
+                try:
+                    n = fm.FontProperties(fname=f).get_name()
+                    if not n in cls._fonts:
+                        cls._fonts.append(n)
+                except Exception:
+                    pass
+        cls._fonts = sorted(cls._fonts)
+        return cls._fonts
+
+    @classmethod
+    def defaultFamily(cls):
+        return fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
+
+
+    @classmethod
     def defaultFont(cls):
         return FontInfo(fm.FontProperties(family=mpl.rcParams['font.family']).get_name())
 

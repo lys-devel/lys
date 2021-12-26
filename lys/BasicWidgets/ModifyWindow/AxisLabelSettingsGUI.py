@@ -1,6 +1,6 @@
 from LysQt.QtWidgets import QGroupBox, QCheckBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, QTextEdit, QLabel, QWidget
 
-from .FontGUI import FontSelectBox
+from .FontGUI import FontSelector
 
 
 class AxisLabelAdjustBox(QGroupBox):
@@ -121,10 +121,29 @@ class AxisAndTickLabelBox(QWidget):
 
 
 class AxisFontBox(QWidget):
-    def __init__(self, canvas):
+    def __init__(self, parent, canvas):
         super().__init__()
+        self._parent = parent
+        self._canvas = canvas
+        self._axis = FontSelector('Axis Font')
+        self._axis.fontChanged.connect(self._axisChanged)
+        self._tick = FontSelector('Tick Font')
+
         layout = QVBoxLayout(self)
-        layout.addWidget(FontSelectBox(canvas))
-        layout.addWidget(FontSelectBox(canvas, 'Axis'))
-        layout.addWidget(FontSelectBox(canvas, 'Tick'))
+        layout.addWidget(self._axis)
+        layout.addWidget(self._tick)
+        layout.addStretch()
         self.setLayout(layout)
+        self.update()
+
+    def _axisChanged(self, font):
+        if self._parent.isApplyAll():
+            axes = self._canvas.axisList()
+        else:
+            axes = [self._parent.getCurrentAxis()]
+        for axis in axes:
+            self._canvas.setAxisLabelFont(axis, **font)
+
+    def update(self):
+        axis = self._parent.getCurrentAxis()
+        self._axis.setFont(**self._canvas.getAxisLabelFont(axis))

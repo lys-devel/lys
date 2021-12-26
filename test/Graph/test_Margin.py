@@ -3,6 +3,9 @@ import shutil
 import os
 import warnings
 
+import matplotlib as mpl
+import matplotlib.font_manager as fm
+
 from lys import glb, home, Graph, errors
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 
@@ -16,8 +19,8 @@ class Graph_test(unittest.TestCase):
             if os.path.exists(home() + "/.lys"):
                 shutil.rmtree(home() + "/.lys")
             glb.createMainWindow(show=False, restore=True)
-        self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
-        #self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
+        #self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
+        self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
 
     def test_Area(self):
         for g in self.graphs:
@@ -197,3 +200,46 @@ class Graph_test(unittest.TestCase):
             self.assertFalse(c.getTickVisible("Bottom", which="minor"))
             self.assertEqual(c.getTickDirection("Left"), "in")
             self.assertEqual(c.getTickDirection("Bottom"), 'out')
+
+    def test_AxisLabel(self):
+        for g in self.graphs:
+            d = {}
+            c = g.canvas
+
+            # set/get axisLabel
+            c.setAxisLabel("Left", "left")
+            c.setAxisLabel("Bottom", "bottom")
+            self.assertEqual(c.getAxisLabel("Left").replace(" ", ""), "left")
+            self.assertEqual(c.getAxisLabel("Bottom").replace(" ", ""), "bottom")
+
+            # set/get axisLabel Visible
+            c.setAxisLabelVisible("Left", True)
+            c.setAxisLabelVisible("Bottom", False)
+            self.assertTrue(c.getAxisLabelVisible("Left"))
+            self.assertFalse(c.getAxisLabelVisible("Bottom"))
+
+            # set/get axis label coords
+            c.setAxisLabelCoords("Left", -0.1)
+            c.setAxisLabelCoords("Bottom", -0.14)
+            self.assertEqual(c.getAxisLabelCoords("Left"), -0.1)
+            self.assertEqual(c.getAxisLabelCoords("Bottom"), -0.14)
+
+            # set/get axis label font
+            family = fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
+            c.setAxisLabelFont("Left", family, 12, "#000000")
+            c.setAxisLabelFont("Bottom", family, 14, "#ffffff")
+            self.assertEqual(c.getAxisLabelFont("Left"), {"family": family, "size": 12, "color": "#000000"})
+            self.assertEqual(c.getAxisLabelFont("Bottom"), {"family": family, "size": 14, "color": "#ffffff"})
+
+            # save and load
+            c.SaveAsDictionary(d)
+            c.setAxisLabel("Left", "right")
+            c.setAxisLabelVisible("Left", False)
+            c.setAxisLabelCoords("Left", -0.14)
+            c.setAxisLabelFont("Left", family, 11, "#ffffff")
+
+            c.LoadFromDictionary(d)
+            self.assertEqual(c.getAxisLabel("Left").replace(" ", ""), "left")
+            self.assertTrue(c.getAxisLabelVisible("Left"))
+            self.assertEqual(c.getAxisLabelCoords("Left"), -0.1)
+            self.assertEqual(c.getAxisLabelFont("Left"), {"family": family, "size": 12, "color": "#000000"})

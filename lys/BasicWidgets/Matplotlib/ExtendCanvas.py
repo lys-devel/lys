@@ -93,7 +93,7 @@ class ExtendCanvas(SaveSettingCanvas):
             axis = self.getPickedAxis()
             if axis is not None:
                 self.modf()(self, 'Axis')
-                self.setSelectedAxis(self.__findAxis(axis))
+                # self.setSelectedAxis(self.__findAxis(axis))
                 return super().OnMouseDown(event)
             line = self.getPickedLine()
             if line is not None:

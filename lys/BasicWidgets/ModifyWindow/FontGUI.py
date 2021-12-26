@@ -6,6 +6,50 @@ from lys.BasicWidgets.CanvasInterface import FontInfo
 from .ColorWidgets import *
 
 
+class FontSelector(QGroupBox):
+    fontChanged = pyqtSignal(dict)
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.__flg = False
+        self.__initlayout()
+
+    def __initlayout(self):
+        self.__font = QComboBox()
+        self.__font.addItems(FontInfo.fonts())
+        self.__font.activated.connect(self.__fontChanged)
+        self.__size = QDoubleSpinBox()
+        self.__size.valueChanged.connect(self.__fontChanged)
+        self.__color = ColorSelection()
+        self.__color.colorChanged.connect(self.__fontChanged)
+
+        lay = QHBoxLayout()
+        lay.addWidget(QLabel('Size'))
+        lay.addWidget(self.__size)
+        lay.addWidget(QLabel('Color'))
+        lay.addWidget(self.__color)
+
+        layout = QVBoxLayout()
+        layout.addWidget(self.__font)
+        layout.addLayout(lay)
+        self.setLayout(layout)
+
+    def setFont(self, family, size=10, color="#000000"):
+        self.__flg = True
+        self.__font.setCurrentText(family)
+        self.__size.setValue(size)
+        self.__color.setColor(color)
+        self.__flg = False
+
+    def getFont(self):
+        return {"family": self.__font.currentText(), "size": self.__size.value(), "color": self.__color.getColor()}
+
+    def __fontChanged(self):
+        if self.__flg:
+            return
+        self.fontChanged.emit(self.getFont())
+
+
 class FontSelectBox(QGroupBox):
     def __init__(self, canvas, name='Default'):
         super().__init__(name + ' Font')

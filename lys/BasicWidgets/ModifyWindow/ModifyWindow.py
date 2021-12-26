@@ -104,7 +104,6 @@ class _AxisTab(QWidget):
 
     def _initlayout(self, canvas):
         self._axis = AxisSelectionWidget(canvas)
-
         self._all = QCheckBox("Apply to all axes")
         self._all.setChecked(False)
 
@@ -113,25 +112,25 @@ class _AxisTab(QWidget):
         h1.addWidget(self._all, alignment=Qt.AlignRight)
 
         ax_tick = AxisAndTickBox(self, canvas)
+        ax_label = AxisAndTickLabelBox(self, canvas)
+        font = AxisFontBox(self, canvas)
         self._axis.activated.connect(ax_tick.update)
+        self._axis.activated.connect(ax_label.update)
+        self._axis.activated.connect(font.update)
 
         tab = QTabWidget()
         tab.addTab(ax_tick, 'Main')
-        ax_label = AxisAndTickLabelBox(self, canvas)
-        self._axis.activated.connect(ax_label.update)
         tab.addTab(ax_label, 'Label')
-        tab.addTab(AxisFontBox(canvas), 'Font')
-        sav = QPushButton('Save', clicked=self._save)
-        lod = QPushButton('Load', clicked=self._load)
+        tab.addTab(font, 'Font')
+
         hbox = QHBoxLayout()
-        hbox.addWidget(sav)
-        hbox.addWidget(lod)
+        hbox.addWidget(QPushButton('Save', clicked=self._save))
+        hbox.addWidget(QPushButton('Load', clicked=self._load))
 
         layout = QVBoxLayout(self)
         layout.addLayout(h1)
         layout.addWidget(tab)
         layout.addLayout(hbox)
-
         self.setLayout(layout)
 
     def getCurrentAxis(self):
