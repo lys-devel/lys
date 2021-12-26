@@ -36,42 +36,99 @@ class CanvasAxisLabel(CanvasPart):
 
     @saveCanvas
     def setAxisLabel(self, axis, text):
+        """
+        Set the label of *axis*.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+            text(str): Label to be set.
+        """
         if not self.canvas().axisIsValid(axis):
             return
         self._setAxisLabel(axis, text)
         self._labels[axis] = text
 
     def getAxisLabel(self, axis):
+        """
+        Get the label of *axis*
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+
+        Return:
+            str: The text of the label.
+        """
         if not self.canvas().axisIsValid(axis):
             return
         return self._labels[axis]
 
     @saveCanvas
-    def setAxisLabelVisible(self, axis, b):
+    def setAxisLabelVisible(self, axis, show):
+        """
+        Show/hide the label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+            show(bool): The label is shown when *show* is True.
+        """
         if not self.canvas().axisIsValid(axis):
             return
         self._setAxisLabelVisible(axis, b)
         self._visible[axis] = b
 
     def getAxisLabelVisible(self, axis):
+        """
+        Get the visibility of the label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+
+        Return:
+            bool: True if the label is shown.
+        """
         if not self.canvas().axisIsValid(axis):
             return
         return self._visible[axis]
 
     @saveCanvas
     def setAxisLabelCoords(self, axis, pos):
+        """
+        Set the position of the label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+            pos(float): The position of the label. Usually negative around -0.2.
+        """
         if not self.canvas().axisIsValid(axis):
             return
         self._setAxisLabelCoords(axis, pos)
         self._coords[axis] = pos
 
     def getAxisLabelCoords(self, axis):
+        """
+        Get the position of the label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+
+        Return:
+            float: The position of the label. Usually negative around -0.2.
+        """
         if not self.canvas().axisIsValid(axis):
             return
         return self._coords[axis]
 
     @saveCanvas
     def setAxisLabelFont(self, axis, family, size=10, color="black"):
+        """
+        Set the font of the label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+            family(str): The name of the font.
+            size(int): The size of the font.
+            color(str): The color of the font such as #111111.
+        """
         if not self.canvas().axisIsValid(axis):
             return
         if family not in FontInfo.fonts():
@@ -81,6 +138,15 @@ class CanvasAxisLabel(CanvasPart):
         self._font[axis] = {"family": family, "size": size, "color": color}
 
     def getAxisLabelFont(self, axis):
+        """
+        Get the font of the label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+
+        Return:
+            dict: The information of font. See :meth:`setAxisLabelFont`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         return self._font[axis]
@@ -152,6 +218,15 @@ class CanvasTickLabel(CanvasPart):
 
     @saveCanvas
     def setTickLabelVisible(self, axis, tf, mirror=False):
+        """
+        Show/hide the tick label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+            tf(bool): The label is shown when *show* is True.
+            mirror(bool): show/hide mirror label when it is True.
+        """
+
         if not self.canvas().axisIsValid(axis):
             return
         if axis == "Left":
@@ -179,6 +254,16 @@ class CanvasTickLabel(CanvasPart):
             self._visible[axis] = tf
 
     def getTickLabelVisible(self, axis, mirror=False):
+        """
+        Get the visibility of the tick label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+            mirror(bool): return the visibility of mirror label when it is True.
+
+        Return:
+            bool: visibility of the tick label.
+        """
         if not self.canvas().axisIsValid(axis):
             return
         if mirror:
@@ -188,12 +273,30 @@ class CanvasTickLabel(CanvasPart):
 
     @saveCanvas
     def setTickLabelFont(self, axis, family, size=9, color="#000000"):
+        """
+        Set the font of the label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+            family(str): The name of the font.
+            size(int): The size of the font.
+            color(str): The color of the font such as #111111.
+        """
         if not self.canvas().axisIsValid(axis):
             return
         self._setTickLabelFont(axis, family, size, color)
         self._font[axis] = {"family": family, "size": size, "color": color}
 
     def getTickLabelFont(self, axis):
+        """
+        Get the font of the label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+
+        Return:
+            dict: The information of font. See :meth:`setTickLabelFont`
+        """
         if not self.canvas().axisIsValid(axis):
             return
         return self._font[axis]

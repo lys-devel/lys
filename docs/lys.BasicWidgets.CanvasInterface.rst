@@ -6,6 +6,7 @@ CanvasInterface package
 
    graph/Area
    graph/Axes
+   graph/AxisLabels
 
 Submodules
 ----------

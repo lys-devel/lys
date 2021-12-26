@@ -1,7 +1,7 @@
-Margin module
+Area module
 ----------------------------------------------
 
-.. automodule:: lys.BasicWidgets.CanvasInterface.Margin
+.. automodule:: lys.BasicWidgets.CanvasInterface.Area
    :members:
    :undoc-members:
    :show-inheritance:

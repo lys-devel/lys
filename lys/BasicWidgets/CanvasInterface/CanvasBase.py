@@ -522,7 +522,6 @@ class OffsetAdjustableCanvasBase(DataHidableCanvasBase):
     @saveCanvas
     def setOffset(self, offset, indexes):
         data = self.getDataFromIndexes(None, indexes)
-        print(indexes, data)
         for d in data:
             d.offset = offset
             self.OnWaveModified(d.wave)
