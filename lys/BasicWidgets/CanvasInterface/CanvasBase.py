@@ -47,9 +47,8 @@ class CanvasBaseBase(DrawableCanvasBase):
         self.saveAppearance()
         for d in self._Datalist:
             if wave == d.wave:
-                self.Remove(d.id, reuse=True)
-                self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, zindex=d.zindex, reuse=True, contour=d.contour, filter=d.filter, wdata=d, vector=d.vector)
-                flg = True
+                self.Remove(d.id)
+                self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, contour=d.contour, filter=d.filter, vector=d.vector)
         self.loadAppearance()
 
     @saveCanvas
@@ -63,26 +62,14 @@ class CanvasBaseBase(DrawableCanvasBase):
         else:
             wav = load(wave)
         if appearance is None:
-            ids = self._Append(wav, axis, id, {}, offset, zindex, contour=contour, filter=filter, vector=vector)
-        else:
-            ids = self._Append(wav, axis, id, dict(appearance), offset, zindex, contour=contour, filter=filter, vector=vector)
+            appearance = {}
+        ids = self._Append(wav, axis, id, dict(appearance), offset, contour=contour, filter=filter, vector=vector)
         return ids
 
     @saveCanvas
-    def _Append(self, w, axis, id, appearance, offset, zindex=0, reuse=False, contour=False, filter=None, wdata=None, vector=False):
-        def makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata, vector):
-            if reuse:
-                wdata.id = ids
-                wdata.obj = obj
-                wdata.axes = ax
-                wdata.filteredWave = filteredWave
-                return wdata
-            else:
-                wd = WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter, filteredWave=filteredWave, vector=vector)
-                return wd
+    def _Append(self, w, axis, id, appearance, offset, contour=False, filter=None, vector=False):
         if filter is not None:
-            wav = w.duplicate()
-            wav = filter.execute(wav)
+            wav = filter.execute(w)
         else:
             wav = w
         filteredWave = wav
@@ -97,9 +84,8 @@ class CanvasBaseBase(DrawableCanvasBase):
             return
         ids, obj, ax = f(wav, axis, id, appearance, offset)
         id_pos = ids + self._getDefaultId(type)
-        self._Datalist.insert(id_pos, makeWaveData(reuse, w, obj, ax, axis, ids, appearance, offset, contour, filter, filteredWave, wdata, vector))
-        if not reuse:
-            w.modified.connect(self.OnWaveModified)
+        self._Datalist.insert(id_pos, WaveData(w, obj, ax, axis, ids, appearance, offset, contour=contour, filter=filter, filteredWave=filteredWave, vector=vector))
+        w.modified.connect(self.OnWaveModified)
         self.dataChanged.emit()
         if appearance is not None:
             self.loadAppearance()
@@ -237,7 +223,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         return id, im, ax
 
     @saveCanvas
-    def Remove(self, indexes, reuse=False):
+    def Remove(self, indexes):
         if hasattr(indexes, '__iter__'):
             list = indexes
         else:
@@ -247,8 +233,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                 if i == d.id:
                     self._remove(d)
                     self._Datalist.remove(d)
-                    if not reuse:
-                        d.wave.modified.disconnect(self.OnWaveModified)
+                    d.wave.modified.disconnect(self.OnWaveModified)
         self.dataChanged.emit()
 
     @saveCanvas
