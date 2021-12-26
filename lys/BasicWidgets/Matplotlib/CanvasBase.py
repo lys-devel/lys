@@ -63,12 +63,12 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
             return self.axes_tx
         if axis == "TopRight":
             if self.axes_txy is None:
-                self.axes_txy = self.axes.twinx().twiny()
-                self.axisChanged.emit('Right')
-                self.axisChanged.emit('Top')
+                self.__getAxes("TopLeft")
+                self.__getAxes("BottomRight")
+                self.axes_txy = self.axes_tx.twiny()
+                self.axes_txy.get_xaxis().set_tick_params(top=False, labeltop=False, which="both")
                 self.axes_txy.xaxis.set_picker(15)
                 self.axes_txy.yaxis.set_picker(15)
-                self.axes_txy.minorticks_on()
             return self.axes_txy
 
     def getAxes(self, axis='Left'):

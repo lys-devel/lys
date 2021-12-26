@@ -19,8 +19,8 @@ class Graph_test(unittest.TestCase):
             if os.path.exists(home() + "/.lys"):
                 shutil.rmtree(home() + "/.lys")
             glb.createMainWindow(show=False, restore=True)
-        #self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
-        self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
+        self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
+        #self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
 
     def test_Area(self):
         for g in self.graphs:
@@ -243,3 +243,30 @@ class Graph_test(unittest.TestCase):
             self.assertTrue(c.getAxisLabelVisible("Left"))
             self.assertEqual(c.getAxisLabelCoords("Left"), -0.1)
             self.assertEqual(c.getAxisLabelFont("Left"), {"family": family, "size": 12, "color": "#000000"})
+
+    def test_TickLabel(self):
+        for g in self.graphs:
+            d = {}
+            c = g.canvas
+
+            # set/get tickLabelVisible
+            c.setTickLabelVisible("Left", True)
+            c.setTickLabelVisible("Left", True, mirror=True)
+            self.assertTrue(c.getTickLabelVisible("Left"))
+            self.assertTrue(c.getTickLabelVisible("Left", mirror=True))
+
+            # set/get tick label font
+            family = fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
+            c.setTickLabelFont("Left", family, 12, "#000000")
+            c.setTickLabelFont("Bottom", family, 14, "#ffffff")
+            self.assertEqual(c.getTickLabelFont("Left"), {"family": family, "size": 12, "color": "#000000"})
+            self.assertEqual(c.getTickLabelFont("Bottom"), {"family": family, "size": 14, "color": "#ffffff"})
+
+            # save and load
+            c.SaveAsDictionary(d)
+            c.setTickLabelVisible("Left", False)
+            c.setTickLabelFont("Left", family, 14, "#000000")
+
+            c.LoadFromDictionary(d)
+            self.assertTrue(c.getTickLabelVisible("Left"))
+            self.assertEqual(c.getTickLabelFont("Left"), {"family": family, "size": 12, "color": "#000000"})

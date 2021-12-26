@@ -76,11 +76,22 @@ class TickLabelAdjustBox(QGroupBox):
         self._parent = parent
         self.__initlayout()
         self.update()
+        self.canvas.axisChanged.connect(self.update)
 
     def update(self):
         self.__flg = True
         axis = self._parent.getCurrentAxis()
         self.__on.setChecked(self.canvas.getTickLabelVisible(axis))
+        self.__mir.setChecked(self.canvas.getTickLabelVisible(axis, mirror=True))
+        self.__mir.setEnabled(True)
+        if axis == "Left" and self.canvas.axisIsValid("Right"):
+            self.__mir.setEnabled(False)
+        if axis == "Bottom" and self.canvas.axisIsValid("Top"):
+            self.__mir.setEnabled(False)
+        if axis == "Right":
+            self.__mir.setEnabled(False)
+        if axis == "Top":
+            self.__mir.setEnabled(False)
         self.__flg = False
 
     def __getAxes(self):
@@ -92,8 +103,11 @@ class TickLabelAdjustBox(QGroupBox):
     def __initlayout(self):
         self.__on = QCheckBox('Put label')
         self.__on.stateChanged.connect(self.__visible)
-        layout = QVBoxLayout()
+        self.__mir = QCheckBox('Mirror')
+        self.__mir.stateChanged.connect(self.__visible_mirror)
+        layout = QHBoxLayout()
         layout.addWidget(self.__on)
+        layout.addWidget(self.__mir)
         self.setLayout(layout)
 
     def __visible(self):
@@ -101,6 +115,14 @@ class TickLabelAdjustBox(QGroupBox):
             return
         for axis in self.__getAxes():
             self.canvas.setTickLabelVisible(axis, self.__on.isChecked())
+        self.update()
+
+    def __visible_mirror(self):
+        if self.__flg:
+            return
+        for axis in self.__getAxes():
+            self.canvas.setTickLabelVisible(axis, self.__mir.isChecked(), mirror=True)
+        self.update()
 
 
 class AxisAndTickLabelBox(QWidget):
@@ -128,6 +150,7 @@ class AxisFontBox(QWidget):
         self._axis = FontSelector('Axis Font')
         self._axis.fontChanged.connect(self._axisChanged)
         self._tick = FontSelector('Tick Font')
+        self._tick.fontChanged.connect(self._tickChanged)
 
         layout = QVBoxLayout(self)
         layout.addWidget(self._axis)
@@ -144,6 +167,15 @@ class AxisFontBox(QWidget):
         for axis in axes:
             self._canvas.setAxisLabelFont(axis, **font)
 
+    def _tickChanged(self, font):
+        if self._parent.isApplyAll():
+            axes = self._canvas.axisList()
+        else:
+            axes = [self._parent.getCurrentAxis()]
+        for axis in axes:
+            self._canvas.setTickLabelFont(axis, **font)
+
     def update(self):
         axis = self._parent.getCurrentAxis()
         self._axis.setFont(**self._canvas.getAxisLabelFont(axis))
+        self._tick.setFont(**self._canvas.getTickLabelFont(axis))

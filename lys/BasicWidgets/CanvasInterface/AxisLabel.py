@@ -124,7 +124,96 @@ class CanvasTickLabel(CanvasPart):
 
     def __init__(self, canvas):
         super().__init__(canvas)
-        # canvas.saveCanvas.connect(self._save)
-        # canvas.loadCanvas.connect(self._load)
-        # self.canvas().axisChanged.connect(self._axisChanged)
-        # self.__initialize()
+        canvas.saveCanvas.connect(self._save)
+        canvas.loadCanvas.connect(self._load)
+        self.canvas().axisChanged.connect(self._axisChanged)
+        self.__initialize()
+
+    def __initialize(self):
+        self._visible = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
+        self._visible_mirror = {'Left': False, 'Right': False, 'Top': False, 'Bottom': False}
+        self._font = {}
+        self.setTickLabelVisible("Left", True)
+        self.setTickLabelVisible("Bottom", True)
+        self.setTickLabelFont("Left", FontInfo.defaultFamily())
+        self.setTickLabelFont("Bottom", FontInfo.defaultFamily())
+
+    def _axisChanged(self, axis):
+        if axis == "Right":
+            self._setTickLabelVisible("Left", False, mirror=True)
+            self._visible_mirror["Left"] = False
+            self.setTickLabelVisible("Right", True)
+            self.setTickLabelFont("Right", FontInfo.defaultFamily())
+        if axis == "Top":
+            self._setTickLabelVisible("Bottom", False, mirror=True)
+            self._visible_mirror["Bottom"] = False
+            self.setTickLabelVisible("Top", True)
+            self.setTickLabelFont("Top", FontInfo.defaultFamily())
+
+    @saveCanvas
+    def setTickLabelVisible(self, axis, tf, mirror=False):
+        if not self.canvas().axisIsValid(axis):
+            return
+        if axis == "Left":
+            if mirror and tf:
+                if self.canvas().axisIsValid("Right"):
+                    warnings.warn("Could not show mirror label of left tick when right axis is valid.")
+                    return
+        if axis == "Bottom":
+            if mirror and tf:
+                if self.canvas().axisIsValid("Top"):
+                    warnings.warn("Could not show mirror label of bottom tick when right axis is valid.")
+                    return
+        if axis == "Right":
+            if mirror:
+                warnings.warn("Could not show/hide mirror label of right tick.")
+                return
+        if axis == "Top":
+            if mirror:
+                warnings.warn("Could not show/hide mirror label of top tick.")
+                return
+        self._setTickLabelVisible(axis, tf, mirror)
+        if mirror:
+            self._visible_mirror[axis] = tf
+        else:
+            self._visible[axis] = tf
+
+    def getTickLabelVisible(self, axis, mirror=False):
+        if not self.canvas().axisIsValid(axis):
+            return
+        if mirror:
+            return self._visible_mirror[axis]
+        else:
+            return self._visible[axis]
+
+    @saveCanvas
+    def setTickLabelFont(self, axis, family, size=9, color="#000000"):
+        if not self.canvas().axisIsValid(axis):
+            return
+        self._setTickLabelFont(axis, family, size, color)
+        self._font[axis] = {"family": family, "size": size, "color": color}
+
+    def getTickLabelFont(self, axis):
+        if not self.canvas().axisIsValid(axis):
+            return
+        return self._font[axis]
+
+    def _save(self, dictionary):
+        dic = {}
+        for axis in self.canvas().axisList():
+            dic[axis + "_label_on"] = self.getTickLabelVisible(axis)
+            dic[axis + "_font"] = self.getTickLabelFont(axis)
+        dictionary['TickLabelSetting'] = dic
+
+    def _load(self, dictionary):
+        if 'TickLabelSetting' in dictionary:
+            dic = dictionary['TickLabelSetting']
+            for axis in self.canvas().axisList():
+                self.setTickLabelVisible(axis, dic[axis + "_label_on"])
+                self.setTickLabelFont(axis, **dic[axis + "_font"])
+
+    def _setTickLabelVisible(self, axis, tf, mirror=False):
+        warnings.warn(str(type(self)) + " does not implement _setTickLabelVisible(axis, tf, mirror) method.", NotImplementedWarning)
+
+    def _setTickLabelFont(self, axis, family, size, color):
+        warnings.warn(str(type(self)) + " does not implement _setTickLabelFont(axis, family, size, color) method.", NotImplementedWarning)

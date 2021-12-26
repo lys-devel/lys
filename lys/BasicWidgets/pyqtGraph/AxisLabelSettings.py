@@ -1,173 +1,68 @@
-#!/usr/bin/env python
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 
-from .CanvasBase import saveCanvas
+import warnings
+from LysQt.QtGui import QFont
+
+from lys.errors import NotSupportedWarning
 from .AxisSettings import *
-from ..CanvasInterface import CanvasFont
+from ..CanvasInterface import CanvasFont, CanvasAxisLabel, CanvasTickLabel
+
+opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 
 
-class FontSelectableCanvas(TickAdjustableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self._font = CanvasFont(self)
-
-    def __getattr__(self, key):
-        if "_font" in self.__dict__:
-            if hasattr(self._font, key):
-                return getattr(self._font, key)
-        return super().__getattr__(key)
-
-
-class AxisLabelAdjustableCanvas(FontSelectableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.fontChanged.connect(self.__onFontChanged)
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dic = {}
-        for l in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(l):
-                dic[l + "_label_on"] = self.getAxisLabelVisible(l)
-                dic[l + "_label"] = self.getAxisLabel(l)
-                dic[l + "_font"] = self.getAxisLabelFont(l).ToDict()
-                dic[l + "_pos"] = self.getAxisLabelCoords(l)
-        dictionary['LabelSetting'] = dic
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'LabelSetting' in dictionary:
-            dic = dictionary['LabelSetting']
-            for l in ['Left', 'Right', 'Top', 'Bottom']:
-                if self.axisIsValid(l):
-                    self.setAxisLabelVisible(l, dic[l + "_label_on"])
-                    self.setAxisLabel(l, dic[l + '_label'])
-                    self.setAxisLabelFont(l, FontInfo.FromDict(dic[l + "_font"]))
-                    self.setAxisLabelCoords(l, dic[l + "_pos"])
-
-    def __onFontChanged(self, name):
-        for axis in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(axis):
-                self.setAxisLabelFont(axis, self.getCanvasFont('Axis'))
-
-    @saveCanvas
-    def setAxisLabel(self, axis, text):
-        ax = self.fig.getAxis(axis.lower())
-        b = self.getAxisLabelVisible(axis)
+class _PyqtgraphAxisLabel(CanvasAxisLabel):
+    def _setAxisLabel(self, axis, text):
+        ax = self.canvas().fig.getAxis(axis.lower())
         ax.setLabel(text)
-        self.setAxisLabelVisible(axis, b)
+        self.setAxisLabelVisible(axis, self.getAxisLabelVisible(axis))
 
-    def getAxisLabel(self, axis):
-        ax = self.fig.getAxis(axis.lower())
-        return ax.label.toPlainText()
-
-    @saveCanvas
-    def setAxisLabelFont(self, axis, font):
-        ax = self.fig.getAxis(axis.lower())
-        css = {'font-family': font.family, 'font-size': str(font.size) + "pt", "color": font.color}
-        ax.setLabel(**css)
-
-    def getAxisLabelFont(self, axis):
-        ax = self.fig.getAxis(axis.lower())
-        f = ax.font()
-        s = ax.labelStyle
-        if "font-family" in s:
-            family = s['font-family']
-        else:
-            family = f.family()
-        if "font-size" in s:
-            size = int(float(s['font-size'].replace("pt", "")))
-        else:
-            size = f.pointSize()
-        if "color" in s:
-            color = s['color']
-        else:
-            color = "#ffffff"
-        return FontInfo(family, size, color)
-
-    @saveCanvas
-    def setAxisLabelVisible(self, axis, b):
-        ax = self.fig.getAxis(axis.lower())
+    def _setAxisLabelVisible(self, axis, b):
+        ax = self.canvas().fig.getAxis(axis.lower())
         ax.showLabel(b)
 
-    def getAxisLabelVisible(self, axis):
-        ax = self.fig.getAxis(axis.lower())
-        return ax.label.isVisible()
-
-    @saveCanvas
-    def setAxisLabelCoords(self, axis, pos):
-        ax = self.fig.getAxis(axis.lower())
+    def _setAxisLabelCoords(self, axis, pos):
+        ax = self.canvas().fig.getAxis(axis.lower())
         if axis in ['Left', 'Right']:
             ax.setStyle(tickTextWidth=int(-pos * 100), autoExpandTextSpace=False)
         else:
             ax.setStyle(tickTextHeight=int(-pos * 100), autoExpandTextSpace=False)
 
-    def getAxisLabelCoords(self, axis):
-        ax = self.fig.getAxis(axis.lower())
-        if axis in ['Left', 'Right']:
-            return -ax.style['tickTextWidth'] / 100
-        else:
-            return -ax.style['tickTextHeight'] / 100
+    def _setAxisLabelFont(self, axis, family, size, color):
+        ax = self.canvas().fig.getAxis(axis.lower())
+        css = {'font-family': family, 'font-size': str(size) + "pt", "color": color}
+        ax.setLabel(**css)
+        self.setAxisLabel(axis, self.getAxisLabel(axis))
 
 
-class TickLabelAdjustableCanvas(AxisLabelAdjustableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.fontChanged.connect(self.__onFontChanged)
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        dic = {}
-        for l in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(l):
-                dic[l + "_label_on"] = self.getTickLabelVisible(l)
-                dic[l + "_font"] = self.getTickLabelFont(l).ToDict()
-        dictionary['TickLabelSetting'] = dic
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        if 'TickLabelSetting' in dictionary:
-            dic = dictionary['TickLabelSetting']
-            for l in ['Left', 'Right', 'Top', 'Bottom']:
-                if self.axisIsValid(l):
-                    self.setTickLabelVisible(l, dic[l + "_label_on"])
-                    self.setTickLabelFont(l, FontInfo.FromDict(dic[l + "_font"]))
-
-    def __onFontChanged(self, name):
-        for axis in ['Left', 'Right', 'Top', 'Bottom']:
-            if self.axisIsValid(axis):
-                self.setTickLabelFont(axis, self.getCanvasFont('Tick'))
-
-    @saveCanvas
-    def setTickLabelVisible(self, axis, tf, mirror=False, which='both'):
+class _PyqtgraphTickLabel(CanvasTickLabel):
+    def _setTickLabelVisible(self, axis, tf, mirror=False):
         if mirror:
-            ax = self.fig.getAxis(opposite[axis.lower()])
+            ax = self.canvas().fig.getAxis(opposite[axis])
         else:
-            ax = self.fig.getAxis(axis.lower())
+            ax = self.canvas().fig.getAxis(axis.lower())
         ax.setStyle(showValues=tf)
 
-    def getTickLabelVisible(self, axis, mirror=False, which='major'):
-        if mirror:
-            ax = self.fig.getAxis(opposite[axis.lower()])
-        else:
-            ax = self.fig.getAxis(axis.lower())
-        return ax.style['showValues']
-
-    @saveCanvas
-    def setTickLabelFont(self, axis, font):
-        ax = self.fig.getAxis(axis.lower())
-        ax.setStyle(tickFont=QFont(font.family, font.size))
-
-    def getTickLabelFont(self, axis):
-        ax = self.fig.getAxis(axis.lower())
-        f = ax.style["tickFont"]
-        if f is None:
-            return FontInfo.defaultFont()
-        else:
-            return FontInfo(f.family(), f.pointSize(), "#ffffff")
+    def _setTickLabelFont(self, axis, family, size, color):
+        ax = self.canvas().fig.getAxis(axis.lower())
+        ax.setStyle(tickFont=QFont(family, size))
+        if color != "black" and color != "#000000":
+            warnings.warn("pyqtGraph does not support changing color of tick.", NotSupportedWarning)
 
 
-class AxisSettingCanvas(TickLabelAdjustableCanvas):
-    pass
+class AxisSettingCanvas(TickAdjustableCanvas):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self._font = CanvasFont(self)
+        self._axisLabel = _PyqtgraphAxisLabel(self)
+        self._tickLabel = _PyqtgraphTickLabel(self)
+
+    def __getattr__(self, key):
+        if "_font" in self.__dict__:
+            if hasattr(self._font, key):
+                return getattr(self._font, key)
+        if "_axisLabel" in self.__dict__:
+            if hasattr(self._axisLabel, key):
+                return getattr(self._axisLabel, key)
+        if "_tickLabel" in self.__dict__:
+            if hasattr(self._tickLabel, key):
+                return getattr(self._tickLabel, key)
+        return super().__getattr__(key)
