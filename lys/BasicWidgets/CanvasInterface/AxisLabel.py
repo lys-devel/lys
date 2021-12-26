@@ -73,8 +73,8 @@ class CanvasAxisLabel(CanvasPart):
         """
         if not self.canvas().axisIsValid(axis):
             return
-        self._setAxisLabelVisible(axis, b)
-        self._visible[axis] = b
+        self._setAxisLabelVisible(axis, show)
+        self._visible[axis] = show
 
     def getAxisLabelVisible(self, axis):
         """
