@@ -164,6 +164,28 @@ def _symmetrze(data, rotation, center):
     return ndimage.shift(sum / m_sum, [-dx, -dy], cval=np.NaN, order=0)
 
 
+class OffsetFilter(FilterInterface):
+    def __init__(self, offset):
+        self._offset = offset
+
+    def _execute(self, wave, *args, **kwargs):
+        if wave.data.ndim == 1:
+            xdata = np.array(wave.getAxis(0))
+            ydata = wave.data
+            if not self._offset[2] == 0.0:
+                xdata = xdata * self._offset[2]
+            if not self._offset[3] == 0.0:
+                ydata = ydata * self._offset[3]
+            xdata = xdata + self._offset[0]
+            ydata = ydata + self._offset[1]
+            return DaskWave(ydata, xdata, **wave.note)
+        else:
+            pass
+
+    def getParameters(self):
+        return {"offset": self._offset}
+
+
 @filterGUI(SetAxisFilter)
 class _SetAxisSetting(FilterSettingBase):
     def __init__(self, dimension=2):
@@ -314,6 +336,7 @@ class _SymmetrizeSetting(FilterSettingBase):
 addFilter(SetAxisFilter, gui=_SetAxisSetting, guiName="Set axis", guiGroup="Axis")
 addFilter(AxisShiftFilter, gui=_ShiftSetting, guiName="Shift axis", guiGroup="Axis")
 addFilter(MagnificationFilter, gui=_MagnificationSetting, guiName="Scale axis", guiGroup="Axis")
+addFilter(OffsetFilter)
 
 addFilter(Rotation2DFilter, gui=_Rotation2DSetting, guiName="Rotate image", guiGroup="Image transformation")
 addFilter(SymmetrizeFilter, gui=_SymmetrizeSetting, guiName="Symmetrize", guiGroup="Symmetric operation")

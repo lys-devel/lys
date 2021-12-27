@@ -68,9 +68,6 @@ class SavableCanvasBase(BasicEventCanvasBase):
         if self.savef is not None:
             self.savef()()
 
-    def EnableSave(self, b):
-        self.saveflg = b
-
     def SaveAsDictionary(self, dictionary, path):
         pass
 
@@ -85,31 +82,14 @@ class SavableCanvasBase(BasicEventCanvasBase):
 
 
 class DrawableCanvasBase(SavableCanvasBase):
-    afterDraw = pyqtSignal()
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.drawflg = None
-
-    def IsDrawEnabled(self):
-        return self.drawflg
-
-    def EnableDraw(self, b):
-        self.drawflg = b
 
     def draw(self):
-        if self.drawflg is not None:
-            if not self.drawflg:
-                return
         try:
             self._draw()
-            afterDraw.emit()
         except Exception:
             pass
 
     def _draw(self):
         pass
-
-    def addAfterDrawListener(self, listener):
-        print("use afterDraw.connect")
-        raise NotImplementedError()

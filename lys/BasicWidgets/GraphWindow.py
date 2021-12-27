@@ -138,9 +138,7 @@ class Graph(AutoSavedWindow):
         dic = {}
         self.canvas.SaveAsDictionary(dic, home())
         g = Graph(lib=lib)
-        g.canvas.EnableDraw(False)
         g.canvas.LoadFromDictionary(dic, home())
-        g.canvas.EnableDraw(True)
         return g
 
 

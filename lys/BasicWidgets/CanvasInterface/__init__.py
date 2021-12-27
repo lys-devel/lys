@@ -14,6 +14,7 @@ from .Axes import CanvasAxes, CanvasTicks
 from .Area import MarginBase, CanvasSizeBase
 from .AxisLabel import CanvasAxisLabel, CanvasTickLabel
 from .Font import FontInfo, CanvasFont
+from .WaveData import LineData
 
 
 class TemporaryCanvasBase(ImageColorAdjustableCanvasBase):

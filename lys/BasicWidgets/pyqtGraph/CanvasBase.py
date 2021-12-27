@@ -22,6 +22,14 @@ def _suppressNumpyWarnings(func):
     return wrapper
 
 
+class _PyqtgraphLine(LineData):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+    def _setZ(self, z):
+        self.obj.setZValue(z)
+
+
 class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
     axisChanged = pyqtSignal(str)
     pgRangeChanged = pyqtSignal(str)
@@ -141,12 +149,12 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         return pg.mkPen(list[self.npen % 9], width=2)
 
     @_suppressNumpyWarnings
-    def _append1d(self, xdata, ydata, axis, zorder):
+    def _append1d(self, wave, axis):
         ax = self.__getAxes(axis)
-        obj = pg.PlotDataItem(x=xdata, y=ydata, pen=self._nextPen())
+        obj = pg.PlotDataItem(x=wave.x, y=wave.data, pen=self._nextPen())
         ax.addItem(obj)
-        obj.setZValue(zorder)
-        return obj, ax
+        obj = _PyqtgraphLine(obj)
+        return obj
 
     @_suppressNumpyWarnings
     def _append2d(self, wave, offset, axis, zorder):
@@ -213,7 +221,8 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         return ((xshift + offset[0]) / xmag, (yshift + offset[1]) / ymag), (xmag, ymag)
 
     def _remove(self, data):
-        data.axes.removeItem(data.obj)
+        ax = self.__getAxes(data.axis)
+        ax.removeItem(data.obj)
 
     def _setZOrder(self, obj, z):
         obj.setZValue(z)

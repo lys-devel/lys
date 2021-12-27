@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from ..CanvasInterface import LineData
 from ..CanvasInterface import *
 from lys import *
 import weakref
@@ -15,6 +16,14 @@ from matplotlib import colors
 
 import matplotlib as mpl
 mpl.rc('image', cmap='gray')
+
+
+class _MatplotlibLine(LineData):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+    def _setZ(self, z):
+        self.obj.set_zorder(z)
 
 
 class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
@@ -86,11 +95,10 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
             else:
                 return self.axes_txy
 
-    def _append1d(self, xdata, ydata, axis, zorder):
+    def _append1d(self, wave, axis):
         ax = self.__getAxes(axis)
-        line, = ax.plot(xdata, ydata, picker=5)
-        line.set_zorder(zorder)
-        return line, ax
+        line, = ax.plot(wave.x, wave.data, picker=5)
+        return _MatplotlibLine(line)
 
     def calcExtent2D(self, wav, offset):
         xstart = wav.x[0]

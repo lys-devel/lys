@@ -63,6 +63,18 @@ class FilterInterface:
     def __str__(self):
         return self.__class__.__name__ + ": " + str(self.getParameters())
 
+    def __add__(self, filt):
+        from .filters import Filters
+        if isinstance(self, Filters):
+            f1 = self.getFilters()
+        else:
+            f1 = [self]
+        if isinstance(filt, Filters):
+            f2 = filt.getFilters()
+        else:
+            f2 = [filt]
+        return Filters([*f1, *f2])
+
     def saveAsFile(self, file):
         """
         Save filter as file.
