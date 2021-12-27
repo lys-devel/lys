@@ -1,18 +1,13 @@
-#!/usr/bin/env python
-from ..CanvasInterface import LineData
+import numpy as np
+
 from ..CanvasInterface import *
 from lys import *
-import weakref
-import sys
-import os
-from enum import Enum
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure, SubplotParams
 from matplotlib.contour import QuadContourSet
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import colors
 
 import matplotlib as mpl
 mpl.rc('image', cmap='gray')
@@ -24,6 +19,26 @@ class _MatplotlibLine(LineData):
 
     def _setZ(self, z):
         self.obj.set_zorder(z)
+
+
+class _MatplotlibImage(ImageData):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+
+class _MatplotlibVector(VectorData):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+
+class _MatplotlibRGB(RGBData):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+
+class _MatplotlibContour(ContourData):
+    def __init__(self, obj):
+        super().__init__(obj)
 
 
 class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
@@ -96,62 +111,34 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
                 return self.axes_txy
 
     def _append1d(self, wave, axis):
-        ax = self.__getAxes(axis)
-        line, = ax.plot(wave.x, wave.data, picker=5)
+        line, = self.__getAxes(axis).plot(wave.x, wave.data, picker=5)
         return _MatplotlibLine(line)
 
-    def calcExtent2D(self, wav, offset):
+    def __calcExtent2D(self, wav):
         xstart = wav.x[0]
         xend = wav.x[len(wav.x) - 1]
         ystart = wav.y[0]
         yend = wav.y[len(wav.y) - 1]
-        if not offset[2] == 0:
-            xstart *= offset[2]
-            xend *= offset[2]
-        if not offset[3] == 0:
-            ystart *= offset[3]
-            yend *= offset[3]
-        xstart = xstart + offset[0]
-        xend = xend + offset[0]
-        ystart = ystart + offset[1]
-        yend = yend + offset[1]
         dx = (xend - xstart) / (wav.data.shape[1] - 1)
         dy = (yend - ystart) / (wav.data.shape[0] - 1)
         return (xstart - dx / 2, xend + dx / 2, yend + dy / 2, ystart - dy / 2)
 
-    def _append2d(self, wave, offset, axis, zorder):
-        ax = self.__getAxes(axis)
-        im = ax.imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.calcExtent2D(wave, offset), picker=True)
-        im.set_zorder(zorder)
-        return im, ax
+    def _append2d(self, wave, axis):
+        im = self.__getAxes(axis).imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.__calcExtent2D(wave), picker=True)
+        return _MatplotlibImage(im)
 
-    def _append3d(self, wave, offset, axis, zorder):
-        ax = self.__getAxes(axis)
-        im = ax.imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.calcExtent2D(wave, offset), picker=True)
-        im.set_zorder(zorder)
-        return im, ax
+    def _append3d(self, wave, axis):
+        im = self.__getAxes(axis).imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.__calcExtent2D(wave), picker=True)
+        return _MatplotlibRGB(im)
 
-    def _appendContour(self, wav, offset, axis, zorder):
-        ax = self.__getAxes(axis)
-        ext = self.calcExtent2D(wav, offset)
-        obj = ax.contour(wav.data.T[::-1, :], [0.5], extent=ext, colors=['red'])
-        self._setZOrder(obj, zorder)
-        return obj, ax
+    def _appendContour(self, wav, axis):
+        obj = self.__getAxes(axis).contour(wav.data.T[::-1, :], [0.5], extent=self.__calcExtent2D(wav), colors=['red'])
+        return _MatplotlibContour(obj)
 
-    def _appendVectorField(self, wav, offset, axis, zorder):
-        ax = self.__getAxes(axis)
-        if offset[2] == 0:
-            x = wav.x + offset[0]
-        else:
-            x = wav.x * offset[2] + offset[0]
-        if offset[3] == 0:
-            y = wav.y + offset[1]
-        else:
-            y = wav.y * offset[3] + offset[1]
-        xx, yy = np.meshgrid(x, y)
-        obj = ax.quiver(xx, yy, np.real(wav.data.T), np.imag(wav.data.T), pivot="mid")
-        self._setZOrder(obj, zorder)
-        return obj, ax
+    def _appendVectorField(self, wav, axis):
+        xx, yy = np.meshgrid(wav.x, wav.y)
+        obj = self.__getAxes(axis).quiver(xx, yy, np.real(wav.data.T), np.imag(wav.data.T), pivot="mid")
+        return _MatplotlibVector(obj)
 
     def _remove(self, data):
         if isinstance(data.obj, QuadContourSet):

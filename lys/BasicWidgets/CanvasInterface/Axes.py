@@ -165,7 +165,7 @@ class CanvasAxes(CanvasPart):
                 ax = d.filteredWave.getAxis(index)
             max = np.nanmax([*ax, max])
             min = np.nanmin([*ax, min])
-        if len(self.canvas().getWaveData(dim=1)) == len(data):
+        if len(self.canvas().getLines()) == len(data):
             mergin = (max - min) / 20
         else:
             mergin = 0

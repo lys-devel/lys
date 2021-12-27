@@ -156,7 +156,7 @@ class _LineTab(QWidget):
 
     def _initlayout(self, canvas):
         layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, "line"))
+        layout.addWidget(RightClickableSelectionBox(canvas, 1, "line"))
 
         tab = QTabWidget()
         tab.addTab(ApperanceBox(canvas), 'Appearance')
@@ -174,7 +174,7 @@ class _ImageTab(QWidget):
 
     def _initlayout(self, canvas):
         layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, "image"))
+        layout.addWidget(RightClickableSelectionBox(canvas, 2, "image"))
         tab = QTabWidget()
         tab.addTab(ImageColorAdjustBox(canvas), 'Color')
         tab.addTab(OffsetAdjustBox(canvas, "image"), 'Offset')
@@ -190,7 +190,7 @@ class _RGBTab(QWidget):
 
     def _initlayout(self, canvas):
         layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, "rgb"))
+        layout.addWidget(RightClickableSelectionBox(canvas, 3, "rgb"))
         tab = QTabWidget()
         tab.addTab(RGBColorAdjustBox(canvas), 'Color')
         tab.addTab(OffsetAdjustBox(canvas, "rgb"), 'Offset')
@@ -206,7 +206,7 @@ class _VectorTab(QWidget):
 
     def _initlayout(self, canvas):
         layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, "vector"))
+        layout.addWidget(RightClickableSelectionBox(canvas, 2, "vector"))
         tab = QTabWidget()
         tab.addTab(VectorAdjustBox(canvas), 'Vector')
         tab.addTab(OffsetAdjustBox(canvas, "vector"), 'Offset')

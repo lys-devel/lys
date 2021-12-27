@@ -30,6 +30,26 @@ class _PyqtgraphLine(LineData):
         self.obj.setZValue(z)
 
 
+class _PyqtgraphImage(ImageData):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+
+class _PyqtgraphVector(VectorData):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+
+class _PyqtgraphRGB(RGBData):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+
+class _PyqtgraphContour(ContourData):
+    def __init__(self, obj):
+        super().__init__(obj)
+
+
 class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
     axisChanged = pyqtSignal(str)
     pgRangeChanged = pyqtSignal(str)
@@ -148,63 +168,35 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         self.npen += 1
         return pg.mkPen(list[self.npen % 9], width=2)
 
-    @_suppressNumpyWarnings
     def _append1d(self, wave, axis):
-        ax = self.__getAxes(axis)
         obj = pg.PlotDataItem(x=wave.x, y=wave.data, pen=self._nextPen())
-        ax.addItem(obj)
+        self.__getAxes(axis).addItem(obj)
         obj = _PyqtgraphLine(obj)
         return obj
 
-    @_suppressNumpyWarnings
-    def _append2d(self, wave, offset, axis, zorder):
-        ax = self.__getAxes(axis)
+    def _append2d(self, wave, axis):
         im = pg.ImageItem(image=wave.data)
-        shift, mag = self.calcExtent2D(wave, offset)
-        im.scale(*mag)
-        im.translate(*shift)
-        ax.addItem(im)
-        im.setZValue(zorder)
-        return im, ax
+        im.setTransform(self.__calcExtent2D(wave))
+        self.__getAxes(axis).addItem(im)
+        return _PyqtgraphImage(im)
 
-    @_suppressNumpyWarnings
-    def _append3d(self, wave, offset, axis, zorder):
-        ax = self.__getAxes(axis)
-        print(wave.data.shape)
+    def _append3d(self, wave, axis):
         im = pg.ImageItem(image=wave.data, levels=(0, 1))
-        print(im)
-        shift, mag = self.calcExtent2D(wave, offset)
-        im.scale(*mag)
-        im.translate(*shift)
-        ax.addItem(im)
-        im.setZValue(zorder)
-        return im, ax
+        im.setTransform(self.__calcExtent2D(wave))
+        self.__getAxes(axis).addItem(im)
+        return _PyqtgraphRGB(im)
 
-    @_suppressNumpyWarnings
-    def _appendContour(self, wav, offset, axis, zorder):
-        ax = self.__getAxes(axis)
-        shift, mag = self.calcExtent2D(wav, offset)
+    def _appendContour(self, wav, axis):
         obj = pg.IsocurveItem(data=wav.data, level=0.5, pen='r')
-        obj.scale(*mag)
-        obj.translate(*shift)
-        ax.addItem(obj)
-        obj.setZValue(zorder)
-        return obj, ax
+        obj.setTransform(self.__calcExtent2D(wav))
+        self.__getAxes(axis).addItem(obj)
+        return _PyqtgraphContour(obj)
 
-    def calcExtent2D(self, wav, offset):
+    def __calcExtent2D(self, wav):
         xstart = wav.x[0]
         xend = wav.x[len(wav.x) - 1]
         ystart = wav.y[0]
         yend = wav.y[len(wav.y) - 1]
-
-        xmag_orig = (xend - xstart)
-        ymag_orig = (yend - ystart)
-        if not offset[2] == 0:
-            xstart *= offset[2]
-            xend *= offset[2]
-        if not offset[3] == 0:
-            ystart *= offset[3]
-            yend *= offset[3]
 
         dx = (xend - xstart) / (len(wav.x) - 1)
         dy = (yend - ystart) / (len(wav.y) - 1)
@@ -218,7 +210,10 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         ymag = (yend - ystart) / len(wav.y)
         xshift = xstart
         yshift = ystart
-        return ((xshift + offset[0]) / xmag, (yshift + offset[1]) / ymag), (xmag, ymag)
+        tr = QTransform()
+        tr.scale(xmag, ymag)
+        tr.translate(xshift / xmag, yshift / ymag)
+        return tr
 
     def _remove(self, data):
         ax = self.__getAxes(data.axis)

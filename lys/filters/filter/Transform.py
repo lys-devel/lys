@@ -179,8 +179,16 @@ class OffsetFilter(FilterInterface):
             xdata = xdata + self._offset[0]
             ydata = ydata + self._offset[1]
             return DaskWave(ydata, xdata, **wave.note)
-        else:
-            pass
+        elif wave.data.ndim == 2 or wave.data.ndim == 3:
+            xdata = np.array(wave.getAxis(0))
+            ydata = np.array(wave.getAxis(1))
+            if not self._offset[2] == 0.0:
+                xdata = xdata * self._offset[2]
+            if not self._offset[3] == 0.0:
+                ydata = ydata * self._offset[3]
+            xdata = xdata + self._offset[0]
+            ydata = ydata + self._offset[1]
+            return DaskWave(wave.data, xdata, ydata, **wave.note)
 
     def getParameters(self):
         return {"offset": self._offset}

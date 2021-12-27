@@ -2,7 +2,7 @@ import os
 import io
 from matplotlib.colors import hsv_to_rgb
 from .SaveCanvas import *
-from .WaveData import WaveData
+from .WaveData import LineData, ImageData, RGBData, VectorData, ContourData
 from lys import *
 from lys import load, Wave, filters
 import _pickle as cPickle
@@ -27,7 +27,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         for d in self._Datalist:
             if wave == d.wave:
                 self.Remove(d.id)
-                self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, contour=d.contour, filter=d.filter, vector=d.vector)
+                self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, contour=isinstance(d, ContourData), filter=d.filter, vector=isinstance(d, VectorData))
         self.loadAppearance()
 
     @saveCanvas
@@ -47,52 +47,23 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     @saveCanvas
     def _Append(self, w, axis, id, appearance, offset, contour=False, filter=None, vector=False):
-        if filter is None:
-            filt = filters.Filters([filters.OffsetFilter(offset)])
-        else:
-            filt = filter + filters.OffsetFilter(offset)
-        wav = filt.execute(w)
+        func = {"line": self._append1d, "vector": self._appendVectorField, "image": self._append2d, "contour": self._appendContour}
+        func["rgb"] = lambda w, ax: self._append3d(self._makeRGBData(w, appearance), ax)
+        id_def = {"line": 2000, "vector": 5500, "image": 5000, "contour": 4000, "rgb": 6000}
+
         type = self._checkType(w, contour, vector)
-        f = self._getAppendFunc(type)
-        if f is None:
-            print("[Graph] Can't append this data. shape = ", w.data.shape)
-            return
-        ids, obj = f(wav, axis, id, appearance, offset, filter=filter, original=w)
-        id_pos = ids + self._getDefaultId(type)
+        filtered = self._filteredWave(w, offset, filter)
+        ids = -id_def[type] + len(self.getWaveData(type))
+        obj = func[type](filtered, axis)
+        # obj.setZ(ids)
+        obj.setMetaData(w, axis, ids, appearance=appearance, offset=offset, zindex=ids, filter=filter, filteredWave=filtered)
+        id_pos = ids + id_def[type]
         self._Datalist.insert(id_pos, obj)
         w.modified.connect(self.OnWaveModified)
         self.dataChanged.emit()
         if appearance is not None:
             self.loadAppearance()
         return ids
-
-    def _makeRGBData(self, wav, appearance):
-        if wav.data.ndim == 2:
-            wav = wav.duplicate()
-            if 'Range' in appearance:
-                rmin, rmax = appearance['Range']
-            else:
-                rmin, rmax = 0, np.max(np.abs(wav.data))
-            wav.data = self._Complex2HSV(wav.data, rmin, rmax, appearance.get('ColorRotation', 0))
-        elif wav.data.ndim == 3:
-            wav = wav.duplicate()
-            if 'Range' in appearance:
-                rmin, rmax = appearance['Range']
-                amp = np.where(wav.data < rmin, rmin, wav.data)
-                amp = np.where(amp > rmax, rmax, amp)
-                wav.data = (amp - rmin) / (rmax - rmin)
-        return wav
-
-    def _Complex2HSV(self, z, rmin, rmax, hue_start=0):
-        amp = np.abs(z)
-        amp = np.where(amp < rmin, rmin, amp)
-        amp = np.where(amp > rmax, rmax, amp)
-        ph = np.angle(z, deg=1) + hue_start
-        h = (ph % 360) / 360
-        s = np.ones_like(h)
-        v = (amp - rmin) / (rmax - rmin)
-        rgb = hsv_to_rgb(np.dstack((h, s, v)))
-        return rgb
 
     def _checkType(self, wav, contour, vector):
         if wav.data.ndim == 1:
@@ -111,81 +82,41 @@ class CanvasBaseBase(DrawableCanvasBase):
         elif wav.data.ndim == 3:
             if wav.data.shape[2] in [3, 4]:
                 return "rgb"
-        return "undefined"
+        raise RuntimeError("[Graph] Can't append this data. shape = " + str(wav.data.shape))
 
-    def _getDefaultId(self, type):
-        if type == "line":
-            return 2000
-        if type == "vector":
-            return 5500
-        if type == "contour":
-            return 4000
-        if type == "image":
-            return 5000
-        if type == "rgb":
-            return 6000
-
-    def _getAppendFunc(self, type):
-        if type == "line":
-            return self._Append1D
-        if type == "vector":
-            return self._AppendVectorField
-        if type == "contour":
-            return self._AppendContour
-        if type == "image":
-            return self._Append2D
-        if type == "rgb":
-            return self._Append3D
-
-    def _Append1D(self, wav, axis, ID, appearance, offset, filter, original):
-        if ID is None:
-            id = -2000 + len(self.getLines())
+    def _filteredWave(self, w, offset, filter):
+        if filter is None:
+            filt = filters.Filters([filters.OffsetFilter(offset)])
         else:
-            id = ID
-        obj = self._append1d(wav, axis)
-        obj.setMetaData(original, axis, id, appearance=appearance, offset=offset, zindex=id, contour=False, filter=filter, vector=False, filteredWave=wav)
-        return id, obj
+            filt = filter + filters.OffsetFilter(offset)
+        return filt.execute(w)
 
-    def _Append2D(self, wav, axis, ID, appearance, offset, filter, original):
-        if ID is None:
-            id = -5000 + len(self.getImages())
-        else:
-            id = ID
-        im, ax = self._append2d(wav, offset, axis, id)
-        obj = WaveData(im)
-        obj.setMetaData(original, axis, id, appearance=appearance, offset=offset, zindex=id, contour=False, filter=filter, vector=False, filteredWave=wav)
-        return id, obj
+    def _makeRGBData(self, wav, appearance):
+        wav = wav.duplicate()
+        if wav.data.ndim == 2:
+            if 'Range' in appearance:
+                rmin, rmax = appearance['Range']
+            else:
+                rmin, rmax = 0, np.max(np.abs(wav.data))
+            wav.data = self._Complex2HSV(wav.data, rmin, rmax, appearance.get('ColorRotation', 0))
+        elif wav.data.ndim == 3:
+            if 'Range' in appearance:
+                rmin, rmax = appearance['Range']
+                amp = np.where(wav.data < rmin, rmin, wav.data)
+                amp = np.where(amp > rmax, rmax, amp)
+                wav.data = (amp - rmin) / (rmax - rmin)
+        return wav
 
-    def _Append3D(self, wav, axis, ID, appearance, offset, filter, original):
-        if ID is None:
-            id = -6000 + len(self.getRGBs())
-        else:
-            id = ID
-        wav = self._makeRGBData(wav, appearance)
-        im, ax = self._append3d(wav, offset, axis, id)
-        obj = WaveData(im)
-        obj.setMetaData(original, axis, id, appearance=appearance, offset=offset, zindex=id, contour=False, filter=filter, vector=False, filteredWave=wav)
-        return id, obj
-
-    def _AppendContour(self, wav, axis, ID, appearance, offset, filter, original):
-        if ID is None:
-            id = -4000 + len(self.getContours())
-        else:
-            id = ID
-        im, ax = self._appendContour(wav, offset, axis, id)
-        obj = WaveData(im)
-        obj.setMetaData(original, axis, id, appearance=appearance, offset=offset, zindex=id, contour=False, filter=filter, vector=False, filteredWave=wav)
-        return id, obj
-
-    def _AppendVectorField(self, wav, axis, ID, appearance, offset, filter, original):
-        if ID is None:
-            id = -5500 + len(self.getVectorFields())
-        else:
-            id = ID
-        im, ax = self._appendVectorField(wav, offset, axis, id)
-        obj = WaveData(im)
-        obj.setMetaData(original, axis, id, appearance=appearance, offset=offset, zindex=id, contour=False, filter=filter, vector=False, filteredWave=wav)
-        return id, obj, ax
+    def _Complex2HSV(self, z, rmin, rmax, hue_start=0):
+        amp = np.abs(z)
+        amp = np.where(amp < rmin, rmin, amp)
+        amp = np.where(amp > rmax, rmax, amp)
+        ph = np.angle(z, deg=1) + hue_start
+        h = (ph % 360) / 360
+        s = np.ones_like(h)
+        v = (amp - rmin) / (rmax - rmin)
+        rgb = hsv_to_rgb(np.dstack((h, s, v)))
+        return rgb
 
     @saveCanvas
     def Remove(self, indexes):
@@ -201,59 +132,38 @@ class CanvasBaseBase(DrawableCanvasBase):
                     d.wave.modified.disconnect(self.OnWaveModified)
         self.dataChanged.emit()
 
-    @saveCanvas
+    @ saveCanvas
     def Clear(self):
         self.Remove([d.id for d in self._Datalist])
 
-    def getWaveData(self, dim=None, contour=False, vector=False):
-        if type(dim) == str:
-            return self._getWaveDataFromType(dim)
-        if dim is None:
+    def getWaveData(self, type="all"):
+        if type == "all":
             return self._Datalist
-        res = []
-        for d in self._Datalist:
-            if d.wave.data.ndim == 1 and dim == 1:
-                res.append(d)
-            if d.wave.data.ndim == 2:
-                if dim == 2:
-                    if d.wave.data.dtype == complex:
-                        if vector and d.vector:
-                            res.append(d)
-                    else:
-                        if contour == d.contour and vector == d.vector:
-                            res.append(d)
-                if dim == 3 and d.wave.data.dtype == complex and not d.vector:
-                    res.append(d)
-            if d.wave.data.ndim == 3 and dim == 3:
-                res.append(d)
-        return res
-
-    def _getWaveDataFromType(self, type):
-        if type == "line":
-            return self.getLines()
-        if type == "image":
-            return self.getImages()
-        if type == "vector":
-            return self.getVectorFields()
+        elif type == "line":
+            return [data for data in self._Datalist if isinstance(data, LineData)]
+        elif type == "image":
+            return [data for data in self._Datalist if isinstance(data, ImageData)]
         if type == "rgb":
-            return self.getRGBs()
+            return [data for data in self._Datalist if isinstance(data, RGBData)]
+        if type == "vector":
+            return [data for data in self._Datalist if isinstance(data, VectorData)]
         if type == "contour":
-            return self.getContours()
+            return [data for data in self._Datalist if isinstance(data, ContourData)]
 
     def getLines(self):
-        return self.getWaveData(1)
+        return self.getWaveData("line")
 
     def getImages(self):
-        return self.getWaveData(2)
+        return self.getWaveData("image")
 
     def getContours(self):
-        return self.getWaveData(2, contour=True)
+        return self.getWaveData("contour")
 
     def getRGBs(self):
-        return self.getWaveData(3)
+        return self.getWaveData("rgb")
 
     def getVectorFields(self):
-        return self.getWaveData(2, vector=True)
+        return self.getWaveData("vector")
 
     def getDataFromIndexes(self, dim, indexes):
         res = []
@@ -262,7 +172,7 @@ class CanvasBaseBase(DrawableCanvasBase):
         else:
             list = [indexes]
         for i in list:
-            for d in self.getWaveData(dim):
+            for d in self.getWaveData():
                 if d.id == i:
                     res.append(d)
         return res
@@ -280,8 +190,8 @@ class CanvasBaseBase(DrawableCanvasBase):
             dic[i]['Axis'] = data.axis
             dic[i]['Appearance'] = str(data.appearance)
             dic[i]['Offset'] = str(data.offset)
-            dic[i]['Contour'] = data.contour
-            dic[i]['Vector'] = data.vector
+            dic[i]['Contour'] = isinstance(data, ContourData)
+            dic[i]['Vector'] = isinstance(data, VectorData)
             if data.filter is None:
                 dic[i]['Filter'] = None
             else:
@@ -316,14 +226,8 @@ class CanvasBaseBase(DrawableCanvasBase):
                     offset = eval(dic[i]['Offset'])
                 else:
                     offset = (0, 0, 0, 0)
-                if 'Contour' in dic[i]:
-                    contour = dic[i]['Contour']
-                else:
-                    contour = False
-                if 'Vector' in dic[i]:
-                    vector = dic[i]['Vector']
-                else:
-                    vector = False
+                contour = dic[i].get('Contour', False)
+                vector = dic[i].get('Vector', False)
                 if 'Filter' in dic[i]:
                     str = dic[i]['Filter']
                     if str is None:
@@ -340,16 +244,19 @@ class CanvasBaseBase(DrawableCanvasBase):
     def _remove(self, data):
         raise NotImplementedError()
 
-    def _append1d(self, xdata, ydata, axis, zorder):
+    def _append1d(self, wave, axis):
         raise NotImplementedError()
 
-    def _append2d(self, wave, offset, axis, zorder):
+    def _append2d(self, wave, axis):
         raise NotImplementedError()
 
-    def _appendContour(self, wave, offset, axis, zorder):
+    def _append3d(self, wave, axis):
         raise NotImplementedError()
 
-    def _appendVectorField(self, wav, offset, axis, zorder):
+    def _appendContour(self, wave, axis):
+        raise NotImplementedError()
+
+    def _appendVectorField(self, wav, axis):
         raise NotImplementedError()
 
     def _setZOrder(self, obj, z):
@@ -406,7 +313,7 @@ class DataSelectableCanvasBase(CanvasBaseBase):
                 n2 += 1
             self._setZOrder(d.obj, d.id)
 
-    @saveCanvas
+    @ saveCanvas
     def moveItem(self, list, target=None):
         tar = eval(str(target))
         for l in list:
@@ -435,13 +342,13 @@ class DataHidableCanvasBase(DataSelectableCanvasBase):
             if 'Visible' in d.appearance:
                 self._setVisible(d.obj, d.appearance['Visible'])
 
-    @saveCanvas
+    @ saveCanvas
     def hideData(self, dim, indexes):
         dat = self.getDataFromIndexes(dim, indexes)
         for d in dat:
             self._setVisible(d.obj, False)
 
-    @saveCanvas
+    @ saveCanvas
     def showData(self, dim, indexes):
         dat = self.getDataFromIndexes(dim, indexes)
         for d in dat:
@@ -455,7 +362,7 @@ class DataHidableCanvasBase(DataSelectableCanvasBase):
 
 
 class OffsetAdjustableCanvasBase(DataHidableCanvasBase):
-    @saveCanvas
+    @ saveCanvas
     def setOffset(self, offset, indexes):
         data = self.getDataFromIndexes(None, indexes)
         for d in data:

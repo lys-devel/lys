@@ -53,12 +53,11 @@ class DataSelectionBox(QTreeView):
                 self.canvas.moveItem(f, self.item(self.itemFromIndex(parent).row(), 2).text())
             return False
 
-    def __init__(self, canvas, dim, contour=False, vector=False):
+    def __init__(self, canvas, dim, type):
         super().__init__()
         self.canvas = canvas
         self.__dim = dim
-        self._contour = contour
-        self._vector = vector
+        self.__type = type
         self.__initlayout()
         self.flg = False
         self._loadstate()
@@ -75,7 +74,7 @@ class DataSelectionBox(QTreeView):
 
     def OnDataSelected(self):
         indexes = self.canvas.getSelectedIndexes(self.__dim)
-        list = self.canvas.getWaveData(self.__dim)
+        list = self.canvas.getWaveData(self.__type)
         selm = self.selectionModel()
         for i in range(len(list)):
             index0 = self.__model.index(len(list) - i - 1, 0)
@@ -93,7 +92,7 @@ class DataSelectionBox(QTreeView):
 
     def _loadstate(self):
         self.flg = True
-        list = self.canvas.getWaveData(self.__dim, contour=self._contour, vector=self._vector)
+        list = self.canvas.getWaveData(self.__type)
         self.__model.clear()
         i = 1
         for l in list:
@@ -143,8 +142,8 @@ class DataShowButton(QPushButton):
 
 
 class RightClickableSelectionBox(DataSelectionBox):
-    def __init__(self, canvas, dim, *args, **kwargs):
-        super().__init__(canvas, dim, *args, **kwargs)
+    def __init__(self, canvas, dim, type, *args, **kwargs):
+        super().__init__(canvas, dim, type, *args, **kwargs)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.canvas = canvas
