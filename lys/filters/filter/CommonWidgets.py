@@ -156,10 +156,11 @@ class AxesSelectionDialog(QDialog):
 class RegionSelectWidget(QGridLayout):
     loadClicked = pyqtSignal(object)
 
-    def __init__(self, parent, dim, loader=None):
+    def __init__(self, parent, dim, loader=None, check=False):
         super().__init__()
         self.dim = dim
         self.loader = loader
+        self._check = check
         self.__initLayout(dim, loader)
 
     def __initLayout(self, dim, loader):
@@ -175,8 +176,14 @@ class RegionSelectWidget(QGridLayout):
         self.start = [ScientificSpinBox() for d in range(dim)]
         self.end = [ScientificSpinBox() for d in range(dim)]
         i = 1
+        self._checkWidgets = []
         for s, e in zip(self.start, self.end):
-            self.addWidget(QLabel("Axis" + str(i)), 0, i)
+            if self._check:
+                check = QCheckBox("Axis" + str(i))
+            else:
+                check = QLabel("Axis" + str(i))
+            self._checkWidgets.append(check)
+            self.addWidget(check, 0, i)
             self.addWidget(s, 1, i)
             self.addWidget(e, 2, i)
             i += 1
@@ -207,3 +214,10 @@ class RegionSelectWidget(QGridLayout):
 
     def getRegion(self):
         return [[s.value(), e.value()] for s, e in zip(self.start, self.end)]
+
+    def setChecked(self, checked):
+        for wid, c in zip(self._checkWidgets, checked):
+            wid.setChecked(c)
+
+    def getChecked(self):
+        return [s.isChecked() for s in self._checkWidgets]

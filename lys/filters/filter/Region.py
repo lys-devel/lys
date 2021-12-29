@@ -12,19 +12,23 @@ from .CommonWidgets import RegionSelectWidget, QComboBox, QHBoxLayout, QVBoxLayo
 
 class NormalizeFilter(FilterInterface):
     """
-    Normalize data specified by *range* along *axis*.
+    Normalize data specified by *range*.
 
-    When *axis* = 1 and data.ndim=2, range should be [(x1, x2), None].
-    The result is as follow.
-    data[0] = data[:,0]/data[x1:x2, 0].mean(), data[1]=data[:,1]/data[x1:x2, 1].mean(), ...
+    Data is integrated along the axes specified by *axis* and then used for normalization.
+
+    If *axis* is (1,2) For 4-dimensional data I(x,y,z,t), then I_norm(x,y,z,t) = I(x,y,z,t)/N(x,t) is calculated where N(x,t) = I_sliced.mean(axis=1).mean(axis=2).
+    I_sliced is determined by *range* parameter. 
+    For example, when *range*= [None, (0,1), (2,3), None], I_sliced = Int_0^1 Int_1^2 dydz I(x,y,z,t).
 
     Args: 
         range(sqeuence of length-2 float or None): see description above.
-        axis(int): axis along which normalization is applied.
+        axis(tuple of int): axes along which the wave is integrated.
     """
 
     def __init__(self, range, axis):
         self._range = range
+        if isinstance(axis, int):
+            self._axis = [axis]
         self._axis = axis
 
     def _makeSlice(self, wave):
@@ -40,19 +44,16 @@ class NormalizeFilter(FilterInterface):
         return tuple(sl)
 
     def _execute(self, wave, **kwargs):
-        axes = list(range(wave.data.ndim))
-        if self._axis == -1:
-            data = wave.data / wave.data[self._makeSlice(wave)].mean()
-        else:
-            letters = ["a", "b", "c", "d", "e", "f",
-                       "g", "h", "i", "j", "k", "l", "m", "n"]
-            axes.remove(self._axis)
-            nor = 1 / wave.data[self._makeSlice(wave)].mean(axis=axes)
-            subscripts = ""
-            for i in range(wave.data.ndim):
-                subscripts += letters[i]
-            subscripts = subscripts + "," + letters[self._axis] + "->" + subscripts
-            data = da.einsum(subscripts, wave.data, nor)
+        letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n"]
+        nor = 1 / wave.data[self._makeSlice(wave)].mean(axis=self._axis)
+        subscripts = ""
+        intaxes = ""
+        for i in range(wave.data.ndim):
+            subscripts += letters[i]
+            if i not in self._axis:
+                intaxes += letters[i]
+        subscripts = subscripts + "," + intaxes + "->" + subscripts
+        data = da.einsum(subscripts, wave.data, nor)
         return DaskWave(data, *wave.axes, **wave.note)
 
     def getParameters(self):
@@ -225,28 +226,23 @@ def _fit_image_(tar, ref, region=None, order=3):
 class _NormalizeSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)
-        self.range = RegionSelectWidget(self, dim)
-        self.combo = QComboBox()
-        self.combo.addItem("Whole")
-        for d in range(dim):
-            self.combo.addItem("Axis" + str(d + 1))
-
-        vbox = QHBoxLayout()
-        vbox.addWidget(QLabel("Normalization direction"))
-        vbox.addWidget(self.combo)
-
-        hbox = QVBoxLayout()
-        hbox.addLayout(vbox)
-        hbox.addLayout(self.range)
-        self.setLayout(hbox)
+        self._dim = dim
+        self.range = RegionSelectWidget(self, dim, check=True)
+        self.setLayout(self.range)
 
     def getParameters(self):
-        return {"range": self.range.getRegion(), "axis": self.combo.currentIndex() - 1}
+        axes = [i for i, c in enumerate(self.range.getChecked()) if c]
+        return {"range": self.range.getRegion(), "axis": axes}
 
     def setParameters(self, range, axis):
-        self.combo.setCurrentIndex(axis + 1)
         for i, r in enumerate(range):
             self.range.setRegion(i, r)
+        check = [False] * self._dim
+        if isinstance(axis, int):
+            axis = [axis]
+        for ax in axis:
+            check[ax] = True
+        self.range.setChecked(check)
 
 
 @filterGUI(ReferenceNormalizeFilter)
