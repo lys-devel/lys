@@ -6,27 +6,7 @@ import pyqtgraph as pg
 
 from lys import *
 from ..CanvasInterface import *
-from .WaveData import _PyqtgraphLine
-
-
-class _PyqtgraphImage(ImageData):
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
-
-
-class _PyqtgraphVector(VectorData):
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
-
-
-class _PyqtgraphRGB(RGBData):
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
-
-
-class _PyqtgraphContour(ContourData):
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
+from .WaveData import _PyqtgraphLine, _PyqtgraphImage, _PyqtgraphRGB, _PyqtgraphContour
 
 
 class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):

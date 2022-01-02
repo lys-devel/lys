@@ -16,6 +16,7 @@ Interface to data displayed in the canvas
    :maxdepth: 4
 
    graph/Line
+   graph/Image
 
 Submodules
 ------------------------------------------------------
@@ -52,14 +53,6 @@ lys.BasicWidgets.CanvasInterface.CrosshairAnnotation module
    :undoc-members:
    :show-inheritance:
 
-lys.BasicWidgets.CanvasInterface.ImageSettings module
------------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.ImageSettings
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 lys.BasicWidgets.CanvasInterface.LineAnnotation module
 ------------------------------------------------------
 
@@ -68,14 +61,6 @@ lys.BasicWidgets.CanvasInterface.LineAnnotation module
    :undoc-members:
    :show-inheritance:
 
-
-lys.BasicWidgets.CanvasInterface.RGBSettings module
----------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.RGBSettings
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 lys.BasicWidgets.CanvasInterface.RectAnnotation module
 ------------------------------------------------------

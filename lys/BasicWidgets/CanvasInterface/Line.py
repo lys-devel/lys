@@ -1,6 +1,7 @@
 import warnings
 from lys.errors import NotImplementedWarning
 
+from .SaveCanvas import saveCanvas
 from .WaveData import WaveData
 
 
@@ -39,6 +40,7 @@ class LineData(WaveData):
     def __getAppearance(self, key, default=None):
         return self.appearance.get(key, default)
 
+    @saveCanvas
     def setColor(self, color):
         """
         Set color of the line.
@@ -48,7 +50,6 @@ class LineData(WaveData):
         """
         self._setColor(color)
         self.__setAppearance('LineColor', color)
-        self.modified.emit(self)
 
     def getColor(self):
         """
@@ -59,6 +60,7 @@ class LineData(WaveData):
         """
         return self.__getAppearance('LineColor')
 
+    @saveCanvas
     def setStyle(self, style):
         """
         Set the style of the line.
@@ -68,7 +70,6 @@ class LineData(WaveData):
         """
         self._setStyle(style)
         self.__setAppearance('LineStyle', style)
-        self.modified.emit(self)
 
     def getStyle(self):
         """
@@ -79,6 +80,7 @@ class LineData(WaveData):
         """
         return self.__getAppearance('LineStyle')
 
+    @saveCanvas
     def setWidth(self, width):
         """
         Set the width of the line.
@@ -88,7 +90,6 @@ class LineData(WaveData):
         """
         self._setWidth(width)
         self.__setAppearance('LineWidth', width)
-        self.modified.emit(self)
 
     def getWidth(self):
         """
@@ -99,6 +100,7 @@ class LineData(WaveData):
         """
         return self.__getAppearance('LineWidth')
 
+    @saveCanvas
     def setMarker(self, marker):
         """
         Set the marker shape.
@@ -108,7 +110,6 @@ class LineData(WaveData):
         """
         self._setMarker(marker)
         self.__setAppearance('Marker', marker)
-        self.modified.emit(self)
 
     def getMarker(self):
         """
@@ -119,6 +120,7 @@ class LineData(WaveData):
         """
         return self.__getAppearance('Marker')
 
+    @saveCanvas
     def setMarkerSize(self, size):
         """
         Set the size of the marker.
@@ -128,7 +130,6 @@ class LineData(WaveData):
         """
         self._setMarkerSize(size)
         self.__setAppearance('MarkerSize', size)
-        self.modified.emit(self)
 
     def getMarkerSize(self):
         """
@@ -139,6 +140,7 @@ class LineData(WaveData):
         """
         return self.__getAppearance('MarkerSize')
 
+    @saveCanvas
     def setMarkerThick(self, thick):
         """
         Set the thickness of the marker edge.
@@ -148,7 +150,6 @@ class LineData(WaveData):
         """
         self._setMarkerThick(thick)
         self.__setAppearance('MarkerThick', thick)
-        self.modified.emit(self)
 
     def getMarkerThick(self):
         """
@@ -159,6 +160,7 @@ class LineData(WaveData):
         """
         return self.__getAppearance('MarkerThick')
 
+    @saveCanvas
     def setMarkerFilling(self, type):
         """
         Set the filling of the marker.
@@ -169,7 +171,6 @@ class LineData(WaveData):
 
         self._setMarkerFilling(type)
         self.__setAppearance('MarkerFilling', type)
-        self.modified.emit(self)
 
     def getMarkerFilling(self):
         """

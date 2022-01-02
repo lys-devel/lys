@@ -56,10 +56,6 @@ class WaveData(CanvasPart):
         pass
 
 
-class ImageData(WaveData):
-    pass
-
-
 class RGBData(WaveData):
     pass
 

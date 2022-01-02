@@ -1,2 +1,0 @@
-class RGBColorAdjustableCanvasBase(object):
-    pass

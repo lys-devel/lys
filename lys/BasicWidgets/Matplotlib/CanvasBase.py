@@ -11,29 +11,9 @@ from PyQt5.QtWidgets import *
 
 import matplotlib as mpl
 
-from .WaveData import _MatplotlibLine
+from .WaveData import _MatplotlibLine, _MatplotlibImage, _MatplotlibVector, _MatplotlibRGB, _MatplotlibContour
 
 mpl.rc('image', cmap='gray')
-
-
-class _MatplotlibImage(ImageData):
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
-
-
-class _MatplotlibVector(VectorData):
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
-
-
-class _MatplotlibRGB(RGBData):
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
-
-
-class _MatplotlibContour(ContourData):
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
 
 
 class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):

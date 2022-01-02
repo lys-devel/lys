@@ -1,11 +1,12 @@
 
-
-from matplotlib import lines
-from ..CanvasInterface import LineData
+import copy
+from matplotlib import lines, cm, colors
+from ..CanvasInterface import LineData, ImageData, RGBData, VectorData, ContourData
 
 
 class _MatplotlibLine(LineData):
     """Implementation of LineData for matplotlib"""
+
     def __init__(self, canvas, obj):
         self._obj = obj
         super().__init__(canvas, obj)
@@ -34,3 +35,56 @@ class _MatplotlibLine(LineData):
 
     def _setZ(self, z):
         self._obj.set_zorder(z)
+
+
+class _MatplotlibImage(ImageData):
+    """Implementation of LineData for matplotlib"""
+
+    def __init__(self, canvas, obj):
+        self._obj = obj
+        super().__init__(canvas, obj)
+
+    def _setColormap(self, cmap):
+        colormap = copy.deepcopy(cm.get_cmap(cmap))
+        if hasattr(colormap, "set_gamma"):
+            colormap.set_gamma(self.getGamma())
+        self._obj.set_cmap(colormap)
+
+    def _setGamma(self, gam):
+        colormap = cm.get_cmap(self.getColormap())
+        if hasattr(colormap, "set_gamma"):
+            colormap.set_gamma(gam)
+        self._obj.set_cmap(colormap)
+
+    def _setColorRange(self, min, max):
+        if self.isLog:
+            norm = colors.LogNorm(vmin=min, vmax=max)
+        else:
+            norm = colors.Normalize(vmin=min, vmax=max)
+        self._obj.set_norm(norm)
+
+    def _setLog(self, log):
+        min, max = self.getColorRange()
+        if log:
+            norm = colors.LogNorm(vmin=min, vmax=max)
+        else:
+            norm = colors.Normalize(vmin=min, vmax=max)
+        self._obj.set_norm(norm)
+
+    def _setOpacity(self, value):
+        self._obj.set_alpha(value)
+
+
+class _MatplotlibVector(VectorData):
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
+
+
+class _MatplotlibRGB(RGBData):
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
+
+
+class _MatplotlibContour(ContourData):
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)

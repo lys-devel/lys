@@ -1,10 +1,13 @@
+import copy
 import warnings
+import numpy as np
+from matplotlib import cm
 import pyqtgraph as pg
 
 from LysQt.QtCore import Qt
 from LysQt.QtGui import QColor
 from lys.errors import NotSupportedWarning
-from ..CanvasInterface import LineData
+from ..CanvasInterface import LineData, ImageData, RGBData, VectorData, ContourData
 
 
 class _PyqtgraphLine(LineData):
@@ -83,3 +86,58 @@ class _PyqtgraphLine(LineData):
 
     def _setZ(self, z):
         self._obj.setZValue(z)
+
+
+class _PyqtgraphImage(ImageData):
+    """Implementation of LineData for pyqtgraph"""
+
+    def __init__(self, canvas, obj):
+        self._obj = obj
+        super().__init__(canvas, obj)
+
+    def _setColormap(self, cmap):
+        lut = self.__getColorLut(cmap, self.getGamma())
+        self.__setColor(lut, self.getColorRange(), self.isLog())
+
+    def _setGamma(self, gam):
+        lut = self.__getColorLut(self.getColormap(), gam)
+        self.__setColor(lut, self.getColorRange(), self.isLog())
+
+    def _setColorRange(self, min, max):
+        lut = self.__getColorLut(self.getColormap(), self.getGamma())
+        self.__setColor(lut, (min, max), self.isLog())
+
+    def _setLog(self, log):
+        lut = self.__getColorLut(self.getColormap(), self.getGamma())
+        self.__setColor(lut, self.getColorRange(), log)
+
+    def __getColorLut(self, cmap, gamma):
+        colormap = copy.deepcopy(cm.get_cmap(cmap))
+        if hasattr(colormap, "set_gamma"):
+            colormap.set_gamma(gamma)
+        lut = np.array(colormap._lut * 255)
+        return lut[0:lut.shape[0] - 3, :]
+
+    def __setColor(self, lut, levels, log):
+        if log:
+            self._obj.setImage(np.log(self.filteredWave.data), lut=lut, levels=tuple(np.log(levels)))
+        else:
+            self._obj.setImage(self.filteredWave.data, lut=lut, levels=levels)
+
+    def _setOpacity(self, opacity):
+        self._obj.setOpacity(opacity)
+
+
+class _PyqtgraphVector(VectorData):
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
+
+
+class _PyqtgraphRGB(RGBData):
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
+
+
+class _PyqtgraphContour(ContourData):
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)

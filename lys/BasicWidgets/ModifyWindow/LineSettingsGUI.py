@@ -1,9 +1,9 @@
 from matplotlib.lines import Line2D
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from .ColorWidgets import *
+from LysQt.QtCore import pyqtSignal
+from LysQt.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QPushButton, QGroupBox, QComboBox, QLabel, QDoubleSpinBox, QGridLayout, QWidget
+
+from .ColorWidgets import ColormapSelection, ColorSelection
 
 
 class LineColorSideBySideDialog(QDialog):
@@ -13,16 +13,16 @@ class LineColorSideBySideDialog(QDialog):
         self.__initlayout()
 
     def __initlayout(self):
-        l = QVBoxLayout()
-        ok = QPushButton('O K', clicked=self.accept)
-        cancel = QPushButton('CANCEL', clicked=self.reject)
         h = QHBoxLayout()
-        h.addWidget(ok)
-        h.addWidget(cancel)
+        h.addWidget(QPushButton('O K', clicked=self.accept))
+        h.addWidget(QPushButton('CANCEL', clicked=self.reject))
+
         self.csel = ColormapSelection()
-        l.addWidget(self.csel)
-        l.addLayout(h)
-        self.setLayout(l)
+
+        lay = QVBoxLayout()
+        lay.addWidget(self.csel)
+        lay.addLayout(h)
+        self.setLayout(lay)
 
     def getColor(self):
         return self.csel.currentColor()

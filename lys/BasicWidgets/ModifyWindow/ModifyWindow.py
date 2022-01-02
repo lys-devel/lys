@@ -155,22 +155,18 @@ class _LineTab(QWidget):
         self._initlayout(canvas)
 
     def _initlayout(self, canvas):
+        app = AppearanceBox(canvas)
         sel = RightClickableSelectionBox(canvas, 1, "line")
-        sel.selected.connect(self._onSelected)
-
-        self._app = AppearanceBox(canvas)
+        sel.selected.connect(app.setLines)
 
         tab = QTabWidget()
-        tab.addTab(self._app, 'Appearance')
+        tab.addTab(app, 'Appearance')
         tab.addTab(OffsetAdjustBox(canvas, "line"), 'Offset')
 
         layout = QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
-
-    def _onSelected(self, lines):
-        self._app.setLines(lines)
 
 
 class _ImageTab(QWidget):
@@ -180,11 +176,16 @@ class _ImageTab(QWidget):
         self._initlayout(canvas)
 
     def _initlayout(self, canvas):
-        layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, 2, "image"))
+        im = ImageColorAdjustBox(canvas)
+        sel = RightClickableSelectionBox(canvas, 2, "image")
+        sel.selected.connect(im.setImages)
+
         tab = QTabWidget()
-        tab.addTab(ImageColorAdjustBox(canvas), 'Color')
+        tab.addTab(im, 'Color')
         tab.addTab(OffsetAdjustBox(canvas, "image"), 'Offset')
+
+        layout = QVBoxLayout()
+        layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
 

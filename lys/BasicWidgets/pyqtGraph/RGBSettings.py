@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 import numpy as np
 
-from .ImageSettings import *
-
+from .CanvasBase import *
 from .CanvasBase import saveCanvas
 
 
-class RGBColorAdjustableCanvas(ImageSettingCanvas):
+class RGBColorAdjustableCanvas(FigureCanvasBase):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
 
@@ -23,6 +22,8 @@ class RGBColorAdjustableCanvas(ImageSettingCanvas):
         if e.key() == Qt.Key_A:
             ids = [i.id for i in self.getRGBs()]
             self.autoColorRange(ids)
+            for i in self.getImages():
+                i.setColorRange()
 
     def getColorRange(self, indexes):
         res = super().getColorRange(indexes)
