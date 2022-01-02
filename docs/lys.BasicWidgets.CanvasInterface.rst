@@ -1,6 +1,8 @@
 CanvasInterface package
 ========================================
 
+Components of canvas
+------------------------------------------------------
 .. toctree::
    :maxdepth: 4
 
@@ -8,8 +10,15 @@ CanvasInterface package
    graph/Axes
    graph/AxisLabels
 
+Interface to data displayed in the canvas
+------------------------------------------------------
+.. toctree::
+   :maxdepth: 4
+
+   graph/Line
+
 Submodules
-----------
+------------------------------------------------------
 
 lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module
 ------------------------------------------------------
@@ -55,14 +64,6 @@ lys.BasicWidgets.CanvasInterface.LineAnnotation module
 ------------------------------------------------------
 
 .. automodule:: lys.BasicWidgets.CanvasInterface.LineAnnotation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.BasicWidgets.CanvasInterface.LineSettings module
-----------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.LineSettings
    :members:
    :undoc-members:
    :show-inheritance:

@@ -8,6 +8,7 @@ from ..CanvasInterface import LineData
 
 
 class _PyqtgraphLine(LineData):
+    """Implementation of LineData for pyqtgraph"""
     __styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
     __symbols = {"circle": "o", "cross": "x", "tri_down": "t", "tri_up": "t1", "tri_right": "t2", "tri_left": "t3", "square": "s", "pentagon": "p", "hexagon": "h", "star": "star", "plus": "+", "diamond": "d", "None": None}
 
@@ -63,11 +64,11 @@ class _PyqtgraphLine(LineData):
 
     def _setMarkerThick(self, thick):
         warnings.warn("pyqtGraph does not support set marker thick", NotSupportedWarning)
-        #p = self._getSymbolPen()
+        # p = self._getSymbolPen()
         # p.setWidth(thick)
         # self._obj.setSymbolPen(p)
         # for refresh
-        #p = self._getLinePen()
+        # p = self._getLinePen()
         # self._obj.setPen(p)
 
     def _setMarkerFilling(self, filling):

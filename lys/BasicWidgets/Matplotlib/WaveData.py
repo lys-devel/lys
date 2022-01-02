@@ -5,6 +5,7 @@ from ..CanvasInterface import LineData
 
 
 class _MatplotlibLine(LineData):
+    """Implementation of LineData for matplotlib"""
     def __init__(self, canvas, obj):
         self._obj = obj
         super().__init__(canvas, obj)

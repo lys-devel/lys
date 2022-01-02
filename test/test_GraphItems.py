@@ -63,3 +63,47 @@ class Graph_test(unittest.TestCase):
 
             c.Clear()
             self.assertEqual(len(c.getWaveData()), 0)
+
+    def test_Line(self):
+        for g in self.graphs:
+            d = {}
+            c = g.canvas
+
+            line = c.Append(Wave([1, 2, 3]))
+            line.setColor('#ff0000')
+            self.assertEqual(line.getColor(), '#ff0000')
+
+            line.setWidth(3)
+            self.assertEqual(line.getWidth(), 3)
+
+            line.setStyle("dashed")
+            self.assertEqual(line.getStyle(), 'dashed')
+
+            line.setMarker('circle')
+            self.assertEqual(line.getMarker(), 'circle')
+
+            line.setMarkerSize(5)
+            self.assertEqual(line.getMarkerSize(), 5)
+
+            line.setMarkerThick(3)
+            self.assertEqual(line.getMarkerThick(), 3)
+
+            line.setMarkerFilling('full')
+            self.assertEqual(line.getMarkerFilling(), 'full')
+
+            ap = line.saveAppearance()
+            line.setColor('#ff00ff')
+            line.setWidth(4)
+            line.setStyle("solid")
+            line.setMarker('nothing')
+            line.setMarkerSize(3)
+            line.setMarkerThick(2)
+            line.setMarkerFilling('none')
+
+            line.loadAppearance(ap)
+            self.assertEqual(line.getWidth(), 3)
+            self.assertEqual(line.getStyle(), 'dashed')
+            self.assertEqual(line.getMarker(), 'circle')
+            self.assertEqual(line.getMarkerSize(), 5)
+            self.assertEqual(line.getMarkerThick(), 3)
+            self.assertEqual(line.getMarkerFilling(), 'full')
