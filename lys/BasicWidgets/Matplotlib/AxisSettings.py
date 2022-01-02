@@ -2,7 +2,7 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import ticker
+from matplotlib import ticker, patches
 
 from lys import *
 from .VectorSettings import *
@@ -17,7 +17,7 @@ class RangeSelectableCanvas(VectorSettingCanvas):
 
     def __init__(self, dpi=100):
         super().__init__(dpi)
-        self.__rect = Rectangle((0, 0), 0, 0, color='orange', alpha=0.5)
+        self.__rect = patches.Rectangle((0, 0), 0, 0, color='orange', alpha=0.5)
         patch = self.axes.add_patch(self.__rect)
         patch.set_zorder(20000)
         self.Selection = False

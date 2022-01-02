@@ -3,38 +3,30 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import pyqtgraph as pg
 
+
 from lys import *
 from ..CanvasInterface import *
-
-#warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
-
-
-class _PyqtgraphLine(LineData):
-    def __init__(self, obj):
-        super().__init__(obj)
-
-    def _setZ(self, z):
-        self.obj.setZValue(z)
+from .WaveData import _PyqtgraphLine
 
 
 class _PyqtgraphImage(ImageData):
-    def __init__(self, obj):
-        super().__init__(obj)
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
 
 
 class _PyqtgraphVector(VectorData):
-    def __init__(self, obj):
-        super().__init__(obj)
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
 
 
 class _PyqtgraphRGB(RGBData):
-    def __init__(self, obj):
-        super().__init__(obj)
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
 
 
 class _PyqtgraphContour(ContourData):
-    def __init__(self, obj):
-        super().__init__(obj)
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
 
 
 class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
@@ -158,26 +150,26 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
     def _append1d(self, wave, axis):
         obj = pg.PlotDataItem(x=wave.x, y=wave.data, pen=self._nextPen())
         self.__getAxes(axis).addItem(obj)
-        obj = _PyqtgraphLine(obj)
+        obj = _PyqtgraphLine(self, obj)
         return obj
 
     def _append2d(self, wave, axis):
         im = pg.ImageItem(image=wave.data)
         im.setTransform(self.__calcExtent2D(wave))
         self.__getAxes(axis).addItem(im)
-        return _PyqtgraphImage(im)
+        return _PyqtgraphImage(self, im)
 
     def _append3d(self, wave, axis):
         im = pg.ImageItem(image=wave.data, levels=(0, 1))
         im.setTransform(self.__calcExtent2D(wave))
         self.__getAxes(axis).addItem(im)
-        return _PyqtgraphRGB(im)
+        return _PyqtgraphRGB(self, im)
 
     def _appendContour(self, wav, axis):
         obj = pg.IsocurveItem(data=wav.data, level=0.5, pen='r')
         obj.setTransform(self.__calcExtent2D(wav))
         self.__getAxes(axis).addItem(obj)
-        return _PyqtgraphContour(obj)
+        return _PyqtgraphContour(self, obj)
 
     def __calcExtent2D(self, wav):
         xstart = wav.x[0]

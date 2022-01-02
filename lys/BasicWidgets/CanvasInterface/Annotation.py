@@ -270,7 +270,6 @@ class AnnotLineStyleAdjustableCanvas(AnnotLineColorAdjustableCanvas):
         data = self.getAnnotationFromIndexes(indexes)
         for d in data:
             self._setLineStyle(d.obj, style)
-            d.appearance['OldLineStyle'] = self._getLineStyle(d.obj)
 
     def getAnnotLineStyle(self, indexes):
         data = self.getAnnotationFromIndexes(indexes)

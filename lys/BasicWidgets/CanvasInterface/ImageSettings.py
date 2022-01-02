@@ -1,8 +1,8 @@
 import sys
-from .LineSettings import *
+from .CanvasBase import *
 
 
-class ImageColorAdjustableCanvasBase(MarkerStyleAdjustableCanvasBase):
+class ImageColorAdjustableCanvasBase(OffsetAdjustableCanvasBase):
     @saveCanvas
     def setColormap(self, cmap, indexes):
         data = self.getDataFromIndexes(2, indexes)

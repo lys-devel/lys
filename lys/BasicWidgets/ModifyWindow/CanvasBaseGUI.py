@@ -8,6 +8,8 @@ from lys.widgets import ScientificSpinBox
 
 
 class DataSelectionBox(QTreeView):
+    selected = pyqtSignal(list)
+
     class _Model(QStandardItemModel):
         def __init__(self, canvas):
             super().__init__(0, 3)
@@ -61,49 +63,32 @@ class DataSelectionBox(QTreeView):
         self.__initlayout()
         self.flg = False
         self._loadstate()
-        canvas.dataChanged.connect(self.OnDataChanged)
-        canvas.dataSelected.connect(self.OnDataSelected)
+        canvas.dataChanged.connect(self._loadstate)
 
     def __initlayout(self):
+        self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setDropIndicatorShown(True)
         self.__model = DataSelectionBox._Model(self.canvas)
         self.setModel(self.__model)
-        self.selectionModel().selectionChanged.connect(self.OnSelected)
-
-    def OnDataSelected(self):
-        indexes = self.canvas.getSelectedIndexes(self.__dim)
-        list = self.canvas.getWaveData(self.__type)
-        selm = self.selectionModel()
-        for i in range(len(list)):
-            index0 = self.__model.index(len(list) - i - 1, 0)
-            index1 = self.__model.index(len(list) - i - 1, 1)
-            index2 = self.__model.index(len(list) - i - 1, 2)
-            id = float(self.__model.itemFromIndex(index2).text())
-            if id in indexes:
-                selm.select(index0, QItemSelectionModel.Select)
-                selm.select(index1, QItemSelectionModel.Select)
-                selm.select(index2, QItemSelectionModel.Select)
-            else:
-                selm.select(index0, QItemSelectionModel.Deselect)
-                selm.select(index1, QItemSelectionModel.Deselect)
-                selm.select(index2, QItemSelectionModel.Deselect)
+        self.selectionModel().selectionChanged.connect(self._onSelected)
 
     def _loadstate(self):
         self.flg = True
         list = self.canvas.getWaveData(self.__type)
+        #selected = self._selectedData()
         self.__model.clear()
-        i = 1
-        for l in list:
-            self.__model.setItem(len(list) - i, 0, QStandardItem(l.wave.name))
-            self.__model.setItem(len(list) - i, 1, QStandardItem(l.axis))
-            self.__model.setItem(len(list) - i, 2, QStandardItem(str(l.id)))
-            i += 1
-        self.OnDataSelected()
+        for i, data in enumerate(list):
+            item = QStandardItem(data.wave.name)
+            self.__model.setItem(len(list) - 1 - i, 0, item)
+            self.__model.setItem(len(list) - 1 - i, 1, QStandardItem(data.axis))
+            self.__model.setItem(len(list) - 1 - i, 2, QStandardItem(str(data.id)))
+            # if data in selected:
+            #    self.selectionModel().select(item, QItemSelectionModel.Select | QItemSelectionModel.Rows)
         self.flg = False
 
-    def OnSelected(self):
+    def _onSelected(self):
         if self.flg:
             return
         self.flg = True
@@ -113,10 +98,12 @@ class DataSelectionBox(QTreeView):
             if i.column() == 2:
                 ids.append(int(self.__model.itemFromIndex(i).text()))
         self.canvas.setSelectedIndexes(self.__dim, ids)
+        self.selected.emit(self._selectedData())
         self.flg = False
 
-    def OnDataChanged(self):
-        self._loadstate()
+    def _selectedData(self):
+        list = self.canvas.getWaveData(self.__type)
+        return [list[i.row()] for i in self.selectedIndexes()]
 
     def sizeHint(self):
         return QSize(150, 100)

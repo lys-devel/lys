@@ -20,7 +20,7 @@ class ColorSelection(QPushButton):
         if res.isValid():
             c = (res.red() / 255.0, res.green() / 255.0, res.blue() / 255.0, res.alpha() / 255.0)
             self.setColor(res.name())
-            self.colorChanged.emit(c)
+            self.colorChanged.emit(self.getColor())
 
     def setColor(self, color):
         if isinstance(color, tuple) or isinstance(color, list):

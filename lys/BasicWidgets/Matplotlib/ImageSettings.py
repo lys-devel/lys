@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from matplotlib import colors
 from matplotlib import cm
-from .LineSettings import *
+from .CanvasBase import *
 
 
-class ImageColorAdjustableCanvas(MarkerStyleAdjustableCanvas):
+class ImageColorAdjustableCanvas(FigureCanvasBase):
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
         if e.key() == Qt.Key_A:

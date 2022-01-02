@@ -2,7 +2,7 @@ import os
 import io
 from matplotlib.colors import hsv_to_rgb
 from .SaveCanvas import *
-from .WaveData import LineData, ImageData, RGBData, VectorData, ContourData
+from . import LineData, ImageData, RGBData, VectorData, ContourData
 from lys import *
 from lys import load, Wave, filters
 import _pickle as cPickle
@@ -15,6 +15,7 @@ class CanvasBaseBase(DrawableCanvasBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._Datalist = []
+        self.__loadFlg = False
 
     @notSaveCanvas
     def emitCloseEvent(self, *args, **kwargs):
@@ -23,6 +24,8 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     @saveCanvas
     def _onWaveModified(self, d):
+        if self.__loadFlg:
+            return
         self.saveAppearance()
         self.Remove(d)
         self._Append(d.wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, contour=isinstance(d, ContourData), filter=d.filter, vector=isinstance(d, VectorData))
@@ -60,6 +63,9 @@ class CanvasBaseBase(DrawableCanvasBase):
         self.dataChanged.emit()
         if appearance is not None:
             self.loadAppearance()
+            self.__loadFlg = True
+            obj.loadAppearance(appearance)
+            self.__loadFlg = False
         return obj
 
     def _checkType(self, wav, contour, vector):

@@ -10,35 +10,30 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 import matplotlib as mpl
+
+from .WaveData import _MatplotlibLine
+
 mpl.rc('image', cmap='gray')
 
 
-class _MatplotlibLine(LineData):
-    def __init__(self, obj):
-        super().__init__(obj)
-
-    def _setZ(self, z):
-        self.obj.set_zorder(z)
-
-
 class _MatplotlibImage(ImageData):
-    def __init__(self, obj):
-        super().__init__(obj)
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
 
 
 class _MatplotlibVector(VectorData):
-    def __init__(self, obj):
-        super().__init__(obj)
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
 
 
 class _MatplotlibRGB(RGBData):
-    def __init__(self, obj):
-        super().__init__(obj)
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
 
 
 class _MatplotlibContour(ContourData):
-    def __init__(self, obj):
-        super().__init__(obj)
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
 
 
 class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
@@ -112,7 +107,7 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
 
     def _append1d(self, wave, axis):
         line, = self.__getAxes(axis).plot(wave.x, wave.data, picker=5)
-        return _MatplotlibLine(line)
+        return _MatplotlibLine(self, line)
 
     def __calcExtent2D(self, wav):
         xstart = wav.x[0]
@@ -125,20 +120,20 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
 
     def _append2d(self, wave, axis):
         im = self.__getAxes(axis).imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.__calcExtent2D(wave), picker=True)
-        return _MatplotlibImage(im)
+        return _MatplotlibImage(self, im)
 
     def _append3d(self, wave, axis):
         im = self.__getAxes(axis).imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.__calcExtent2D(wave), picker=True)
-        return _MatplotlibRGB(im)
+        return _MatplotlibRGB(self, im)
 
     def _appendContour(self, wav, axis):
         obj = self.__getAxes(axis).contour(wav.data.T[::-1, :], [0.5], extent=self.__calcExtent2D(wav), colors=['red'])
-        return _MatplotlibContour(obj)
+        return _MatplotlibContour(self, obj)
 
     def _appendVectorField(self, wav, axis):
         xx, yy = np.meshgrid(wav.x, wav.y)
         obj = self.__getAxes(axis).quiver(xx, yy, np.real(wav.data.T), np.imag(wav.data.T), pivot="mid")
-        return _MatplotlibVector(obj)
+        return _MatplotlibVector(self, obj)
 
     def _remove(self, data):
         if isinstance(data.obj, QuadContourSet):

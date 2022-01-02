@@ -1,12 +1,14 @@
 from LysQt.QtCore import QObject, pyqtSignal
+from .SaveCanvas import CanvasPart
 
 
-class WaveData(QObject):
+class WaveData(CanvasPart):
     modified = pyqtSignal(QObject)
 
-    def __init__(self, obj):
-        super().__init__()
+    def __init__(self, canvas, obj):
+        super().__init__(canvas)
         self.obj = obj
+        self.appearance = {}
 
     def __del__(self):
         self.wave.modified.disconnect(self._emitModified)
@@ -16,7 +18,7 @@ class WaveData(QObject):
         self.wave.modified.connect(self._emitModified)
         self.axis = axis
         self.id = idn
-        self.appearance = appearance
+        self.appearance.update(appearance)
         self.offset = offset
         self.zindex = zindex
         self.filter = filter
@@ -28,9 +30,8 @@ class WaveData(QObject):
     def _emitModified(self):
         self.modified.emit(self)
 
-
-class LineData(WaveData):
-    pass
+    def loadAppearance(self, appearance):
+        pass
 
 
 class ImageData(WaveData):

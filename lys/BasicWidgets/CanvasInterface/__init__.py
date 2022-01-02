@@ -1,6 +1,13 @@
+from .Axes import CanvasAxes, CanvasTicks
+from .Area import MarginBase, CanvasSizeBase
+from .AxisLabel import CanvasAxisLabel, CanvasTickLabel
+from .Font import FontInfo, CanvasFont
+from .WaveData import ImageData, VectorData, RGBData, ContourData
+from .Line import LineData
+
+
 from .SaveCanvas import *
 from .CanvasBase import *
-from .LineSettings import *
 from .ImageSettings import *
 from .Annotation import *
 from .TextAnnotation import *
@@ -10,11 +17,6 @@ from .RegionAnnotation import *
 from .CrosshairAnnotation import *
 from .AnnotGUICanvas import *
 from .RGBSettings import *
-from .Axes import CanvasAxes, CanvasTicks
-from .Area import MarginBase, CanvasSizeBase
-from .AxisLabel import CanvasAxisLabel, CanvasTickLabel
-from .Font import FontInfo, CanvasFont
-from .WaveData import LineData, ImageData, VectorData, RGBData, ContourData
 
 
 class TemporaryCanvasBase(ImageColorAdjustableCanvasBase):
