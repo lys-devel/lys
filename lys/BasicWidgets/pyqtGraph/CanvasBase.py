@@ -1,25 +1,12 @@
-#!/usr/bin/env python
-import weakref
-import sys
-import os
-import warnings
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import pyqtgraph as pg
+
 from lys import *
 from ..CanvasInterface import *
 
-warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
-
-
-def _suppressNumpyWarnings(func):
-    def wrapper(*args, **kwargs):
-        with warnings.catch_warnings():
-            warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
-            warnings.filterwarnings('ignore', r'invalid value encountered in reduce')
-            return func(*args, **kwargs)
-    return wrapper
+#warnings.filterwarnings('ignore', r'All-NaN (slice|axis) encountered')
 
 
 class _PyqtgraphLine(LineData):

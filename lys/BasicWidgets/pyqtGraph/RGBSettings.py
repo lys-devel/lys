@@ -16,7 +16,7 @@ class RGBColorAdjustableCanvas(ImageSettingCanvas):
         data = self.getDataFromIndexes(3, indexes)
         for d in data:
             d.appearance['Range'] = (0, np.max(d.wave.data))
-            self.OnWaveModified(d.wave)
+            d.modified.emit(d)
 
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
@@ -40,14 +40,14 @@ class RGBColorAdjustableCanvas(ImageSettingCanvas):
         data = self.getDataFromIndexes(3, indexes)
         for d in data:
             d.appearance['Range'] = (min, max)
-            self.OnWaveModified(d.wave)
+            d.modified.emit(d)
 
     @saveCanvas
     def setColorRotation(self, indexes, value):
         data = self.getDataFromIndexes(3, indexes)
         for d in data:
             d.appearance['ColorRotation'] = value
-            self.OnWaveModified(d.wave)
+            d.modified.emit(d)
 
     def colorRotation(self, indexes):
         data = self.getDataFromIndexes(3, indexes)

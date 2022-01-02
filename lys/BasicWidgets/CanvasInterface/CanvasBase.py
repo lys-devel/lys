@@ -22,12 +22,10 @@ class CanvasBaseBase(DrawableCanvasBase):
         super().emitCloseEvent()
 
     @saveCanvas
-    def OnWaveModified(self, wave):
+    def _onWaveModified(self, d):
         self.saveAppearance()
-        for d in self._Datalist:
-            if wave == d.wave:
-                self.Remove(d.id)
-                self._Append(wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, contour=isinstance(d, ContourData), filter=d.filter, vector=isinstance(d, VectorData))
+        self.Remove(d)
+        self._Append(d.wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, contour=isinstance(d, ContourData), filter=d.filter, vector=isinstance(d, VectorData))
         self.loadAppearance()
 
     @saveCanvas
@@ -42,8 +40,7 @@ class CanvasBaseBase(DrawableCanvasBase):
             wav = load(wave)
         if appearance is None:
             appearance = {}
-        ids = self._Append(wav, axis, id, dict(appearance), offset, contour=contour, filter=filter, vector=vector)
-        return ids
+        return self._Append(wav, axis, id, dict(appearance), offset, contour=contour, filter=filter, vector=vector)
 
     @saveCanvas
     def _Append(self, w, axis, id, appearance, offset, contour=False, filter=None, vector=False):
@@ -59,11 +56,11 @@ class CanvasBaseBase(DrawableCanvasBase):
         obj.setMetaData(w, axis, ids, appearance=appearance, offset=offset, zindex=ids, filter=filter, filteredWave=filtered)
         id_pos = ids + id_def[type]
         self._Datalist.insert(id_pos, obj)
-        w.modified.connect(self.OnWaveModified)
+        obj.modified.connect(self._onWaveModified)
         self.dataChanged.emit()
         if appearance is not None:
             self.loadAppearance()
-        return ids
+        return obj
 
     def _checkType(self, wav, contour, vector):
         if wav.data.ndim == 1:
@@ -119,22 +116,20 @@ class CanvasBaseBase(DrawableCanvasBase):
         return rgb
 
     @saveCanvas
-    def Remove(self, indexes):
-        if hasattr(indexes, '__iter__'):
-            list = indexes
-        else:
-            list = [indexes]
-        for i in list:
-            for d in self._Datalist:
-                if i == d.id:
-                    self._remove(d)
-                    self._Datalist.remove(d)
-                    d.wave.modified.disconnect(self.OnWaveModified)
+    def Remove(self, obj):
+        if hasattr(obj, '__iter__'):
+            for o in obj:
+                self.Remove(o)
+            return
+        self._remove(obj)
+        self._Datalist.remove(obj)
+        obj.modified.disconnect(self._onWaveModified)
         self.dataChanged.emit()
 
     @ saveCanvas
     def Clear(self):
-        self.Remove([d.id for d in self._Datalist])
+        while len(self._Datalist) != 0:
+            self.Remove(self._Datalist[0])
 
     def getWaveData(self, type="all"):
         if type == "all":
@@ -367,7 +362,7 @@ class OffsetAdjustableCanvasBase(DataHidableCanvasBase):
         data = self.getDataFromIndexes(None, indexes)
         for d in data:
             d.offset = offset
-            self.OnWaveModified(d.wave)
+            d.modified.emit(d)
 
     def getOffset(self, indexes):
         res = []

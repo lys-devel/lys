@@ -3,7 +3,7 @@ import numpy as np
 from ..CanvasInterface import *
 from lys import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure, SubplotParams
+from matplotlib.figure import Figure
 from matplotlib.contour import QuadContourSet
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
