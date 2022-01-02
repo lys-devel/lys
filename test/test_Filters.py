@@ -290,7 +290,7 @@ class Filters_test(unittest.TestCase):
     def test_region(self):
         # NormalizeFilter
         w = Wave(np.ones([5, 5]) * 2, name="wave")
-        f = filters.NormalizeFilter([(1, 4), (0, 0)], axis=1)
+        f = filters.NormalizeFilter([(1, 4), (0, 0)], axis=[0])
         f1 = filters.NormalizeFilter(**f.getParameters())
         self.assertEqual(f1.getRelativeDimension(), 0)
         result = f1.execute(w)
