@@ -134,6 +134,8 @@ class _PyqtgraphVector(VectorData):
 
 
 class _PyqtgraphRGB(RGBData):
+    """Implementation of RGBData for pyqtgraph"""
+
     def __init__(self, canvas, obj):
         super().__init__(canvas, obj)
 

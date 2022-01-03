@@ -140,3 +140,22 @@ class Graph_test(unittest.TestCase):
             self.assertEqual(im.getOpacity(), 0.7)
             self.assertEqual(im.getColorRange(), (1, 3))
             self.assertTrue(im.isLog())
+
+    def test_RGB(self):
+        for g in self.graphs:
+            c = g.canvas
+
+            im = c.Append(Wave([[1 + 1j, 2, 3], [4, 5, 6]]))
+            im.setColorRotation(99)
+            self.assertEqual(im.getColorRotation(), 99)
+
+            im.setColorRange(0, 5)
+            self.assertEqual(im.getColorRange(), (0, 5))
+
+            ap = im.saveAppearance()
+            im.setColorRotation(9)
+            im.setColorRange(0, 2)
+
+            im.loadAppearance(ap)
+            self.assertEqual(im.getColorRotation(), 99)
+            self.assertEqual(im.getColorRange(), (0, 5))

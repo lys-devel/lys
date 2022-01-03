@@ -81,6 +81,8 @@ class _MatplotlibVector(VectorData):
 
 
 class _MatplotlibRGB(RGBData):
+    """Implementation of RGBData for matplotlib"""
+
     def __init__(self, canvas, obj):
         super().__init__(canvas, obj)
 

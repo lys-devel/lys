@@ -17,6 +17,7 @@ Interface to data displayed in the canvas
 
    graph/Line
    graph/Image
+   graph/RGB
 
 Submodules
 ------------------------------------------------------

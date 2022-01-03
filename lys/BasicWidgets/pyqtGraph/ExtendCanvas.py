@@ -144,6 +144,11 @@ class ExtendCanvas(AnnotGUICanvas):
 
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
+        if e.key() == Qt.Key_A:
+            for i in self.getRGBs():
+                i.setColorRange()
+            for i in self.getImages():
+                i.setColorRange()
         self.keyPressed.emit(e)
 
     def defModFunc(self, canvas, tab='Axis'):

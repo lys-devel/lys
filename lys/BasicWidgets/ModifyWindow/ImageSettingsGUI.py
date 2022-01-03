@@ -1,5 +1,4 @@
-import math
-from LysQt.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QWidget, QComboBox, QGroupBox, QGridLayout
+from LysQt.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QWidget, QComboBox, QGroupBox, QGridLayout, QDoubleSpinBox
 
 from lys.widgets import ScientificSpinBox
 from .ColorWidgets import ColormapSelection, ColorSelection
@@ -90,41 +89,51 @@ class RGBColorAdjustBox(QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
-        canvas.dataSelected.connect(self.OnDataSelected)
+        self.__loadflg = False
         self.__initlayout()
-        self.__flg = False
 
     def __initlayout(self):
-        layout = QVBoxLayout()
-        self.__rot = ScientificSpinBox()
-        self.__rot.valueChanged.connect(self.__changerange)
-        self.__start = _rangeWidget("First", 20)
-        self.__end = _rangeWidget("Last", 80)
+        self.__rot = QDoubleSpinBox()
+        self.__rot.setRange(0, 360)
+        self.__rot.valueChanged.connect(self.__changerot)
+        self.__start = _rangeWidget("Min", 0)
+        self.__end = _rangeWidget("Max", 1)
         self.__start.valueChanged.connect(self.__changerange)
         self.__end.valueChanged.connect(self.__changerange)
-        layout.addWidget(self.__rot)
-        layout.addWidget(self.__start)
-        layout.addWidget(self.__end)
+
+        h1 = QHBoxLayout()
+        h1.addWidget(QLabel('Color Rotation'))
+        h1.addWidget(self.__rot)
+
+        layout = QVBoxLayout()
+        layout.addLayout(h1)
+        layout.addLayout(self.__start)
+        layout.addLayout(self.__end)
+        layout.addStretch()
         self.setLayout(layout)
 
-    def OnDataSelected(self):
-        self.__flg = True
-        indexes = self.canvas.getSelectedIndexes(3)
-        if len(indexes) == 0:
-            return
-        im = abs(self.canvas.getDataFromIndexes(3, indexes)[0].wave.data)
-        self.__start.setRange(im.mean(), math.sqrt(im.var()) * 5)
-        self.__end.setRange(im.mean(), math.sqrt(im.var()) * 5)
-        ran = self.canvas.getColorRange(indexes)[0]
-        self.__start.setAbsolute(ran[0])
-        self.__end.setAbsolute(ran[1])
-        self.__flg = False
+    def setRGBs(self, images):
+        self._images = images
+        if len(images) != 0:
+            self.__loadflg = True
+            self.__rot.setValue(images[0].getColorRotation())
+            min, max = images[0].getAutoColorRange()
+            self.__start.setAutoValue(min)
+            self.__end.setAutoValue(max)
+            min, max = images[0].getColorRange()
+            self.__start.setAbsolute(min)
+            self.__end.setAbsolute(max)
+            self.__loadflg = False
 
     def __changerange(self):
-        if not self.__flg:
-            indexes = self.canvas.getSelectedIndexes(3)
-            self.canvas.setColorRange(indexes, self.__start.getValue(), self.__end.getValue())
-            self.canvas.setColorRotation(indexes, self.__rot.value())
+        if not self.__loadflg:
+            for im in self._images:
+                im.setColorRange(self.__start.getValue(), self.__end.getValue())
+
+    def __changerot(self):
+        if not self.__loadflg:
+            for im in self._images:
+                im.setColorRotation(self.__rot.value())
 
 
 class VectorAdjustBox(QWidget):

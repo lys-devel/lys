@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import *
 from lys import *
 from lys.errors import NotSupportedWarning
 from .CanvasBase import saveCanvas
-from .RGBSettings import *
+from .CanvasBase import *
 
 from ..CanvasInterface import CanvasAxes, CanvasTicks
 
@@ -16,7 +16,7 @@ opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom', 'left': 'Right', 'right': 'Left', 'bottom': 'Top', 'top': 'Bottom'}
 
 
-class RangeSelectableCanvas(RGBSettingCanvas):
+class RangeSelectableCanvas(FigureCanvasBase):
     selectedRangeChanged = pyqtSignal(object)
 
     def __init__(self, dpi=100):

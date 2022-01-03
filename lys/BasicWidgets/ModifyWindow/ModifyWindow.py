@@ -197,11 +197,16 @@ class _RGBTab(QWidget):
         self._initlayout(canvas)
 
     def _initlayout(self, canvas):
-        layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, 3, "rgb"))
+        rgb = RGBColorAdjustBox(canvas)
+        sel = RightClickableSelectionBox(canvas, 3, "rgb")
+        sel.selected.connect(rgb.setRGBs)
+
         tab = QTabWidget()
-        tab.addTab(RGBColorAdjustBox(canvas), 'Color')
+        tab.addTab(rgb, 'Color')
         tab.addTab(OffsetAdjustBox(canvas, "rgb"), 'Offset')
+
+        layout = QVBoxLayout()
+        layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
 

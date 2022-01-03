@@ -1,7 +1,7 @@
-from .RGBSettings import *
+from .CanvasBase import *
 
 
-class VectorScalableCanvas(RGBSettingCanvas):
+class VectorScalableCanvas(FigureCanvasBase):
     @saveCanvas
     def setVectorPivot(self, indexes, pivot):
         data = self.getDataFromIndexes("vector", indexes)
