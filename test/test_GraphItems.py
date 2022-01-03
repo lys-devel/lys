@@ -66,7 +66,6 @@ class Graph_test(unittest.TestCase):
 
     def test_Line(self):
         for g in self.graphs:
-            d = {}
             c = g.canvas
 
             line = c.Append(Wave([1, 2, 3]))
@@ -107,3 +106,37 @@ class Graph_test(unittest.TestCase):
             self.assertEqual(line.getMarkerSize(), 5)
             self.assertEqual(line.getMarkerThick(), 3)
             self.assertEqual(line.getMarkerFilling(), 'full')
+
+    def test_Image(self):
+        for g in self.graphs:
+            c = g.canvas
+
+            im = c.Append(Wave([[1, 2, 3], [4, 5, 6]]))
+            im.setColormap('bwr')
+            self.assertEqual(im.getColormap(), 'bwr')
+
+            im.setGamma(0.5)
+            self.assertEqual(im.getGamma(), 0.5)
+
+            im.setOpacity(0.7)
+            self.assertEqual(im.getOpacity(), 0.7)
+
+            im.setColorRange(1, 3)
+            self.assertEqual(im.getColorRange(), (1, 3))
+
+            im.setLog(True)
+            self.assertTrue(im.isLog())
+
+            ap = im.saveAppearance()
+            im.setColormap('gray')
+            im.setGamma(0.4)
+            im.setOpacity(0.6)
+            im.setColorRange(2, 4)
+            im.setLog(False)
+
+            im.loadAppearance(ap)
+            self.assertEqual(im.getColormap(), 'bwr')
+            self.assertEqual(im.getGamma(), 0.5)
+            self.assertEqual(im.getOpacity(), 0.7)
+            self.assertEqual(im.getColorRange(), (1, 3))
+            self.assertTrue(im.isLog())
