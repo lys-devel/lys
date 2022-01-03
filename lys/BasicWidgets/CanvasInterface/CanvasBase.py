@@ -1,14 +1,15 @@
-import os
 import io
-from .SaveCanvas import *
-from . import LineData, ImageData, RGBData, VectorData, ContourData
+import _pickle as cPickle
+
 from lys import *
 from lys import load, Wave, filters
-import _pickle as cPickle
-import numpy as np
+
+from .SaveCanvas import *
+from . import LineData, ImageData, RGBData, VectorData, ContourData
 
 
 class CanvasBaseBase(DrawableCanvasBase):
+    _id_def = {"line": 2000, "vector": 5500, "image": 5000, "contour": 4000, "rgb": 6000}
     dataChanged = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
@@ -21,24 +22,10 @@ class CanvasBaseBase(DrawableCanvasBase):
         super().emitCloseEvent()
 
     @saveCanvas
-    def Append(self, wave, axis="BottomLeft", appearance=None, offset=(0, 0, 0, 0), contour=False, filter=None, vector=False):
-        if isinstance(wave, list):
-            for w in wave:
-                self.Append(w, axis=axis, appearance=appearance, offset=offset, contour=contour, filter=filter, vector=vector)
-            return
-        if isinstance(wave, Wave):
-            wav = wave
-        else:
-            wav = load(wave)
-        if appearance is None:
-            appearance = {}
-        return self._Append(wav, axis, dict(appearance), offset, contour=contour, filter=filter, vector=vector)
-
-    @saveCanvas
-    def _Append(self, w, axis, appearance, offset, contour=False, filter=None, vector=False):
+    def Append(self, w, axis="BottomLeft", appearance={}, offset=(0, 0, 0, 0), filter=None, contour=False, vector=False):
         func = {"line": self._append1d, "vector": self._appendVectorField, "image": self._append2d, "contour": self._appendContour, "rgb": self._append3d}
-        id_def = {"line": 2000, "vector": 5500, "image": 5000, "contour": 4000, "rgb": 6000}
-
+        if isinstance(w, list) or isinstance(w, tuple):
+            return [self.Append(ww, axis=axis, contour=contour, vector=vector) for ww in w]
         type = self._checkType(w, contour, vector)
         obj = func[type](w, axis)
         obj.setOffset(offset)
@@ -68,13 +55,6 @@ class CanvasBaseBase(DrawableCanvasBase):
             if wav.data.shape[2] in [3, 4]:
                 return "rgb"
         raise RuntimeError("[Graph] Can't append this data. shape = " + str(wav.data.shape))
-
-    def _filteredWave(self, w, offset, filter):
-        if filter is None:
-            filt = filters.Filters([filters.OffsetFilter(offset)])
-        else:
-            filt = filter + filters.OffsetFilter(offset)
-        return filt.execute(w)
 
     @saveCanvas
     def Remove(self, obj):
@@ -122,9 +102,8 @@ class CanvasBaseBase(DrawableCanvasBase):
         return self.getWaveData("vector")
 
     def SaveAsDictionary(self, dictionary, path):
-        i = 0
         dic = {}
-        for data in self._Datalist:
+        for i, data in enumerate(self._Datalist):
             dic[i] = {}
             dic[i]['File'] = None
             b = io.BytesIO()
@@ -139,49 +118,40 @@ class CanvasBaseBase(DrawableCanvasBase):
                 dic[i]['Filter'] = None
             else:
                 dic[i]['Filter'] = str(data.filter)
-            i += 1
         dictionary['Datalist'] = dic
 
     def LoadFromDictionary(self, dictionary, path):
         axisDict = {1: "BottomLeft", 2: "TopLeft", 3: "BottomRight", 4: "TopRight", "BottomLeft": "BottomLeft", "TopLeft": "TopLeft", "BottomRight": "BottomRight", "TopRight": "TopRight"}
         i = 0
-        sdir = os.getcwd()
-        os.chdir(path)
         if 'Datalist' in dictionary:
             dic = dictionary['Datalist']
             while i in dic:
-                w = dic[i]['File']
-                if w is None:
-                    if 'Wave' in dic[i]:  # for backward compability
-                        waveData = dic[i]['Wave']
-                        waveData = waveData.replace(b'ExtendAnalysis.core', b'lys.core')
-                        waveData = waveData.replace(b'ExtendAnalysis.ExtendType', b'lys.core')
-                        waveData = waveData.replace(b'produce', b'_produceWave')
-                        w = cPickle.loads(waveData)
-                    elif 'Wave_npz' in dic[i]:
-                        w = Wave(io.BytesIO(dic[i]['Wave_npz']))
+                w = self.__loadWave(dic[i])
                 axis = axisDict[dic[i]['Axis']]
-                if 'Appearance' in dic[i]:
-                    ap = eval(dic[i]['Appearance'])
-                else:
-                    ap = {}
-                if 'Offset' in dic[i]:
-                    offset = eval(dic[i]['Offset'])
-                else:
-                    offset = (0, 0, 0, 0)
+                ap = eval(dic[i].get('Appearance', "dict()"))
+                offset = eval(dic[i].get('Offset', "(0,0,0,0)"))
                 contour = dic[i].get('Contour', False)
                 vector = dic[i].get('Vector', False)
-                if 'Filter' in dic[i]:
-                    str = dic[i]['Filter']
-                    if str is None:
-                        filter = None
-                    else:
-                        filter = filters.fromString(dic[i]['Filter'])
-                else:
-                    filter = None
-                self.Append(w, axis, appearance=ap, offset=offset, contour=contour, filter=filter, vector=vector)
+                filter = dic[i].get('Filter', None)
+                if filter is not None:
+                    filter = filters.fromString(filter)
+                self.Append(w, axis, appearance=ap, offset=offset, filter=filter, contour=contour, vector=vector)
                 i += 1
-        os.chdir(sdir)
+
+    def __loadWave(self, d):
+        w = d['File']
+        if w is None:
+            if 'Wave' in d:  # for backward compability
+                waveData = d['Wave']
+                waveData = waveData.replace(b'ExtendAnalysis.core', b'lys.core')
+                waveData = waveData.replace(b'ExtendAnalysis.ExtendType', b'lys.core')
+                waveData = waveData.replace(b'produce', b'_produceWave')
+                w = cPickle.loads(waveData)
+            elif 'Wave_npz' in d:
+                w = Wave(io.BytesIO(d['Wave_npz']))
+        else:
+            w = load(w)
+        return w
 
     def _remove(self, data):
         raise NotImplementedError()

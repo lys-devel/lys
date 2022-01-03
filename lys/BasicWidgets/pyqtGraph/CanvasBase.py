@@ -19,7 +19,6 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         self.__resizing = False
         self.__initAxes()
         self.fig.canvas = None
-        self.npen = 0
 
     def _draw(self):
         self.update()
@@ -134,33 +133,7 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         return _PyqtgraphRGB(self, wave, axis)
 
     def _appendContour(self, wav, axis):
-        obj = pg.IsocurveItem(data=wav.data, level=0.5, pen='r')
-        obj.setTransform(self.__calcExtent2D(wav))
-        self.__getAxes(axis).addItem(obj)
-        return _PyqtgraphContour(self, obj, wav, axis)
-
-    def __calcExtent2D(self, wav):
-        xstart = wav.x[0]
-        xend = wav.x[len(wav.x) - 1]
-        ystart = wav.y[0]
-        yend = wav.y[len(wav.y) - 1]
-
-        dx = (xend - xstart) / (len(wav.x) - 1)
-        dy = (yend - ystart) / (len(wav.y) - 1)
-
-        xstart = xstart - dx / 2
-        xend = xend + dx / 2
-        ystart = ystart - dy / 2
-        yend = yend + dy / 2
-
-        xmag = (xend - xstart) / len(wav.x)
-        ymag = (yend - ystart) / len(wav.y)
-        xshift = xstart
-        yshift = ystart
-        tr = QTransform()
-        tr.scale(xmag, ymag)
-        tr.translate(xshift / xmag, yshift / ymag)
-        return tr
+        return _PyqtgraphContour(self, wav, axis)
 
     def _remove(self, data):
         ax = self.__getAxes(data.axis)
