@@ -128,11 +128,6 @@ class _PyqtgraphImage(ImageData):
         self._obj.setOpacity(opacity)
 
 
-class _PyqtgraphVector(VectorData):
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
-
-
 class _PyqtgraphRGB(RGBData):
     """Implementation of RGBData for pyqtgraph"""
 
@@ -141,5 +136,7 @@ class _PyqtgraphRGB(RGBData):
 
 
 class _PyqtgraphContour(ContourData):
+    """Implementation of ContourData for pyqtgraph"""
+
     def __init__(self, canvas, obj):
         super().__init__(canvas, obj)

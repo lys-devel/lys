@@ -54,7 +54,3 @@ class WaveData(CanvasPart):
 
     def _loadAppearance(self, appearance):
         pass
-
-
-class ContourData(WaveData):
-    pass

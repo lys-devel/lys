@@ -2,11 +2,11 @@ from .Axes import CanvasAxes, CanvasTicks
 from .Area import MarginBase, CanvasSizeBase
 from .AxisLabel import CanvasAxisLabel, CanvasTickLabel
 from .Font import FontInfo, CanvasFont
-from .WaveData import ContourData
 from .Line import LineData
 from .Image import ImageData
 from .RGB import RGBData
 from .Vector import VectorData
+from .Contour import ContourData
 
 
 from .SaveCanvas import *
