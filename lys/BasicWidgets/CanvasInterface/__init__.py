@@ -1,16 +1,10 @@
 from .Axes import CanvasAxes, CanvasTicks
 from .Area import MarginBase, CanvasSizeBase
 from .AxisLabel import CanvasAxisLabel, CanvasTickLabel
+from .Data import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 from .Font import FontInfo, CanvasFont
-from .Line import LineData
-from .Image import ImageData
-from .RGB import RGBData
-from .Vector import VectorData
-from .Contour import ContourData
-
 
 from .SaveCanvas import *
-from .CanvasBase import *
 
 from .Annotation import *
 from .TextAnnotation import *
@@ -21,7 +15,7 @@ from .CrosshairAnnotation import *
 from .AnnotGUICanvas import *
 
 
-class TemporaryCanvasBase(CanvasBaseBase):
+class TemporaryCanvasBase(DrawableCanvasBase):
     saveCanvas = pyqtSignal(dict)
     loadCanvas = pyqtSignal(dict)
 

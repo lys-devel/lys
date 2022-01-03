@@ -1,5 +1,4 @@
-import numpy as np
-
+from ..CanvasInterface import CanvasData
 from ..CanvasInterface import *
 from lys import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -16,7 +15,31 @@ from .WaveData import _MatplotlibLine, _MatplotlibImage, _MatplotlibVector, _Mat
 mpl.rc('image', cmap='gray')
 
 
-class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
+class _MatplotlibData(CanvasData):
+    def _append1d(self, wave, axis):
+        return _MatplotlibLine(self.canvas(), wave, axis)
+
+    def _append2d(self, wave, axis):
+        return _MatplotlibImage(self.canvas(), wave, axis)
+
+    def _append3d(self, wave, axis):
+        return _MatplotlibRGB(self.canvas(), wave, axis)
+
+    def _appendContour(self, wav, axis):
+        return _MatplotlibContour(self.canvas(), wav, axis)
+
+    def _appendVectorField(self, wav, axis):
+        return _MatplotlibVector(self.canvas(), wav, axis)
+
+    def _remove(self, data):
+        if isinstance(data._obj, QuadContourSet):
+            for o in data._obj.collections:
+                o.remove()
+        else:
+            data._obj.remove()
+
+
+class _FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
     axisChanged = pyqtSignal(str)
 
     def __init__(self, dpi=100):
@@ -87,28 +110,6 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
             else:
                 return self.axes_txy
 
-    def _append1d(self, wave, axis):
-        return _MatplotlibLine(self, wave, axis)
-
-    def _append2d(self, wave, axis):
-        return _MatplotlibImage(self, wave, axis)
-
-    def _append3d(self, wave, axis):
-        return _MatplotlibRGB(self, wave, axis)
-
-    def _appendContour(self, wav, axis):
-        return _MatplotlibContour(self, wav, axis)
-
-    def _appendVectorField(self, wav, axis):
-        return _MatplotlibVector(self, wav, axis)
-
-    def _remove(self, data):
-        if isinstance(data._obj, QuadContourSet):
-            for o in data._obj.collections:
-                o.remove()
-        else:
-            data._obj.remove()
-
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:
             if i.id == artist.get_zorder():
@@ -116,3 +117,15 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
 
     def constructContextMenu(self):
         return QMenu(self)
+
+
+class FigureCanvasBase(_FigureCanvasBase):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self._data = _MatplotlibData(self)
+
+    def __getattr__(self, key):
+        if "_data" in self.__dict__:
+            if hasattr(self._data, key):
+                return getattr(self._data, key)
+        return super().__getattr__(key)

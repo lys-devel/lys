@@ -9,7 +9,25 @@ from ..CanvasInterface import *
 from .WaveData import _PyqtgraphLine, _PyqtgraphImage, _PyqtgraphRGB, _PyqtgraphContour
 
 
-class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
+class _PyqtgraphData(CanvasData):
+    def _append1d(self, wave, axis):
+        return _PyqtgraphLine(self.canvas(), wave, axis)
+
+    def _append2d(self, wave, axis):
+        return _PyqtgraphImage(self.canvas(), wave, axis)
+
+    def _append3d(self, wave, axis):
+        return _PyqtgraphRGB(self.canvas(), wave, axis)
+
+    def _appendContour(self, wav, axis):
+        return _PyqtgraphContour(self.canvas(), wav, axis)
+
+    def _remove(self, data):
+        ax = self.canvas().getAxes(data.axis)
+        ax.removeItem(data._obj)
+
+
+class _FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
     axisChanged = pyqtSignal(str)
     pgRangeChanged = pyqtSignal(str)
 
@@ -123,22 +141,6 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
             else:
                 return self.axes_txy
 
-    def _append1d(self, wave, axis):
-        return _PyqtgraphLine(self, wave, axis)
-
-    def _append2d(self, wave, axis):
-        return _PyqtgraphImage(self, wave, axis)
-
-    def _append3d(self, wave, axis):
-        return _PyqtgraphRGB(self, wave, axis)
-
-    def _appendContour(self, wav, axis):
-        return _PyqtgraphContour(self, wav, axis)
-
-    def _remove(self, data):
-        ax = self.__getAxes(data.axis)
-        ax.removeItem(data._obj)
-
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:
             if i.id == artist.get_zorder():
@@ -152,3 +154,15 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
 
     def _onDrag(self, event):
         event.ignore()
+
+
+class FigureCanvasBase(_FigureCanvasBase):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self._data = _PyqtgraphData(self)
+
+    def __getattr__(self, key):
+        if "_data" in self.__dict__:
+            if hasattr(self._data, key):
+                return getattr(self._data, key)
+        return super().__getattr__(key)

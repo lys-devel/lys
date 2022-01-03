@@ -1,25 +1,28 @@
+import warnings
 import io
 import _pickle as cPickle
 
-from lys import *
-from lys import load, Wave, filters
+from LysQt.QtCore import pyqtSignal
+from lys import Wave, filters, load
+from lys.errors import NotImplementedWarning
 
-from .SaveCanvas import *
-from . import LineData, ImageData, RGBData, VectorData, ContourData
+from .SaveCanvas import CanvasPart, saveCanvas
+from .Line import LineData
+from .Image import ImageData
+from .RGB import RGBData
+from .Vector import VectorData
+from .Contour import ContourData
 
 
-class CanvasBaseBase(DrawableCanvasBase):
-    _id_def = {"line": 2000, "vector": 5500, "image": 5000, "contour": 4000, "rgb": 6000}
+class CanvasData(CanvasPart):
+    #_id_def = {"line": 2000, "vector": 5500, "image": 5000, "contour": 4000, "rgb": 6000}
     dataChanged = pyqtSignal()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, canvas):
+        super().__init__(canvas)
         self._Datalist = []
-
-    @notSaveCanvas
-    def emitCloseEvent(self, *args, **kwargs):
-        self.Clear()
-        super().emitCloseEvent()
+        canvas.saveCanvas.connect(self._save)
+        canvas.loadCanvas.connect(self._load)
 
     @saveCanvas
     def Append(self, w, axis="BottomLeft", appearance={}, offset=(0, 0, 0, 0), filter=None, contour=False, vector=False):
@@ -101,7 +104,7 @@ class CanvasBaseBase(DrawableCanvasBase):
     def getVectorFields(self):
         return self.getWaveData("vector")
 
-    def SaveAsDictionary(self, dictionary, path):
+    def _save(self, dictionary):
         dic = {}
         for i, data in enumerate(self._Datalist):
             dic[i] = {}
@@ -120,7 +123,7 @@ class CanvasBaseBase(DrawableCanvasBase):
                 dic[i]['Filter'] = str(data.filter)
         dictionary['Datalist'] = dic
 
-    def LoadFromDictionary(self, dictionary, path):
+    def _load(self, dictionary):
         axisDict = {1: "BottomLeft", 2: "TopLeft", 3: "BottomRight", 4: "TopRight", "BottomLeft": "BottomLeft", "TopLeft": "TopLeft", "BottomRight": "BottomRight", "TopRight": "TopRight"}
         i = 0
         if 'Datalist' in dictionary:

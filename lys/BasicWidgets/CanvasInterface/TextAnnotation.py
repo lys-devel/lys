@@ -1,5 +1,4 @@
-from .CanvasBase import *
-from .SaveCanvas import *
+from .SaveCanvas import saveCanvas
 
 
 class TextAnnotationCanvasBase(object):
@@ -14,13 +13,13 @@ class TextAnnotationCanvasBase(object):
     @saveCanvas
     def setAnnotationText(self, indexes, txt):
         list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            self._setText(l.obj, txt)
+        for ant in list:
+            self._setText(ant.obj, txt)
         self._emitAnnotationEdited()
 
     def getAnnotationText(self, indexes):
         list = self.getAnnotationFromIndexes(indexes)
-        return [self._getText(l.obj) for l in list]
+        return [self._getText(ant.obj) for ant in list]
 
     def SaveAsDictionary(self, dictionary, path):
         # super().SaveAsDictionary(dictionary,path)

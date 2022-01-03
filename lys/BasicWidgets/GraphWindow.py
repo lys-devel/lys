@@ -52,7 +52,6 @@ class Graph(AutoSavedWindow):
         self.canvas.show()
         self.canvas.canvasResized.connect(self._resizeCanvas)
         self.canvas.keyPressed.connect(self.keyPress)
-        self.closed.connect(self.canvas.emitCloseEvent)
         self.resized.connect(self.canvas.parentResized)
         self.canvas.setSaveFunction(self.Save)
         if file is not None:

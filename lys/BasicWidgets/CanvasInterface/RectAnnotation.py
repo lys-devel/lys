@@ -1,4 +1,4 @@
-from .CanvasBase import *
+
 from .SaveCanvas import *
 
 

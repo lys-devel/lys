@@ -4,7 +4,7 @@ from PyQt5.QtGui import QBrush, QColor, QCursor
 from PyQt5.QtCore import Qt, QAbstractItemModel, QVariant, QModelIndex, pyqtSignal, QSize, QItemSelectionModel
 
 import numpy as np
-from lys import filters, display, Wave, Graph, pyqtCanvas, CanvasBaseBase
+from lys import filters, display, Wave, Graph, pyqtCanvas, AbstractCanvasBase
 
 from ..MultiCutExecutors import PointExecutor, RegionExecutor, FreeLineExecutor
 from ..MultiCut import ExecutorList, SwitchableObjects, controlledObjects
@@ -324,7 +324,7 @@ class _InteractiveWidget(QGroupBox):
         return self.__cut.getTargetCanvas()
 
     def _point(self, c=None):
-        if not isinstance(c, CanvasBaseBase):
+        if not isinstance(c, AbstractCanvasBase):
             c = self._getTargetCanvas()
         id = c.addCross()
         e = PointExecutor(self.canvases.getAxes(c))
@@ -333,7 +333,7 @@ class _InteractiveWidget(QGroupBox):
         self.__exe.append(e, c)
 
     def _rect(self, c=None):
-        if not isinstance(c, CanvasBaseBase):
+        if not isinstance(c, AbstractCanvasBase):
             c = self._getTargetCanvas()
         id = c.addRect()
         e = RegionExecutor(self.canvases.getAxes(c))
@@ -345,7 +345,7 @@ class _InteractiveWidget(QGroupBox):
         pass
 
     def _line(self, c=None):
-        if not isinstance(c, CanvasBaseBase):
+        if not isinstance(c, AbstractCanvasBase):
             c = self._getTargetCanvas()
         id = c.addLine()
         e = FreeLineExecutor(self.canvases.getAxes(c))
@@ -354,7 +354,7 @@ class _InteractiveWidget(QGroupBox):
         self.__exe.append(e, c)
 
     def _regx(self, c=None):
-        if not isinstance(c, CanvasBaseBase):
+        if not isinstance(c, AbstractCanvasBase):
             c = self._getTargetCanvas()
         id = c.addRegion()
         e = RegionExecutor(self.canvases.getAxes(c)[0])
@@ -363,7 +363,7 @@ class _InteractiveWidget(QGroupBox):
         self.__exe.append(e, c)
 
     def _regy(self, c=None):
-        if not isinstance(c, CanvasBaseBase):
+        if not isinstance(c, AbstractCanvasBase):
             c = self._getTargetCanvas()
         id = c.addRegion(type="horizontal")
         e = RegionExecutor(self.canvases.getAxes(c)[1])
@@ -372,7 +372,7 @@ class _InteractiveWidget(QGroupBox):
         self.__exe.append(e, c)
 
     def _linex(self, c=None):
-        if not isinstance(c, CanvasBaseBase):
+        if not isinstance(c, AbstractCanvasBase):
             c = self._getTargetCanvas()
         id = c.addInfiniteLine()
         e = PointExecutor(self.canvases.getAxes(c)[0])
@@ -381,7 +381,7 @@ class _InteractiveWidget(QGroupBox):
         self.__exe.append(e, c)
 
     def _liney(self, c=None):
-        if not isinstance(c, CanvasBaseBase):
+        if not isinstance(c, AbstractCanvasBase):
             c = self._getTargetCanvas()
         id = c.addInfiniteLine(type='horizontal')
         e = PointExecutor(self.canvases.getAxes(c)[1])

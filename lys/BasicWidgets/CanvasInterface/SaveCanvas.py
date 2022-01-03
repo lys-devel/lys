@@ -9,7 +9,7 @@ def saveCanvas(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         if isinstance(args[0], CanvasPart):
-            canvas = args[0]._canvas
+            canvas = args[0].canvas()
         else:
             canvas = args[0]
         if canvas.saveflg:
@@ -42,20 +42,13 @@ def notSaveCanvas(func):
 class CanvasPart(QObject):
     def __init__(self, canvas):
         super().__init__()
-        self._canvas = canvas
+        self._canvas = weakref.ref(canvas)
 
     def canvas(self):
-        return self._canvas
+        return self._canvas()
 
 
-class BasicEventCanvasBase(object):
-    deleted = pyqtSignal(object)
-
-    def emitCloseEvent(self):
-        self.deleted.emit(self)
-
-
-class SavableCanvasBase(BasicEventCanvasBase):
+class SavableCanvasBase(object):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.saveflg = False
@@ -68,18 +61,8 @@ class SavableCanvasBase(BasicEventCanvasBase):
         if self.savef is not None:
             self.savef()()
 
-    def SaveAsDictionary(self, dictionary, path):
-        pass
-
-    def LoadFromDictionary(self, dictionary, path):
-        pass
-
-
 
 class DrawableCanvasBase(SavableCanvasBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def draw(self):
         try:
             self._draw()
