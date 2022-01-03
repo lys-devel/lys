@@ -1,6 +1,5 @@
 import os
 import io
-from matplotlib.colors import hsv_to_rgb
 from .SaveCanvas import *
 from . import LineData, ImageData, RGBData, VectorData, ContourData
 from lys import *
@@ -15,19 +14,11 @@ class CanvasBaseBase(DrawableCanvasBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._Datalist = []
-        self.__loadFlg = False
 
     @notSaveCanvas
     def emitCloseEvent(self, *args, **kwargs):
         self.Clear()
         super().emitCloseEvent()
-
-    @saveCanvas
-    def _onWaveModified(self, d):
-        if self.__loadFlg:
-            return
-        self.Remove(d)
-        self._Append(d.wave, d.axis, appearance=d.appearance, offset=d.offset, contour=isinstance(d, ContourData), filter=d.filter, vector=isinstance(d, VectorData))
 
     @saveCanvas
     def Append(self, wave, axis="BottomLeft", appearance=None, offset=(0, 0, 0, 0), contour=False, filter=None, vector=False):
@@ -45,22 +36,18 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     @saveCanvas
     def _Append(self, w, axis, appearance, offset, contour=False, filter=None, vector=False):
-        func = {"line": self._append1d, "vector": self._appendVectorField, "image": self._append2d, "contour": self._appendContour}
-        func["rgb"] = lambda w, ax: self._append3d(self._makeRGBData(w, appearance), ax)
+        func = {"line": self._append1d, "vector": self._appendVectorField, "image": self._append2d, "contour": self._appendContour, "rgb": self._append3d}
         id_def = {"line": 2000, "vector": 5500, "image": 5000, "contour": 4000, "rgb": 6000}
 
         type = self._checkType(w, contour, vector)
-        filtered = self._filteredWave(w, offset, filter)
-        obj = func[type](filtered, axis)
+        obj = func[type](w, axis)
+        obj.setOffset(offset)
+        obj.setFilter(filter)
         # obj.setZ(-id_def[type] + len(self.getWaveData(type)))
-        obj.setMetaData(w, axis, offset=offset, filter=filter, filteredWave=filtered)
+        obj.loadAppearance(appearance)
+        obj.modified.connect(self.dataChanged)
         self._Datalist.append(obj)
-        obj.modified.connect(self._onWaveModified)
         self.dataChanged.emit()
-        if appearance is not None:
-            self.__loadFlg = True
-            obj.loadAppearance(appearance)
-            self.__loadFlg = False
         return obj
 
     def _checkType(self, wav, contour, vector):
@@ -89,33 +76,6 @@ class CanvasBaseBase(DrawableCanvasBase):
             filt = filter + filters.OffsetFilter(offset)
         return filt.execute(w)
 
-    def _makeRGBData(self, wav, appearance):
-        wav = wav.duplicate()
-        if wav.data.ndim == 2:
-            if 'Range' in appearance:
-                rmin, rmax = appearance['Range']
-            else:
-                rmin, rmax = 0, np.max(np.abs(wav.data))
-            wav.data = self._Complex2HSV(wav.data, rmin, rmax, appearance.get('ColorRotation', 0))
-        elif wav.data.ndim == 3:
-            if 'Range' in appearance:
-                rmin, rmax = appearance['Range']
-                amp = np.where(wav.data < rmin, rmin, wav.data)
-                amp = np.where(amp > rmax, rmax, amp)
-                wav.data = (amp - rmin) / (rmax - rmin)
-        return wav
-
-    def _Complex2HSV(self, z, rmin, rmax, hue_start=0):
-        amp = np.abs(z)
-        amp = np.where(amp < rmin, rmin, amp)
-        amp = np.where(amp > rmax, rmax, amp)
-        ph = np.angle(z, deg=1) + hue_start
-        h = (ph % 360) / 360
-        s = np.ones_like(h)
-        v = (amp - rmin) / (rmax - rmin)
-        rgb = hsv_to_rgb(np.dstack((h, s, v)))
-        return rgb
-
     @saveCanvas
     def Remove(self, obj):
         if hasattr(obj, '__iter__'):
@@ -124,7 +84,7 @@ class CanvasBaseBase(DrawableCanvasBase):
             return
         self._remove(obj)
         self._Datalist.remove(obj)
-        obj.modified.disconnect(self._onWaveModified)
+        obj.modified.disconnect(self.dataChanged)
         self.dataChanged.emit()
 
     @ saveCanvas

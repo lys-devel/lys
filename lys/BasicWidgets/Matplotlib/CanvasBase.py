@@ -71,6 +71,8 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
             return self.axes_txy
 
     def getAxes(self, axis='Left'):
+        if axis in ['BottomLeft', 'BottomRight', 'TopLeft', 'TopRight']:
+            return self.__getAxes(axis)
         ax = axis
         if ax in ['Left', 'Bottom']:
             return self.axes
@@ -86,34 +88,19 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
                 return self.axes_txy
 
     def _append1d(self, wave, axis):
-        line, = self.__getAxes(axis).plot(wave.x, wave.data, picker=5)
-        return _MatplotlibLine(self, line)
-
-    def __calcExtent2D(self, wav):
-        xstart = wav.x[0]
-        xend = wav.x[len(wav.x) - 1]
-        ystart = wav.y[0]
-        yend = wav.y[len(wav.y) - 1]
-        dx = (xend - xstart) / (wav.data.shape[1] - 1)
-        dy = (yend - ystart) / (wav.data.shape[0] - 1)
-        return (xstart - dx / 2, xend + dx / 2, yend + dy / 2, ystart - dy / 2)
+        return _MatplotlibLine(self, wave, axis)
 
     def _append2d(self, wave, axis):
-        im = self.__getAxes(axis).imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.__calcExtent2D(wave), picker=True)
-        return _MatplotlibImage(self, im)
+        return _MatplotlibImage(self, wave, axis)
 
     def _append3d(self, wave, axis):
-        im = self.__getAxes(axis).imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=self.__calcExtent2D(wave), picker=True)
-        return _MatplotlibRGB(self, im)
+        return _MatplotlibRGB(self, wave, axis)
 
     def _appendContour(self, wav, axis):
-        obj = self.__getAxes(axis).contour(wav.data.T[::-1, :], [0.5], extent=self.__calcExtent2D(wav), colors=['red'])
-        return _MatplotlibContour(self, obj)
+        return _MatplotlibContour(self, wav, axis)
 
     def _appendVectorField(self, wav, axis):
-        xx, yy = np.meshgrid(wav.x, wav.y)
-        obj = self.__getAxes(axis).quiver(xx, yy, np.real(wav.data.T), np.imag(wav.data.T), pivot="mid")
-        return _MatplotlibVector(self, obj)
+        return _MatplotlibVector(self, wav, axis)
 
     def _remove(self, data):
         if isinstance(data._obj, QuadContourSet):

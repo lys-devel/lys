@@ -80,7 +80,7 @@ class DataSelectionBox(QTreeView):
             item = QStandardItem(data.wave.name)
             self.__model.setItem(len(list) - 1 - i, 0, item)
             self.__model.setItem(len(list) - 1 - i, 1, QStandardItem(data.axis))
-            self.__model.setItem(len(list) - 1 - i, 2, QStandardItem(str(data.id)))
+            #self.__model.setItem(len(list) - 1 - i, 2, QStandardItem(str(data.id)))
         self.flg = False
 
     def _onSelected(self):

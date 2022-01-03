@@ -2,38 +2,32 @@ import warnings
 from lys import filters
 from lys.errors import NotImplementedWarning
 
-from LysQt.QtCore import QObject, pyqtSignal
+from LysQt.QtCore import pyqtSignal
 from .SaveCanvas import CanvasPart, saveCanvas
 
 
 class WaveData(CanvasPart):
-    modified = pyqtSignal(QObject)
     appearanceSet = pyqtSignal(dict)
+    modified = pyqtSignal()
 
-    def __init__(self, canvas, obj):
+    def __init__(self, canvas, wave, axis):
         super().__init__(canvas)
+        self.wave = wave
+        self.wave.modified.connect(self._update)
+        self.axis = axis
         self.appearance = {}
+        self.offset = (0, 0, 0, 0)
+        self.filter = None
+        self.filteredWave = wave
 
     def __del__(self):
-        self.wave.modified.disconnect(self._emitModified)
+        self.wave.modified.disconnect(self._update)
 
-    def setMetaData(self, wave, axis, offset=(0, 0, 0, 0), filter=None, filteredWave=None):
-        self.wave = wave
-        self.wave.modified.connect(self._emitModified)
-        self.axis = axis
-        self.offset = offset
-        self.filter = filter
-        if filteredWave is not None:
-            self.filteredWave = filteredWave
-        else:
-            self.filteredWave = wave
-
-    def _emitModified(self):
-        self.modified.emit(self)
-
-    def _update(self):
+    @saveCanvas
+    def _update(self, *args, **kwargs):
         self.filteredWave = self._filteredWave(self.wave, self.offset, self.filter)
         self._updateData()
+        self.modified.emit()
 
     def _filteredWave(self, w, offset, filter):
         if filter is None:
@@ -50,12 +44,18 @@ class WaveData(CanvasPart):
     def getVisible(self):
         return self.appearance.get('Visible', True)
 
+    @saveCanvas
     def setOffset(self, offset):
         self.offset = offset
-        self.modified.emit(self)
+        self._update()
 
     def getOffset(self):
         return self.offset
+
+    @saveCanvas
+    def setFilter(self, filter=None):
+        self.filter = filter
+        self._update()
 
     def saveAppearance(self):
         """

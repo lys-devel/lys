@@ -108,6 +108,8 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
             return self.axes_txy
 
     def getAxes(self, axis='Left'):
+        if axis in ["BottomLeft", "BottomRight", "TopLeft", "TopRight"]:
+            return self.__getAxes(axis)
         ax = axis
         if ax in ['Left', 'Bottom']:
             return self.axes
@@ -123,28 +125,19 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
                 return self.axes_txy
 
     def _append1d(self, wave, axis):
-        obj = pg.PlotDataItem(x=wave.x, y=wave.data)
-        self.__getAxes(axis).addItem(obj)
-        obj = _PyqtgraphLine(self, obj)
-        return obj
+        return _PyqtgraphLine(self, wave, axis)
 
     def _append2d(self, wave, axis):
-        im = pg.ImageItem(image=wave.data)
-        im.setTransform(self.__calcExtent2D(wave))
-        self.__getAxes(axis).addItem(im)
-        return _PyqtgraphImage(self, im)
+        return _PyqtgraphImage(self, wave, axis)
 
     def _append3d(self, wave, axis):
-        im = pg.ImageItem(image=wave.data, levels=(0, 1))
-        im.setTransform(self.__calcExtent2D(wave))
-        self.__getAxes(axis).addItem(im)
-        return _PyqtgraphRGB(self, im)
+        return _PyqtgraphRGB(self, wave, axis)
 
     def _appendContour(self, wav, axis):
         obj = pg.IsocurveItem(data=wav.data, level=0.5, pen='r')
         obj.setTransform(self.__calcExtent2D(wav))
         self.__getAxes(axis).addItem(obj)
-        return _PyqtgraphContour(self, obj)
+        return _PyqtgraphContour(self, obj, wav, axis)
 
     def __calcExtent2D(self, wav):
         xstart = wav.x[0]

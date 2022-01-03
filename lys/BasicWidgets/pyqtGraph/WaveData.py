@@ -5,7 +5,7 @@ from matplotlib import cm
 import pyqtgraph as pg
 
 from LysQt.QtCore import Qt
-from LysQt.QtGui import QColor
+from LysQt.QtGui import QColor, QTransform
 from lys.errors import NotSupportedWarning
 from ..CanvasInterface import LineData, ImageData, RGBData, VectorData, ContourData
 
@@ -15,9 +15,13 @@ class _PyqtgraphLine(LineData):
     __styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
     __symbols = {"circle": "o", "cross": "x", "tri_down": "t", "tri_up": "t1", "tri_right": "t2", "tri_left": "t3", "square": "s", "pentagon": "p", "hexagon": "h", "star": "star", "plus": "+", "diamond": "d", "None": None}
 
-    def __init__(self, canvas, obj):
-        self._obj = obj
-        super().__init__(canvas, obj)
+    def __init__(self, canvas, wave, axis):
+        super().__init__(canvas, wave, axis)
+        self._obj = pg.PlotDataItem(x=wave.x, y=wave.data)
+        canvas.getAxes(axis).addItem(self._obj)
+
+    def _updateData(self):
+        self._obj.setData(x=self.filteredWave.x, y=self.filteredWave.data)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -94,12 +98,42 @@ class _PyqtgraphLine(LineData):
         self._obj.setZValue(z)
 
 
+def _calcExtent2D(wav):
+    xstart = wav.x[0]
+    xend = wav.x[len(wav.x) - 1]
+    ystart = wav.y[0]
+    yend = wav.y[len(wav.y) - 1]
+
+    dx = (xend - xstart) / (len(wav.x) - 1)
+    dy = (yend - ystart) / (len(wav.y) - 1)
+
+    xstart = xstart - dx / 2
+    xend = xend + dx / 2
+    ystart = ystart - dy / 2
+    yend = yend + dy / 2
+
+    xmag = (xend - xstart) / len(wav.x)
+    ymag = (yend - ystart) / len(wav.y)
+    xshift = xstart
+    yshift = ystart
+    tr = QTransform()
+    tr.scale(xmag, ymag)
+    tr.translate(xshift / xmag, yshift / ymag)
+    return tr
+
+
 class _PyqtgraphImage(ImageData):
     """Implementation of LineData for pyqtgraph"""
 
-    def __init__(self, canvas, obj):
-        self._obj = obj
-        super().__init__(canvas, obj)
+    def __init__(self, canvas, wave, axis):
+        super().__init__(canvas, wave, axis)
+        self._obj = pg.ImageItem(image=wave.data)
+        self._obj.setTransform(_calcExtent2D(wave))
+        canvas.getAxes(axis).addItem(self._obj)
+
+    def _updateData(self):
+        self._obj.setImage(self.filteredWave.data)
+        self._obj.setTransform(_calcExtent2D(self.filteredWave))
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -143,9 +177,15 @@ class _PyqtgraphImage(ImageData):
 class _PyqtgraphRGB(RGBData):
     """Implementation of RGBData for pyqtgraph"""
 
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
-        self._obj = obj
+    def __init__(self, canvas, wave, axis):
+        super().__init__(canvas, wave, axis)
+        self._obj = pg.ImageItem(image=wave.data, levels=(0, 1))
+        self._obj.setTransform(_calcExtent2D(wave))
+        canvas.getAxes(axis).addItem(self._obj)
+
+    def _updateData(self):
+        self._obj.setImage(self.filteredWave.data)
+        self._obj.setTransform(_calcExtent2D(self.filteredWave))
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -157,9 +197,11 @@ class _PyqtgraphRGB(RGBData):
 class _PyqtgraphContour(ContourData):
     """Implementation of ContourData for pyqtgraph"""
 
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
-        self._obj = obj
+    def __init__(self, canvas, wave, axis):
+        super().__init__(canvas, wave, axis)
+        self._obj = pg.IsocurveItem(data=wave.data, level=0.5, pen='r')
+        self._obj.setTransform(_calcExtent2D(wave))
+        canvas.getAxes(axis).addItem(self._obj)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)

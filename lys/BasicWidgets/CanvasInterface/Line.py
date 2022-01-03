@@ -27,13 +27,9 @@ class LineData(WaveData):
         line.setColor('#ff0000')
     """
 
-    def __init__(self, canvas, obj):
-        super().__init__(canvas, obj)
+    def __init__(self, canvas, wave, axis):
+        super().__init__(canvas, wave, axis)
         self.appearanceSet.connect(self._loadAppearance)
-        if not hasattr(canvas, "_lineColorGenerator"):
-            self.canvas()._lineColorGenerator = _ColorGenerator()
-        color = self.canvas()._lineColorGenerator.nextColor()
-        self.setColor(color)
 
     def __setAppearance(self, key, value):
         self.appearance[key] = value
@@ -185,6 +181,11 @@ class LineData(WaveData):
     def _loadAppearance(self, appearance):
         if 'LineColor' in appearance:
             self.setColor(appearance['LineColor'])
+        else:
+            if not hasattr(self.canvas(), "_lineColorGenerator"):
+                self.canvas()._lineColorGenerator = _ColorGenerator()
+            color = self.canvas()._lineColorGenerator.nextColor()
+            self.setColor(color)
         self.setStyle(appearance.get('LineStyle', 'solid'))
         self.setWidth(appearance.get('LineWidth', 2))
         self.setMarker(appearance.get('Marker', 'nothing'))
