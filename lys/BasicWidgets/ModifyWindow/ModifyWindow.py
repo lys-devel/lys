@@ -156,12 +156,14 @@ class _LineTab(QWidget):
 
     def _initlayout(self, canvas):
         app = AppearanceBox(canvas)
+        off = OffsetAdjustBox()
         sel = RightClickableSelectionBox(canvas, 1, "line")
         sel.selected.connect(app.setLines)
+        sel.selected.connect(off.setData)
 
         tab = QTabWidget()
         tab.addTab(app, 'Appearance')
-        tab.addTab(OffsetAdjustBox(canvas, "line"), 'Offset')
+        tab.addTab(off, 'Offset')
 
         layout = QVBoxLayout()
         layout.addWidget(sel)
@@ -177,12 +179,14 @@ class _ImageTab(QWidget):
 
     def _initlayout(self, canvas):
         im = ImageColorAdjustBox(canvas)
+        off = OffsetAdjustBox()
         sel = RightClickableSelectionBox(canvas, 2, "image")
         sel.selected.connect(im.setImages)
+        sel.selected.connect(off.setData)
 
         tab = QTabWidget()
         tab.addTab(im, 'Color')
-        tab.addTab(OffsetAdjustBox(canvas, "image"), 'Offset')
+        tab.addTab(off, 'Offset')
 
         layout = QVBoxLayout()
         layout.addWidget(sel)
@@ -198,12 +202,14 @@ class _RGBTab(QWidget):
 
     def _initlayout(self, canvas):
         rgb = RGBColorAdjustBox(canvas)
+        off = OffsetAdjustBox()
         sel = RightClickableSelectionBox(canvas, 3, "rgb")
         sel.selected.connect(rgb.setRGBs)
+        sel.selected.connect(off.setData)
 
         tab = QTabWidget()
         tab.addTab(rgb, 'Color')
-        tab.addTab(OffsetAdjustBox(canvas, "rgb"), 'Offset')
+        tab.addTab(off, 'Offset')
 
         layout = QVBoxLayout()
         layout.addWidget(sel)
@@ -219,12 +225,14 @@ class _VectorTab(QWidget):
 
     def _initlayout(self, canvas):
         vec = VectorAdjustBox(canvas)
+        off = OffsetAdjustBox()
         sel = RightClickableSelectionBox(canvas, 2, "vector")
         sel.selected.connect(vec.setVectors)
+        sel.selected.connect(off.setData)
 
         tab = QTabWidget()
         tab.addTab(vec, 'Vector')
-        tab.addTab(OffsetAdjustBox(canvas, "vector"), 'Offset')
+        tab.addTab(off, 'Offset')
 
         layout = QVBoxLayout()
         layout.addWidget(sel)

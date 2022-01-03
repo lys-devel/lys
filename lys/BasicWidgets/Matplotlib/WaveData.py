@@ -11,6 +11,12 @@ class _MatplotlibLine(LineData):
         self._obj = obj
         super().__init__(canvas, obj)
 
+    def _setVisible(self, visible):
+        self._obj.set_visible(visible)
+
+    def _setZ(self, z):
+        self._obj.set_zorder(z)
+
     def _setColor(self, color):
         self._obj.set_color(color)
 
@@ -33,9 +39,6 @@ class _MatplotlibLine(LineData):
     def _setMarkerFilling(self, filling):
         self._obj.set_fillstyle(filling)
 
-    def _setZ(self, z):
-        self._obj.set_zorder(z)
-
 
 class _MatplotlibImage(ImageData):
     """Implementation of LineData for matplotlib"""
@@ -43,6 +46,12 @@ class _MatplotlibImage(ImageData):
     def __init__(self, canvas, obj):
         self._obj = obj
         super().__init__(canvas, obj)
+
+    def _setVisible(self, visible):
+        self._obj.set_visible(visible)
+
+    def _setZ(self, z):
+        self._obj.set_zorder(z)
 
     def _setColormap(self, cmap):
         colormap = copy.deepcopy(cm.get_cmap(cmap))
@@ -82,6 +91,12 @@ class _MatplotlibVector(VectorData):
         self._obj = obj
         super().__init__(canvas, obj)
 
+    def _setVisible(self, visible):
+        self._obj.set_visible(visible)
+
+    def _setZ(self, z):
+        self._obj.set_zorder(z)
+
     def _setPivot(self, pivot):
         self._obj.pivot = pivot
 
@@ -100,6 +115,13 @@ class _MatplotlibRGB(RGBData):
 
     def __init__(self, canvas, obj):
         super().__init__(canvas, obj)
+        self._obj = obj
+
+    def _setVisible(self, visible):
+        self._obj.set_visible(visible)
+
+    def _setZ(self, z):
+        self._obj.set_zorder(z)
 
 
 class _MatplotlibContour(ContourData):
@@ -107,3 +129,12 @@ class _MatplotlibContour(ContourData):
 
     def __init__(self, canvas, obj):
         super().__init__(canvas, obj)
+        self._obj = obj
+
+    def _setVisible(self, visible):
+        for o in self._obj.collections:
+            o.set_visible(visible)
+
+    def _setZ(self, z):
+        for o in self._obj.collections:
+            o.set_zorder(z)

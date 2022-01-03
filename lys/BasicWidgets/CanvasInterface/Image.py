@@ -19,6 +19,10 @@ class ImageData(WaveData):
         im.setColormap('gray')
     """
 
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
+        self.appearanceSet.connect(self._loadAppearance)
+
     def __setAppearance(self, key, value):
         self.appearance[key] = value
 

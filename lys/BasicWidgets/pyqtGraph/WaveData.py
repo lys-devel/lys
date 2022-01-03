@@ -19,6 +19,12 @@ class _PyqtgraphLine(LineData):
         self._obj = obj
         super().__init__(canvas, obj)
 
+    def _setVisible(self, visible):
+        self._obj.setVisible(visible)
+
+    def _setZ(self, z):
+        self._obj.setZValue(z)
+
     def _getLinePen(self):
         p = self._obj.opts['pen']
         if isinstance(p, tuple):
@@ -95,6 +101,12 @@ class _PyqtgraphImage(ImageData):
         self._obj = obj
         super().__init__(canvas, obj)
 
+    def _setVisible(self, visible):
+        self._obj.setVisible(visible)
+
+    def _setZ(self, z):
+        self._obj.setZValue(z)
+
     def _setColormap(self, cmap):
         lut = self.__getColorLut(cmap, self.getGamma())
         self.__setColor(lut, self.getColorRange(), self.isLog())
@@ -133,6 +145,13 @@ class _PyqtgraphRGB(RGBData):
 
     def __init__(self, canvas, obj):
         super().__init__(canvas, obj)
+        self._obj = obj
+
+    def _setVisible(self, visible):
+        self._obj.setVisible(visible)
+
+    def _setZ(self, z):
+        self._obj.setZValue(z)
 
 
 class _PyqtgraphContour(ContourData):
@@ -140,3 +159,10 @@ class _PyqtgraphContour(ContourData):
 
     def __init__(self, canvas, obj):
         super().__init__(canvas, obj)
+        self._obj = obj
+
+    def _setVisible(self, visible):
+        self._obj.setVisible(visible)
+
+    def _setZ(self, z):
+        self._obj.setZValue(z)

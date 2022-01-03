@@ -26,10 +26,8 @@ class CanvasBaseBase(DrawableCanvasBase):
     def _onWaveModified(self, d):
         if self.__loadFlg:
             return
-        self.saveAppearance()
         self.Remove(d)
         self._Append(d.wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, contour=isinstance(d, ContourData), filter=d.filter, vector=isinstance(d, VectorData))
-        self.loadAppearance()
 
     @saveCanvas
     def Append(self, wave, axis="BottomLeft", id=None, appearance=None, offset=(0, 0, 0, 0), contour=False, filter=None, vector=False):
@@ -57,12 +55,10 @@ class CanvasBaseBase(DrawableCanvasBase):
         obj = func[type](filtered, axis)
         # obj.setZ(ids)
         obj.setMetaData(w, axis, ids, appearance=appearance, offset=offset, zindex=ids, filter=filter, filteredWave=filtered)
-        id_pos = ids + id_def[type]
-        self._Datalist.insert(id_pos, obj)
+        self._Datalist.append(obj)
         obj.modified.connect(self._onWaveModified)
         self.dataChanged.emit()
         if appearance is not None:
-            self.loadAppearance()
             self.__loadFlg = True
             obj.loadAppearance(appearance)
             self.__loadFlg = False
@@ -166,22 +162,9 @@ class CanvasBaseBase(DrawableCanvasBase):
     def getVectorFields(self):
         return self.getWaveData("vector")
 
-    def getDataFromIndexes(self, dim, indexes):
-        res = []
-        if hasattr(indexes, '__iter__'):
-            list = indexes
-        else:
-            list = [indexes]
-        for i in list:
-            for d in self.getWaveData():
-                if d.id == i:
-                    res.append(d)
-        return res
-
     def SaveAsDictionary(self, dictionary, path):
         i = 0
         dic = {}
-        self.saveAppearance()
         for data in self._Datalist:
             dic[i] = {}
             dic[i]['File'] = None
@@ -239,7 +222,6 @@ class CanvasBaseBase(DrawableCanvasBase):
                     filter = None
                 self.Append(w, axis, appearance=ap, offset=offset, contour=contour, filter=filter, vector=vector)
                 i += 1
-        self.loadAppearance()
         os.chdir(sdir)
 
     def _remove(self, data):
@@ -259,120 +241,3 @@ class CanvasBaseBase(DrawableCanvasBase):
 
     def _appendVectorField(self, wav, axis):
         raise NotImplementedError()
-
-    def _setZOrder(self, obj, z):
-        raise NotImplementedError()
-
-
-class DataSelectableCanvasBase(CanvasBaseBase):
-    dataSelected = pyqtSignal()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__indexes = {}
-
-    def setSelectedIndexes(self, dim, indexes):
-        if hasattr(indexes, '__iter__'):
-            list = indexes
-        else:
-            list = [indexes]
-        if dim == 1:
-            self.__indexes["line"] = list
-        if dim == 2:
-            self.__indexes["image"] = list
-        if dim == 3:
-            self.__indexes["rgb"] = list
-        else:
-            self.__indexes[dim] = list
-        self.dataSelected.emit()
-
-    def getSelectedIndexes(self, dim):
-        if dim == 1:
-            return self.__indexes.get("line", [])
-        if dim == 2:
-            return self.__indexes.get("image", [])
-        if dim == 3:
-            return self.__indexes.get("rgb", [])
-        return self.__indexes.get(dim, [])
-
-    def _findIndex(self, id):
-        res = -1
-        for d in self._Datalist:
-            if d.id == id:
-                res = self._Datalist.index(d)
-        return res
-
-    def _reorder(self):
-        n1 = 0
-        n2 = 0
-        for d in self._Datalist:
-            if d.wave.data.ndim == 1:
-                d.id = -2000 + n1
-                n1 += 1
-            if d.wave.data.ndim == 2:
-                d.id = -5000 + n2
-                n2 += 1
-            self._setZOrder(d.obj, d.id)
-
-    @ saveCanvas
-    def moveItem(self, list, target=None):
-        tar = eval(str(target))
-        for l in list:
-            n = self._findIndex(l)
-            item_n = self._Datalist[n]
-            self._Datalist.remove(item_n)
-            if tar is not None:
-                self._Datalist.insert(self._findIndex(tar) + 1, item_n)
-            else:
-                self._Datalist.insert(0, item_n)
-        self._reorder()
-        self.dataChanged.emit()
-
-
-class DataHidableCanvasBase(DataSelectableCanvasBase):
-    def saveAppearance(self):
-        super().saveAppearance()
-        data = self.getWaveData()
-        for d in data:
-            d.appearance['Visible'] = self._isVisible(d.obj)
-
-    def loadAppearance(self):
-        super().loadAppearance()
-        data = self.getWaveData()
-        for d in data:
-            if 'Visible' in d.appearance:
-                self._setVisible(d.obj, d.appearance['Visible'])
-
-    @ saveCanvas
-    def hideData(self, dim, indexes):
-        dat = self.getDataFromIndexes(dim, indexes)
-        for d in dat:
-            self._setVisible(d.obj, False)
-
-    @ saveCanvas
-    def showData(self, dim, indexes):
-        dat = self.getDataFromIndexes(dim, indexes)
-        for d in dat:
-            self._setVisible(d.obj, True)
-
-    def _isVisible(self, obj):
-        raise NotImplementedError()
-
-    def _setVisible(self, obj, b):
-        raise NotImplementedError()
-
-
-class OffsetAdjustableCanvasBase(DataHidableCanvasBase):
-    @ saveCanvas
-    def setOffset(self, offset, indexes):
-        data = self.getDataFromIndexes(None, indexes)
-        for d in data:
-            d.offset = offset
-            d.modified.emit(d)
-
-    def getOffset(self, indexes):
-        res = []
-        data = self.getDataFromIndexes(None, indexes)
-        for d in data:
-            res.append(d.offset)
-        return res

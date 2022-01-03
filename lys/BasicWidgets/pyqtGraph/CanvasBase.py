@@ -122,13 +122,8 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
             else:
                 return self.axes_txy
 
-    def _nextPen(self):
-        list = ["#17becf", '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', "#7f7f7f"]
-        self.npen += 1
-        return pg.mkPen(list[self.npen % 9], width=2)
-
     def _append1d(self, wave, axis):
-        obj = pg.PlotDataItem(x=wave.x, y=wave.data, pen=self._nextPen())
+        obj = pg.PlotDataItem(x=wave.x, y=wave.data)
         self.__getAxes(axis).addItem(obj)
         obj = _PyqtgraphLine(self, obj)
         return obj
@@ -178,23 +173,10 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         ax = self.__getAxes(data.axis)
         ax.removeItem(data.obj)
 
-    def _setZOrder(self, obj, z):
-        obj.setZValue(z)
-
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:
             if i.id == artist.get_zorder():
                 return i
-
-    def axesName(self, axes):
-        if axes == self.axes:
-            return 'Bottom Left'
-        if axes == self.axes_tx:
-            return 'Bottom Right'
-        if axes == self.axes_ty:
-            return 'Top Left'
-        else:
-            return 'Top Right'
 
     def constructContextMenu(self):
         return QMenu(self)
@@ -204,10 +186,3 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
 
     def _onDrag(self, event):
         event.ignore()
-
-    # DataHidableCanvasBase
-    def _isVisible(self, obj):
-        return obj.isVisible()
-
-    def _setVisible(self, obj, b):
-        obj.setVisible(b)

@@ -6,4 +6,6 @@ from .WaveData import WaveData
 
 
 class ContourData(WaveData):
-    pass
+    def __init__(self, canvas, obj):
+        super().__init__(canvas, obj)
+        # self.appearanceSet.connect(self._loadAppearance)

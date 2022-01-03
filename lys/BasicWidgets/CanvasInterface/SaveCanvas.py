@@ -74,11 +74,6 @@ class SavableCanvasBase(BasicEventCanvasBase):
     def LoadFromDictionary(self, dictionary, path):
         pass
 
-    def saveAppearance(self):
-        pass
-
-    def loadAppearance(self):
-        pass
 
 
 class DrawableCanvasBase(SavableCanvasBase):

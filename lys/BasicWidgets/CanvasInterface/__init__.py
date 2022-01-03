@@ -21,7 +21,7 @@ from .CrosshairAnnotation import *
 from .AnnotGUICanvas import *
 
 
-class TemporaryCanvasBase(OffsetAdjustableCanvasBase):
+class TemporaryCanvasBase(CanvasBaseBase):
     saveCanvas = pyqtSignal(dict)
     loadCanvas = pyqtSignal(dict)
 

@@ -29,6 +29,7 @@ class LineData(WaveData):
 
     def __init__(self, canvas, obj):
         super().__init__(canvas, obj)
+        self.appearanceSet.connect(self._loadAppearance)
         if not hasattr(canvas, "_lineColorGenerator"):
             self.canvas()._lineColorGenerator = _ColorGenerator()
         color = self.canvas()._lineColorGenerator.nextColor()

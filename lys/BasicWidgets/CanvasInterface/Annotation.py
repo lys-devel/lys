@@ -24,6 +24,9 @@ class AnnotatableCanvasBase(object):
         self._changed = {}
         self._id_seed = 10000
 
+    def _setZOrder(self, obj, z):
+        raise NotImplementedError()
+
     def _registerType(self, type):
         self._list[type] = []
         self._changed[type] = []

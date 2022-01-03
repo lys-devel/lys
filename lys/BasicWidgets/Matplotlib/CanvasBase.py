@@ -122,54 +122,10 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         else:
             data.obj.remove()
 
-    def _setZOrder(self, obj, z):
-        if isinstance(obj, QuadContourSet):
-            for o in obj.collections:
-                o.set_zorder(z)
-        else:
-            obj.set_zorder(z)
-
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:
             if i.id == artist.get_zorder():
                 return i
 
-    def axesName(self, axes):
-        if axes == self.axes:
-            return 'Bottom Left'
-        if axes == self.axes_tx:
-            return 'Bottom Right'
-        if axes == self.axes_ty:
-            return 'Top Left'
-        else:
-            return 'Top Right'
-
-    def _reorder(self):
-        n1 = 0
-        n2 = 0
-        for d in self._Datalist:
-            if d.wave.data.ndim == 1:
-                d.id = -2000 + n1
-                n1 += 1
-            if d.wave.data.ndim == 2:
-                d.id = -5000 + n2
-                n2 += 1
-            d.obj.set_zorder(d.id)
-        self.draw()
-
     def constructContextMenu(self):
         return QMenu(self)
-
-    # DataHidableCanvasBase
-    def _isVisible(self, obj):
-        if isinstance(obj, QuadContourSet):
-            return obj.collections[0].get_visible()
-        else:
-            return obj.get_visible()
-
-    def _setVisible(self, obj, b):
-        if isinstance(obj, QuadContourSet):
-            for o in obj.collections:
-                o.set_visible(b)
-        else:
-            obj.set_visible(b)

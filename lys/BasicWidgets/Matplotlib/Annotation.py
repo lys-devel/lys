@@ -55,6 +55,9 @@ class AnnotatableCanvas(AreaSettingCanvas, AnnotLineStyleAdjustableCanvas):
     def _setLineWidth(self, obj, width):
         obj.set_linewidth(width)
 
+    def _setZOrder(self, obj, z):
+        obj.set_zorder(z)
+
 
 class TextAnnotationCanvas(AnnotatableCanvas, TextAnnotationCanvasBase):
     def __init__(self, dpi):
