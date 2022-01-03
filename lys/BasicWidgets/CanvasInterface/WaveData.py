@@ -1,4 +1,5 @@
 import warnings
+from lys import filters
 from lys.errors import NotImplementedWarning
 
 from LysQt.QtCore import QObject, pyqtSignal
@@ -11,20 +12,16 @@ class WaveData(CanvasPart):
 
     def __init__(self, canvas, obj):
         super().__init__(canvas)
-        self.obj = obj
         self.appearance = {}
 
     def __del__(self):
         self.wave.modified.disconnect(self._emitModified)
 
-    def setMetaData(self, wave, axis, idn, appearance={}, offset=(0, 0, 0, 0), zindex=0, filter=None, filteredWave=None):
+    def setMetaData(self, wave, axis, offset=(0, 0, 0, 0), filter=None, filteredWave=None):
         self.wave = wave
         self.wave.modified.connect(self._emitModified)
         self.axis = axis
-        self.id = idn
-        self.appearance.update(appearance)
         self.offset = offset
-        self.zindex = zindex
         self.filter = filter
         if filteredWave is not None:
             self.filteredWave = filteredWave
@@ -33,6 +30,17 @@ class WaveData(CanvasPart):
 
     def _emitModified(self):
         self.modified.emit(self)
+
+    def _update(self):
+        self.filteredWave = self._filteredWave(self.wave, self.offset, self.filter)
+        self._updateData()
+
+    def _filteredWave(self, w, offset, filter):
+        if filter is None:
+            filt = filters.Filters([filters.OffsetFilter(offset)])
+        else:
+            filt = filter + filters.OffsetFilter(offset)
+        return filt.execute(w)
 
     @saveCanvas
     def setVisible(self, visible):
@@ -75,3 +83,6 @@ class WaveData(CanvasPart):
 
     def _setVisible(self, visible):
         warnings.warn(str(type(self)) + " does not implement _setVisible(visible) method.", NotImplementedWarning)
+
+    def _updateData(self):
+        raise NotImplementedError(str(type(self)) + " does not implement _updateData() method.")

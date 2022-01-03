@@ -171,7 +171,7 @@ class FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
 
     def _remove(self, data):
         ax = self.__getAxes(data.axis)
-        ax.removeItem(data.obj)
+        ax.removeItem(data._obj)
 
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:

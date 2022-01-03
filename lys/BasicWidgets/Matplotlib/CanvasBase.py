@@ -116,11 +116,11 @@ class FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         return _MatplotlibVector(self, obj)
 
     def _remove(self, data):
-        if isinstance(data.obj, QuadContourSet):
-            for o in data.obj.collections:
+        if isinstance(data._obj, QuadContourSet):
+            for o in data._obj.collections:
                 o.remove()
         else:
-            data.obj.remove()
+            data._obj.remove()
 
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:

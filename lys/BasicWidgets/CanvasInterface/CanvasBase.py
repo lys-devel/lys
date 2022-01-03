@@ -27,10 +27,10 @@ class CanvasBaseBase(DrawableCanvasBase):
         if self.__loadFlg:
             return
         self.Remove(d)
-        self._Append(d.wave, d.axis, d.id, appearance=d.appearance, offset=d.offset, contour=isinstance(d, ContourData), filter=d.filter, vector=isinstance(d, VectorData))
+        self._Append(d.wave, d.axis, appearance=d.appearance, offset=d.offset, contour=isinstance(d, ContourData), filter=d.filter, vector=isinstance(d, VectorData))
 
     @saveCanvas
-    def Append(self, wave, axis="BottomLeft", id=None, appearance=None, offset=(0, 0, 0, 0), contour=False, filter=None, vector=False):
+    def Append(self, wave, axis="BottomLeft", appearance=None, offset=(0, 0, 0, 0), contour=False, filter=None, vector=False):
         if isinstance(wave, list):
             for w in wave:
                 self.Append(w, axis=axis, appearance=appearance, offset=offset, contour=contour, filter=filter, vector=vector)
@@ -41,20 +41,19 @@ class CanvasBaseBase(DrawableCanvasBase):
             wav = load(wave)
         if appearance is None:
             appearance = {}
-        return self._Append(wav, axis, id, dict(appearance), offset, contour=contour, filter=filter, vector=vector)
+        return self._Append(wav, axis, dict(appearance), offset, contour=contour, filter=filter, vector=vector)
 
     @saveCanvas
-    def _Append(self, w, axis, id, appearance, offset, contour=False, filter=None, vector=False):
+    def _Append(self, w, axis, appearance, offset, contour=False, filter=None, vector=False):
         func = {"line": self._append1d, "vector": self._appendVectorField, "image": self._append2d, "contour": self._appendContour}
         func["rgb"] = lambda w, ax: self._append3d(self._makeRGBData(w, appearance), ax)
         id_def = {"line": 2000, "vector": 5500, "image": 5000, "contour": 4000, "rgb": 6000}
 
         type = self._checkType(w, contour, vector)
         filtered = self._filteredWave(w, offset, filter)
-        ids = -id_def[type] + len(self.getWaveData(type))
         obj = func[type](filtered, axis)
-        # obj.setZ(ids)
-        obj.setMetaData(w, axis, ids, appearance=appearance, offset=offset, zindex=ids, filter=filter, filteredWave=filtered)
+        # obj.setZ(-id_def[type] + len(self.getWaveData(type)))
+        obj.setMetaData(w, axis, offset=offset, filter=filter, filteredWave=filtered)
         self._Datalist.append(obj)
         obj.modified.connect(self._onWaveModified)
         self.dataChanged.emit()
