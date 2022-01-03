@@ -159,3 +159,32 @@ class Graph_test(unittest.TestCase):
             im.loadAppearance(ap)
             self.assertEqual(im.getColorRotation(), 99)
             self.assertEqual(im.getColorRange(), (0, 5))
+
+    def test_Vector(self):
+        for g in [self.graphs[0]]:
+            c = g.canvas
+
+            v = c.Append(Wave([[1 + 1j, 2, 3], [4, 5, 6]]), vector=True)
+            v.setWidth(3)
+            self.assertEqual(v.getWidth(), 3)
+
+            v.setScale(4)
+            self.assertEqual(v.getScale(), 4)
+
+            v.setPivot('tail')
+            self.assertEqual(v.getPivot(), 'tail')
+
+            v.setColor('#ff0000')
+            self.assertEqual(v.getColor(), '#ff0000')
+
+            ap = v.saveAppearance()
+            v.setWidth(5)
+            v.setScale(6)
+            v.setPivot('middle')
+            v.setColor('#ff00ff')
+
+            v.loadAppearance(ap)
+            self.assertEqual(v.getWidth(), 3)
+            self.assertEqual(v.getScale(), 4)
+            self.assertEqual(v.getPivot(), 'tail')
+            self.assertEqual(v.getColor(), '#ff0000')

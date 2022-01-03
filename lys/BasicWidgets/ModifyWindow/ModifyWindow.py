@@ -218,11 +218,16 @@ class _VectorTab(QWidget):
         self._initlayout(canvas)
 
     def _initlayout(self, canvas):
-        layout = QVBoxLayout()
-        layout.addWidget(RightClickableSelectionBox(canvas, 2, "vector"))
+        vec = VectorAdjustBox(canvas)
+        sel = RightClickableSelectionBox(canvas, 2, "vector")
+        sel.selected.connect(vec.setVectors)
+
         tab = QTabWidget()
-        tab.addTab(VectorAdjustBox(canvas), 'Vector')
+        tab.addTab(vec, 'Vector')
         tab.addTab(OffsetAdjustBox(canvas, "vector"), 'Offset')
+
+        layout = QVBoxLayout()
+        layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
 

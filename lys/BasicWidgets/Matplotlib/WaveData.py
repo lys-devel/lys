@@ -76,8 +76,23 @@ class _MatplotlibImage(ImageData):
 
 
 class _MatplotlibVector(VectorData):
+    """Implementation of VectorData for matplotlib"""
+
     def __init__(self, canvas, obj):
+        self._obj = obj
         super().__init__(canvas, obj)
+
+    def _setPivot(self, pivot):
+        self._obj.pivot = pivot
+
+    def _setScale(self, scale):
+        self._obj.scale = scale
+
+    def _setWidth(self, width):
+        self._obj.width = width / 100
+
+    def _setColor(self, color):
+        self._obj.set_color(color)
 
 
 class _MatplotlibRGB(RGBData):
@@ -88,5 +103,7 @@ class _MatplotlibRGB(RGBData):
 
 
 class _MatplotlibContour(ContourData):
+    """Implementation of ContourData for matplotlib"""
+
     def __init__(self, canvas, obj):
         super().__init__(canvas, obj)

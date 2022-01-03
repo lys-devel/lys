@@ -142,12 +142,10 @@ class VectorAdjustBox(QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
-        canvas.dataSelected.connect(self.OnDataSelected)
         self.__initlayout()
         self.__flg = False
 
     def __initlayout(self):
-        layout = QVBoxLayout()
         self.__pivot = QComboBox()
         self.__pivot.addItems(self._pivots)
         self.__pivot.currentTextChanged.connect(self.__changePivot)
@@ -157,75 +155,48 @@ class VectorAdjustBox(QWidget):
         self.__width.valueChanged.connect(self.__changeWidth)
         self.__color = ColorSelection()
         self.__color.colorChanged.connect(self.__changeColor)
-        self.__edgecolor = ColorSelection()
-        self.__edgecolor.colorChanged.connect(self.__changeEdgeColor)
 
         grid1 = QGridLayout()
-        grid1.addWidget(QLabel("face"), 0, 1)
-        grid1.addWidget(QLabel("edge"), 0, 2)
+        grid1.addWidget(QLabel("Pivot"), 0, 0)
+        grid1.addWidget(QLabel("color"), 1, 0)
+        grid1.addWidget(QLabel("scale"), 2, 0)
+        grid1.addWidget(QLabel("width"), 3, 0)
+        grid1.addWidget(self.__pivot, 0, 1)
         grid1.addWidget(self.__color, 1, 1)
-        grid1.addWidget(self.__edgecolor, 1, 2)
-        grp1 = QGroupBox("Color")
-        grp1.setLayout(grid1)
+        grid1.addWidget(self.__scale, 2, 1)
+        grid1.addWidget(self.__width, 3, 1)
 
-        grid2 = QGridLayout()
-        grid2.addWidget(QLabel("scale"), 0, 1)
-        grid2.addWidget(QLabel("width"), 0, 2)
-        grid2.addWidget(self.__scale, 1, 1)
-        grid2.addWidget(self.__width, 1, 2)
-        grp2 = QGroupBox("Size")
-        grp2.setLayout(grid2)
-
-        layout.addWidget(self.__pivot)
-        layout.addWidget(grp1)
-        layout.addWidget(grp2)
+        layout = QVBoxLayout()
+        layout.addLayout(grid1)
         layout.addStretch()
         self.setLayout(layout)
 
-    def OnDataSelected(self):
+    def setVectors(self, vectors):
+        self._vectors = vectors
         self.__flg = True
-        indexes = self.canvas.getSelectedIndexes("vector")
-        if len(indexes) == 0:
-            return
-        scale = self.canvas.getVectorScale(indexes)[0]
-        if scale is None:
-            self.__scale.setValue(0)
-        else:
-            self.__scale.setValue(scale)
-        width = self.canvas.getVectorWidth(indexes)[0]
-        if width is None:
-            self.__width.setValue(0)
-        else:
-            self.__width.setValue(width)
+        if len(vectors) != 0:
+            self.__scale.setValue(vectors[0].getScale())
+            self.__width.setValue(vectors[0].getWidth())
+            self.__color.setColor(vectors[0].getColor())
+            self.__pivot.setCurrentText(vectors[0].getPivot())
         self.__flg = False
-        col = self.canvas.getVectorColor(indexes, "face")[0]
-        self.__color.setColor(col)
-        col = self.canvas.getVectorColor(indexes, "edge")[0]
-        self.__edgecolor.setColor(col)
-        p = self.canvas.getVectorPivot(indexes)[0]
-        self.__pivot.setCurrentIndex(self._pivots.index(p))
 
     def __changeLength(self, value):
         if not self.__flg:
-            indexes = self.canvas.getSelectedIndexes("vector")
-            self.canvas.setVectorScale(indexes, value)
+            for v in self._vectors:
+                v.setScale(value)
 
     def __changeWidth(self, value):
         if not self.__flg:
-            indexes = self.canvas.getSelectedIndexes("vector")
-            self.canvas.setVectorWidth(indexes, value)
+            for v in self._vectors:
+                v.setWidth(value)
 
     def __changeColor(self, color):
         if not self.__flg:
-            indexes = self.canvas.getSelectedIndexes("vector")
-            self.canvas.setVectorColor(indexes, color, "face")
-
-    def __changeEdgeColor(self, color):
-        if not self.__flg:
-            indexes = self.canvas.getSelectedIndexes("vector")
-            self.canvas.setVectorColor(indexes, color, "edge")
+            for v in self._vectors:
+                v.setColor(color)
 
     def __changePivot(self):
         if not self.__flg:
-            indexes = self.canvas.getSelectedIndexes("vector")
-            self.canvas.setVectorPivot(indexes, self.__pivot.currentText())
+            for v in self._vectors:
+                v.setPivot(self.__pivot.currentText())

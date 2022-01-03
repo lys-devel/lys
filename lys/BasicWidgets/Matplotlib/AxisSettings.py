@@ -5,14 +5,14 @@ from PyQt5.QtWidgets import *
 from matplotlib import ticker, patches
 
 from lys import *
-from .VectorSettings import *
+from .CanvasBase import *
 from ..CanvasInterface import CanvasAxes, CanvasTicks
 
 opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom'}
 
 
-class RangeSelectableCanvas(VectorSettingCanvas):
+class RangeSelectableCanvas(FigureCanvasBase):
     selectedRangeChanged = pyqtSignal(object)
 
     def __init__(self, dpi=100):
