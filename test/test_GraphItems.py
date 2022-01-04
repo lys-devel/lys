@@ -3,7 +3,7 @@ import shutil
 import os
 import warnings
 
-from lys import glb, home, Wave, Graph, errors
+from lys import glb, home, Wave, Graph, errors, filters
 
 
 class Graph_test(unittest.TestCase):
@@ -63,6 +63,24 @@ class Graph_test(unittest.TestCase):
 
             c.Clear()
             self.assertEqual(len(c.getWaveData()), 0)
+
+    def test_WaveData(self):
+        for g in self.graphs:
+            c = g.canvas
+
+            line = c.Append(Wave([1, 2, 3]))
+            line.setVisible(False)
+            self.assertFalse(line.getVisible())
+
+            line.setOffset((1, 1, 2, 2))
+            self.assertEqual(line.getOffset(), (1, 1, 2, 2))
+
+            f = filters.SimpleMathFilter('+', 1)
+            line.setFilter(f)
+            self.assertEqual(line.getFilter(), f)
+
+            line.setZOrder(11)
+            self.assertEqual(line.getZOrder(), 11)
 
     def test_Line(self):
         for g in self.graphs:

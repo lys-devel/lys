@@ -100,6 +100,10 @@ class WaveData(CanvasPart):
         self.filter = filter
         self._update()
 
+    def getFilter(self):
+        return self.filter
+
+    @saveCanvas
     def setZOrder(self, z):
         """
         Set the z order of the data.
