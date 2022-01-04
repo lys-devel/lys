@@ -35,8 +35,11 @@ class _FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
         AbstractCanvasBase.__init__(self)
         super().__init__()
         self.__resizing = False
-        self.__initAxes()
+        self.fig = self.plotItem
         self.fig.canvas = None
+        self.fig.showAxis('right')
+        self.fig.showAxis('top')
+        self.__initAxes()
 
     def _draw(self):
         self.update()
@@ -46,13 +49,13 @@ class _FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
 
     def __updateViews(self):
         self.__resizing = True
-        self.axes_tx_com.setGeometry(self.axes.sceneBoundingRect())
+        self._axes_tx_com.setGeometry(self._axes.sceneBoundingRect())
         #self.axes_tx_com.linkedViewChanged(self.axes, self.axes_tx_com.XAxis)
 
-        self.axes_ty_com.setGeometry(self.axes.sceneBoundingRect())
+        self._axes_ty_com.setGeometry(self._axes.sceneBoundingRect())
         #self.axes_ty_com.linkedViewChanged(self.axes, self.axes_ty_com.YAxis)
 
-        self.axes_txy_com.setGeometry(self.axes.sceneBoundingRect())
+        self._axes_txy_com.setGeometry(self._axes.sceneBoundingRect())
         #self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.XAxis)
         #self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.YAxis)
         self.__resizing = False
@@ -62,84 +65,84 @@ class _FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
             self.pgRangeChanged.emit(axis)
 
     def __initAxes(self):
-        self.fig = self.plotItem
-        self.axes = self.fig.vb
-        self.fig.showAxis('right')
-        self.fig.showAxis('top')
+        self._axes = self.fig.vb
 
-        self.axes_tx = None
-        self.axes_tx_com = pg.ViewBox()
-        self.fig.scene().addItem(self.axes_tx_com)
-        self.fig.getAxis('right').linkToView(self.axes_tx_com)
-        self.axes_tx_com.setXLink(self.axes)
-        self.axes_tx_com.setYLink(self.axes)
+        self._axes_tx = None
+        self._axes_tx_com = pg.ViewBox()
+        self.fig.scene().addItem(self._axes_tx_com)
+        self.fig.getAxis('right').linkToView(self._axes_tx_com)
+        self._axes_tx_com.setXLink(self._axes)
+        self._axes_tx_com.setYLink(self._axes)
 
-        self.axes_ty = None
-        self.axes_ty_com = pg.ViewBox()
-        self.fig.scene().addItem(self.axes_ty_com)
-        self.fig.getAxis('top').linkToView(self.axes_ty_com)
-        self.axes_ty_com.setXLink(self.axes)
-        self.axes_ty_com.setYLink(self.axes)
+        self._axes_ty = None
+        self._axes_ty_com = pg.ViewBox()
+        self.fig.scene().addItem(self._axes_ty_com)
+        self.fig.getAxis('top').linkToView(self._axes_ty_com)
+        self._axes_ty_com.setXLink(self._axes)
+        self._axes_ty_com.setYLink(self._axes)
 
-        self.axes_txy = None
-        self.axes_txy_com = pg.ViewBox()
-        self.fig.scene().addItem(self.axes_txy_com)
-        self.axes_txy_com.setYLink(self.axes_tx_com)
-        self.axes_txy_com.setXLink(self.axes_ty_com)
+        self._axes_txy = None
+        self._axes_txy_com = pg.ViewBox()
+        self.fig.scene().addItem(self._axes_txy_com)
+        self._axes_txy_com.setYLink(self._axes_tx_com)
+        self._axes_txy_com.setXLink(self._axes_ty_com)
 
         self.fig.getAxis('top').setStyle(showValues=False)
         self.fig.getAxis('right').setStyle(showValues=False)
 
-        self.axes.sigResized.connect(self.__updateViews)
-        self.axes.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Left"))
-        self.axes.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Bottom"))
-        self.axes_txy_com.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Top"))
-        self.axes_txy_com.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Right"))
+        self._axes.sigResized.connect(self.__updateViews)
+        self._axes.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Left"))
+        self._axes.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Bottom"))
+        self._axes_txy_com.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Top"))
+        self._axes_txy_com.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Right"))
 
     def __getAxes(self, axis):
+        self.__enableAxes(axis)
         if axis == "BottomLeft":
-            return self.axes
+            return self._axes
         if axis == "TopLeft":
-            if self.axes_ty is None:
-                self.axes_ty_com.setXLink(None)
-                self.axes_ty = self.axes_ty_com
-                self.fig.getAxis('top').setStyle(showValues=True)
-                self.axisChanged.emit('Top')
-            return self.axes_ty
+            return self._axes_ty
         if axis == "BottomRight":
-            if self.axes_tx is None:
-                self.axes_tx_com.setYLink(None)
-                self.axes_tx = self.axes_tx_com
-                self.fig.getAxis('right').setStyle(showValues=True)
-                self.axisChanged.emit('Right')
-            return self.axes_tx
+            return self._axes_tx
         if axis == "TopRight":
-            if self.axes_txy is None:
-                self.axes_ty_com.setXLink(None)
-                self.axes_tx_com.setYLink(None)
-                self.axes_txy = self.axes_txy_com
-                self.fig.getAxis('top').setStyle(showValues=True)
-                self.fig.getAxis('right').setStyle(showValues=True)
-                self.axisChanged.emit('Right')
-                self.axisChanged.emit('Top')
-            return self.axes_txy
+            return self._axes_txy
+
+    def __enableAxes(self, axis):
+        if axis == "TopLeft" and self._axes_ty is None:
+            self._axes_ty_com.setXLink(None)
+            self._axes_ty = self.axes_ty_com
+            self.fig.getAxis('top').setStyle(showValues=True)
+            self.axisChanged.emit('Top')
+        if axis == "BottomRight" and self._axes_tx is None:
+            self._axes_tx_com.setYLink(None)
+            self._axes_tx = self.axes_tx_com
+            self.fig.getAxis('right').setStyle(showValues=True)
+            self.axisChanged.emit('Right')
+        if axis == "TopRight" and self._axes_txy is None:
+            self._axes_ty_com.setXLink(None)
+            self._axes_tx_com.setYLink(None)
+            self._axes_txy = self._axes_txy_com
+            self.fig.getAxis('top').setStyle(showValues=True)
+            self.fig.getAxis('right').setStyle(showValues=True)
+            self.axisChanged.emit('Right')
+            self.axisChanged.emit('Top')
 
     def getAxes(self, axis='Left'):
         if axis in ["BottomLeft", "BottomRight", "TopLeft", "TopRight"]:
             return self.__getAxes(axis)
         ax = axis
         if ax in ['Left', 'Bottom']:
-            return self.axes
+            return self._axes
         if ax == 'Top':
-            if self.axes_ty is not None:
-                return self.axes_ty
+            if self._axes_ty is not None:
+                return self._axes_ty
             else:
-                return self.axes_txy
+                return self._axes_txy
         if ax == 'Right':
-            if self.axes_tx is not None:
-                return self.axes_tx
+            if self._axes_tx is not None:
+                return self._axes_tx
             else:
-                return self.axes_txy
+                return self._axes_txy
 
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:

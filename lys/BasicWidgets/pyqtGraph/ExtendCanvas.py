@@ -22,10 +22,10 @@ class ExtendCanvas(AnnotGUICanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.fig.scene().sigMouseClicked.connect(self._onClick)
-        self.axes.mouseDragEvent = self._onDrag
+        self.getAxes('BottomLeft').mouseDragEvent = self._onDrag
         self.modf = weakref.WeakMethod(self.defModFunc)
         self.setFocusPolicy(Qt.StrongFocus)
-        self.axes.menu.popup = self.buildContextMenu
+        self.getAxes('BottomLeft').menu.popup = self.buildContextMenu
         return
         self.moveText = False
         self.textPosStart = None
@@ -34,22 +34,22 @@ class ExtendCanvas(AnnotGUICanvas):
     def __findAxis(self, axis):
         axes = axis.axes
         xy = isinstance(axis, XAxis)
-        if axes == self.axes:
+        if axes == self.getAxes('BottomLeft'):
             if xy:
                 return 'Bottom'
             else:
                 return 'Left'
-        elif axes == self.axes_ty:
+        elif axes == self.getAxes('TopLeft'):
             if xy:
                 return 'Top'
             else:
                 return 'Left'
-        elif axes == self.axes_tx:
+        elif axes == self.getAxes('BottomRight'):
             if xy:
                 return 'Bottom'
             else:
                 return 'Right'
-        elif axes == self.axes_txy:
+        elif axes == self.getAxes('TopRight'):
             if xy:
                 return 'Top'
             else:

@@ -46,13 +46,13 @@ class _FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         self.fig = Figure(dpi=dpi)
         AbstractCanvasBase.__init__(self)
         super().__init__(self.fig)
-        self.axes = self.fig.add_subplot(111)  # TODO #This line takes 0.3s for each image.
-        self.axes.minorticks_on()
-        self.axes.xaxis.set_picker(15)
-        self.axes.yaxis.set_picker(15)
-        self.axes_tx = None
-        self.axes_ty = None
-        self.axes_txy = None
+        self._axes = self.fig.add_subplot(111)  # TODO #This line takes 0.3s for each image.
+        self._axes.minorticks_on()
+        self._axes.xaxis.set_picker(15)
+        self._axes.yaxis.set_picker(15)
+        self._axes_tx = None
+        self._axes_ty = None
+        self._axes_txy = None
 
     def _draw(self):
         super().draw()
@@ -61,54 +61,57 @@ class _FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         return self.__getAxes(axis)
 
     def __getAxes(self, axis):
+        self.__enableAxes(axis)
         if axis == "BottomLeft":
-            return self.axes
+            return self._axes
         if axis == "TopLeft":
-            if self.axes_ty is None:
-                self.axes_ty = self.axes.twiny()
-                self.axes_ty.spines['left'].set_visible(False)
-                self.axes_ty.spines['right'].set_visible(False)
-                self.axes_ty.xaxis.set_picker(15)
-                self.axes_ty.yaxis.set_picker(15)
-                self.axes_ty.minorticks_on()
-                self.axisChanged.emit('Top')
-            return self.axes_ty
+            return self._axes_ty
         if axis == "BottomRight":
-            if self.axes_tx is None:
-                self.axes_tx = self.axes.twinx()
-                self.axes_tx.spines['top'].set_visible(False)
-                self.axes_tx.spines['bottom'].set_visible(False)
-                self.axes_tx.xaxis.set_picker(15)
-                self.axes_tx.yaxis.set_picker(15)
-                self.axes_tx.minorticks_on()
-                self.axisChanged.emit('Right')
-            return self.axes_tx
+            return self._axes_tx
         if axis == "TopRight":
-            if self.axes_txy is None:
-                self.__getAxes("TopLeft")
-                self.__getAxes("BottomRight")
-                self.axes_txy = self.axes_tx.twiny()
-                self.axes_txy.get_xaxis().set_tick_params(top=False, labeltop=False, which="both")
-                self.axes_txy.xaxis.set_picker(15)
-                self.axes_txy.yaxis.set_picker(15)
-            return self.axes_txy
+            return self._axes_txy
+
+    def __enableAxes(self, axis):
+        if axis == "TopLeft" and self._axes_ty is None:
+            self._axes_ty = self._axes.twiny()
+            self._axes_ty.spines['left'].set_visible(False)
+            self._axes_ty.spines['right'].set_visible(False)
+            self._axes_ty.xaxis.set_picker(15)
+            self._axes_ty.yaxis.set_picker(15)
+            self._axes_ty.minorticks_on()
+            self.axisChanged.emit('Top')
+        if axis == 'BottomRight' and self._axes_tx is None:
+            self._axes_tx = self.axes.twinx()
+            self._axes_tx.spines['top'].set_visible(False)
+            self._axes_tx.spines['bottom'].set_visible(False)
+            self._axes_tx.xaxis.set_picker(15)
+            self._axes_tx.yaxis.set_picker(15)
+            self._axes_tx.minorticks_on()
+            self.axisChanged.emit('Right')
+        if axis == "TopRight" and self._axes_txy is None:
+            self.__enableAxes("TopLeft")
+            self.__enableAxes("BottomRight")
+            self._axes_txy = self.axes_tx.twiny()
+            self._axes_txy.get_xaxis().set_tick_params(top=False, labeltop=False, which="both")
+            self._axes_txy.xaxis.set_picker(15)
+            self._axes_txy.yaxis.set_picker(15)
 
     def getAxes(self, axis='Left'):
         if axis in ['BottomLeft', 'BottomRight', 'TopLeft', 'TopRight']:
             return self.__getAxes(axis)
         ax = axis
         if ax in ['Left', 'Bottom']:
-            return self.axes
+            return self._axes
         if ax == 'Top':
-            if self.axes_ty is not None:
-                return self.axes_ty
+            if self._axes_ty is not None:
+                return self._axes_ty
             else:
-                return self.axes_txy
+                return self._axes_txy
         if ax == 'Right':
-            if self.axes_tx is not None:
-                return self.axes_tx
+            if self._axes_tx is not None:
+                return self._axes_tx
             else:
-                return self.axes_txy
+                return self._axes_txy
 
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:

@@ -18,7 +18,7 @@ class RangeSelectableCanvas(FigureCanvasBase):
     def __init__(self, dpi=100):
         super().__init__(dpi)
         self.__rect = patches.Rectangle((0, 0), 0, 0, color='orange', alpha=0.5)
-        patch = self.axes.add_patch(self.__rect)
+        patch = self.getAxes("BottomLeft").add_patch(self.__rect)
         patch.set_zorder(20000)
         self.Selection = False
         self.rect_pos_start = [0, 0]

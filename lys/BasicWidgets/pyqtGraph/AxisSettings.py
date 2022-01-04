@@ -29,7 +29,7 @@ class RangeSelectableCanvas(FigureCanvasBase):
         self.roi.addScaleHandle([0, 0.5], [1, 0.5])
         self.roi.addScaleHandle([0.5, 0], [0.5, 1])
         self.roi.addScaleHandle([0.5, 1], [0.5, 0])
-        self.axes.addItem(self.roi)
+        self.getAxes('BottomLeft').addItem(self.roi)
 
     def _onClick(self, event):
         if event.button() == Qt.LeftButton:
@@ -40,13 +40,13 @@ class RangeSelectableCanvas(FigureCanvasBase):
     def _onDrag(self, event, axis=0):
         if event.button() == Qt.LeftButton:
             if event.isStart():
-                self._roi_start = self.axes.mapSceneToView(event.scenePos())
+                self._roi_start = self.getAxes('BottomLeft').mapSceneToView(event.scenePos())
                 self.roi.setPos(self._roi_start)
                 self.roi.show()
                 event.accept()
                 return
             else:
-                self._roi_end = self.axes.mapSceneToView(event.scenePos())
+                self._roi_end = self.getAxes('BottomLeft').mapSceneToView(event.scenePos())
                 self.roi.setSize(self._roi_end - self._roi_start)
                 self.selectedRangeChanged.emit(self.SelectedRange())
                 event.accept()
