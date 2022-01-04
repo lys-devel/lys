@@ -18,7 +18,7 @@ class Graph_test(unittest.TestCase):
         self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
         #self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
 
-    def test_CanvasBase(self):
+    def test_CanvasData(self):
         for g in self.graphs:
             d = {}
             c = g.canvas

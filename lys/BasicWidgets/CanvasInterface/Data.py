@@ -17,6 +17,7 @@ from .Contour import ContourData
 class CanvasData(CanvasPart):
     #_id_def = {"line": 2000, "vector": 5500, "image": 5000, "contour": 4000, "rgb": 6000}
     dataChanged = pyqtSignal()
+    """pyqtSignal that is emittd when data is added/removed/changed."""
 
     def __init__(self, canvas):
         super().__init__(canvas)
@@ -25,12 +26,41 @@ class CanvasData(CanvasPart):
         canvas.loadCanvas.connect(self._load)
 
     @saveCanvas
-    def Append(self, w, axis="BottomLeft", appearance={}, offset=(0, 0, 0, 0), filter=None, contour=False, vector=False):
+    def Append(self, wave, axis="BottomLeft", appearance={}, offset=(0, 0, 0, 0), filter=None, contour=False, vector=False):
+        """
+        Append Wave to graph.
+
+        Data type is determined by the shape and dtype of wave in addition to *contour* and *vector*.
+
+        When 1-dimensional data is added, line is added to the graph.
+
+        When 2-dimensional real data is added and *contour* is False, image is added.
+
+        When 2-dimensional real data is added and *contour* is True, contour is added.
+
+        When 2-dimensional complex data is added and *vector* is False, it is converted to RGB colormap data.
+
+        When 2-dimensional complex data is added and *vector* is True, it is added as vector map.
+
+        When 3-dimensional data is added and its shape[2] is 3 or 4, it is added as RGB(A) color map data.
+
+        See :class:`.Line.LineData`, :class:`.Image.ImageData`, :class:`Contour.ContourData`, :class:`.Vector.VectorData`, :class:`.RGB.RGBData` for detail of each data type.
+
+        Args:
+            wave(Wave): The data to be added.
+            axis('BottomLeft', 'BottomRight', 'TopLeft', or 'TopRight'): The axis to which the data is added.
+            appearance(dict): The dictionary that determins appearance. See :meth:`.WaveData.saveAppearance` for detail.
+            offset(tuple  of length 4): See :meth:`.WaveData.setOffset`
+            filter(filter): See :meth:`.WaveData.setFilter`
+            contour(bool): See above description.
+            vector(bool): See above description.
+
+        """
         func = {"line": self._append1d, "vector": self._appendVectorField, "image": self._append2d, "contour": self._appendContour, "rgb": self._append3d}
-        if isinstance(w, list) or isinstance(w, tuple):
-            return [self.Append(ww, axis=axis, contour=contour, vector=vector) for ww in w]
-        type = self._checkType(w, contour, vector)
-        obj = func[type](w, axis)
+        if isinstance(wave, list) or isinstance(wave, tuple):
+            return [self.Append(ww, axis=axis, contour=contour, vector=vector) for ww in wave]
+        type = self._checkType(wave, contour, vector)
+        obj = func[type](wave, axis)
         obj.setOffset(offset)
         obj.setFilter(filter)
         # obj.setZ(-id_def[type] + len(self.getWaveData(type)))
@@ -61,6 +91,12 @@ class CanvasData(CanvasPart):
 
     @saveCanvas
     def Remove(self, obj):
+        """
+        Remove data from canvas.
+
+        Args:
+            obj(WaveData): WaveData object to be removed.
+        """
         if hasattr(obj, '__iter__'):
             for o in obj:
                 self.Remove(o)
@@ -72,10 +108,19 @@ class CanvasData(CanvasPart):
 
     @ saveCanvas
     def Clear(self):
+        """
+        Remove all data from canvas.
+        """
         while len(self._Datalist) != 0:
             self.Remove(self._Datalist[0])
 
     def getWaveData(self, type="all"):
+        """
+        Return list of WaveData object that is specified by *type*.
+
+        Args:
+            type('all', 'line', 'image', 'rgb', 'vector', or 'contour'): The data type to be returned.
+        """
         if type == "all":
             return self._Datalist
         elif type == "line":
@@ -90,18 +135,33 @@ class CanvasData(CanvasPart):
             return [data for data in self._Datalist if isinstance(data, ContourData)]
 
     def getLines(self):
+        """
+        Return all LineData in the canvas.
+        """
         return self.getWaveData("line")
 
     def getImages(self):
+        """
+        Return all ImageData in the canvas.
+        """
         return self.getWaveData("image")
 
     def getContours(self):
+        """
+        Return all ContourData in the canvas.
+        """
         return self.getWaveData("contour")
 
     def getRGBs(self):
+        """
+        Return all RGBData in the canvas.
+        """
         return self.getWaveData("rgb")
 
     def getVectorFields(self):
+        """
+        Return all VectorData in the canvas.
+        """
         return self.getWaveData("vector")
 
     def _save(self, dictionary):

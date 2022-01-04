@@ -9,16 +9,19 @@ Components of canvas
    graph/Area
    graph/Axes
    graph/AxisLabels
+   graph/Data
 
 Interface to data displayed in the canvas
 ------------------------------------------------------
 .. toctree::
    :maxdepth: 4
 
+   graph/WaveData
    graph/Line
    graph/Image
    graph/RGB
    graph/Vector
+   graph/Contour
 
 Submodules
 ------------------------------------------------------
@@ -35,14 +38,6 @@ lys.BasicWidgets.CanvasInterface.Annotation module
 --------------------------------------------------
 
 .. automodule:: lys.BasicWidgets.CanvasInterface.Annotation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.BasicWidgets.CanvasInterface.CanvasBase module
---------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.CanvasBase
    :members:
    :undoc-members:
    :show-inheritance:
