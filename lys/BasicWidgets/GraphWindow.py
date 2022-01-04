@@ -107,14 +107,14 @@ class Graph(AutoSavedWindow):
         if e.key() == Qt.Key_F:
             wavelis = []
             for d in self.canvas.getLines():
-                if d.wave.FileName is not None:
-                    wavelis.append(d.wave)
+                if d.getWave().FileName is not None:
+                    wavelis.append(d.getWave())
             FittingWindow(self, wavelis, self.canvas)
         if e.key() == Qt.Key_L:
             wavelis = []
             for d in self.canvas.getImages():
-                if d.wave.FileName is not None:
-                    wavelis.append(d.wave)
+                if d.getWave().FileName is not None:
+                    wavelis.append(d.getWave())
             LineProfileWindow(self, wavelis, self.canvas)
         if e.key() == Qt.Key_S:
             text, ok = QInputDialog.getText(self, '---Save Dialog---', 'Enter graph name:')

@@ -170,17 +170,17 @@ class CanvasData(CanvasPart):
             dic[i] = {}
             dic[i]['File'] = None
             b = io.BytesIO()
-            data.wave.export(b)
+            data.getWave().export(b)
             dic[i]['Wave_npz'] = b.getvalue()
-            dic[i]['Axis'] = data.axis
-            dic[i]['Appearance'] = str(data.appearance)
-            dic[i]['Offset'] = str(data.offset)
+            dic[i]['Axis'] = data.getAxis()
+            dic[i]['Appearance'] = str(data.saveAppearance())
+            dic[i]['Offset'] = str(data.getOffset())
             dic[i]['Contour'] = isinstance(data, ContourData)
             dic[i]['Vector'] = isinstance(data, VectorData)
-            if data.filter is None:
+            if data.getFilter() is None:
                 dic[i]['Filter'] = None
             else:
-                dic[i]['Filter'] = str(data.filter)
+                dic[i]['Filter'] = filters.toString(data.getFilter())
         dictionary['Datalist'] = dic
 
     def _load(self, dictionary):

@@ -154,15 +154,16 @@ class CanvasAxes(CanvasPart):
     def _calculateAutoRange(self, axis):
         max = np.nan
         min = np.nan
-        data = [wdata for wdata in self.canvas().getWaveData() if axis in wdata.axis]
+        data = [wdata for wdata in self.canvas().getWaveData() if axis in wdata.getAxis()]
         if len(data) == 0:
             return [0, 1]
         index = {"Left": 1, "Right": 1, "Bottom": 0, "Top": 0}[axis]
         for d in data:
-            if d.filteredWave.data.ndim == 1 and index == 1:
-                ax = d.filteredWave.data
+            wav = d.getFilteredWave()
+            if wav.data.ndim == 1 and index == 1:
+                ax = wav.data
             else:
-                ax = d.filteredWave.getAxis(index)
+                ax = wav.getAxis(index)
             max = np.nanmax([*ax, max])
             min = np.nanmin([*ax, min])
         if len(self.canvas().getLines()) == len(data):

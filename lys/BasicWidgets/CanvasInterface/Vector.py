@@ -14,10 +14,10 @@ class VectorData(WaveData):
     """
 
     def __setAppearance(self, key, value):
-        self.appearance[key] = value
+        self._appearance[key] = value
 
     def __getAppearance(self, key, default=None):
-        return self.appearance.get(key, default)
+        return self._appearance.get(key, default)
 
     @saveCanvas
     def setPivot(self, pivot):
@@ -68,7 +68,7 @@ class VectorData(WaveData):
         Return:
             float: The scale of the vector.
         """
-        return np.max(np.abs(self.filteredWave.data)) * 10
+        return np.max(np.abs(self.getFilteredWave().data)) * 10
 
     @saveCanvas
     def setWidth(self, width):

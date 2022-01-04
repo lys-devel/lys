@@ -23,7 +23,7 @@ class _PyqtgraphData(CanvasData):
         return _PyqtgraphContour(self.canvas(), wav, axis)
 
     def _remove(self, data):
-        ax = self.canvas().getAxes(data.axis)
+        ax = self.canvas().getAxes(data.getAxis())
         ax.removeItem(data._obj)
 
 

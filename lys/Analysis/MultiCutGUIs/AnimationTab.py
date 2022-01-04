@@ -136,7 +136,7 @@ class AnimationTab(QGroupBox):
         for key, value in dic.items():
             c.LoadSetting(key, value)
         for d in data:
-            c.Append(d.wave, appearance=copy.deepcopy(d.appearance), offset=copy.deepcopy(d.offset))
+            c.Append(d.getWave(), appearance=copy.deepcopy(d.saveAppearance()), offset=copy.deepcopy(d.getOffset()))
         ani = animation.FuncAnimation(c.fig, _frame, fargs=(c, axis, params, exe), frames=len(axis), interval=30, repeat=False, init_func=_init)
         ani.save(file, writer='ffmpeg')
         self.__exe.remove(self.__pexe)

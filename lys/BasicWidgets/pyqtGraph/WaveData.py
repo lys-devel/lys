@@ -21,7 +21,7 @@ class _PyqtgraphLine(LineData):
         canvas.getAxes(axis).addItem(self._obj)
 
     def _updateData(self):
-        self._obj.setData(x=self.filteredWave.x, y=self.filteredWave.data)
+        self._obj.setData(x=self.getFilteredWave().x, y=self.getFilteredWave().data)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -132,8 +132,8 @@ class _PyqtgraphImage(ImageData):
         canvas.getAxes(axis).addItem(self._obj)
 
     def _updateData(self):
-        self._obj.setImage(self.filteredWave.data)
-        self._obj.setTransform(_calcExtent2D(self.filteredWave))
+        self._obj.setImage(self.getFilteredWave().data)
+        self._obj.setTransform(_calcExtent2D(self.getFilteredWave()))
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -166,9 +166,9 @@ class _PyqtgraphImage(ImageData):
 
     def __setColor(self, lut, levels, log):
         if log:
-            self._obj.setImage(np.log(self.filteredWave.data), lut=lut, levels=tuple(np.log(levels)))
+            self._obj.setImage(np.log(self.getFilteredWave().data), lut=lut, levels=tuple(np.log(levels)))
         else:
-            self._obj.setImage(self.filteredWave.data, lut=lut, levels=levels)
+            self._obj.setImage(self.getFilteredWave().data, lut=lut, levels=levels)
 
     def _setOpacity(self, opacity):
         self._obj.setOpacity(opacity)
@@ -184,8 +184,8 @@ class _PyqtgraphRGB(RGBData):
         canvas.getAxes(axis).addItem(self._obj)
 
     def _updateData(self):
-        self._obj.setImage(self.filteredWave.data)
-        self._obj.setTransform(_calcExtent2D(self.filteredWave))
+        self._obj.setImage(self.getFilteredWave().data)
+        self._obj.setTransform(_calcExtent2D(self.getFilteredWave()))
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)

@@ -20,30 +20,57 @@ class WaveData(CanvasPart):
 
     def __init__(self, canvas, wave, axis):
         super().__init__(canvas)
-        self.wave = wave
-        self.wave.modified.connect(self._update)
-        self.axis = axis
-        self.appearance = {}
-        self.offset = (0, 0, 0, 0)
-        self.filter = None
-        self.filteredWave = wave
+        self._wave = wave
+        self._wave.modified.connect(self._update)
+        self._axis = axis
+        self._appearance = {}
+        self._offset = (0, 0, 0, 0)
+        self._filter = None
+        self._filteredWave = wave
         self._z = 'default'
 
     def __del__(self):
-        self.wave.modified.disconnect(self._update)
+        self._wave.modified.disconnect(self._update)
 
     @saveCanvas
     def _update(self, *args, **kwargs):
-        self.filteredWave = self._filteredWave(self.wave, self.offset, self.filter)
+        self._filteredWave = self._calcFilteredWave(self._wave, self._offset, self._filter)
         self._updateData()
         self.modified.emit()
 
-    def _filteredWave(self, w, offset, filter):
+    def _calcFilteredWave(self, w, offset, filter):
         if filter is None:
             filt = filters.Filters([filters.OffsetFilter(offset)])
         else:
             filt = filter + filters.OffsetFilter(offset)
         return filt.execute(w)
+
+    def getWave(self):
+        """
+        Get the wave.
+
+        Return:
+            Wave: The wave.
+        """
+        return self._wave
+
+    def getFilteredWave(self):
+        """
+        Get the wave to which offset and filter have been applied.
+
+        Return:
+            Wave: The filtered wave.
+        """
+        return self._filteredWave
+
+    def getAxis(self):
+        """
+        Get the axis to which the data was added.
+
+        Return:
+            str: The axis ('BottomLeft', 'TopLeft', 'BottomRight', or 'TopRight').
+        """
+        return self._axis
 
     @saveCanvas
     def setVisible(self, visible):
@@ -54,7 +81,7 @@ class WaveData(CanvasPart):
             visible(bool): The visibility of the data.
         """
         self._setVisible(visible)
-        self.appearance['Visible'] = visible
+        self._appearance['Visible'] = visible
 
     def getVisible(self):
         """
@@ -63,7 +90,7 @@ class WaveData(CanvasPart):
         Return:
             bool: The visibility of the data.
         """
-        return self.appearance.get('Visible', True)
+        return self._appearance.get('Visible', True)
 
     @saveCanvas
     def setOffset(self, offset):
@@ -75,7 +102,7 @@ class WaveData(CanvasPart):
         Args:
             offset(tuple of length 4 float): The offset in the form of (x0, y0, x1, y1). 
         """
-        self.offset = offset
+        self._offset = offset
         self._update()
 
     def getOffset(self):
@@ -87,7 +114,7 @@ class WaveData(CanvasPart):
         Return:
             tuple of length 4 float: The offset in the form of (x0, y0, x1, y1). 
         """
-        return self.offset
+        return tuple(self._offset)
 
     @saveCanvas
     def setFilter(self, filter=None):
@@ -97,11 +124,11 @@ class WaveData(CanvasPart):
         Args:
             filter(filterr): The filter. See :class:`lys.filters.filter.FilterInterface.FilterInterface` 
         """
-        self.filter = filter
+        self._filter = filter
         self._update()
 
     def getFilter(self):
-        return self.filter
+        return self._filter
 
     @saveCanvas
     def setZOrder(self, z):
@@ -132,7 +159,7 @@ class WaveData(CanvasPart):
         Return:
             dict: dictionary that include all appearance information.
         """
-        return dict(self.appearance)
+        return dict(self._appearance)
 
     @saveCanvas
     def loadAppearance(self, appearance):

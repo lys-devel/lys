@@ -20,10 +20,10 @@ class ImageData(WaveData):
     """
 
     def __setAppearance(self, key, value):
-        self.appearance[key] = value
+        self._appearance[key] = value
 
     def __getAppearance(self, key, default=None):
-        return self.appearance.get(key, default)
+        return self._appearance.get(key, default)
 
     @saveCanvas
     def setColormap(self, cmap):
@@ -123,7 +123,7 @@ class ImageData(WaveData):
         Return:
             tuple of length 2: minimum and maximum value of the range.
         """
-        dat = np.nan_to_num(self.filteredWave.data)
+        dat = np.nan_to_num(self.getFilteredWave().data)
         ma, mi = np.percentile(dat, [95, 5])
         dat = np.clip(dat, mi, ma)
         var = np.sqrt(dat.var()) * 3

@@ -77,7 +77,7 @@ class DataSelectionBox(QTreeView):
         list = self.canvas.getWaveData(self.__type)
         self.__model.clear()
         for i, data in enumerate(list):
-            item = QStandardItem(data.wave.name)
+            item = QStandardItem(data.getWave().name)
             self.__model.setItem(len(list) - 1 - i, 0, item)
             self.__model.setItem(len(list) - 1 - i, 1, QStandardItem(data.axis))
             #self.__model.setItem(len(list) - 1 - i, 2, QStandardItem(str(data.id)))
@@ -139,9 +139,9 @@ class RightClickableSelectionBox(DataSelectionBox):
         res = []
         for d in self._selectedData():
             if type == "Wave":
-                res.append(d.wave)
+                res.append(d.getWave())
             else:
-                res.append(d.filteredWave)
+                res.append(d.getFilteredWave())
         return res
 
     def __visible(self, visible):
@@ -160,7 +160,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         from lys import Graph
         g = Graph.active(exclude=self.canvas)
         for d in self.__getWaves(type):
-            g.Append(d.wave, **kwargs)
+            g.Append(d.getWave(), **kwargs)
 
     def __multicut(self, type):
         from lys import MultiCut
@@ -171,24 +171,20 @@ class RightClickableSelectionBox(DataSelectionBox):
         from lys import Table
         t = Table()
         for d in self.__getWaves(type):
-            t.Append(d.wave)
+            t.Append(d.getWave())
 
     def __print(self, type):
         for d in self.__getWaves():
-            print(d.wave)
+            print(d.getWave())
 
     def __process(self):
         from lys.filters import FiltersDialog
 
         class dialog(FiltersDialog):
             def __init__(self, data):
-                super().__init__(data.wave.data.ndim)
-                self.data = data
-                self.applied.connect(self.__set)
+                super().__init__(data.getWave().data.ndim)
+                self.applied.connect(data.setFilter)
 
-            def __set(self, f):
-                self.data.filter = f
-                self.data.wave.modified.emit(self.data.wave)
         data = self.__getWaves()[0]
         d = dialog(data)
         if data.filter is not None:

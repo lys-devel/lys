@@ -15,10 +15,10 @@ class RGBData(WaveData):
     """
 
     def __setAppearance(self, key, value):
-        self.appearance[key] = value
+        self._appearance[key] = value
 
     def __getAppearance(self, key, default=None):
-        return self.appearance.get(key, default)
+        return self._appearance.get(key, default)
 
     @saveCanvas
     def setColorRange(self, min='auto', max='auto'):
@@ -48,7 +48,7 @@ class RGBData(WaveData):
         Return:
             tuple of length 2: minimum and maximum value of the range.
         """
-        return (0, np.max(np.abs(self.wave.data)))
+        return (0, np.max(np.abs(self.getWave().data)))
 
     @saveCanvas
     def setColorRotation(self, rot):
@@ -71,7 +71,7 @@ class RGBData(WaveData):
         return self.__getAppearance('ColorRotation')
 
     def getRGBWave(self):
-        return self._makeRGBData(self.filteredWave, self.appearance)
+        return self._makeRGBData(self.getFilteredWave(), self.saveAppearance())
 
     def _makeRGBData(self, wav, appearance):
         wav = wav.duplicate()

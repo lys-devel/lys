@@ -13,7 +13,7 @@ class _MatplotlibLine(LineData):
         self._obj, = canvas.getAxes(axis).plot(wave.x, wave.data, picker=5)
 
     def _updateData(self):
-        self._obj.set_data(self.filteredWave.x, self.filteredWave.data)
+        self._obj.set_data(self.getFilteredWave().x, self.getFilteredWave().data)
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
@@ -62,8 +62,8 @@ class _MatplotlibImage(ImageData):
         self._obj = canvas.getAxes(axis).imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=_calcExtent2D(wave), picker=True)
 
     def _updateData(self):
-        self._obj.set_data(self.filteredWave.data.swapaxes(0, 1))
-        self._obj.set_extent(_calcExtent2D(self.filteredWave))
+        self._obj.set_data(self.getFilteredWave().data.swapaxes(0, 1))
+        self._obj.set_extent(_calcExtent2D(self.getFilteredWave()))
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
@@ -111,8 +111,8 @@ class _MatplotlibVector(VectorData):
         self._obj = canvas.getAxes(axis).quiver(xx, yy, np.real(wave.data.T), np.imag(wave.data.T), pivot="mid")
 
     def _updateData(self):
-        X, Y = np.meshgrid(self.filteredWave.x, self.filteredWave.y)
-        self._obj.set_UVC(np.real(self.filteredWave.data.T), np.imag(self.filteredWave.data.T))
+        X, Y = np.meshgrid(self.getFilteredWave().x, self.getFilteredWave().y)
+        self._obj.set_UVC(np.real(self.getFilteredWave().data.T), np.imag(self.getFilteredWave().data.T))
         self._obj.set_offsets(np.array([X.flatten(), Y.flatten()]).T)
 
     def _setVisible(self, visible):

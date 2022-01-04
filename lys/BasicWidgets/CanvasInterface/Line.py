@@ -28,10 +28,10 @@ class LineData(WaveData):
     """
 
     def __setAppearance(self, key, value):
-        self.appearance[key] = value
+        self._appearance[key] = value
 
     def __getAppearance(self, key, default=None):
-        return self.appearance.get(key, default)
+        return self._appearance.get(key, default)
 
     @saveCanvas
     def setColor(self, color):

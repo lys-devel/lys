@@ -41,6 +41,10 @@ class Filters(FilterInterface):
         return self._filters
 
     @staticmethod
+    def toString(filter):
+        return str(Filters([filter]))
+
+    @staticmethod
     def fromString(data):
         if isinstance(data, str):
             data = eval(data)

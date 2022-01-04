@@ -497,7 +497,6 @@ class CutTab(QWidget):
             if self._usegraph.isChecked():
                 g = display(w)
                 self.canvases.append(g.canvas, ax)
-                g.canvas.deleted.connect(self.canvases.remove)
                 g.canvas.clicked.connect(lambda x, y: self._gridClicked(g.canvas))
                 return g.canvas
             else:
@@ -519,7 +518,6 @@ class CutTab(QWidget):
                 c.Append(w)
                 c.keyPressed.connect(self.parent.keyPress)
                 self.canvases.append(c, ax)
-                c.deleted.connect(self.canvases.remove)
                 c.clicked.connect(lambda x, y: self._gridClicked(c))
                 self.grid.Append(c, *pos, *wid)
                 return c
