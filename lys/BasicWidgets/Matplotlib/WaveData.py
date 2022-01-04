@@ -84,7 +84,7 @@ class _MatplotlibImage(ImageData):
         self._obj.set_cmap(colormap)
 
     def _setColorRange(self, min, max):
-        if self.isLog:
+        if self.isLog():
             norm = colors.LogNorm(vmin=min, vmax=max)
         else:
             norm = colors.Normalize(vmin=min, vmax=max)
