@@ -28,17 +28,17 @@ class Graph_test(unittest.TestCase):
             data2d = Wave([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
             data2dc = Wave([[1 + 1j, 2 + 2j], [3 + 3j, 4 + 4j]])
             line = c.Append(data1d)
+            line2 = c.Append(data1d, axis="TopRight")
             image = c.Append(data2d)
             #ont = c.Append(data2d, contour=True)
             rgb = c.Append(data2dc)
             # vec = c.Append(data2dc, vector=True)
 
             # get wave data
-            self.assertEqual(len(c.getLines()), 1)
+            self.assertEqual(len(c.getLines()), 2)
             self.assertEqual(len(c.getImages()), 1)
             #self.assertEqual(len(c.getContours()), 1)
             self.assertEqual(len(c.getRGBs()), 1)
-            self.assertEqual(len(c.getWaveData()), 3)
             #self.assertEqual(len(c.getVectorFields()), 1)
 
             c.SaveAsDictionary(d)
@@ -49,14 +49,14 @@ class Graph_test(unittest.TestCase):
             # c.Remove(cont)
             c.Remove(rgb)
 
-            self.assertEqual(len(c.getLines()), 0)
+            self.assertEqual(len(c.getLines()), 1)
             self.assertEqual(len(c.getImages()), 0)
             #self.assertEqual(len(c.getContours()), 0)
             self.assertEqual(len(c.getRGBs()), 0)
 
             # load
             c.LoadFromDictionary(d)
-            self.assertEqual(len(c.getLines()), 1)
+            self.assertEqual(len(c.getLines()), 2)
             self.assertEqual(len(c.getImages()), 1)
             #self.assertEqual(len(c.getContours()), 1)
             self.assertEqual(len(c.getRGBs()), 1)

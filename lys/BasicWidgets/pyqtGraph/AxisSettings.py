@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import warnings
 import numpy as np
+import pyqtgraph as pg
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -16,81 +17,126 @@ opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom', 'left': 'Right', 'right': 'Left', 'bottom': 'Top', 'top': 'Bottom'}
 
 
-class RangeSelectableCanvas(FigureCanvasBase):
-    selectedRangeChanged = pyqtSignal(object)
-
-    def __init__(self, dpi=100):
-        super().__init__(dpi)
-        self.roi = pg.RectROI([0, 0], [0, 0], invertible=True)
-        self.roi.hide()
-        self.roi.addScaleHandle([1, 1], [0, 0])
-        self.roi.addScaleHandle([0, 0], [1, 1])
-        self.roi.addScaleHandle([1, 0.5], [0, 0.5])
-        self.roi.addScaleHandle([0, 0.5], [1, 0.5])
-        self.roi.addScaleHandle([0.5, 0], [0.5, 1])
-        self.roi.addScaleHandle([0.5, 1], [0.5, 0])
-        self.getAxes('BottomLeft').addItem(self.roi)
-
-    def _onClick(self, event):
-        if event.button() == Qt.LeftButton:
-            if self.roi.isVisible():
-                self.roi.hide()
-        return super()._onClick(event)
-
-    def _onDrag(self, event, axis=0):
-        if event.button() == Qt.LeftButton:
-            if event.isStart():
-                self._roi_start = self.getAxes('BottomLeft').mapSceneToView(event.scenePos())
-                self.roi.setPos(self._roi_start)
-                self.roi.show()
-                event.accept()
-                return
-            else:
-                self._roi_end = self.getAxes('BottomLeft').mapSceneToView(event.scenePos())
-                self.roi.setSize(self._roi_end - self._roi_start)
-                self.selectedRangeChanged.emit(self.SelectedRange())
-                event.accept()
-                return
-        return super()._onDrag(event)
-
-    def IsRangeSelected(self):
-        return self.roi.isVisible()
-
-    def ClearSelectedRange(self):
-        self.roi.hide()
-
-    def SelectedRange(self):
-        if self.roi.isVisible():
-            return (np.array([self._roi_start.x(), self._roi_start.y()]), np.array([self._roi_end.x(), self._roi_end.y()]))
-        else:
-            return None
-
-
 class _pyqtGraphAxes(CanvasAxes):
     def __init__(self, canvas):
         super().__init__(canvas)
-        self.canvas().pgRangeChanged.connect(self._rangeChanged)
+        self.__resizing = False
+        self.__initAxes(canvas)
 
-    def _rangeChanged(self, axis):
-        if "Left" in axis and self.axisIsValid("Left"):
-            _, yrange = self.canvas().getAxes("Left").viewRange()
-            if yrange != self.getAxisRange("Left"):
-                self.setAxisRange("Left", yrange)
-        if "Right" in axis and self.axisIsValid("Right"):
-            _, yrange = self.canvas().getAxes("Right").viewRange()
-            if yrange != self.getAxisRange("Right"):
-                self.setAxisRange("Right", yrange)
-        if "Bottom" in axis and self.axisIsValid("Bottom"):
-            xrange, _ = self.canvas().getAxes("Bottom").viewRange()
-            if xrange != self.getAxisRange("Bottom"):
-                self.setAxisRange("Bottom", xrange)
-        if "Top" in axis and self.axisIsValid("Top"):
-            xrange, _ = self.canvas().getAxes("Top").viewRange()
-            if xrange != self.getAxisRange("Top"):
-                self.setAxisRange("Top", xrange)
+    def __initAxes(self, canvas):
+        self._axes = canvas.fig.vb
 
-    def _isValid(self, axis):
-        return self.canvas().getAxes(axis) is not None
+        self._axes_tx = None
+        self._axes_tx_com = pg.ViewBox()
+        canvas.fig.scene().addItem(self._axes_tx_com)
+        canvas.fig.getAxis('right').linkToView(self._axes_tx_com)
+        self._axes_tx_com.setXLink(self._axes)
+        self._axes_tx_com.setYLink(self._axes)
+
+        self._axes_ty = None
+        self._axes_ty_com = pg.ViewBox()
+        canvas.fig.scene().addItem(self._axes_ty_com)
+        canvas.fig.getAxis('top').linkToView(self._axes_ty_com)
+        self._axes_ty_com.setXLink(self._axes)
+        self._axes_ty_com.setYLink(self._axes)
+
+        self._axes_txy = None
+        self._axes_txy_com = pg.ViewBox()
+        canvas.fig.scene().addItem(self._axes_txy_com)
+        self._axes_txy_com.setYLink(self._axes_tx_com)
+        self._axes_txy_com.setXLink(self._axes_ty_com)
+
+        canvas.fig.getAxis('top').setStyle(showValues=False)
+        canvas.fig.getAxis('right').setStyle(showValues=False)
+
+        self._axes.sigResized.connect(self.__updateViews)
+        self._axes.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Left"))
+        self._axes.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Bottom"))
+        self._axes_txy_com.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Top"))
+        self._axes_txy_com.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Right"))
+
+    def __updateViews(self):
+        self.__resizing = True
+        self._axes_tx_com.setGeometry(self._axes.sceneBoundingRect())
+        #self.axes_tx_com.linkedViewChanged(self.axes, self.axes_tx_com.XAxis)
+
+        self._axes_ty_com.setGeometry(self._axes.sceneBoundingRect())
+        #self.axes_ty_com.linkedViewChanged(self.axes, self.axes_ty_com.YAxis)
+
+        self._axes_txy_com.setGeometry(self._axes.sceneBoundingRect())
+        #self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.XAxis)
+        #self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.YAxis)
+        self.__resizing = False
+
+    def __viewRangeChanged(self, axis):
+        if not self.__resizing:
+            if "Left" in axis and self.axisIsValid("Left"):
+                _, yrange = self.canvas().getAxes("Left").viewRange()
+                if yrange != self.getAxisRange("Left"):
+                    self.setAxisRange("Left", yrange)
+            if "Right" in axis and self.axisIsValid("Right"):
+                _, yrange = self.canvas().getAxes("Right").viewRange()
+                if yrange != self.getAxisRange("Right"):
+                    self.setAxisRange("Right", yrange)
+            if "Bottom" in axis and self.axisIsValid("Bottom"):
+                xrange, _ = self.canvas().getAxes("Bottom").viewRange()
+                if xrange != self.getAxisRange("Bottom"):
+                    self.setAxisRange("Bottom", xrange)
+            if "Top" in axis and self.axisIsValid("Top"):
+                xrange, _ = self.canvas().getAxes("Top").viewRange()
+                if xrange != self.getAxisRange("Top"):
+                    self.setAxisRange("Top", xrange)
+
+    def __getAxes(self, axis):
+        if axis == "BottomLeft":
+            return self._axes
+        if axis == "TopLeft":
+            return self._axes_ty
+        if axis == "BottomRight":
+            return self._axes_tx
+        if axis == "TopRight":
+            return self._axes_txy
+
+    def __enableAxes(self, axis):
+        if axis == "TopLeft" and self._axes_ty is None:
+            self._axes_ty_com.setXLink(None)
+            self._axes_ty = self._axes_ty_com
+            self.canvas().fig.getAxis('top').setStyle(showValues=True)
+        if axis == "BottomRight" and self._axes_tx is None:
+            self._axes_tx_com.setYLink(None)
+            self._axes_tx = self._axes_tx_com
+            self.canvas().fig.getAxis('right').setStyle(showValues=True)
+        if axis == "TopRight" and self._axes_txy is None:
+            self._axes_ty_com.setXLink(None)
+            self._axes_tx_com.setYLink(None)
+            self._axes_txy = self._axes_txy_com
+            self.canvas().fig.getAxis('top').setStyle(showValues=True)
+            self.canvas().fig.getAxis('right').setStyle(showValues=True)
+
+    def _addAxis(self, axis):
+        if axis == "Right":
+            self.__enableAxes("BottomRight")
+        if axis == 'Top':
+            self.__enableAxes("TopLeft")
+        if self.axisIsValid("Right") and self.axisIsValid("Top"):
+            self.__enableAxes("TopRight")
+
+    def getAxes(self, axis='Left'):
+        if axis in ["BottomLeft", "BottomRight", "TopLeft", "TopRight"]:
+            return self.__getAxes(axis)
+        ax = axis
+        if ax in ['Left', 'Bottom']:
+            return self._axes
+        if ax == 'Top':
+            if self._axes_ty is not None:
+                return self._axes_ty
+            else:
+                return self._axes_txy
+        if ax == 'Right':
+            if self._axes_tx is not None:
+                return self._axes_tx
+            else:
+                return self._axes_txy
 
     def _setRange(self, axis, range):
         axes = self.canvas().getAxes(axis)
@@ -102,6 +148,10 @@ class _pyqtGraphAxes(CanvasAxes):
             axes.setXRange(*range, padding=0)
             axes.disableAutoRange(axis='x')
             axes.invertX(range[0] > range[1])
+        if axis == 'Top' and self._axes_txy is not None:
+            self._axes_txy.invertX(range[0] > range[1])
+        if axis == 'Right' and self._axes_txy is not None:
+            self._axes_txy.invertY(range[0] > range[1])
 
     def _setAxisThick(self, axis, thick):
         ax = self._getAxisList(axis)
@@ -206,7 +256,7 @@ class _pyqtGraphTicks(CanvasTicks):
                 ax.setTickSpacing(major=self.getTickInterval(axis, which="major", raw=False), minor=self.getTickInterval(axis, which=w, raw=False))
 
 
-class AxesCanvas(RangeSelectableCanvas):
+class AxesCanvas(FigureCanvasBase):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self._axs = _pyqtGraphAxes(self)
@@ -222,7 +272,57 @@ class AxesCanvas(RangeSelectableCanvas):
         return super().__getattr__(key)
 
 
-class AxisRangeRightClickCanvas(AxesCanvas):
+class RangeSelectableCanvas(AxesCanvas):
+    selectedRangeChanged = pyqtSignal(object)
+
+    def __init__(self, dpi=100):
+        super().__init__(dpi)
+        self.roi = pg.RectROI([0, 0], [0, 0], invertible=True)
+        self.roi.hide()
+        self.roi.addScaleHandle([1, 1], [0, 0])
+        self.roi.addScaleHandle([0, 0], [1, 1])
+        self.roi.addScaleHandle([1, 0.5], [0, 0.5])
+        self.roi.addScaleHandle([0, 0.5], [1, 0.5])
+        self.roi.addScaleHandle([0.5, 0], [0.5, 1])
+        self.roi.addScaleHandle([0.5, 1], [0.5, 0])
+        self.getAxes('BottomLeft').addItem(self.roi)
+
+    def _onClick(self, event):
+        if event.button() == Qt.LeftButton:
+            if self.roi.isVisible():
+                self.roi.hide()
+        return super()._onClick(event)
+
+    def _onDrag(self, event, axis=0):
+        if event.button() == Qt.LeftButton:
+            if event.isStart():
+                self._roi_start = self.getAxes('BottomLeft').mapSceneToView(event.scenePos())
+                self.roi.setPos(self._roi_start)
+                self.roi.show()
+                event.accept()
+                return
+            else:
+                self._roi_end = self.getAxes('BottomLeft').mapSceneToView(event.scenePos())
+                self.roi.setSize(self._roi_end - self._roi_start)
+                self.selectedRangeChanged.emit(self.SelectedRange())
+                event.accept()
+                return
+        return super()._onDrag(event)
+
+    def IsRangeSelected(self):
+        return self.roi.isVisible()
+
+    def ClearSelectedRange(self):
+        self.roi.hide()
+
+    def SelectedRange(self):
+        if self.roi.isVisible():
+            return (np.array([self._roi_start.x(), self._roi_start.y()]), np.array([self._roi_end.x(), self._roi_end.y()]))
+        else:
+            return None
+
+
+class AxisRangeRightClickCanvas(RangeSelectableCanvas):
     @ saveCanvas
     def __ExpandAndShrink(self, mode, axis):
         if not self.axisIsValid(axis):

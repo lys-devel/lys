@@ -26,6 +26,7 @@ class ExtendCanvas(AnnotGUICanvas):
         self.modf = weakref.WeakMethod(self.defModFunc)
         self.setFocusPolicy(Qt.StrongFocus)
         self.getAxes('BottomLeft').menu.popup = self.buildContextMenu
+        self.initCanvas.emit()
         return
         self.moveText = False
         self.textPosStart = None

@@ -77,10 +77,9 @@ class DataSelectionBox(QTreeView):
         list = self.canvas.getWaveData(self.__type)
         self.__model.clear()
         for i, data in enumerate(list):
-            item = QStandardItem(data.getWave().name)
-            self.__model.setItem(len(list) - 1 - i, 0, item)
-            self.__model.setItem(len(list) - 1 - i, 1, QStandardItem(data.axis))
-            #self.__model.setItem(len(list) - 1 - i, 2, QStandardItem(str(data.id)))
+            self.__model.setItem(i, 0, QStandardItem(data.getWave().name))
+            self.__model.setItem(i, 1, QStandardItem(data.getAxis()))
+            self.__model.setItem(i, 2, QStandardItem(str(data.getZOrder())))
         self.flg = False
 
     def _onSelected(self):

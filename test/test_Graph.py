@@ -141,6 +141,12 @@ class Graph_test(unittest.TestCase):
             self.assertFalse(c.getMirrorAxis("Left"))
             self.assertEqual(c.getAxisMode("Left"), "linear")
 
+            c.addAxis("Right")
+            c.addAxis("Top")
+
+            self.assertTrue(c.axisIsValid('Right'))
+            self.assertTrue(c.axisIsValid('Top'))
+
     def test_Ticks(self):
         for g in self.graphs:
             d = {}

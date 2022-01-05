@@ -12,99 +12,94 @@ opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom'}
 
 
-class RangeSelectableCanvas(FigureCanvasBase):
-    selectedRangeChanged = pyqtSignal(object)
-
-    def __init__(self, dpi=100):
-        super().__init__(dpi)
-        self.__rect = patches.Rectangle((0, 0), 0, 0, color='orange', alpha=0.5)
-        patch = self.getAxes("BottomLeft").add_patch(self.__rect)
-        patch.set_zorder(20000)
-        self.Selection = False
-        self.rect_pos_start = [0, 0]
-        self.rect_pos_end = [0, 0]
-        self.mpl_connect('button_press_event', self.OnMouseDown)
-        self.mpl_connect('button_release_event', self.OnMouseUp)
-        self.mpl_connect('motion_notify_event', self.OnMouseMove)
-
-    def __GlobalToAxis(self, x, y, ax):
-        loc = self.__GlobalToRatio(x, y, ax)
-        xlim = ax.get_xlim()
-        ylim = ax.get_ylim()
-        x_ax = xlim[0] + (xlim[1] - xlim[0]) * loc[0]
-        y_ax = ylim[0] + (ylim[1] - ylim[0]) * loc[1]
-        return [x_ax, y_ax]
-
-    def __GlobalToRatio(self, x, y, ax):
-        ran = ax.get_position()
-        x_loc = (x - ran.x0 * self.width()) / ((ran.x1 - ran.x0) * self.width())
-        y_loc = (y - ran.y0 * self.height()) / ((ran.y1 - ran.y0) * self.height())
-        return [x_loc, y_loc]
-
-    def OnMouseDown(self, event):
-        if event.button == 1:
-            self.Selection = True
-            self.__saved = self.copy_from_bbox(self.axes.bbox)
-            self.rect_pos_start = [event.x, event.y]
-            self.rect_pos_end = [event.x, event.y]
-            ax = self.__GlobalToAxis(event.x, event.y, self.axes)
-            self.__rect.set_xy(ax)
-
-    def OnMouseUp(self, event):
-        if self.Selection == True and event.button == 1:
-            self.rect_pos_end = [event.x, event.y]
-            ax = self.__GlobalToAxis(event.x, event.y, self.axes)
-            self.__rect.set_width(ax[0] - self.__rect.xy[0])
-            self.__rect.set_height(ax[1] - self.__rect.xy[1])
-            self.draw()
-            self.selectedRangeChanged.emit(self.SelectedRange())
-            self.Selection = False
-
-    def OnMouseMove(self, event):
-        if self.Selection == True:
-            ax = self.__GlobalToAxis(event.x, event.y, self.axes)
-            self.__rect.set_width(ax[0] - self.__rect.xy[0])
-            self.__rect.set_height(ax[1] - self.__rect.xy[1])
-            self.restore_region(self.__saved)
-            self.axes.draw_artist(self.__rect)
-            self.blit(self.axes.bbox)
-            self.selectedRangeChanged.emit(self.SelectedRange())
-            self.flush_events()
-
-    def IsRangeSelected(self):
-        return not self.__rect.get_width() == 0
-
-    def ClearSelectedRange(self):
-        self.__rect.set_width(0)
-        self.__rect.set_height(0)
-
-    def SelectedRange(self):
-        start = self.__GlobalToAxis(self.rect_pos_start[0], self.rect_pos_start[1], self.axes)
-        end = self.__GlobalToAxis(self.rect_pos_end[0], self.rect_pos_end[1], self.axes)
-        if start[0] == end[0] and start[1] == end[1]:
-            return None
-        else:
-            return (start, end)
-
-
 class _MatplotlibAxes(CanvasAxes):
-    def _isValid(self, axis):
-        return self.canvas().getAxes(axis) is not None
+    def __init__(self, canvas):
+        super().__init__(canvas)
+        self.__initAxes(canvas)
+
+    def __initAxes(self, canvas):
+        self._axes = canvas.fig.add_subplot(111)  # TODO #This line takes 0.3s for each image.
+        self._axes.minorticks_on()
+        self._axes.xaxis.set_picker(15)
+        self._axes.yaxis.set_picker(15)
+        self._axes_tx = None
+        self._axes_ty = None
+        self._axes_txy = None
+
+    def __getAxes(self, axis):
+        if axis == "BottomLeft":
+            return self._axes
+        if axis == "TopLeft":
+            return self._axes_ty
+        if axis == "BottomRight":
+            return self._axes_tx
+        if axis == "TopRight":
+            return self._axes_txy
+
+    def getAxes(self, axis='Left'):
+        if axis in ['BottomLeft', 'BottomRight', 'TopLeft', 'TopRight']:
+            return self.__getAxes(axis)
+        ax = axis
+        if ax in ['Left', 'Bottom']:
+            return self._axes
+        if ax == 'Top':
+            if self._axes_ty is not None:
+                return self._axes_ty
+            else:
+                return self._axes_txy
+        if ax == 'Right':
+            if self._axes_tx is not None:
+                return self._axes_tx
+            else:
+                return self._axes_txy
+
+    def _addAxis(self, axis):
+        if axis == "Right":
+            self.__enableAxes("BottomRight")
+        if axis == 'Top':
+            self.__enableAxes("TopLeft")
+        if self.axisIsValid("Right") and self.axisIsValid("Top"):
+            self.__enableAxes("TopRight")
+
+    def __enableAxes(self, axis):
+        if axis == "TopLeft" and self._axes_ty is None:
+            self._axes_ty = self._axes.twiny()
+            self._axes_ty.spines['left'].set_visible(False)
+            self._axes_ty.spines['right'].set_visible(False)
+            self._axes_ty.xaxis.set_picker(15)
+            self._axes_ty.yaxis.set_picker(15)
+            self._axes_ty.minorticks_on()
+        if axis == 'BottomRight' and self._axes_tx is None:
+            self._axes_tx = self._axes.twinx()
+            self._axes_tx.spines['top'].set_visible(False)
+            self._axes_tx.spines['bottom'].set_visible(False)
+            self._axes_tx.xaxis.set_picker(15)
+            self._axes_tx.yaxis.set_picker(15)
+            self._axes_tx.minorticks_on()
+        if axis == "TopRight" and self._axes_txy is None:
+            self._axes_txy = self._axes_tx.twiny()
+            self._axes_txy.get_xaxis().set_tick_params(top=False, labeltop=False, which="both")
+            self._axes_txy.xaxis.set_picker(15)
+            self._axes_txy.yaxis.set_picker(15)
 
     def _setRange(self, axis, range):
-        axes = self.canvas().getAxes(axis)
+        axes = self.getAxes(axis)
         if axis in ['Left', 'Right']:
             axes.set_ylim(range)
         if axis in ['Top', 'Bottom']:
             axes.set_xlim(range)
+        if axis == 'Top':
+            topAxes = self.getAxes("TopRight")
+            if topAxes is not None:
+                topAxes.set_xlim(range)
 
     def _setAxisThick(self, axis, thick):
-        axes = self.canvas().getAxes(axis)
+        axes = self.getAxes(axis)
         axes.spines[axis.lower()].set_linewidth(thick)
         axes.spines[opposite[axis]].set_linewidth(thick)
 
     def _setAxisColor(self, axis, color):
-        axes = self.canvas().getAxes(axis)
+        axes = self.getAxes(axis)
         axes.spines[axis.lower()].set_edgecolor(color)
         axes.spines[opposite[axis]].set_edgecolor(color)
         if axis in ['Left', 'Right']:
@@ -113,10 +108,10 @@ class _MatplotlibAxes(CanvasAxes):
             axes.get_xaxis().set_tick_params(color=color, which='both')
 
     def _setMirrorAxis(self, axis, value):
-        self.canvas().getAxes(axis).spines[opposite[axis]].set_visible(value)
+        self.getAxes(axis).spines[opposite[axis]].set_visible(value)
 
     def _setAxisMode(self, axis, mod):
-        axes = self.canvas().getAxes(axis)
+        axes = self.getAxes(axis)
         if axis in ['Left', 'Right']:
             axes.set_yscale(mod)
         else:
@@ -169,7 +164,7 @@ class _MatplotlibTicks(CanvasTicks):
             axes.get_xaxis().set_tick_params(direction=direction, which='both')
 
 
-class AxesCanvas(RangeSelectableCanvas):
+class AxesCanvas(FigureCanvasBase):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self._axs = _MatplotlibAxes(self)
@@ -185,7 +180,82 @@ class AxesCanvas(RangeSelectableCanvas):
         return super().__getattr__(key)
 
 
-class AxisRangeRightClickCanvas(AxesCanvas):
+class RangeSelectableCanvas(AxesCanvas):
+    selectedRangeChanged = pyqtSignal(object)
+
+    def __init__(self, dpi=100):
+        super().__init__(dpi)
+        self.__rect = patches.Rectangle((0, 0), 0, 0, color='orange', alpha=0.5)
+        patch = self.getAxes("BottomLeft").add_patch(self.__rect)
+        patch.set_zorder(20000)
+        self.Selection = False
+        self.rect_pos_start = [0, 0]
+        self.rect_pos_end = [0, 0]
+        self.mpl_connect('button_press_event', self.OnMouseDown)
+        self.mpl_connect('button_release_event', self.OnMouseUp)
+        self.mpl_connect('motion_notify_event', self.OnMouseMove)
+
+    def __GlobalToAxis(self, x, y, ax):
+        loc = self.__GlobalToRatio(x, y, ax)
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+        x_ax = xlim[0] + (xlim[1] - xlim[0]) * loc[0]
+        y_ax = ylim[0] + (ylim[1] - ylim[0]) * loc[1]
+        return [x_ax, y_ax]
+
+    def __GlobalToRatio(self, x, y, ax):
+        ran = ax.get_position()
+        x_loc = (x - ran.x0 * self.width()) / ((ran.x1 - ran.x0) * self.width())
+        y_loc = (y - ran.y0 * self.height()) / ((ran.y1 - ran.y0) * self.height())
+        return [x_loc, y_loc]
+
+    def OnMouseDown(self, event):
+        if event.button == 1:
+            self.Selection = True
+            self.__saved = self.copy_from_bbox(self.getAxes("BottomLeft").bbox)
+            self.rect_pos_start = [event.x, event.y]
+            self.rect_pos_end = [event.x, event.y]
+            ax = self.__GlobalToAxis(event.x, event.y, self.getAxes("BottomLeft"))
+            self.__rect.set_xy(ax)
+
+    def OnMouseUp(self, event):
+        if self.Selection == True and event.button == 1:
+            self.rect_pos_end = [event.x, event.y]
+            ax = self.__GlobalToAxis(event.x, event.y, self.getAxes("BottomLeft"))
+            self.__rect.set_width(ax[0] - self.__rect.xy[0])
+            self.__rect.set_height(ax[1] - self.__rect.xy[1])
+            self.draw()
+            self.selectedRangeChanged.emit(self.SelectedRange())
+            self.Selection = False
+
+    def OnMouseMove(self, event):
+        if self.Selection == True:
+            ax = self.__GlobalToAxis(event.x, event.y, self.getAxes("BottomLeft"))
+            self.__rect.set_width(ax[0] - self.__rect.xy[0])
+            self.__rect.set_height(ax[1] - self.__rect.xy[1])
+            self.restore_region(self.__saved)
+            self.getAxes("BottomLeft").draw_artist(self.__rect)
+            self.blit(self.getAxes("BottomLeft").bbox)
+            self.selectedRangeChanged.emit(self.SelectedRange())
+            self.flush_events()
+
+    def IsRangeSelected(self):
+        return not self.__rect.get_width() == 0
+
+    def ClearSelectedRange(self):
+        self.__rect.set_width(0)
+        self.__rect.set_height(0)
+
+    def SelectedRange(self):
+        start = self.__GlobalToAxis(self.rect_pos_start[0], self.rect_pos_start[1], self.getAxes("BottomLeft"))
+        end = self.__GlobalToAxis(self.rect_pos_end[0], self.rect_pos_end[1], self.getAxes("BottomLeft"))
+        if start[0] == end[0] and start[1] == end[1]:
+            return None
+        else:
+            return (start, end)
+
+
+class AxisRangeRightClickCanvas(RangeSelectableCanvas):
     def __GlobalToAxis(self, x, y, ax):
         loc = self.__GlobalToRatio(x, y, ax)
         xlim = ax.get_xlim()
@@ -286,7 +356,6 @@ class AxisRangeRightClickCanvas(AxesCanvas):
         for axis in ['Left', 'Right', 'Bottom', 'Top']:
             self.setAutoScaleAxis(axis)
         self.ClearSelectedRange()
-        self.draw()
 
 
 class AxisRangeScrollableCanvas(AxisRangeRightClickCanvas):
@@ -319,7 +388,7 @@ class AxisRangeScrollableCanvas(AxisRangeRightClickCanvas):
 
     def __ExpandGraph(self, x, y, axis, step):
         ratio = 1.05**step
-        loc = self.__GlobalToRatio(x, y, self.axes)
+        loc = self.__GlobalToRatio(x, y, self.getAxes("BottomLeft"))
         if axis in {"Bottom"}:
             old = self.getAxisRange('Bottom')
             cent = (old[1] - old[0]) * loc[0] + old[0]
@@ -338,7 +407,7 @@ class AxisRangeScrollableCanvas(AxisRangeRightClickCanvas):
             self.setAxisRange('Top', [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio])
 
     def __FindRegion(self, x, y):
-        ran = self.axes.get_position()
+        ran = self.getAxes("BottomLeft").get_position()
         x_loc = x / self.width()
         y_loc = y / self.height()
         pos_mode = "OutOfFigure"

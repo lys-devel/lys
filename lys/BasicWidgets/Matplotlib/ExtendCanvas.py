@@ -25,6 +25,7 @@ class ExtendCanvas(SaveSettingCanvas):
         self.moveText = False
         self.textPosStart = None
         self.cursorPosStart = None
+        self.initCanvas.emit()
 
     def __findAxis(self, axis):
         axes = axis.axes
@@ -107,7 +108,7 @@ class ExtendCanvas(SaveSettingCanvas):
                 return super().OnMouseDown(event)
             self.modf()(self)
         elif event.button == 1:
-            self.clicked.emit(*self.__GlobalToAxis(event.x, event.y, self.axes))
+            self.clicked.emit(*self.__GlobalToAxis(event.x, event.y, self.getAxes("BottomLeft")))
             self.annot = self.getPickedAnnotation()
             if self.annot is not None:
                 self.annotindex = self.annot.get_zorder()

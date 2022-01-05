@@ -18,6 +18,7 @@ from .AnnotGUICanvas import *
 class TemporaryCanvasBase(DrawableCanvasBase):
     saveCanvas = pyqtSignal(dict)
     loadCanvas = pyqtSignal(dict)
+    initCanvas = pyqtSignal()
 
     def SaveAsDictionary(self, dictionary, path):
         super().SaveAsDictionary(dictionary, path)

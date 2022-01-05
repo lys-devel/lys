@@ -7,28 +7,35 @@ from .SaveCanvas import CanvasPart, saveCanvas
 
 class CanvasAxes(CanvasPart):
     """
-    Interface to access axes of canvas. 
+    Interface to access axes of canvas.
     All methods in this interface can be accessed from :class:`CanvasBase` instance.
     Developers should implement a abstract methods.
     """
+    axisChanged = pyqtSignal(str)
+    """Emitted when the right or top axis is added."""
+
     axisRangeChanged = pyqtSignal()
     """Emitted when the range of axes is changed."""
 
     def __init__(self, canvas):
         super().__init__(canvas)
-        canvas.axisChanged.connect(lambda ax: self.setAutoScaleAxis(ax))
+        self.axisChanged.connect(lambda ax: self.setAutoScaleAxis(ax))
         canvas.dataChanged.connect(self._update)
         canvas.saveCanvas.connect(self._save)
         canvas.loadCanvas.connect(self._load)
+        canvas.initCanvas.connect(self._init)
         self.__initialize()
 
     def __initialize(self):
+        self.__axisList = ["Left", "Bottom"]
         self.__auto = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
         self.__range = {'Left': [0, 1], 'Right': [0, 1], 'Top': [0, 1], 'Bottom': [0, 1]}
         self.__thick = {'Left': 1, 'Right': 1, 'Top': 1, 'Bottom': 1}
         self.__color = {'Left': "#000000", 'Right': "#000000", 'Top': "#000000", 'Bottom': "#000000"}
         self.__mirror = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
         self.__mode = {'Left': "linear", 'Right': "linear", 'Top': "linear", 'Bottom': "linear"}
+
+    def _init(self):
         for ax in self.axisList():
             self.setAutoScaleAxis(ax)
             self.setAxisThick(ax, 1)
@@ -40,6 +47,19 @@ class CanvasAxes(CanvasPart):
         for ax in self.canvas().axisList():
             if self.isAutoScaled(ax):
                 self.setAutoScaleAxis(ax)
+
+    @ saveCanvas
+    def addAxis(self, axis):
+        """
+        Add top/right axis to the canvas.
+
+        Args:
+            axis('Top' or 'Right'): The axis to be added.
+        """
+        if not self.axisIsValid(axis):
+            self.__axisList.append(axis)
+            self._addAxis(axis)
+            self.axisChanged.emit(axis)
 
     def axisIsValid(self, axis):
         """
@@ -62,7 +82,7 @@ class CanvasAxes(CanvasPart):
             g.canvas.axisIsValid("Right")
             # False
         """
-        return self._isValid(axis)
+        return axis in self.__axisList
 
     def axisList(self):
         """
@@ -79,15 +99,9 @@ class CanvasAxes(CanvasPart):
             g.canvas.axisList()
             # ['Left', 'Bottom']
         """
-        res = ['Left']
-        if self.axisIsValid('Right'):
-            res.append('Right')
-        res.append('Bottom')
-        if self.axisIsValid('Top'):
-            res.append('Top')
-        return res
+        return self.__axisList
 
-    @saveCanvas
+    @ saveCanvas
     def setAxisRange(self, axis, range):
         """
         Set the axis view limits.
@@ -126,7 +140,7 @@ class CanvasAxes(CanvasPart):
         if self.axisIsValid(axis):
             return self.__range[axis]
 
-    @saveCanvas
+    @ saveCanvas
     def setAutoScaleAxis(self, axis):
         """
         Autoscale the axis view to the data.
@@ -205,7 +219,7 @@ class CanvasAxes(CanvasPart):
         if self.axisIsValid(axis):
             return self.__auto[axis]
 
-    @saveCanvas
+    @ saveCanvas
     def setAxisThick(self, axis, thick):
         """
         Set thick of axis.
@@ -237,7 +251,7 @@ class CanvasAxes(CanvasPart):
         if self.axisIsValid(axis):
             return self.__thick[axis]
 
-    @saveCanvas
+    @ saveCanvas
     def setAxisColor(self, axis, color):
         """
         Set color of axis.
@@ -269,7 +283,7 @@ class CanvasAxes(CanvasPart):
         if self.axisIsValid(axis):
             return self.__color[axis]
 
-    @saveCanvas
+    @ saveCanvas
     def setMirrorAxis(self, axis, value):
         """
         Enable/disable mirror axis.
@@ -301,7 +315,7 @@ class CanvasAxes(CanvasPart):
         if self.axisIsValid(axis):
             return self.__mirror[axis]
 
-    @saveCanvas
+    @ saveCanvas
     def setAxisMode(self, axis, mode):
         """
         Set axis mode.
@@ -335,6 +349,7 @@ class CanvasAxes(CanvasPart):
 
     def _save(self, dictionary):
         dic = {}
+        dictionary['AxisList'] = self.axisList()
         list = ['Left', 'Right', 'Top', 'Bottom']
         for ax in list:
             if self.axisIsValid(ax):
@@ -360,6 +375,9 @@ class CanvasAxes(CanvasPart):
         dictionary['AxisSetting'] = dic
 
     def _load(self, dictionary):
+        if 'AxisList' in dictionary:
+            for ax in dictionary['AxisList']:
+                self.addAxis(ax)
         if 'AxisRange' in dictionary:
             dic = dictionary['AxisRange']
             for ax in ['Left', 'Right', 'Top', 'Bottom']:
@@ -400,7 +418,7 @@ class CanvasAxes(CanvasPart):
 
 class CanvasTicks(CanvasPart):
     """
-    Interface to access ticks of canvas. 
+    Interface to access ticks of canvas.
     All methods in this interface can be accessed from :class:`CanvasBase` instance.
     Developers should implement a abstract methods.
     """
@@ -449,7 +467,7 @@ class CanvasTicks(CanvasPart):
             self.setTickVisible(ax, False, mirror=True, which='both')
             self.setTickDirection(ax, "in")
 
-    @saveCanvas
+    @ saveCanvas
     def setTickWidth(self, axis, value, which='major'):
         """
         Set thick of ticks.
@@ -489,7 +507,7 @@ class CanvasTicks(CanvasPart):
             return
         return self.__width[which][axis]
 
-    @saveCanvas
+    @ saveCanvas
     def setTickLength(self, axis, value, which='major'):
         """
         Set length of ticks.
@@ -529,7 +547,7 @@ class CanvasTicks(CanvasPart):
             return
         return self.__length[which][axis]
 
-    @saveCanvas
+    @ saveCanvas
     def setTickInterval(self, axis, value=0, which='major'):
         """
         Set interval of ticks.
@@ -603,7 +621,7 @@ class CanvasTicks(CanvasPart):
                 return d * p / 4
             return d * p / 5
 
-    @saveCanvas
+    @ saveCanvas
     def setTickVisible(self, axis, value, mirror=False, which='both'):
         """
         Set visibility of ticks.
@@ -646,7 +664,7 @@ class CanvasTicks(CanvasPart):
         else:
             return self.__visible[which][axis]
 
-    @saveCanvas
+    @ saveCanvas
     def setTickDirection(self, axis, direction):
         """
         Set direction of ticks.

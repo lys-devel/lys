@@ -1,5 +1,6 @@
 import warnings
 import io
+import numpy as np
 import _pickle as cPickle
 
 from LysQt.QtCore import pyqtSignal
@@ -15,7 +16,6 @@ from .Contour import ContourData
 
 
 class CanvasData(CanvasPart):
-    #_id_def = {"line": 2000, "vector": 5500, "image": 5000, "contour": 4000, "rgb": 6000}
     dataChanged = pyqtSignal()
     """pyqtSignal that is emittd when data is added/removed/changed."""
 
@@ -59,18 +59,25 @@ class CanvasData(CanvasPart):
         func = {"line": self._append1d, "vector": self._appendVectorField, "image": self._append2d, "contour": self._appendContour, "rgb": self._append3d}
         if isinstance(wave, list) or isinstance(wave, tuple):
             return [self.Append(ww, axis=axis, contour=contour, vector=vector) for ww in wave]
-        type = self._checkType(wave, contour, vector)
+        self.__addAxes(axis)
+        type = self.__checkType(wave, contour, vector)
         obj = func[type](wave, axis)
         obj.setOffset(offset)
         obj.setFilter(filter)
-        # obj.setZ(-id_def[type] + len(self.getWaveData(type)))
+        obj.setZOrder(self.__getDefaultZ(type))
         obj.loadAppearance(appearance)
         obj.modified.connect(self.dataChanged)
         self._Datalist.append(obj)
         self.dataChanged.emit()
         return obj
 
-    def _checkType(self, wav, contour, vector):
+    def __addAxes(self, axis):
+        if axis in ["BottomRight", "TopRight"]:
+            self.canvas().addAxis("Right")
+        if axis in ["TopLeft", "TopRight"]:
+            self.canvas().addAxis("Top")
+
+    def __checkType(self, wav, contour, vector):
         if wav.data.ndim == 1:
             return "line"
         elif wav.data.ndim == 2:
@@ -89,7 +96,12 @@ class CanvasData(CanvasPart):
                 return "rgb"
         raise RuntimeError("[Graph] Can't append this data. shape = " + str(wav.data.shape))
 
-    @saveCanvas
+    def __getDefaultZ(self, type):
+        id_def = {"line": 8000, "image": 2000, "vector": 6000, "contour": 4000, "rgb": 0}
+        data = self.getWaveData(type)
+        return np.max([d.getZOrder() for d in data] + [id_def[type]]) + 1
+
+    @ saveCanvas
     def Remove(self, obj):
         """
         Remove data from canvas.
@@ -175,6 +187,7 @@ class CanvasData(CanvasPart):
             dic[i]['Axis'] = data.getAxis()
             dic[i]['Appearance'] = str(data.saveAppearance())
             dic[i]['Offset'] = str(data.getOffset())
+            dic[i]['ZOrder'] = data.getZOrder()
             dic[i]['Contour'] = isinstance(data, ContourData)
             dic[i]['Vector'] = isinstance(data, VectorData)
             if data.getFilter() is None:
@@ -185,21 +198,29 @@ class CanvasData(CanvasPart):
 
     def _load(self, dictionary):
         axisDict = {1: "BottomLeft", 2: "TopLeft", 3: "BottomRight", 4: "TopRight", "BottomLeft": "BottomLeft", "TopLeft": "TopLeft", "BottomRight": "BottomRight", "TopRight": "TopRight"}
-        i = 0
+        self.Clear()
         if 'Datalist' in dictionary:
             dic = dictionary['Datalist']
+            i = 0
             while i in dic:
                 w = self.__loadWave(dic[i])
                 axis = axisDict[dic[i]['Axis']]
-                ap = eval(dic[i].get('Appearance', "dict()"))
-                offset = eval(dic[i].get('Offset', "(0,0,0,0)"))
                 contour = dic[i].get('Contour', False)
                 vector = dic[i].get('Vector', False)
-                filter = dic[i].get('Filter', None)
-                if filter is not None:
-                    filter = filters.fromString(filter)
-                self.Append(w, axis, appearance=ap, offset=offset, filter=filter, contour=contour, vector=vector)
+                obj = self.Append(w, axis, contour=contour, vector=vector)
+                self.__loadMetaData(obj, dic[i])
                 i += 1
+
+    def __loadMetaData(self, obj, d):
+        if 'ZOrder' in d:
+            obj.setZOrder(d['ZOrder'])
+        if 'Offset' in d:
+            obj.setOffset(eval(d['Offset']))
+        filter = d.get('Filter', None)
+        if filter is not None:
+            obj.setFilter(filters.fromString(filter))
+        if 'Appearance' in d:
+            obj.loadAppearance(eval(d['Appearance']))
 
     def __loadWave(self, d):
         w = d['File']
@@ -217,19 +238,19 @@ class CanvasData(CanvasPart):
         return w
 
     def _remove(self, data):
-        raise NotImplementedError()
+        raise NotImplementedError(str(type(self)) + " does not implement _remove(data) method.")
 
     def _append1d(self, wave, axis):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _append1d(wave, axis) method.", NotImplementedWarning)
 
     def _append2d(self, wave, axis):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _append2d(wave, axis) method.", NotImplementedWarning)
 
     def _append3d(self, wave, axis):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _append3d(wave, axis) method.", NotImplementedWarning)
 
     def _appendContour(self, wave, axis):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _appendContour(wave, axis) method.", NotImplementedWarning)
 
     def _appendVectorField(self, wav, axis):
-        raise NotImplementedError()
+        warnings.warn(str(type(self)) + " does not implement _appendVectorField(wave, axis) method.", NotImplementedWarning)
