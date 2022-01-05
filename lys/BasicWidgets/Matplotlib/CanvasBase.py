@@ -8,11 +8,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-import matplotlib as mpl
-
 from .WaveData import _MatplotlibLine, _MatplotlibImage, _MatplotlibVector, _MatplotlibRGB, _MatplotlibContour
-
-mpl.rc('image', cmap='gray')
 
 
 class _MatplotlibData(CanvasData):
@@ -40,7 +36,6 @@ class _MatplotlibData(CanvasData):
 
 
 class _FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
-
     def __init__(self, dpi=100):
         self.fig = Figure(dpi=dpi)
         AbstractCanvasBase.__init__(self)
@@ -48,9 +43,6 @@ class _FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
 
     def _draw(self):
         super().draw()
-
-    def _getAxesFrom(self, axis):
-        return self.getAxes(axis)
 
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:

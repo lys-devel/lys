@@ -27,7 +27,7 @@ class LineAnnotCanvas(AnnotationSettingCanvas, LineAnnotationCanvasBase):
         LineAnnotationCanvasBase.LoadFromDictionary(self, dictionary, path)
 
     def _makeLineAnnot(self, pos, axis):
-        axes = self._getAxesFrom(axis)
+        axes = self.getAxes(axis)
         line, = axes.plot((pos[0][0], pos[1][0]), (pos[0][1], pos[1][1]), picker=5)
         return line
 

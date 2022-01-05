@@ -65,7 +65,7 @@ class TextAnnotationCanvas(AnnotatableCanvas, TextAnnotationCanvasBase):
         TextAnnotationCanvasBase.__init__(self)
 
     def _makeObject(self, text, axis, appearance, id, x, y, box, size, picker):
-        axes = self._getAxesFrom(axis)
+        axes = self.getAxes(axis)
         return axes.text(x, y, text, transform=axes.transAxes, picker=picker, bbox=box, size=size)
 
     def _setText(self, obj, txt):

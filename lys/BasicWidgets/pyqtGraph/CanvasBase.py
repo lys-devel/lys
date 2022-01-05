@@ -39,9 +39,6 @@ class _FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
     def _draw(self):
         self.update()
 
-    def _getAxesFrom(self, axis):
-        return self.__getAxes(axis)
-
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:
             if i.id == artist.get_zorder():
