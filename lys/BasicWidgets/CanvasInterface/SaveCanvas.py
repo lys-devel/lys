@@ -1,8 +1,6 @@
 import functools
 import weakref
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QObject, pyqtSignal
 
 
 def saveCanvas(func):
@@ -18,7 +16,8 @@ def saveCanvas(func):
             canvas.saveflg = True
             res = func(*args, **kwargs)
             canvas.Save()
-            canvas.draw()
+            canvas.drawCanvas()
+            canvas.updated.emit()
             canvas.saveflg = False
         return res
     return wrapper
@@ -62,12 +61,24 @@ class SavableCanvasBase(object):
             self.savef()()
 
 
-class DrawableCanvasBase(SavableCanvasBase):
-    def draw(self):
-        try:
-            self._draw()
-        except Exception:
-            pass
+_saveCanvasDummy = saveCanvas
+
+
+class AbstractCanvasBase(SavableCanvasBase):
+    saveCanvas = pyqtSignal(dict)
+    loadCanvas = pyqtSignal(dict)
+    initCanvas = pyqtSignal()
+    updated = pyqtSignal()
+
+    def SaveAsDictionary(self, dictionary):
+        self.saveCanvas.emit(dictionary)
+
+    @_saveCanvasDummy
+    def LoadFromDictionary(self, dictionary):
+        self.loadCanvas.emit(dictionary)
+
+    def drawCanvas(self):
+        self._draw()
 
     def _draw(self):
         pass

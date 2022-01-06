@@ -1,23 +1,10 @@
-#!/usr/bin/env python
-import random
-import weakref
-import gc
-import sys
-import os
-import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure, SubplotParams
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import colors, patches
-from matplotlib.patches import BoxStyle
-import matplotlib
 
 from lys import *
 
 from .Annotation import *
-from .CanvasBase import saveCanvas
 
 
 class AnnotGUICanvas(AnnotationSettingCanvas, AnnotGUICanvasBase):

@@ -1,26 +1,15 @@
 import warnings
-import weakref
 import numpy as np
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from LysQt.QtCore import pyqtSignal
 
 from lys.errors import NotImplementedWarning
 from .LineAnnotation import LineAnnotation, InfiniteLineAnnotation
 from .RectAnnotation import RectAnnotation
 from .RegionAnnotation import RegionAnnotation
 from .CrossAnnotation import CrossAnnotation
-from .SaveCanvas import *
-
-
-class AnnotationData(object):
-    def __init__(self, name, obj, idn, appearance):
-        self.name = name
-        self.obj = obj
-        self.id = idn
-        self.appearance = appearance
-        self.axes = "BottomLeft"
+from .TextAnnotation import TextAnnotation
+from .SaveCanvas import CanvasPart, saveCanvas
 
 
 class CanvasAnnotation(CanvasPart):
@@ -40,6 +29,8 @@ class CanvasAnnotation(CanvasPart):
         self.canvas().loadCanvas.connect(self.__loadRegion)
         self.canvas().saveCanvas.connect(self.__saveCross)
         self.canvas().loadCanvas.connect(self.__loadCross)
+        self.canvas().saveCanvas.connect(self.__saveText)
+        self.canvas().loadCanvas.connect(self.__loadText)
 
     def __getRange(self, dir, axis):
         if dir == "x":
@@ -96,7 +87,7 @@ class CanvasAnnotation(CanvasPart):
                 p = (p0, p1)
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
-                obj = self.addLineAnnotation(p, axis, appearance=appearance)
+                self.addLineAnnotation(p, axis, appearance=appearance)
                 i += 1
 
     @saveCanvas
@@ -204,7 +195,7 @@ class CanvasAnnotation(CanvasPart):
                 t = dic[i]['Type']
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
-                self.addRegion(p, t, axis, appearance=appearance)
+                self.addRegionAnnotation(p, t, axis, appearance=appearance)
                 i += 1
 
     @saveCanvas
@@ -239,11 +230,59 @@ class CanvasAnnotation(CanvasPart):
                 self.addCrossAnnotation(p, axis, appearance=appearance)
                 i += 1
 
-    # def removeAnnotation(self, annot):
-    #    pass
+    @saveCanvas
+    def addText(self, text, pos=None, axis="BottomLeft", appearance={}):
+        if pos is None:
+            rb = self.__getRange('x', axis)
+            rl = self.__getRange('y', axis)
+            pos = (np.min(rb) + (np.max(rb) - np.min(rb)) / 2, np.min(rl) + (np.max(rl) - np.min(rl)) / 2)
+        obj = self._addText(text, pos, axis)
+        return self.__addObject(obj, appearance)
 
-    # def getAnnotations(self, type="all"):
-    #    pass
+    def getTextAnnotations(self):
+        return [annot for annot in self._annotations if isinstance(annot, TextAnnotation)]
+
+    def __saveText(self, dictionary):
+        dic = {}
+        for i, data in enumerate(self.getTextAnnotations()):
+            dic[i] = {}
+            dic[i]['Text'] = self.getText()
+            dic[i]['Appearance'] = str(data.saveAppearance())
+            dic[i]['Axis'] = self.getAxis()
+        dictionary['Textlist'] = dic
+
+    def __loadText(self, dictionary):
+        if 'Textlist' in dictionary:
+            dic = dictionary['Textlist']
+            i = 0
+            while i in dic:
+                t = dic[i]['Text']
+                appearance = eval(dic[i]['Appearance'])
+                axis = self._axisDict[dic[i]['Axis']]
+                self.addText(t, axis, appearance=appearance)
+                i += 1
+
+    def getAnnotations(self, type="all"):
+        if type == "all":
+            return self._annotations
+        if type == "text":
+            return self.getTextAnnotations()
+        if type == "line":
+            return self.getLineAnnotations()
+        if type == "infiniteLine":
+            return self.getInfiniteLineAnnotations()
+        if type == "rect":
+            return self.getRectAnnotations()
+        if type == "region":
+            return self.getRegionAnnotations()
+        if type == "cross":
+            return self.getCrossAnnotations()
+        pass
+
+    def removeAnnotation(self, annot):
+        self._annotations.remove(annot)
+        self._removeAnnotation(annot)
+        self.annotationChanged.emit()
 
     def _addLineAnnotation(self, pos, axis):
         warnings.warn(str(type(self)) + " does not implement _addLineAnnotation(pos, axis) method.", NotImplementedWarning)
@@ -260,204 +299,8 @@ class CanvasAnnotation(CanvasPart):
     def _addCrossAnnotation(self, pos, axis):
         warnings.warn(str(type(self)) + " does not implement _addCrossAnnotation(pos, axis) method.", NotImplementedWarning)
 
+    def _addText(self, text, pos, axis):
+        warnings.warn(str(type(self)) + " does not implement _addTextAnnotation(text, pos, axis) method.", NotImplementedWarning)
 
-class AnnotatableCanvasBase(object):
-    def __init__(self):
-        self._list = {}
-        self._id_start = {}
-        self._changed = {}
-        self._id_seed = 10000
-
-    def _setZOrder(self, obj, z):
-        raise NotImplementedError()
-
-    def _registerType(self, type):
-        self._list[type] = []
-        self._changed[type] = []
-        self._id_start[type] = self._id_seed
-        self._id_seed += 300
-
-    def hasAnnotType(self, type):
-        return type in self._list
-
-    @saveCanvas
-    def addAnnotation(self, type, name, obj, appearance=None, id=None):
-        if id is None:
-            ids = self._id_start[type] + len(self._list[type])
-        else:
-            ids = id
-        self._addObject(obj)
-        self._setZOrder(obj, ids)
-        if appearance is None:
-            self._list[type].insert(ids - self._id_start[type], AnnotationData(name, obj, ids, {}))
-        else:
-            self._list[type].insert(ids - self._id_start[type], AnnotationData(name, obj, ids, appearance))
-        self._emitAnnotationChanged(type)
-        return ids
-
-    @saveCanvas
-    def removeAnnotation(self, indexes, type='all'):
-        for key, value in self._list.items():
-            if type == key or type == "all":
-                for i in indexes:
-                    for d in value:
-                        if i == d.id:
-                            self._removeObject(d.obj)
-                            self._list[type].remove(d)
-            self._reorderAnnotation(type)
-            self._emitAnnotationChanged(type)
-
-    @saveCanvas
-    def clearAnnotations(self, type='all'):
-        list = self.getAnnotations(type)
-        self.removeAnnotation([l.id for l in list], type)
-
-    def _reorderAnnotation(self, type='text'):
-        if type == "all":
-            keys = self._list.keys()
-        else:
-            keys = [type]
-        for k in keys:
-            n = 0
-            for d in self._list[k]:
-                d.id = self._id_start[k] + n
-                self._setZOrder(d.obj, d.id)
-                n += 1
-
-    def getAnnotations(self, type='all', indexes=None):
-        if indexes is None:
-            if type == 'all':
-                res = []
-                for v in self._list.values():
-                    res.extend(v)
-                return res
-            return self._list[type]
-        else:
-            res = []
-            if hasattr(indexes, "__iter__"):
-                list = indexes
-            else:
-                list = [indexes]
-            for i in list:
-                for d in self.getAnnotations(type):
-                    if i == d.id:
-                        res.append(d)
-            return res
-
-    def getAnnotationFromIndexes(self, indexes=None, type='all'):
-        return self.getAnnotations(type, indexes)
-
-    def addAnnotationChangeListener(self, listener, type='text'):
-        self._changed[type].append(weakref.ref(listener))
-
-    def _emitAnnotationChanged(self, type='text'):
-        if type == "all":
-            keys = self._list.keys()
-        else:
-            keys = [type]
-        for k in keys:
-            for l in self._changed[k]:
-                if l() is None:
-                    self._changed[k].remove(l)
-                else:
-                    l().OnAnnotationChanged()
-
-    def loadAnnotAppearance(self):
-        pass
-
-    def saveAnnotAppearance(self):
-        pass
-    # methods to be implemented
-
-    def _addObject(self, obj, id):
-        raise NotImplementedError()
-
-    def _removeObject(self, obj):
-        raise NotImplementedError()
-
-    def _getAnnotAxis(self, obj):
-        raise NotImplementedError()
-
-
-class AnnotationEditableCanvasBase(AnnotatableCanvasBase):
-    def __init__(self):
-        super().__init__()
-        self._edited = {}
-
-    def _registerType(self, type):
-        super()._registerType(type)
-        self._edited[type] = []
-
-    def _emitAnnotationEdited(self, type='text'):
-        for l in self._edited[type]:
-            if l() is None:
-                self._edited[type].remove(l)
-            else:
-                l().OnAnnotationEdited()
-
-    def addAnnotationEditedListener(self, listener, type='text'):
-        self._edited[type].append(weakref.ref(listener))
-
-
-class AnnotationSelectableCanvasBase(AnnotationEditableCanvasBase):
-    def __init__(self):
-        super().__init__()
-        self._sel = {}
-        self._selected = {}
-
-    def _registerType(self, type):
-        super()._registerType(type)
-        self._sel[type] = []
-        self._selected[type] = []
-
-    def getSelectedAnnotations(self, type='text'):
-        return self._sel[type]
-
-    def setSelectedAnnotations(self, indexes, type='text'):
-        if hasattr(indexes, '__iter__'):
-            self._sel[type] = indexes
-        else:
-            self._sel[type] = [indexes]
-        self._emitAnnotationSelected()
-
-    def addAnnotationSelectedListener(self, listener, type='text'):
-        self._selected[type].append(weakref.ref(listener))
-
-    def _emitAnnotationSelected(self, type='text'):
-        for l in self._selected[type]:
-            if l() is None:
-                self._selected[type].remove(l)
-            else:
-                l().OnAnnotationSelected()
-
-
-class AnnotationOrderMovableCanvasBase(AnnotationSelectableCanvasBase):
-    def _findIndex(self, id, type='text'):
-        res = -1
-        for d in self._list[type]:
-            if d.id == id:
-                res = self._list[type].index(d)
-        return res
-
-    @saveCanvas
-    def moveAnnotation(self, list, target=None, type='text'):
-        tar = eval(str(target))
-        for l in list:
-            n = self._findIndex(l)
-            item_n = self._list[type][n]
-            self._list[type].remove(item_n)
-            if tar is not None:
-                self._list[type].insert(self._findIndex(tar) + 1, item_n)
-            else:
-                self._list[type].insert(0, item_n)
-        self._reorderAnnotation()
-
-
-class AnnotationCallbackCanvasBase(AnnotationOrderMovableCanvasBase):
-    def addCallback(self, indexes, callback):
-        list = self.getAnnotations("all", indexes)
-        for l in list:
-            self._addAnnotCallback(l.obj, callback)
-
-    def _addAnnotCallback(self, obj, callback):
-        raise NotImplementedError()
+    def _removeAnnotation(self, obj):
+        warnings.warn(str(type(self)) + " does not implement _removeAnnotation(obj) method.", NotImplementedWarning)

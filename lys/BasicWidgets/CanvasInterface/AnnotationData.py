@@ -4,7 +4,7 @@ from lys.errors import NotImplementedWarning
 from .SaveCanvas import CanvasPart, saveCanvas
 
 
-class _AnnotationData(CanvasPart):
+class AnnotationData(CanvasPart):
     def __init__(self, canvas, name, axis):
         super().__init__(canvas)
         self._name = name
@@ -76,7 +76,7 @@ class _AnnotationData(CanvasPart):
         warnings.warn(str(type(self)) + " does not implement _loadAppearance(appearance) method.", NotImplementedWarning)
 
 
-class AnnotationWithLine(_AnnotationData):
+class AnnotationWithLine(AnnotationData):
     @saveCanvas
     def setLineColor(self, color):
         """

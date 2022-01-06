@@ -250,9 +250,9 @@ class _AnnotationTab(QWidget):
         layout = QVBoxLayout(self)
         tab = QTabWidget()
         tab.addTab(AnnotationBox(canvas), 'Text')
-        if canvas.hasAnnotType('line'):
+        if len(canvas.getLineAnnotations()) != 0:
             tab.addTab(LineAnnotationBox(canvas), 'Line')
-        if canvas.hasAnnotType('rect'):
+        if len(canvas.getRectAnnotations()) != 0:
             tab.addTab(RectAnnotationBox(canvas), 'Rect')
         self._test = QPushButton('Legend(test)')
         self._test.clicked.connect(self.test)

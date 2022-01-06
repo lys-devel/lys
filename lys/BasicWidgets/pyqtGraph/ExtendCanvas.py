@@ -27,10 +27,6 @@ class ExtendCanvas(AnnotGUICanvas):
         self.setFocusPolicy(Qt.StrongFocus)
         self.getAxes('BottomLeft').menu.popup = self.buildContextMenu
         self.initCanvas.emit()
-        return
-        self.moveText = False
-        self.textPosStart = None
-        self.cursorPosStart = None
 
     def __findAxis(self, axis):
         axes = axis.axes
@@ -163,11 +159,11 @@ class ExtendCanvas(AnnotGUICanvas):
             parent = parent.parentWidget()
     # @saveCanvas
 
-    def LoadFromDictionary(self, dictionary, path=home()):
-        return super().LoadFromDictionary(dictionary, path)
+    def LoadFromDictionary(self, dictionary):
+        return super().LoadFromDictionary(dictionary)
 
-    def SaveAsDictionary(self, dictionary, path=home()):
-        super().SaveAsDictionary(dictionary, path)
+    def SaveAsDictionary(self, dictionary):
+        super().SaveAsDictionary(dictionary)
 
     def SaveSetting(self, type):
         dict = {}

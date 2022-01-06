@@ -59,9 +59,9 @@ class AnnotationSelectionBox(QTreeView):
         self.__type = type
         self.__initlayout()
         self._loadstate()
-        self.canvas.addAnnotationChangeListener(self, type)
-        self.canvas.addAnnotationEditedListener(self, type)
-        self.canvas.addAnnotationSelectedListener(self, type)
+        self.canvas.annotationChanged.connect(self._loadstate)
+        #self.canvas.addAnnotationEditedListener(self, type)
+        #self.canvas.addAnnotationSelectedListener(self, type)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.flg = False
@@ -118,9 +118,6 @@ class AnnotationSelectionBox(QTreeView):
         self.canvas.setSelectedAnnotations(ids, self.__type)
         self.flg = False
 
-    def OnAnnotationChanged(self):
-        self._loadstate()
-
     def OnAnnotationEdited(self):
         list = self.canvas.getAnnotations(self.__type)
         i = 1
@@ -157,7 +154,7 @@ class AnnotationEditBox(QWidget):
         self.canvas = canvas
         self.__flg = False
         self.__initlayout()
-        self.canvas.addAnnotationSelectedListener(self)
+        # self.canvas.addAnnotationSelectedListener(self)
 
     def __initlayout(self):
         l = QVBoxLayout()
@@ -208,7 +205,7 @@ class AnnotationMoveBox(QWidget):
         super().__init__()
         self.__initlayout()
         self.canvas = canvas
-        self.canvas.addAnnotationSelectedListener(self)
+        # self.canvas.addAnnotationSelectedListener(self)
 
     def __initlayout(self):
         l = QVBoxLayout()
@@ -263,7 +260,7 @@ class AnnotationBoxAdjustBox(QWidget):
         self.canvas = canvas
         self.__initlayout()
         self.__flg = False
-        self.canvas.addAnnotationSelectedListener(self)
+        # self.canvas.addAnnotationSelectedListener(self)
 
     def __initlayout(self):
         gl = QGridLayout()

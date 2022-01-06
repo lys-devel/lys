@@ -65,7 +65,7 @@ class Graph(AutoSavedWindow):
             d['Library'] = 'matplotlib'
         elif isinstance(self.canvas, pyqtCanvas):
             d['Library'] = 'pyqtgraph'
-        self.canvas.SaveAsDictionary(d, os.path.dirname(file))
+        self.canvas.SaveAsDictionary(d)
         d['Graph'] = {}
         d['Graph']['Position_x'] = self.pos().x()
         d['Graph']['Position_y'] = self.pos().y()
@@ -76,7 +76,7 @@ class Graph(AutoSavedWindow):
         with open(file, 'r') as f:
             d = eval(f.read())
         self.move(d['Graph']['Position_x'], d['Graph']['Position_y'])
-        self.canvas.LoadFromDictionary(d, os.path.dirname(file))
+        self.canvas.LoadFromDictionary(d)
 
     def _loadLibType(self, file):
         with open(file, 'r') as f:

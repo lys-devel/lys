@@ -167,17 +167,8 @@ class _MatplotlibTicks(CanvasTicks):
 class AxesCanvas(FigureCanvasBase):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
-        self._axs = _MatplotlibAxes(self)
-        self._ticks = _MatplotlibTicks(self)
-
-    def __getattr__(self, key):
-        if "_axs" in self.__dict__:
-            if hasattr(self._axs, key):
-                return getattr(self._axs, key)
-        if "_ticks" in self.__dict__:
-            if hasattr(self._ticks, key):
-                return getattr(self._ticks, key)
-        return super().__getattr__(key)
+        self.addCanvasPart(_MatplotlibAxes(self))
+        self.addCanvasPart(_MatplotlibTicks(self))
 
 
 class RangeSelectableCanvas(AxesCanvas):

@@ -1,8 +1,4 @@
 #!/usr/bin/env python
-import random
-import sys
-import os
-from enum import Enum
 from PyQt5.QtGui import *
 
 from lys.widgets import LysSubWindow
@@ -26,30 +22,6 @@ class ExtendCanvas(SaveSettingCanvas):
         self.textPosStart = None
         self.cursorPosStart = None
         self.initCanvas.emit()
-
-    def __findAxis(self, axis):
-        axes = axis.axes
-        xy = isinstance(axis, XAxis)
-        if axes == self.axes:
-            if xy:
-                return 'Bottom'
-            else:
-                return 'Left'
-        elif axes == self.axes_ty:
-            if xy:
-                return 'Top'
-            else:
-                return 'Left'
-        elif axes == self.axes_tx:
-            if xy:
-                return 'Bottom'
-            else:
-                return 'Right'
-        elif axes == self.axes_txy:
-            if xy:
-                return 'Top'
-            else:
-                return 'Right'
 
     def __GlobalToAxis(self, x, y, ax):
         loc = self.__GlobalToRatio(x, y, ax)
@@ -127,7 +99,7 @@ class ExtendCanvas(SaveSettingCanvas):
 
     def buildContextMenu(self):
         menu = super().constructContextMenu()
-        action = menu.exec_(QCursor.pos())
+        menu.exec_(QCursor.pos())
 
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
@@ -149,11 +121,11 @@ class ExtendCanvas(SaveSettingCanvas):
             parent = parent.parentWidget()
 
     @saveCanvas
-    def LoadFromDictionary(self, dictionary, path=home()):
-        return super().LoadFromDictionary(dictionary, path)
+    def LoadFromDictionary(self, dictionary):
+        return super().LoadFromDictionary(dictionary)
 
-    def SaveAsDictionary(self, dictionary, path=home()):
-        super().SaveAsDictionary(dictionary, path)
+    def SaveAsDictionary(self, dictionary):
+        super().SaveAsDictionary(dictionary)
 
     def SaveSetting(self, type):
         dict = {}

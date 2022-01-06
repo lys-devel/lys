@@ -52,14 +52,5 @@ class _MatplotlibCanvasSize(CanvasSizeBase):
 class AreaSettingCanvas(AxisSettingCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
-        self._margin = _MatplotlibMargin(self)
-        self._csize = _MatplotlibCanvasSize(self)
-
-    def __getattr__(self, key):
-        if "_margin" in self.__dict__:
-            if hasattr(self._margin, key):
-                return getattr(self._margin, key)
-        if "_csize" in self.__dict__:
-            if hasattr(self._csize, key):
-                return getattr(self._csize, key)
-        return super().__getattr__(key)
+        self.addCanvasPart(_MatplotlibMargin(self))
+        self.addCanvasPart(_MatplotlibCanvasSize(self))

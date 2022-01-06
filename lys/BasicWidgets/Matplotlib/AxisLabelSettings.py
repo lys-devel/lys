@@ -65,18 +65,6 @@ class _MatplotlibTickLabel(CanvasTickLabel):
 class AxisSettingCanvas(TickAdjustableCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
-        self._font = CanvasFont(self)
-        self._axisLabel = _MatplotlibAxisLabel(self)
-        self._tickLabel = _MatplotlibTickLabel(self)
-
-    def __getattr__(self, key):
-        if "_font" in self.__dict__:
-            if hasattr(self._font, key):
-                return getattr(self._font, key)
-        if "_axisLabel" in self.__dict__:
-            if hasattr(self._axisLabel, key):
-                return getattr(self._axisLabel, key)
-        if "_tickLabel" in self.__dict__:
-            if hasattr(self._tickLabel, key):
-                return getattr(self._tickLabel, key)
-        return super().__getattr__(key)
+        self.addCanvasPart(CanvasFont(self))
+        self.addCanvasPart(_MatplotlibAxisLabel(self))
+        self.addCanvasPart(_MatplotlibTickLabel(self))

@@ -53,13 +53,22 @@ class _FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
         return QMenu(self)
 
 
-class FigureCanvasBase(_FigureCanvasBase):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self._data = _MatplotlibData(self)
+class CanvasBase(_FigureCanvasBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__parts = []
+
+    def addCanvasPart(self, part):
+        self.__parts.append(part)
 
     def __getattr__(self, key):
-        if "_data" in self.__dict__:
-            if hasattr(self._data, key):
-                return getattr(self._data, key)
+        for part in self.__parts:
+            if hasattr(part, key):
+                return getattr(part, key)
         return super().__getattr__(key)
+
+
+class FigureCanvasBase(CanvasBase):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self.addCanvasPart(_MatplotlibData(self))

@@ -7,14 +7,6 @@ from matplotlib.text import Text
 from .AnnotGUICanvas import *
 
 
-class AnchorData(object):
-    def __init__(self, obj, obj2, idn, target):
-        self.obj = obj
-        self.obj2 = obj2
-        self.id = idn
-        self.target = target
-
-
 class PicableCanvas(AnnotGUICanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi)

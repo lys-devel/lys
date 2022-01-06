@@ -53,7 +53,7 @@ class _PyqtGraphCanvasSize(CanvasSizeBase):
         size = self.canvas().fig.size()
         self.canvas().resize(size.width(), size.height())
         self.canvas().adjustSize()
-        self.canvas().draw()
+        # self.canvas().draw()
 
 
 class AreaSettingCanvas(AxisSettingCanvas):
