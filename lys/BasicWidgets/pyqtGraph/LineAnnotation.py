@@ -1,88 +1,69 @@
-#!/usr/bin/env python
-import numpy as np
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+import pyqtgraph as pg
+from LysQt.QtCore import Qt
+from LysQt.QtGui import QColor
+from ..CanvasInterface import LineAnnotation, InfiniteLineAnnotation
 
-from lys import *
-from .Annotation import *
-from .CanvasBase import saveCanvas
+_styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
 
 
-class LineAnnotCanvas(AnnotationSettingCanvas, LineAnnotationCanvasBase):
-    def __init__(self, dpi):
-        super().__init__(dpi)
-        LineAnnotationCanvasBase.__init__(self)
-        self.__flg = False
-
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        LineAnnotationCanvasBase.SaveAsDictionary(self, dictionary, path)
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        LineAnnotationCanvasBase.LoadFromDictionary(self, dictionary, path)
-
-    def _makeLineAnnot(self, pos, axis):
-        line = pg.LineSegmentROI(pos)
-        line.setPen(pg.mkPen(color='#000000'))
-        return line
-
-    def _setLinePosition(self, obj, pos):
-        if self.__flg:
-            return
-        self.__flg = True
-        obj.getHandles()[0].setPos(pos[0][0] - obj.pos()[0], pos[1][0] - obj.pos()[1])
-        obj.getHandles()[1].setPos(pos[0][1] - obj.pos()[0], pos[1][1] - obj.pos()[1])
-        self.__flg = False
-
-    def _getLinePosition(self, obj):
-        return [[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[0] + obj.listPoints()[1][0]], [obj.pos()[1] + obj.listPoints()[0][1], obj.pos()[1] + obj.listPoints()[1][1]]]
+class _PyqtgraphLineAnnotation(LineAnnotation):
+    def __init__(self, canvas, pos, axis):
+        super().__init__(canvas, pos, axis)
+        self._obj = pg.LineSegmentROI(pos)
+        self._obj.setPen(pg.mkPen(color='#000000'))
+        canvas.getAxes(axis).addItem(self._obj)
+        # TODO : set signal emitted when position is changed by user.
 
     def _addAnnotCallback(self, obj, callback):
-        if isinstance(obj, pg.LineSegmentROI):
-            obj.sigRegionChanged.connect(lambda obj: callback([[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[0] + obj.listPoints()[1][0]], [obj.pos()[1] + obj.listPoints()[0][1], obj.pos()[1] + obj.listPoints()[1][1]]]))
-            obj.sigRegionChanged.emit(obj)
-        else:
-            super()._addAnnotCallback(obj, callback)
+        obj.sigRegionChanged.connect(lambda obj: callback([[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[0] + obj.listPoints()[1][0]], [obj.pos()[1] + obj.listPoints()[0][1], obj.pos()[1] + obj.listPoints()[1][1]]]))
+        obj.sigRegionChanged.emit(obj)
+
+    def _setPosition(self, pos):
+        self._obj.getHandles()[0].setPos(pos[0][0] - self._obj.pos()[0], pos[1][0] - self._obj.pos()[1])
+        self._obj.getHandles()[1].setPos(pos[0][1] - self._obj.pos()[0], pos[1][1] - self._obj.pos()[1])
+
+    def _setColor(self, color):
+        self._obj.pen.setColor(QColor(color))
+
+    def _setStyle(self, style):
+        self._obj.pen.setStyle(_styles[style])
+
+    def _setWidth(self, width):
+        self._obj.pen.setWidth(width)
+
+    def _setZOrder(self, z):
+        self._obj.setZValue(z)
 
 
-class InfiniteLineAnnotCanvas(LineAnnotCanvas, InfiniteLineAnnotationCanvasBase):
-    def __init__(self, dpi):
-        super().__init__(dpi)
-        InfiniteLineAnnotationCanvasBase.__init__(self)
+class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
 
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        InfiniteLineAnnotationCanvasBase.SaveAsDictionary(self, dictionary, path)
-
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        InfiniteLineAnnotationCanvasBase.LoadFromDictionary(self, dictionary, path)
-
-    def _makeInfiniteLineAnnot(self, pos, type, axis):
+    def __init__(self, canvas, pos, type, axis):
+        super().__init__(canvas, pos, type, axis)
         if type == 'vertical':
-            line = pg.InfiniteLine(pos, 90)
+            self._obj = pg.InfiniteLine(pos, 90)
         else:
-            line = pg.InfiniteLine(pos, 0)
-        line.setMovable(True)
-        line.setPen(pg.mkPen(color='#000000'))
-        line.setVisible(True)
-        return line
-
-    def _getInfiniteLinePosition(self, obj):
-        return obj.value()
-
-    def _setInfiniteLinePosition(self, obj, pos):
-        return obj.setValue(pos)
+            self._obj = pg.InfiniteLine(pos, 0)
+        self._obj.setMovable(True)
+        self._obj.setPen(pg.mkPen(color='#000000'))
+        self._obj.setVisible(True)
+        canvas.getAxes(axis).addItem(self._obj)
+        # TODO : set signal emitted when position is changed by user.
 
     def _addAnnotCallback(self, obj, callback):
-        if isinstance(obj, pg.InfiniteLine):
-            obj.sigPositionChanged.connect(lambda line: callback(line.value()))
-            obj.sigPositionChanged.emit(obj)
-        else:
-            super()._addAnnotCallback(obj, callback)
+        obj.sigPositionChanged.connect(lambda line: callback(line.value()))
+        obj.sigPositionChanged.emit(obj)
 
+    def _setPosition(self, pos):
+        self._obj.setValue(pos)
 
-class LineAnnotationSettingCanvas(InfiniteLineAnnotCanvas):
-    pass
+    def _setColor(self, color):
+        self._obj.pen.setColor(QColor(color))
+
+    def _setStyle(self, style):
+        self._obj.pen.setStyle(_styles[style])
+
+    def _setWidth(self, width):
+        self._obj.pen.setWidth(width)
+
+    def _setZOrder(self, z):
+        self._obj.setZValue(z)

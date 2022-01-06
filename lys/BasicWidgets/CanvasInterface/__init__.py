@@ -3,6 +3,7 @@ from .Area import MarginBase, CanvasSizeBase
 from .AxisLabel import CanvasAxisLabel, CanvasTickLabel
 from .Data import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 from .Font import FontInfo, CanvasFont
+from .Annotation import CanvasAnnotation
 
 from .SaveCanvas import *
 

@@ -16,11 +16,11 @@ import matplotlib
 
 from lys import *
 
-from .LineAnnotation import *
+from .Annotation import *
 from .CanvasBase import saveCanvas
 
 
-class AnnotGUICanvas(LineAnnotCanvas, AnnotGUICanvasBase):
+class AnnotGUICanvas(AnnotationSettingCanvas, AnnotGUICanvasBase):
     def __init__(self, dpi):
         super().__init__(dpi)
         AnnotGUICanvasBase.__init__(self)

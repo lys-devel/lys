@@ -1,35 +1,23 @@
-#!/usr/bin/env python
-import weakref
-import sys
-import os
-import numpy as np
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
-from lys import *
-
-from .Annotation import *
-from .CanvasBase import saveCanvas
+from ..CanvasInterface import LineAnnotation
 
 
-class LineAnnotCanvas(AnnotationSettingCanvas, LineAnnotationCanvasBase):
-    def __init__(self, dpi):
-        super().__init__(dpi)
-        LineAnnotationCanvasBase.__init__(self)
+class _MatplotlibLineAnnotation(LineAnnotation):
+    def __init__(self, canvas, pos, axis):
+        super().__init__(canvas, pos, axis)
+        axes = canvas.getAxes(axis)
+        self._obj, = axes.plot((pos[0][0], pos[1][0]), (pos[0][1], pos[1][1]), picker=5)
 
-    def SaveAsDictionary(self, dictionary, path):
-        super().SaveAsDictionary(dictionary, path)
-        LineAnnotationCanvasBase.SaveAsDictionary(self, dictionary, path)
+    def _setPosition(self, pos):
+        self._obj.set_data((pos[0][0], pos[1][0]), (pos[0][1], pos[1][1]))
 
-    def LoadFromDictionary(self, dictionary, path):
-        super().LoadFromDictionary(dictionary, path)
-        LineAnnotationCanvasBase.LoadFromDictionary(self, dictionary, path)
+    def _setColor(self, color):
+        self._obj.set_color(color)
 
-    def _makeLineAnnot(self, pos, axis):
-        axes = self.getAxes(axis)
-        line, = axes.plot((pos[0][0], pos[1][0]), (pos[0][1], pos[1][1]), picker=5)
-        return line
+    def _setStyle(self, style):
+        self._obj.set_linestyle(style)
 
-    def _getLinePosition(self, obj):
-        return obj.get_data()
+    def _setWidth(self, width):
+        self._obj.set_linewidth(width)
+
+    def _setZOrder(self, z):
+        self._obj.set_zorder(z)

@@ -1,9 +1,13 @@
+import warnings
 import weakref
+import numpy as np
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+from lys.errors import NotImplementedWarning
+from .LineAnnotation import LineAnnotation, InfiniteLineAnnotation
 from .SaveCanvas import *
 
 
@@ -14,6 +18,126 @@ class AnnotationData(object):
         self.id = idn
         self.appearance = appearance
         self.axes = "BottomLeft"
+
+
+class CanvasAnnotation(CanvasPart):
+    _axisDict = {1: "BottomLeft", 2: "TopLeft", 3: "BottomRight", 4: "TopRight", "BottomLeft": "BottomLeft", "TopLeft": "TopLeft", "BottomRight": "BottomRight", "TopRight": "TopRight"}
+    annotationChanged = pyqtSignal()
+
+    def __init__(self, canvas):
+        super().__init__(canvas)
+        self._annotations = []
+        self.canvas().saveCanvas.connect(self.__saveLines)
+        self.canvas().loadCanvas.connect(self.__loadLines)
+        self.canvas().saveCanvas.connect(self.__saveInfiniteLines)
+        self.canvas().loadCanvas.connect(self.__loadInfiniteLines)
+
+    @saveCanvas
+    def addLineAnnotation(self, pos="auto", axis="BottomLeft", appearance={}):
+        if pos == "auto":
+            if 'Left' in axis:
+                rl = self.canvas().getAxisRange('Left')
+            else:
+                rl = self.canvas().getAxisRange('Right')
+            if 'Bottom' in axis:
+                rb = self.canvas().getAxisRange('Bottom')
+            else:
+                rb = self.canvas().getAxisRange('Top')
+            db = (np.max(rb) - np.min(rb))
+            dl = (np.max(rl) - np.min(rl))
+            start = (np.min(rb) + db / 2, np.min(rl) + dl / 2)
+            end = (start[0] + db / 10, start[1] + dl / 10)
+            pos = (start, end)
+        obj = self._addLineAnnotation(pos, axis)
+        obj.loadAppearance(appearance)
+        self._annotations.append(obj)
+        self.annotationChanged.emit()
+        return obj
+
+    def getLineAnnotations(self):
+        return [annot for annot in self._annotations if isinstance(annot, LineAnnotation)]
+
+    def __saveLines(self, dictionary):
+        dic = {}
+        for i, data in enumerate(self.getLineAnnotations()):
+            dic[i] = {}
+            pos = data.getPosition()
+            dic[i]['Position0'] = list(pos[0])
+            dic[i]['Position1'] = list(pos[1])
+            dic[i]['Appearance'] = str(data.saveAppearance())
+            dic[i]['Axis'] = data.getAxis()
+        dictionary['annot_lines'] = dic
+
+    def __loadLines(self, dictionary):
+        if 'annot_lines' in dictionary:
+            dic = dictionary['annot_lines']
+            i = 0
+            while i in dic:
+                p0 = dic[i]['Position0']
+                p1 = dic[i]['Position1']
+                p = (p0, p1)
+                appearance = eval(dic[i]['Appearance'])
+                axis = self._axisDict[dic[i]['Axis']]
+                obj = self.addLineAnnotation(p, axis, appearance=appearance)
+                i += 1
+
+    @saveCanvas
+    def addInfiniteLineAnnotation(self, pos=None, type='vertical', axis="BottomLeft", appearance={}):
+        if pos is None:
+            if type == 'vertical':
+                if 'Bottom' in axis:
+                    r = self.canvas().getAxisRange('Bottom')
+                else:
+                    r = self.canvas().getAxisRange('Top')
+            else:
+                if 'Left' in axis:
+                    r = self.canvas().getAxisRange('Left')
+                else:
+                    r = self.canvas().getAxisRange('Right')
+            pos = np.min(r) + (np.max(r) - np.min(r)) / 2
+        obj = self._addInfiniteLineAnnotation(pos, type, axis)
+        self._annotations.append(obj)
+        obj.loadAppearance(appearance)
+        self.annotationChanged.emit()
+        return obj
+
+    def getInfiniteLineAnnotations(self):
+        return [annot for annot in self._annotations if isinstance(annot, InfiniteLineAnnotation)]
+
+    def __saveInfiniteLines(self, dictionary):
+        dic = {}
+        for i, data in enumerate(self.getInfiniteLineAnnotations()):
+            dic[i] = {}
+            pos = data.getPosition()
+            dic[i]['Position'] = pos
+            dic[i]['Type'] = data.getType()
+            dic[i]['Appearance'] = str(data.saveAppearance())
+            dic[i]['Axis'] = data.getAxis()
+        dictionary['annot_infiniteLines'] = dic
+
+    def __loadInfiniteLines(self, dictionary):
+        if 'annot_infiniteLines' in dictionary:
+            dic = dictionary['annot_infiniteLines']
+            i = 0
+            while i in dic:
+                p = dic[i]['Position']
+                t = dic[i]['Type']
+                appearance = eval(dic[i]['Appearance'])
+                axis = self._axisDict[dic[i]['Axis']]
+                obj = self.addInfiniteLineAnnotation(p, t, axis, appearance=appearance)
+                i += 1
+
+    # def removeAnnotation(self, annot):
+    #    pass
+
+    # def getAnnotations(self, type="all"):
+    #    pass
+
+    def _addLineAnnotation(self, pos, axis):
+        warnings.warn(str(type(self)) + " does not implement _addLineAnnotation(pos, axis) method.", NotImplementedWarning)
+
+    def _addInfiniteLineAnnotation(self, pos, axis):
+        warnings.warn(str(type(self)) + " does not implement _addInfiniteLineAnnotation(pos, axis) method.", NotImplementedWarning)
 
 
 class AnnotatableCanvasBase(object):
@@ -235,88 +359,7 @@ class AnnotationHidableCanvasBase(AnnotationOrderMovableCanvasBase):
             self._setVisible(d.obj, True)
 
 
-class AnnotLineColorAdjustableCanvas(AnnotationHidableCanvasBase):
-    def saveAnnotAppearance(self):
-        super().saveAnnotAppearance()
-        data = self.getAnnotations()
-        for d in data:
-            d.appearance['LineColor'] = self._getLineColor(d.obj)
-
-    def loadAnnotAppearance(self):
-        super().loadAnnotAppearance()
-        data = self.getAnnotations()
-        for d in data:
-            if 'LineColor' in d.appearance:
-                self.setAnnotLineColor(d.appearance['LineColor'], d.id)
-
-    @saveCanvas
-    def setAnnotLineColor(self, color, indexes):
-        data = self.getAnnotationFromIndexes(indexes)
-        for d in data:
-            self._setLineColor(d.obj, color)
-
-    def getAnnotLineColor(self, indexes):
-        data = self.getAnnotationFromIndexes(indexes)
-        return [self._getLineColor(d.obj) for d in data]
-
-    def _getLineColor(self, obj):
-        raise NotImplementedError()
-
-    def _setLineColor(self, obj, color):
-        raise NotImplementedError()
-
-
-class AnnotLineStyleAdjustableCanvas(AnnotLineColorAdjustableCanvas):
-    @saveCanvas
-    def setAnnotLineStyle(self, style, indexes):
-        data = self.getAnnotationFromIndexes(indexes)
-        for d in data:
-            self._setLineStyle(d.obj, style)
-
-    def getAnnotLineStyle(self, indexes):
-        data = self.getAnnotationFromIndexes(indexes)
-        return [self._getLineStyle(d.obj) for d in data]
-
-    @saveCanvas
-    def setAnnotLineWidth(self, width, indexes):
-        data = self.getAnnotationFromIndexes(indexes)
-        for d in data:
-            self._setLineWidth(d.obj, width)
-
-    def getAnnotLineWidth(self, indexes):
-        data = self.getAnnotationFromIndexes(indexes)
-        return [self._getLineWidth(d.obj) for d in data]
-
-    def saveAnnotAppearance(self):
-        super().saveAnnotAppearance()
-        data = self.getAnnotations()
-        for d in data:
-            d.appearance['LineStyle'] = self._getLineStyle(d.obj)
-            d.appearance['LineWidth'] = self._getLineWidth(d.obj)
-
-    def loadAnnotAppearance(self):
-        super().loadAnnotAppearance()
-        data = self.getAnnotations()
-        for d in data:
-            if 'LineStyle' in d.appearance:
-                self.setAnnotLineStyle(d.appearance['LineStyle'], d.id)
-            if 'LineWidth' in d.appearance:
-                self.setAnnotLineWidth(d.appearance['LineWidth'], d.id)
-
-    def _getLineStyle(self, obj):
-        pass
-
-    def _setLineStyle(self, obj, style):
-        pass
-
-    def _getLineWidth(self, obj):
-        pass
-
-    def _setLineWidth(self, obj, width):
-        pass
-
-
-class AnnotationCallbackCanvasBase(AnnotLineStyleAdjustableCanvas):
+class AnnotationCallbackCanvasBase(AnnotationHidableCanvasBase):
     def addCallback(self, indexes, callback):
         list = self.getAnnotations("all", indexes)
         for l in list:

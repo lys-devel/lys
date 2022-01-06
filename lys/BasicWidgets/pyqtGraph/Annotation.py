@@ -7,14 +7,14 @@ from PyQt5.QtWidgets import *
 from lys import *
 from .AreaSettings import *
 
+from .LineAnnotation import _PyqtgraphLineAnnotation, _PyqtgraphInfiniteLineAnnotation
+
 
 class AnnotatableCanvas(AreaSettingCanvas, AnnotationCallbackCanvasBase):
-    __styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
-    __styles_inv = dict((v, k) for k, v in __styles.items())
 
     def __init__(self, dpi):
         super().__init__(dpi)
-        AnnotLineStyleAdjustableCanvas.__init__(self)
+        AnnotationCallbackCanvasBase.__init__(self)
 
     def _addObject(self, obj):
         self.axes.addItem(obj)
@@ -24,27 +24,6 @@ class AnnotatableCanvas(AreaSettingCanvas, AnnotationCallbackCanvasBase):
 
     def _getAnnotAxis(self, obj):
         return "BottomLeft"
-
-    def _setLineColor(self, obj, color):
-        obj.pen.setColor(QColor(color))
-
-    def _getLineColor(self, obj):
-        return obj.pen.color().name()
-
-    def _getLineStyle(self, obj):
-        return self.__styles_inv[obj.pen.style()]
-
-    def _setLineStyle(self, obj, style):
-        obj.pen.setStyle(self.__styles[style])
-
-    def _getLineWidth(self, obj):
-        return obj.pen.width()
-
-    def _setLineWidth(self, obj, width):
-        obj.pen.setWidth(width)
-
-    def _setZOrder(self, obj, z):
-        obj.setZValue(z)
 
 
 class TextAnnotationCanvas(AnnotatableCanvas, TextAnnotationCanvasBase):
@@ -311,5 +290,21 @@ class AnnotationBoxAdjustableCanvas(AnnotationMovableCanvas):
         return res
 
 
+class _PyqtgraphAnnotation(CanvasAnnotation):
+    def _addLineAnnotation(self, pos, axis):
+        return _PyqtgraphLineAnnotation(self.canvas(), pos, axis)
+
+    def _addInfiniteLineAnnotation(self, pos, type, axis):
+        return _PyqtgraphInfiniteLineAnnotation(self.canvas(), pos, type, axis)
+
+
 class AnnotationSettingCanvas(AnnotationBoxAdjustableCanvas):
-    pass
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self._annot = _PyqtgraphAnnotation(self)
+
+    def __getattr__(self, key):
+        if "_annot" in self.__dict__:
+            if hasattr(self._annot, key):
+                return getattr(self._annot, key)
+        return super().__getattr__(key)

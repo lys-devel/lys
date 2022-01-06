@@ -1,16 +1,13 @@
-#!/usr/bin/env python
-import weakref
-import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from lys import *
-from .LineAnnotation import *
+from .Annotation import *
 from .CanvasBase import saveCanvas
 
 
-class RectAnnotCanvas(LineAnnotationSettingCanvas, RectAnnotationCanvasBase):
+class RectAnnotCanvas(AnnotationSettingCanvas, RectAnnotationCanvasBase):
     def __init__(self, dpi):
         super().__init__(dpi)
         RectAnnotationCanvasBase.__init__(self)

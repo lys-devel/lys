@@ -1,25 +1,20 @@
-#!/usr/bin/env python
-import random
-import weakref
-import gc
-import sys
-import os
-import numpy as np
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from matplotlib import colors, patches
 from matplotlib.patches import BoxStyle
-import matplotlib
+
 
 from lys import *
 from .AreaSettings import *
+from ..CanvasInterface import CanvasAnnotation
+
+from .LineAnnotation import _MatplotlibLineAnnotation
 
 
-class AnnotatableCanvas(AreaSettingCanvas, AnnotLineStyleAdjustableCanvas):
+class AnnotatableCanvas(AreaSettingCanvas, AnnotationCallbackCanvasBase):
     def __init__(self, dpi):
         super().__init__(dpi)
-        AnnotLineStyleAdjustableCanvas.__init__(self)
+        AnnotationCallbackCanvasBase.__init__(self)
 
     def _addObject(self, obj):
         pass
@@ -36,27 +31,6 @@ class AnnotatableCanvas(AreaSettingCanvas, AnnotLineStyleAdjustableCanvas):
             return "BottomRight"
         if obj.axes == self.axes_txy:
             return "TopRight"
-
-    def _setLineColor(self, obj, color):
-        obj.set_color(color)
-
-    def _getLineColor(self, obj):
-        return obj.get_color()
-
-    def _getLineStyle(self, obj):
-        return obj.get_linestyle().replace('-.', 'dashdot').replace('--', 'dashed').replace('-', 'solid').replace(':', 'dotted')
-
-    def _setLineStyle(self, obj, style):
-        obj.set_linestyle(style)
-
-    def _getLineWidth(self, obj):
-        return obj.get_linewidth()
-
-    def _setLineWidth(self, obj, width):
-        obj.set_linewidth(width)
-
-    def _setZOrder(self, obj, z):
-        obj.set_zorder(z)
 
 
 class TextAnnotationCanvas(AnnotatableCanvas, TextAnnotationCanvasBase):
@@ -324,5 +298,21 @@ class AnnotationBoxAdjustableCanvas(AnnotationMovableCanvas):
         return res
 
 
+class _MatplotlibAnnotation(CanvasAnnotation):
+    def _addLineAnnotation(self, pos, axis):
+        return _MatplotlibLineAnnotation(self.canvas(), pos, axis)
+
+    def _addInfiniteLineAnnotation(self, pos, type, axis):
+        raise NotImplementedError(str(type(self)) + " does not support infinite line annotation.")
+
+
 class AnnotationSettingCanvas(AnnotationBoxAdjustableCanvas):
-    pass
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self._annot = _MatplotlibAnnotation(self)
+
+    def __getattr__(self, key):
+        if "_annot" in self.__dict__:
+            if hasattr(self._annot, key):
+                return getattr(self._annot, key)
+        return super().__getattr__(key)
