@@ -22,7 +22,6 @@ class TextAnnotationCanvasBase(object):
         return [self._getText(ant.obj) for ant in list]
 
     def SaveAsDictionary(self, dictionary, path):
-        # super().SaveAsDictionary(dictionary,path)
         dic = {}
         self.saveAnnotAppearance()
         for i, data in enumerate(self._list['text']):

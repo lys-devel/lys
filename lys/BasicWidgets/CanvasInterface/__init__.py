@@ -9,10 +9,6 @@ from .SaveCanvas import *
 
 from .Annotation import *
 from .TextAnnotation import *
-from .LineAnnotation import *
-from .RectAnnotation import *
-from .RegionAnnotation import *
-from .CrosshairAnnotation import *
 from .AnnotGUICanvas import *
 
 

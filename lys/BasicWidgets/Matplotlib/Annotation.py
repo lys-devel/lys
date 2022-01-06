@@ -8,7 +8,7 @@ from lys import *
 from .AreaSettings import *
 from ..CanvasInterface import CanvasAnnotation
 
-from .LineAnnotation import _MatplotlibLineAnnotation
+from .AnnotationData import _MatplotlibLineAnnotation
 
 
 class AnnotatableCanvas(AreaSettingCanvas, AnnotationCallbackCanvasBase):

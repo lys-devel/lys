@@ -5,11 +5,11 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from lys import *
-from .CrosshairAnnot import *
+from .Annotation import *
 from .CanvasBase import saveCanvas
 
 
-class AnnotGUICanvas(CrosshairAnnotCanvas, AnnotGUICanvasBase):
+class AnnotGUICanvas(AnnotationSettingCanvas, AnnotGUICanvasBase):
     def __init__(self, dpi):
         super().__init__(dpi)
         AnnotGUICanvasBase.__init__(self)

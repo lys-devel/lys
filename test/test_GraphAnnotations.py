@@ -18,6 +18,26 @@ class Graph_test(unittest.TestCase):
         self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
         #self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
 
+    def __lineStyles(self, obj):
+        obj.setLineColor('#ff0000')
+        self.assertEqual(obj.getLineColor(), '#ff0000')
+
+        obj.setLineStyle('dashed')
+        self.assertEqual(obj.getLineStyle(), 'dashed')
+
+        obj.setLineWidth(3)
+        self.assertEqual(obj.getLineWidth(), 3)
+
+        d = obj.saveAppearance()
+        obj.setLineColor('#ff00ff')
+        obj.setLineStyle('solid')
+        obj.setLineWidth(4)
+
+        obj.loadAppearance(d)
+        self.assertEqual(obj.getLineColor(), '#ff0000')
+        self.assertEqual(obj.getLineStyle(), 'dashed')
+        self.assertEqual(obj.getLineWidth(), 3)
+
     def test_LineAnnotation(self):
         for g in self.graphs:
             c = g.canvas
@@ -26,24 +46,7 @@ class Graph_test(unittest.TestCase):
             line.setPosition([(0, 1), (2, 3)])
             self.assertEqual(line.getPosition(), [(0, 1), (2, 3)])
 
-            line.setColor('#ff0000')
-            self.assertEqual(line.getColor(), '#ff0000')
-
-            line.setStyle('dashed')
-            self.assertEqual(line.getStyle(), 'dashed')
-
-            line.setWidth(3)
-            self.assertEqual(line.getWidth(), 3)
-
-            d = line.saveAppearance()
-            line.setColor('#ff00ff')
-            line.setStyle('solid')
-            line.setWidth(4)
-
-            line.loadAppearance(d)
-            self.assertEqual(line.getColor(), '#ff0000')
-            self.assertEqual(line.getStyle(), 'dashed')
-            self.assertEqual(line.getWidth(), 3)
+            self.__lineStyles(line)
 
     def test_InfiniteLineAnnotation(self):
         for g in [self.graphs[1]]:
@@ -53,21 +56,35 @@ class Graph_test(unittest.TestCase):
             line.setPosition(5)
             self.assertEqual(line.getPosition(), 5)
 
-            line.setColor('#ff0000')
-            self.assertEqual(line.getColor(), '#ff0000')
+            self.__lineStyles(line)
 
-            line.setStyle('dashed')
-            self.assertEqual(line.getStyle(), 'dashed')
+    def test_RectAnnotation(self):
+        for g in [self.graphs[1]]:
+            c = g.canvas
 
-            line.setWidth(3)
-            self.assertEqual(line.getWidth(), 3)
+            rect = c.addRectAnnotation()
+            rect.setRegion(([0, 1], [2, 3]))
+            self.assertEqual(rect.getPosition(), (0, 2))
+            self.assertEqual(rect.getSize(), (1, 1))
 
-            d = line.saveAppearance()
-            line.setColor('#ff00ff')
-            line.setStyle('solid')
-            line.setWidth(4)
+            self.__lineStyles(rect)
 
-            line.loadAppearance(d)
-            self.assertEqual(line.getColor(), '#ff0000')
-            self.assertEqual(line.getStyle(), 'dashed')
-            self.assertEqual(line.getWidth(), 3)
+    def test_RegionAnnotation(self):
+        for g in [self.graphs[1]]:
+            c = g.canvas
+
+            rect = c.addRegionAnnotation()
+            rect.setRegion((0, 1))
+            self.assertEqual(rect.getRegion(), (0, 1))
+
+            self.__lineStyles(rect)
+
+    def test_CrossAnnotation(self):
+        for g in [self.graphs[1]]:
+            c = g.canvas
+
+            cross = c.addCrossAnnotation()
+            cross.setPosition((0, 1))
+            self.assertEqual(cross.getPosition(), (0, 1))
+
+            self.__lineStyles(cross)

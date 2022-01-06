@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import *
 from lys import *
 from .AreaSettings import *
 
-from .LineAnnotation import _PyqtgraphLineAnnotation, _PyqtgraphInfiniteLineAnnotation
+from .AnnotationData import _PyqtgraphLineAnnotation, _PyqtgraphInfiniteLineAnnotation, _PyqtgraphRectAnnotation, _PyqtgraphRegionAnnotation, _PyqtgraphCrossAnnotation
 
 
 class AnnotatableCanvas(AreaSettingCanvas, AnnotationCallbackCanvasBase):
@@ -296,6 +296,15 @@ class _PyqtgraphAnnotation(CanvasAnnotation):
 
     def _addInfiniteLineAnnotation(self, pos, type, axis):
         return _PyqtgraphInfiniteLineAnnotation(self.canvas(), pos, type, axis)
+
+    def _addRectAnnotation(self, *args, **kwargs):
+        return _PyqtgraphRectAnnotation(self.canvas(), *args, **kwargs)
+
+    def _addRegionAnnotation(self, *args, **kwargs):
+        return _PyqtgraphRegionAnnotation(self.canvas(), *args, **kwargs)
+
+    def _addCrossAnnotation(self, *args, **kwargs):
+        return _PyqtgraphCrossAnnotation(self.canvas(), *args, **kwargs)
 
 
 class AnnotationSettingCanvas(AnnotationBoxAdjustableCanvas):
