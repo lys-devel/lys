@@ -2,11 +2,11 @@
 from LysQt.QtWidgets import QDesktopWidget
 
 from .AxisLabelSettings import *
-from ..CanvasInterface import MarginBase, CanvasSizeBase
+from ..CanvasInterface import CanvasMargin, CanvasSize
 
 
-class _PyqtGraphMargin(MarginBase):
-    """Implementation of MarginBase for pyqtGraph"""
+class _PyqtGraphMargin(CanvasMargin):
+    """Implementation of CanvasMargin for pyqtGraph"""
 
     def _setMargin(self, left, right, top, bottom):
         self.canvas().setContentsMargins(left, right, top, bottom)
@@ -15,7 +15,7 @@ class _PyqtGraphMargin(MarginBase):
 _unit = 2.54 / QDesktopWidget().physicalDpiX()  # cm/pixel
 
 
-class _PyqtGraphCanvasSize(CanvasSizeBase):
+class _PyqtGraphCanvasSize(CanvasSize):
     """Implementation of CanvasSize for pyqtGraph"""
 
     def _setAuto(self, axis):

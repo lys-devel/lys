@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 from .AxisLabelSettings import *
-from ..CanvasInterface import MarginBase, CanvasSizeBase
+from ..CanvasInterface import CanvasMargin, CanvasSize
 
 
-class _MatplotlibMargin(MarginBase):
-    """Implementation of MarginBase for matplotlib"""
+class _MatplotlibMargin(CanvasMargin):
+    """Implementation of CanvasMargin for matplotlib"""
 
     def _setMargin(self, left, right, top, bottom):
         self.canvas().fig.subplots_adjust(left=left, right=right, top=top, bottom=bottom)
@@ -13,8 +13,8 @@ class _MatplotlibMargin(MarginBase):
 _unit = 1 / 2.54  # inch->cm
 
 
-class _MatplotlibCanvasSize(CanvasSizeBase):
-    """Implementation of CanvasSizeBase for matplotlib"""
+class _MatplotlibCanvasSize(CanvasSize):
+    """Implementation of CanvasSize for matplotlib"""
 
     def _setAuto(self, axis):
         self._adjust()

@@ -16,7 +16,7 @@ class CanvasAnnotation(CanvasPart):
     """
     Interface to add, remove, and get annotations in canvas.
 
-    All public methods in this class can be accessed from canvas.
+    All public methods in this class can be accessed from :class:`.CanvasBase.CanvasBase`.
     """
     _axisDict = {1: "BottomLeft", 2: "TopLeft", 3: "BottomRight", 4: "TopRight", "BottomLeft": "BottomLeft", "TopLeft": "TopLeft", "BottomRight": "BottomRight", "TopRight": "TopRight"}
     annotationChanged = pyqtSignal()

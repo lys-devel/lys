@@ -18,7 +18,7 @@ class NormalizeFilter(FilterInterface):
 
     If *axis* is (1,2) For 4-dimensional data I(x,y,z,t), then I_norm(x,y,z,t) = I(x,y,z,t)/N(x,t) is calculated where N(x,t) = I_sliced.mean(axis=1).mean(axis=2).
     I_sliced is determined by *range* parameter. 
-    For example, when *range*= [None, (0,1), (2,3), None], I_sliced = Int_0^1 Int_1^2 dydz I(x,y,z,t).
+    For example, when range= [None, (0,1), (2,3), None], I_sliced = Int_0^1 Int_1^2 dydz I(x,y,z,t).
 
     Args: 
         range(sqeuence of length-2 float or None): see description above.

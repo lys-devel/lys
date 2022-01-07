@@ -4,7 +4,7 @@ from lys.errors import NotImplementedWarning
 from .CanvasBase import CanvasPart, saveCanvas
 
 
-class MarginBase(CanvasPart):
+class CanvasMargin(CanvasPart):
     """
     Abstract base class for Margin. 
     All methods in this interface can be accessed from :class:`CanvasBase` instance.
@@ -88,7 +88,7 @@ class MarginBase(CanvasPart):
         warnings.warn(str(type(self)) + " does not implement _setMargin(left, right, top, bottom) method.", NotImplementedWarning)
 
 
-class CanvasSizeBase(CanvasPart):
+class CanvasSize(CanvasPart):
     """
     Abstract base class of CanvasSize. 
     All methods in this interface can be accessed from :class:`CanvasBase` instance.
