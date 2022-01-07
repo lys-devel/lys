@@ -1,7 +1,7 @@
 import warnings
 from lys.errors import NotImplementedWarning
 from .Font import FontInfo
-from .SaveCanvas import CanvasPart, saveCanvas
+from .CanvasBase import CanvasPart, saveCanvas
 
 
 class CanvasAxisLabel(CanvasPart):

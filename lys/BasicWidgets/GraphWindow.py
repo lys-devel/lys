@@ -53,7 +53,7 @@ class Graph(AutoSavedWindow):
         self.canvas.canvasResized.connect(self._resizeCanvas)
         self.canvas.keyPressed.connect(self.keyPress)
         self.resized.connect(self.canvas.parentResized)
-        self.canvas.setSaveFunction(self.Save)
+        self.canvas.updated.connect(self.Save)
         if file is not None:
             self._load(file)
         else:
@@ -135,9 +135,9 @@ class Graph(AutoSavedWindow):
 
     def Duplicate(self, lib=None):
         dic = {}
-        self.canvas.SaveAsDictionary(dic, home())
+        self.canvas.SaveAsDictionary(dic)
         g = Graph(lib=lib)
-        g.canvas.LoadFromDictionary(dic, home())
+        g.canvas.LoadFromDictionary(dic)
         return g
 
 

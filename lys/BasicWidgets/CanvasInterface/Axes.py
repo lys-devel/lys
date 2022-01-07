@@ -2,7 +2,7 @@ import warnings
 import numpy as np
 from LysQt.QtCore import pyqtSignal
 from lys.errors import NotImplementedWarning
-from .SaveCanvas import CanvasPart, saveCanvas
+from .CanvasBase import CanvasPart, saveCanvas
 
 
 class CanvasAxes(CanvasPart):

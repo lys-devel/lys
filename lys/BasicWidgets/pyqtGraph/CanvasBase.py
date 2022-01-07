@@ -27,17 +27,16 @@ class _PyqtgraphData(CanvasData):
         ax.removeItem(data._obj)
 
 
-class _FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
+class FigureCanvasBase(CanvasBase, pg.PlotWidget):
     def __init__(self, dpi=100):
-        AbstractCanvasBase.__init__(self)
-        super().__init__()
+        CanvasBase.__init__(self)
+        pg.PlotWidget.__init__(self)
         self.fig = self.plotItem
         self.fig.canvas = None
         self.fig.showAxis('right')
         self.fig.showAxis('top')
-
-    def _draw(self):
-        self.update()
+        self.updated.connect(self.update)
+        self.addCanvasPart(_PyqtgraphData(self))
 
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:
@@ -52,15 +51,3 @@ class _FigureCanvasBase(pg.PlotWidget, AbstractCanvasBase):
 
     def _onDrag(self, event):
         event.ignore()
-
-
-class FigureCanvasBase(_FigureCanvasBase):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self._data = _PyqtgraphData(self)
-
-    def __getattr__(self, key):
-        if "_data" in self.__dict__:
-            if hasattr(self._data, key):
-                return getattr(self._data, key)
-        return super().__getattr__(key)

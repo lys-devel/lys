@@ -2,7 +2,7 @@ import warnings
 from LysQt.QtCore import pyqtSignal
 from lys.errors import NotImplementedWarning
 
-from .SaveCanvas import saveCanvas
+from .CanvasBase import saveCanvas
 from .AnnotationData import AnnotationData
 
 

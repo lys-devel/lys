@@ -2,7 +2,7 @@ import matplotlib as mpl
 import matplotlib.font_manager as fm
 
 from LysQt.QtCore import pyqtSignal
-from .SaveCanvas import CanvasPart, saveCanvas
+from .CanvasBase import CanvasPart, saveCanvas
 
 
 class FontInfo(object):
@@ -57,7 +57,6 @@ class FontInfo(object):
     @classmethod
     def defaultFamily(cls):
         return fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
-
 
     @classmethod
     def defaultFont(cls):

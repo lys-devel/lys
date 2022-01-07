@@ -3,7 +3,7 @@ from lys import filters
 from lys.errors import NotImplementedWarning
 
 from LysQt.QtCore import pyqtSignal
-from .SaveCanvas import CanvasPart, saveCanvas
+from .CanvasBase import CanvasPart, saveCanvas
 
 
 class WaveData(CanvasPart):

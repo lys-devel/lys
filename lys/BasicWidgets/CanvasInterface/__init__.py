@@ -5,5 +5,5 @@ from .Data import CanvasData, LineData, ImageData, RGBData, VectorData, ContourD
 from .Font import FontInfo, CanvasFont
 from .Annotation import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation, TextAnnotation
 
-from .SaveCanvas import AbstractCanvasBase
+from .CanvasBase import CanvasBase
 from .AnnotGUICanvas import *

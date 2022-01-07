@@ -7,7 +7,7 @@ from LysQt.QtCore import pyqtSignal
 from lys import Wave, filters, load
 from lys.errors import NotImplementedWarning
 
-from .SaveCanvas import CanvasPart, saveCanvas
+from .CanvasBase import CanvasPart, saveCanvas
 from .Line import LineData
 from .Image import ImageData
 from .RGB import RGBData

@@ -2,7 +2,7 @@ import numpy as np
 import warnings
 from lys.errors import NotImplementedWarning
 
-from .SaveCanvas import saveCanvas
+from .CanvasBase import saveCanvas
 from .WaveData import WaveData
 
 

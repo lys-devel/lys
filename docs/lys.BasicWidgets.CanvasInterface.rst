@@ -1,6 +1,13 @@
 CanvasInterface package
 ========================================
 
+Base class of canvas
+------------------------------------------------------
+.. toctree::
+   :maxdepth: 4
+
+   graph/CanvasBase
+
 Components of canvas
 ------------------------------------------------------
 .. toctree::
@@ -10,8 +17,9 @@ Components of canvas
    graph/Axes
    graph/AxisLabels
    graph/Data
+   graph/Annotation
 
-Interface to data displayed in the canvas
+Interface to data
 ------------------------------------------------------
 .. toctree::
    :maxdepth: 4
@@ -22,6 +30,18 @@ Interface to data displayed in the canvas
    graph/RGB
    graph/Vector
    graph/Contour
+
+Interface to annotations
+------------------------------------------------------
+.. toctree::
+   :maxdepth: 4
+
+   graph/AnnotationData
+   graph/TextAnnot
+   graph/LineAnnot
+   graph/RegionAnnot
+   graph/CrossAnnot
+   graph/RectAnnot
 
 Submodules
 ------------------------------------------------------
@@ -34,67 +54,3 @@ lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module
    :undoc-members:
    :show-inheritance:
 
-lys.BasicWidgets.CanvasInterface.Annotation module
---------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.Annotation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.BasicWidgets.CanvasInterface.CrosshairAnnotation module
------------------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.CrosshairAnnotation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.BasicWidgets.CanvasInterface.LineAnnotation module
-------------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.LineAnnotation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-lys.BasicWidgets.CanvasInterface.RectAnnotation module
-------------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.RectAnnotation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.BasicWidgets.CanvasInterface.RegionAnnotation module
---------------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.RegionAnnotation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.BasicWidgets.CanvasInterface.SaveCanvas module
---------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.SaveCanvas
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-lys.BasicWidgets.CanvasInterface.TextAnnotation module
-------------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.TextAnnotation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface
-   :members:
-   :undoc-members:
-   :show-inheritance:

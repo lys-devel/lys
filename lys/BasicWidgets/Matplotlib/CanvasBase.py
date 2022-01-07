@@ -1,4 +1,4 @@
-from ..CanvasInterface import CanvasData
+from ..CanvasInterface import CanvasData, CanvasBase
 from ..CanvasInterface import *
 from lys import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -35,14 +35,13 @@ class _MatplotlibData(CanvasData):
             data._obj.remove()
 
 
-class _FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
+class FigureCanvasBase(CanvasBase, FigureCanvas):
     def __init__(self, dpi=100):
         self.fig = Figure(dpi=dpi)
-        AbstractCanvasBase.__init__(self)
-        super().__init__(self.fig)
-
-    def _draw(self):
-        super().draw()
+        CanvasBase.__init__(self)
+        FigureCanvas.__init__(self, self.fig)
+        self.updated.connect(self.draw)
+        self.addCanvasPart(_MatplotlibData(self))
 
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:
@@ -51,24 +50,3 @@ class _FigureCanvasBase(FigureCanvas, AbstractCanvasBase):
 
     def constructContextMenu(self):
         return QMenu(self)
-
-
-class CanvasBase(_FigureCanvasBase):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__parts = []
-
-    def addCanvasPart(self, part):
-        self.__parts.append(part)
-
-    def __getattr__(self, key):
-        for part in self.__parts:
-            if hasattr(part, key):
-                return getattr(part, key)
-        return super().__getattr__(key)
-
-
-class FigureCanvasBase(CanvasBase):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.addCanvasPart(_MatplotlibData(self))
