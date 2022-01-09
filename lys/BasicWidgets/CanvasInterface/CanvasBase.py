@@ -35,6 +35,8 @@ class CanvasBase(object):
     :class:`.AxisLabel.CanvasAxisLabel`, :class:`.AxisLabel.CanvasTickLabel`, :class:`Data.CanvasData`, and :class:`Annotation.CanvasAnnotation`.
 
     All of these classes inherits :class:`CanvasPart` and added by :meth:`addCanvasPart`.
+
+    Users can access all public methods of the classes above.
     """
     saveCanvas = pyqtSignal(dict)
     """pyqtSignal that is emitted when :meth:`SaveAsDictionary` is called."""
