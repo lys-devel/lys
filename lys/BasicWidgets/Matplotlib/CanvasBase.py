@@ -1,4 +1,4 @@
-from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont
+from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent
 from ..CanvasInterface import *
 from lys import *
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -14,17 +14,36 @@ from .AnnotationData import _MatplotlibAnnotation
 from .WaveData import _MatplotlibData
 
 
+class _MatplotlibMouseEvent(CanvasMouseEvent):
+    def __GlobalToAxis(self, x, y, ax):
+        loc = self.__GlobalToRatio(x, y, ax)
+        xlim = ax.get_xlim()
+        ylim = ax.get_ylim()
+        x_ax = xlim[0] + (xlim[1] - xlim[0]) * loc[0]
+        y_ax = ylim[0] + (ylim[1] - ylim[0]) * loc[1]
+        return (x_ax, y_ax)
+
+    def __GlobalToRatio(self, x, y, ax):
+        ran = ax.get_position()
+        x_loc = (x - ran.x0 * self.canvas().width()) / ((ran.x1 - ran.x0) * self.canvas().width())
+        y_loc = (self.canvas().height() - y - ran.y0 * self.canvas().height()) / ((ran.y1 - ran.y0) * self.canvas().height())
+        return [x_loc, y_loc]
+
+    def mapPosition(self, pos, axis):
+        ax = self.canvas().getAxes(axis)
+        return self.__GlobalToAxis(pos.x(), pos.y(), ax)
+
+
 class FigureCanvasBase(CanvasBase, FigureCanvas):
     def __init__(self, dpi=100):
         self.fig = Figure(dpi=dpi)
         CanvasBase.__init__(self)
         FigureCanvas.__init__(self, self.fig)
         self.updated.connect(self.draw)
-        self.mpl_connect('button_press_event', self.OnMouseDown)
-        self.mpl_connect('button_release_event', self.OnMouseUp)
-        self.mpl_connect('motion_notify_event', self.OnMouseMove)
+        self.__initCanvasParts()
         self.mpl_connect('scroll_event', self._onScroll)
-        self.__select_rect = False
+
+    def __initCanvasParts(self):
         self.addCanvasPart(_MatplotlibData(self))
         self.addCanvasPart(_MatplotlibAxes(self))
         self.addCanvasPart(_MatplotlibTicks(self))
@@ -35,40 +54,30 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
         self.addCanvasPart(_MatplotlibMargin(self))
         self.addCanvasPart(_MatplotlibCanvasSize(self))
         self.addCanvasPart(_MatplotlibAnnotation(self))
+        self.addCanvasPart(CanvasKeyboardEvent(self))
+        self.addCanvasPart(_MatplotlibMouseEvent(self))
+        self.initCanvas.emit()
 
     def getWaveDataFromArtist(self, artist):
         for i in self._Datalist:
             if i.id == artist.get_zorder():
                 return i
 
-    def __GlobalToAxis(self, x, y, ax):
-        loc = self.__GlobalToRatio(x, y, ax)
-        xlim = ax.get_xlim()
-        ylim = ax.get_ylim()
-        x_ax = xlim[0] + (xlim[1] - xlim[0]) * loc[0]
-        y_ax = ylim[0] + (ylim[1] - ylim[0]) * loc[1]
-        return [x_ax, y_ax]
+    def mouseReleaseEvent(self, event):
+        self.mouseReleased.emit(event)
+        super().mouseReleaseEvent(event)
 
-    def __GlobalToRatio(self, x, y, ax):
-        ran = ax.get_position()
-        x_loc = (x - ran.x0 * self.width()) / ((ran.x1 - ran.x0) * self.width())
-        y_loc = (y - ran.y0 * self.height()) / ((ran.y1 - ran.y0) * self.height())
-        return [x_loc, y_loc]
+    def mousePressEvent(self, event):
+        self.mousePressed.emit(event)
+        super().mouseReleaseEvent(event)
 
-    def OnMouseDown(self, event):
-        if event.button == 1:
-            self.__start = self.__GlobalToAxis(event.x, event.y, self.getAxes("BottomLeft"))
-            self.setSelectedRange([self.__start, self.__start])
-            self.__select_rect = True
+    def mouseMoveEvent(self, event):
+        self.mouseMoved.emit(event)
+        super().mouseReleaseEvent(event)
 
-    def OnMouseMove(self, event):
-        if self.__select_rect:
-            end = self.__GlobalToAxis(event.x, event.y, self.getAxes("BottomLeft"))
-            self.setSelectedRange([self.__start, end])
-
-    def OnMouseUp(self, event):
-        if self.__select_rect and event.button == 1:
-            self.__select_rect = False
+    def keyPressEvent(self, event):
+        super().keyPressEvent(event)
+        self.keyPressed.emit(event)
 
     @saveCanvas
     def _onScroll(self, event):
@@ -120,6 +129,12 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
             pos_mode = "OnGraph"
         return pos_mode
 
+    def __GlobalToRatio(self, x, y, ax):
+        ran = ax.get_position()
+        x_loc = (x - ran.x0 * self.width()) / ((ran.x1 - ran.x0) * self.width())
+        y_loc = (y - ran.y0 * self.height()) / ((ran.y1 - ran.y0) * self.height())
+        return [x_loc, y_loc]
+
     def SaveFigure(self, path, format):
         self.fig.savefig(path, transparent=True, format=format)
 
@@ -150,12 +165,6 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
         data = buf.read()
         buf.close()
         return data
-
-    def keyPressEvent(self, e):
-        super().keyPressEvent(e)
-        if e.modifiers() == Qt.ControlModifier:
-            if e.key() == Qt.Key_C:
-                self.CopyToClipboard()
 
 
 """

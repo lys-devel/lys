@@ -8,18 +8,16 @@ from .CanvasBase import *
 
 
 class ExtendCanvas(FigureCanvasBase):
-    keyPressed = pyqtSignal(QKeyEvent)
-    clicked = pyqtSignal(float, float)
     savedDict = {}
 
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.setFocusPolicy(Qt.StrongFocus)
+        self.doubleClicked.connect(self.defModFunc)
         self.modf = weakref.WeakMethod(self.defModFunc)
         self.moveText = False
         self.textPosStart = None
         self.cursorPosStart = None
-        self.initCanvas.emit()
 
     def __GlobalToAxis(self, x, y, ax):
         loc = self.__GlobalToRatio(x, y, ax)
@@ -96,15 +94,6 @@ class ExtendCanvas(FigureCanvasBase):
                 return super().OnMouseDown(event)
         else:
             return super().OnMouseDown(event)
-
-    def keyPressEvent(self, e):
-        super().keyPressEvent(e)
-        if e.key() == Qt.Key_A:
-            for i in self.getRGBs():
-                i.setColorRange()
-            for i in self.getImages():
-                i.setColorRange()
-        self.keyPressed.emit(e)
 
     def defModFunc(self, canvas, tab='Axis'):
         from lys import ModifyWindow, Graph

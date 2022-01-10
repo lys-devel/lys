@@ -1,17 +1,22 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 import pyqtgraph as pg
 
-
-from lys import *
-from ..CanvasInterface import *
-from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont
+from lys.widgets import LysSubWindow
+from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent
 from .AxisSettings import _pyqtGraphAxes, _pyqtGraphTicks
 from .AxisLabelSettings import _PyqtgraphAxisLabel, _PyqtgraphTickLabel
 from .AreaSettings import _PyqtGraphMargin, _PyqtGraphCanvasSize
 from .WaveData import _PyqtgraphData
 from .AnnotationData import _PyqtgraphAnnotation
+
+pg.setConfigOption('background', 'w')
+pg.setConfigOption('foreground', 'k')
+
+
+class _PyqtgraphMouseEvent(CanvasMouseEvent):
+    def mapPosition(self, pos, axis):
+        ax = self.canvas().getAxes(axis)
+        p = ax.mapSceneToView(pos)
+        return (p.x(), p.y())
 
 
 class FigureCanvasBase(CanvasBase, pg.PlotWidget):
@@ -20,6 +25,16 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         pg.PlotWidget.__init__(self)
         self.__initFigure()
         self.updated.connect(self.update)
+        self.__initCanvasParts()
+        self.doubleClicked.connect(self.defModFunc)
+
+    def __initFigure(self):
+        self.fig = self.plotItem
+        self.fig.canvas = None
+        self.fig.showAxis('right')
+        self.fig.showAxis('top')
+
+    def __initCanvasParts(self):
         self.addCanvasPart(_PyqtgraphData(self))
         self.addCanvasPart(_pyqtGraphAxes(self))
         self.addCanvasPart(_pyqtGraphTicks(self))
@@ -30,35 +45,36 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.addCanvasPart(_PyqtGraphMargin(self))
         self.addCanvasPart(_PyqtGraphCanvasSize(self))
         self.addCanvasPart(_PyqtgraphAnnotation(self))
+        self.addCanvasPart(CanvasKeyboardEvent(self))
+        self.addCanvasPart(_PyqtgraphMouseEvent(self))
+        self.initCanvas.emit()
 
-    def __initFigure(self):
-        self.fig = self.plotItem
-        self.fig.canvas = None
-        self.fig.showAxis('right')
-        self.fig.showAxis('top')
+    def mouseReleaseEvent(self, event):
+        self.mouseReleased.emit(event)
+        super().mouseReleaseEvent(event)
 
-    def getWaveDataFromArtist(self, artist):
-        for i in self._Datalist:
-            if i.id == artist.get_zorder():
-                return i
+    def mousePressEvent(self, event):
+        self.mousePressed.emit(event)
+        super().mouseReleaseEvent(event)
 
-    def _onClick(self, event):
-        if event.button() == Qt.LeftButton:
-            if self.isRangeSelected():
-                self.clearSelectedRange()
-        return event.accept()
+    def mouseMoveEvent(self, event):
+        self.mouseMoved.emit(event)
+        super().mouseReleaseEvent(event)
 
-    def _onDrag(self, event, axis=0):
-        if event.button() == Qt.LeftButton:
-            pt = self.getAxes('BottomLeft').mapSceneToView(event.scenePos())
-            if event.isStart():
-                self._roi_start = (pt.x(), pt.y())
-                self._roi_end = (pt.x(), pt.y())
-            else:
-                self._roi_end = (pt.x(), pt.y())
-            self.setSelectedRange([self._roi_start, self._roi_end])
-            return event.accept()
-        return event.ignore()
+    def keyPressEvent(self, event):
+        self.keyPressed.emit(event)
+        super().keyPressEvent(event)
+
+    def defModFunc(self, tab='Axis'):
+        from lys import ModifyWindow, Graph
+        parent = self.parentWidget()
+        while(parent is not None):
+            if isinstance(parent, LysSubWindow):
+                mod = ModifyWindow(self, parent, showArea=isinstance(parent, Graph))
+                if isinstance(tab, str):
+                    mod.selectTab(tab)
+                break
+            parent = parent.parentWidget()
 
 
 """
