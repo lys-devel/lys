@@ -1,12 +1,10 @@
 #!/usr/bin/env python
-import random
-import sys
-import os
-from enum import Enum
+import weakref
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import pyqtgraph as pg
-from .AnnotGUICanvas import *
+from .CanvasBase import *
+
 from lys import *
 from lys.widgets import LysSubWindow
 
@@ -14,7 +12,7 @@ pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
 
 
-class ExtendCanvas(AnnotGUICanvas):
+class ExtendCanvas(FigureCanvasBase):
     keyPressed = pyqtSignal(QKeyEvent)
     clicked = pyqtSignal(float, float)
     savedDict = {}
@@ -25,7 +23,6 @@ class ExtendCanvas(AnnotGUICanvas):
         self.getAxes('BottomLeft').mouseDragEvent = self._onDrag
         self.modf = weakref.WeakMethod(self.defModFunc)
         self.setFocusPolicy(Qt.StrongFocus)
-        self.getAxes('BottomLeft').menu.popup = self.buildContextMenu
         self.initCanvas.emit()
 
     def __findAxis(self, axis):
@@ -135,10 +132,6 @@ class ExtendCanvas(AnnotGUICanvas):
         else:
             return super().OnMouseDown(event)
 
-    def buildContextMenu(self, *args):
-        menu = super().constructContextMenu()
-        action = menu.exec_(QCursor.pos())
-
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
         if e.key() == Qt.Key_A:
@@ -157,13 +150,6 @@ class ExtendCanvas(AnnotGUICanvas):
                 mod.selectTab(tab)
                 break
             parent = parent.parentWidget()
-    # @saveCanvas
-
-    def LoadFromDictionary(self, dictionary):
-        return super().LoadFromDictionary(dictionary)
-
-    def SaveAsDictionary(self, dictionary):
-        super().SaveAsDictionary(dictionary)
 
     def SaveSetting(self, type):
         dict = {}

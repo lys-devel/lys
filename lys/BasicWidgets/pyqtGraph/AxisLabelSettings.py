@@ -3,13 +3,14 @@ import warnings
 from LysQt.QtGui import QFont
 
 from lys.errors import NotSupportedWarning
-from .AxisSettings import *
-from ..CanvasInterface import CanvasFont, CanvasAxisLabel, CanvasTickLabel
+from ..CanvasInterface import CanvasAxisLabel, CanvasTickLabel
 
-opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
+_opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 
 
 class _PyqtgraphAxisLabel(CanvasAxisLabel):
+    """Implementation of CanvasAxisLabel for pyqtgraph"""
+
     def _setAxisLabel(self, axis, text):
         ax = self.canvas().fig.getAxis(axis.lower())
         ax.setLabel(text)
@@ -34,9 +35,11 @@ class _PyqtgraphAxisLabel(CanvasAxisLabel):
 
 
 class _PyqtgraphTickLabel(CanvasTickLabel):
+    """Implementation of CanvasTickLabel for pyqtgraph"""
+
     def _setTickLabelVisible(self, axis, tf, mirror=False):
         if mirror:
-            ax = self.canvas().fig.getAxis(opposite[axis])
+            ax = self.canvas().fig.getAxis(_opposite[axis])
         else:
             ax = self.canvas().fig.getAxis(axis.lower())
         ax.setStyle(showValues=tf)
@@ -46,23 +49,3 @@ class _PyqtgraphTickLabel(CanvasTickLabel):
         ax.setStyle(tickFont=QFont(family, size))
         if color != "black" and color != "#000000":
             warnings.warn("pyqtGraph does not support changing color of tick.", NotSupportedWarning)
-
-
-class AxisSettingCanvas(TickAdjustableCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self._font = CanvasFont(self)
-        self._axisLabel = _PyqtgraphAxisLabel(self)
-        self._tickLabel = _PyqtgraphTickLabel(self)
-
-    def __getattr__(self, key):
-        if "_font" in self.__dict__:
-            if hasattr(self._font, key):
-                return getattr(self._font, key)
-        if "_axisLabel" in self.__dict__:
-            if hasattr(self._axisLabel, key):
-                return getattr(self._axisLabel, key)
-        if "_tickLabel" in self.__dict__:
-            if hasattr(self._tickLabel, key):
-                return getattr(self._tickLabel, key)
-        return super().__getattr__(key)

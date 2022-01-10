@@ -119,7 +119,7 @@ class MultiCut(GridAttachedWindow):
         g = Graph.active()
         c = g.canvas
         if c is not None:
-            r = c.SelectedRange()
+            r = c.selectedRange()
             p1, p2 = r[0], r[1]
             axes = self._cut.findAxisFromCanvas(c)
             obj.setRegion(axes[0], (p1[0], p2[0]))

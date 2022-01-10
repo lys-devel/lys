@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from LysQt.QtWidgets import QDesktopWidget
 
-from .AxisLabelSettings import *
 from ..CanvasInterface import CanvasMargin, CanvasSize
 
 
@@ -54,19 +53,3 @@ class _PyqtGraphCanvasSize(CanvasSize):
         self.canvas().resize(size.width(), size.height())
         self.canvas().adjustSize()
         # self.canvas().draw()
-
-
-class AreaSettingCanvas(AxisSettingCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self._margin = _PyqtGraphMargin(self)
-        self._csize = _PyqtGraphCanvasSize(self)
-
-    def __getattr__(self, key):
-        if "_margin" in self.__dict__:
-            if hasattr(self._margin, key):
-                return getattr(self._margin, key)
-        if "_csize" in self.__dict__:
-            if hasattr(self._csize, key):
-                return getattr(self._csize, key)
-        return super().__getattr__(key)

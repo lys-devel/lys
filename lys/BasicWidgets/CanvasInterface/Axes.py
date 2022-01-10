@@ -17,6 +17,9 @@ class CanvasAxes(CanvasPart):
     axisRangeChanged = pyqtSignal()
     """Emitted when the range of axes is changed."""
 
+    selectedRangeChanged = pyqtSignal(object)
+    """Emitted when the selected range of axes is changed."""
+
     def __init__(self, canvas):
         super().__init__(canvas)
         self.axisChanged.connect(lambda ax: self.setAutoScaleAxis(ax))
@@ -34,6 +37,8 @@ class CanvasAxes(CanvasPart):
         self.__color = {'Left': "#000000", 'Right': "#000000", 'Top': "#000000", 'Bottom': "#000000"}
         self.__mirror = {'Left': True, 'Right': True, 'Top': True, 'Bottom': True}
         self.__mode = {'Left': "linear", 'Right': "linear", 'Top': "linear", 'Bottom': "linear"}
+        self.__rect_start = (0, 0)
+        self.__rect_end = (0, 0)
 
     def _init(self):
         for ax in self.axisList():
@@ -346,6 +351,23 @@ class CanvasAxes(CanvasPart):
         """
         if self.axisIsValid(axis):
             return self.__mode[axis]
+
+    def setSelectedRange(self, region):
+        self._setSelectAnnotation(region)
+        self.__rect_start, self.__rect_end = region
+        self.selectedRangeChanged.emit(self.selectedRange())
+
+    def isRangeSelected(self):
+        return self.__rect_start != self.__rect_end
+
+    def selectedRange(self):
+        if self.isRangeSelected():
+            return [self.__rect_start, self.__rect_end]
+
+    def clearSelectedRange(self):
+        self._setSelectAnnotation([(0, 0), (0, 0)])
+        self.__rect_start = (0, 0)
+        self.__rect_end = (0, 0)
 
     def _save(self, dictionary):
         dic = {}

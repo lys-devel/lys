@@ -195,7 +195,7 @@ class RegionSelectWidget(QGridLayout):
         from lys import Graph
         c = Graph.active().canvas
         if c is not None:
-            r = c.SelectedRange()
+            r = c.selectedRange()
             if self.dim == 2:
                 self.setRegion(0, (r[0][0], r[1][0]))
                 self.setRegion(1, (r[0][1], r[1][1]))

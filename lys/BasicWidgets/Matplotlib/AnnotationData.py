@@ -1,4 +1,4 @@
-from ..CanvasInterface import LineAnnotation, TextAnnotation
+from ..CanvasInterface import CanvasAnnotation, LineAnnotation, TextAnnotation
 
 
 class _MatplotlibLineAnnotation(LineAnnotation):
@@ -42,6 +42,26 @@ class _MatplotlibTextAnnotation(TextAnnotation):
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
+
+
+class _MatplotlibAnnotation(CanvasAnnotation):
+    def _addLineAnnotation(self, pos, axis):
+        return _MatplotlibLineAnnotation(self.canvas(), pos, axis)
+
+    def _addInfiniteLineAnnotation(self, pos, type, axis):
+        raise NotImplementedError(str(type(self)) + " does not support infinite line annotation.")
+
+    def _addRectAnnotation(self, *args, **kwargs):
+        raise NotImplementedError(str(type(self)) + " does not support rect annotation.")
+
+    def _addRgionAnnotation(self, *args, **kwargs):
+        raise NotImplementedError(str(type(self)) + " does not support region annotation.")
+
+    def _addCrossAnnotation(self, *args, **kwargs):
+        raise NotImplementedError(str(type(self)) + " does not support crossannotation.")
+
+    def _addTextAnnotation(self, text, pos, axis):
+        raise _MatplotlibTextAnnotation(self.canvas(), text, pos, axis)
 
 
 """

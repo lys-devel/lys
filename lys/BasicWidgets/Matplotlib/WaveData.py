@@ -2,7 +2,8 @@
 import copy
 import numpy as np
 from matplotlib import lines, cm, colors
-from ..CanvasInterface import LineData, ImageData, RGBData, VectorData, ContourData
+from matplotlib.contour import QuadContourSet
+from ..CanvasInterface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 
 
 class _MatplotlibLine(LineData):
@@ -168,3 +169,27 @@ class _MatplotlibContour(ContourData):
     def _setZ(self, z):
         for o in self._obj.collections:
             o.set_zorder(z)
+
+
+class _MatplotlibData(CanvasData):
+    def _append1d(self, wave, axis):
+        return _MatplotlibLine(self.canvas(), wave, axis)
+
+    def _append2d(self, wave, axis):
+        return _MatplotlibImage(self.canvas(), wave, axis)
+
+    def _append3d(self, wave, axis):
+        return _MatplotlibRGB(self.canvas(), wave, axis)
+
+    def _appendContour(self, wav, axis):
+        return _MatplotlibContour(self.canvas(), wav, axis)
+
+    def _appendVectorField(self, wav, axis):
+        return _MatplotlibVector(self.canvas(), wav, axis)
+
+    def _remove(self, data):
+        if isinstance(data._obj, QuadContourSet):
+            for o in data._obj.collections:
+                o.remove()
+        else:
+            data._obj.remove()

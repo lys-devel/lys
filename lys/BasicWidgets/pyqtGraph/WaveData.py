@@ -7,7 +7,7 @@ import pyqtgraph as pg
 from LysQt.QtCore import Qt
 from LysQt.QtGui import QColor, QTransform
 from lys.errors import NotSupportedWarning
-from ..CanvasInterface import LineData, ImageData, RGBData, VectorData, ContourData
+from ..CanvasInterface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 
 
 class _PyqtgraphLine(LineData):
@@ -208,3 +208,21 @@ class _PyqtgraphContour(ContourData):
 
     def _setZ(self, z):
         self._obj.setZValue(z)
+
+
+class _PyqtgraphData(CanvasData):
+    def _append1d(self, wave, axis):
+        return _PyqtgraphLine(self.canvas(), wave, axis)
+
+    def _append2d(self, wave, axis):
+        return _PyqtgraphImage(self.canvas(), wave, axis)
+
+    def _append3d(self, wave, axis):
+        return _PyqtgraphRGB(self.canvas(), wave, axis)
+
+    def _appendContour(self, wav, axis):
+        return _PyqtgraphContour(self.canvas(), wav, axis)
+
+    def _remove(self, data):
+        ax = self.canvas().getAxes(data.getAxis())
+        ax.removeItem(data._obj)

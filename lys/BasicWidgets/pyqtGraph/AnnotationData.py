@@ -1,12 +1,14 @@
 import pyqtgraph as pg
 from LysQt.QtCore import Qt, pyqtSignal, QRectF
 from LysQt.QtGui import QColor, QTransform
-from ..CanvasInterface import LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation
+from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation
 
 _styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
 
 
 class _PyqtgraphLineAnnotation(LineAnnotation):
+    """Implementation of LineAnnotation for pyqtgraph"""
+
     def __init__(self, canvas, pos, axis):
         super().__init__(canvas, pos, axis)
         self._obj = pg.LineSegmentROI(pos)
@@ -39,6 +41,8 @@ class _PyqtgraphLineAnnotation(LineAnnotation):
 
 
 class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
+    """Implementation of InfiniteLineAnnotation for pyqtgraph"""
+
     def __init__(self, canvas, pos, orientation, axis):
         super().__init__(canvas, pos, orientation, axis)
         if orientation == 'vertical':
@@ -75,6 +79,8 @@ class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
 
 
 class _PyqtgraphRectAnnotation(RectAnnotation):
+    """Implementation of RectAnnotation for pyqtgraph"""
+
     def __init__(self, canvas, pos, size, axis):
         super().__init__(canvas, pos, size, axis)
         self._obj = pg.RectROI(pos, size)
@@ -109,6 +115,8 @@ class _PyqtgraphRectAnnotation(RectAnnotation):
 
 
 class _PyqtgraphRegionAnnotation(RegionAnnotation):
+    """Implementation of RegionAnnotation for pyqtgraph"""
+
     __list = {"horizontal": pg.LinearRegionItem.Horizontal, "vertical": pg.LinearRegionItem.Vertical}
 
     def __init__(self, canvas, region, orientation, axis):
@@ -144,6 +152,8 @@ class _PyqtgraphRegionAnnotation(RegionAnnotation):
 
 
 class _PyqtgraphCrossAnnotation(CrossAnnotation):
+    """Implementation of CrossAnnotation for pyqtgraph"""
+
     def __init__(self, canvas, position, axis):
         super().__init__(canvas, position, axis)
         self._obj = _CrosshairItem(position)
@@ -243,6 +253,25 @@ class _CrosshairItem(pg.GraphicsObject):
 
     def lineMoveFinished(self):
         self.sigRegionChangeFinished.emit(self)
+
+
+class _PyqtgraphAnnotation(CanvasAnnotation):
+    """Implementation of CanvasAnnotation for pyqtgraph"""
+
+    def _addLineAnnotation(self, pos, axis):
+        return _PyqtgraphLineAnnotation(self.canvas(), pos, axis)
+
+    def _addInfiniteLineAnnotation(self, pos, type, axis):
+        return _PyqtgraphInfiniteLineAnnotation(self.canvas(), pos, type, axis)
+
+    def _addRectAnnotation(self, *args, **kwargs):
+        return _PyqtgraphRectAnnotation(self.canvas(), *args, **kwargs)
+
+    def _addRegionAnnotation(self, *args, **kwargs):
+        return _PyqtgraphRegionAnnotation(self.canvas(), *args, **kwargs)
+
+    def _addCrossAnnotation(self, *args, **kwargs):
+        return _PyqtgraphCrossAnnotation(self.canvas(), *args, **kwargs)
 
 
 """

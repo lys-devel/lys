@@ -1,13 +1,13 @@
 #!/usr/bin/env python
+import weakref
 from PyQt5.QtGui import *
 
 from lys.widgets import LysSubWindow
 
-from .SaveSettings import *
-from .CanvasBase import saveCanvas
+from .CanvasBase import *
 
 
-class ExtendCanvas(SaveSettingCanvas):
+class ExtendCanvas(FigureCanvasBase):
     keyPressed = pyqtSignal(QKeyEvent)
     clicked = pyqtSignal(float, float)
     savedDict = {}
@@ -15,8 +15,6 @@ class ExtendCanvas(SaveSettingCanvas):
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
         self.setFocusPolicy(Qt.StrongFocus)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
         self.modf = weakref.WeakMethod(self.defModFunc)
         self.moveText = False
         self.textPosStart = None
@@ -56,6 +54,8 @@ class ExtendCanvas(SaveSettingCanvas):
 
     def OnMouseDown(self, event):
         if event.dblclick:
+            self.modf()(self)
+            return super().OnMouseDown(event)
             self.annot = self.getPickedAnnotation()
             if self.annot is not None:
                 self.modf()(self, 'Annot.')
@@ -78,9 +78,9 @@ class ExtendCanvas(SaveSettingCanvas):
                 w = self.getWaveDataFromArtist(image)
                 self.setSelectedIndexes(2, w.id)
                 return super().OnMouseDown(event)
-            self.modf()(self)
         elif event.button == 1:
             self.clicked.emit(*self.__GlobalToAxis(event.x, event.y, self.getAxes("BottomLeft")))
+            return super().OnMouseDown(event)
             self.annot = self.getPickedAnnotation()
             if self.annot is not None:
                 self.annotindex = self.annot.get_zorder()
@@ -96,10 +96,6 @@ class ExtendCanvas(SaveSettingCanvas):
                 return super().OnMouseDown(event)
         else:
             return super().OnMouseDown(event)
-
-    def buildContextMenu(self):
-        menu = super().constructContextMenu()
-        menu.exec_(QCursor.pos())
 
     def keyPressEvent(self, e):
         super().keyPressEvent(e)
@@ -119,13 +115,6 @@ class ExtendCanvas(SaveSettingCanvas):
                 mod.selectTab(tab)
                 break
             parent = parent.parentWidget()
-
-    @saveCanvas
-    def LoadFromDictionary(self, dictionary):
-        return super().LoadFromDictionary(dictionary)
-
-    def SaveAsDictionary(self, dictionary):
-        super().SaveAsDictionary(dictionary)
 
     def SaveSetting(self, type):
         dict = {}

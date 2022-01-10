@@ -117,7 +117,7 @@ class LineProfileWidget(QWidget):
         return self._waves[n]
 
     def __loadRan(self):
-        info = self.__canvas.SelectedRange()
+        info = self.__canvas.selectedRange()
         w = self._selectedWave()
         if info is not None:
             fr = w.posToPoint(info[0])

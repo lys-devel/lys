@@ -277,3 +277,38 @@ class _OtherTab(QWidget):
         layout.addWidget(RegionInfoBox(canvas))
         layout.addStretch()
         self.setLayout(layout)
+
+
+class SaveBox(QWidget):
+    def __init__(self, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self.__initlayout()
+
+    def __initlayout(self):
+        l = QVBoxLayout()
+        self._save = QPushButton('Save', clicked=self.Save)
+        l.addWidget(self._save)
+        self._copy = QPushButton('Copy', clicked=self.Copy)
+        l.addWidget(self._copy)
+        self.setLayout(l)
+
+    def Copy(self):
+        self.canvas.CopyToClipboard()
+
+    def Save(self):
+        filters = ['PDF file (*.pdf)', 'EPS file (*.eps)', 'PNG file (*.png)', 'SVG file (*.svg)']
+        exts = ['.pdf', '.eps', '.png', '.svg']
+        f = ""
+        for fil in filters:
+            f += fil + ";;"
+        res = QFileDialog.getSaveFileName(self, 'Open file', os.getcwd(), f, filters[0])
+        if len(res[0]) == 0:
+            return
+        name, ext = os.path.splitext(res[0])
+        savename = name
+        if ext == exts[filters.index(res[1])]:
+            savename += ext
+        else:
+            savename = name + ext + exts[filters.index(res[1])]
+        self.canvas.SaveFigure(savename, exts[filters.index(res[1])].replace('.', ''))

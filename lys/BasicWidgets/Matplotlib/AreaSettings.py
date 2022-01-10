@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-from .AxisLabelSettings import *
 from ..CanvasInterface import CanvasMargin, CanvasSize
 
 
@@ -47,10 +45,3 @@ class _MatplotlibCanvasSize(CanvasSize):
 
     def _adjust(self):
         self.canvas().resize(self.canvas().fig.get_figwidth() * 100, self.canvas().fig.get_figheight() * 100)
-
-
-class AreaSettingCanvas(AxisSettingCanvas):
-    def __init__(self, dpi=100):
-        super().__init__(dpi=dpi)
-        self.addCanvasPart(_MatplotlibMargin(self))
-        self.addCanvasPart(_MatplotlibCanvasSize(self))
