@@ -93,6 +93,8 @@ class AxisSelectionLayout(QHBoxLayout):
         self.childs = []
         self.addWidget(QLabel(label))
         self.setDimension(dim)
+        if init >= len(self.childs):
+            init = 0
         self.childs[init].setChecked(True)
 
     def __update(self):

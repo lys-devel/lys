@@ -1,8 +1,8 @@
 import numpy as np
 from matplotlib import cm
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QColor, QImage, QPixmap, QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import QPushButton, QColorDialog, QWidget, QDoubleSpinBox, QComboBox, QCheckBox, QVBoxLayout, QHBoxLayout, QLabel
 
 from lys.widgets import ScientificSpinBox
 
@@ -18,7 +18,6 @@ class ColorSelection(QPushButton):
     def OnClicked(self):
         res = QColorDialog.getColor(QColor(self.getColor()))
         if res.isValid():
-            c = (res.red() / 255.0, res.green() / 255.0, res.blue() / 255.0, res.alpha() / 255.0)
             self.setColor(res.name())
             self.colorChanged.emit(self.getColor())
 
@@ -59,7 +58,6 @@ _cmaps = [('Perceptually Uniform Sequential', [
         'flag', 'prism', 'ocean', 'gist_earth', 'terrain', 'gist_stern',
         'gnuplot', 'gnuplot2', 'CMRmap', 'cubehelix', 'brg', 'hsv',
         'gist_rainbow', 'rainbow', 'jet', 'nipy_spectral', 'gist_ncar'])]
-#_cmaps = [('automaps', [item for item in matplotlib.pyplot.colormaps() if "_r" not in item])]
 _cmapdic = {}
 
 
@@ -92,7 +90,7 @@ _loadCmaps()
 class ColormapSelection(QWidget):
     colorChanged = pyqtSignal()
 
-    class ColorCombo(QComboBox):
+    class _ColorCombo(QComboBox):
         def __init__(self):
             super().__init__()
             model = QStandardItemModel()
@@ -112,7 +110,7 @@ class ColormapSelection(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.__combo = ColormapSelection.ColorCombo()
+        self.__combo = ColormapSelection._ColorCombo()
         self.__combo.activated.connect(self.__changed)
         self.__opacity = QDoubleSpinBox()
         self.__opacity.setRange(0, 1)

@@ -42,11 +42,11 @@ class CanvasAxes(CanvasPart):
 
     def _init(self):
         for ax in self.axisList():
-            self.setAutoScaleAxis(ax)
             self.setAxisThick(ax, 1)
             self.setAxisColor(ax, "#000000")
             self.setMirrorAxis(ax, True)
             self.setAxisMode(ax, "linear")
+            self.setAutoScaleAxis(ax)
 
     def _update(self):
         for ax in self.canvas().axisList():
@@ -127,6 +127,11 @@ class CanvasAxes(CanvasPart):
             :meth:`getAxisRange`, :meth:`setAutoScaleAxis`
         """
         if self.axisIsValid(axis):
+            if self.getAxisMode(axis) == 'log':
+                if range[0] < 0:
+                    range[0] = -range[0]
+                if range[1] < 0:
+                    range[1] = -range[1]
             self._setRange(axis, range)
             self.__auto[axis] = False
             self.__range[axis] = range
@@ -335,6 +340,7 @@ class CanvasAxes(CanvasPart):
         if self.axisIsValid(axis):
             self._setAxisMode(axis, mode)
             self.__mode[axis] = mode
+            self.setAxisRange(axis, self.getAxisRange(axis))
 
     def getAxisMode(self, axis):
         """
@@ -617,31 +623,36 @@ class CanvasTicks(CanvasPart):
             return self._calculateAutoInterval(axis, which)
         else:
             range = self.canvas().getAxisRange(axis)
-            if (abs(range[1] - range[0]) / value) < 100:
+            if (abs(range[1] - range[0]) / value) < 100 and self.canvas().getAxisMode(axis) == 'linear':
+                return value
+            elif self.canvas().getAxisMode(axis) == 'log':
                 return value
             else:
                 return self._calculateAutoInterval(axis, which)
 
     def _calculateAutoInterval(self, axis, which):
         range = self.canvas().getAxisRange(axis)
-        d = abs(range[1] - range[0]) / 4
-        if d == 0:
+        if self.canvas().getAxisMode(axis) == "linear":
+            d = abs(range[1] - range[0]) / 4
+            if d == 0:
+                return 1
+            p = 10**(np.floor(np.log10(d)))
+            if d / p < 2:
+                d = 1
+            elif d / p < 3:
+                d = 2
+            elif d / p < 8:
+                d = 5
+            else:
+                d = 10
+            if which == 'major':
+                return d * p
+            else:
+                if d == 2:
+                    return d * p / 4
+                return d * p / 5
+        elif self.canvas().getAxisMode(axis) == "log":
             return 1
-        p = 10**(np.floor(np.log10(d)))
-        if d / p < 2:
-            d = 1
-        elif d / p < 3:
-            d = 2
-        elif d / p < 8:
-            d = 5
-        else:
-            d = 10
-        if which == 'major':
-            return d * p
-        else:
-            if d == 2:
-                return d * p / 4
-            return d * p / 5
 
     @ saveCanvas
     def setTickVisible(self, axis, value, mirror=False, which='both'):

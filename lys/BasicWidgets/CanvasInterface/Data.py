@@ -8,6 +8,7 @@ from lys import Wave, filters, load
 from lys.errors import NotImplementedWarning
 
 from .CanvasBase import CanvasPart, saveCanvas
+from .WaveData import WaveData
 from .Line import LineData
 from .Image import ImageData
 from .RGB import RGBData
@@ -59,6 +60,14 @@ class CanvasData(CanvasPart):
         func = {"line": self._append1d, "vector": self._appendVectorField, "image": self._append2d, "contour": self._appendContour, "rgb": self._append3d}
         if isinstance(wave, list) or isinstance(wave, tuple):
             return [self.Append(ww, axis=axis, contour=contour, vector=vector) for ww in wave]
+        if isinstance(wave, WaveData):
+            return self.Append(wave.getWave(),
+                               axis=wave.getAxis(),
+                               appearance=wave.saveAppearance(),
+                               offset=wave.getOffset(),
+                               filter=wave.getFilter(),
+                               contour=isinstance(wave, ContourData),
+                               vector=isinstance(wave, VectorData))
         self.__addAxes(axis)
         type = self.__checkType(wave, contour, vector)
         obj = func[type](wave, axis)

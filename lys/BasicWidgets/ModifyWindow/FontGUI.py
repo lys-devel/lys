@@ -1,9 +1,8 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QGroupBox, QComboBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, QLabel, QCheckBox
 
 from lys.BasicWidgets.CanvasInterface import FontInfo
-from .ColorWidgets import *
+from .ColorWidgets import ColorSelection
 
 
 class FontSelector(QGroupBox):
@@ -71,7 +70,7 @@ class FontSelectBox(QGroupBox):
         d = font.family
         for f in FontInfo._fonts:
             self.__font.addItem(f)
-        if not d in FontInfo._fonts:
+        if d not in FontInfo._fonts:
             self.__font.addItem(d)
         self.__font.activated.connect(self.__fontChanged)
         self.__def = QCheckBox('Use default')
@@ -136,7 +135,7 @@ class FontSelectWidget(QGroupBox):
 
     def __initlayout(self):
         layout = QVBoxLayout()
-        l = QHBoxLayout()
+        lay = QHBoxLayout()
         self.__font = QComboBox()
 
         for f in FontInfo._fonts:
@@ -149,16 +148,16 @@ class FontSelectWidget(QGroupBox):
         layout.addWidget(self.__font)
         self.__def = QCheckBox('Use default')
         self.__def.stateChanged.connect(self.__Changed)
-        l.addWidget(self.__def)
-        l.addWidget(QLabel('Size'))
+        lay.addWidget(self.__def)
+        lay.addWidget(QLabel('Size'))
         self.__size = QDoubleSpinBox()
         self.__size.valueChanged.connect(self.__Changed)
-        l.addWidget(self.__size)
-        l.addWidget(QLabel('Color'))
+        lay.addWidget(self.__size)
+        lay.addWidget(QLabel('Color'))
         self.__color = ColorSelection()
         self.__color.colorChanged.connect(self.__Changed)
-        l.addWidget(self.__color)
-        layout.addLayout(l)
+        lay.addWidget(self.__color)
+        layout.addLayout(lay)
         self.setLayout(layout)
 
     def getFont(self):

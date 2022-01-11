@@ -211,7 +211,7 @@ class FiltersGUI(QWidget):
 
         vbox = QVBoxLayout()
         vbox.addWidget(self._tab)
-        vbox.addLayout(hbox2)
+        # vbox.addLayout(hbox2)
         self.setLayout(vbox)
 
     def __addTab(self, index):

@@ -1,11 +1,11 @@
-#!/usr/bin/env python
-import os
 from LysQt.QtGui import *
 
 from lys import registerFileLoader
 from lys.widgets import AutoSavedWindow, _ExtendMdiArea
 from .Commons.ExtendTable import *
 from .ModifyWindow.ModifyWindow import *
+from .Matplotlib import ExtendCanvas
+from .pyqtGraph import pyqtCanvas
 from .FittingWindow import *
 
 
@@ -146,9 +146,9 @@ def display(*args, lib=None, **kwargs):
     return append(*args, graph=g, **kwargs)
 
 
-def append(*args, graph=None, **kwargs):
+def append(*args, graph=None, exclude=None, **kwargs):
     if graph is None:
-        g = Graph.active()
+        g = Graph.active(exclude=exclude)
     else:
         g = graph
     for wave in args:

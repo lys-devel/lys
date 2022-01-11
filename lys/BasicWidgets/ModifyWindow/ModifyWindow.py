@@ -1,18 +1,16 @@
-#!/usr/bin/env python
-import sys
 import os
-from PyQt5.QtGui import *
+import weakref
+from LysQt.QtWidgets import QWidget, QCheckBox, QTabWidget, QHBoxLayout, QVBoxLayout, QPushButton, QFileDialog
 
 from lys.widgets import LysSubWindow
-from lys.BasicWidgets.pyqtGraph.ExtendCanvas import ExtendCanvas as pyqtCanvas
 from lys.BasicWidgets.Matplotlib.ExtendCanvas import *
 from .LineSettingsGUI import *
 from .ImageSettingsGUI import *
-from .AxisSettingsGUI import *
-from .CanvasBaseGUI import *
+from .AxisSettingsGUI import AxisSelectionWidget, AxisAndTickBox
+from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
 from .FontGUI import *
-from .AxisLabelSettingsGUI import *
-from .AreaSettingsGUI import *
+from .AxisLabelSettingsGUI import AxisAndTickLabelBox, AxisFontBox
+from .AreaSettingsGUI import MarginAdjustBox, ResizeBox
 from .AnnotationGUI import *
 from .LineAnnotationGUI import *
 from .InfoGUI import *
@@ -157,7 +155,7 @@ class _LineTab(QWidget):
     def _initlayout(self, canvas):
         app = AppearanceBox(canvas)
         off = OffsetAdjustBox()
-        sel = RightClickableSelectionBox(canvas, 1, "line")
+        sel = DataSelectionBox(canvas, 1, "line")
         sel.selected.connect(app.setLines)
         sel.selected.connect(off.setData)
 
@@ -180,7 +178,7 @@ class _ImageTab(QWidget):
     def _initlayout(self, canvas):
         im = ImageColorAdjustBox(canvas)
         off = OffsetAdjustBox()
-        sel = RightClickableSelectionBox(canvas, 2, "image")
+        sel = DataSelectionBox(canvas, 2, "image")
         sel.selected.connect(im.setImages)
         sel.selected.connect(off.setData)
 
@@ -203,7 +201,7 @@ class _RGBTab(QWidget):
     def _initlayout(self, canvas):
         rgb = RGBColorAdjustBox(canvas)
         off = OffsetAdjustBox()
-        sel = RightClickableSelectionBox(canvas, 3, "rgb")
+        sel = DataSelectionBox(canvas, 3, "rgb")
         sel.selected.connect(rgb.setRGBs)
         sel.selected.connect(off.setData)
 
@@ -226,7 +224,7 @@ class _VectorTab(QWidget):
     def _initlayout(self, canvas):
         vec = VectorAdjustBox(canvas)
         off = OffsetAdjustBox()
-        sel = RightClickableSelectionBox(canvas, 2, "vector")
+        sel = DataSelectionBox(canvas, 2, "vector")
         sel.selected.connect(vec.setVectors)
         sel.selected.connect(off.setData)
 
@@ -286,12 +284,12 @@ class SaveBox(QWidget):
         self.__initlayout()
 
     def __initlayout(self):
-        l = QVBoxLayout()
+        lay = QVBoxLayout()
         self._save = QPushButton('Save', clicked=self.Save)
-        l.addWidget(self._save)
+        lay.addWidget(self._save)
         self._copy = QPushButton('Copy', clicked=self.Copy)
-        l.addWidget(self._copy)
-        self.setLayout(l)
+        lay.addWidget(self._copy)
+        self.setLayout(lay)
 
     def Copy(self):
         self.canvas.CopyToClipboard()

@@ -1,7 +1,6 @@
 import numpy as np
 
 from LysQt.QtWidgets import QComboBox, QGroupBox, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton, QCheckBox, QDoubleSpinBox
-
 from .ColorWidgets import ColorSelection
 from lys.widgets import ScientificSpinBox
 
@@ -17,7 +16,7 @@ class AxisSelectionWidget(QComboBox):
         self.addItems(canvas.axisList())
 
 
-class AxisRangeAdjustBox(QGroupBox):
+class _AxisRangeAdjustBox(QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__('Axis Range')
         self._parent = parent
@@ -27,7 +26,6 @@ class AxisRangeAdjustBox(QGroupBox):
         self.canvas.axisRangeChanged.connect(self.update)
 
     def __initlayout(self):
-        layout = QVBoxLayout()
 
         self.__combo = QComboBox()
         self.__combo.addItem('Auto')
@@ -38,15 +36,16 @@ class AxisRangeAdjustBox(QGroupBox):
         self.__spin2 = ScientificSpinBox(valueChanged=self.__spinChanged)
 
         layout_h1 = QHBoxLayout()
-        layout_h1.addWidget(QLabel('Min'))
-        layout_h1.addWidget(self.__spin1)
+        layout_h1.addWidget(QLabel('Min'), 1)
+        layout_h1.addWidget(self.__spin1, 2)
 
         layout_h2 = QHBoxLayout()
-        layout_h2.addWidget(QLabel('Max'))
-        layout_h2.addWidget(self.__spin2)
+        layout_h2.addWidget(QLabel('Max'), 1)
+        layout_h2.addWidget(self.__spin2, 2)
 
         rev = QPushButton("Reverse", clicked=self.__reverse)
 
+        layout = QVBoxLayout()
         layout.addWidget(self.__combo)
         layout.addLayout(layout_h1)
         layout.addLayout(layout_h2)
@@ -99,7 +98,7 @@ class AxisRangeAdjustBox(QGroupBox):
             self.canvas.setAxisRange(self._parent.getCurrentAxis(), [mi, ma])
 
 
-class AxisAdjustBox(QGroupBox):
+class _AxisAdjustBox(QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__("Axis Setting")
         self.canvas = canvas
@@ -109,28 +108,25 @@ class AxisAdjustBox(QGroupBox):
         self.update()
 
     def __initlayout(self):
-        gl = QGridLayout()
 
         self.__mirror = QCheckBox("Mirror")
         self.__mirror.stateChanged.connect(self.__mirrorChanged)
-        gl.addWidget(self.__mirror, 0, 0)
-
-        gl.addWidget(QLabel('Mode'), 1, 0)
         self.__mode = QComboBox()
         self.__mode.addItems(['linear', 'log'])
         self.__mode.activated.connect(self.__chgmod)
-        gl.addWidget(self.__mode, 1, 1)
-
-        gl.addWidget(QLabel('Color'), 2, 0)
         self.__color = ColorSelection()
         self.__color.colorChanged.connect(self.__changeColor)
-        gl.addWidget(self.__color, 2, 1)
-
-        gl.addWidget(QLabel('Thick'), 3, 0)
         self.__spin1 = QDoubleSpinBox()
         self.__spin1.valueChanged.connect(self.__setThick)
-        gl.addWidget(self.__spin1, 3, 1)
 
+        gl = QGridLayout()
+        gl.addWidget(self.__mirror, 0, 0)
+        gl.addWidget(QLabel('Mode'), 1, 0)
+        gl.addWidget(QLabel('Color'), 2, 0)
+        gl.addWidget(QLabel('Thick'), 3, 0)
+        gl.addWidget(self.__mode, 1, 1)
+        gl.addWidget(self.__color, 2, 1)
+        gl.addWidget(self.__spin1, 3, 1)
         self.setLayout(gl)
 
     def update(self):
@@ -168,7 +164,7 @@ class AxisAdjustBox(QGroupBox):
             self.canvas.setAxisColor(ax, self.__color.getColor())
 
 
-class TickAdjustBox(QGroupBox):
+class _TickAdjustBox(QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__("Tick Setting")
         self.canvas = canvas
@@ -319,9 +315,9 @@ class TickAdjustBox(QGroupBox):
 class AxisAndTickBox(QWidget):
     def __init__(self, parent, canvas):
         super().__init__()
-        self._range = AxisRangeAdjustBox(parent, canvas)
-        self._axis = AxisAdjustBox(parent, canvas)
-        self._tick = TickAdjustBox(parent, canvas)
+        self._range = _AxisRangeAdjustBox(parent, canvas)
+        self._axis = _AxisAdjustBox(parent, canvas)
+        self._tick = _TickAdjustBox(parent, canvas)
 
         layout_h1 = QHBoxLayout()
         layout_h1.addWidget(self._range)

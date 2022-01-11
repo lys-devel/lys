@@ -3,7 +3,7 @@ from LysQt.QtWidgets import QGroupBox, QCheckBox, QDoubleSpinBox, QHBoxLayout, Q
 from .FontGUI import FontSelector
 
 
-class AxisLabelAdjustBox(QGroupBox):
+class _AxisLabelAdjustBox(QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__("Axis Label")
         self.__flg = False
@@ -68,7 +68,7 @@ class AxisLabelAdjustBox(QGroupBox):
             self.canvas.setAxisLabelCoords(axis, self.__pos.value())
 
 
-class TickLabelAdjustBox(QGroupBox):
+class _TickLabelAdjustBox(QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__("Tick Label")
         self.__flg = False
@@ -128,8 +128,8 @@ class TickLabelAdjustBox(QGroupBox):
 class AxisAndTickLabelBox(QWidget):
     def __init__(self, parent, canvas):
         super().__init__()
-        self._axis = AxisLabelAdjustBox(parent, canvas)
-        self._tick = TickLabelAdjustBox(parent, canvas)
+        self._axis = _AxisLabelAdjustBox(parent, canvas)
+        self._tick = _TickLabelAdjustBox(parent, canvas)
 
         layout = QVBoxLayout(self)
         layout.addWidget(self._axis)

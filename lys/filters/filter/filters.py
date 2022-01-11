@@ -9,8 +9,11 @@ class Filters(FilterInterface):
         self._filters = []
         if isinstance(filters, Filters):
             self._filters.extend(filters._filters)
-        else:
-            self._filters.extend(filters)
+        for f in filters:
+            if isinstance(f, Filters):
+                self._filters.extend(f._filters)
+            else:
+                self._filters.append(f)
 
     def _execute(self, wave, *args, **kwargs):
         for f in self._filters:
@@ -42,7 +45,10 @@ class Filters(FilterInterface):
 
     @staticmethod
     def toString(filter):
-        return str(Filters([filter]))
+        if isinstance(filter, Filters):
+            return str(filter)
+        else:
+            return str(Filters([filter]))
 
     @staticmethod
     def fromString(data):

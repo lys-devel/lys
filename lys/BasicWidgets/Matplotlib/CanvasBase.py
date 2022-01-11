@@ -78,30 +78,34 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
     def _onScroll(self, event):
         region = self.__FindRegion(event.x, event.y)
         if region == "OnGraph":
-            self.__ExpandGraph(event.x, event.y, "Bottom", event.step)
-            self.__ExpandGraph(event.x, event.y, "Left", event.step)
-        elif not region == "OutOfFigure":
-            self.__ExpandGraph(event.x, event.y, region, event.step)
+            axes = self.axisList()
+        else:
+            axes = [region]
+            if region == "Left":
+                axes.append("Right")
+            if region == "Bottom":
+                axes.append("Top")
+        for axis in axes:
+            self.__ExpandGraph(event.x, event.y, axis, event.step)
 
     def __ExpandGraph(self, x, y, axis, step):
+        if not self.axisIsValid(axis):
+            return
         ratio = 1.05**step
         loc = self.__GlobalToRatio(x, y, self.getAxes("BottomLeft"))
-        if axis in {"Bottom"}:
-            old = self.getAxisRange('Bottom')
-            cent = (old[1] - old[0]) * loc[0] + old[0]
-            self.setAxisRange('Bottom', [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio])
-        if axis in {"Left"}:
-            old = self.getAxisRange('Left')
-            cent = (old[1] - old[0]) * loc[1] + old[0]
-            self.setAxisRange('Left', [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio])
-        if axis in {"Right", "Left"} and self.axisIsValid('Right'):
-            old = self.getAxisRange('Right')
-            cent = (old[1] - old[0]) * loc[1] + old[0]
-            self.setAxisRange('Right', [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio])
-        if axis in {"Top", "Bottom"} and self.axisIsValid('Top'):
-            old = self.getAxisRange('Top')
-            cent = (old[1] - old[0]) * loc[0] + old[0]
-            self.setAxisRange('Top', [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio])
+        old = self.getAxisRange(axis)
+        if self.getAxisMode(axis) == "linear":
+            if axis in {"Bottom", "Top"}:
+                cent = (old[1] - old[0]) * loc[0] + old[0]
+            if axis in {"Left", "Right"}:
+                cent = (old[1] - old[0]) * loc[1] + old[0]
+            ran = [cent - (cent - old[0]) * ratio, cent + (old[1] - cent) * ratio]
+        elif self.getAxisMode(axis) == "log":
+            if old[0] > old[1]:
+                ran = [old[0] * ratio, old[1] / ratio]
+            else:
+                ran = [old[0] / ratio, old[1] * ratio]
+        self.setAxisRange(axis, ran)
 
     def __FindRegion(self, x, y):
         ran = self.getAxes("BottomLeft").get_position()

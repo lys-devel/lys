@@ -1,10 +1,8 @@
 import weakref
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from LysQt.QtWidgets import QGroupBox, QLabel, QDoubleSpinBox, QGridLayout, QVBoxLayout, QHBoxLayout, QComboBox
 
-from .AxisSettingsGUI import *
+from .AxisSettingsGUI import AxisSelectionWidget
 
 
 class MarginAdjustBox(QGroupBox):
@@ -51,42 +49,41 @@ class ResizeBox(QGroupBox):
             self._partner = weakref.ref(partner)
 
         def _initlayout(self, canvas):
-            layout = QVBoxLayout()
-
             self.cw = QComboBox()
             self.cw.addItems(['Auto', 'Absolute', 'Per Unit', 'Aspect', 'Plan'])
             self.cw.activated.connect(self.__ModeChanged)
-            layout.addWidget(self.cw)
 
-            tmp = QHBoxLayout()
             self.spin1 = QDoubleSpinBox()
             self.spin1.valueChanged.connect(self.__Changed)
             self.spin1.setDecimals(5)
             self.lab1 = QLabel(' * Height')
-            tmp.addWidget(self.spin1)
-            tmp.addWidget(self.lab1)
-            layout.addLayout(tmp)
+            tmp1 = QHBoxLayout()
+            tmp1.addWidget(self.spin1)
+            tmp1.addWidget(self.lab1)
 
-            tmp = QHBoxLayout()
             self.lab2_1 = QLabel('*')
             self.lab2_2 = QLabel('Range')
             self.combo2 = AxisSelectionWidget(canvas)
             self.combo2.activated.connect(self.__Changed)
-            tmp.addWidget(self.lab2_1)
-            tmp.addWidget(self.combo2)
-            tmp.addWidget(self.lab2_2)
-            layout.addLayout(tmp)
+            tmp2 = QHBoxLayout()
+            tmp2.addWidget(self.lab2_1)
+            tmp2.addWidget(self.combo2)
+            tmp2.addWidget(self.lab2_2)
 
-            tmp = QHBoxLayout()
             self.lab3_1 = QLabel('/')
             self.lab3_2 = QLabel('Range')
             self.combo3 = AxisSelectionWidget(canvas)
             self.combo3.activated.connect(self.__Changed)
-            tmp.addWidget(self.lab3_1)
-            tmp.addWidget(self.combo3)
-            tmp.addWidget(self.lab3_2)
-            layout.addLayout(tmp)
+            tmp3 = QHBoxLayout()
+            tmp3.addWidget(self.lab3_1)
+            tmp3.addWidget(self.combo3)
+            tmp3.addWidget(self.lab3_2)
 
+            layout = QVBoxLayout()
+            layout.addWidget(self.cw)
+            layout.addLayout(tmp1)
+            layout.addLayout(tmp2)
+            layout.addLayout(tmp3)
             self.setLayout(layout)
 
         def __loadstate(self):
@@ -101,11 +98,11 @@ class ResizeBox(QGroupBox):
             lis2 = self.canvas.axisList()
             try:
                 self.combo2.setCurrentIndex(lis2.index(param['value1']))
-            except:
+            except Exception:
                 self.combo2.setCurrentIndex(lis2.index('Left'))
             try:
                 self.combo3.setCurrentIndex(lis2.index(param['value2']))
-            except:
+            except Exception:
                 self.combo3.setCurrentIndex(lis2.index('Bottom'))
             self._setLook(param['mode'])
             self.__loadflg = False

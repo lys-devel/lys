@@ -1,58 +1,59 @@
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt, QMimeData, pyqtSignal, QSize, QItemSelectionModel
+from PyQt5.QtGui import QCursor, QStandardItem, QStandardItemModel
+from PyQt5.QtWidgets import QTreeView, QFileDialog, QInputDialog, QGridLayout, QLabel, QVBoxLayout, QWidget, QGroupBox, QComboBox, QPushButton, QMenu, QAbstractItemView, QAction
 
-from lys import *
+from lys import Wave, glb
 from lys.widgets import ScientificSpinBox
 
 
-class DataSelectionBox(QTreeView):
-    selected = pyqtSignal(list)
+class _Model(QStandardItemModel):
+    def __init__(self, canvas):
+        super().__init__(0, 3)
+        self.setHeaderData(0, Qt.Horizontal, 'Line')
+        self.setHeaderData(1, Qt.Horizontal, 'Axis')
+        self.setHeaderData(2, Qt.Horizontal, 'Zorder')
+        self.canvas = canvas
 
-    class _Model(QStandardItemModel):
-        def __init__(self, canvas):
-            super().__init__(0, 3)
-            self.setHeaderData(0, Qt.Horizontal, 'Line')
-            self.setHeaderData(1, Qt.Horizontal, 'Axis')
-            self.setHeaderData(2, Qt.Horizontal, 'Zorder')
-            self.canvas = canvas
+    def clear(self):
+        super().clear()
+        self.setColumnCount(3)
+        self.setHeaderData(0, Qt.Horizontal, 'Line')
+        self.setHeaderData(1, Qt.Horizontal, 'Axis')
+        self.setHeaderData(2, Qt.Horizontal, 'Zorder')
 
-        def clear(self):
-            super().clear()
-            self.setColumnCount(3)
-            self.setHeaderData(0, Qt.Horizontal, 'Line')
-            self.setHeaderData(1, Qt.Horizontal, 'Axis')
-            self.setHeaderData(2, Qt.Horizontal, 'Zorder')
+    def supportedDropActions(self):
+        return Qt.MoveAction
 
-        def supportedDropActions(self):
-            return Qt.MoveAction
+    def mimeData(self, indexes):
+        mimedata = QMimeData()
+        data = []
+        for i in indexes:
+            if i.column() != 2:
+                continue
+            t = eval(self.itemFromIndex(i).text())
+            data.append(t)
+        mimedata.setData('index', str(data).encode('utf-8'))
+        mimedata.setText(str(data))
+        return mimedata
 
-        def mimeData(self, indexes):
-            mimedata = QMimeData()
-            data = []
-            for i in indexes:
-                if i.column() != 2:
-                    continue
-                t = eval(self.itemFromIndex(i).text())
-                data.append(t)
-            mimedata.setData('index', str(data).encode('utf-8'))
-            mimedata.setText(str(data))
-            return mimedata
+    def mimeTypes(self):
+        return ['index']
 
-        def mimeTypes(self):
-            return ['index']
-
-        def dropMimeData(self, data, action, row, column, parent):
-            f = eval(data.text())
-            par = self.itemFromIndex(parent)
-            if par is None:
-                if row == -1 and column == -1:
-                    self.canvas.moveItem(f)
-                else:
-                    self.canvas.moveItem(f, self.item(row, 2).text())
+    def dropMimeData(self, data, action, row, column, parent):
+        f = eval(data.text())
+        par = self.itemFromIndex(parent)
+        if par is None:
+            if row == -1 and column == -1:
+                self.canvas.moveItem(f)
             else:
-                self.canvas.moveItem(f, self.item(self.itemFromIndex(parent).row(), 2).text())
-            return False
+                self.canvas.moveItem(f, self.item(row, 2).text())
+        else:
+            self.canvas.moveItem(f, self.item(self.itemFromIndex(parent).row(), 2).text())
+        return False
+
+
+class _DataSelectionBoxBase(QTreeView):
+    selected = pyqtSignal(list)
 
     def __init__(self, canvas, dim, type):
         super().__init__()
@@ -68,18 +69,22 @@ class DataSelectionBox(QTreeView):
         self.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setDropIndicatorShown(True)
-        self.__model = DataSelectionBox._Model(self.canvas)
+        self.__model = _Model(self.canvas)
         self.setModel(self.__model)
         self.selectionModel().selectionChanged.connect(self._onSelected)
 
     def _loadstate(self):
         self.flg = True
+        selected = self._selectedData()
         list = self.canvas.getWaveData(self.__type)
         self.__model.clear()
         for i, data in enumerate(list):
             self.__model.setItem(i, 0, QStandardItem(data.getWave().name))
             self.__model.setItem(i, 1, QStandardItem(data.getAxis()))
             self.__model.setItem(i, 2, QStandardItem(str(data.getZOrder())))
+            if data in selected:
+                index = self.__model.item(i).index()
+                self.selectionModel().select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
         self.flg = False
 
     def _onSelected(self):
@@ -91,13 +96,15 @@ class DataSelectionBox(QTreeView):
 
     def _selectedData(self):
         list = self.canvas.getWaveData(self.__type)
+        if len(list) != self.__model.rowCount():
+            return []
         return [list[i.row()] for i in self.selectedIndexes() if i.column() == 0]
 
     def sizeHint(self):
         return QSize(150, 100)
 
 
-class RightClickableSelectionBox(DataSelectionBox):
+class DataSelectionBox(_DataSelectionBoxBase):
     def __init__(self, canvas, dim, type, *args, **kwargs):
         super().__init__(canvas, dim, type, *args, **kwargs)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -110,12 +117,13 @@ class RightClickableSelectionBox(DataSelectionBox):
         menu.addAction(QAction('Show', self, triggered=lambda: self.__visible(True)))
         menu.addAction(QAction('Hide', self, triggered=lambda: self.__visible(False)))
         menu.addAction(QAction('Remove', self, triggered=self.__remove))
-        menu.addAction(QAction('Print', self, triggered=self.__print))
+        menu.addAction(QAction('Duplicate', self, triggered=self.__duplicate))
         menu.addAction(QAction('Process', self, triggered=self.__process))
 
         raw = menu.addMenu("Raw data")
         raw.addAction(QAction('Display', self, triggered=lambda: self.__display("Wave")))
         raw.addAction(QAction('Append', self, triggered=lambda: self.__append("Wave")))
+        raw.addAction(QAction('Print', self, triggered=lambda: self.__print("Wave")))
         raw.addAction(QAction('MultiCut', self, triggered=lambda: self.__multicut("Wave")))
         if self.__dim == 3 or self.__dim == "rgb":
             raw.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("Wave", vector=True)))
@@ -126,6 +134,7 @@ class RightClickableSelectionBox(DataSelectionBox):
         pr = menu.addMenu("Processed data")
         pr.addAction(QAction('Display', self, triggered=lambda: self.__display("ProcessedWave")))
         pr.addAction(QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
+        pr.addAction(QAction('Print', self, triggered=lambda: self.__print("ProcessedWave")))
         pr.addAction(QAction('MultiCut', self, triggered=lambda: self.__multicut("ProcessedWave")))
         if self.__dim == 3 or self.__dim == "rgb":
             pr.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("ProcessedWave", vector=True)))
@@ -156,10 +165,12 @@ class RightClickableSelectionBox(DataSelectionBox):
         display(*self.__getWaves(type), **kwargs)
 
     def __append(self, type, **kwargs):
-        from lys import Graph
-        g = Graph.active(exclude=self.canvas)
-        for d in self.__getWaves(type):
-            g.Append(d.getWave(), **kwargs)
+        from lys import append
+        append(*self.__getWaves(type), exclude=self.canvas, **kwargs)
+
+    def __duplicate(self):
+        for d in self._selectedData():
+            self.canvas.Append(d)
 
     def __multicut(self, type):
         from lys import MultiCut
@@ -170,25 +181,21 @@ class RightClickableSelectionBox(DataSelectionBox):
         from lys import Table
         t = Table()
         for d in self.__getWaves(type):
-            t.Append(d.getWave())
+            t.Append(d)
 
     def __print(self, type):
-        for d in self.__getWaves():
-            print(d.getWave())
+        for d in self.__getWaves(type):
+            print(d)
 
     def __process(self):
         from lys.filters import FiltersDialog
-
-        class dialog(FiltersDialog):
-            def __init__(self, data):
-                super().__init__(data.getWave().data.ndim)
-                self.applied.connect(data.setFilter)
-
-        data = self.__getWaves()[0]
-        d = dialog(data)
-        if data.filter is not None:
-            d.setFilter(data.filter)
-        d.show()
+        data = self._selectedData()
+        dlg = FiltersDialog(data[0].getWave().data.ndim)
+        for d in data:
+            dlg.applied.connect(d.setFilter)
+        if data[0].getFilter() is not None:
+            dlg.setFilter(data[0].getFilter())
+        dlg.show()
 
     def __export(self, waveType):
         filt = ""
@@ -201,7 +208,6 @@ class RightClickableSelectionBox(DataSelectionBox):
             d.export(path, type=type)
 
     def __send(self, waveType):
-        from lys import glb
         d = self.__getWaves(waveType)[0]
         w = d.duplicate()
         text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
