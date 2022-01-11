@@ -1,12 +1,12 @@
-from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent
-from ..CanvasInterface import *
-from lys import *
+import io
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
 
+from LysQt.QtCore import QMimeData
+from LysQt.QtWidgets import QApplication
+from LysQt.QtGui import QImage
+
+from ..CanvasInterface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent
 from .AxisSettings import _MatplotlibAxes, _MatplotlibTicks
 from .AxisLabelSettings import _MatplotlibAxisLabel, _MatplotlibTickLabel
 from .AreaSettings import _MatplotlibMargin, _MatplotlibCanvasSize
@@ -57,11 +57,6 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
         self.addCanvasPart(CanvasKeyboardEvent(self))
         self.addCanvasPart(_MatplotlibMouseEvent(self))
         self.initCanvas.emit()
-
-    def getWaveDataFromArtist(self, artist):
-        for i in self._Datalist:
-            if i.id == artist.get_zorder():
-                return i
 
     def mouseReleaseEvent(self, event):
         self.mouseReleased.emit(event)
@@ -149,7 +144,7 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
         mime.setData('application/pdf', self.__toData('pdf'))
         try:
             mime.setText(self.__toData('pdf').hex())
-        except:
+        except Exception:
             import traceback
             print(traceback.format_exc())
         buf = io.BytesIO()
@@ -250,4 +245,72 @@ class PicableCanvas(FigureCanvasBase):
     def getPickedAnnotation(self):
         return self.selAnnot
 
+class ExtendCanvas(FigureCanvasBase):
+    def __init__(self, dpi=100):
+        super().__init__(dpi=dpi)
+        self.doubleClicked.connect(self.defModFunc)
+        self.modf = weakref.WeakMethod(self.defModFunc)
+        self.moveText = False
+        self.textPosStart = None
+        self.cursorPosStart = None    def OnMouseUp(self, event):
+        if self.moveText == True and event.button == 1:
+            self.moveText = False
+        return super().OnMouseUp(event)
+
+    def OnMouseMove(self, event):
+        if self.moveText == True:
+            mode = self.getAnnotPositionMode(self.annotindex)[0]
+            if mode == 'Absolute':
+                d = self.__GlobalToRatio(event.x, event.y, self.axes)
+            elif mode == 'Relative':
+                d = self.__GlobalToAxis(event.x, event.y, self.axes)
+            self.setAnnotPosition(self.annotindex, (self.textPosStart[0] + d[0] - self.cursorPosStart[0], self.textPosStart[1] + d[1] - self.cursorPosStart[1]))
+            self.draw()
+        else:
+            return super().OnMouseMove(event)
+
+    def OnMouseDown(self, event):
+        if event.dblclick:
+            self.modf()(self)
+            return super().OnMouseDown(event)
+            self.annot = self.getPickedAnnotation()
+            if self.annot is not None:
+                self.modf()(self, 'Annot.')
+                self.setSelectedAnnotations(self.annot.get_zorder())
+                return super().OnMouseDown(event)
+            axis = self.getPickedAxis()
+            if axis is not None:
+                self.modf()(self, 'Axis')
+                # self.setSelectedAxis(self.__findAxis(axis))
+                return super().OnMouseDown(event)
+            line = self.getPickedLine()
+            if line is not None:
+                self.modf()(self, 'Lines')
+                w = self.getWaveDataFromArtist(line)
+                self.setSelectedIndexes(1, w.id)
+                return super().OnMouseDown(event)
+            image = self.getPickedImage()
+            if image is not None:
+                self.modf()(self, 'Images')
+                w = self.getWaveDataFromArtist(image)
+                self.setSelectedIndexes(2, w.id)
+                return super().OnMouseDown(event)
+        elif event.button == 1:
+            self.clicked.emit(*self.__GlobalToAxis(event.x, event.y, self.getAxes("BottomLeft")))
+            return super().OnMouseDown(event)
+            self.annot = self.getPickedAnnotation()
+            if self.annot is not None:
+                self.annotindex = self.annot.get_zorder()
+                self.moveText = True
+                mode = self.getAnnotPositionMode(self.annotindex)[0]
+                if mode == 'Absolute':
+                    self.cursorPosStart = self.__GlobalToRatio(event.x, event.y, self.axes)
+                elif mode == 'Relative':
+                    self.cursorPosStart = self.__GlobalToAxis(event.x, event.y, self.axes)
+                self.textPosStart = self.getAnnotPosition(self.annotindex)[0]
+                return
+            else:
+                return super().OnMouseDown(event)
+        else:
+            return super().OnMouseDown(event)
 """

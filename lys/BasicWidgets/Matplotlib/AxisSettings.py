@@ -138,7 +138,10 @@ class _MatplotlibTicks(CanvasTicks):
 
     def _setTickInterval(self, axis, interval, which='major'):
         axs = self.canvas().getAxes(axis)
-        loc = ticker.MultipleLocator(interval)
+        if self.canvas().getAxisMode(axis) == 'linear':
+            loc = ticker.MultipleLocator(interval)
+        else:
+            loc = ticker.LogLocator(base=interval, numticks=15)
         if axis in ['Left', 'Right']:
             ax = axs.get_yaxis()
         if axis in ['Bottom', 'Top']:

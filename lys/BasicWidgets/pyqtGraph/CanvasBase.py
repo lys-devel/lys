@@ -1,6 +1,5 @@
 import pyqtgraph as pg
 
-from lys.widgets import LysSubWindow
 from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent
 from .AxisSettings import _pyqtGraphAxes, _pyqtGraphTicks
 from .AxisLabelSettings import _PyqtgraphAxisLabel, _PyqtgraphTickLabel
@@ -26,7 +25,6 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.__initFigure()
         self.updated.connect(self.update)
         self.__initCanvasParts()
-        self.doubleClicked.connect(self.defModFunc)
 
     def __initFigure(self):
         self.fig = self.plotItem
@@ -64,17 +62,6 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
     def keyPressEvent(self, event):
         self.keyPressed.emit(event)
         super().keyPressEvent(event)
-
-    def defModFunc(self, tab='Axis'):
-        from lys import ModifyWindow, Graph
-        parent = self.parentWidget()
-        while(parent is not None):
-            if isinstance(parent, LysSubWindow):
-                mod = ModifyWindow(self, parent, showArea=isinstance(parent, Graph))
-                if isinstance(tab, str):
-                    mod.selectTab(tab)
-                break
-            parent = parent.parentWidget()
 
 
 """
