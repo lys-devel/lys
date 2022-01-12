@@ -296,7 +296,6 @@ class _InteractiveWidget(QGroupBox):
         ry = QPushButton("Region (Y)", clicked=self._regy)
         pt = QPushButton("Point", clicked=self._point)
         rt = QPushButton("Rect", clicked=self._rect)
-        cc = QPushButton("Circle", clicked=self._circle)
         li = QPushButton("Free Line", clicked=self._line)
 
         mc = QComboBox()
@@ -310,8 +309,7 @@ class _InteractiveWidget(QGroupBox):
         grid.addWidget(ry, 1, 1)
         grid.addWidget(pt, 2, 0)
         grid.addWidget(rt, 2, 1)
-        grid.addWidget(cc, 3, 0)
-        grid.addWidget(li, 3, 1)
+        grid.addWidget(li, 3, 0)
         grid.addWidget(mc, 4, 0)
 
         elist = controlledExecutorsGUI(self.__exe, self)
@@ -326,67 +324,65 @@ class _InteractiveWidget(QGroupBox):
     def _point(self, c=None):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
-        id = c.addCross()
-        e = PointExecutor(self.canvases.getAxes(c))
-        c.addCallback(id, e.callback)
-        e.updated.connect(lambda x: c.setCrosshairPosition(c.getAnnotations(indexes=id)[0], e.getPosition()))
+        crs = c.addCrossAnnotation()
+        e = PointExecutor(self.canvases.getAxes(c), pos=crs.getPosition())
+        crs.positionChanged.connect(e.setPosition)
+        e.updated.connect(lambda x: crs.setPosition(e.getPosition()))
         self.__exe.append(e, c)
 
     def _rect(self, c=None):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
-        id = c.addRect()
-        e = RegionExecutor(self.canvases.getAxes(c))
-        c.addCallback(id, e.callback)
-        e.updated.connect(lambda x: c.setRectRegion(c.getAnnotations(indexes=id)[0], e.getRange()))
+        rect = c.addRectAnnotation()
+        e = RegionExecutor(self.canvases.getAxes(c), range=rect.getRegion())
+        rect.regionChanged.connect(e.setRange)
+        e.updated.connect(lambda x: rect.setRegion(e.getRange()))
         self.__exe.append(e, c)
-
-    def _circle(self):
-        pass
 
     def _line(self, c=None):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
-        id = c.addLine()
-        e = FreeLineExecutor(self.canvases.getAxes(c))
-        c.addCallback(id, e.callback)
-        e.updated.connect(lambda x: c.setAnnotLinePosition(c.getAnnotations(indexes=id)[0], e.getPosition()))
+        reg = c.addFreeRegionAnnotation()
+        e = FreeLineExecutor(self.canvases.getAxes(c), pos=reg.getRegion(), width=reg.getWidth())
+        reg.regionChanged.connect(e.setPosition)
+        reg.widthChanged.connect(e.setWidth)
+        e.updated.connect(lambda x: [reg.setRegion(e.getPosition()), reg.setWidth(e.getWidth())])
         self.__exe.append(e, c)
 
     def _regx(self, c=None):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
-        id = c.addRegion()
-        e = RegionExecutor(self.canvases.getAxes(c)[0])
-        c.addCallback(id, e.callback)
-        e.updated.connect(lambda x: c.setRegion(c.getAnnotations(indexes=id)[0], e.getRange()[0]))
+        reg = c.addRegionAnnotation()
+        e = RegionExecutor(self.canvases.getAxes(c)[0], range=reg.getRegion())
+        reg.regionChanged.connect(e.setRange)
+        e.updated.connect(lambda x: reg.setRegion(e.getRange()[0]))
         self.__exe.append(e, c)
 
     def _regy(self, c=None):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
-        id = c.addRegion(type="horizontal")
-        e = RegionExecutor(self.canvases.getAxes(c)[1])
-        c.addCallback(id, e.callback)
-        e.updated.connect(lambda x: c.setRegion(c.getAnnotations(indexes=id)[0], e.getRange()[0]))
+        reg = c.addRegionAnnotation(type="horizontal")
+        e = RegionExecutor(self.canvases.getAxes(c)[1], range=reg.getRegion())
+        reg.regionChanged.connect(e.setRange)
+        e.updated.connect(lambda x: reg.setRegion(e.getRange()[0]))
         self.__exe.append(e, c)
 
     def _linex(self, c=None):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
-        id = c.addInfiniteLine()
-        e = PointExecutor(self.canvases.getAxes(c)[0])
-        c.addCallback(id, e.callback)
-        e.updated.connect(lambda x: c.setInfiniteLinePosition(c.getAnnotations(indexes=id)[0], e.getPosition()[0]))
+        line = c.addInfiniteLineAnnotation()
+        e = PointExecutor(self.canvases.getAxes(c)[0], pos=line.getPosition())
+        line.positionChanged.connect(e.setPosition)
+        e.updated.connect(lambda x: line.setPosition(e.getPosition()[0]))
         self.__exe.append(e, c)
 
     def _liney(self, c=None):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
-        id = c.addInfiniteLine(type='horizontal')
-        e = PointExecutor(self.canvases.getAxes(c)[1])
-        c.addCallback(id, e.callback)
-        e.updated.connect(lambda x: c.setInfiniteLinePosition(c.getAnnotations(indexes=id)[0], e.getPosition()[0]))
+        line = c.addInfiniteLineAnnotation(type='horizontal')
+        e = PointExecutor(self.canvases.getAxes(c)[1], pos=line.getPosition())
+        line.positionChanged.connect(e.setPosition)
+        e.updated.connect(lambda x: line.setPosition(e.getPosition()[0]))
         self.__exe.append(e, c)
 
 
@@ -497,7 +493,7 @@ class CutTab(QWidget):
             if self._usegraph.isChecked():
                 g = display(w)
                 self.canvases.append(g.canvas, ax)
-                g.canvas.clicked.connect(lambda x, y: self._gridClicked(g.canvas))
+                g.canvas.clicked.connect(lambda e: self._gridClicked(g.canvas))
                 return g.canvas
             else:
                 if self.getTargetCanvas() is not None:
@@ -518,7 +514,7 @@ class CutTab(QWidget):
                 c.Append(w)
                 c.keyPressed.connect(self.parent.keyPress)
                 self.canvases.append(c, ax)
-                c.clicked.connect(lambda x, y: self._gridClicked(c))
+                c.clicked.connect(lambda e: self._gridClicked(c))
                 self.grid.Append(c, *pos, *wid)
                 return c
 

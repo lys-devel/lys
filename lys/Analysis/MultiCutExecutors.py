@@ -66,9 +66,8 @@ class RegionExecutor(QObject):
 
     def setRange(self, range):
         self.range = []
-        if isinstance(range[0], list):
-            for r in range:
-                self.range.append(r)
+        if hasattr(range[0], "__iter__"):
+            self.range = range
         else:
             self.range.append(range)
         self.updated.emit(self.axes)
@@ -88,9 +87,6 @@ class RegionExecutor(QObject):
                     p2 = wave.data.shape[i] - 1
                 slices[i] = slice(p1, p2 + 1)
                 sumlist.append(i)
-
-    def callback(self, region):
-        self.setRange(region)
 
     def Name(self):
         return "Region"
@@ -234,9 +230,6 @@ class PointExecutor(QObject):
                     p = wave.data.shape[i] - 1
                 slices[i] = p
 
-    def callback(self, pos):
-        self.setPosition(pos)
-
     def Name(self):
         return "Point"
 
@@ -337,12 +330,12 @@ class FreeLineExecutor(QObject):
     _id = 10000
     updated = pyqtSignal(tuple)
 
-    def __init__(self, axes, pos=None):
+    def __init__(self, axes, pos=None, width=1):
         super().__init__()
         self.axes = axes
         self.id = FreeLineExecutor._id
         FreeLineExecutor._id += 1
-        self.width = 1
+        self.width = width
         if pos is not None:
             self.setPosition(pos)
 
@@ -378,15 +371,8 @@ class FreeLineExecutor(QObject):
         self.width = w
         self.updated.emit((self.id,))
 
-    # def execute(self, wave, axes):
-    #    f = FreeLineFilter(axes, self.position, self.width)
-    #    Filters([f]).execute(wave)
-
     def getFilter(self, axes):
         return FreeLineFilter(axes, self.position, self.width)
-
-    def callback(self, pos):
-        self.setPosition(pos)
 
     def Name(self):
         return "Line" + str(self.id - 10000) + " (width = " + str(self.width) + ")"
@@ -424,9 +410,9 @@ class FreeLineExecutorDialog(LysSubWindow):
         l = QGridLayout()
         for n, i in enumerate(self._axes):
             l.addWidget(QLabel("Point " + str(n)), n, 0)
-            l.addWidget(self._val1[n], n, 1)
-            l.addWidget(self._val2[n], n, 2)
-        self.width = QSpinBox()
+            l.addWidget(self._val1[n], 0, n + 1)
+            l.addWidget(self._val2[n], 1, n + 1)
+        self.width = ScientificSpinBox()
         self.width.setValue(self.__parent.getWidth())
         self.width.valueChanged.connect(self._updateValues)
         l.addWidget(QLabel("Width"), n + 1, 0)

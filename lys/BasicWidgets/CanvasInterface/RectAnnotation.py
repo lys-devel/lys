@@ -27,7 +27,7 @@ class RectAnnotation(AnnotationWithLine):
         rect = g.canvas.addRectAnnotation()
         rect.setLineColor("#ff0000")
     """
-    changed = pyqtSignal()
+    regionChanged = pyqtSignal(list)
     """PyqtSignal that is emitted when the rectangle is changed."""
 
     def __init__(self, canvas, pos, size, axis):
@@ -43,10 +43,13 @@ class RectAnnotation(AnnotationWithLine):
         Args:
             region(2*2 sequence): The region of rectangle in the form of [(x1, x2), (y1, y2)]
         """
-        self._setPosition(min(*region[0]), min(*region[1]))
-        self._setSize(max(*region[0]) - min(*region[0]), max(*region[1]) - min(*region[1]))
-        self._pos = (min(*region[0]), min(*region[1]))
-        self._size = (max(*region[0]) - min(*region[0]), max(*region[1]) - min(*region[1]))
+        if [tuple(region[0]), tuple(region[1])] != self.getRegion():
+            x, y = min(*region[0]), min(*region[1])
+            w, h = max(*region[0]) - min(*region[0]), max(*region[1]) - min(*region[1])
+            self._pos = (x, y)
+            self._size = (w, h)
+            self._setRegion([(x, x + w), (y, y + h)])
+            self.regionChanged.emit(self.getRegion())
 
     def getPosition(self):
         """
@@ -66,8 +69,14 @@ class RectAnnotation(AnnotationWithLine):
         """
         return self._size
 
-    def _setPosition(self, pos):
-        warnings.warn(str(type(self)) + " does not implement _setPosition(pos) method.", NotImplementedWarning)
+    def getRegion(self):
+        """
+        Get region of the rectangle.
 
-    def _setSize(self, size):
-        warnings.warn(str(type(self)) + " does not implement _setSize(size) method.", NotImplementedWarning)
+        Return:
+            2*2 sequence: The region of rectangle in the form of [(x1, x2), (y1, y2)]
+        """
+        return [(self._pos[0], self._pos[0] + self._size[0]), (self._pos[1], self._pos[1] + self._size[1])]
+
+    def _setRegion(self, region):
+        warnings.warn(str(type(self)) + " does not implement _setRegion(pos) method.", NotImplementedWarning)

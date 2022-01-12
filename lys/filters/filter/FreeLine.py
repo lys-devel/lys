@@ -27,7 +27,7 @@ class FreeLineFilter(FilterInterface):
         Cut along line::
 
             w = Wave([[1, 2, 3], [2, 3, 4], [3, 4, 5]], [1, 2, 3], [1, 2, 3], name="wave")
-            f = filters.FreeLineFilter(axes=[0, 1], range=[(1, 3), (1, 3)], width=1)
+            f = filters.FreeLineFilter(axes=[0, 1], range=[(1, 1), (3, 3)], width=1)
             result = f.execute(w)
             print(result.data)
             # [1, 3, 5]
@@ -40,7 +40,13 @@ class FreeLineFilter(FilterInterface):
         self.position = range
 
     def _execute(self, wave, *axes, **kwargs):
-        return self._execute_dask(wave, self._axes, self._width)
+        width = self.__calcWidthInPixel(wave, self._axes, self._width)
+        return self._execute_dask(wave, self._axes, width)
+
+    def __calcWidthInPixel(self, wave, axes, width):
+        ax = wave.getAxis(axes[0])
+        dx = (ax[-1] - ax[0]) / (len(ax) - 1)
+        return max(1, int(np.round(width / dx)))
 
     def _execute_dask(self, wave, axes, width):
         coord = []
@@ -52,8 +58,8 @@ class FreeLineFilter(FilterInterface):
         return self.__setAxesAndData(wave, axes, size, res)
 
     def __makeCoordinates(self, wave, axes, j):
-        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[1][0], axes[1]))
-        pos2 = (wave.posToPoint(self.position[0][1], axes[0]), wave.posToPoint(self.position[1][1], axes[1]))
+        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[0][1], axes[1]))
+        pos2 = (wave.posToPoint(self.position[1][0], axes[0]), wave.posToPoint(self.position[1][1], axes[1]))
         dx = (pos2[0] - pos1[0])
         dy = (pos2[1] - pos1[1])
         size = int(np.sqrt(dx * dx + dy * dy) + 1)
@@ -62,8 +68,8 @@ class FreeLineFilter(FilterInterface):
         return np.linspace(pos1[0], pos2[0], size) + dx * (j * 0.5), np.linspace(pos1[1], pos2[1], size) + dy * (j * 0.5), size
 
     def __setAxesAndData(self, wave, axes, size, res):
-        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[1][0], axes[1]))
-        pos2 = (wave.posToPoint(self.position[0][1], axes[0]), wave.posToPoint(self.position[1][1], axes[1]))
+        pos1 = (wave.posToPoint(self.position[0][0], axes[0]), wave.posToPoint(self.position[0][1], axes[1]))
+        pos2 = (wave.posToPoint(self.position[1][0], axes[0]), wave.posToPoint(self.position[1][1], axes[1]))
         axis1 = wave.getAxis(axes[0])
         axis2 = wave.getAxis(axes[1])
         dx = abs(axis1[pos1[0]] - axis1[pos2[0]])

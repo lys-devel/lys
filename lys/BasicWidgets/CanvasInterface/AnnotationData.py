@@ -49,6 +49,25 @@ class AnnotationData(CanvasPart):
 
         return self._appearance['Visible']
 
+    def setZOrder(self, z):
+        """
+        Set the z order of the annotaion.
+
+        Args:
+            z(int): The z order of the annotation.
+        """
+        self._setZOrder(z)
+        self._appearance['ZOrder'] = z
+
+    def getZOrder(self):
+        """
+        Get the z order of the annotaion.
+
+        Return:
+            int: The z order of the annotation.
+        """
+        return self._appearance['ZOrder']
+
     @saveCanvas
     def loadAppearance(self, appearance):
         """
@@ -71,6 +90,9 @@ class AnnotationData(CanvasPart):
 
     def _setVisible(self, visible):
         warnings.warn(str(type(self)) + " does not implement _setVisible(visible) method.", NotImplementedWarning)
+
+    def _setZOrder(self, z):
+        warnings.warn(str(type(self)) + " does not implement _setZOrder(z) method.", NotImplementedWarning)
 
     def _loadAppearance(self, appearance):
         warnings.warn(str(type(self)) + " does not implement _loadAppearance(appearance) method.", NotImplementedWarning)

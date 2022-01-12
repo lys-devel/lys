@@ -178,8 +178,8 @@ class MultipleGrid(LysSubWindow):
                 if wid is not None:
                     self.layout.removeWidget(wid)
                     wid.deleteLater()
-                    if isinstance(wid, BasicEventCanvasBase):
-                        wid.emitCloseEvent()
+                    # if isinstance(wid, BasicEventCanvasBase):
+                    #    wid.emitCloseEvent()
         self.layout.addWidget(widget, x, y, w, h)
 
     def setSize(self, size):

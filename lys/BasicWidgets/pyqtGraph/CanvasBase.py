@@ -1,4 +1,5 @@
 import pyqtgraph as pg
+from LysQt.QtGui import QMouseEvent
 
 from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent
 from .AxisSettings import _pyqtGraphAxes, _pyqtGraphTicks
@@ -12,8 +13,12 @@ pg.setConfigOption('foreground', 'k')
 
 
 class _PyqtgraphMouseEvent(CanvasMouseEvent):
-    def mapPosition(self, pos, axis):
+    def mapPosition(self, event, axis):
         ax = self.canvas().getAxes(axis)
+        if isinstance(event, QMouseEvent):
+            pos = event.pos()
+        else:
+            pos = event.scenePos()
         p = ax.mapSceneToView(pos)
         return (p.x(), p.y())
 
@@ -25,6 +30,7 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.__initFigure()
         self.updated.connect(self.update)
         self.__initCanvasParts()
+        self.getAxes('BottomLeft').mouseDragEvent = self._onDrag
 
     def __initFigure(self):
         self.fig = self.plotItem
@@ -48,23 +54,24 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.initCanvas.emit()
 
     def mouseReleaseEvent(self, event):
-        self.mouseReleased.emit(event)
         super().mouseReleaseEvent(event)
+        self.mouseReleased.emit(event)
 
     def mousePressEvent(self, event):
+        super().mousePressEvent(event)
         self.mousePressed.emit(event)
-        super().mouseReleaseEvent(event)
-
-    def mouseMoveEvent(self, event):
-        self.mouseMoved.emit(event)
-        super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event):
         self.keyPressed.emit(event)
         super().keyPressEvent(event)
 
+    def _onDrag(self, event):
+        self.mouseMoved.emit(event)
+        return event.accept()
+
 
 """
+
     def _onDrag(self, event, axis=0):
         if event.button() == Qt.LeftButton:
             if self._getMode() == "line":

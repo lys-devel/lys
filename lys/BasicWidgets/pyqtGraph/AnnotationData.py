@@ -1,7 +1,8 @@
 import pyqtgraph as pg
+import numpy as np
 from LysQt.QtCore import Qt, pyqtSignal, QRectF
 from LysQt.QtGui import QColor, QTransform
-from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation
+from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation, FreeRegionAnnotation
 
 _styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
 
@@ -13,16 +14,13 @@ class _PyqtgraphLineAnnotation(LineAnnotation):
         super().__init__(canvas, pos, axis)
         self._obj = pg.LineSegmentROI(pos)
         self._obj.setPen(pg.mkPen(color='#000000'))
+        self._obj.sigRegionChanged.connect(lambda obj: self.setPosition([[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[1] + obj.listPoints()[0][1]], [obj.pos()[0] + obj.listPoints()[1][0], obj.pos()[1] + obj.listPoints()[1][1]]]))
         canvas.getAxes(axis).addItem(self._obj)
-        # TODO : set signal emitted when position is changed by user.
-
-    def _addAnnotCallback(self, obj, callback):
-        obj.sigRegionChanged.connect(lambda obj: callback([[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[0] + obj.listPoints()[1][0]], [obj.pos()[1] + obj.listPoints()[0][1], obj.pos()[1] + obj.listPoints()[1][1]]]))
-        obj.sigRegionChanged.emit(obj)
 
     def _setPosition(self, pos):
-        self._obj.getHandles()[0].setPos(pos[0][0] - self._obj.pos()[0], pos[1][0] - self._obj.pos()[1])
-        self._obj.getHandles()[1].setPos(pos[0][1] - self._obj.pos()[0], pos[1][1] - self._obj.pos()[1])
+        self._obj.setPos(0, 0)
+        self._obj.getHandles()[0].setPos(*pos[0])
+        self._obj.getHandles()[1].setPos(*pos[1])
 
     def _setLineColor(self, color):
         self._obj.pen.setColor(QColor(color))
@@ -52,12 +50,11 @@ class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
         self._obj.setMovable(True)
         self._obj.setPen(pg.mkPen(color='#000000'))
         self._obj.setVisible(True)
+        self._obj.sigPositionChanged.connect(self._posChanged)
         canvas.getAxes(axis).addItem(self._obj)
-        # TODO : set signal emitted when position is changed by user.
 
-    def _addAnnotCallback(self, obj, callback):
-        obj.sigPositionChanged.connect(lambda line: callback(line.value()))
-        obj.sigPositionChanged.emit(obj)
+    def _posChanged(self, line):
+        self.setPosition(line.value())
 
     def _setPosition(self, pos):
         self._obj.setValue(pos)
@@ -85,18 +82,12 @@ class _PyqtgraphRectAnnotation(RectAnnotation):
         super().__init__(canvas, pos, size, axis)
         self._obj = pg.RectROI(pos, size)
         self._obj.setPen(pg.mkPen(color='#000000'))
+        self._obj.sigRegionChanged.connect(lambda roi: self.setRegion([[roi.pos()[0], roi.pos()[0] + roi.size()[0]], [roi.pos()[1], roi.pos()[1] + roi.size()[1]]]))
         canvas.getAxes(axis).addItem(self._obj)
-        # TODO : set signal emitted when position is changed by user.
 
-    def _addAnnotCallback(self, obj, callback):
-        obj.sigRegionChanged.connect(lambda roi: callback([[roi.pos()[0], roi.pos()[0] + roi.size()[0]], [roi.pos()[1], roi.pos()[1] + roi.size()[1]]]))
-        obj.sigRegionChanged.emit(obj)
-
-    def _setPosition(self, x, y):
-        self._obj.setPos((x, y))
-
-    def _setSize(self, w, h):
-        self._obj.setSize((w, h))
+    def _setRegion(self, region):
+        self._obj.setPos((region[0][0], region[1][0]))
+        self._obj.setSize((region[0][1] - region[0][0], region[1][1] - region[1][0]))
 
     def _setLineColor(self, color):
         self._obj.pen.setColor(QColor(color))
@@ -122,12 +113,8 @@ class _PyqtgraphRegionAnnotation(RegionAnnotation):
     def __init__(self, canvas, region, orientation, axis):
         super().__init__(canvas, region, orientation, axis)
         self._obj = pg.LinearRegionItem(region, orientation=self.__list[orientation])
+        self._obj.sigRegionChanged.connect(lambda roi: self.setRegion(roi.getRegion()))
         canvas.getAxes(axis).addItem(self._obj)
-        # TODO : set signal emitted when position is changed by user.
-
-    def _addAnnotCallback(self, obj, callback):
-        obj.sigRegionChanged.connect(lambda roi: callback(roi.getRegion()))
-        obj.sigRegionChanged.emit(obj)
 
     def _setRegion(self, region):
         self._obj.setRegion(region)
@@ -151,17 +138,71 @@ class _PyqtgraphRegionAnnotation(RegionAnnotation):
         self._obj.setVisible(visible)
 
 
+class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
+    """Implementation of FreeRegionAnnotation for pyqtgraph"""
+
+    def __init__(self, canvas, region, width, axis):
+        super().__init__(canvas, region, width, axis)
+        self.__flg = False
+        pos1, pos2 = np.array(region[0]), np.array(region[1])
+        d = pos2 - pos1
+        v = np.array([-d[1], d[0]])
+        pos = pos1 - width * v / np.linalg.norm(v) / 2
+        self._obj = pg.RectROI(pos, size=(np.linalg.norm(d), width), angle=np.angle(d[0] + 1j * d[1], deg=True), movable=True, rotatable=True)
+        handles = self._obj.getHandles()
+        for h in handles:
+            h.hide()
+        self._obj.addScaleRotateHandle((0, 0.5), (1, 0.5))
+        self._obj.addScaleRotateHandle((1, 0.5), (0, 0.5))
+        self._obj.sigRegionChanged.connect(self._regionChanged)
+        canvas.getAxes(axis).addItem(self._obj)
+
+    def _regionChanged(self, roi):
+        if self.__flg:
+            return
+        self.__flg = True
+        p = np.array([roi.pos()[0], roi.pos()[1]])
+        d = np.array((np.cos(roi.angle() / 180 * np.pi), np.sin(roi.angle() / 180 * np.pi)))
+        v = np.array((-d[1], d[0]))
+        self.setRegion([tuple(p + v * roi.size()[1] / 2), tuple(p + roi.size()[0] * d + v * roi.size()[1] / 2)])
+        self.__flg = False
+
+    def _setRegion(self, region):
+        pos1, pos2 = np.array(region[0]), np.array(region[1])
+        d = pos2 - pos1
+        v = np.array([-d[1], d[0]])
+        pos = pos1 - self.getWidth() * v / np.linalg.norm(v) / 2
+        self._obj.setPos(pos)
+        self._obj.setSize((np.linalg.norm(d), self.getWidth()))
+        self._obj.setAngle(np.angle(d[0] + 1j * d[1], deg=True))
+
+    def _setWidth(self, width):
+        self._obj.setSize((self._obj.size()[0], width))
+
+    def _setLineColor(self, color):
+        self._obj.pen.setColor(QColor(color))
+
+    def _setLineStyle(self, style):
+        self._obj.pen.setStyle(_styles[style])
+
+    def _setLineWidth(self, width):
+        self._obj.pen.setWidth(width)
+
+    def _setZOrder(self, z):
+        self._obj.setZValue(z)
+
+    def _setVisible(self, visible):
+        self._obj.setVisible(visible)
+
+
 class _PyqtgraphCrossAnnotation(CrossAnnotation):
     """Implementation of CrossAnnotation for pyqtgraph"""
 
     def __init__(self, canvas, position, axis):
         super().__init__(canvas, position, axis)
         self._obj = _CrosshairItem(position)
+        self._obj.sigRegionChanged.connect(lambda roi: self.setPosition(roi.getPosition()))
         canvas.getAxes(axis).addItem(self._obj)
-        # TODO : set signal emitted when position is changed by user.
-
-    def _addAnnotCallback(self, obj, callback):
-        obj.sigRegionChanged.connect(lambda roi: callback(roi.getPosition()))
 
     def _setPosition(self, pos):
         self._obj.lines[0].setValue(pos[1])
@@ -208,6 +249,7 @@ class _CrosshairItem(pg.GraphicsObject):
         self.lines[0].sigPositionChanged.connect(lambda: self.lineMoved(0))
         self.lines[1].sigPositionChanged.connect(lambda: self.lineMoved(1))
         self.setMovable(True)
+        self.setPosition(values)
 
     def getPosition(self):
         r = (self.lines[1].value(), self.lines[0].value())
@@ -269,6 +311,9 @@ class _PyqtgraphAnnotation(CanvasAnnotation):
 
     def _addRegionAnnotation(self, *args, **kwargs):
         return _PyqtgraphRegionAnnotation(self.canvas(), *args, **kwargs)
+
+    def _addFreeRegionAnnotation(self, *args, **kwargs):
+        return _PyqtgraphFreeRegionAnnotation(self.canvas(), *args, **kwargs)
 
     def _addCrossAnnotation(self, *args, **kwargs):
         return _PyqtgraphCrossAnnotation(self.canvas(), *args, **kwargs)

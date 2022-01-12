@@ -44,7 +44,7 @@ class Graph_test(unittest.TestCase):
 
             line = c.addLineAnnotation()
             line.setPosition([(0, 1), (2, 3)])
-            self.assertEqual(line.getPosition(), [(0, 1), (2, 3)])
+            self.assertEqual(line.getPosition(), ((0, 1), (2, 3)))
 
             self.__lineStyles(line)
 

@@ -26,7 +26,7 @@ class CrossAnnotation(AnnotationWithLine):
         rect = g.canvas.addCrossAnnotation()
         rect.setLineColor("#ff0000")
     """
-    changed = pyqtSignal()
+    positionChanged = pyqtSignal(tuple)
     """PyqtSignal that is emitted when the region is changed."""
 
     def __init__(self, canvas, pos, axis):
@@ -41,8 +41,10 @@ class CrossAnnotation(AnnotationWithLine):
         Args:
             pos(length 2 sequence): Theposition of cross in the form of (x, y)
         """
-        self._setPosition(pos)
-        self._pos = pos
+        if tuple(pos) != self._pos:
+            self._pos = tuple(pos)
+            self._setPosition(pos)
+            self.positionChanged.emit(self._pos)
 
     def getPosition(self):
         """

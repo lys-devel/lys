@@ -26,7 +26,7 @@ class LineAnnotation(AnnotationWithLine):
         line = g.canvas.addLineAnnotation()
         line.setLineColor("#ff0000")
     """
-    changed = pyqtSignal()
+    positionChanged = pyqtSignal(tuple)
     """PyqtSignal that is emitted when the position of the line is changed."""
 
     def __init__(self, canvas, pos, axis):
@@ -41,8 +41,10 @@ class LineAnnotation(AnnotationWithLine):
         Args:
             pos(2*2 sequence): The position of the line in the form of [(x0,y0),(x1,y1)].
         """
-        self._setPosition(pos)
-        self._pos = pos
+        if tuple(pos) != self._pos:
+            self._pos = tuple(pos)
+            self._setPosition(pos)
+            self.positionChanged.emit(tuple(self._pos))
 
     def getPosition(self):
         """
@@ -78,7 +80,7 @@ class InfiniteLineAnnotation(AnnotationWithLine):
         line = g.canvas.addInfiniteLineAnnotation()
         line.setLineColor("#ff0000")
     """
-    changed = pyqtSignal()
+    positionChanged = pyqtSignal(float)
     """PyqtSignal that is emitted when the position of the line is changed."""
 
     def __init__(self, canvas, pos, orientation, axis):
@@ -94,8 +96,10 @@ class InfiniteLineAnnotation(AnnotationWithLine):
         Args:
             pos(float): The position of the line.
         """
-        self._setPosition(pos)
-        self._pos = pos
+        if pos != self._pos:
+            self._pos = pos
+            self._setPosition(pos)
+            self.positionChanged.emit(self._pos)
 
     def getPosition(self):
         """

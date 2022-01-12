@@ -136,7 +136,7 @@ class Filters_test(unittest.TestCase):
 
     def test_freeline(self):
         w = Wave([[1, 2, 3], [2, 3, 4], [3, 4, 5]], [1, 2, 3], [1, 2, 3], name="wave")
-        f = filters.FreeLineFilter(axes=[0, 1], range=[(1, 3), (2, 2)], width=1)
+        f = filters.FreeLineFilter(axes=[0, 1], range=[(1, 2), (3, 2)], width=1)
         f1 = filters.FreeLineFilter(**f.getParameters())
         self.assertEqual(f1.getRelativeDimension(), -1)
         result = f1.execute(w)
@@ -144,7 +144,7 @@ class Filters_test(unittest.TestCase):
         assert_array_equal(result.x, [0, 1, 2])
         self.assertEqual(result.name, "wave")
 
-        f2 = filters.FreeLineFilter(axes=[0, 1], range=[(1, 3), (1, 3)], width=1)
+        f2 = filters.FreeLineFilter(axes=[0, 1], range=[(1, 1), (3, 3)], width=1)
         result = f2.execute(w)
         assert_array_equal(result.data, [1, 3, 5])
         assert_array_equal(result.x, [0, np.sqrt(2), 2 * np.sqrt(2)])

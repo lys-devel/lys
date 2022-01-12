@@ -37,14 +37,14 @@ class CanvasMouseEvent(CanvasPart):
     @saveCanvas
     def _mousePressed(self, e):
         if e.button() == Qt.LeftButton:
-            self.__start = self.mapPosition(e.pos(), "BottomLeft")
+            self.__start = self.mapPosition(e, "BottomLeft")
             self.canvas().setSelectedRange([self.__start, self.__start])
             self.__select_rect = True
 
     @saveCanvas
     def _mouseMoved(self, e):
         if self.__select_rect:
-            end = self.mapPosition(e.pos(), "BottomLeft")
+            end = self.mapPosition(e, "BottomLeft")
             self.canvas().setSelectedRange([self.__start, end])
 
     @saveCanvas
@@ -56,5 +56,5 @@ class CanvasMouseEvent(CanvasPart):
             self.doubleClicked.emit(e)
         self._clicktime = time.time()
 
-    def mapPosition(self, pos, axis):
+    def mapPosition(self, event, axis):
         pass
