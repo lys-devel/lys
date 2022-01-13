@@ -94,7 +94,7 @@ class ImageData(WaveData):
             min(float or 'auto'): The minimum value of the range.
             max(float or 'auto'): The maximum value of the range.
         """
-        automax, automin = self.getAutoColorRange()
+        automin, automax = self.getAutoColorRange()
         if max == 'auto':
             max = automax
         if min == 'auto':

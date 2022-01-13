@@ -101,9 +101,9 @@ class AnnotationSelectionBox(QTreeView):
         self.__model.clear()
         i = 1
         for l in list:
-            self.__model.setItem(len(list) - i, 0, QStandardItem(l.name))
-            self.__model.setItem(len(list) - i, 1, QStandardItem(l.axes))
-            self.__model.setItem(len(list) - i, 2, QStandardItem(str(l.id)))
+            self.__model.setItem(len(list) - i, 0, QStandardItem(l.getName()))
+            self.__model.setItem(len(list) - i, 1, QStandardItem(l.getAxis()))
+            self.__model.setItem(len(list) - i, 2, QStandardItem(str(l.getZOrder())))
             i += 1
 
     def OnSelected(self):
