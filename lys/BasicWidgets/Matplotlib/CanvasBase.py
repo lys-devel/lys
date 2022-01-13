@@ -2,7 +2,7 @@ import io
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
-from LysQt.QtCore import QMimeData
+from LysQt.QtCore import QMimeData, Qt
 from LysQt.QtWidgets import QApplication
 from LysQt.QtGui import QImage
 
@@ -39,6 +39,7 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
         self.fig = Figure(dpi=dpi)
         CanvasBase.__init__(self)
         FigureCanvas.__init__(self, self.fig)
+        self.setFocusPolicy(Qt.StrongFocus)  # requires to enable key events
         self.updated.connect(self.draw)
         self.__initCanvasParts()
         self.mpl_connect('scroll_event', self._onScroll)
