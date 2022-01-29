@@ -117,13 +117,12 @@ class Graph(AutoSavedWindow):
                     wavelis.append(d.getWave())
             LineProfileWindow(self, wavelis, self.canvas)
         if e.key() == Qt.Key_S:
-            text, ok = QInputDialog.getText(self, '---Save Dialog---', 'Enter graph name:')
-            if not text.endswith('.grf'):
-                text += '.grf'
-            if ok:
-                self.Save(text)
+            path, _ = QFileDialog.getSaveFileName(filter="Graph (*.grf)")
+            if len(path) != 0:
+                if not path.endswith('.grf'):
+                    path += '.grf'
+                self.Save(path)
         if e.key() == Qt.Key_D:
-            #text, ok = QInputDialog.getText(self, '---Save Dialog---', 'Enter graph name:')
             self.Duplicate(lib=Graph.graphLibrary)
 
     def closeEvent(self, event):

@@ -334,7 +334,8 @@ class _contextMenuBuilder:
             nam, ext = os.path.splitext(os.path.basename(p))
             obj = load(p)
             if obj is not None:
-                glb.shell().addObject(obj, name=nam)
+                if ext != ".grf":
+                    glb.shell().addObject(obj, name=nam)
             else:
                 print("Failed to load " + p, file=sys.stderr)
 
