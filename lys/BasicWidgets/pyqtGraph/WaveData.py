@@ -134,6 +134,9 @@ class _PyqtgraphImage(ImageData):
     def _updateData(self):
         self._obj.setImage(self.getFilteredWave().data)
         self._obj.setTransform(_calcExtent2D(self.getFilteredWave()))
+        r = self.getColorRange()
+        if r is not None:
+            self.setColorRange(*r)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)

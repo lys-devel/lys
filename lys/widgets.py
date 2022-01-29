@@ -177,6 +177,7 @@ class LysSubWindow(SizeAdjustableWindow):
         from . import glb
         super().__init__()
         self._parent = None
+        self._floating = floating
         if floating:
             LysSubWindow.__win.append(self)
             glb.mainWindow().closed.connect(self.close)
@@ -245,6 +246,10 @@ class LysSubWindow(SizeAdjustableWindow):
         User input on various widgets are easily exported to file by :meth:`saveSettings`.
         """
         return _restore(self, file)
+
+    def isFloating(self):
+        """Return if the window is out of the mdi window or not"""
+        return self._floating
 
 
 def _restore(self, file):
@@ -329,9 +334,7 @@ class AutoSavedWindow(LysSubWindow):
 
     When a *AutoSavedWindow* is instantiated, it is automatically added to current MdiArea.
 
-    At the same time, the window is connected to a temporary file in .lys/workspace/
-
-    When :meth:`Save` is called without *file* argument, data is automatically saved in the temprary file.
+    At the same time, the window is connected to a temporary file in .lys/workspace/. See :meth:`Save` for detail.
 
     This functionarity is realized by calling :meth:`_save` method, which should be implemented in class that inherit *AutoSavedWindow*
 
@@ -394,9 +397,8 @@ class AutoSavedWindow(LysSubWindow):
         If *file* is given, the content of the window is saved via _save method.
 
         If *file* is not given, it is saved in the last-saved file if it exists.
-        If the file has not been saved, it is saved in the temporary file in .lys/workspace/ automatically.
 
-        DO NOT use *temporary* option except lys developers.
+        If *temporary* is True, it is saved in the temporary file in .lys/workspace/ automatically.
 
         Args:
             file(str): the file to be saved.

@@ -76,6 +76,16 @@ class FileSystemView(QWidget):
         if self._builder is not None:
             self._builder.build(self.selectedPaths())
 
+    def selectedPath(self):
+        """
+        Returns first selected path.
+
+        Return:
+            str: path selected
+        """
+        paths = self.selectedPaths()
+        return paths[0]
+
     def selectedPaths(self):
         """
         Returns selected paths.
@@ -310,7 +320,7 @@ class _contextMenuBuilder:
         return self.__actions[tp]
 
     def _judgeFileType(self, paths):
-        if all([os.path.isdir(p) for p in paths]):
+        if all([self._parent._Model.isDir(self._parent._Model.indexFromPath(p)) for p in paths]):
             res = "dir"
         else:
             ext = os.path.splitext(paths[0])[1]
