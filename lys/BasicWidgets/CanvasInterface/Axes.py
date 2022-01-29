@@ -196,9 +196,13 @@ class CanvasAxes(CanvasPart):
             mergin = 0
         r = self.getAxisRange(axis)
         if r[0] < r[1]:
-            return [min - mergin, max + mergin]
+            res = [min - mergin, max + mergin]
         else:
-            return [max + mergin, min - mergin]
+            res = [max + mergin, min - mergin]
+        if (res[0] == res[1]):
+            res[0] = res[0] - 1
+            res[1] = res[1] + 1
+        return res
 
     def isAutoScaled(self, axis):
         """
