@@ -127,7 +127,7 @@ class Graph(AutoSavedWindow):
             self.Duplicate(lib=Graph.graphLibrary)
 
     def closeEvent(self, event):
-        self.canvas.fig.canvas = None
+        self.canvas.finalize()
         super().closeEvent(event)
 
     def Append(self, wave, axis="BottomLeft", contour=False, vector=False):

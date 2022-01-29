@@ -85,6 +85,16 @@ class CanvasBase(object):
         """
         self.loadCanvas.emit(dictionary)
 
+    def finalize(self):
+        """
+        Finalize the canvas.
+
+        Several graph library (including matplotlib) requires explicit finalization to break circular reference, which causes memory leak.
+
+        Call this method to finalize the canvas, which is usually done by parent widget (such as Graph).
+        """
+        pass
+
 
 class CanvasPart(QObject):
     """

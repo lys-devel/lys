@@ -5,7 +5,7 @@ class _MatplotlibMargin(CanvasMargin):
     """Implementation of CanvasMargin for matplotlib"""
 
     def _setMargin(self, left, right, top, bottom):
-        self.canvas().fig.subplots_adjust(left=left, right=right, top=top, bottom=bottom)
+        self.canvas().getFigure().subplots_adjust(left=left, right=right, top=top, bottom=bottom)
 
 
 _unit = 1 / 2.54  # inch->cm
@@ -20,22 +20,22 @@ class _MatplotlibCanvasSize(CanvasSize):
     def _setAbsolute(self, type, value):
         rat = self._getMarginRatio()
         if type == "Width":
-            self.canvas().fig.set_figwidth(value * _unit * rat[0])
+            self.canvas().getFigure().set_figwidth(value * _unit * rat[0])
         else:
-            self.canvas().fig.set_figheight(value * _unit * rat[1])
+            self.canvas().getFigure().set_figheight(value * _unit * rat[1])
         self._adjust()
 
     def _setAspect(self, type, aspect):
         rat = self._getMarginRatio()
         if type == "Width":
-            self.canvas().fig.set_figwidth(self.canvas().fig.get_figheight() * (rat[0] / rat[1]) * aspect)
+            self.canvas().getFigure().set_figwidth(self.canvas().getFigure().get_figheight() * (rat[0] / rat[1]) * aspect)
         else:
-            self.canvas().fig.set_figheight(self.canvas().fig.get_figwidth() / (rat[0] / rat[1]) * aspect)
+            self.canvas().getFigure().set_figheight(self.canvas().getFigure().get_figwidth() / (rat[0] / rat[1]) * aspect)
         self._adjust()
 
     def _getSize(self):
         rat = self._getMarginRatio()
-        return (self.canvas().fig.get_figwidth() / rat[0] / _unit, self.canvas().fig.get_figheight() / rat[1] / _unit)
+        return (self.canvas().getFigure().get_figwidth() / rat[0] / _unit, self.canvas().getFigure().get_figheight() / rat[1] / _unit)
 
     def _getMarginRatio(self):
         m = self.canvas().getMargin()
@@ -44,4 +44,4 @@ class _MatplotlibCanvasSize(CanvasSize):
         return (wr, hr)
 
     def _adjust(self):
-        self.canvas().resize(self.canvas().fig.get_figwidth() * 100, self.canvas().fig.get_figheight() * 100)
+        self.canvas().resize(self.canvas().getFigure().get_figwidth() * 100, self.canvas().getFigure().get_figheight() * 100)

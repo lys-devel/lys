@@ -36,9 +36,8 @@ class _MatplotlibMouseEvent(CanvasMouseEvent):
 
 class FigureCanvasBase(CanvasBase, FigureCanvas):
     def __init__(self, dpi=100):
-        self.fig = Figure(dpi=dpi)
         CanvasBase.__init__(self)
-        FigureCanvas.__init__(self, self.fig)
+        FigureCanvas.__init__(self, Figure(dpi=dpi))
         self.setFocusPolicy(Qt.StrongFocus)  # requires to enable key events
         self.updated.connect(self.draw)
         self.__initCanvasParts()
@@ -135,8 +134,14 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
         y_loc = (y - ran.y0 * self.height()) / ((ran.y1 - ran.y0) * self.height())
         return [x_loc, y_loc]
 
+    def getFigure(self):
+        return self.figure
+
+    def finalize(self):
+        self.figure.canvas = None
+
     def SaveFigure(self, path, format):
-        self.fig.savefig(path, transparent=True, format=format)
+        self.getFigure().savefig(path, transparent=True, format=format)
 
     def CopyToClipboard(self):
         clipboard = QApplication.clipboard()
@@ -153,14 +158,14 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
             import traceback
             print(traceback.format_exc())
         buf = io.BytesIO()
-        self.fig.savefig(buf, transparent=True)
+        self.getFigure().savefig(buf, transparent=True)
         mime.setImageData(QImage.fromData(buf.getvalue()))
         buf.close()
         clipboard.setMimeData(mime)
 
     def __toData(self, format):
         buf = io.BytesIO()
-        self.fig.savefig(buf, format=format, transparent=True)
+        self.getFigure().savefig(buf, format=format, transparent=True)
         buf.seek(0)
         data = buf.read()
         buf.close()

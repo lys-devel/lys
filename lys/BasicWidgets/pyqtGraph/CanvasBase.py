@@ -1,3 +1,5 @@
+import weakref
+
 import pyqtgraph as pg
 from LysQt.QtGui import QMouseEvent
 
@@ -30,7 +32,8 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.__initFigure()
         self.updated.connect(self.update)
         self.__initCanvasParts()
-        self.getAxes('BottomLeft').mouseDragEvent = self._onDrag
+        self._helper = _dragHelper(self)
+        self.getAxes('BottomLeft').mouseDragEvent = self._helper.onDrag
 
     def __initFigure(self):
         self.fig = self.plotItem
@@ -68,6 +71,15 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
     def _onDrag(self, event):
         self.mouseMoved.emit(event)
         return event.accept()
+
+
+class _dragHelper:
+    def __init__(self, obj):
+        self._obj = weakref.ref(obj)
+
+    def onDrag(self, event):
+        self._obj().mouseMoved.emit(event)
+        event.accept()
 
 
 """

@@ -53,15 +53,9 @@ class _pyqtGraphAxes(CanvasAxes):
 
     def __initROI(self):
         pen = pg.mkPen(QColor('#ff0000'))
-        self.__roi = pg.RectROI([0, 0], [0, 0], invertible=True, pen=pen)
+        self.__roi = pg.RectROI([0, 0], [0, 0], invertible=True, movable=False, resizable=False, pen=pen)
+        self.__roi.setZValue(100000)
         self.__roi.hide()
-        self.__roi.addScaleHandle([1, 1], [0, 0])
-        self.__roi.addScaleHandle([0, 0], [1, 1])
-        self.__roi.addScaleHandle([1, 0.5], [0, 0.5])
-        self.__roi.addScaleHandle([0, 0.5], [1, 0.5])
-        self.__roi.addScaleHandle([0.5, 0], [0.5, 1])
-        self.__roi.addScaleHandle([0.5, 1], [0.5, 0])
-        self.__roi.sigRegionChanged.connect(lambda r: self.setSelectedRange([[r.pos()[0], r.pos()[1]], [r.pos()[0] + r.size()[0], r.pos()[1] + r.size()[1]]]))
         self.__roiflg = False
         self.getAxes('BottomLeft').addItem(self.__roi)
 

@@ -15,7 +15,7 @@ class _MatplotlibAxes(CanvasAxes):
         patch.set_zorder(20000)
 
     def __initAxes(self, canvas):
-        self._axes = canvas.fig.add_subplot(111)  # TODO #This line takes 0.3s for each image.
+        self._axes = canvas.getFigure().add_subplot(111)  # TODO #This line takes 0.3s for each image.
         self._axes.minorticks_on()
         self._axes.xaxis.set_picker(15)
         self._axes.yaxis.set_picker(15)

@@ -29,9 +29,6 @@ class WaveData(CanvasPart):
         self._filteredWave = wave
         self._z = 'default'
 
-    def __del__(self):
-        self._wave.modified.disconnect(self._update)
-
     @saveCanvas
     def _update(self, *args, **kwargs):
         self._filteredWave = self._calcFilteredWave(self._wave, self._offset, self._filter)
