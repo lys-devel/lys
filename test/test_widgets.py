@@ -3,6 +3,8 @@ import os
 import shutil
 import warnings
 
+import lys
+
 from LysQt.QtWidgets import QSpinBox
 
 from lys import glb, home, registerFileLoader, errors
@@ -27,7 +29,7 @@ class testAutoSavedWindow(AutoSavedWindow):
 
     def setText(self, txt):
         self.text = txt
-        self.Save()
+        self.Save(temporary=True)
 
     def _save(self, file):
         with open(file, "w") as f:
@@ -73,15 +75,12 @@ class FileView_test(unittest.TestCase):
     def test_AutoSavedWindow(self):
         win1 = testAutoSavedWindow()
         win1.setText("test1")
-        self.assertEqual(win1.FileName(), home() + "/.lys/workspace/default/wins/text000.txt")
-        self.assertEqual(win1.Name(), "text000.txt")
+        self.assertEqual(win1.TemporaryFile(), home() + "/.lys/workspace/default/wins/text000.txt")
 
         win2 = testAutoSavedWindow()
         win2.setText("test2")
-        self.assertEqual(win2.FileName(), home() + "/.lys/workspace/default/wins/text001.txt")
-
         win2.Save(self.path + "/text2.txt")
-        self.assertEqual(win2.Name(), "text2.txt")
+        self.assertEqual(win2.Name(), "test/MainWindow/text2.txt")
 
         win3 = testAutoSavedWindow(self.path + "/text2.txt", warn=False)
         self.assertTrue(win3 is None)

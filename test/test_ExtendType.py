@@ -27,5 +27,4 @@ class ExtendType_test(unittest.TestCase):
 
         # load old type graph
         g = load(self.path + "/oldgraph1.grf")
-        g._Disconnect()
         self.assertEqual(type(g), Graph)

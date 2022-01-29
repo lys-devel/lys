@@ -53,7 +53,7 @@ class Graph(AutoSavedWindow):
         self.canvas.canvasResized.connect(self._resizeCanvas)
         self.canvas.keyPressed.connect(self.keyPress)
         self.resized.connect(self.canvas.parentResized)
-        self.canvas.updated.connect(self.Save)
+        self.canvas.updated.connect(lambda: self.Save(temporary=True))
         if file is not None:
             self._load(file)
         else:
@@ -117,17 +117,27 @@ class Graph(AutoSavedWindow):
                     wavelis.append(d.getWave())
             LineProfileWindow(self, wavelis, self.canvas)
         if e.key() == Qt.Key_S:
-            path, _ = QFileDialog.getSaveFileName(filter="Graph (*.grf)")
-            if len(path) != 0:
-                if not path.endswith('.grf'):
-                    path += '.grf'
-                self.Save(path)
+            if e.modifiers() == Qt.ShiftModifier | Qt.ControlModifier:
+                self.__saveAs()
+            elif e.modifiers() == Qt.ControlModifier:
+                if self.FileName() == None:
+                    self.__saveAs()
+                else:
+                    self.Save()
         if e.key() == Qt.Key_D:
             self.Duplicate(lib=Graph.graphLibrary)
 
+    def __saveAs(self):
+        path, _ = QFileDialog.getSaveFileName(filter="Graph (*.grf)")
+        if len(path) != 0:
+            if not path.endswith('.grf'):
+                path += '.grf'
+            self.Save(path)
+
     def closeEvent(self, event):
-        self.canvas.finalize()
         super().closeEvent(event)
+        if event.isAccepted():
+            self.canvas.finalize()
 
     def Append(self, wave, axis="BottomLeft", contour=False, vector=False):
         return self.canvas.Append(wave, axis, contour=contour, vector=vector)
