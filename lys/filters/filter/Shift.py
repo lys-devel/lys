@@ -23,9 +23,9 @@ class ShiftFilter(FilterInterface):
     def _execute(self, wave, *args, shift=None, **kwargs):
         order = 1
         if shift is None:
-            shi = self._s
+            shi = list(self._s)
         else:
-            shi = shift
+            shi = list(shift)
         for i, s in enumerate(shi):
             ax = wave.getAxis(i)
             dx = (ax[-1] - ax[0]) / (len(ax) - 1)
