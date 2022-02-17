@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QSizePolicy, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget
+from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QSizePolicy, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget, QTextEdit
 from LysQt.QtCore import Qt, pyqtSignal, QPoint
 from LysQt.QtGui import QValidator
 from . import home, load, SettingDict
@@ -288,6 +288,12 @@ def _restore(self, file):
             if name in settings:
                 obj.addItems(settings[name])
 
+    for obj in self.findChildren(QTextEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                obj.setPlainText(settings[name]) 
+
 
 def _save(self, file):
     settings = SettingDict(file)
@@ -316,8 +322,12 @@ def _save(self, file):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = [obj.item(i).text() for i in range(obj.count())]
-    return settings
 
+    for obj in self.findChildren(QTextEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.toPlainText()
+    return settings
 
 def _checkName(name):
     if name == "":
