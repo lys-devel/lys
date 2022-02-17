@@ -69,6 +69,11 @@ def _restore(self, file):
             if name in settings:
                 obj.setText(settings[name])
 
+    for obj in self.findChildren(QTextEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                obj.setPlainText(settings[name]) 
 
 def _save(self, file):
     settings = {}
@@ -92,6 +97,12 @@ def _save(self, file):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = obj.text()
+
+    for obj in self.findChildren(QTextEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.toPlainText()
+
     d = Dict(file)
     d.data = settings
     return settings
