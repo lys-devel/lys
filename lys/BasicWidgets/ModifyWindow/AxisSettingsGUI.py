@@ -1,8 +1,7 @@
 import numpy as np
 
 from LysQt.QtWidgets import QComboBox, QGroupBox, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton, QCheckBox, QDoubleSpinBox
-from .ColorWidgets import ColorSelection
-from lys.widgets import ScientificSpinBox
+from lys.widgets import ScientificSpinBox, ColorSelection
 
 
 class AxisSelectionWidget(QComboBox):
