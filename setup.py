@@ -1,12 +1,10 @@
 from setuptools import setup
 import sys
-sys.path.append('./ExtendAnalysis')
+sys.path.append('./lys')
 sys.path.append('./test')
-sys.path.append('./test/BasicWidgets')
 
 setup(
-    name="ExtendAnalysis",
-    version="0.1.1",
-    install_requires=["numpy", "loky", "matplotlib", "opencv-python-headless", "Pillow", "PyQt5", "pyqtGraph", "retry", "scipy", "watchdog", "dask[array]", "dask[distributed]", "dask_image", "autopep8"],
-    test_suite="TestSuite.suite"
+    name="lys",
+    version="0.2.1",
+    install_requires=["numpy", "scipy", "opencv-python-headless", "loky", "Pillow", "PyQt5", "matplotlib", "pyqtGraph", "dask[array]", "dask[distributed]", "dask_image", "autopep8"],
 )
