@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>glb module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="MainWindow module" href="MainWindow.html" />
+    <link rel="prev" title="functions module" href="functions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../lys.html">lys package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="core.html">core module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="functions.html">functions module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">glb module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MainWindow.html">MainWindow module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shell.html">shell module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="FileView.html">FileView module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html">widgets module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">Python API</a> &raquo;</li>
+          <li><a href="../lys.html">lys package</a> &raquo;</li>
+      <li>glb module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lys_/glb.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.glb">
+<span id="glb-module"></span><h1>glb module<a class="headerlink" href="#module-lys.glb" title="Permalink to this headline"></a></h1>
+<p><em>glb</em> module gives global variables such as a instance of main window.</p>
+<p>Functions used by general users are given in <a class="reference internal" href="functions.html#module-lys.functions" title="lys.functions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">functions</span></code></a> module.</p>
+<p>All global variables can NOT be directly imported from lys because these are used only by developers.</p>
+<p>Developers should import lys.glb module to access global variables</p>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.glb.createMainWindow">
+<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">createMainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#createMainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.createMainWindow" title="Permalink to this definition"></a></dt>
+<dd><p>Create main window.</p>
+<p>This function is called by lys automatically, and thus users and developers need not to use this function.</p>
+<p>If you want to make custom launch script of lys, see <code class="xref py py-mod docutils literal notranslate"><span class="pre">__main__</span></code> module.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.glb.mainWindow">
+<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">mainWindow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#mainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.mainWindow" title="Permalink to this definition"></a></dt>
+<dd><p>Return <a class="reference internal" href="MainWindow.html#lys.MainWindow.MainWindow" title="lys.MainWindow.MainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">MainWindow.MainWindow</span></code></a> object.</p>
+<p><em>MainWindow</em> is used to realize new GUI functionalities in lys.
+See <a class="reference internal" href="MainWindow.html#lys.MainWindow.MainWindow" title="lys.MainWindow.MainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">MainWindow.MainWindow</span></code></a> for detailed description.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.glb.restoreWorkspaces">
+<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">restoreWorkspaces</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#restoreWorkspaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.restoreWorkspaces" title="Permalink to this definition"></a></dt>
+<dd><p>Restore workspaces.</p>
+<p>This function is called by lys automatically, and thus users and developers need not to use this function.</p>
+<p>If you want to make custom launch script of lys, see <code class="xref py py-mod docutils literal notranslate"><span class="pre">__main__</span></code> module.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.glb.shell">
+<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">shell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#shell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.shell" title="Permalink to this definition"></a></dt>
+<dd><p>Return <a class="reference internal" href="shell.html#lys.shell.ExtendShell" title="lys.shell.ExtendShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">shell.ExtendShell</span></code></a> object.</p>
+<p>ExtendShell object is used to realize new functionalities in lys Python Interface.
+See <a class="reference internal" href="shell.html#lys.shell.ExtendShell" title="lys.shell.ExtendShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">shell.ExtendShell</span></code></a> for detailed description.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="functions.html" class="btn btn-neutral float-left" title="functions module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="MainWindow.html" class="btn btn-neutral float-right" title="MainWindow module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

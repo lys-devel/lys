@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shell module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FileView module" href="FileView.html" />
+    <link rel="prev" title="MainWindow module" href="MainWindow.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../lys.html">lys package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="core.html">core module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="functions.html">functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="glb.html">glb module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MainWindow.html">MainWindow module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">shell module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="FileView.html">FileView module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html">widgets module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">Python API</a> &raquo;</li>
+          <li><a href="../lys.html">lys package</a> &raquo;</li>
+      <li>shell module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lys_/shell.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.shell">
+<span id="shell-module"></span><h1>shell module<a class="headerlink" href="#module-lys.shell" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.shell.</span></span><span class="sig-name descname"><span class="pre">ExtendShell</span></span><a class="reference internal" href="../_modules/lys/shell.html#ExtendShell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.shell.ExtendShell" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
+<p>Extended shell object that is used for Python Interface in lys.</p>
+<p>This object is basically used to realize custom functionarities of lys from plugins.</p>
+<p>Any expression can be executed and evaluated by <a class="reference internal" href="#lys.shell.ExtendShell.exec" title="lys.shell.ExtendShell.exec"><code class="xref py py-func docutils literal notranslate"><span class="pre">exec()</span></code></a> and <a class="reference internal" href="#lys.shell.ExtendShell.eval" title="lys.shell.ExtendShell.eval"><code class="xref py py-func docutils literal notranslate"><span class="pre">eval()</span></code></a> functions.
+Any object can be added by <a class="reference internal" href="#lys.shell.ExtendShell.addObject" title="lys.shell.ExtendShell.addObject"><code class="xref py py-func docutils literal notranslate"><span class="pre">addObject()</span></code></a></p>
+<p>ExtendShell is basically singleton object. Developers should access the instance of ExtendShell from <a class="reference internal" href="glb.html#lys.glb.shell" title="lys.glb.shell"><code class="xref py py-func docutils literal notranslate"><span class="pre">glb.shell()</span></code></a> function.</p>
+<p class="rubric">Example</p>
+<p>Execute some commands in lys Python Interface.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;a=1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>Adding new function in lys Python Interface.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Import new module in lys Python Interface.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># define *my_module* that is used in Python Interface</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span><span class="o">.</span><span class="n">importModule</span><span class="p">(</span><span class="s2">&quot;my_module&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell.addObject">
+<span class="sig-name descname"><span class="pre">addObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printResult</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/shell.html#ExtendShell.addObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.shell.ExtendShell.addObject" title="Permalink to this definition"></a></dt>
+<dd><p>Add object to shell.</p>
+<p><em>name</em> represents name of object on shell.
+If None, obj.__name__ and obj.name is used as a name.
+If both methods are not defined, object is loaded as default name “obj”.</p>
+<p>To avoid overlap, name is automatically changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<em>any</em>) – object to be loaded</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – name of object</p></li>
+<li><p><strong>printResult</strong> (<em>bool</em>) – If True, message is printed after loading.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell.commandExecuted">
+<span class="sig-name descname"><span class="pre">commandExecuted</span></span><a class="headerlink" href="#lys.shell.ExtendShell.commandExecuted" title="Permalink to this definition"></a></dt>
+<dd><p><em>commandExecuted</em> signal is emitted after when <a class="reference internal" href="#lys.shell.ExtendShell.eval" title="lys.shell.ExtendShell.eval"><code class="xref py py-func docutils literal notranslate"><span class="pre">eval()</span></code></a> and <a class="reference internal" href="#lys.shell.ExtendShell.exec" title="lys.shell.ExtendShell.exec"><code class="xref py py-func docutils literal notranslate"><span class="pre">exec()</span></code></a> is called.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell.commandLog">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">commandLog</span></span><a class="headerlink" href="#lys.shell.ExtendShell.commandLog" title="Permalink to this definition"></a></dt>
+<dd><p>List of command log that is executed by user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of commands</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell.dict">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">dict</span></span><a class="headerlink" href="#lys.shell.ExtendShell.dict" title="Permalink to this definition"></a></dt>
+<dd><p>Global dictionary of shell.</p>
+<p>This is useful when developers want to access local variables in Python Interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Global dictionary of shell</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell.eval">
+<span class="sig-name descname"><span class="pre">eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/shell.html#ExtendShell.eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.shell.ExtendShell.eval" title="Permalink to this definition"></a></dt>
+<dd><p>Evaluate expression in shell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expr</strong> (<em>str</em>) – expression to be evaluated</p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – if True, <em>expr</em> is added to command log.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Result</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;a=1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell.exec">
+<span class="sig-name descname"><span class="pre">exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/shell.html#ExtendShell.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.shell.ExtendShell.exec" title="Permalink to this definition"></a></dt>
+<dd><p>Execute expression in shell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expr</strong> (<em>str</em>) – expression to be executed</p></li>
+<li><p><strong>save</strong> (<em>bool</em>) – if True, <em>expr</em> is added to command log.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;a=1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell.importAll">
+<span class="sig-name descname"><span class="pre">importAll</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/shell.html#ExtendShell.importAll"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.shell.ExtendShell.importAll" title="Permalink to this definition"></a></dt>
+<dd><p>Import module</p>
+<p>This function import <em>module</em>, i.e. from <em>module</em> import * is called.</p>
+<p>If the module has been imported, it is reloaded by importlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>module</strong> (<em>str</em>) – module to be loaded.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">importAll</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell.importModule">
+<span class="sig-name descname"><span class="pre">importModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/shell.html#ExtendShell.importModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.shell.ExtendShell.importModule" title="Permalink to this definition"></a></dt>
+<dd><p>Import module</p>
+<p>This function import <em>module</em>, i.e. import <em>module</em> is called.</p>
+<p>If the module has been imported, it is reloaded by importlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>module</strong> (<em>str</em>) – module to be loaded.</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">importModule</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.shell.ExtendShell.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/shell.html#ExtendShell.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.shell.ExtendShell.refresh" title="Permalink to this definition"></a></dt>
+<dd><p>Refresh all modules in module directory.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="MainWindow.html" class="btn btn-neutral float-left" title="MainWindow module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="FileView.html" class="btn btn-neutral float-right" title="FileView module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

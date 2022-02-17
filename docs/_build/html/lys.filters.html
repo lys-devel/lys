@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lys.filters package &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lys.filters.filter package" href="lys.filters.filter.html" />
+    <link rel="prev" title="lys.BasicWidgets.Fitting package" href="lys.BasicWidgets.Fitting.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lys.html">lys package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html">lys.Analysis package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">lys.filters package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html">lys.filters.filter package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lys.filters.FilterIOGUI">lys.filters.FilterIOGUI module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lys.filters.FilterManager">lys.filters.FilterManager module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lys.filters.filtersGUI">lys.filters.filtersGUI module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lys.filters">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="api.html">Python API</a> &raquo;</li>
+      <li>lys.filters package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lys.filters.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="lys-filters-package">
+<h1>lys.filters package<a class="headerlink" href="#lys-filters-package" title="Permalink to this headline"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lys.filters.filter.html">lys.filters.filter package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.CommonWidgets">lys.filters.filter.CommonWidgets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Convolution">lys.filters.filter.Convolution module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Dask">lys.filters.filter.Dask module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Differentiate">lys.filters.filter.Differentiate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.FilterInterface">lys.filters.filter.FilterInterface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.FindPeak">lys.filters.filter.FindPeak module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.FreeLine">lys.filters.filter.FreeLine module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Frequency">lys.filters.filter.Frequency module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Integral">lys.filters.filter.Integral module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Interporation">lys.filters.filter.Interporation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.MatrixMath">lys.filters.filter.MatrixMath module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Region">lys.filters.filter.Region module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Resize">lys.filters.filter.Resize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Segmentation">lys.filters.filter.Segmentation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Shift">lys.filters.filter.Shift module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.SimpleMath">lys.filters.filter.SimpleMath module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Smooth">lys.filters.filter.Smooth module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Transform">lys.filters.filter.Transform module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.filters">lys.filters.filter.filters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+</section>
+<section id="module-lys.filters.FilterIOGUI">
+<span id="lys-filters-filteriogui-module"></span><h2>lys.filters.FilterIOGUI module<a class="headerlink" href="#module-lys.filters.FilterIOGUI" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.FilterIOGUI.FilterExportDialog">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.filters.FilterIOGUI.</span></span><span class="sig-name descname"><span class="pre">FilterExportDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/FilterIOGUI.html#FilterExportDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.FilterIOGUI.FilterExportDialog" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.FilterIOGUI.FilterExportDialog.getExportPath">
+<span class="sig-name descname"><span class="pre">getExportPath</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/FilterIOGUI.html#FilterExportDialog.getExportPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.FilterIOGUI.FilterExportDialog.getExportPath" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.FilterIOGUI.FilterImportDialog">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.filters.FilterIOGUI.</span></span><span class="sig-name descname"><span class="pre">FilterImportDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/FilterIOGUI.html#FilterImportDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.FilterIOGUI.FilterImportDialog" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.FilterIOGUI.FilterImportDialog.getImportPath">
+<span class="sig-name descname"><span class="pre">getImportPath</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/FilterIOGUI.html#FilterImportDialog.getImportPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.FilterIOGUI.FilterImportDialog.getImportPath" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.FilterIOGUI.FilterViewWidget">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.filters.FilterIOGUI.</span></span><span class="sig-name descname"><span class="pre">FilterViewWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/FilterIOGUI.html#FilterViewWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.FilterIOGUI.FilterViewWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="lys_/FileView.html#lys.FileView.FileSystemView" title="lys.FileView.FileSystemView"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.FileView.FileSystemView</span></code></a></p>
+</dd></dl>
+
+</section>
+<section id="module-lys.filters.FilterManager">
+<span id="lys-filters-filtermanager-module"></span><h2>lys.filters.FilterManager module<a class="headerlink" href="#module-lys.filters.FilterManager" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.filters.FilterManager.addFilter">
+<span class="sig-prename descclassname"><span class="pre">lys.filters.FilterManager.</span></span><span class="sig-name descname"><span class="pre">addFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filterName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gui</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guiName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guiGroup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/FilterManager.html#addFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.FilterManager.addFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Add new filter to lys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filter</strong> (<em>class that implements FilterInterface</em>) – filter to be added.</p></li>
+<li><p><strong>filterName</strong> (<em>str</em>) – name of filter. If omitted, default name is used.</p></li>
+<li><p><strong>gui</strong> (<em>class that implements FilterSettingBase</em><em>, </em><em>and is decorated by filterGUI</em>) – Widget that is used in MultiCut.</p></li>
+<li><p><strong>guiName</strong> (<em>str</em>) – name of filter in GUI.</p></li>
+<li><p><strong>guiGroup</strong> (<em>str</em>) – name of group in GUI.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.filters.FilterManager.getFilter">
+<span class="sig-prename descclassname"><span class="pre">lys.filters.FilterManager.</span></span><span class="sig-name descname"><span class="pre">getFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/FilterManager.html#getFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.FilterManager.getFilter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-lys.filters.filtersGUI">
+<span id="lys-filters-filtersgui-module"></span><h2>lys.filters.filtersGUI module<a class="headerlink" href="#module-lys.filters.filtersGUI" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FilterGroupSetting">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.filters.filtersGUI.</span></span><span class="sig-name descname"><span class="pre">FilterGroupSetting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filterDict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FilterGroupSetting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FilterGroupSetting" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FilterGroupSetting.filterChanged">
+<span class="sig-name descname"><span class="pre">filterChanged</span></span><a class="headerlink" href="#lys.filters.filtersGUI.FilterGroupSetting.filterChanged" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FilterGroupSetting.parseFromFilter">
+<span class="sig-name descname"><span class="pre">parseFromFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FilterGroupSetting.parseFromFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FilterGroupSetting.parseFromFilter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FilterGroupSetting.setDimension">
+<span class="sig-name descname"><span class="pre">setDimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FilterGroupSetting.setDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FilterGroupSetting.setDimension" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FilterSettingBase">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.filters.filtersGUI.</span></span><span class="sig-name descname"><span class="pre">FilterSettingBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FilterSettingBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FilterSettingBase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FilterSettingBase.GetFilter">
+<span class="sig-name descname"><span class="pre">GetFilter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FilterSettingBase.GetFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FilterSettingBase.GetFilter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FilterSettingBase.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FilterSettingBase.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FilterSettingBase.getParameters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FilterSettingBase.parseFromFilter">
+<span class="sig-name descname"><span class="pre">parseFromFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FilterSettingBase.parseFromFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FilterSettingBase.parseFromFilter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FilterSettingBase.setParameters">
+<span class="sig-name descname"><span class="pre">setParameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FilterSettingBase.setParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FilterSettingBase.setParameters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersDialog">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.filters.filtersGUI.</span></span><span class="sig-name descname"><span class="pre">FiltersDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersDialog" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="lys_/widgets.html#lys.widgets.LysSubWindow" title="lys.widgets.LysSubWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.LysSubWindow</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersDialog.applied">
+<span class="sig-name descname"><span class="pre">applied</span></span><a class="headerlink" href="#lys.filters.filtersGUI.FiltersDialog.applied" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersDialog.setFilter">
+<span class="sig-name descname"><span class="pre">setFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersDialog.setFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersDialog.setFilter" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.filters.filtersGUI.</span></span><span class="sig-name descname"><span class="pre">FiltersGUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regionLoader</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersGUI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.GetFilters">
+<span class="sig-name descname"><span class="pre">GetFilters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersGUI.GetFilters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.GetFilters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersGUI.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.clear" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.loadFilters">
+<span class="sig-name descname"><span class="pre">loadFilters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersGUI.loadFilters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.loadFilters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.loadFrom">
+<span class="sig-name descname"><span class="pre">loadFrom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersGUI.loadFrom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.loadFrom" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.loadFromString">
+<span class="sig-name descname"><span class="pre">loadFromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersGUI.loadFromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.loadFromString" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.saveAs">
+<span class="sig-name descname"><span class="pre">saveAs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersGUI.saveAs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.saveAs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.setDimension">
+<span class="sig-name descname"><span class="pre">setDimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#FiltersGUI.setDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.setDimension" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.filterGUI">
+<span class="sig-prename descclassname"><span class="pre">lys.filters.filtersGUI.</span></span><span class="sig-name descname"><span class="pre">filterGUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filterClass</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filtersGUI.html#filterGUI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.filterGUI" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-lys.filters">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lys.filters" title="Permalink to this headline"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lys.BasicWidgets.Fitting.html" class="btn btn-neutral float-left" title="lys.BasicWidgets.Fitting package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lys.filters.filter.html" class="btn btn-neutral float-right" title="lys.filters.filter package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

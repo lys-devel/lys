@@ -11,5 +11,8 @@ test/proc.py
 .lys
 build
 dist
-docs/_*
+docs/_static
+docs/_templates
+docs/_build/.doctrees
+docs/_build/doctrees
 __pycache__
