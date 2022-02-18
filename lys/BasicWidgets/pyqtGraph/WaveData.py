@@ -17,11 +17,20 @@ class _PyqtgraphLine(LineData):
 
     def __init__(self, canvas, wave, axis):
         super().__init__(canvas, wave, axis)
-        self._obj = pg.PlotDataItem(x=wave.x, y=wave.data)
+        if wave.data.dtype == complex:
+            data = np.absolute(wave.data)
+        else:
+            data = wave.data
+        self._obj = pg.PlotDataItem(x=wave.x, y=data)
         canvas.getAxes(axis).addItem(self._obj)
 
     def _updateData(self):
-        self._obj.setData(x=self.getFilteredWave().x, y=self.getFilteredWave().data)
+        wave = self.getFilteredWave()
+        if wave.data.dtype == complex:
+            data = np.absolute(wave.data)
+        else:
+            data = wave.data
+        self._obj.setData(x=wave.x, y=data)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -187,7 +196,7 @@ class _PyqtgraphRGB(RGBData):
         canvas.getAxes(axis).addItem(self._obj)
 
     def _updateData(self):
-        self._obj.setImage(self.getFilteredWave().data)
+        self._obj.setImage(self.getRGBWave().data)
         self._obj.setTransform(_calcExtent2D(self.getFilteredWave()))
 
     def _setVisible(self, visible):

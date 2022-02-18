@@ -2,7 +2,7 @@ from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QGroupBox, QComboBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, QLabel, QCheckBox
 
 from lys.BasicWidgets.CanvasInterface import FontInfo
-from .ColorWidgets import ColorSelection
+from lys.widgets import ColorSelection
 
 
 class FontSelector(QGroupBox):

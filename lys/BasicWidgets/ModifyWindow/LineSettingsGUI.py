@@ -3,7 +3,7 @@ from matplotlib.lines import Line2D
 from LysQt.QtCore import pyqtSignal
 from LysQt.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QPushButton, QGroupBox, QComboBox, QLabel, QDoubleSpinBox, QGridLayout, QWidget
 
-from .ColorWidgets import ColormapSelection, ColorSelection
+from lys.widgets import ColormapSelection, ColorSelection
 
 
 class LineColorSideBySideDialog(QDialog):

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lys.BasicWidgets.CanvasInterface.SaveCanvas &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>lys.BasicWidgets.CanvasInterface.SaveCanvas</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lys.BasicWidgets.CanvasInterface.SaveCanvas</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">weakref</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">pyqtSignal</span>
+
+
+<div class="viewcode-block" id="saveCanvas"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.saveCanvas">[docs]</a><span class="k">def</span> <span class="nf">saveCanvas</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">CanvasPart</span><span class="p">):</span>
+            <span class="n">canvas</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">canvas</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">canvas</span><span class="o">.</span><span class="n">saveflg</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">saveflg</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">Save</span><span class="p">()</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">drawCanvas</span><span class="p">()</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+            <span class="n">canvas</span><span class="o">.</span><span class="n">saveflg</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+
+
+<div class="viewcode-block" id="notSaveCanvas"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.notSaveCanvas">[docs]</a><span class="k">def</span> <span class="nf">notSaveCanvas</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="o">@</span> <span class="n">functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">CanvasPart</span><span class="p">):</span>
+            <span class="n">canvas</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_canvas</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">canvas</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">saved</span> <span class="o">=</span> <span class="n">canvas</span><span class="o">.</span><span class="n">saveflg</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="n">saveflg</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">canvas</span><span class="o">.</span><span class="n">saveflg</span> <span class="o">=</span> <span class="n">saved</span>
+        <span class="k">return</span> <span class="n">res</span>
+    <span class="k">return</span> <span class="n">wrapper</span></div>
+
+
+<div class="viewcode-block" id="CanvasPart"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.CanvasPart">[docs]</a><span class="k">class</span> <span class="nc">CanvasPart</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CanvasPart.canvas"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.CanvasPart.canvas">[docs]</a>    <span class="k">def</span> <span class="nf">canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="SavableCanvasBase"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.SavableCanvasBase">[docs]</a><span class="k">class</span> <span class="nc">SavableCanvasBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saveflg</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">savef</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="SavableCanvasBase.setSaveFunction"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.SavableCanvasBase.setSaveFunction">[docs]</a>    <span class="k">def</span> <span class="nf">setSaveFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">savef</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">WeakMethod</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SavableCanvasBase.Save"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.SavableCanvasBase.Save">[docs]</a>    <span class="k">def</span> <span class="nf">Save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">savef</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">savef</span><span class="p">()()</span></div></div>
+
+
+<span class="n">_saveCanvasDummy</span> <span class="o">=</span> <span class="n">saveCanvas</span>
+
+
+<div class="viewcode-block" id="AbstractCanvasBase"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.AbstractCanvasBase">[docs]</a><span class="k">class</span> <span class="nc">AbstractCanvasBase</span><span class="p">(</span><span class="n">SavableCanvasBase</span><span class="p">):</span>
+    <span class="n">saveCanvas</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">loadCanvas</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">initCanvas</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+    <span class="n">updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AbstractCanvasBase.SaveAsDictionary"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.AbstractCanvasBase.SaveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">SaveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractCanvasBase.LoadFromDictionary"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.AbstractCanvasBase.LoadFromDictionary">[docs]</a>    <span class="nd">@_saveCanvasDummy</span>
+    <span class="k">def</span> <span class="nf">LoadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AbstractCanvasBase.drawCanvas"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.SaveCanvas.AbstractCanvasBase.drawCanvas">[docs]</a>    <span class="k">def</span> <span class="nf">drawCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_draw</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

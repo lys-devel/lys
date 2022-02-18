@@ -1,3 +1,4 @@
+import numpy as np
 from dask_image import ndfilters
 
 from lys import DaskWave
@@ -57,7 +58,11 @@ class GaussianFilter(FilterInterface):
         self._kernel = kernel
 
     def _execute(self, wave, *args, **kwargs):
-        data = self._applyFunc(ndfilters.gaussian_filter, wave.data, sigma=self._kernel)
+        kernel = []
+        for i in range(wave.data.ndim):
+            ax = wave.getAxis(i)
+            kernel.append(self._kernel[i]/abs(ax[1]-ax[0])/(2*np.sqrt(2*np.log(2))))
+        data = self._applyFunc(ndfilters.gaussian_filter, wave.data, sigma=kernel)
         return DaskWave(data, *wave.axes, **wave.note)
 
     def getParameters(self):

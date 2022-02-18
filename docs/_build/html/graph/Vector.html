@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vector module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contour module" href="Contour.html" />
+    <link rel="prev" title="RGB module" href="RGB.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lys.html">lys package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#base-class-of-canvas">Base class of canvas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#components-of-canvas">Components of canvas</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#interface-to-data">Interface to data</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="WaveData.html">WaveData module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Line.html">Line module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Image.html">Image module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="RGB.html">RGB module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Vector module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="Contour.html">Contour module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#interface-to-annotations">Interface to annotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#lys-basicwidgets-canvasinterface-annotguicanvas-module">lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">Python API</a> &raquo;</li>
+          <li><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a> &raquo;</li>
+      <li>Vector module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/graph/Vector.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.BasicWidgets.CanvasInterface.Vector">
+<span id="vector-module"></span><h1>Vector module<a class="headerlink" href="#module-lys.BasicWidgets.CanvasInterface.Vector" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.Vector.</span></span><span class="sig-name descname"><span class="pre">VectorData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="WaveData.html#lys.BasicWidgets.CanvasInterface.WaveData.WaveData" title="lys.BasicWidgets.CanvasInterface.WaveData.WaveData"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.CanvasInterface.WaveData.WaveData</span></code></a></p>
+<p>Interface to access vector data in the canvas.</p>
+<p>Instance of VectorData is automatically generated by display or append methods.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData.getAutoScale">
+<span class="sig-name descname"><span class="pre">getAutoScale</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData.getAutoScale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData.getAutoScale" title="Permalink to this definition"></a></dt>
+<dd><p>Get the automatically-calculated scale of the vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The scale of the vector.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData.getColor">
+<span class="sig-name descname"><span class="pre">getColor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData.getColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData.getColor" title="Permalink to this definition"></a></dt>
+<dd><p>Get the color of the vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>str</strong> – The color of the vector such as ‘#ff0000’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData.getPivot">
+<span class="sig-name descname"><span class="pre">getPivot</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData.getPivot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData.getPivot" title="Permalink to this definition"></a></dt>
+<dd><p>Get pivot point of the vector plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>string that indicate pivot point.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData.getScale">
+<span class="sig-name descname"><span class="pre">getScale</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData.getScale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData.getScale" title="Permalink to this definition"></a></dt>
+<dd><p>Get the scale of the vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The scale of the vector.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData.getWidth">
+<span class="sig-name descname"><span class="pre">getWidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData.getWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData.getWidth" title="Permalink to this definition"></a></dt>
+<dd><p>Get the width of the vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The width of the vector.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData.setColor">
+<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData.setColor" title="Permalink to this definition"></a></dt>
+<dd><p>Set the color of the vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>color</strong> (<em>str</em>) – The color of the vector such as ‘#ff0000’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData.setPivot">
+<span class="sig-name descname"><span class="pre">setPivot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pivot</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData.setPivot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData.setPivot" title="Permalink to this definition"></a></dt>
+<dd><p>Set pivot point of the vector plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pivot</strong> (<em>'tail'</em><em> or </em><em>'middle'</em><em> or </em><em>'tip'</em>) – The pivot point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData.setScale">
+<span class="sig-name descname"><span class="pre">setScale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData.setScale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData.setScale" title="Permalink to this definition"></a></dt>
+<dd><p>Set the scale of the vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>scale</strong> (<em>float</em><em> or </em><em>'auto'</em>) – The scale of the vector.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Vector.VectorData.setWidth">
+<span class="sig-name descname"><span class="pre">setWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Vector.html#VectorData.setWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Vector.VectorData.setWidth" title="Permalink to this definition"></a></dt>
+<dd><p>Set the width of the vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>width</strong> (<em>float</em>) – The width of the vector.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="RGB.html" class="btn btn-neutral float-left" title="RGB module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Contour.html" class="btn btn-neutral float-right" title="Contour module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

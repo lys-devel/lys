@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FileView module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="widgets module" href="widgets.html" />
+    <link rel="prev" title="shell module" href="shell.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../lys.html">lys package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="core.html">core module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="functions.html">functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="glb.html">glb module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MainWindow.html">MainWindow module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shell.html">shell module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">FileView module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="widgets.html">widgets module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">Python API</a> &raquo;</li>
+          <li><a href="../lys.html">lys package</a> &raquo;</li>
+      <li>FileView module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lys_/FileView.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.FileView">
+<span id="fileview-module"></span><h1>FileView module<a class="headerlink" href="#module-lys.FileView" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.FileView.FileSystemView">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.FileView.</span></span><span class="sig-name descname"><span class="pre">FileSystemView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">path</span></em>, <em class="sig-param"><span class="pre">model=&lt;PyQt5.QtWidgets.QFileSystemModel</span> <span class="pre">object&gt;</span></em>, <em class="sig-param"><span class="pre">drop=False</span></em>, <em class="sig-param"><span class="pre">filter=True</span></em>, <em class="sig-param"><span class="pre">menu=True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/FileView.html#FileSystemView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.FileView.FileSystemView" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<p><em>FileSystemView</em> is a custom widget to see files in lys, which is mainly used in main window.</p>
+<p>Developers can get selected paths by <a class="reference internal" href="#lys.FileView.FileSystemView.selectedPaths" title="lys.FileView.FileSystemView.selectedPaths"><code class="xref py py-meth docutils literal notranslate"><span class="pre">selectedPaths()</span></code></a> method.
+Context menu for specified type can be registered by <a class="reference internal" href="#lys.FileView.FileSystemView.registerFileMenu" title="lys.FileView.FileSystemView.registerFileMenu"><code class="xref py py-meth docutils literal notranslate"><span class="pre">registerFileMenu()</span></code></a> method.</p>
+<p>See <a class="reference internal" href="#lys.FileView.FileSystemView.selectedPaths" title="lys.FileView.FileSystemView.selectedPaths"><code class="xref py py-meth docutils literal notranslate"><span class="pre">selectedPaths()</span></code></a> and <a class="reference internal" href="#lys.FileView.FileSystemView.registerFileMenu" title="lys.FileView.FileSystemView.registerFileMenu"><code class="xref py py-meth docutils literal notranslate"><span class="pre">registerFileMenu()</span></code></a> for detail and examples</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – path to see files.</p></li>
+<li><p><strong>model</strong> (<em>QFileSystemModel</em>) – model used in this view</p></li>
+<li><p><strong>drop</strong> (<em>bool</em>) – Accept drag &amp; drop or not.</p></li>
+<li><p><strong>filter</strong> (<em>bool</em>) – Enable filtering or not.</p></li>
+<li><p><strong>menu</strong> (<em>bool</em>) – Enable context menu or not.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.FileView.FileSystemView.registerFileMenu">
+<span class="sig-name descname"><span class="pre">registerFileMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/FileView.html#FileSystemView.registerFileMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.FileView.FileSystemView.registerFileMenu" title="Permalink to this definition"></a></dt>
+<dd><p>register new context menu to filetype specified by <em>ext</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ext</strong> (<em>str</em>) – extension of file type, e.g. “.txt”, “.csv”, etc…</p></li>
+<li><p><strong>menu</strong> (<em>QMenu</em>) – context menu to be added.</p></li>
+<li><p><strong>add_default</strong> – if True, default menus such as Cut, Copy is automatically added at the end of menu.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">fileView</span>     <span class="c1"># access global fileview in main window.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">menu</span> <span class="o">=</span> <span class="n">QMenu</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Print&quot;</span><span class="p">,</span> <span class="n">triggered</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">registerFileMenu</span><span class="p">(</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="n">menu</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.FileView.FileSystemView.selectedPath">
+<span class="sig-name descname"><span class="pre">selectedPath</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/FileView.html#FileSystemView.selectedPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.FileView.FileSystemView.selectedPath" title="Permalink to this definition"></a></dt>
+<dd><p>Returns first selected path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>path selected</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.FileView.FileSystemView.selectedPaths">
+<span class="sig-name descname"><span class="pre">selectedPaths</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/FileView.html#FileSystemView.selectedPaths"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.FileView.FileSystemView.selectedPaths" title="Permalink to this definition"></a></dt>
+<dd><p>Returns selected paths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>paths selected</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of str</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">fileView</span>     <span class="c1"># access global fileview in main window.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">selectedPaths</span><span class="p">()</span>
+<span class="go">[&quot;path selected&quot;, &quot;path selected2, ...&quot;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.FileView.FileSystemView.setPath">
+<span class="sig-name descname"><span class="pre">setPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/FileView.html#FileSystemView.setPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.FileView.FileSystemView.setPath" title="Permalink to this definition"></a></dt>
+<dd><p>Set root directory of file system.
+:param path: root path
+:type path: str</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="shell.html" class="btn btn-neutral float-left" title="shell module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="widgets.html" class="btn btn-neutral float-right" title="widgets module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

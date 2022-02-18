@@ -40,7 +40,10 @@ class WaveData(CanvasPart):
             filt = filters.Filters([filters.OffsetFilter(offset)])
         else:
             filt = filter + filters.OffsetFilter(offset)
-        return filt.execute(w)
+        w = filt.execute(w)
+        if w.data.ndim == 1 and w.data.dtype == complex:
+            w = filters.ComplexFilter("absolute").execute(w)
+        return w
 
     def getWave(self):
         """

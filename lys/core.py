@@ -553,7 +553,13 @@ class Wave(WaveBase):
             tmp = np.load(io.BytesIO(file.getvalue()), allow_pickle=True)
         self.data = tmp['data']
         if 'axes' in tmp:
-            self.axes = [axis for axis in tmp['axes']]
+            axes = []
+            for axis in tmp['axes']:
+                if axis.ndim == 0 or axis is None:
+                    axes.append(np.array(None))
+                else:
+                    axes.append(np.array(axis, dtype=type(axis[0])))
+            self.axes = axes
         else:
             self.axes = []
         if 'note' in tmp:

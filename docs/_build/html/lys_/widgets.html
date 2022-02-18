@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>widgets module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="CanvasInterface package" href="../lys.BasicWidgets.CanvasInterface.html" />
+    <link rel="prev" title="FileView module" href="FileView.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../lys.html">lys package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="core.html">core module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="functions.html">functions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="glb.html">glb module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="MainWindow.html">MainWindow module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shell.html">shell module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="FileView.html">FileView module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">widgets module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">Python API</a> &raquo;</li>
+          <li><a href="../lys.html">lys package</a> &raquo;</li>
+      <li>widgets module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lys_/widgets.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.widgets">
+<span id="widgets-module"></span><h1>widgets module<a class="headerlink" href="#module-lys.widgets" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.AutoSavedWindow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.widgets.</span></span><span class="sig-name descname"><span class="pre">AutoSavedWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#AutoSavedWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.AutoSavedWindow" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lys.widgets.LysSubWindow" title="lys.widgets.LysSubWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.LysSubWindow</span></code></a></p>
+<p>This is a base widget class for auto save feature, which is mainly used for Graph class.</p>
+<p>When a <em>AutoSavedWindow</em> is instantiated, it is automatically added to current MdiArea.</p>
+<p>At the same time, the window is connected to a temporary file in .lys/workspace/. See <a class="reference internal" href="#lys.widgets.AutoSavedWindow.Save" title="lys.widgets.AutoSavedWindow.Save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Save()</span></code></a> for detail.</p>
+<p>This functionarity is realized by calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">_save()</span></code> method, which should be implemented in class that inherit <em>AutoSavedWindow</em></p>
+<p>To gives default file name, the class should also implement <code class="xref py py-meth docutils literal notranslate"><span class="pre">_prefix()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">_suffix()</span></code> methods, in addition to <code class="xref py py-meth docutils literal notranslate"><span class="pre">save()</span></code> method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.AutoSavedWindow.FileName">
+<span class="sig-name descname"><span class="pre">FileName</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#AutoSavedWindow.FileName"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.AutoSavedWindow.FileName" title="Permalink to this definition"></a></dt>
+<dd><p>Return filename that saves content of the window</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.AutoSavedWindow.Name">
+<span class="sig-name descname"><span class="pre">Name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#AutoSavedWindow.Name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.AutoSavedWindow.Name" title="Permalink to this definition"></a></dt>
+<dd><p>Return name of the window, which is automatically determined by filename.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.AutoSavedWindow.Save">
+<span class="sig-name descname"><span class="pre">Save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temporary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#AutoSavedWindow.Save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.AutoSavedWindow.Save" title="Permalink to this definition"></a></dt>
+<dd><p>Save the content of the window.</p>
+<p>If <em>file</em> is given, the content of the window is saved via _save method.</p>
+<p>If <em>file</em> is not given, it is saved in the last-saved file if it exists.</p>
+<p>If <em>temporary</em> is True, it is saved in the temporary file in .lys/workspace/ automatically.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file</strong> (<em>str</em>) – the file to be saved.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.AutoSavedWindow.TemporaryFile">
+<span class="sig-name descname"><span class="pre">TemporaryFile</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#AutoSavedWindow.TemporaryFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.AutoSavedWindow.TemporaryFile" title="Permalink to this definition"></a></dt>
+<dd><p>Return temporary filename that hold content of the window</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.AutoSavedWindow.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#AutoSavedWindow.close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.AutoSavedWindow.close" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of close in QMdiSubWindow</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.AutoSavedWindow.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#AutoSavedWindow.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.AutoSavedWindow.closeEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of closeEvent in QMdiSubWindow</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.AutoSavedWindow.saved">
+<span class="sig-name descname"><span class="pre">saved</span></span><a class="headerlink" href="#lys.widgets.AutoSavedWindow.saved" title="Permalink to this definition"></a></dt>
+<dd><p><em>saved</em> signal is emitted when it is saved.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.widgets.</span></span><span class="sig-name descname"><span class="pre">LysSubWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">floating</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lys.widgets.SizeAdjustableWindow" title="lys.widgets.SizeAdjustableWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.SizeAdjustableWindow</span></code></a></p>
+<p>LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.</p>
+<p>When a <em>AutoSavedWindow</em> is instantiated, it is automatically added to current MdiArea.</p>
+<p>It is recommended to inherit this class when developers implement new sub windows in lys.</p>
+<p>User input on several QWidgets can be saved and restored from file. See <a class="reference internal" href="#lys.widgets.LysSubWindow.saveSettings" title="lys.widgets.LysSubWindow.saveSettings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">saveSettings()</span></code></a> and <a class="reference internal" href="#lys.widgets.LysSubWindow.restoreSettings" title="lys.widgets.LysSubWindow.restoreSettings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restoreSettings()</span></code></a> for detail.</p>
+<p>LysSubWindow can be attached to different LysSubWindow. See <a class="reference internal" href="#lys.widgets.LysSubWindow.attach" title="lys.widgets.LysSubWindow.attach"><code class="xref py py-meth docutils literal notranslate"><span class="pre">attach()</span></code></a> for detail.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>floating</strong> (<em>bool</em>) – Whether the window in in the current mdi area, or floating out side the medi area.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow.attach" title="Permalink to this definition"></a></dt>
+<dd><p>Attach <em>self</em> to <em>parent</em></p>
+<p>After it is attached, the window follows the <em>parent</em> widget automatically.</p>
+<p>This functionarity is usually used for several setting widgets (such as ModifyWindow of Graph), which should follow the parent (such as Graph)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.attachTo">
+<span class="sig-name descname"><span class="pre">attachTo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow.attachTo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow.attachTo" title="Permalink to this definition"></a></dt>
+<dd><p>Attach <em>self</em> to pre-registered parent by <a class="reference internal" href="#lys.widgets.LysSubWindow.attach" title="lys.widgets.LysSubWindow.attach"><code class="xref py py-meth docutils literal notranslate"><span class="pre">attach()</span></code></a>.</p>
+<p>When the parent window is move programatically by <code class="xref py py-func docutils literal notranslate"><span class="pre">move()</span></code>, the window does not follow.</p>
+<p>Developers should call this method to intentionally attach it to parent.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow.closeEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of closeEvent in QMdiSubWindow</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.closed">
+<span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#lys.widgets.LysSubWindow.closed" title="Permalink to this definition"></a></dt>
+<dd><p><em>closed</em> signal is emitted when the window is closed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.isFloating">
+<span class="sig-name descname"><span class="pre">isFloating</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow.isFloating"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow.isFloating" title="Permalink to this definition"></a></dt>
+<dd><p>Return if the window is out of the mdi window or not</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.moveEvent">
+<span class="sig-name descname"><span class="pre">moveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow.moveEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow.moveEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of moveEvent in QMdiSubWindow</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.moved">
+<span class="sig-name descname"><span class="pre">moved</span></span><a class="headerlink" href="#lys.widgets.LysSubWindow.moved" title="Permalink to this definition"></a></dt>
+<dd><p><em>moved</em> signal is emitted when the window is moved.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.resizeEvent">
+<span class="sig-name descname"><span class="pre">resizeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow.resizeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow.resizeEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of resizeEvent in QMdiSubWindow</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.resized">
+<span class="sig-name descname"><span class="pre">resized</span></span><a class="headerlink" href="#lys.widgets.LysSubWindow.resized" title="Permalink to this definition"></a></dt>
+<dd><p><em>resized</em> signal is emitted when the window is resized.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.restoreSettings">
+<span class="sig-name descname"><span class="pre">restoreSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow.restoreSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow.restoreSettings" title="Permalink to this definition"></a></dt>
+<dd><p>Import all widgets settings from default setting file specified by name.
+User input on various widgets are easily exported to file by <a class="reference internal" href="#lys.widgets.LysSubWindow.saveSettings" title="lys.widgets.LysSubWindow.saveSettings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">saveSettings()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.LysSubWindow.saveSettings">
+<span class="sig-name descname"><span class="pre">saveSettings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow.saveSettings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow.saveSettings" title="Permalink to this definition"></a></dt>
+<dd><p>Export all widgets settings from default setting file specified by name.
+User input on various widgets are easily loaded from file by <a class="reference internal" href="#lys.widgets.LysSubWindow.restoreSettings" title="lys.widgets.LysSubWindow.restoreSettings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restoreSettings()</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.widgets.</span></span><span class="sig-name descname"><span class="pre">ScientificSpinBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDoubleSpinBox</span></code></p>
+<p>Spin box that displays values in sdientific notation, which is frequently used in lys.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox.stepBy">
+<span class="sig-name descname"><span class="pre">stepBy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox.stepBy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox.stepBy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox.textFromValue">
+<span class="sig-name descname"><span class="pre">textFromValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox.textFromValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox.textFromValue" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox.validate" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of validate</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox.valueFromText">
+<span class="sig-name descname"><span class="pre">valueFromText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox.valueFromText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox.valueFromText" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of valueFromText</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.SizeAdjustableWindow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.widgets.</span></span><span class="sig-name descname"><span class="pre">SizeAdjustableWindow</span></span><a class="reference internal" href="../_modules/lys/widgets.html#SizeAdjustableWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.SizeAdjustableWindow" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMdiSubWindow</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.SizeAdjustableWindow.setHeight">
+<span class="sig-name descname"><span class="pre">setHeight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#SizeAdjustableWindow.setHeight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.SizeAdjustableWindow.setHeight" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.SizeAdjustableWindow.setWidth">
+<span class="sig-name descname"><span class="pre">setWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#SizeAdjustableWindow.setWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.SizeAdjustableWindow.setWidth" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="FileView.html" class="btn btn-neutral float-left" title="FileView module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../lys.BasicWidgets.CanvasInterface.html" class="btn btn-neutral float-right" title="CanvasInterface package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

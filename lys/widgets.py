@@ -1,15 +1,13 @@
 import os
 import sys
 import traceback
-import math
 from pathlib import Path
 
-import numpy as np
 
 from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QSizePolicy, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget, QTextEdit
 from LysQt.QtCore import Qt, pyqtSignal, QPoint
-from LysQt.QtGui import QValidator
 from . import home, load, SettingDict
+from .generalWidgets import ColorSelection, ColormapSelection, ScientificSpinBox
 
 
 class _ExtendMdiArea(QMdiArea):
@@ -479,50 +477,3 @@ class AutoSavedWindow(LysSubWindow):
 
     def _suffix(self):
         pass
-
-
-class ScientificSpinBox(QDoubleSpinBox):
-    """
-    Spin box that displays values in sdientific notation, which is frequently used in lys.
-    """
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.setRange(-np.inf, np.inf)
-        self.setDecimals(128)
-        self.setAccelerated(True)
-
-    def textFromValue(self, value):
-        """textFromValue"""
-        return "{:.6g}".format(value)
-
-    def valueFromText(self, text):
-        """Reimplementation of valueFromText"""
-        return float(text)
-
-    def validate(self, text, pos):
-        """Reimplementation of validate"""
-        try:
-            float(text)
-        except Exception:
-            try:
-                float(text.replace("e", "").replace("-", ""))
-            except Exception:
-                return (QValidator.Invalid, text, pos)
-            else:
-                return (QValidator.Intermediate, text, pos)
-        else:
-            return (QValidator.Acceptable, text, pos)
-
-    def stepBy(self, steps):
-        """stepBy"""
-        v = self.value()
-        if v == 0:
-            n = 1
-        else:
-            val = np.log10(abs(v))
-            p = math.floor(val)
-            if math.floor(abs(v) / (10**p)) == 1:  # and np.sign(steps) != np.sign(v):
-                p = p - 1
-            n = 10 ** p
-        self.setValue(v + steps * n)
