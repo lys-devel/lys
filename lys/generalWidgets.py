@@ -31,12 +31,7 @@ class ScientificSpinBox(QDoubleSpinBox):
         try:
             float(text)
         except Exception:
-            try:
-                float(text.replace("e", "").replace("-", ""))
-            except Exception:
-                return (QValidator.Invalid, text, pos)
-            else:
-                return (QValidator.Intermediate, text, pos)
+            return (QValidator.Intermediate, text, pos)
         else:
             return (QValidator.Acceptable, text, pos)
 
