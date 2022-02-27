@@ -1,6 +1,6 @@
 import os
 import glob
-
+import sys
 
 from LysQt.QtCore import QObject, pyqtSignal
 from . import home
@@ -131,7 +131,7 @@ class ExtendShell(QObject):
             >>> glb.shell().importAll("time")
 
         """
-        self.__mod.importAll(module)
+        self.__mod.importModule(module, importAll=True)
 
     def refresh(self):
         """Refresh all modules in module directory."""
@@ -236,16 +236,17 @@ class _ModuleManager:
         self.__importedModules = []
         exec("import importlib", self.__dict)
 
-    def importModule(self, module):
-        if module in self.__importedModules:
-            exec("importlib.reload(" + module + ")", self.__dict)
-        else:
-            self.__importedModules.append(module)
-            exec("import " + module, self.__dict)
-
-    def importAll(self, module):
-        self.importModule(module)
-        exec("from " + module + " import *", self.__dict)
+    def importModule(self, module, importAll=False):
+        try:
+            if module in self.__importedModules:
+                exec("importlib.reload(" + module + ")", self.__dict)
+            else:
+                exec("import " + module, self.__dict)
+                self.__importedModules.append(module)
+            if importAll:
+                exec("from " + module + " import *", self.__dict)
+        except Exception:
+            print("Error on loading", module, file=sys.stderr)
 
     def reload(self):
         if os.path.exists(home() + "/proc.py"):
@@ -253,7 +254,7 @@ class _ModuleManager:
         files = glob.glob(home() + "/module/*.py")
         for f in files:
             f = os.path.splitext(os.path.basename(f))[0]
-            self.importAll("module." + f)
+            self.importModule("module." + f, importAll=True)
 
 
 ExtendShell()
