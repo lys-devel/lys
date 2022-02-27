@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lys.BasicWidgets.Fitting.FittingWidget &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>lys.BasicWidgets.Fitting.FittingWidget</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lys.BasicWidgets.Fitting.FittingWidget</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtWidgets</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtGui</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">PyQt5.QtCore</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.Functions</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.Fitting</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="FittingWidget"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingWidget">[docs]</a><span class="k">class</span> <span class="nc">FittingWidget</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wavelist</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__initlayout</span><span class="p">(</span><span class="n">wavelist</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateGeometry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_total</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_residual</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_peaks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_peaks</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="FittingWidget.update"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingWidget.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wave</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">home</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">funcs</span><span class="p">,</span> <span class="n">guess</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getParams</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_total</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_total</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">funcs</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">guess</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span> <span class="o">+</span> <span class="n">f</span><span class="o">.</span><span class="n">nparam</span><span class="p">()])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w_peaks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w_total</span><span class="o">.</span><span class="n">data</span> <span class="o">+=</span> <span class="n">val</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="n">f</span><span class="o">.</span><span class="n">nparam</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_residual</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_total</span><span class="o">.</span><span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_residual</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">home</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w_total</span><span class="o">.</span><span class="n">Save</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="s1">&#39;/total.npz&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">w_residual</span><span class="o">.</span><span class="n">Save</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="s1">&#39;/residual.npz&#39;</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_peaks</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">Save</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="s1">&#39;/peak&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.npz&#39;</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">saveResult</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FittingWidget.OnPeakAdded"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingWidget.OnPeakAdded">[docs]</a>    <span class="k">def</span> <span class="nf">OnPeakAdded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_peaks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id_peaks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FittingWidget.OnPeakRemoved"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingWidget.OnPeakRemoved">[docs]</a>    <span class="k">def</span> <span class="nf">OnPeakRemoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">Remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_peaks</span><span class="p">[</span><span class="n">row</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id_peaks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_peaks</span><span class="p">[</span><span class="n">row</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">__initlayout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wavelist</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">vbox1</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">wavelist</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">FileName</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">FileName</span><span class="p">(),</span> <span class="n">home</span><span class="p">()))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">FileName</span><span class="p">(),</span> <span class="n">home</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span> <span class="o">=</span> <span class="n">FittingTree</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">peakAdded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OnPeakAdded</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">peakRemoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OnPeakRemoved</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_exec</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Fit&#39;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__execute</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_expo</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Export&#39;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__export</span><span class="p">)</span>
+        <span class="n">vbox1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">)</span>
+        <span class="n">hbox2</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;Save to&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__startsave</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Load&#39;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__load</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__setName</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">home</span><span class="p">()))</span>
+        <span class="n">hbox2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">)</span>
+        <span class="n">hbox2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">hbox2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">)</span>
+        <span class="n">vbox1</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hbox2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hbox1</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">csr</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;use cursor&#39;</span><span class="p">)</span>
+            <span class="n">hbox1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">csr</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tot</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;total&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tot</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__totadd</span><span class="p">)</span>
+            <span class="n">hbox1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tot</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;peaks&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__peakadd</span><span class="p">)</span>
+            <span class="n">hbox1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">residual</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s1">&#39;residual&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__resadd</span><span class="p">)</span>
+            <span class="n">hbox1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="p">)</span>
+            <span class="n">vbox1</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hbox1</span><span class="p">)</span>
+        <span class="n">vbox1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="p">)</span>
+        <span class="n">hbox3</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">hbox3</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_exec</span><span class="p">)</span>
+        <span class="n">hbox3</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_expo</span><span class="p">)</span>
+        <span class="n">vbox1</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hbox3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__setName</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">vbox1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wave</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">home</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">txt</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">txt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Analysis&#39;</span><span class="p">):</span>
+                <span class="n">path</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/Fit/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">Name</span><span class="p">(),</span> <span class="n">home</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">__totadd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tot</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tot_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w_total</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">Remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tot_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__resadd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">residual</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">res_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w_residual</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">Remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">res_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__peakadd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">peaks</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_peaks</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">id_peaks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">Remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_peaks</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">id_peaks</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__startsave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">loadResult</span><span class="p">(</span><span class="n">home</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wave</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">home</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span>
+        <span class="n">funcs</span><span class="p">,</span> <span class="n">guess</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">getParams</span><span class="p">()</span>
+        <span class="n">fit</span> <span class="o">=</span> <span class="n">Fitting</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">funcs</span><span class="p">:</span>
+            <span class="n">fit</span><span class="o">.</span><span class="n">addFunction</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">csr</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAnchorInfo</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">c2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAnchorInfo</span><span class="p">(</span><span class="mi">2</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">c1</span><span class="p">))</span>
+            <span class="n">c2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">c2</span><span class="p">))</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">c1</span><span class="p">:</span><span class="n">c2</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">c1</span><span class="p">:</span><span class="n">c2</span><span class="p">],</span> <span class="n">guess</span><span class="o">=</span><span class="n">guess</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">guess</span><span class="o">=</span><span class="n">guess</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setParams</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">class</span> <span class="nc">GetValues</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+                <span class="n">grid</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
+                <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;peak&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">grid</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="n">hbox1</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+                <span class="n">btns</span> <span class="o">=</span> <span class="n">QDialogButtonBox</span><span class="p">(</span><span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Ok</span> <span class="o">|</span> <span class="n">QDialogButtonBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                <span class="n">btns</span><span class="o">.</span><span class="n">accepted</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+                <span class="n">btns</span><span class="o">.</span><span class="n">rejected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+
+                <span class="n">vbox1</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+                <span class="n">vbox1</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+                <span class="n">vbox1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btns</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">vbox1</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">GetValues</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="n">QDialog</span><span class="o">.</span><span class="n">Rejected</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">index</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">:</span>
+            <span class="n">p</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="s2">&quot;/FittingResult.dic&quot;</span><span class="p">):</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">SettingDict</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="s2">&quot;/FittingResult.dic&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;peak&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)][</span><span class="s1">&#39;guess&#39;</span><span class="p">][</span><span class="n">index</span><span class="p">])</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">()</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">res</span>
+
+        <span class="n">w</span><span class="o">.</span><span class="n">Save</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span> <span class="o">+</span> <span class="s1">&#39;/peak&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="FittingTree"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree">[docs]</a><span class="k">class</span> <span class="nc">FittingTree</span><span class="p">(</span><span class="n">QTreeView</span><span class="p">):</span>
+    <span class="n">updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+    <span class="n">peakAdded</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">peakRemoved</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setSelectionMode</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">ExtendedSelection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setSelectionBehavior</span><span class="p">(</span><span class="n">QAbstractItemView</span><span class="o">.</span><span class="n">SelectRows</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">QStandardItemModel</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">setHeaderData</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">,</span> <span class="s1">&#39;Name&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">setHeaderData</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">,</span> <span class="s1">&#39;Value&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">CustomContextMenu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customContextMenuRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">buildContextMenu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="FittingTree.addFunction"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.addFunction">[docs]</a>    <span class="k">def</span> <span class="nf">addFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dialog</span> <span class="o">=</span> <span class="n">QDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ListOfFunctions</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">combo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">v1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">combo</span><span class="p">)</span>
+        <span class="n">h1</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;O K&#39;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="n">dialog</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="n">cancel</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;CALCEL&#39;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="n">dialog</span><span class="o">.</span><span class="n">reject</span><span class="p">)</span>
+        <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span>
+        <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">cancel</span><span class="p">)</span>
+        <span class="n">v1</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
+        <span class="n">dialog</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">dialog</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">ftype</span> <span class="o">=</span> <span class="n">combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_addParam</span><span class="p">(</span><span class="n">ftype</span><span class="p">)</span></div>
+
+    <span class="k">class</span> <span class="nc">_SingleParam</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+        <span class="n">updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">tree</span><span class="p">):</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child1</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child1</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child1</span><span class="o">.</span><span class="n">setCheckState</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">)</span>
+            <span class="n">child2</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">()</span>
+            <span class="n">parent</span><span class="o">.</span><span class="n">appendRow</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">child1</span><span class="p">,</span> <span class="n">child2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">QDoubleSpinBox</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">valueChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+            <span class="n">tree</span><span class="o">.</span><span class="n">setIndexWidget</span><span class="p">(</span><span class="n">child2</span><span class="o">.</span><span class="n">index</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">min1</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">min1</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">min2</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max1</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="s1">&#39;max&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max1</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">max2</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child1</span><span class="o">.</span><span class="n">appendRow</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">min1</span><span class="p">,</span> <span class="n">min2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">child1</span><span class="o">.</span><span class="n">appendRow</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">max1</span><span class="p">,</span> <span class="n">max2</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">minval</span> <span class="o">=</span> <span class="n">QDoubleSpinBox</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">minval</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">minval</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">minval</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maxval</span> <span class="o">=</span> <span class="n">QDoubleSpinBox</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maxval</span><span class="o">.</span><span class="n">setDecimals</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maxval</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">maxval</span><span class="o">.</span><span class="n">setMaximum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+            <span class="n">tree</span><span class="o">.</span><span class="n">setIndexWidget</span><span class="p">(</span><span class="n">min2</span><span class="o">.</span><span class="n">index</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">minval</span><span class="p">)</span>
+            <span class="n">tree</span><span class="o">.</span><span class="n">setIndexWidget</span><span class="p">(</span><span class="n">max2</span><span class="o">.</span><span class="n">index</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxval</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">getGuess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">setGuess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">getBounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="nb">min</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+            <span class="nb">max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">child1</span><span class="o">.</span><span class="n">checkState</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">:</span>
+                <span class="nb">min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getGuess</span><span class="p">()</span>
+                <span class="nb">max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getGuess</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min1</span><span class="o">.</span><span class="n">checkState</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">:</span>
+                    <span class="nb">min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minval</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max1</span><span class="o">.</span><span class="n">checkState</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">:</span>
+                    <span class="nb">max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxval</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">(</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_addParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ftype</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">QStandardItem</span><span class="p">(</span><span class="n">ftype</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">appendRow</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;Func&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ListOfFunctions</span><span class="p">[</span><span class="n">ftype</span><span class="p">]</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;Func&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">params</span><span class="p">()</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;Params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SingleParam</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">parent</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+            <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;Params&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">peakAdded</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">))</span>
+
+<div class="viewcode-block" id="FittingTree.update"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FittingTree.removeFunction"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.removeFunction">[docs]</a>    <span class="k">def</span> <span class="nf">removeFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectedIndexes</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">rowCount</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="p">()</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_remove</span><span class="p">(</span><span class="n">j</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FittingTree.clear"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remove</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">removeRow</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">peakRemoved</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FittingTree.getParams"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.getParams">[docs]</a>    <span class="k">def</span> <span class="nf">getParams</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res_func</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">res_guess</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">res_bounds_min</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">res_bounds_max</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="n">res_func</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;Func&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;Params&#39;</span><span class="p">]:</span>
+                <span class="n">res_guess</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">getGuess</span><span class="p">())</span>
+                <span class="n">b</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">getBounds</span><span class="p">()</span>
+                <span class="n">res_bounds_min</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">res_bounds_max</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">res_func</span><span class="p">,</span> <span class="n">res_guess</span><span class="p">,</span> <span class="p">(</span><span class="n">res_bounds_min</span><span class="p">,</span> <span class="n">res_bounds_max</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FittingTree.setParams"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.setParams">[docs]</a>    <span class="k">def</span> <span class="nf">setParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;Params&#39;</span><span class="p">]:</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">setGuess</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="FittingTree.buildContextMenu"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.buildContextMenu">[docs]</a>    <span class="k">def</span> <span class="nf">buildContextMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qPoint</span><span class="p">):</span>
+        <span class="n">menu</span> <span class="o">=</span> <span class="n">QMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">menulabels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Add Function&#39;</span><span class="p">,</span> <span class="s1">&#39;Remove Function&#39;</span><span class="p">,</span> <span class="s1">&#39;Load from current folder&#39;</span><span class="p">]</span>
+        <span class="n">actionlist</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">menulabels</span><span class="p">:</span>
+            <span class="n">actionlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">exec_</span><span class="p">(</span><span class="n">QCursor</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Add Function&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addFunction</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Remove Function&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">removeFunction</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">action</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;Load from current folder&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loadResult</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="FittingTree.saveResult"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.saveResult">[docs]</a>    <span class="k">def</span> <span class="nf">saveResult</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">SettingDict</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/FittingResult.dic&#39;</span><span class="p">)</span>
+        <span class="n">funcs</span><span class="p">,</span> <span class="n">guess</span><span class="p">,</span> <span class="n">bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getParams</span><span class="p">()</span>
+        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;npeaks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">funcs</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">funcs</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;function&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">findFuncByInstance</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="s1">&#39;guess&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">guess</span><span class="p">[</span><span class="n">n</span><span class="p">:</span><span class="n">n</span> <span class="o">+</span> <span class="n">f</span><span class="o">.</span><span class="n">nparam</span><span class="p">()]</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="n">f</span><span class="o">.</span><span class="n">nparam</span><span class="p">()</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;peak&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="FittingTree.loadResult"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.loadResult">[docs]</a>    <span class="k">def</span> <span class="nf">loadResult</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/FittingResult.dic&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">SettingDict</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/FittingResult.dic&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;npeaks&#39;</span><span class="p">]):</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;peak&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_addParam</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;function&#39;</span><span class="p">])</span>
+                <span class="n">g</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;guess&#39;</span><span class="p">]</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="s1">&#39;Params&#39;</span><span class="p">]:</span>
+                    <span class="n">s</span><span class="o">.</span><span class="n">setGuess</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                    <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Fitting result is not found.&#39;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="FuncSelectDialog"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.FittingWidget.FuncSelectDialog">[docs]</a><span class="k">def</span> <span class="nf">FuncSelectDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

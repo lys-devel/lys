@@ -1,7 +1,6 @@
 from LysQt.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QWidget, QComboBox, QGroupBox, QGridLayout, QDoubleSpinBox
 
-from lys.widgets import ScientificSpinBox
-from .ColorWidgets import ColormapSelection, ColorSelection
+from lys.widgets import ScientificSpinBox, ColormapSelection, ColorSelection
 
 
 class _rangeWidget(QHBoxLayout):

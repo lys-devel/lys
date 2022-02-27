@@ -1,10 +1,57 @@
+
+import math
 import numpy as np
 from matplotlib import cm
 from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QColor, QImage, QPixmap, QStandardItem, QStandardItemModel
+from PyQt5.QtGui import QColor, QImage, QPixmap, QStandardItem, QStandardItemModel, QValidator
 from PyQt5.QtWidgets import QPushButton, QColorDialog, QWidget, QDoubleSpinBox, QComboBox, QCheckBox, QVBoxLayout, QHBoxLayout, QLabel
 
-from lys.widgets import ScientificSpinBox
+
+class ScientificSpinBox(QDoubleSpinBox):
+    """
+    Spin box that displays values in sdientific notation, which is frequently used in lys.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setRange(-np.inf, np.inf)
+        self.setDecimals(128)
+        self.setAccelerated(True)
+
+    def textFromValue(self, value):
+        """textFromValue"""
+        return "{:.6g}".format(value)
+
+    def valueFromText(self, text):
+        """Reimplementation of valueFromText"""
+        return float(text)
+
+    def validate(self, text, pos):
+        """Reimplementation of validate"""
+        try:
+            float(text)
+        except Exception:
+            try:
+                float(text.replace("e", "").replace("-", ""))
+            except Exception:
+                return (QValidator.Invalid, text, pos)
+            else:
+                return (QValidator.Intermediate, text, pos)
+        else:
+            return (QValidator.Acceptable, text, pos)
+
+    def stepBy(self, steps):
+        """stepBy"""
+        v = self.value()
+        if v == 0:
+            n = 1
+        else:
+            val = np.log10(abs(v))
+            p = math.floor(val)
+            if math.floor(abs(v) / (10**p)) == 1:  # and np.sign(steps) != np.sign(v):
+                p = p - 1
+            n = 10 ** p
+        self.setValue(v + steps * n)
 
 
 class ColorSelection(QPushButton):

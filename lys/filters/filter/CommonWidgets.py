@@ -49,7 +49,7 @@ class kernelSigmaLayout(QGridLayout):
     def __init__(self, dimension=2):
         super().__init__()
         self.addWidget(QLabel('Sigma'), 1, 0)
-        self._kernels = [QDoubleSpinBox() for d in range(dimension)]
+        self._kernels = [ScientificSpinBox() for d in range(dimension)]
         for i, k in enumerate(self._kernels):
             k.setMinimum(0)
             self.addWidget(QLabel('Axis' + str(i + 1)), 0, i + 1)

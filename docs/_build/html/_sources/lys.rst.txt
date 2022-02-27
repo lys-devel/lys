@@ -1,0 +1,13 @@
+lys package
+================================
+
+.. toctree::
+   :maxdepth: 4
+
+   lys_/core
+   lys_/functions
+   lys_/glb
+   lys_/MainWindow
+   lys_/shell
+   lys_/FileView
+   lys_/widgets

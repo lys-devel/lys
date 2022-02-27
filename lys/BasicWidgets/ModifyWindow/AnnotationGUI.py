@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import *
 
 from .FontGUI import *
 
+from lys.widgets import ColorSelection
+
 
 class AnnotationSelectionBox(QTreeView):
     class _Model(QStandardItemModel):

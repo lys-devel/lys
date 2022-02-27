@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lys.BasicWidgets.Fitting.Functions &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>lys.BasicWidgets.Fitting.Functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lys.BasicWidgets.Fitting.Functions</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">signature</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span><span class="p">,</span> <span class="n">special</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+
+
+<div class="viewcode-block" id="function"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.function">[docs]</a><span class="k">class</span> <span class="nc">function</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="function.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.function.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="function.nparam"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.function.nparam">[docs]</a>    <span class="k">def</span> <span class="nf">nparam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="function.params"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.function.params">[docs]</a>    <span class="k">def</span> <span class="nf">params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sig</span> <span class="o">=</span> <span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">)</span>
+        <span class="n">flg</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">flg</span><span class="p">:</span>
+                <span class="n">flg</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div></div>
+
+
+<div class="viewcode-block" id="none"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.none">[docs]</a><span class="k">class</span> <span class="nc">none</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="none.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.none.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span></div></div>
+
+
+<div class="viewcode-block" id="const"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.const">[docs]</a><span class="k">class</span> <span class="nc">const</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="const.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.const.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">*</span> <span class="n">value</span></div></div>
+
+
+<div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.linear">[docs]</a><span class="k">class</span> <span class="nc">linear</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="linear.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.linear.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span></div></div>
+
+
+<div class="viewcode-block" id="quadratic"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.quadratic">[docs]</a><span class="k">class</span> <span class="nc">quadratic</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="quadratic.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.quadratic.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">c</span></div></div>
+
+
+<div class="viewcode-block" id="step"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.step">[docs]</a><span class="k">class</span> <span class="nc">step</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="step.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.step.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">height</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">height</span></div></div>
+
+
+<div class="viewcode-block" id="Error"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.Error">[docs]</a><span class="k">class</span> <span class="nc">Error</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="Error.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.Error.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">height</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">special</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">)</span> <span class="o">/</span> <span class="n">fwhm</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="StepExp"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.StepExp">[docs]</a><span class="k">class</span> <span class="nc">StepExp</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="StepExp.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.StepExp.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">height</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">)))</span></div></div>
+
+
+<div class="viewcode-block" id="Lorentzian"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.Lorentzian">[docs]</a><span class="k">class</span> <span class="nc">Lorentzian</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="Lorentzian.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.Lorentzian.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">height</span> <span class="o">*</span> <span class="p">(</span><span class="n">fwhm</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">fwhm</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="cos"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.cos">[docs]</a><span class="k">class</span> <span class="nc">cos</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="cos.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.cos.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">frequency</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">)</span> <span class="o">+</span> <span class="n">phase</span><span class="p">)</span> <span class="o">*</span> <span class="n">height</span></div></div>
+
+
+<div class="viewcode-block" id="exp"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.exp">[docs]</a><span class="k">class</span> <span class="nc">exp</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="exp.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.exp.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">))</span> <span class="o">*</span> <span class="n">height</span></div></div>
+
+
+<div class="viewcode-block" id="Gauss"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.Gauss">[docs]</a><span class="k">class</span> <span class="nc">Gauss</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="Gauss.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.Gauss.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">height</span></div></div>
+
+
+<div class="viewcode-block" id="doubleExp"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.doubleExp">[docs]</a><span class="k">class</span> <span class="nc">doubleExp</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="doubleExp.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.doubleExp.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">height</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">)</span> <span class="o">/</span> <span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">)</span> <span class="o">/</span> <span class="n">b</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="relaxOscillation"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.relaxOscillation">[docs]</a><span class="k">class</span> <span class="nc">relaxOscillation</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="relaxOscillation.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.relaxOscillation.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">relax</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">height</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">)</span> <span class="o">/</span> <span class="n">relax</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">offset</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">frequency</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">position</span><span class="p">)</span> <span class="o">+</span> <span class="n">phase</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="GaussConvolved"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.GaussConvolved">[docs]</a><span class="k">class</span> <span class="nc">GaussConvolved</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">f</span>
+
+<div class="viewcode-block" id="GaussConvolved.func"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.GaussConvolved.func">[docs]</a>    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">gaussian_filter</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">p</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="GaussConvolved.nparam"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.GaussConvolved.nparam">[docs]</a>    <span class="k">def</span> <span class="nf">nparam</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">nparam</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="GaussConvolved.params"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.GaussConvolved.params">[docs]</a>    <span class="k">def</span> <span class="nf">params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">params</span><span class="p">()</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Resolution&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div></div>
+
+
+<span class="n">ListOfFunctions</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;Const&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">const</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;Linear&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">linear</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;Quadratic&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">quadratic</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;Step&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">step</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;Cos&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cos</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;Exp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;Gauss&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Gauss</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;Lorentzian&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Lorentzian</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;StepExponential&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">StepExp</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;DoubleExp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">doubleExp</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;relaxOsci&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">relaxOscillation</span><span class="p">()</span>
+<span class="n">ListOfFunctions</span><span class="p">[</span><span class="s2">&quot;Error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Error</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="findFuncByInstance"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.findFuncByInstance">[docs]</a><span class="k">def</span> <span class="nf">findFuncByInstance</span><span class="p">(</span><span class="n">instance</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ListOfFunctions</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">ListOfFunctions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">==</span> <span class="n">instance</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">key</span></div>
+
+
+<div class="viewcode-block" id="addFunction"><a class="viewcode-back" href="../../../../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.addFunction">[docs]</a><span class="k">def</span> <span class="nf">addFunction</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">funcObj</span><span class="p">):</span>
+    <span class="n">ListOfFunctions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">funcObj</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

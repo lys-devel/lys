@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lys.BasicWidgets.CanvasInterface.LineSettings &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../CanvasInterface.html">lys.BasicWidgets.CanvasInterface</a> &raquo;</li>
+      <li>lys.BasicWidgets.CanvasInterface.LineSettings</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lys.BasicWidgets.CanvasInterface.LineSettings</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="LineColorAdjustableCanvasBase"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineColorAdjustableCanvasBase">[docs]</a><span class="k">class</span> <span class="nc">LineColorAdjustableCanvasBase</span><span class="p">(</span><span class="n">OffsetAdjustableCanvasBase</span><span class="p">):</span>
+<div class="viewcode-block" id="LineColorAdjustableCanvasBase.saveAppearance"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineColorAdjustableCanvasBase.saveAppearance">[docs]</a>    <span class="k">def</span> <span class="nf">saveAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;LineColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getDataColor</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LineColorAdjustableCanvasBase.setDataColor"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineColorAdjustableCanvasBase.setDataColor">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setDataColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setDataColor</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LineColorAdjustableCanvasBase.getDataColor"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineColorAdjustableCanvasBase.getDataColor">[docs]</a>    <span class="k">def</span> <span class="nf">getDataColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getDataColor</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="LineColorAdjustableCanvasBase.loadAppearance"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineColorAdjustableCanvasBase.loadAppearance">[docs]</a>    <span class="k">def</span> <span class="nf">loadAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">loadAppearance</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;LineColor&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_setDataColor</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;LineColor&#39;</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_setDataColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_getDataColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="LineStyleAdjustableCanvasBase"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineStyleAdjustableCanvasBase">[docs]</a><span class="k">class</span> <span class="nc">LineStyleAdjustableCanvasBase</span><span class="p">(</span><span class="n">LineColorAdjustableCanvasBase</span><span class="p">):</span>
+<div class="viewcode-block" id="LineStyleAdjustableCanvasBase.saveAppearance"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineStyleAdjustableCanvasBase.saveAppearance">[docs]</a>    <span class="k">def</span> <span class="nf">saveAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;LineStyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getLineDataStyle</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;LineWidth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getLineDataWidth</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LineStyleAdjustableCanvasBase.setLineStyle"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineStyleAdjustableCanvasBase.setLineStyle">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setLineStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setLineDataStyle</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;OldLineStyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getLineDataStyle</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LineStyleAdjustableCanvasBase.getLineStyle"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineStyleAdjustableCanvasBase.getLineStyle">[docs]</a>    <span class="k">def</span> <span class="nf">getLineStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getLineDataStyle</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="LineStyleAdjustableCanvasBase.setDataWidth"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineStyleAdjustableCanvasBase.setDataWidth">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setDataWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setLineDataWidth</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LineStyleAdjustableCanvasBase.getLineWidth"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineStyleAdjustableCanvasBase.getLineWidth">[docs]</a>    <span class="k">def</span> <span class="nf">getLineWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getLineDataWidth</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="LineStyleAdjustableCanvasBase.loadAppearance"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.LineStyleAdjustableCanvasBase.loadAppearance">[docs]</a>    <span class="k">def</span> <span class="nf">loadAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">loadAppearance</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;LineStyle&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_setLineDataStyle</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;LineStyle&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;LineWidth&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_setLineDataWidth</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;LineWidth&#39;</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_getLineDataStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_setLineDataStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_getLineDataWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_setLineDataWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase">[docs]</a><span class="k">class</span> <span class="nc">MarkerStyleAdjustableCanvasBase</span><span class="p">(</span><span class="n">LineStyleAdjustableCanvasBase</span><span class="p">):</span>
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.saveAppearance"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.saveAppearance">[docs]</a>    <span class="k">def</span> <span class="nf">saveAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;Marker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMarker</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;MarkerSize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMarkerSize</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;MarkerThick&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMarkerThick</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;MarkerFilling&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMarkerFilling</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.setMarker"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.setMarker">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setMarker</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">marker</span><span class="p">)</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;OldMarker&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getMarker</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.getMarker"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.getMarker">[docs]</a>    <span class="k">def</span> <span class="nf">getMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_getMarker</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.setMarkerSize"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.setMarkerSize">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setMarkerSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setMarkerSize</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.getMarkerSize"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.getMarkerSize">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_getMarkerSize</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.setMarkerThick"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.setMarkerThick">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setMarkerThick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setMarkerThick</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.getMarkerThick"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.getMarkerThick">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerThick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_getMarkerThick</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.setMarkerFilling"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.setMarkerFilling">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setMarkerFilling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setMarkerFilling</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.getMarkerFilling"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.getMarkerFilling">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerFilling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indexes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_getMarkerFilling</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getDataFromIndexes</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">indexes</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.loadAppearance"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.loadAppearance">[docs]</a>    <span class="k">def</span> <span class="nf">loadAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">loadAppearance</span><span class="p">()</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;Marker&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_setMarker</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;Marker&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;MarkerSize&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_setMarkerSize</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;MarkerSize&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;MarkerThick&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_setMarkerThick</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;MarkerThick&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="s1">&#39;MarkerFilling&#39;</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_setMarkerFilling</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">obj</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">appearance</span><span class="p">[</span><span class="s1">&#39;MarkerFilling&#39;</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_getMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_getMarkerSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_getMarkerThick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_getMarkerFilling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_setMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_setMarkerSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_setMarkerThick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">thick</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_setMarkerFilling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">filling</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.getMarkerList"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.getMarkerList">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MarkerStyleAdjustableCanvasBase.getMarkerFillingList"><a class="viewcode-back" href="../../../../lys.BasicWidgets.CanvasInterface.html#lys.BasicWidgets.CanvasInterface.LineSettings.MarkerStyleAdjustableCanvasBase.getMarkerFillingList">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerFillingList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

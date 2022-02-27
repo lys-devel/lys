@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CanvasBase module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Area module" href="Area.html" />
+    <link rel="prev" title="CanvasInterface package" href="../lys.BasicWidgets.CanvasInterface.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lys.html">lys package</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#base-class-of-canvas">Base class of canvas</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">CanvasBase module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#components-of-canvas">Components of canvas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#interface-to-data">Interface to data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#interface-to-annotations">Interface to annotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#lys-basicwidgets-canvasinterface-annotguicanvas-module">lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../api.html">Python API</a> &raquo;</li>
+          <li><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a> &raquo;</li>
+      <li>CanvasBase module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/graph/CanvasBase.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.BasicWidgets.CanvasInterface.CanvasBase">
+<span id="canvasbase-module"></span><h1>CanvasBase module<a class="headerlink" href="#module-lys.BasicWidgets.CanvasInterface.CanvasBase" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.CanvasBase.</span></span><span class="sig-name descname"><span class="pre">CanvasBase</span></span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CanvasBase.html#CanvasBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for canvas.</p>
+<p>Canvas is composed of <a class="reference internal" href="Area.html#lys.BasicWidgets.CanvasInterface.Area.CanvasSize" title="lys.BasicWidgets.CanvasInterface.Area.CanvasSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">Area.CanvasSize</span></code></a>, <a class="reference internal" href="Area.html#lys.BasicWidgets.CanvasInterface.Area.CanvasSize" title="lys.BasicWidgets.CanvasInterface.Area.CanvasSize"><code class="xref py py-class docutils literal notranslate"><span class="pre">Area.CanvasSize</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Axes.CanvasAxis</span></code>, <a class="reference internal" href="Axes.html#lys.BasicWidgets.CanvasInterface.Axes.CanvasTicks" title="lys.BasicWidgets.CanvasInterface.Axes.CanvasTicks"><code class="xref py py-class docutils literal notranslate"><span class="pre">Axes.CanvasTicks</span></code></a>,
+<a class="reference internal" href="AxisLabels.html#lys.BasicWidgets.CanvasInterface.AxisLabel.CanvasAxisLabel" title="lys.BasicWidgets.CanvasInterface.AxisLabel.CanvasAxisLabel"><code class="xref py py-class docutils literal notranslate"><span class="pre">AxisLabel.CanvasAxisLabel</span></code></a>, <a class="reference internal" href="AxisLabels.html#lys.BasicWidgets.CanvasInterface.AxisLabel.CanvasTickLabel" title="lys.BasicWidgets.CanvasInterface.AxisLabel.CanvasTickLabel"><code class="xref py py-class docutils literal notranslate"><span class="pre">AxisLabel.CanvasTickLabel</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Data.CanvasData</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">Annotation.CanvasAnnotation</span></code>.</p>
+<p>All of these classes inherits <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a> and added by <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.addCanvasPart" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.addCanvasPart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addCanvasPart()</span></code></a>.</p>
+<p>Users can access all public methods of the classes above.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.LoadFromDictionary">
+<span class="sig-name descname"><span class="pre">LoadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CanvasBase.html#CanvasBase.LoadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.LoadFromDictionary" title="Permalink to this definition"></a></dt>
+<dd><p>Load the content of the canvas as dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dictionary</strong> (<em>dict</em>) – The content of the canvas is loaded from <em>dictionary</em>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.SaveAsDictionary">
+<span class="sig-name descname"><span class="pre">SaveAsDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CanvasBase.html#CanvasBase.SaveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.SaveAsDictionary" title="Permalink to this definition"></a></dt>
+<dd><p>Save the content of the canvas as dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dictionary</strong> (<em>dict</em>) – The content of the canvas is written in <em>dictionary</em>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.addCanvasPart">
+<span class="sig-name descname"><span class="pre">addCanvasPart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">part</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CanvasBase.html#CanvasBase.addCanvasPart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.addCanvasPart" title="Permalink to this definition"></a></dt>
+<dd><p>Add <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a> as a part of the canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>part</strong> (<a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart"><em>CanvasPart</em></a>) – The part to be added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CanvasBase.html#CanvasBase.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.finalize" title="Permalink to this definition"></a></dt>
+<dd><p>Finalize the canvas.</p>
+<p>Several graph library (including matplotlib) requires explicit finalization to break circular reference, which causes memory leak.</p>
+<p>Call this method to finalize the canvas, which is usually done by parent widget (such as Graph).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.initCanvas">
+<span class="sig-name descname"><span class="pre">initCanvas</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.initCanvas" title="Permalink to this definition"></a></dt>
+<dd><p>pyqtSignal that is emitted when the canvas is initialized.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.loadCanvas">
+<span class="sig-name descname"><span class="pre">loadCanvas</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.loadCanvas" title="Permalink to this definition"></a></dt>
+<dd><p>pyqtSignal that is emitted when <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.LoadFromDictionary" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.LoadFromDictionary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LoadFromDictionary()</span></code></a> is called.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.saveCanvas">
+<span class="sig-name descname"><span class="pre">saveCanvas</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.saveCanvas" title="Permalink to this definition"></a></dt>
+<dd><p>pyqtSignal that is emitted when <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.SaveAsDictionary" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.SaveAsDictionary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SaveAsDictionary()</span></code></a> is called.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.updated">
+<span class="sig-name descname"><span class="pre">updated</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase.updated" title="Permalink to this definition"></a></dt>
+<dd><p>pyqtSignal that is emitted when the canvas is updated.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.CanvasBase.</span></span><span class="sig-name descname"><span class="pre">CanvasPart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CanvasBase.html#CanvasPart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
+<p>The canvas that inherit <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasBase</span></code></a> class is composed of multiple <em>CanvasPart</em>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart.canvas">
+<span class="sig-name descname"><span class="pre">canvas</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CanvasBase.html#CanvasPart.canvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart.canvas" title="Permalink to this definition"></a></dt>
+<dd><p>Get the canvas that contains the CanvasPart.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The canvas.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase">CanvasBase</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CanvasBase.saveCanvas">
+<span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.CanvasBase.</span></span><span class="sig-name descname"><span class="pre">saveCanvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CanvasBase.html#saveCanvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.saveCanvas" title="Permalink to this definition"></a></dt>
+<dd><p>When methods of <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasBase</span></code></a> or :class:’CanvasPart’ that is decorated by <em>saveCanvas</em> is called, then <em>updated</em> signal of the canvas is emitted.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../lys.BasicWidgets.CanvasInterface.html" class="btn btn-neutral float-left" title="CanvasInterface package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Area.html" class="btn btn-neutral float-right" title="Area module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
