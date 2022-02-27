@@ -191,6 +191,7 @@ class _PlainTextEdit(QPlainTextEdit):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.setLineWrapMode(QPlainTextEdit.NoWrap)
         self.metrics = self.fontMetrics()
         self.setTabStopWidth(self.metrics.width(" ") * 6)
         self.setViewportMargins(self.metrics.width("8") * 8, 0, 0, 0)
@@ -300,7 +301,8 @@ class PythonEditor(LysSubWindow):
                 else:
                     data.write("from lys import *")
         with open(self.file, 'r') as data:
-            self.widget.setPlainText(autopep8.fix_code(data.read()).replace("    ", "\t"))
+            fixed = self.__fix(data.read())
+            self.widget.setPlainText(fixed)
 
     def refreshTitle(self):
         if self.updated:
@@ -314,11 +316,20 @@ class PythonEditor(LysSubWindow):
                 self.save()
 
     def save(self):
+        fixed = self.__fix(self.widget.toPlainText())
         with open(self.file, 'w') as data:
-            data.write(autopep8.fix_code(self.widget.toPlainText()).replace("    ", "\t"))
+            data.write(fixed)
+        # self.widget.setPlainText(fixed)
         self.updated = False
         self.refreshTitle()
         glb.shell().refresh()
+
+    def __fix(self, text):
+        try:
+            options = autopep8.parse_args(['--max-line-length', '100000', '-'])
+            return autopep8.fix_code(text, options).replace("    ", "\t")
+        except Exception:
+            return text
 
     def closeEvent(self, event):
         if not self.updated:
