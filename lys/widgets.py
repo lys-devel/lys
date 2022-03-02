@@ -4,7 +4,7 @@ import traceback
 from pathlib import Path
 
 
-from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget
+from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget, QTextEdit
 from LysQt.QtCore import Qt, pyqtSignal, QPoint
 from . import home, load, SettingDict
 from .generalWidgets import ScientificSpinBox, ColorSelection, ColormapSelection
@@ -262,6 +262,12 @@ def _restore(self, file):
             if name in settings:
                 obj.addItems(settings[name])
 
+    for obj in self.findChildren(QTextEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            if name in settings:
+                obj.setPlainText(settings[name])
+
 
 def _save(self, file):
     settings = SettingDict(file)
@@ -290,6 +296,11 @@ def _save(self, file):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = [obj.item(i).text() for i in range(obj.count())]
+
+    for obj in self.findChildren(QTextEdit):
+        name = obj.objectName()
+        if _checkName(name):
+            settings[name] = obj.toPlainText()
     return settings
 
 
