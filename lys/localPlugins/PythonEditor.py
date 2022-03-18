@@ -4,7 +4,7 @@ import os
 import autopep8
 
 from PyQt5.QtCore import Qt, QRegExp, pyqtSignal, QEvent, QPoint
-from PyQt5.QtGui import QSyntaxHighlighter, QColor, QFont, QTextCharFormat, QKeyEvent, QPainter
+from PyQt5.QtGui import QSyntaxHighlighter, QColor, QFont, QTextCharFormat, QKeyEvent, QPainter, QTextCursor
 from PyQt5.QtWidgets import QMessageBox, QPlainTextEdit, QWidget, QInputDialog
 
 from lys import glb, home, registerFileLoader
@@ -191,6 +191,7 @@ class _PlainTextEdit(QPlainTextEdit):
 
     def __init__(self, parent):
         super().__init__(parent)
+        self.setLineWrapMode(QPlainTextEdit.NoWrap)
         self.metrics = self.fontMetrics()
         self.setTabStopWidth(self.metrics.width(" ") * 6)
         self.setViewportMargins(self.metrics.width("8") * 8, 0, 0, 0)
@@ -200,10 +201,13 @@ class _PlainTextEdit(QPlainTextEdit):
 
     def keyPressEvent(self, event):
         self.keyPressed.emit(event)
+        if event.key() == Qt.Key_Tab:
+            self.insertPlainText('    ')
+            return event.ignore()
         super().keyPressEvent(event)
         if event.key() == Qt.Key_Return:
-            for i in range(self.textCursor().block().previous().text().count('\t')):
-                self.insertPlainText('\t')
+            for i in range(self.textCursor().block().previous().text().count('    ')):
+                self.insertPlainText('    ')
 
     def paintEvent(self, e):
         super().paintEvent(e)
@@ -300,7 +304,8 @@ class PythonEditor(LysSubWindow):
                 else:
                     data.write("from lys import *")
         with open(self.file, 'r') as data:
-            self.widget.setPlainText(autopep8.fix_code(data.read()).replace("    ", "\t"))
+            fixed = self.__fix(data.read())
+            self.widget.setPlainText(fixed)
 
     def refreshTitle(self):
         if self.updated:
@@ -314,11 +319,27 @@ class PythonEditor(LysSubWindow):
                 self.save()
 
     def save(self):
+        text = self.widget.toPlainText()
+        fixed = self.__fix(text)
         with open(self.file, 'w') as data:
-            data.write(autopep8.fix_code(self.widget.toPlainText()).replace("    ", "\t"))
+            data.write(fixed)
+        c = self.widget.textCursor()
+        p = c.position()
+        self.widget.selectAll()
+        self.widget.insertPlainText(fixed)
+        c.movePosition(QTextCursor.Start)
+        c.movePosition(QTextCursor.Right, n=p)
+        self.widget.setTextCursor(c)
         self.updated = False
         self.refreshTitle()
         glb.shell().refresh()
+
+    def __fix(self, text):
+        try:
+            options = autopep8.parse_args(['--max-line-length', '100000', '-'])
+            return autopep8.fix_code(text, options)
+        except Exception:
+            return text
 
     def closeEvent(self, event):
         if not self.updated:

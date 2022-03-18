@@ -4,9 +4,9 @@ import traceback
 import rlcompleter
 
 
-from LysQt.QtWidgets import QMainWindow, QSplitter, QLineEdit, QWidget, QHBoxLayout, QTabWidget, QTextEdit, QTabBar
-from LysQt.QtGui import QColor, QTextCursor, QTextOption
-from LysQt.QtCore import Qt, pyqtSignal, QEvent
+from LysQt.QtWidgets import QMainWindow, QSplitter, QWidget, QHBoxLayout, QTabWidget, QTextEdit, QTabBar, QSizePolicy
+from LysQt.QtGui import QColor, QTextCursor, QTextOption, QTextCursor
+from LysQt.QtCore import Qt, pyqtSignal, QEvent, QSize
 
 from . import glb, home, SettingDict
 
@@ -253,19 +253,27 @@ class _CommandLogWidget(QTextEdit):
         self._save()
 
 
-class _CommandLineEdit(QLineEdit):
+class _CommandLineEdit(QTextEdit):
     def __init__(self, shell):
         super().__init__()
+        self.setPlaceholderText("Type python command and press enter")
         self.shell = shell
-        self.returnPressed.connect(self.__SendCommand)
         self.__logn = 0
         self.completer = rlcompleter.Completer(self.shell.dict)
+        self.textChanged.connect(self.__onTextChanged)
+        self.textChanged.emit()
+
+    def __onTextChanged(self):
+        doc = self.document()
+        margins = self.contentsMargins()
+        h = doc.size().toSize().height() + (doc.documentMargin() + self.frameWidth()) * 2 + margins.top() + margins.bottom()
+        self.setFixedHeight(h)
 
     def __findBlock(self):
-        text = self.text()
-        end = self.cursorPosition()
+        text = self.toPlainText()
+        end = self.textCursor().position()
         for i in range(1, end + 1):
-            if text[end - i] in [",", "(", " ", "=", "["]:
+            if text[end - i] in [",", "(", " ", "=", "[", ":", "\n"]:
                 return end - i + 1, end
         return 0, end
 
@@ -273,7 +281,7 @@ class _CommandLineEdit(QLineEdit):
         self.__tabn = -1
 
     def _complete(self):
-        if len(self.text()) == 0:
+        if len(self.toPlainText()) == 0:
             return True
         if self.__tabn == -1:
             self._printComplete()
@@ -281,9 +289,9 @@ class _CommandLineEdit(QLineEdit):
             return True
         if self.__tabn == 0:
             s, e = self.__findBlock()
-            self.__prefix = self.text()[:s]
-            self.__suffix = self.text()[e:]
-            self.__txt = self.text()[s:e]
+            self.__prefix = self.toPlainText()[:s]
+            self.__suffix = self.toPlainText()[e:]
+            self.__txt = self.toPlainText()[s:e]
         try:
             tmp = self.completer.complete(self.__txt, self.__tabn)
             if tmp is None and not self.__tabn == 0:
@@ -291,17 +299,20 @@ class _CommandLineEdit(QLineEdit):
                 self.__tabn = 0
             if tmp is not None:
                 self.setText(self.__prefix + tmp + self.__suffix)
-                self.setCursorPosition(len(self.__prefix + tmp))
+                c = self.textCursor()
+                c.movePosition(QTextCursor.Start)
+                c.movePosition(QTextCursor.Right, n=len(self.__prefix + tmp))
+                self.setTextCursor(c)
                 self.__tabn += 1
         except Exception:
             print("fail to complete:", self.__txt, self.__tabn)
         return True
 
     def _printComplete(self):
-        if len(self.text()) == 0:
+        if len(self.toPlainText()) == 0:
             return
         s, e = self.__findBlock()
-        self.__txt = self.text()[s:e]
+        self.__txt = self.toPlainText()[s:e]
         res = ""
         for i in range(100):
             tmp = self.completer.complete(self.__txt, i)
@@ -339,13 +350,19 @@ class _CommandLineEdit(QLineEdit):
                 else:
                     self.setText(log[max(0, len(log) - self.__logn)])
                 return True
+            if event.key() == Qt.Key_Return and (event.modifiers() == Qt.NoModifier):
+                self.__SendCommand()
+                return True
 
-        return QLineEdit.event(self, event)
+        return super().event(event)
 
     def __SendCommand(self):
-        txt = self.text()
+        for c in self.toPlainText().splitlines():
+            self.__exeCommand(c)
         self.clear()
         self.__logn = 0
+
+    def __exeCommand(self, txt):
         print(">", txt)
         try:
             res = self.shell.eval(txt, save=True)

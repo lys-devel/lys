@@ -1,4 +1,5 @@
 from LysQt.QtGui import *
+from LysQt.QtWidgets import QSizePolicy
 
 from lys import registerFileLoader
 from lys.widgets import AutoSavedWindow, _ExtendMdiArea
@@ -9,7 +10,31 @@ from .pyqtGraph import pyqtCanvas
 from .FittingWindow import *
 
 
-class Graph(AutoSavedWindow):
+class _SizeAdjustableWindow(AutoSavedWindow):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setWidth(0)
+        self.setHeight(0)
+        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+
+    def setWidth(self, val):
+        if val == 0:
+            self.setMinimumWidth(35)
+            self.setMaximumWidth(10000)
+        else:
+            self.setMinimumWidth(val)
+            self.setMaximumWidth(val)
+
+    def setHeight(self, val):
+        if val == 0:
+            self.setMinimumHeight(35)
+            self.setMaximumHeight(10000)
+        else:
+            self.setMinimumHeight(val)
+            self.setMaximumHeight(val)
+
+
+class Graph(_SizeAdjustableWindow):
     graphLibrary = "matplotlib"
 
     @classmethod

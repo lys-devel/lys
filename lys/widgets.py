@@ -4,10 +4,10 @@ import traceback
 from pathlib import Path
 
 
-from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QSizePolicy, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget, QTextEdit
+from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget, QTextEdit
 from LysQt.QtCore import Qt, pyqtSignal, QPoint
 from . import home, load, SettingDict
-from .generalWidgets import ColorSelection, ColormapSelection, ScientificSpinBox
+from .generalWidgets import ScientificSpinBox, ColorSelection, ColormapSelection
 
 
 class _ExtendMdiArea(QMdiArea):
@@ -117,31 +117,7 @@ class _ExtendMdiArea(QMdiArea):
         print('Too many windows.', file=sys.stderr)
 
 
-class SizeAdjustableWindow(QMdiSubWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWidth(0)
-        self.setHeight(0)
-        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-
-    def setWidth(self, val):
-        if val == 0:
-            self.setMinimumWidth(35)
-            self.setMaximumWidth(10000)
-        else:
-            self.setMinimumWidth(val)
-            self.setMaximumWidth(val)
-
-    def setHeight(self, val):
-        if val == 0:
-            self.setMinimumHeight(35)
-            self.setMaximumHeight(10000)
-        else:
-            self.setMinimumHeight(val)
-            self.setMaximumHeight(val)
-
-
-class LysSubWindow(SizeAdjustableWindow):
+class LysSubWindow(QMdiSubWindow):
     """
     LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.
 
@@ -290,7 +266,7 @@ def _restore(self, file):
         name = obj.objectName()
         if _checkName(name):
             if name in settings:
-                obj.setPlainText(settings[name]) 
+                obj.setPlainText(settings[name])
 
 
 def _save(self, file):
@@ -326,6 +302,7 @@ def _save(self, file):
         if _checkName(name):
             settings[name] = obj.toPlainText()
     return settings
+
 
 def _checkName(name):
     if name == "":
