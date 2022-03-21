@@ -24,56 +24,47 @@ class _ExtendMdiArea(QMdiArea):
         super().__init__()
         _ExtendMdiArea._main = parent
         self._workspace = workspace
-        self.__list = []
         self._dicFile = home() + '/.lys/workspace/' + workspace + '/winDict.dic'
         self._windir = home() + '/.lys/workspace/' + workspace + '/wins'
 
     def update(self):
         dic = {}
-        for i, w in enumerate(self.__list):
+        for i, w in enumerate(self._autoWindows()):
             d = {}
             d["FileName"] = w.FileName()
             d["TemporaryFile"] = w.TemporaryFile()
             dic[i] = d
-        #print("-----update-----\n", dic)
         with open(self._dicFile, 'w') as f:
             f.write(str(dic))
 
     def _fileNames(self):
-        return [w.FileName() for w in self.__list if w.FileName() is not None]
+        return [w.FileName() for w in self._autoWindows() if w.FileName() is not None]
 
-    def _AddAutoWindow(self, win):
-        if not win.FileName() in self._fileNames():
-            self.__list.append(win)
-            win.saved.connect(self.update)
-            win.closed.connect(lambda: self._RemoveAutoWindow(win))
-            self.update()
-
-    def _RemoveAutoWindow(self, win):
-        if win in self.__list:
-            self.__list.remove(win)
-            if os.path.exists(win.TemporaryFile()):
-                os.remove(win.TemporaryFile())
-            self.update()
-
-    def CloseAllWindows(self):
-        for win in self.__list:
-            self.__list.remove(win)
-            win.close(force=True)
-            self.update()
+    def _autoWindows(self):
+        return [w for w in self.subWindowList(order=QMdiArea.ActivationHistoryOrder) if isinstance(w, AutoSavedWindow)]
 
     def addSubWindow(self, window):
         super().addSubWindow(window)
         window.closed.connect(lambda: self.removeSubWindow(window))
         if isinstance(window, AutoSavedWindow):
-            self._AddAutoWindow(window)
+            if not window.FileName() in self._fileNames():
+                window.saved.connect(self.update)
+                self.update()
+
+    def removeSubWindow(self, window, store=False):
+        if window in self.subWindowList():
+            super().removeSubWindow(window)
+            if isinstance(window, AutoSavedWindow) and not store:
+                if os.path.exists(window.TemporaryFile()):
+                    os.remove(window.TemporaryFile())
+                self.update()
 
     @classmethod
     def loadedWindow(cls, path):
         if path is None:
             return None
         for work in cls._main._mdiArea("__all__"):
-            for win in work.__list:
+            for win in work._autoWindows():
                 file = win.FileName()
                 if win.FileName() is None:
                     continue
@@ -89,7 +80,6 @@ class _ExtendMdiArea(QMdiArea):
         else:
             dic = {}
         # load all windows and disconnect if it is temporary
-        self.__list = []
         i = 0
         while i in dic:
             try:
@@ -102,14 +92,18 @@ class _ExtendMdiArea(QMdiArea):
         self.update()
 
     def StoreAllWindows(self):
-        wins = list(self.__list)
-        self.__list.clear()
-        for win in reversed(wins):
+        self.update()
+        for win in self._autoWindows():
+            self.removeSubWindow(win, store=True)
+            win.close(force=True)
+
+    def CloseAllWindows(self):
+        for win in self._autoWindows():
             win.close(force=True)
 
     def tmpFilePath(self, prefix, suffix):
         os.makedirs(self._windir, exist_ok=True)
-        used = [w.TemporaryFile() for w in self.__list]
+        used = [w.TemporaryFile() for w in self._autoWindows()]
         for i in range(1000):
             path = self._windir + '/' + prefix + str(i).zfill(3) + suffix
             if path not in used:
