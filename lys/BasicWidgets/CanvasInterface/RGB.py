@@ -78,6 +78,10 @@ class RGBData(WaveData):
         if wav.data.ndim == 2:
             if 'Range' in appearance:
                 rmin, rmax = appearance['Range']
+                if rmin == "auto":
+                    rmin = 0
+                if rmax == "auto":
+                    rmax = np.max(np.abs(wav.data))
             else:
                 rmin, rmax = 0, np.max(np.abs(wav.data))
             wav.data = self._Complex2HSV(wav.data, rmin, rmax, appearance.get('ColorRotation', 0))

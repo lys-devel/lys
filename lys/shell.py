@@ -1,6 +1,7 @@
 import os
 import glob
 import sys
+import traceback
 
 from LysQt.QtCore import QObject, pyqtSignal
 from . import home
@@ -246,7 +247,7 @@ class _ModuleManager:
             if importAll:
                 exec("from " + module + " import *", self.__dict)
         except Exception:
-            print("Error on loading", module, file=sys.stderr)
+            print("Error on loading", module, "\n", traceback.format_exc(), file=sys.stderr)
 
     def reload(self):
         if os.path.exists(home() + "/proc.py"):
