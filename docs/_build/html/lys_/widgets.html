@@ -153,7 +153,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="lys.widgets.LysSubWindow">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.widgets.</span></span><span class="sig-name descname"><span class="pre">LysSubWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">floating</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#LysSubWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.LysSubWindow" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.widgets.SizeAdjustableWindow" title="lys.widgets.SizeAdjustableWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.SizeAdjustableWindow</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMdiSubWindow</span></code></p>
 <p>LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.</p>
 <p>When a <em>AutoSavedWindow</em> is instantiated, it is automatically added to current MdiArea.</p>
 <p>It is recommended to inherit this class when developers implement new sub windows in lys.</p>
@@ -235,51 +235,6 @@ User input on various widgets are easily exported to file by <a class="reference
 <dd><p>Export all widgets settings from default setting file specified by name.
 User input on various widgets are easily loaded from file by <a class="reference internal" href="#lys.widgets.LysSubWindow.restoreSettings" title="lys.widgets.LysSubWindow.restoreSettings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restoreSettings()</span></code></a>.</p>
 </dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.widgets.</span></span><span class="sig-name descname"><span class="pre">ScientificSpinBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDoubleSpinBox</span></code></p>
-<p>Spin box that displays values in sdientific notation, which is frequently used in lys.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox.stepBy">
-<span class="sig-name descname"><span class="pre">stepBy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox.stepBy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox.stepBy" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox.textFromValue">
-<span class="sig-name descname"><span class="pre">textFromValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox.textFromValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox.textFromValue" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox.validate">
-<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox.validate" title="Permalink to this definition"></a></dt>
-<dd><p>Reimplementation of validate</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.widgets.ScientificSpinBox.valueFromText">
-<span class="sig-name descname"><span class="pre">valueFromText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#ScientificSpinBox.valueFromText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.ScientificSpinBox.valueFromText" title="Permalink to this definition"></a></dt>
-<dd><p>Reimplementation of valueFromText</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.widgets.SizeAdjustableWindow">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.widgets.</span></span><span class="sig-name descname"><span class="pre">SizeAdjustableWindow</span></span><a class="reference internal" href="../_modules/lys/widgets.html#SizeAdjustableWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.SizeAdjustableWindow" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMdiSubWindow</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.widgets.SizeAdjustableWindow.setHeight">
-<span class="sig-name descname"><span class="pre">setHeight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#SizeAdjustableWindow.setHeight"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.SizeAdjustableWindow.setHeight" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.widgets.SizeAdjustableWindow.setWidth">
-<span class="sig-name descname"><span class="pre">setWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets.html#SizeAdjustableWindow.setWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.SizeAdjustableWindow.setWidth" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 

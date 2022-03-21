@@ -109,7 +109,10 @@
             <span class="n">filt</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">Filters</span><span class="p">([</span><span class="n">filters</span><span class="o">.</span><span class="n">OffsetFilter</span><span class="p">(</span><span class="n">offset</span><span class="p">)])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">filt</span> <span class="o">=</span> <span class="nb">filter</span> <span class="o">+</span> <span class="n">filters</span><span class="o">.</span><span class="n">OffsetFilter</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">filt</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">complex</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">ComplexFilter</span><span class="p">(</span><span class="s2">&quot;absolute&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span>
 
 <div class="viewcode-block" id="WaveData.getWave"><a class="viewcode-back" href="../../../../graph/WaveData.html#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getWave">[docs]</a>    <span class="k">def</span> <span class="nf">getWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

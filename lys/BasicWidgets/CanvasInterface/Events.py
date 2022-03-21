@@ -6,7 +6,13 @@ from .CanvasBase import CanvasPart, saveCanvas
 
 
 class CanvasKeyboardEvent(CanvasPart):
+    """
+    Basic keyborad event class of Canvas.
+    """
     keyPressed = pyqtSignal(QKeyEvent)
+    """
+    Emitted when a key is pressed.
+    """
 
     def __init__(self, canvas):
         super().__init__(canvas)
@@ -20,11 +26,29 @@ class CanvasKeyboardEvent(CanvasPart):
 
 
 class CanvasMouseEvent(CanvasPart):
+    """
+    Basic keyborad event class of Canvas.
+    """
     mousePressed = pyqtSignal(object)
+    """
+    Emitted when a mouse is pressed.
+    """
     mouseReleased = pyqtSignal(object)
+    """
+    Emitted when a mouse is released.
+    """
     mouseMoved = pyqtSignal(object)
+    """
+    Emitted when a mouse is moved.
+    """
     clicked = pyqtSignal(object)
+    """
+    Emitted when a mouse is clicked.
+    """
     doubleClicked = pyqtSignal(object)
+    """
+    Emitted when a mouse is double-clicked.
+    """
 
     def __init__(self, canvas):
         super().__init__(canvas)
@@ -57,4 +81,11 @@ class CanvasMouseEvent(CanvasPart):
         self._clicktime = time.time()
 
     def mapPosition(self, event, axis):
-        pass
+        """
+        Translate the clicked position to the data-coordinates.
+
+        Args:
+            event(QEvent): The event that is given as an argument of mouse events such as mousePressed.
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis by which the position is translated.
+        """
+        raise NotImplementedError(str(type(self)) + " does not implement mapPosition(event, axis) method.")

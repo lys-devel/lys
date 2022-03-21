@@ -7,6 +7,7 @@ Base class of canvas
    :maxdepth: 4
 
    graph/CanvasBase
+   graph/Events
 
 Components of canvas
 ------------------------------------------------------
@@ -42,15 +43,4 @@ Interface to annotations
    graph/RegionAnnot
    graph/CrossAnnot
    graph/RectAnnot
-
-Submodules
-------------------------------------------------------
-
-lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module
-------------------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.AnnotGUICanvas
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
