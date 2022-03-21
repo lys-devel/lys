@@ -150,7 +150,7 @@ class ColormapSelection(QWidget):
         def setColormap(self, cmap):
             self.setCurrentIndex(self.__list.index(cmap))
 
-    def __init__(self):
+    def __init__(self, opacity=True, log=True, reverse=True, gamma=True):
         super().__init__()
         self.__combo = ColormapSelection._ColorCombo()
         self.__combo.activated.connect(self.__changed)
@@ -170,12 +170,16 @@ class ColormapSelection(QWidget):
         layout = QVBoxLayout()
 
         layout_h = QHBoxLayout()
-        layout_h.addWidget(QLabel('Opac'))
-        layout_h.addWidget(self.__opacity)
-        layout_h.addWidget(QLabel('Gam'))
-        layout_h.addWidget(self.__gamma)
-        layout_h.addWidget(self.__check)
-        layout_h.addWidget(self.__log)
+        if opacity:
+            layout_h.addWidget(QLabel('Opac'))
+            layout_h.addWidget(self.__opacity)
+        if gamma:
+            layout_h.addWidget(QLabel('Gam'))
+            layout_h.addWidget(self.__gamma)
+        if reverse:
+            layout_h.addWidget(self.__check)
+        if log:
+            layout_h.addWidget(self.__log)
 
         layout.addLayout(layout_h)
         layout.addWidget(self.__combo)

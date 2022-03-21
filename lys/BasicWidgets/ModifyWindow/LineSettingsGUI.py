@@ -1,12 +1,16 @@
+from matplotlib import cm
 from matplotlib.lines import Line2D
+
+import numpy as np
 
 from LysQt.QtCore import pyqtSignal
 from LysQt.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QPushButton, QGroupBox, QComboBox, QLabel, QDoubleSpinBox, QGridLayout, QWidget
+from LysQt.QtGui import QColor
 
 from lys.widgets import ColormapSelection, ColorSelection
 
 
-class LineColorSideBySideDialog(QDialog):
+class _LineColorSideBySideDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Select colormap')
@@ -17,7 +21,7 @@ class LineColorSideBySideDialog(QDialog):
         h.addWidget(QPushButton('O K', clicked=self.accept))
         h.addWidget(QPushButton('CANCEL', clicked=self.reject))
 
-        self.csel = ColormapSelection()
+        self.csel = ColormapSelection(opacity=False, log=False, reverse=True, gamma=False)
 
         lay = QVBoxLayout()
         lay.addWidget(self.csel)
@@ -144,11 +148,17 @@ class AppearanceBox(QWidget):
         self.setLayout(layout)
 
     def __sidebyside(self):
-        d = LineColorSideBySideDialog()
+        d = _LineColorSideBySideDialog()
         res = d.exec_()
         if res == QDialog.Accepted:
             c = d.getColor()
-            print(c)
+            if c == "" or c == "_r":
+                return
+            sm = cm.ScalarMappable(cmap=c)
+            rgbas = sm.to_rgba(np.linspace(0, 1, len(self._lines)), bytes=True)
+            rgbas = [('#{0:02x}{1:02x}{2:02x}').format(r, g, b) for r, g, b, a in rgbas]
+            for line, color in zip(self._lines, rgbas):
+                line.setColor(color)
 
     def setLines(self, lines):
         self._lines = lines

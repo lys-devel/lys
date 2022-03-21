@@ -63,7 +63,9 @@ class _PyqtgraphLine(LineData):
         p = self._getSymbolPen()
         p.setColor(QColor(color))
         self._obj.setSymbolPen(p)
-        self._obj.setPen(pg.mkPen(color=QColor(color)))
+        p = self._getLinePen()
+        p.setColor(QColor(color))
+        self._obj.setPen(p)
 
     def _setStyle(self, style):
         p = self._getLinePen()
