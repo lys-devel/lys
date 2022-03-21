@@ -106,7 +106,7 @@ class CanvasData(CanvasPart):
         raise RuntimeError("[Graph] Can't append this data. shape = " + str(wav.data.shape))
 
     def __getDefaultZ(self, type):
-        id_def = {"line": 8000, "image": 2000, "vector": 6000, "contour": 4000, "rgb": 0}
+        id_def = {"line": 8000, "image": 2000, "vector": 6000, "contour": 4000, "rgb": 3000}
         data = self.getWaveData(type)
         return np.max([d.getZOrder() for d in data] + [id_def[type]]) + 1
 
