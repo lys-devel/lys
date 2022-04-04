@@ -555,7 +555,9 @@ class Wave(WaveBase):
         if 'axes' in tmp:
             axes = []
             for axis in tmp['axes']:
-                if axis.ndim == 0 or axis is None:
+                if axis is None:
+                    axes.append(np.array(None))
+                elif axis.ndim == 0:
                     axes.append(np.array(None))
                 else:
                     axes.append(np.array(axis, dtype=type(axis[0])))
