@@ -11,7 +11,8 @@ class _MatplotlibLine(LineData):
 
     def __init__(self, canvas, wave, axis):
         super().__init__(canvas, wave, axis)
-        self._obj, = canvas.getAxes(axis).plot(wave.x, wave.data, picker=5)
+        self._obj, = canvas.getAxes(axis).plot(wave.x, wave.data)
+        self._obj.set_pickradius(5)
 
     def _updateData(self):
         self._obj.set_data(self.getFilteredWave().x, self.getFilteredWave().data)
