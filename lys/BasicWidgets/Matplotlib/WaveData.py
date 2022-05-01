@@ -6,6 +6,10 @@ from matplotlib.contour import QuadContourSet
 from ..CanvasInterface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 
 
+def _setZ(obj, z):
+    obj.set_zorder(z - 100000)
+
+
 class _MatplotlibLine(LineData):
     """Implementation of LineData for matplotlib"""
 
@@ -21,7 +25,7 @@ class _MatplotlibLine(LineData):
         self._obj.set_visible(visible)
 
     def _setZ(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
     def _setColor(self, color):
         self._obj.set_color(color)
@@ -71,7 +75,7 @@ class _MatplotlibImage(ImageData):
         self._obj.set_visible(visible)
 
     def _setZ(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
     def _setColormap(self, cmap):
         colormap = copy.deepcopy(cm.get_cmap(cmap))
@@ -121,7 +125,7 @@ class _MatplotlibVector(VectorData):
         self._obj.set_visible(visible)
 
     def _setZ(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
     def _setPivot(self, pivot):
         self._obj.pivot = pivot
@@ -153,7 +157,7 @@ class _MatplotlibRGB(RGBData):
         self._obj.set_visible(visible)
 
     def _setZ(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
 
 class _MatplotlibContour(ContourData):
@@ -169,7 +173,7 @@ class _MatplotlibContour(ContourData):
 
     def _setZ(self, z):
         for o in self._obj.collections:
-            o.set_zorder(z)
+            _setZ(o, z)
 
 
 class _MatplotlibData(CanvasData):

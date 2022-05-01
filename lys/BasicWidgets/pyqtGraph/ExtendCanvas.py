@@ -3,7 +3,6 @@ from lys.widgets import LysSubWindow
 
 
 class ExtendCanvas(FigureCanvasBase):
-    savedDict = {}
 
     def __init__(self, dpi=100):
         super().__init__(dpi=dpi)
@@ -18,19 +17,3 @@ class ExtendCanvas(FigureCanvasBase):
                 mod.selectTab(tab)
                 break
             parent = parent.parentWidget()
-
-    def SaveSetting(self, type):
-        dict = {}
-        self.SaveAsDictionary(dict)
-        ExtendCanvas.savedDict[type] = dict[type]
-        return dict[type]
-
-    def LoadSetting(self, type, obj=None):
-        if dict is not None:
-            d = {}
-            d[type] = dict
-            self.LoadFromDictionary(d)
-        elif type in ExtendCanvas.savedDict:
-            d = {}
-            d[type] = ExtendCanvas.savedDict[type]
-            self.LoadFromDictionary(d)

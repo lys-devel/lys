@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import QTreeView, QMenu, QAction, QWidget, QButtonGroup, QRadioButton, QLabel, QPushButton, QComboBox
-from PyQt5.QtWidgets import QTableWidget, QGridLayout, QHeaderView, QGroupBox, QHBoxLayout, QVBoxLayout, QMessageBox, QCheckBox
+from PyQt5.QtWidgets import QTableWidget, QGridLayout, QHeaderView, QGroupBox, QHBoxLayout, QVBoxLayout, QMessageBox, QCheckBox, QFileDialog, QInputDialog
 from PyQt5.QtGui import QBrush, QColor, QCursor
 from PyQt5.QtCore import Qt, QAbstractItemModel, QVariant, QModelIndex, pyqtSignal, QSize, QItemSelectionModel
 
 import numpy as np
-from lys import filters, display, Wave, Graph, pyqtCanvas, CanvasBase
+from lys import filters, display, Wave, Graph, pyqtCanvas, CanvasBase, edit, glb
 
 from ..MultiCutExecutors import PointExecutor, RegionExecutor, FreeLineExecutor
 from ..MultiCut import ExecutorList, SwitchableObjects, controlledObjects
@@ -88,13 +88,19 @@ class controlledWavesGUI(QTreeView):
 
         connected.addAction(QAction("Display", self, triggered=self._display))
         connected.addAction(QAction("Append", self, triggered=self._append))
-        connected.addAction(QAction("Append Vector", self, triggered=self._vector))
-        connected.addAction(QAction("Append Contour", self, triggered=self._contour))
+        connected.addAction(QAction("Edit", self, triggered=self._edit))
+        connected.addAction(QAction("Send to shell", self, triggered=self._shell))
+        connected.addAction(QAction("Append as Vector", self, triggered=self._vector))
+        connected.addAction(QAction("Append as Contour", self, triggered=self._contour))
 
         copied.addAction(QAction("Display", self, triggered=lambda: self._display(type="copied")))
         copied.addAction(QAction("Append", self, triggered=lambda: self._append(type="copied")))
-        copied.addAction(QAction("Append Vector", self, triggered=lambda: self._vector(type="copied")))
-        copied.addAction(QAction("Append Contour", self, triggered=lambda: self._contour(type="copied")))
+        copied.addAction(QAction("MultiCut", self, triggered=lambda: self._multicut(type="copied")))
+        copied.addAction(QAction("Edit", self, triggered=lambda: self._edit(type="copied")))
+        copied.addAction(QAction("Export", self, triggered=lambda: self._export(type="copied")))
+        copied.addAction(QAction("Send to shell", self, triggered=lambda: self._shell(type="copied")))
+        copied.addAction(QAction("Append as Vector", self, triggered=lambda: self._vector(type="copied")))
+        copied.addAction(QAction("Append as Contour", self, triggered=lambda: self._contour(type="copied")))
 
         menu.addSeparator()
 
@@ -116,6 +122,28 @@ class controlledWavesGUI(QTreeView):
 
     def _append(self, type="Connected"):
         self.apnd(*self._getObj(type))
+
+    def _multicut(self, type="Connected"):
+        from lys import MultiCut
+        MultiCut(self._getObj(type)[0])
+
+    def _edit(self, type="Connected"):
+        edit(self._getObj(type)[0])
+
+    def _export(self, type="Connected"):
+        filt = ""
+        for f in Wave.SupportedFormats():
+            filt = filt + f + ";;"
+        filt = filt[:len(filt) - 2]
+        path, type = QFileDialog.getSaveFileName(filter=filt)
+        if len(path) != 0:
+            self._getObj(type)[0].export(path, type=type)
+
+    def _shell(self, type):
+        w = self._getObj(type)[0]
+        text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
+        if ok:
+            glb.shell().addObject(w, text)
 
     def _contour(self, type="Connected"):
         self.apnd(*self._getObj(type), contour=True)
@@ -361,7 +389,7 @@ class _InteractiveWidget(QGroupBox):
     def _regy(self, c=None):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
-        reg = c.addRegionAnnotation(type="horizontal")
+        reg = c.addRegionAnnotation(orientation="horizontal")
         e = RegionExecutor(self.canvases.getAxes(c)[1], range=reg.getRegion())
         reg.regionChanged.connect(e.setRange)
         e.updated.connect(lambda x: reg.setRegion(e.getRange()[0]))
@@ -379,7 +407,7 @@ class _InteractiveWidget(QGroupBox):
     def _liney(self, c=None):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
-        line = c.addInfiniteLineAnnotation(type='horizontal')
+        line = c.addInfiniteLineAnnotation(orientation='horizontal')
         e = PointExecutor(self.canvases.getAxes(c)[1], pos=line.getPosition())
         line.positionChanged.connect(e.setPosition)
         e.updated.connect(lambda x: line.setPosition(e.getPosition()[0]))

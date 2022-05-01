@@ -15,6 +15,9 @@ from .AnnotationGUI import *
 from .LineAnnotationGUI import *
 from .InfoGUI import *
 
+# temporary dictionary to save canvas settings
+_saveDict = {}
+
 
 class ModifyWindow(LysSubWindow):
     instance = None
@@ -86,12 +89,16 @@ class _AreaTab(QWidget):
         self.setLayout(self.layout)
 
     def _save(self):
-        self.canvas.SaveSetting('Size')
-        self.canvas.SaveSetting('Margin')
+        d = {}
+        for t in ['Size', 'Margin']:
+            self.canvas.SaveAsDictionary(d)
+            _saveDict[t] = d[t]
 
     def _load(self):
-        self.canvas.LoadSetting('Size')
-        self.canvas.LoadSetting('Margin')
+        d = {}
+        for t in ['Size', 'Margin']:
+            d[t] = _saveDict[t]
+        self.canvas.LoadFromDictionary(d)
 
 
 class _AxisTab(QWidget):
@@ -138,12 +145,16 @@ class _AxisTab(QWidget):
         return self._all.isChecked()
 
     def _save(self):
+        d = {}
         for t in ['AxisSetting', 'TickSetting', 'AxisRange', 'LabelSetting', 'TickLabelSetting']:
-            self.canvas.SaveSetting(t)
+            self.canvas.SaveAsDictionary(d)
+            _saveDict[t] = d[t]
 
     def _load(self):
+        d = {}
         for t in ['AxisSetting', 'TickSetting', 'AxisRange', 'LabelSetting', 'TickLabelSetting']:
-            self.canvas.LoadSetting(t)
+            d[t] = _saveDict[t]
+        self.canvas.LoadFromDictionary(d)
 
 
 class _LineTab(QWidget):

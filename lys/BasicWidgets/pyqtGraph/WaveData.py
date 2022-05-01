@@ -10,6 +10,10 @@ from lys.errors import NotSupportedWarning
 from ..CanvasInterface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 
 
+def _setZ(obj, z):
+    obj.setZValue(z - 100000)
+
+
 class _PyqtgraphLine(LineData):
     """Implementation of LineData for pyqtgraph"""
     __styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
@@ -36,7 +40,7 @@ class _PyqtgraphLine(LineData):
         self._obj.setVisible(visible)
 
     def _setZ(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
     def _getLinePen(self):
         p = self._obj.opts['pen']
@@ -153,7 +157,7 @@ class _PyqtgraphImage(ImageData):
         self._obj.setVisible(visible)
 
     def _setZ(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
     def _setColormap(self, cmap):
         lut = self.__getColorLut(cmap, self.getGamma())
@@ -205,7 +209,7 @@ class _PyqtgraphRGB(RGBData):
         self._obj.setVisible(visible)
 
     def _setZ(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
 
 class _PyqtgraphContour(ContourData):
@@ -221,7 +225,7 @@ class _PyqtgraphContour(ContourData):
         self._obj.setVisible(visible)
 
     def _setZ(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
 
 class _PyqtgraphData(CanvasData):

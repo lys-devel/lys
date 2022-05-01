@@ -207,8 +207,8 @@ class CanvasData(CanvasPart):
 
     def _load(self, dictionary):
         axisDict = {1: "BottomLeft", 2: "TopLeft", 3: "BottomRight", 4: "TopRight", "BottomLeft": "BottomLeft", "TopLeft": "TopLeft", "BottomRight": "BottomRight", "TopRight": "TopRight"}
-        self.Clear()
         if 'Datalist' in dictionary:
+            self.Clear()
             dic = dictionary['Datalist']
             i = 0
             while i in dic:

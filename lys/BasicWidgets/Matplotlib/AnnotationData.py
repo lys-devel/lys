@@ -5,7 +5,8 @@ class _MatplotlibLineAnnotation(LineAnnotation):
     def __init__(self, canvas, pos, axis):
         super().__init__(canvas, pos, axis)
         axes = canvas.getAxes(axis)
-        self._obj, = axes.plot((pos[0][0], pos[1][0]), (pos[0][1], pos[1][1]), picker=5)
+        self._obj, = axes.plot((pos[0][0], pos[1][0]), (pos[0][1], pos[1][1]))
+        self._obj.set_pickradius(5)
 
     def _setPosition(self, pos):
         self._obj.set_data((pos[0][0], pos[1][0]), (pos[0][1], pos[1][1]))
