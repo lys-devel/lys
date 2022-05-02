@@ -4,6 +4,7 @@ from lys.errors import NotImplementedWarning
 
 from .CanvasBase import saveCanvas
 from .AnnotationData import AnnotationData
+from .Font import FontInfo
 
 
 class TextAnnotation(AnnotationData):
@@ -77,6 +78,7 @@ class TextAnnotation(AnnotationData):
         """
         return self._pos
 
+    @saveCanvas
     def setTransform(self, transformation):
         """
         Set the transformation of the annotation.
@@ -88,7 +90,6 @@ class TextAnnotation(AnnotationData):
         Args:
             transformation('axes' or 'data'): The transformation.
         """
-        print("transform", transformation)
         self._setTransform(transformation)
         self._appearance['transform'] = transformation
 
@@ -101,11 +102,78 @@ class TextAnnotation(AnnotationData):
         """
         return self._appearance['transform']
 
+    @saveCanvas
+    def setFont(self, family, size=10, color="black"):
+        """
+        Set the font of the annotation.
+
+        Args:
+            family(str): The name of the font.
+            size(int): The size of the font.
+            color(str): The color of the font such as '#111111'.
+        """
+        if family not in FontInfo.fonts():
+            warnings.warn("Font [" + family + "] not found. Use default font.")
+            family = FontInfo.defaultFamily()
+        self._setFont(family, size, color)
+        self._appearance['font'] = {"family": family, "size": size, "color": color}
+
+    def getFont(self):
+        """
+        Get the font of the label.
+
+        Args:
+            axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
+
+        Return:
+            dict: The information of font. See :meth:`setFont`
+        """
+        return self._appearance['font']
+
+    @saveCanvas
+    def setBoxStyle(self, style):
+        """
+        Set the style of the bounding box.
+
+        Args:
+            style(str): 'none', 'square', 'circle', 'round', 'round4', 'larrow', 'rarrow', 'darrow', 'roundtooth', or 'sawtooth' 
+        """
+        self._setBoxStyle(style)
+        self._appearance['boxStyle'] = style
+
+    def getBoxStyle(self):
+        """
+        Get the style of the bounding box.
+
+        Return:
+            str: The style of the bounding box. See :meth:`setBoxStyle`
+        """
+        return self._appearance['boxStyle']
+
+    @saveCanvas
+    def setBoxColor(self, faceColor, edgeColor):
+        """
+        Set the color of the bounding box.
+
+        Args:
+            faceColor: The face color in the form of color string such as #111111
+            edgeColor: The edge color in the form of color string such as #111111
+        """
+        self._setBoxColor(faceColor, edgeColor)
+        self._appearance['boxFaceColor'] = faceColor
+        self._appearance['boxEdgeColor'] = edgeColor
+
+    def getBoxColor(self):
+        return self._appearance.get('boxFaceColor', 'white'), self._appearance.get('boxEdgeColor', 'black')
+
     def _loadAppearance(self, appearance):
         pos = self.getPosition()
-        print("load", appearance, pos)
         self.setTransform(appearance.get('transform', 'axes'))
         self.setPosition(pos)
+        font = appearance.get('font', {"family": FontInfo.defaultFamily(), "size": 10, "color": "black"})
+        self.setFont(**font)
+        self.setBoxStyle(appearance.get('boxStyle', 'none'))
+        self.setBoxColor(appearance.get('boxFaceColor', 'white'), appearance.get('boxEdgeColor', 'black'))
 
     def _initialize(self, text, axis):
         warnings.warn(str(type(self)) + " does not implement _initialize(text, axis) method.", NotImplementedWarning)
@@ -118,3 +186,9 @@ class TextAnnotation(AnnotationData):
 
     def _setTransform(self, transformation):
         warnings.warn(str(type(self)) + " does not implement _setTransformation(transformation) method.", NotImplementedWarning)
+
+    def _setFont(self, family, size, color):
+        warnings.warn(str(type(self)) + " does not implement _setFont(family, size, color) method.", NotImplementedWarning)
+
+    def _setBoxStyle(self, style):
+        warnings.warn(str(type(self)) + " does not implement _setBoxStyle(style) method.", NotImplementedWarning)

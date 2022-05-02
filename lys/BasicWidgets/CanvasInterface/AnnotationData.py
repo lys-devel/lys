@@ -29,6 +29,7 @@ class AnnotationData(CanvasPart):
         """
         return self._axis
 
+    @saveCanvas
     def setVisible(self, visible):
         """
         Set the visibility of the annotaion.
@@ -49,6 +50,7 @@ class AnnotationData(CanvasPart):
 
         return self._appearance['Visible']
 
+    @saveCanvas
     def setZOrder(self, z):
         """
         Set the z order of the annotaion.

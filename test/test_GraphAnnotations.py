@@ -3,6 +3,9 @@ import shutil
 import os
 import warnings
 
+import matplotlib as mpl
+import matplotlib.font_manager as fm
+
 from lys import glb, home, Graph, errors
 
 
@@ -16,7 +19,6 @@ class Graph_test(unittest.TestCase):
                 shutil.rmtree(home() + "/.lys")
             glb.createMainWindow(show=False, restore=True)
         self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
-        #self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
 
     def __lineStyles(self, obj):
         obj.setLineColor('#ff0000')
@@ -90,7 +92,7 @@ class Graph_test(unittest.TestCase):
             self.__lineStyles(cross)
 
     def test_TextAnnotation(self):
-        for g in [self.graphs[0]]:
+        for g in self.graphs:
             text = g.addText("test")
             self.assertEqual(text.getText(), "test")
 
@@ -106,9 +108,24 @@ class Graph_test(unittest.TestCase):
             text.setTransform("axes")
             self.assertTrue(text.getPosition() == (0, 0))
 
+            family = fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
+            text.setFont(family, 11, "#333333")
+            self.assertEqual(text.getFont(), {"family": family, "size": 11, "color": "#333333"})
+
+            text.setBoxStyle("square")
+            self.assertEqual(text.getBoxStyle(), "square")
+
+            text.setBoxColor("#111111", "#222222")
+            self.assertEqual(text.getBoxColor()[0], "#111111")
+            self.assertEqual(text.getBoxColor()[1], "#222222")
+
             d = g.SaveAsDictionary()
             g.LoadFromDictionary(d)
             text = g.getTextAnnotations()[0]
             self.assertEqual(text.getText(), "test1")
             self.assertTrue(text.getPosition() == (0, 0))
             self.assertEqual(text.getTransform(), "axes")
+            self.assertEqual(text.getFont(), {"family": family, "size": 11, "color": "#333333"})
+            self.assertEqual(text.getBoxStyle(), "square")
+            self.assertEqual(text.getBoxColor()[0], "#111111")
+            self.assertEqual(text.getBoxColor()[1], "#222222")

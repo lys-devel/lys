@@ -63,4 +63,6 @@ class CanvasContextMenu(CanvasPart):
         self.canvas().clearSelectedRange()
 
     def __addText(self):
-        print("test")
+        self.canvas().addText("text")
+        mod = self.canvas().openModifyWindow()
+        mod.selectTab("Annot.")

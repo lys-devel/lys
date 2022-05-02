@@ -1,8 +1,12 @@
+import warnings
 import pyqtgraph as pg
 import numpy as np
 from LysQt.QtCore import Qt, pyqtSignal, QRectF
-from LysQt.QtGui import QColor, QTransform
-from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation, FreeRegionAnnotation
+from LysQt.QtGui import QColor, QTransform, QFont, QColor
+
+from lys.errors import NotSupportedWarning
+
+from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation, FreeRegionAnnotation, TextAnnotation
 
 _styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
 
@@ -291,6 +295,96 @@ class _CrosshairItem(pg.GraphicsObject):
         self.sigRegionChangeFinished.emit(self)
 
 
+class _PyqtgraphTextAnnotation(TextAnnotation):
+    def _initialize(self, text, pos, axis):
+        self._axis = axis
+        self._xt, self._yt = "data", "data"
+        self._obj = pg.TextItem(text=text, anchor=(0, 1))
+        self.canvas().getAxes(axis).addItem(self._obj)
+        self.canvas().axisRangeChanged.connect(self._refresh)
+
+    def _refresh(self):
+        self.setPosition(self.getPosition())
+
+    def _setText(self, txt):
+        self._obj.setText(txt)
+
+    def __getRange(self):
+        if 'Left' in self._axis:
+            yr = self.canvas().getAxisRange('Left')
+        else:
+            yr = self.canvas().getAxisRange('Right')
+        if 'Bottom' in self._axis:
+            xr = self.canvas().getAxisRange('Bottom')
+        else:
+            xr = self.canvas().getAxisRange('Top')
+        return xr, yr
+
+    def __dataToAxes(self, x, y):
+        rx, ry = self.__getRange()
+        return (x - rx[0]) / (rx[1] - rx[0]), (y - ry[0]) / (ry[1] - ry[0])
+
+    def __axesToData(self, x, y):
+        rx, ry = self.__getRange()
+        return rx[0] + (rx[1] - rx[0]) * x, ry[0] + (ry[1] - ry[0]) * y
+
+    def _setPosition(self, pos):
+        if self._xt == "data":
+            x = pos[0]
+        elif self._xt == "axes":
+            x, _ = self.__axesToData(*pos)
+        if self._yt == "data":
+            y = pos[1]
+        elif self._yt == "axes":
+            _, y = self.__axesToData(*pos)
+        self._obj.setPos(x, y)
+
+    def _setTransform(self, transformation):
+        if isinstance(transformation, str):
+            xt = yt = transformation
+        else:
+            xt, yt = transformation
+        xo, yo = self.getPosition()
+        xd, yd = self.__axesToData(xo, yo)
+        xa, ya = self.__dataToAxes(xo, yo)
+        if self._xt != xt:
+            self._xt = xt
+            if xt == "data":
+                x_new = xd
+            else:
+                x_new = xa
+        else:
+            x_new = xo
+        if self._yt != yt:
+            self._yt = yt
+            if yt == "data":
+                y_new = yd
+            else:
+                y_new = ya
+        else:
+            y_new = yo
+        self.setPosition((x_new, y_new))
+
+    def _setFont(self, family, size, color):
+        self._obj.setColor(QColor(color))
+        self._obj.setFont(QFont(family, size))
+
+    def _setBoxStyle(self, style):
+        warnings.warn("pyqtGraph does not support bounding box of text.", NotSupportedWarning)
+
+    def _setBoxColor(self, faceColor, edgeColor):
+        warnings.warn("pyqtGraph does not support bounding box of text.", NotSupportedWarning)
+
+    def _setZOrder(self, z):
+        self._obj.setZValue(z)
+
+    def _setVisible(self, visible):
+        self._obj.setVisible(visible)
+
+    def remove(self):
+        self._obj.remove()
+
+
 class _PyqtgraphAnnotation(CanvasAnnotation):
     """Implementation of CanvasAnnotation for pyqtgraph"""
 
@@ -312,116 +406,14 @@ class _PyqtgraphAnnotation(CanvasAnnotation):
     def _addCrossAnnotation(self, *args, **kwargs):
         return _PyqtgraphCrossAnnotation(self.canvas(), *args, **kwargs)
 
+    def _addTextAnnotation(self, *args, **kwargs):
+        return _PyqtgraphTextAnnotation(self.canvas(), *args, **kwargs)
+
 
 """
 
 
-class TextAnnotationCanvas(AnnotatableCanvas, TextAnnotationCanvasBase):
-    def __init__(self, dpi):
-        super().__init__(dpi)
-        TextAnnotationCanvasBase.__init__(self)
-
-    def _makeObject(self, text, axis, appearance, id, x, y, box, size, picker):
-        return pg.TextItem(text=text)
-
-    def _setText(self, obj, txt):
-        obj.setText(txt)
-
-    def _getText(self, obj):
-        return obj.textItem.toPlainText()
-
-    def SaveAsDictionary(self, dictionary, path):
-        AnnotatableCanvas.SaveAsDictionary(self, dictionary, path)
-        TextAnnotationCanvasBase.SaveAsDictionary(self, dictionary, path)
-
-    def LoadFromDictionary(self, dictionary, path):
-        TextAnnotationCanvasBase.LoadFromDictionary(self, dictionary, path)
-        super().LoadFromDictionary(dictionary, path)
-
-
-class AnnotationEditableCanvas(TextAnnotationCanvas):
-    def __init__(self, dpi):
-        super().__init__(dpi)
-        self.fontChanged.connect(self.__onFontChanged)
-
-    def loadAnnotAppearance(self):
-        super().loadAnnotAppearance()
-        data = self.getAnnotations('text')
-        for d in data:
-            if 'Font' in d.appearance:
-                self._setFont(d, FontInfo.FromDict(d.appearance['Font']))
-
-    def __onFontChanged(self, name):
-        list = self.getAnnotations('text')
-        for l in list:
-            if 'Font_def' in l.appearance:
-                if l.appearance['Font_def'] is not None and name in [l.appearance['Font_def'], 'Default']:
-                    f = self.getCanvasFont(name)
-                    l.obj.set_family(f.family)
-                    l.obj.set_size(f.size)
-                    l.obj.set_color(f.color)
-        self.draw()
-
-    def _setFont(self, annot, font):
-        if not isinstance(font, FontInfo):
-            f = self.getCanvasFont(font)
-        else:
-            f = font
-        annot.obj.set_family(f.family)
-        annot.obj.set_size(f.size)
-        annot.obj.set_color(f.color)
-        annot.appearance['Font'] = f.ToDict()
-
-    @saveCanvas
-    def setAnnotationFont(self, indexes, font='Default', default=False):
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            self._setFont(l, font)
-            if default and not isinstance(font, FontInfo):
-                l.appearance['Font_def'] = font
-            else:
-                l.appearance['Font_def'] = None
-
-    def getAnnotationFontDefault(self, indexes):
-        res = []
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            if 'Font_def' in l.appearance:
-                if l.appearance['Font_def'] is not None:
-                    res.append(True)
-                else:
-                    res.append(False)
-            else:
-                res.append(False)
-        return res
-
-    def getAnnotationFont(self, indexes):
-        res = []
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            res.append(FontInfo(l.obj.get_family()[0], l.obj.get_size(), l.obj.get_color()))
-        return res
-
-
 class AnnotationMovableCanvas(AnnotationEditableCanvas):
-    def saveAnnotAppearance(self):
-        super().saveAnnotAppearance()
-        data = self.getAnnotations('text')
-        for d in data:
-            t = d.obj.get_transform()
-            if t == d.obj.axes.transData:
-                d.appearance['PositionMode'] = 'Relative'
-            else:
-                d.appearance['PositionMode'] = 'Absolute'
-            d.appearance['Position'] = d.obj.get_position()
-
-    def loadAnnotAppearance(self):
-        super().loadAnnotAppearance()
-        data = self.getAnnotations('text')
-        for d in data:
-            if 'PositionMode' in d.appearance:
-                self.setAnnotPositionMode([d.id], d.appearance['PositionMode'])
-                self.setAnnotPosition([d.id], d.appearance['Position'])
 
     @saveCanvas
     def setAnnotPosition(self, indexes, xy):
@@ -439,51 +431,10 @@ class AnnotationMovableCanvas(AnnotationEditableCanvas):
 
     @saveCanvas
     def setAnnotPositionMode(self, indexes, mode):
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            old_p = l.obj.get_position()
-            old_t = l.obj.get_transform()
-            ax = l.obj.axes
-            ylim = ax.get_ylim()
-            xlim = ax.get_xlim()
-            if mode == 'Absolute':
-                l.obj.set_transform(self.axes.transAxes)
-                if old_t == self.axes.transData:
-                    l.obj.set_position(((old_p[0] - xlim[0]) / (xlim[1] - xlim[0]), (old_p[1] - ylim[0]) / (ylim[1] - ylim[0])))
-            elif mode == 'Relative':
-                l.obj.set_transform(self.axes.transData)
-                if old_t == self.axes.transAxes:
-                    l.obj.set_position((xlim[0] + old_p[0] * (xlim[1] - xlim[0]), ylim[0] + old_p[1] * (ylim[1] - ylim[0])))
 
-    def getAnnotPositionMode(self, indexes):
-        res = []
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            t = l.obj.get_transform()
-            if t == self.axes.transAxes:
-                res.append('Absolute')
-            else:
-                res.append('Relative')
-        return res
 
 
 class AnnotationBoxAdjustableCanvas(AnnotationMovableCanvas):
-    def saveAnnotAppearance(self):
-        super().saveAnnotAppearance()
-        data = self.getAnnotations('text')
-        for d in data:
-            d.appearance['BoxStyle'] = self.getAnnotBoxStyle([d.id])[0]
-            d.appearance['BoxFaceColor'] = self.getAnnotBoxColor([d.id])[0]
-            d.appearance['BoxEdgeColor'] = self.getAnnotBoxEdgeColor([d.id])[0]
-
-    def loadAnnotAppearance(self):
-        super().loadAnnotAppearance()
-        data = self.getAnnotations('text')
-        for d in data:
-            if 'BoxStyle' in d.appearance:
-                self.setAnnotBoxStyle([d.id], d.appearance['BoxStyle'])
-                self.setAnnotBoxColor([d.id], d.appearance['BoxFaceColor'])
-                self.setAnnotBoxEdgeColor([d.id], d.appearance['BoxEdgeColor'])
 
     @saveCanvas
     def setAnnotBoxStyle(self, indexes, style):

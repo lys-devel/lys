@@ -8,12 +8,10 @@ class CanvasUtilities(CanvasPart):
     Extra canvas utilities.
     """
 
-    def openModifyWindow(self, tab='Axis'):
+    def openModifyWindow(self):
         from lys import ModifyWindow, Graph
         parent = self._getParent()
         mod = ModifyWindow(self.canvas(), parent, showArea=isinstance(parent, Graph))
-        if isinstance(tab, str):
-            mod.selectTab(tab)
         return mod
 
     def _getParent(self):

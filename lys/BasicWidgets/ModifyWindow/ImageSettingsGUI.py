@@ -1,4 +1,4 @@
-from LysQt.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QWidget, QComboBox, QGroupBox, QGridLayout, QDoubleSpinBox
+from LysQt.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QWidget, QComboBox, QGridLayout, QDoubleSpinBox
 
 from lys.widgets import ScientificSpinBox, ColormapSelection, ColorSelection
 

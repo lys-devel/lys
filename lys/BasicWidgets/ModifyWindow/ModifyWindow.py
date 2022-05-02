@@ -26,23 +26,16 @@ class ModifyWindow(LysSubWindow):
         if ModifyWindow.instance is not None:
             if ModifyWindow.instance() is not None:
                 ModifyWindow.instance().close()
-        self._initlayout(canvas, parent, showArea)
-        self.adjustSize()
-        self.updateGeometry()
-        self.show()
-        self.canvas = canvas
-        self._parent = parent
+        self._initlayout(canvas, showArea)
         self.attach(parent)
         self.attachTo()
         ModifyWindow.instance = weakref.ref(self)
 
-    def _initlayout(self, canvas, win, showArea):
-        self.__list = []
+    def _initlayout(self, canvas, showArea):
         self.setWindowTitle("Modify Window")
         self._tab = QTabWidget()
         if showArea:
             self._tab.addTab(_AreaTab(canvas), "Area")
-            self.__list.append('Area')
         self._tab.addTab(_AxisTab(canvas), "Axis")
         if len(canvas.getLines()) != 0:
             self._tab.addTab(_LineTab(canvas), "Lines")
@@ -54,14 +47,14 @@ class ModifyWindow(LysSubWindow):
             self._tab.addTab(_VectorTab(canvas), "Vector")
         self._tab.addTab(_AnnotationTab(canvas), "Annot.")
         self._tab.addTab(_OtherTab(canvas), 'Other')
-        self.__list.append('Axis')
-        self.__list.append('Lines')
-        self.__list.append('Images')
-        self.__list.append('Annot.')
         self.setWidget(self._tab)
+        self.adjustSize()
+        self.updateGeometry()
+        self.show()
 
     def selectTab(self, tab):
-        self._tab.setCurrentIndex(self.__list.index(tab))
+        list = [self._tab.tabText(i) for i in range(self._tab.count())]
+        self._tab.setCurrentIndex(list.index(tab))
 
 
 class _AreaTab(QWidget):
@@ -74,8 +67,8 @@ class _AreaTab(QWidget):
         self._size = ResizeBox(canvas)
         self._margin = MarginAdjustBox(canvas)
 
-        sav = QPushButton('Save', clicked=self._save)
-        lod = QPushButton('Load', clicked=self._load)
+        sav = QPushButton('Copy settings', clicked=self._save)
+        lod = QPushButton('Paste settings', clicked=self._load)
         hbox = QHBoxLayout()
         hbox.addWidget(sav)
         hbox.addWidget(lod)
@@ -128,8 +121,8 @@ class _AxisTab(QWidget):
         tab.addTab(font, 'Font')
 
         hbox = QHBoxLayout()
-        hbox.addWidget(QPushButton('Save', clicked=self._save))
-        hbox.addWidget(QPushButton('Load', clicked=self._load))
+        hbox.addWidget(QPushButton('Copy setttings', clicked=self._save))
+        hbox.addWidget(QPushButton('Paste settings', clicked=self._load))
 
         layout = QVBoxLayout(self)
         layout.addLayout(h1)
@@ -257,7 +250,8 @@ class _AnnotationTab(QWidget):
     def _initlayout(self, canvas):
         layout = QVBoxLayout(self)
         tab = QTabWidget()
-        tab.addTab(AnnotationBox(canvas), 'Text')
+        if len(canvas.getTextAnnotations()) != 0:
+            tab.addTab(AnnotationBox(canvas), 'Text')
         if len(canvas.getLineAnnotations()) != 0:
             tab.addTab(LineAnnotationBox(canvas), 'Line')
         if len(canvas.getRectAnnotations()) != 0:

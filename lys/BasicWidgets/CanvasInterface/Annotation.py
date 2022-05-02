@@ -468,6 +468,7 @@ class CanvasAnnotation(CanvasPart):
         if type == "cross":
             return self.getCrossAnnotations()
 
+    @saveCanvas
     def removeAnnotation(self, annot):
         """
         Remove annotation from the canvas.
@@ -497,7 +498,7 @@ class CanvasAnnotation(CanvasPart):
     def _addCrossAnnotation(self, pos, axis):
         warnings.warn(str(type(self)) + " does not implement _addCrossAnnotation(pos, axis) method.", NotImplementedWarning)
 
-    def _addTextAnnotation(self, text, axis):
+    def _addTextAnnotation(self, text, pos, axis):
         warnings.warn(str(type(self)) + " does not implement _addTextAnnotation(text, pos, axis) method.", NotImplementedWarning)
 
     def _removeAnnotation(self, obj):
