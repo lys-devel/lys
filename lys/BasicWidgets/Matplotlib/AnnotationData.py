@@ -26,6 +26,9 @@ class _MatplotlibLineAnnotation(LineAnnotation):
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
 
+    def remove(self):
+        self._obj.remove()
+
 
 class _MatplotlibTextAnnotation(TextAnnotation):
     def _initialize(self, text, pos, axis):
@@ -101,13 +104,3 @@ class _MatplotlibAnnotation(CanvasAnnotation):
 
     def _removeAnnotation(self, obj):
         obj.remove()
-
-
-"""
-
-
-
-
-
-
-"""

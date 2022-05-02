@@ -42,8 +42,9 @@ class LineAnnotation(AnnotationWithLine):
         Args:
             pos(2*2 sequence): The position of the line in the form of [(x0,y0),(x1,y1)].
         """
-        if tuple(pos) != self._pos:
-            self._pos = tuple(pos)
+        pos = tuple((tuple(pos[0]), tuple(pos[1])))
+        if pos != self._pos:
+            self._pos = pos
             self._setPosition(pos)
             self.positionChanged.emit(tuple(self._pos))
 

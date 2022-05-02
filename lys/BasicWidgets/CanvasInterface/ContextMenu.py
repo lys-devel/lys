@@ -1,5 +1,5 @@
 from LysQt.QtCore import Qt
-from LysQt.QtWidgets import QMenu, QAction
+from LysQt.QtWidgets import QMenu, QAction, QActionGroup
 from LysQt.QtGui import QCursor
 
 from .CanvasBase import CanvasPart, saveCanvas
@@ -8,6 +8,11 @@ from .CanvasBase import CanvasPart, saveCanvas
 class CanvasContextMenu(CanvasPart):
     def __init__(self, canvas):
         super().__init__(canvas)
+        self.__ag = QActionGroup(self)
+        self._sel = QAction('Select Range', self, checkable=True, checked=True)
+        self._line = QAction('Draw Line', self, checked=False, checkable=True)
+        self._rect = QAction('Draw Rectangle', self, checked=False, checkable=True)
+        self.__ag.triggered.connect(lambda x: x.setChecked(True))
         canvas.setContextMenuPolicy(Qt.CustomContextMenu)
         canvas.customContextMenuRequested.connect(self._constructContextMenu)
 
@@ -24,12 +29,21 @@ class CanvasContextMenu(CanvasPart):
             m.addAction(QAction('Vertical Shrink', self, triggered=lambda: self.__exec('Vertical Shrink')))
 
         m = menu.addMenu('Tools')
-        m.addAction(QAction('Select Range', self))
+        m.addAction(self.__ag.addAction(self._sel))
         m.addSeparator()
-        m.addAction(QAction('Draw Line', self))
-        m.addAction(QAction('Draw Rectangle', self))
+        m.addAction(self.__ag.addAction(self._line))
+        m.addAction(self.__ag.addAction(self._rect))
+
         menu.addAction(QAction('Add Text', self, triggered=self.__addText))
         menu.exec_(QCursor.pos())
+
+    def toolState(self):
+        if self._sel.isChecked():
+            return "Select"
+        elif self._line.isChecked():
+            return "Line"
+        elif self._rect.isChecked():
+            return "Rect"
 
     @saveCanvas
     def __exec(self, text):

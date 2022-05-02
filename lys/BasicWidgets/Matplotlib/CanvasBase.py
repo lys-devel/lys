@@ -174,38 +174,6 @@ class ExtendCanvas(CanvasBase, FigureCanvas):
 
 
 """
-    def OnMouseDown(self, event):
-        if self._getMode() == "line":
-            if event.button == 1:
-                self.__drawflg = True
-                #self.__saved = self.copy_from_bbox(self.axes.bbox)
-                ax = self.__GlobalToAxis(event.x, event.y, self.axes)
-                self._pos_start = ax
-                self.__line, = self.axes.plot([ax[0]], [ax[1]])
-        else:
-            return super().OnMouseDown(event)
-
-    def OnMouseUp(self, event):
-        if self._getMode() == "line":
-            if self.__drawflg == True and event.button == 1:
-                ax = self.__GlobalToAxis(event.x, event.y, self.axes)
-                if not self._pos_start == ax:
-                    self.addLine((self._pos_start, ax))
-                self.__line.set_data([], [])
-                self.draw()
-                self.__drawflg = False
-        else:
-            return super().OnMouseUp(event)
-
-    def OnMouseMove(self, event):
-        if self._getMode() == "line":
-            if self.__drawflg == True:
-                ax = self.__GlobalToAxis(event.x, event.y, self.axes)
-                self.__line.set_data([self._pos_start[0], ax[0]], [self._pos_start[1], ax[1]])
-                self.draw()
-        else:
-            return super().OnMouseMove(event)
-
 
 class PicableCanvas(FigureCanvasBase):
     def __init__(self, dpi=100):
@@ -268,17 +236,6 @@ class ExtendCanvas(FigureCanvasBase):
             self.moveText = False
         return super().OnMouseUp(event)
 
-    def OnMouseMove(self, event):
-        if self.moveText == True:
-            mode = self.getAnnotPositionMode(self.annotindex)[0]
-            if mode == 'Absolute':
-                d = self.__GlobalToRatio(event.x, event.y, self.axes)
-            elif mode == 'Relative':
-                d = self.__GlobalToAxis(event.x, event.y, self.axes)
-            self.setAnnotPosition(self.annotindex, (self.textPosStart[0] + d[0] - self.cursorPosStart[0], self.textPosStart[1] + d[1] - self.cursorPosStart[1]))
-            self.draw()
-        else:
-            return super().OnMouseMove(event)
 
     def OnMouseDown(self, event):
         if event.dblclick:
@@ -305,22 +262,6 @@ class ExtendCanvas(FigureCanvasBase):
                 self.modf()(self, 'Images')
                 w = self.getWaveDataFromArtist(image)
                 self.setSelectedIndexes(2, w.id)
-                return super().OnMouseDown(event)
-        elif event.button == 1:
-            self.clicked.emit(*self.__GlobalToAxis(event.x, event.y, self.getAxes("BottomLeft")))
-            return super().OnMouseDown(event)
-            self.annot = self.getPickedAnnotation()
-            if self.annot is not None:
-                self.annotindex = self.annot.get_zorder()
-                self.moveText = True
-                mode = self.getAnnotPositionMode(self.annotindex)[0]
-                if mode == 'Absolute':
-                    self.cursorPosStart = self.__GlobalToRatio(event.x, event.y, self.axes)
-                elif mode == 'Relative':
-                    self.cursorPosStart = self.__GlobalToAxis(event.x, event.y, self.axes)
-                self.textPosStart = self.getAnnotPosition(self.annotindex)[0]
-                return
-            else:
                 return super().OnMouseDown(event)
         else:
             return super().OnMouseDown(event)

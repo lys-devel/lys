@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QTreeView, QAbstractItemView, QLabel, QVBoxLayout, Q
 from .FontGUI import FontSelector
 
 from lys.widgets import ColorSelection, ScientificSpinBox
+from lys.decorators import avoidCircularReference
 
 
 class _Model(QStandardItemModel):
@@ -133,19 +134,6 @@ class AnnotationSelectionBox(QTreeView):
                 data.setVisible(False)
             elif action.text() == 'remove':
                 self.canvas.removeAnnotation(data)
-
-
-def avoidCircularReference(func, name="_avoidCircularFlg"):
-    def wrapper(self, *args, **kwargs):
-        if not hasattr(self, name):
-            setattr(self, name, False)
-        if getattr(self, name) is True:
-            return
-        else:
-            setattr(self, name, True)
-            func(self, *args, **kwargs)
-            setattr(self, name, False)
-    return wrapper
 
 
 class _AnnotationEditBox(QWidget):

@@ -1,7 +1,7 @@
 import time
 
 from LysQt.QtGui import QKeyEvent, QMouseEvent
-from LysQt.QtCore import pyqtSignal, Qt
+from LysQt.QtCore import pyqtSignal, Qt, QObject
 from .CanvasBase import CanvasPart, saveCanvas
 
 
@@ -52,30 +52,14 @@ class CanvasMouseEvent(CanvasPart):
 
     def __init__(self, canvas):
         super().__init__(canvas)
-        self.mousePressed.connect(self._mousePressed)
         self.mouseReleased.connect(self._mouseReleased)
-        self.mouseMoved.connect(self._mouseMoved)
         self.doubleClicked.connect(canvas.openModifyWindow)
-        self.__select_rect = False
         self._clicktime = 0
 
-    @saveCanvas
-    def _mousePressed(self, e):
-        if e.button() == Qt.LeftButton:
-            self.__start = self.mapPosition(e, "BottomLeft")
-            self.canvas().setSelectedRange([self.__start, self.__start])
-            self.__select_rect = True
+        self._select = _RegionSelector(self, canvas)
+        self._line = _LineDrawer(self, canvas)
 
-    @saveCanvas
-    def _mouseMoved(self, e):
-        if self.__select_rect:
-            end = self.mapPosition(e, "BottomLeft")
-            self.canvas().setSelectedRange([self.__start, end])
-
-    @saveCanvas
     def _mouseReleased(self, e):
-        if self.__select_rect and e.button() == Qt.LeftButton:
-            self.__select_rect = False
         self.clicked.emit(e)
         if time.time() - self._clicktime < 0.3:
             self.doubleClicked.emit(e)
@@ -90,3 +74,59 @@ class CanvasMouseEvent(CanvasPart):
             axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis by which the position is translated.
         """
         raise NotImplementedError(str(type(self)) + " does not implement mapPosition(event, axis) method.")
+
+
+class _RegionSelector(QObject):
+    def __init__(self, parent, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self.__select_rect = False
+        parent.mousePressed.connect(self._mousePressed)
+        parent.mouseReleased.connect(self._mouseReleased)
+        parent.mouseMoved.connect(self._mouseMoved)
+
+    def _mousePressed(self, e):
+        if e.button() == Qt.LeftButton:
+            self.__start = self.canvas.mapPosition(e, "BottomLeft")
+            self.canvas.setSelectedRange([self.__start, self.__start])
+            if self.canvas.toolState() == "Select":
+                self.__select_rect = True
+
+    def _mouseMoved(self, e):
+        if self.__select_rect:
+            end = self.canvas.mapPosition(e, "BottomLeft")
+            self.canvas.setSelectedRange([self.__start, end])
+
+    def _mouseReleased(self, e):
+        if self.__select_rect and e.button() == Qt.LeftButton:
+            self.__select_rect = False
+
+
+class _LineDrawer(QObject):
+    def __init__(self, parent, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self._line = None
+        self._busy = False
+        parent.mousePressed.connect(self._mousePressed)
+        parent.mouseReleased.connect(self._mouseReleased)
+        parent.mouseMoved.connect(self._mouseMoved)
+
+    def _mousePressed(self, e):
+        if e.button() == Qt.LeftButton:
+            self.__start = self.canvas.mapPosition(e, "BottomLeft")
+            if self.canvas.toolState() == "Line":
+                self._busy = True
+
+    def _mouseMoved(self, e):
+        if self._busy:
+            end = self.canvas.mapPosition(e, "BottomLeft")
+            if self._line is None:
+                self._line = self.canvas.addLineAnnotation([self.__start, end])
+            else:
+                self._line.setPosition([self.__start, end])
+
+    def _mouseReleased(self, e):
+        if self._busy and e.button() == Qt.LeftButton:
+            self._busy = False
+            self._line = None

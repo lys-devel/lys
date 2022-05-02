@@ -123,7 +123,7 @@ class AnimationTab(QGroupBox):
     def __prepareOptionalParams(self):
         params = {}
         if self.__useTime.isChecked():
-            params['time'] = {"unit": self.__timeunit.text(), "offset": self.__timeoffset.value(), "obj": None}
+            params['time'] = {"unit": self.__timeunit.text(), "offset": self.__timeoffset.value()}
         if self.__useFunc.isChecked():
             params['gfunc'] = self.__funcName.text()
         return params
@@ -157,10 +157,11 @@ def _frame(i, c, axis, params, exe):
         f(c, i, axis)
 
 
-def _drawTime(c, data=None, obj=None, unit="", offset=0):
+def _drawTime(c, data=None, unit="", offset=0):
     t = '{:.10g}'.format(round(data + float(offset), 1)) + " " + unit
-    print(t)
-    if obj is None:
-        obj = c.addText(t, pos=(0.1, 0.1))
+    ta = c.getTextAnnotations()
+    if len(ta) == 0:
+        t = c.addText(t, pos=(0.1, 0.1))
+        t.setBoxStyle("square")
     else:
-        obj.setText(t)
+        ta[0].setText(t)

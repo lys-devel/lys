@@ -18,7 +18,8 @@ class _PyqtgraphLineAnnotation(LineAnnotation):
         self._obj = pg.LineSegmentROI(pos)
         self._obj.setPen(pg.mkPen(color='#000000'))
         self._obj.sigRegionChanged.connect(lambda obj: self.setPosition([[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[1] + obj.listPoints()[0][1]], [obj.pos()[0] + obj.listPoints()[1][0], obj.pos()[1] + obj.listPoints()[1][1]]]))
-        self.canvas().getAxes(axis).addItem(self._obj)
+        self._axes = self.canvas().getAxes(axis)
+        self._axes.addItem(self._obj)
 
     def _setPosition(self, pos):
         self._obj.setPos(0, 0)
@@ -39,6 +40,9 @@ class _PyqtgraphLineAnnotation(LineAnnotation):
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
+
+    def remove(self):
+        self._axes.removeItem(self._obj)
 
 
 class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
@@ -382,7 +386,7 @@ class _PyqtgraphTextAnnotation(TextAnnotation):
         self._obj.setVisible(visible)
 
     def remove(self):
-        self._obj.remove()
+        self.canvas().getAxes(self._axis).removeItem(self._obj)
 
 
 class _PyqtgraphAnnotation(CanvasAnnotation):
@@ -408,6 +412,9 @@ class _PyqtgraphAnnotation(CanvasAnnotation):
 
     def _addTextAnnotation(self, *args, **kwargs):
         return _PyqtgraphTextAnnotation(self.canvas(), *args, **kwargs)
+
+    def _removeAnnotation(self, obj):
+        obj.remove()
 
 
 """

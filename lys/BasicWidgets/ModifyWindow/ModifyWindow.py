@@ -1,18 +1,21 @@
 import os
 import weakref
 from LysQt.QtWidgets import QWidget, QCheckBox, QTabWidget, QHBoxLayout, QVBoxLayout, QPushButton, QFileDialog
+from LysQt.QtCore import Qt
 
 from lys.widgets import LysSubWindow
-from .LineSettingsGUI import *
-from .ImageSettingsGUI import *
-from .AxisSettingsGUI import AxisSelectionWidget, AxisAndTickBox
+
 from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
-from .FontGUI import *
+from .LineSettingsGUI import AppearanceBox
+from .ImageSettingsGUI import ImageColorAdjustBox, RGBColorAdjustBox, VectorAdjustBox
+
+from .AxisSettingsGUI import AxisSelectionWidget, AxisAndTickBox
 from .AxisLabelSettingsGUI import AxisAndTickLabelBox, AxisFontBox
 from .AreaSettingsGUI import MarginAdjustBox, ResizeBox
-from .AnnotationGUI import *
-from .LineAnnotationGUI import *
-from .InfoGUI import *
+
+from .AnnotationGUI import AnnotationBox
+from .LineAnnotationGUI import LineAnnotationBox, RectAnnotationBox
+from .InfoGUI import RegionInfoBox
 
 # temporary dictionary to save canvas settings
 _saveDict = {}
@@ -263,7 +266,7 @@ class _AnnotationTab(QWidget):
         self.setLayout(layout)
 
     def test(self):
-        a = self.canvas.axes.legend()
+        self.canvas.axes.legend()
         self.canvas.draw()
 
 
