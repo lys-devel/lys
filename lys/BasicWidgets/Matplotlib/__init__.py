@@ -1,1 +1,1 @@
-from .ExtendCanvas import ExtendCanvas
+from .CanvasBase import ExtendCanvas

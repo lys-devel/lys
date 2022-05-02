@@ -63,7 +63,7 @@ class CanvasAnnotation(CanvasPart):
         return obj
 
     @saveCanvas
-    def addLineAnnotation(self, pos="auto", axis="BottomLeft", appearance={}):
+    def addLineAnnotation(self, pos="auto", axis="BottomLeft", **appearance):
         """
         Add line annotation.
 
@@ -116,11 +116,11 @@ class CanvasAnnotation(CanvasPart):
                 p = (p0, p1)
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
-                self.addLineAnnotation(p, axis, appearance=appearance)
+                self.addLineAnnotation(p, axis, **appearance)
                 i += 1
 
     @saveCanvas
-    def addInfiniteLineAnnotation(self, pos=None, orientation='vertical', axis="BottomLeft", appearance={}):
+    def addInfiniteLineAnnotation(self, pos=None, orientation='vertical', axis="BottomLeft", **appearance):
         """
         Add infinite line annotation.
 
@@ -171,11 +171,11 @@ class CanvasAnnotation(CanvasPart):
                 t = dic[i]['Type']
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
-                self.addInfiniteLineAnnotation(p, t, axis, appearance=appearance)
+                self.addInfiniteLineAnnotation(p, t, axis, **appearance)
                 i += 1
 
     @saveCanvas
-    def addRectAnnotation(self, pos='auto', size='auto', axis="BottomLeft", appearance={}):
+    def addRectAnnotation(self, pos='auto', size='auto', axis="BottomLeft", **appearance):
         """
         Add rectangle annotation.
 
@@ -225,11 +225,11 @@ class CanvasAnnotation(CanvasPart):
                 s = dic[i]['Size']
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
-                self.addRectAnnotation(p, s, axis, appearance=appearance)
+                self.addRectAnnotation(p, s, axis, **appearance)
                 i += 1
 
     @saveCanvas
-    def addRegionAnnotation(self, region=None, orientation='vertical', axis="BottomLeft", appearance={}):
+    def addRegionAnnotation(self, region=None, orientation='vertical', axis="BottomLeft", **appearance):
         """
         Add region annotation.
 
@@ -279,11 +279,11 @@ class CanvasAnnotation(CanvasPart):
                 t = dic[i]['Type']
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
-                self.addRegionAnnotation(p, t, axis, appearance=appearance)
+                self.addRegionAnnotation(p, t, axis, **appearance)
                 i += 1
 
     @saveCanvas
-    def addCrossAnnotation(self, pos='auto', axis="BottomLeft", appearance={}):
+    def addCrossAnnotation(self, pos='auto', axis="BottomLeft", **appearance):
         """
         Add cross annotation.
 
@@ -328,11 +328,11 @@ class CanvasAnnotation(CanvasPart):
                 p = dic[i]['Position']
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
-                self.addCrossAnnotation(p, axis, appearance=appearance)
+                self.addCrossAnnotation(p, axis, **appearance)
                 i += 1
 
     @saveCanvas
-    def addFreeRegionAnnotation(self, region="auto", width='auto', axis="BottomLeft", appearance={}):
+    def addFreeRegionAnnotation(self, region="auto", width='auto', axis="BottomLeft", **appearance):
         """
         Add free region annotation.
 
@@ -390,11 +390,11 @@ class CanvasAnnotation(CanvasPart):
                 w = dic[i]['Width']
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
-                self.addFreeRegionAnnotation(p, w, axis, appearance=appearance)
+                self.addFreeRegionAnnotation(p, w, axis, **appearance)
                 i += 1
 
     @saveCanvas
-    def addText(self, text, pos='auto', axis="BottomLeft", appearance={}):
+    def addText(self, text, pos='auto', axis="BottomLeft", **appearance):
         """
         Add text annotation.
 
@@ -408,9 +408,7 @@ class CanvasAnnotation(CanvasPart):
             TextAnnotation: The annotation added.
         """
         if pos == 'auto':
-            rb = self.__getRange('x', axis)
-            rl = self.__getRange('y', axis)
-            pos = (np.min(rb) + (np.max(rb) - np.min(rb)) / 2, np.min(rl) + (np.max(rl) - np.min(rl)) / 2)
+            pos = (0.5, 0.5)
         obj = self._addTextAnnotation(text, pos, axis)
         return self.__addObject(obj, appearance)
 
@@ -442,7 +440,7 @@ class CanvasAnnotation(CanvasPart):
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
                 pos = dic[i].get('Position', 'auto')
-                self.addText(t, pos, axis=axis, appearance=appearance)
+                self.addText(t, pos, axis=axis, **appearance)
                 i += 1
 
     def getAnnotations(self, type="all"):

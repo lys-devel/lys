@@ -3,7 +3,6 @@ import weakref
 from LysQt.QtWidgets import QWidget, QCheckBox, QTabWidget, QHBoxLayout, QVBoxLayout, QPushButton, QFileDialog
 
 from lys.widgets import LysSubWindow
-from lys.BasicWidgets.Matplotlib.ExtendCanvas import *
 from .LineSettingsGUI import *
 from .ImageSettingsGUI import *
 from .AxisSettingsGUI import AxisSelectionWidget, AxisAndTickBox

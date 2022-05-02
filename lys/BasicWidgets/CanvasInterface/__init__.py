@@ -7,3 +7,4 @@ from .Annotation import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation
 from .ContextMenu import CanvasContextMenu
 from .Events import CanvasKeyboardEvent, CanvasMouseEvent
 from .CanvasBase import CanvasBase, saveCanvas
+from .Other import CanvasUtilities

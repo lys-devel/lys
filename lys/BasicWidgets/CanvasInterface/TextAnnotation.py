@@ -15,6 +15,7 @@ class TextAnnotation(AnnotationData):
     Args:
         canvas(Canvas): canvas to which the text annotation is added.
         text(str): The text of the annotation.
+        pos(length 2 sequence): The psition of the annotation in the form of (x,y).
         axis('BottomLeft', 'BottomRight', 'TopLeft', or 'TopRight'): The axis to which the text annotation is added.
 
     Example::
@@ -65,19 +66,46 @@ class TextAnnotation(AnnotationData):
             pos(length 2 sequence): The position of the annotation.
         """
         self._setPosition(pos)
-        self._pos = pos
+        self._pos = tuple(pos)
 
     def getPosition(self):
         """
         Get the position of the annotation.
 
-        Args:
+        Return:
             length 2 sequence: The position of the annotation.
         """
         return self._pos
 
+    def setTransform(self, transformation):
+        """
+        Set the transformation of the annotation.
+
+        When the *transformation* is 'axes', the annotation is fixed in the canvas.
+
+        When the *transformation* is 'data', the position of the annotation is changed when the view range of the canvas is changed. 
+
+        Args:
+            transformation('axes' or 'data'): The transformation.
+        """
+        print("transform", transformation)
+        self._setTransform(transformation)
+        self._appearance['transform'] = transformation
+
+    def getTransform(self):
+        """
+        Get the transformation of the annotation.
+
+        Return:
+            str: The transformation string.
+        """
+        return self._appearance['transform']
+
     def _loadAppearance(self, appearance):
-        pass
+        pos = self.getPosition()
+        print("load", appearance, pos)
+        self.setTransform(appearance.get('transform', 'axes'))
+        self.setPosition(pos)
 
     def _initialize(self, text, axis):
         warnings.warn(str(type(self)) + " does not implement _initialize(text, axis) method.", NotImplementedWarning)
@@ -87,3 +115,6 @@ class TextAnnotation(AnnotationData):
 
     def _setPosition(self, pos):
         warnings.warn(str(type(self)) + " does not implement _setPosition(pos) method.", NotImplementedWarning)
+
+    def _setTransform(self, transformation):
+        warnings.warn(str(type(self)) + " does not implement _setTransformation(transformation) method.", NotImplementedWarning)

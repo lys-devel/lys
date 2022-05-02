@@ -6,7 +6,7 @@ from LysQt.QtCore import QMimeData, Qt
 from LysQt.QtWidgets import QApplication
 from LysQt.QtGui import QImage
 
-from ..CanvasInterface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent
+from ..CanvasInterface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent, CanvasUtilities
 from .AxisSettings import _MatplotlibAxes, _MatplotlibTicks
 from .AxisLabelSettings import _MatplotlibAxisLabel, _MatplotlibTickLabel
 from .AreaSettings import _MatplotlibMargin, _MatplotlibCanvasSize
@@ -34,7 +34,7 @@ class _MatplotlibMouseEvent(CanvasMouseEvent):
         return self.__GlobalToAxis(pos.x(), pos.y(), ax)
 
 
-class FigureCanvasBase(CanvasBase, FigureCanvas):
+class ExtendCanvas(CanvasBase, FigureCanvas):
     def __init__(self, dpi=100):
         CanvasBase.__init__(self)
         FigureCanvas.__init__(self, Figure(dpi=dpi))
@@ -54,6 +54,7 @@ class FigureCanvasBase(CanvasBase, FigureCanvas):
         self.addCanvasPart(_MatplotlibMargin(self))
         self.addCanvasPart(_MatplotlibCanvasSize(self))
         self.addCanvasPart(_MatplotlibAnnotation(self))
+        self.addCanvasPart(CanvasUtilities(self))
         self.addCanvasPart(CanvasKeyboardEvent(self))
         self.addCanvasPart(_MatplotlibMouseEvent(self))
         self.initCanvas.emit()

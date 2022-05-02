@@ -66,14 +66,20 @@ class CanvasBase(object):
                 return getattr(part, key)
         return super().__getattr__(key)
 
-    def SaveAsDictionary(self, dictionary):
+    def SaveAsDictionary(self, dictionary=None):
         """
         Save the content of the canvas as dictionary.
 
         Args:
             dictionary(dict): The content of the canvas is written in *dictionary*.
+
+        Return:
+            dict: The dictionary in which the information of the canvas is written
         """
+        if dictionary is None:
+            dictionary = {}
         self.saveCanvas.emit(dictionary)
+        return dictionary
 
     @_saveCanvasDummy
     def LoadFromDictionary(self, dictionary):

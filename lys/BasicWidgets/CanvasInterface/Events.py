@@ -55,6 +55,7 @@ class CanvasMouseEvent(CanvasPart):
         self.mousePressed.connect(self._mousePressed)
         self.mouseReleased.connect(self._mouseReleased)
         self.mouseMoved.connect(self._mouseMoved)
+        self.doubleClicked.connect(canvas.openModifyWindow)
         self.__select_rect = False
         self._clicktime = 0
 

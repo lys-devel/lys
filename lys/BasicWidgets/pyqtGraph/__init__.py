@@ -1,1 +1,1 @@
-from .ExtendCanvas import ExtendCanvas as pyqtCanvas
+from .CanvasBase import FigureCanvasBase as pyqtCanvas

@@ -92,4 +92,23 @@ class Graph_test(unittest.TestCase):
     def test_TextAnnotation(self):
         for g in [self.graphs[0]]:
             text = g.addText("test")
-            #self.assertEqual(text.getText(), "test")
+            self.assertEqual(text.getText(), "test")
+
+            text.setText("test1")
+            self.assertEqual(text.getText(), "test1")
+
+            text.setPosition((0, 0))
+            self.assertTrue(text.getPosition() == (0, 0))
+
+            text.setTransform("data")
+            self.assertEqual(text.getTransform(), "data")
+            text.setTransform(["axes", "data"])
+            text.setTransform("axes")
+            self.assertTrue(text.getPosition() == (0, 0))
+
+            d = g.SaveAsDictionary()
+            g.LoadFromDictionary(d)
+            text = g.getTextAnnotations()[0]
+            self.assertEqual(text.getText(), "test1")
+            self.assertTrue(text.getPosition() == (0, 0))
+            self.assertEqual(text.getTransform(), "axes")

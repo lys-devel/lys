@@ -25,8 +25,10 @@ class CanvasContextMenu(CanvasPart):
 
         m = menu.addMenu('Tools')
         m.addAction(QAction('Select Range', self))
+        m.addSeparator()
         m.addAction(QAction('Draw Line', self))
         m.addAction(QAction('Draw Rectangle', self))
+        menu.addAction(QAction('Add Text', self, triggered=self.__addText))
         menu.exec_(QCursor.pos())
 
     @saveCanvas
@@ -59,3 +61,6 @@ class CanvasContextMenu(CanvasPart):
         for axis in self.canvas().axisList():
             self.canvas().setAutoScaleAxis(axis)
         self.canvas().clearSelectedRange()
+
+    def __addText(self):
+        print("test")

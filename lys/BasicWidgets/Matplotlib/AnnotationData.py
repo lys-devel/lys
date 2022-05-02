@@ -1,3 +1,4 @@
+from matplotlib import transforms
 from ..CanvasInterface import CanvasAnnotation, LineAnnotation, TextAnnotation
 
 
@@ -28,14 +29,26 @@ class _MatplotlibLineAnnotation(LineAnnotation):
 
 class _MatplotlibTextAnnotation(TextAnnotation):
     def _initialize(self, text, pos, axis):
-        axes = self.canvas().getAxes(axis)
-        self._obj = axes.text(pos[0], pos[1], text, transform=axes.transAxes, picker=True)
+        self._axes = self.canvas().getAxes(axis)
+        self._obj = self._axes.text(pos[0], pos[1], text, transform=self._axes.transAxes, picker=True)
 
     def _setText(self, txt):
         self._obj.set_text(txt)
 
     def _setPosition(self, pos):
         self._obj.set_position(pos)
+
+    def _setTransform(self, transformation):
+        d = {"axes": self._axes.transAxes, "data": self._axes.transData}
+        if isinstance(transformation, str):
+            t = d[transformation]
+        else:
+            t = transforms.blended_transform_factory(d[transformation[0]], d[transformation[1]])
+        pos = self.getPosition()
+        old = self._obj.get_transform().transform(pos)
+        new = t.inverted().transform(old)
+        self._obj.set_transform(t)
+        self.setPosition(new)
 
     def _setZOrder(self, z):
         self._obj.set_zorder(z)
