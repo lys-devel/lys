@@ -407,11 +407,11 @@ class CanvasAnnotation(CanvasPart):
         Return:
             TextAnnotation: The annotation added.
         """
-        if pos is None:
+        if pos == 'auto':
             rb = self.__getRange('x', axis)
             rl = self.__getRange('y', axis)
             pos = (np.min(rb) + (np.max(rb) - np.min(rb)) / 2, np.min(rl) + (np.max(rl) - np.min(rl)) / 2)
-        obj = self._addText(text, pos, axis)
+        obj = self._addTextAnnotation(text, pos, axis)
         return self.__addObject(obj, appearance)
 
     def getTextAnnotations(self):
@@ -427,9 +427,10 @@ class CanvasAnnotation(CanvasPart):
         dic = {}
         for i, data in enumerate(self.getTextAnnotations()):
             dic[i] = {}
-            dic[i]['Text'] = self.getText()
+            dic[i]['Text'] = data.getText()
+            dic[i]['Position'] = data.getPosition()
             dic[i]['Appearance'] = str(data.saveAppearance())
-            dic[i]['Axis'] = self.getAxis()
+            dic[i]['Axis'] = data.getAxis()
         dictionary['Textlist'] = dic
 
     def __loadText(self, dictionary):
@@ -440,7 +441,8 @@ class CanvasAnnotation(CanvasPart):
                 t = dic[i]['Text']
                 appearance = eval(dic[i]['Appearance'])
                 axis = self._axisDict[dic[i]['Axis']]
-                self.addText(t, axis, appearance=appearance)
+                pos = dic[i].get('Position', 'auto')
+                self.addText(t, pos, axis=axis, appearance=appearance)
                 i += 1
 
     def getAnnotations(self, type="all"):
@@ -497,7 +499,7 @@ class CanvasAnnotation(CanvasPart):
     def _addCrossAnnotation(self, pos, axis):
         warnings.warn(str(type(self)) + " does not implement _addCrossAnnotation(pos, axis) method.", NotImplementedWarning)
 
-    def _addText(self, text, pos, axis):
+    def _addTextAnnotation(self, text, axis):
         warnings.warn(str(type(self)) + " does not implement _addTextAnnotation(text, pos, axis) method.", NotImplementedWarning)
 
     def _removeAnnotation(self, obj):

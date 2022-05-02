@@ -12,6 +12,7 @@ from ..MultiCutExecutors import PointExecutor
 
 class AnimationTab(QGroupBox):
     updated = pyqtSignal(int)
+    _type = [".mp4 (ffmpeg required)", ".gif"]
 
     class _axisWidget(QWidget):
         def __init__(self, dim):
@@ -45,38 +46,30 @@ class AnimationTab(QGroupBox):
 
         btn = QPushButton("Create animation", clicked=self.__animation)
         self.__filename = QLineEdit()
-        hbox1 = QHBoxLayout()
-        hbox1.addWidget(QLabel("Filename"))
-        hbox1.addWidget(self.__filename)
+        self.__types = QComboBox()
+        self.__types.addItems(self._type)
+        g = QGridLayout()
+        g.addWidget(QLabel("Filename"), 0, 0)
+        g.addWidget(self.__filename, 0, 1)
+        g.addWidget(QLabel("Type"), 1, 0)
+        g.addWidget(self.__types, 1, 1)
         self.layout.addWidget(self.__axis)
-        self.layout.addLayout(hbox1)
+        self.layout.addLayout(g)
         self.layout.addLayout(self.__makeTimeOptionLayout())
-        self.layout.addLayout(self.__makeScaleOptionLayout())
         self.layout.addLayout(self.__makeGeneralFuncLayout())
         self.layout.addWidget(btn)
         self.setLayout(self.layout)
 
     def __makeTimeOptionLayout(self):
-        self.__useTime = QCheckBox('Draw time')
+        self.__useTime = QCheckBox('Draw frame')
         self.__timeoffset = QDoubleSpinBox()
         self.__timeoffset.setRange(float('-inf'), float('inf'))
-        self.__timeunit = QComboBox()
-        self.__timeunit.addItems(['', 'ps', 'ns'])
+        self.__timeunit = QLineEdit()
         hbox1 = QHBoxLayout()
         hbox1.addWidget(self.__useTime)
         hbox1.addWidget(self.__timeoffset)
         hbox1.addWidget(self.__timeunit)
         return hbox1
-
-    def __makeScaleOptionLayout(self):
-        self.__usescale = QCheckBox('Draw scale (disabled)')
-        self.__scalesize = QDoubleSpinBox()
-        self.__scalesize.setValue(1)
-        self.__scalesize.setRange(0, float('inf'))
-        hbox2 = QHBoxLayout()
-        hbox2.addWidget(self.__usescale)
-        hbox2.addWidget(self.__scalesize)
-        return hbox2
 
     def __makeGeneralFuncLayout(self):
         self.__useFunc = QCheckBox("Use general func f(canv, i, axis)")
@@ -94,13 +87,12 @@ class AnimationTab(QGroupBox):
         self.layout.insertWidget(0, self.__axis)
 
     def __loadCanvasSettings(self):
-        import copy
         if Graph.active() is None:
             return None, None
         c = Graph.active().canvas
-        dic = {}
-        for t in ['AxisSetting', 'TickSetting', 'AxisRange', 'LabelSetting', 'TickLabelSetting', 'Size', 'Margin']:
-            dic[t] = c.SaveSetting(t)
+        d = {}
+        c.SaveAsDictionary(d)
+        dic = {t: d[t] for t in ['AxisSetting', 'TickSetting', 'AxisRange', 'LabelSetting', 'TickLabelSetting', 'Size', 'Margin']}
         wd = c.getWaveData()
         return dic, wd
 
@@ -108,41 +100,47 @@ class AnimationTab(QGroupBox):
         logging.info('[Animation] Analysis started.')
         dic, data = self.__loadCanvasSettings()
         if dic is None:
-            logging.warning('[Animation] Prepare graph for reference.')
+            QMessageBox.information(self, "Error", "You should specify the Graph that is used to create animation.", QMessageBox.Yes)
             return
-        axis = self.wave.axes[self.__axis.getAxis()]
-        self.__pexe = PointExecutor((self.__axis.getAxis(),))
+        axis = self.wave.getAxis(self.__axis.getAxis())
+        self.__pexe = PointExecutor(self.__axis.getAxis())
         self.__exe.saveEnabledState()
         self.__exe.append(self.__pexe)
         params = self.__prepareOptionalParams()
-        file = self.__filename.text() + ".mp4"
-        if file is None:
-            file = "Animation.mp4"
-        self._makeAnime(file, dic, data, axis, params, self.__pexe)
+        name = self.__filename.text()
+        if len(name) == 0:
+            QMessageBox.information(self, "Error", "Filename is required to make animation.", QMessageBox.Yes)
+            return
+        if self.__types.currentText() == ".gif":
+            name += ".gif"
+        else:
+            if "ffmpeg" not in animation.writers:
+                QMessageBox.information(self, "Error", "FFMPEG is required to make mp4 animation.", QMessageBox.Yes)
+                return
+            name += ".mp4"
+        self._makeAnime(name, dic, data, axis, params, self.__pexe)
 
     def __prepareOptionalParams(self):
         params = {}
         if self.__useTime.isChecked():
-            params['time'] = {"unit": self.__timeunit.currentText(), "offset": self.__timeoffset.value()}
-        if self.__usescale.isChecked():
-            params['scale'] = {"size": self.__scalesize.value()}
+            params['time'] = {"unit": self.__timeunit.text(), "offset": self.__timeoffset.value(), "obj": None}
         if self.__useFunc.isChecked():
             params['gfunc'] = self.__funcName.text()
         return params
 
     def _makeAnime(self, file, dic, data, axis, params, exe):
-        import copy
         c = ExtendCanvas()
-        for key, value in dic.items():
-            c.LoadSetting(key, value)
-        for d in data:
-            c.Append(d.getWave(), appearance=copy.deepcopy(d.saveAppearance()), offset=copy.deepcopy(d.getOffset()))
+        c.Append(data)
+        c.LoadFromDictionary(dic)
         ani = animation.FuncAnimation(c.getFigure(), _frame, fargs=(c, axis, params, exe), frames=len(axis), interval=30, repeat=False, init_func=_init)
-        ani.save(file, writer='ffmpeg')
+        if self.__types.currentText() == ".gif":
+            writer = "pillow"
+        else:
+            writer = "ffmpeg"
+        ani.save(file, writer=writer)
         self.__exe.remove(self.__pexe)
         self.__exe.restoreEnabledState()
-        QMessageBox.information(None, "Info", "Animation is saved to " + file, QMessageBox.Yes)
-        logging.info("[Animation] saved to " + file)
+        QMessageBox.information(self, "Info", "Animation is saved to " + file, QMessageBox.Yes)
         return file
 
 
@@ -159,16 +157,10 @@ def _frame(i, c, axis, params, exe):
         f(c, i, axis)
 
 
-def _drawTime(c, data=None, unit="", offset=0):
-    c.clearAnnotations('text')
+def _drawTime(c, data=None, obj=None, unit="", offset=0):
     t = '{:.10g}'.format(round(data + float(offset), 1)) + " " + unit
-    c.addText(t, x=0.1, y=0.1)
-
-
-def _drawScale(c, size):
-    xr = c.getAxisRange('Bottom')
-    yr = c.getAxisRange('Left')
-    x = xr[0] + (xr[1] - xr[0]) * 0.95
-    y = yr[1] + (yr[0] - yr[1]) * 0.9
-    id = c.addLine(([x - size, y], [x, y]))
-    c.setAnnotLineColor('white', id)
+    print(t)
+    if obj is None:
+        obj = c.addText(t, pos=(0.1, 0.1))
+    else:
+        obj.setText(t)

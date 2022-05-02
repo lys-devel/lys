@@ -211,10 +211,10 @@ class PointExecutor(QObject):
         return tuple(self.axes)
 
     def setPosition(self, pos):
-        if isinstance(pos, float) or isinstance(pos, int):
-            self.position = [pos]
-        else:
+        if hasattr(pos, "__iter__"):
             self.position = pos
+        else:
+            self.position = [pos]
         self.updated.emit(tuple(self.axes))
 
     def getPosition(self):

@@ -31,6 +31,7 @@ class RegionAnnotation(AnnotationWithLine):
 
     def __init__(self, canvas, region, orientation, axis):
         super().__init__(canvas, "test", axis)
+        self._initialize(region, orientation, axis)
         self._region = region
         self._orientation = orientation
 
@@ -66,6 +67,9 @@ class RegionAnnotation(AnnotationWithLine):
         """
         return self._orientation
 
+    def _initialize(self, region, orientation, axis):
+        warnings.warn(str(type(self)) + " does not implement _initialize(region, orientation, axis) method.", NotImplementedWarning)
+
     def _setRegion(self, region):
         warnings.warn(str(type(self)) + " does not implement _setRegion(region) method.", NotImplementedWarning)
 
@@ -98,6 +102,7 @@ class FreeRegionAnnotation(AnnotationWithLine):
 
     def __init__(self, canvas, region, width, axis):
         super().__init__(canvas, "test", axis)
+        self._initialize(region, width, axis)
         self._region = region
         self._width = width
 
@@ -145,6 +150,9 @@ class FreeRegionAnnotation(AnnotationWithLine):
             float: The width of annotation.
         """
         return self._width
+
+    def _initialize(self, region, width, axis):
+        warnings.warn(str(type(self)) + " does not implement _initialize(region, width, axis) method.", NotImplementedWarning)
 
     def _setRegion(self, region):
         warnings.warn(str(type(self)) + " does not implement _setRegion(region) method.", NotImplementedWarning)

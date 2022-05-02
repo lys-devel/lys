@@ -23,7 +23,7 @@ class LineAnnotation(AnnotationWithLine):
 
         from lys import display
         g = display()
-        line = g.canvas.addLineAnnotation()
+        line = g.addLineAnnotation()
         line.setLineColor("#ff0000")
     """
     positionChanged = pyqtSignal(tuple)
@@ -31,6 +31,7 @@ class LineAnnotation(AnnotationWithLine):
 
     def __init__(self, canvas, pos, axis):
         super().__init__(canvas, "test", axis)
+        self._initialize(pos, axis)
         self._pos = pos
 
     @saveCanvas
@@ -54,6 +55,9 @@ class LineAnnotation(AnnotationWithLine):
             2*2 sequence: The position of the line in the form of [(x0,y0),(x1,y1)].
         """
         return self._pos
+
+    def _initialize(self, pos, axis):
+        warnings.warn(str(type(self)) + " does not implement _initialize(text, axis) method.", NotImplementedWarning)
 
     def _setPosition(self, pos):
         warnings.warn(str(type(self)) + " does not implement _setPosition(pos) method.", NotImplementedWarning)
@@ -85,6 +89,7 @@ class InfiniteLineAnnotation(AnnotationWithLine):
 
     def __init__(self, canvas, pos, orientation, axis):
         super().__init__(canvas, "test", axis)
+        self._initialize(pos, orientation, axis)
         self._pos = pos
         self._orientation = orientation
 
@@ -112,6 +117,9 @@ class InfiniteLineAnnotation(AnnotationWithLine):
 
     def getOrientation(self):
         return self._orientation
+
+    def _initialize(self, pos, orientation, axis):
+        warnings.warn(str(type(self)) + " does not implement _initialize(pos, orientation, axis) method.", NotImplementedWarning)
 
     def _setPosition(self, pos):
         warnings.warn(str(type(self)) + " does not implement _setPosition(pos) method.", NotImplementedWarning)

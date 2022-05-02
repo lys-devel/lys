@@ -88,3 +88,8 @@ class Graph_test(unittest.TestCase):
             self.assertEqual(cross.getPosition(), (0, 1))
 
             self.__lineStyles(cross)
+
+    def test_TextAnnotation(self):
+        for g in [self.graphs[0]]:
+            text = g.addText("test")
+            #self.assertEqual(text.getText(), "test")

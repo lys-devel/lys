@@ -10,12 +10,11 @@ _styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLi
 class _PyqtgraphLineAnnotation(LineAnnotation):
     """Implementation of LineAnnotation for pyqtgraph"""
 
-    def __init__(self, canvas, pos, axis):
-        super().__init__(canvas, pos, axis)
+    def _initialize(self, pos, axis):
         self._obj = pg.LineSegmentROI(pos)
         self._obj.setPen(pg.mkPen(color='#000000'))
         self._obj.sigRegionChanged.connect(lambda obj: self.setPosition([[obj.pos()[0] + obj.listPoints()[0][0], obj.pos()[1] + obj.listPoints()[0][1]], [obj.pos()[0] + obj.listPoints()[1][0], obj.pos()[1] + obj.listPoints()[1][1]]]))
-        canvas.getAxes(axis).addItem(self._obj)
+        self.canvas().getAxes(axis).addItem(self._obj)
 
     def _setPosition(self, pos):
         self._obj.setPos(0, 0)
@@ -41,8 +40,7 @@ class _PyqtgraphLineAnnotation(LineAnnotation):
 class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
     """Implementation of InfiniteLineAnnotation for pyqtgraph"""
 
-    def __init__(self, canvas, pos, orientation, axis):
-        super().__init__(canvas, pos, orientation, axis)
+    def _initialize(self, pos, orientation, axis):
         if orientation == 'vertical':
             self._obj = pg.InfiniteLine(pos, 90)
         else:
@@ -51,7 +49,7 @@ class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
         self._obj.setPen(pg.mkPen(color='#000000'))
         self._obj.setVisible(True)
         self._obj.sigPositionChanged.connect(self._posChanged)
-        canvas.getAxes(axis).addItem(self._obj)
+        self.canvas().getAxes(axis).addItem(self._obj)
 
     def _posChanged(self, line):
         self.setPosition(line.value())
@@ -78,12 +76,11 @@ class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
 class _PyqtgraphRectAnnotation(RectAnnotation):
     """Implementation of RectAnnotation for pyqtgraph"""
 
-    def __init__(self, canvas, pos, size, axis):
-        super().__init__(canvas, pos, size, axis)
+    def _initialize(self, pos, size, axis):
         self._obj = pg.RectROI(pos, size)
         self._obj.setPen(pg.mkPen(color='#000000'))
         self._obj.sigRegionChanged.connect(lambda roi: self.setRegion([[roi.pos()[0], roi.pos()[0] + roi.size()[0]], [roi.pos()[1], roi.pos()[1] + roi.size()[1]]]))
-        canvas.getAxes(axis).addItem(self._obj)
+        self.canvas().getAxes(axis).addItem(self._obj)
 
     def _setRegion(self, region):
         self._obj.setPos((region[0][0], region[1][0]))
@@ -110,11 +107,10 @@ class _PyqtgraphRegionAnnotation(RegionAnnotation):
 
     __list = {"horizontal": pg.LinearRegionItem.Horizontal, "vertical": pg.LinearRegionItem.Vertical}
 
-    def __init__(self, canvas, region, orientation, axis):
-        super().__init__(canvas, region, orientation, axis)
+    def _initialize(self, region, orientation, axis):
         self._obj = pg.LinearRegionItem(region, orientation=self.__list[orientation])
         self._obj.sigRegionChanged.connect(lambda roi: self.setRegion(roi.getRegion()))
-        canvas.getAxes(axis).addItem(self._obj)
+        self.canvas().getAxes(axis).addItem(self._obj)
 
     def _setRegion(self, region):
         self._obj.setRegion(region)
@@ -141,8 +137,7 @@ class _PyqtgraphRegionAnnotation(RegionAnnotation):
 class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
     """Implementation of FreeRegionAnnotation for pyqtgraph"""
 
-    def __init__(self, canvas, region, width, axis):
-        super().__init__(canvas, region, width, axis)
+    def _initialize(self, region, width, axis):
         self.__flg = False
         pos1, pos2 = np.array(region[0]), np.array(region[1])
         d = pos2 - pos1
@@ -155,7 +150,7 @@ class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
         self._obj.addScaleRotateHandle((0, 0.5), (1, 0.5))
         self._obj.addScaleRotateHandle((1, 0.5), (0, 0.5))
         self._obj.sigRegionChanged.connect(self._regionChanged)
-        canvas.getAxes(axis).addItem(self._obj)
+        self.canvas().getAxes(axis).addItem(self._obj)
 
     def _regionChanged(self, roi):
         if self.__flg:
@@ -198,11 +193,10 @@ class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
 class _PyqtgraphCrossAnnotation(CrossAnnotation):
     """Implementation of CrossAnnotation for pyqtgraph"""
 
-    def __init__(self, canvas, position, axis):
-        super().__init__(canvas, position, axis)
+    def _initialize(self, position, axis):
         self._obj = _CrosshairItem(position)
         self._obj.sigRegionChanged.connect(lambda roi: self.setPosition(roi.getPosition()))
-        canvas.getAxes(axis).addItem(self._obj)
+        self.canvas().getAxes(axis).addItem(self._obj)
 
     def _setPosition(self, pos):
         self._obj.lines[0].setValue(pos[1])

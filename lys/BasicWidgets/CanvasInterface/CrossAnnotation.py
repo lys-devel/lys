@@ -31,6 +31,7 @@ class CrossAnnotation(AnnotationWithLine):
 
     def __init__(self, canvas, pos, axis):
         super().__init__(canvas, "test", axis)
+        self._initialize(pos, axis)
         self._pos = pos
 
     @saveCanvas
@@ -54,6 +55,9 @@ class CrossAnnotation(AnnotationWithLine):
             length 2 sequence: The position of annotation in the form of (x, y)
         """
         return self._pos
+
+    def _initialize(self, pos, axis):
+        warnings.warn(str(type(self)) + " does not implement _initialize(pos, axis) method.", NotImplementedWarning)
 
     def _setPosition(self, pos):
         warnings.warn(str(type(self)) + " does not implement _setPosition(pos) method.", NotImplementedWarning)

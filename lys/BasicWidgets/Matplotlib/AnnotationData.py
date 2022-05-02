@@ -2,9 +2,8 @@ from ..CanvasInterface import CanvasAnnotation, LineAnnotation, TextAnnotation
 
 
 class _MatplotlibLineAnnotation(LineAnnotation):
-    def __init__(self, canvas, pos, axis):
-        super().__init__(canvas, pos, axis)
-        axes = canvas.getAxes(axis)
+    def _initialize(self, pos, axis):
+        axes = self.canvas().getAxes(axis)
         self._obj, = axes.plot((pos[0][0], pos[1][0]), (pos[0][1], pos[1][1]))
         self._obj.set_pickradius(5)
 
@@ -28,9 +27,9 @@ class _MatplotlibLineAnnotation(LineAnnotation):
 
 
 class _MatplotlibTextAnnotation(TextAnnotation):
-    def __init__(self, canvas, text, axis):
-        axes = self.getAxes(axis)
-        self._obj = axes.text(x, y, text, transform=axes.transAxes, picker=True)
+    def _initialize(self, text, pos, axis):
+        axes = self.canvas().getAxes(axis)
+        self._obj = axes.text(pos[0], pos[1], text, transform=axes.transAxes, picker=True)
 
     def _setText(self, txt):
         self._obj.set_text(txt)
@@ -62,7 +61,7 @@ class _MatplotlibAnnotation(CanvasAnnotation):
         raise NotImplementedError(str(type(self)) + " does not support crossannotation.")
 
     def _addTextAnnotation(self, text, pos, axis):
-        raise _MatplotlibTextAnnotation(self.canvas(), text, pos, axis)
+        return _MatplotlibTextAnnotation(self.canvas(), text, pos, axis)
 
 
 """

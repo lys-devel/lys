@@ -84,6 +84,11 @@ class Graph(_SizeAdjustableWindow):
         else:
             self.canvas.setCanvasSize("Both", "Auto", 4)
 
+    def __getattr__(self, key):
+        if hasattr(self.canvas, key):
+            return getattr(self.canvas, key)
+        return super().__getattr__(key)
+
     def _save(self, file):
         d = {}
         if isinstance(self.canvas, ExtendCanvas):

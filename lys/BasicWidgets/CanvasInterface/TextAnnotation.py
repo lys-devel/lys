@@ -21,16 +21,18 @@ class TextAnnotation(AnnotationData):
 
         from lys import display
         g = display()
-        line = g.canvas.addText('test')
+        line = g.addText('test')
     """
 
-    edited = pyqtSignal()
+    edited = pyqtSignal(str)
     """Pyqtsignal that is emitted when the text is edited."""
 
     def __init__(self, canvas, text, pos, axis):
         super().__init__(canvas, "test", axis)
-        self._text = text
-        self._pos = pos
+        self._initialize(text, pos, axis)
+        self._text = ""
+        self.setText(text)
+        self.setPosition(pos)
 
     @saveCanvas
     def setText(self, text):
@@ -40,8 +42,10 @@ class TextAnnotation(AnnotationData):
         Args:
             text(str): The text of the annotation.
         """
-        self._setText(text)
-        self._text = text
+        if text != self._text:
+            self._setText(text)
+            self._text = text
+            self.edited.emit(text)
 
     def getText(self):
         """
@@ -60,7 +64,7 @@ class TextAnnotation(AnnotationData):
         Args:
             pos(length 2 sequence): The position of the annotation.
         """
-        self._setText(pos)
+        self._setPosition(pos)
         self._pos = pos
 
     def getPosition(self):
@@ -72,5 +76,14 @@ class TextAnnotation(AnnotationData):
         """
         return self._pos
 
+    def _loadAppearance(self, appearance):
+        pass
+
+    def _initialize(self, text, axis):
+        warnings.warn(str(type(self)) + " does not implement _initialize(text, axis) method.", NotImplementedWarning)
+
     def _setText(self, text):
         warnings.warn(str(type(self)) + " does not implement _setText(text) method.", NotImplementedWarning)
+
+    def _setPosition(self, pos):
+        warnings.warn(str(type(self)) + " does not implement _setPosition(pos) method.", NotImplementedWarning)

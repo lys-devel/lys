@@ -32,6 +32,7 @@ class RectAnnotation(AnnotationWithLine):
 
     def __init__(self, canvas, pos, size, axis):
         super().__init__(canvas, "test", axis)
+        self._initialize(pos, size, axis)
         self._pos = pos
         self._size = size
 
@@ -77,6 +78,9 @@ class RectAnnotation(AnnotationWithLine):
             2*2 sequence: The region of rectangle in the form of [(x1, x2), (y1, y2)]
         """
         return [(self._pos[0], self._pos[0] + self._size[0]), (self._pos[1], self._pos[1] + self._size[1])]
+
+    def _initialize(self, pos, size, axis):
+        warnings.warn(str(type(self)) + " does not implement _initialize(pos, size, axis) method.", NotImplementedWarning)
 
     def _setRegion(self, region):
         warnings.warn(str(type(self)) + " does not implement _setRegion(pos) method.", NotImplementedWarning)
