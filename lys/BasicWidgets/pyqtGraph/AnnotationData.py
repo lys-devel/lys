@@ -5,6 +5,7 @@ from LysQt.QtCore import Qt, pyqtSignal, QRectF
 from LysQt.QtGui import QColor, QTransform, QFont, QColor
 
 from lys.errors import NotSupportedWarning
+from lys.decorators import avoidCircularReference
 
 from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation, FreeRegionAnnotation, TextAnnotation
 
@@ -80,6 +81,9 @@ class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
 
+    def remove(self):
+        self.canvas().getAxes(self._axis).removeItem(self._obj)
+
 
 class _PyqtgraphRectAnnotation(RectAnnotation):
     """Implementation of RectAnnotation for pyqtgraph"""
@@ -90,6 +94,7 @@ class _PyqtgraphRectAnnotation(RectAnnotation):
         self._obj.sigRegionChanged.connect(lambda roi: self.setRegion([[roi.pos()[0], roi.pos()[0] + roi.size()[0]], [roi.pos()[1], roi.pos()[1] + roi.size()[1]]]))
         self.canvas().getAxes(axis).addItem(self._obj)
 
+    @avoidCircularReference
     def _setRegion(self, region):
         self._obj.setPos((region[0][0], region[1][0]))
         self._obj.setSize((region[0][1] - region[0][0], region[1][1] - region[1][0]))
@@ -108,6 +113,9 @@ class _PyqtgraphRectAnnotation(RectAnnotation):
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
+
+    def remove(self):
+        self.canvas().getAxes(self._axis).removeItem(self._obj)
 
 
 class _PyqtgraphRegionAnnotation(RegionAnnotation):
@@ -313,23 +321,12 @@ class _PyqtgraphTextAnnotation(TextAnnotation):
     def _setText(self, txt):
         self._obj.setText(txt)
 
-    def __getRange(self):
-        if 'Left' in self._axis:
-            yr = self.canvas().getAxisRange('Left')
-        else:
-            yr = self.canvas().getAxisRange('Right')
-        if 'Bottom' in self._axis:
-            xr = self.canvas().getAxisRange('Bottom')
-        else:
-            xr = self.canvas().getAxisRange('Top')
-        return xr, yr
-
     def __dataToAxes(self, x, y):
-        rx, ry = self.__getRange()
+        rx, ry = self.canvas().getAxisRange(self._axis)
         return (x - rx[0]) / (rx[1] - rx[0]), (y - ry[0]) / (ry[1] - ry[0])
 
     def __axesToData(self, x, y):
-        rx, ry = self.__getRange()
+        rx, ry = self.canvas().getAxisRange(self._axis)
         return rx[0] + (rx[1] - rx[0]) * x, ry[0] + (ry[1] - ry[0]) * y
 
     def _setPosition(self, pos):

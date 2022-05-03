@@ -11,6 +11,8 @@ class CanvasContextMenu(CanvasPart):
         self.__ag = QActionGroup(self)
         self._sel = QAction('Select Range', self, checkable=True, checked=True)
         self._line = QAction('Draw Line', self, checked=False, checkable=True)
+        self._vline = QAction('Draw Vertical Line', self, checked=False, checkable=True)
+        self._hline = QAction('Draw Horizontal Line', self, checked=False, checkable=True)
         self._rect = QAction('Draw Rectangle', self, checked=False, checkable=True)
         self.__ag.triggered.connect(lambda x: x.setChecked(True))
         canvas.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -32,6 +34,9 @@ class CanvasContextMenu(CanvasPart):
         m.addAction(self.__ag.addAction(self._sel))
         m.addSeparator()
         m.addAction(self.__ag.addAction(self._line))
+        m.addAction(self.__ag.addAction(self._vline))
+        m.addAction(self.__ag.addAction(self._hline))
+        m.addSeparator()
         m.addAction(self.__ag.addAction(self._rect))
 
         menu.addAction(QAction('Add Text', self, triggered=self.__addText))
@@ -42,6 +47,10 @@ class CanvasContextMenu(CanvasPart):
             return "Select"
         elif self._line.isChecked():
             return "Line"
+        elif self._vline.isChecked():
+            return "VLine"
+        elif self._hline.isChecked():
+            return "HLine"
         elif self._rect.isChecked():
             return "Rect"
 

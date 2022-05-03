@@ -51,7 +51,7 @@ class Graph_test(unittest.TestCase):
             self.__lineStyles(line)
 
     def test_InfiniteLineAnnotation(self):
-        for g in [self.graphs[1]]:
+        for g in self.graphs:
             c = g.canvas
 
             line = c.addInfiniteLineAnnotation()
@@ -61,7 +61,7 @@ class Graph_test(unittest.TestCase):
             self.__lineStyles(line)
 
     def test_RectAnnotation(self):
-        for g in [self.graphs[1]]:
+        for g in self.graphs:
             c = g.canvas
 
             rect = c.addRectAnnotation()

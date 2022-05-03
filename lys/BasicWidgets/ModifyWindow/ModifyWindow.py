@@ -13,8 +13,9 @@ from .AxisSettingsGUI import AxisSelectionWidget, AxisAndTickBox
 from .AxisLabelSettingsGUI import AxisAndTickLabelBox, AxisFontBox
 from .AreaSettingsGUI import MarginAdjustBox, ResizeBox
 
-from .AnnotationGUI import AnnotationBox
-from .LineAnnotationGUI import LineAnnotationBox, RectAnnotationBox
+from .TextAnnotationGUI import TextAnnotationBox
+from .LineAnnotationGUI import LineAnnotationBox, InfiniteLineAnnotationBox
+from .RegionAnnotationGUI import RectAnnotationBox
 from .InfoGUI import RegionInfoBox
 
 # temporary dictionary to save canvas settings
@@ -254,9 +255,11 @@ class _AnnotationTab(QWidget):
         layout = QVBoxLayout(self)
         tab = QTabWidget()
         if len(canvas.getTextAnnotations()) != 0:
-            tab.addTab(AnnotationBox(canvas), 'Text')
+            tab.addTab(TextAnnotationBox(canvas), 'Text')
         if len(canvas.getLineAnnotations()) != 0:
             tab.addTab(LineAnnotationBox(canvas), 'Line')
+        if len(canvas.getInfiniteLineAnnotations()) != 0:
+            tab.addTab(InfiniteLineAnnotationBox(canvas), 'V/H Line')
         if len(canvas.getRectAnnotations()) != 0:
             tab.addTab(RectAnnotationBox(canvas), 'Rect')
         self._test = QPushButton('Legend(test)')

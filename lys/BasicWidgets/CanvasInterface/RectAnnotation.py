@@ -44,12 +44,13 @@ class RectAnnotation(AnnotationWithLine):
         Args:
             region(2*2 sequence): The region of rectangle in the form of [(x1, x2), (y1, y2)]
         """
-        if [tuple(region[0]), tuple(region[1])] != self.getRegion():
+        region = (tuple(region[0]), tuple(region[1]))
+        if region != self.getRegion():
             x, y = min(*region[0]), min(*region[1])
             w, h = max(*region[0]) - min(*region[0]), max(*region[1]) - min(*region[1])
             self._pos = (x, y)
             self._size = (w, h)
-            self._setRegion([(x, x + w), (y, y + h)])
+            self._setRegion(((x, x + w), (y, y + h)))
             self.regionChanged.emit(self.getRegion())
 
     def getPosition(self):

@@ -141,14 +141,30 @@ class CanvasAxes(CanvasPart):
         """
         Get the axis view limits.
 
+        If the axis is in 'BottomLeft', 'BottomRight', 'TopLeft', or 'TopRight', both horizontal and vertical range is returned in the form of [(x1, x2), (y1, y2)].
+
         Args:
-            axis ('Left' or 'Right' or 'Bottom' or 'Top'): The axis whose range is changed.
+            axis ('Left', 'Right', 'Bottom', 'Top', 'BottomLeft', 'BottomRight', 'TopLeft', or 'TopRight'): The axis.
+
+        Return:
+            length 2 sequence: The axis range in the form of (x1, x2). 
 
         See also:
             :meth:`setAxisRange`, :meth:`setAutoScaleAxis`
         """
         if self.axisIsValid(axis):
             return self.__range[axis]
+        elif axis in ['BottomLeft', 'BottomRight', 'TopLeft', 'TopRight']:
+            res = []
+            if 'Bottom' in axis:
+                res.append(self.getAxisRange('Bottom'))
+            else:
+                res.append(self.getAxisRange('Top'))
+            if 'Left' in axis:
+                res.append(self.getAxisRange('Left'))
+            else:
+                res.append(self.getAxisRange('Right'))
+            return res
 
     @ saveCanvas
     def setAutoScaleAxis(self, axis):
@@ -363,18 +379,41 @@ class CanvasAxes(CanvasPart):
             return self.__mode[axis]
 
     def setSelectedRange(self, region):
+        """
+        Set the selected range of the graph.
+
+        The selected range can be obtained by :meth:`selectedRange`
+
+        Args:
+            region: The region to be selected in the form of [(x1, y1), (x2, y2)].
+        """
         self._setSelectAnnotation(region)
         self.__rect_start, self.__rect_end = region
         self.selectedRangeChanged.emit(self.selectedRange())
 
     def isRangeSelected(self):
+        """
+        Return True if the selected range is not empty.
+
+        Return:
+            bool: The result.
+        """
         return self.__rect_start != self.__rect_end
 
     def selectedRange(self):
+        """
+        Return the selected range that is set by :meth:`setSelectedRange` method.
+
+        Return:
+            2*2 sequence: The selected range in the form of [(x1, y1), (x2, y2)]
+        """
         if self.isRangeSelected():
             return [self.__rect_start, self.__rect_end]
 
     def clearSelectedRange(self):
+        """
+        Clear the selected range.
+        """
         self._setSelectAnnotation([(0, 0), (0, 0)])
         self.__rect_start = (0, 0)
         self.__rect_end = (0, 0)

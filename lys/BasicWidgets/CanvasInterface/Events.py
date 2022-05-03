@@ -1,4 +1,5 @@
 import time
+import numpy as np
 
 from LysQt.QtGui import QKeyEvent, QMouseEvent
 from LysQt.QtCore import pyqtSignal, Qt, QObject
@@ -58,6 +59,8 @@ class CanvasMouseEvent(CanvasPart):
 
         self._select = _RegionSelector(self, canvas)
         self._line = _LineDrawer(self, canvas)
+        self._iline = _InfiniteLineDrawer(self, canvas)
+        self._line = _RectDrawer(self, canvas)
 
     def _mouseReleased(self, e):
         self.clicked.emit(e)
@@ -130,3 +133,65 @@ class _LineDrawer(QObject):
         if self._busy and e.button() == Qt.LeftButton:
             self._busy = False
             self._line = None
+
+
+class _InfiniteLineDrawer(QObject):
+    def __init__(self, parent, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self._line = None
+        self._index = 0
+        parent.mousePressed.connect(self._mousePressed)
+        parent.mouseReleased.connect(self._mouseReleased)
+        parent.mouseMoved.connect(self._mouseMoved)
+
+    def _mousePressed(self, e):
+        if e.button() == Qt.LeftButton:
+            self.__start = self.canvas.mapPosition(e, "BottomLeft")
+            if self.canvas.toolState() == "VLine":
+                self._index = 0
+                self._line = self.canvas.addInfiniteLineAnnotation(self.__start[0], orientation='vertical')
+            if self.canvas.toolState() == "HLine":
+                self._index = 1
+                self._line = self.canvas.addInfiniteLineAnnotation(self.__start[1], orientation='horizontal')
+
+    def _mouseMoved(self, e):
+        end = self.canvas.mapPosition(e, "BottomLeft")
+        if self._line is not None:
+            self._line.setPosition(end[self._index])
+
+    def _mouseReleased(self, e):
+        if self._line is not None and e.button() == Qt.LeftButton:
+            self._line = None
+
+
+class _RectDrawer(QObject):
+    def __init__(self, parent, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self._rect = None
+        self._busy = False
+        parent.mousePressed.connect(self._mousePressed)
+        parent.mouseReleased.connect(self._mouseReleased)
+        parent.mouseMoved.connect(self._mouseMoved)
+
+    def _mousePressed(self, e):
+        if e.button() == Qt.LeftButton:
+            self.__start = self.canvas.mapPosition(e, "BottomLeft")
+            if self.canvas.toolState() == "Rect":
+                self._busy = True
+
+    def _mouseMoved(self, e):
+        if self._busy:
+            end = self.canvas.mapPosition(e, "BottomLeft")
+            if self._rect is None:
+                pos = (self.__start[0] + end[0]) / 2, (self.__start[1] + end[1]) / 2
+                size = end[0] - self.__start[0], end[1] - self.__start[1]
+                self._rect = self.canvas.addRectAnnotation(pos, size)
+            else:
+                self._rect.setRegion(np.array([self.__start, end]).T)
+
+    def _mouseReleased(self, e):
+        if self._busy and e.button() == Qt.LeftButton:
+            self._busy = False
+            self._rect = None
