@@ -6,6 +6,7 @@ import warnings
 import matplotlib as mpl
 import matplotlib.font_manager as fm
 
+from numpy.testing import assert_array_equal, assert_array_almost_equal
 from lys import glb, home, Graph, errors
 
 
@@ -72,7 +73,7 @@ class Graph_test(unittest.TestCase):
             self.__lineStyles(rect)
 
     def test_RegionAnnotation(self):
-        for g in [self.graphs[1]]:
+        for g in self.graphs:
             c = g.canvas
 
             rect = c.addRegionAnnotation()
@@ -81,8 +82,18 @@ class Graph_test(unittest.TestCase):
 
             self.__lineStyles(rect)
 
+    def test_FreeRegionAnnotation(self):
+        for g in self.graphs:
+            c = g.canvas
+
+            rect = c.addFreeRegionAnnotation()
+            rect.setRegion([(0, 0), (1, 1)])
+            assert_array_almost_equal(rect.getRegion(), [(0, 0), (1, 1)])
+
+            self.__lineStyles(rect)
+
     def test_CrossAnnotation(self):
-        for g in [self.graphs[1]]:
+        for g in self.graphs:
             c = g.canvas
 
             cross = c.addCrossAnnotation()

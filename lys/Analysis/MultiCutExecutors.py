@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, QObject, pyqtSignal
 
 from lys.widgets import LysSubWindow, ScientificSpinBox
 from lys.filters import FreeLineFilter
+from lys.decorators import avoidCircularReference
 
 
 class AllExecutor(QObject):
@@ -64,6 +65,7 @@ class RegionExecutor(QObject):
     def getRange(self):
         return self.range
 
+    @avoidCircularReference
     def setRange(self, range):
         self.range = []
         if hasattr(range[0], "__iter__"):
@@ -210,6 +212,7 @@ class PointExecutor(QObject):
     def getAxes(self):
         return tuple(self.axes)
 
+    @avoidCircularReference
     def setPosition(self, pos):
         if hasattr(pos, "__iter__"):
             self.position = pos
@@ -345,6 +348,7 @@ class FreeLineExecutor(QObject):
     def getPosition(self):
         return self.position
 
+    @avoidCircularReference
     def setPosition(self, pos):
         self.position = pos
         self.updated.emit((self.id,))

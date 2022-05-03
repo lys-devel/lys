@@ -448,7 +448,7 @@ class CanvasAnnotation(CanvasPart):
         Return list of all annotations in canvas.
 
         Args:
-            type(str): The type of annotations ('all', 'text', 'line', 'infiniteLine', 'rect', 'region', or 'cross')
+            type(str): The type of annotations ('all', 'text', 'line', 'infiniteLine', 'rect', 'region', 'freeRegion', or 'cross')
 
         Return:
             list: list of :class:`.AnnotationData.AnnotationData`.
@@ -465,6 +465,8 @@ class CanvasAnnotation(CanvasPart):
             return self.getRectAnnotations()
         if type == "region":
             return self.getRegionAnnotations()
+        if type == "freeRegion":
+            return self.getFreeRegionAnnotations()
         if type == "cross":
             return self.getCrossAnnotations()
 

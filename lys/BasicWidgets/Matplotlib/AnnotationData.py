@@ -1,5 +1,7 @@
+import numpy as np
 from matplotlib import transforms, patches
-from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, TextAnnotation, RectAnnotation
+
+from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, TextAnnotation, RectAnnotation, RegionAnnotation, FreeRegionAnnotation, CrossAnnotation
 
 
 class _MatplotlibLineAnnotation(LineAnnotation):
@@ -106,6 +108,149 @@ class _MatplotlibRectAnnotation(RectAnnotation):
         self._obj.remove()
 
 
+class _MatplotlibRegionAnnotation(RegionAnnotation):
+    """Implementation of RegionAnnotation for matplotlib"""
+
+    def _initialize(self, region, orientation, axis):
+        self._orientation = orientation
+        self._axis = axis
+        self._axes = self.canvas().getAxes(axis)
+        self._obj = patches.Rectangle((0, 0), 1, 1, color='magenta', alpha=0.5, transform=self._axes.transData)
+        self._patch = self._axes.add_patch(self._obj)
+        self._setRegion(region)
+        self.canvas().axisRangeChanged.connect(self.__changed)
+
+    def __changed(self):
+        self._setRegion(self.getRegion())
+
+    def _setRegion(self, region):
+        rx, ry = self.canvas().getAxisRange(self._axis)
+        if self._orientation == 'vertical':
+            self._obj.set_xy([region[0], ry[0]])
+            self._obj.set_width(region[1] - region[0])
+            self._obj.set_height(ry[1] - ry[0])
+        else:
+            self._obj.set_xy([rx[0], region[0]])
+            self._obj.set_width(rx[1] - rx[0])
+            self._obj.set_height(region[1] - region[0])
+
+    def _setLineColor(self, color):
+        self._obj.set_color(color)
+
+    def _setLineStyle(self, style):
+        self._obj.set_linestyle(style)
+
+    def _setLineWidth(self, width):
+        self._obj.set_linewidth(width)
+
+    def _setZOrder(self, z):
+        self._obj.set_zorder(z)
+
+    def _setVisible(self, visible):
+        self._obj.set_visible(visible)
+
+    def remove(self):
+        self._obj.remove()
+
+
+class _MatplotlibFreeRegionAnnotation(FreeRegionAnnotation):
+    """Implementation of FreeRegionAnnotation for matplotlib"""
+
+    def _initialize(self, region, width, axis):
+        pos1, pos2 = np.array(region[0]), np.array(region[1])
+        d = pos2 - pos1
+        v = np.array([-d[1], d[0]])
+        pos = pos1 - width * v / np.linalg.norm(v) / 2
+
+        self._axes = self.canvas().getAxes(axis)
+        self._obj = patches.Rectangle(pos, np.linalg.norm(d), width, color='magenta', alpha=0.5, transform=self._axes.transData, angle=np.angle(d[0] + 1j * d[1], deg=True),)
+        self._patch = self._axes.add_patch(self._obj)
+
+    def _setRegion(self, region):
+        pos1, pos2 = np.array(region[0]), np.array(region[1])
+        d = pos2 - pos1
+        v = np.array([-d[1], d[0]])
+        pos = pos1 - self.getWidth() * v / np.linalg.norm(v) / 2
+        self._obj.set_xy(pos)
+        self._obj.set_width(np.linalg.norm(d))
+        self._obj.angle = np.angle(d[0] + 1j * d[1], deg=True)
+
+    def _setWidth(self, width):
+        self._obj.set_height(width)
+        self._setRegion(self.getRegion())
+
+    def _setLineColor(self, color):
+        self._obj.set_color(color)
+
+    def _setLineStyle(self, style):
+        self._obj.set_linestyle(style)
+
+    def _setLineWidth(self, width):
+        self._obj.set_linewidth(width)
+
+    def _setZOrder(self, z):
+        self._obj.set_zorder(z)
+
+    def _setVisible(self, visible):
+        self._obj.set_visible(visible)
+
+    def remove(self):
+        self._obj.remove()
+
+
+class _MatplotlibCrossAnnotation(CrossAnnotation):
+    """Implementation of CrossAnnotation for matplotlib"""
+
+    def _initialize(self, position, axis):
+        self._axis = axis
+        axes = self.canvas().getAxes(axis)
+        self._obj = _CrosshairItem(self.canvas(), axes, position)
+        self.canvas().axisRangeChanged.connect(self.__changed)
+        self._setPosition(position)
+
+    def __changed(self):
+        self._setPosition(self.getPosition())
+
+    def _setPosition(self, pos):
+        xr, yr = self.canvas().getAxisRange(self._axis)
+        self._obj.lines[0].set_data((pos[0], pos[0]), (min(*yr) - 1, max(*yr) + 1))
+        self._obj.lines[1].set_data((min(*xr) - 1, max(*xr) + 1), (pos[1], pos[1]))
+
+    def _setLineColor(self, color):
+        self._obj.lines[0].set_color(color)
+        self._obj.lines[1].set_color(color)
+
+    def _setLineStyle(self, style):
+        self._obj.lines[0].set_linestyle(style)
+        self._obj.lines[1].set_linestyle(style)
+
+    def _setLineWidth(self, width):
+        self._obj.lines[0].set_linewidth(width)
+        self._obj.lines[1].set_linewidth(width)
+
+    def _setZOrder(self, z):
+        self._obj.lines[0].set_zorder(z)
+        self._obj.lines[1].set_zorder(z)
+
+    def _setVisible(self, visible):
+        self._obj.lines[0].set_visible(visible)
+        self._obj.lines[1].set_visible(visible)
+
+    def remove(self):
+        self._obj.lines[0].remove()
+        self._obj.lines[1].remove()
+
+
+class _CrosshairItem(object):
+    def __init__(self, canvas, axes, pos):
+        self._canvas = canvas
+        line1, = axes.plot((pos[0], 0), (pos[0], 0))
+        line2, = axes.plot((0, pos[0]), (0, pos[1]))
+        self.lines = [line1, line2]
+        self.lines[0].set_pickradius(5)
+        self.lines[1].set_pickradius(5)
+
+
 class _MatplotlibTextAnnotation(TextAnnotation):
     def _initialize(self, text, pos, axis):
         self._axes = self.canvas().getAxes(axis)
@@ -169,11 +314,14 @@ class _MatplotlibAnnotation(CanvasAnnotation):
     def _addRectAnnotation(self, *args, **kwargs):
         return _MatplotlibRectAnnotation(self.canvas(), *args, **kwargs)
 
-    def _addRgionAnnotation(self, *args, **kwargs):
-        raise NotImplementedError(str(type(self)) + " does not support region annotation.")
+    def _addRegionAnnotation(self, *args, **kwargs):
+        return _MatplotlibRegionAnnotation(self.canvas(), *args, **kwargs)
+
+    def _addFreeRegionAnnotation(self, *args, **kwargs):
+        return _MatplotlibFreeRegionAnnotation(self.canvas(), *args, **kwargs)
 
     def _addCrossAnnotation(self, *args, **kwargs):
-        raise NotImplementedError(str(type(self)) + " does not support crossannotation.")
+        return _MatplotlibCrossAnnotation(self.canvas(), *args, **kwargs)
 
     def _addTextAnnotation(self, *args, **kwargs):
         return _MatplotlibTextAnnotation(self.canvas(), *args, **kwargs)

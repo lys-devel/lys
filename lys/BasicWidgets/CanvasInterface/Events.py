@@ -61,6 +61,9 @@ class CanvasMouseEvent(CanvasPart):
         self._line = _LineDrawer(self, canvas)
         self._iline = _InfiniteLineDrawer(self, canvas)
         self._line = _RectDrawer(self, canvas)
+        self._region = _RegionDrawer(self, canvas)
+        self._fregion = _FreeRegionDrawer(self, canvas)
+        self._cross = _CrosshairDrawer(self, canvas)
 
     def _mouseReleased(self, e):
         self.clicked.emit(e)
@@ -195,3 +198,96 @@ class _RectDrawer(QObject):
         if self._busy and e.button() == Qt.LeftButton:
             self._busy = False
             self._rect = None
+
+
+class _RegionDrawer(QObject):
+    def __init__(self, parent, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self._region = None
+        self._busy = False
+        parent.mousePressed.connect(self._mousePressed)
+        parent.mouseReleased.connect(self._mouseReleased)
+        parent.mouseMoved.connect(self._mouseMoved)
+
+    def _mousePressed(self, e):
+        if e.button() == Qt.LeftButton:
+            self.__start = self.canvas.mapPosition(e, "BottomLeft")
+            if self.canvas.toolState() == "VRegion":
+                self._busy = True
+                self._orientation = 'vertical'
+            elif self.canvas.toolState() == "HRegion":
+                self._busy = True
+                self._orientation = 'horizontal'
+
+    def _mouseMoved(self, e):
+        if self._busy:
+            end = self.canvas.mapPosition(e, "BottomLeft")
+            if self._orientation == 'vertical':
+                region = [self.__start[0], end[0]]
+            else:
+                region = [self.__start[1], end[1]]
+            if self._region is None:
+                self._region = self.canvas.addRegionAnnotation(region, orientation=self._orientation)
+            else:
+                self._region.setRegion(region)
+
+    def _mouseReleased(self, e):
+        if self._busy and e.button() == Qt.LeftButton:
+            self._busy = False
+            self._region = None
+
+
+class _FreeRegionDrawer(QObject):
+    def __init__(self, parent, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self._line = None
+        self._busy = False
+        parent.mousePressed.connect(self._mousePressed)
+        parent.mouseReleased.connect(self._mouseReleased)
+        parent.mouseMoved.connect(self._mouseMoved)
+
+    def _mousePressed(self, e):
+        if e.button() == Qt.LeftButton:
+            self.__start = self.canvas.mapPosition(e, "BottomLeft")
+            if self.canvas.toolState() == "FreeRegion":
+                self._busy = True
+
+    def _mouseMoved(self, e):
+        if self._busy:
+            end = self.canvas.mapPosition(e, "BottomLeft")
+            if self._line is None:
+                self._line = self.canvas.addFreeRegionAnnotation([self.__start, end])
+            else:
+                self._line.setRegion([self.__start, end])
+
+    def _mouseReleased(self, e):
+        if self._busy and e.button() == Qt.LeftButton:
+            self._busy = False
+            self._line = None
+
+
+class _CrosshairDrawer(QObject):
+    def __init__(self, parent, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self._line = None
+        parent.mousePressed.connect(self._mousePressed)
+        parent.mouseReleased.connect(self._mouseReleased)
+        parent.mouseMoved.connect(self._mouseMoved)
+
+    def _mousePressed(self, e):
+        if e.button() == Qt.LeftButton:
+            self.__start = self.canvas.mapPosition(e, "BottomLeft")
+            if self.canvas.toolState() == "Cross":
+                self._line = self.canvas.addCrossAnnotation(self.__start)
+
+    def _mouseMoved(self, e):
+        end = self.canvas.mapPosition(e, "BottomLeft")
+        if self._line is not None:
+            self._line.setPosition(end)
+
+    def _mouseReleased(self, e):
+        if self._line is not None and e.button() == Qt.LeftButton:
+            self._line = None

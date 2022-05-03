@@ -14,6 +14,10 @@ class CanvasContextMenu(CanvasPart):
         self._vline = QAction('Draw Vertical Line', self, checked=False, checkable=True)
         self._hline = QAction('Draw Horizontal Line', self, checked=False, checkable=True)
         self._rect = QAction('Draw Rectangle', self, checked=False, checkable=True)
+        self._vregion = QAction('Draw Vertical Region', self, checked=False, checkable=True)
+        self._hregion = QAction('Draw Horizontal Region', self, checked=False, checkable=True)
+        self._free = QAction('Draw Free Region', self, checked=False, checkable=True)
+        self._cross = QAction('Draw Cross', self, checked=False, checkable=True)
         self.__ag.triggered.connect(lambda x: x.setChecked(True))
         canvas.setContextMenuPolicy(Qt.CustomContextMenu)
         canvas.customContextMenuRequested.connect(self._constructContextMenu)
@@ -38,6 +42,11 @@ class CanvasContextMenu(CanvasPart):
         m.addAction(self.__ag.addAction(self._hline))
         m.addSeparator()
         m.addAction(self.__ag.addAction(self._rect))
+        m.addAction(self.__ag.addAction(self._vregion))
+        m.addAction(self.__ag.addAction(self._hregion))
+        m.addAction(self.__ag.addAction(self._free))
+        m.addSeparator()
+        m.addAction(self.__ag.addAction(self._cross))
 
         menu.addAction(QAction('Add Text', self, triggered=self.__addText))
         menu.exec_(QCursor.pos())
@@ -53,6 +62,14 @@ class CanvasContextMenu(CanvasPart):
             return "HLine"
         elif self._rect.isChecked():
             return "Rect"
+        elif self._vregion.isChecked():
+            return "VRegion"
+        elif self._hregion.isChecked():
+            return "HRegion"
+        elif self._free.isChecked():
+            return "FreeRegion"
+        elif self._cross.isChecked():
+            return "Cross"
 
     @saveCanvas
     def __exec(self, text):

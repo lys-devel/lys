@@ -149,12 +149,14 @@ class _PyqtgraphRegionAnnotation(RegionAnnotation):
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
 
+    def remove(self):
+        self.canvas().getAxes(self._axis).removeItem(self._obj)
+
 
 class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
     """Implementation of FreeRegionAnnotation for pyqtgraph"""
 
     def _initialize(self, region, width, axis):
-        self.__flg = False
         pos1, pos2 = np.array(region[0]), np.array(region[1])
         d = pos2 - pos1
         v = np.array([-d[1], d[0]])
@@ -168,27 +170,28 @@ class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
         self._obj.sigRegionChanged.connect(self._regionChanged)
         self.canvas().getAxes(axis).addItem(self._obj)
 
+    @avoidCircularReference
     def _regionChanged(self, roi):
-        if self.__flg:
-            return
-        self.__flg = True
         p = np.array([roi.pos()[0], roi.pos()[1]])
         d = np.array((np.cos(roi.angle() / 180 * np.pi), np.sin(roi.angle() / 180 * np.pi)))
         v = np.array((-d[1], d[0]))
         self.setRegion([tuple(p + v * roi.size()[1] / 2), tuple(p + roi.size()[0] * d + v * roi.size()[1] / 2)])
-        self.__flg = False
 
     def _setRegion(self, region):
+        self.__set(region, self.getWidth())
+
+    def _setWidth(self, width):
+        self.__set(self.getRegion(), width)
+
+    @avoidCircularReference
+    def __set(self, region, width):
         pos1, pos2 = np.array(region[0]), np.array(region[1])
         d = pos2 - pos1
         v = np.array([-d[1], d[0]])
-        pos = pos1 - self.getWidth() * v / np.linalg.norm(v) / 2
+        pos = pos1 - width * v / np.linalg.norm(v) / 2
         self._obj.setPos(pos)
-        self._obj.setSize((np.linalg.norm(d), self.getWidth()))
+        self._obj.setSize((np.linalg.norm(d), width))
         self._obj.setAngle(np.angle(d[0] + 1j * d[1], deg=True))
-
-    def _setWidth(self, width):
-        self._obj.setSize((self._obj.size()[0], width))
 
     def _setLineColor(self, color):
         self._obj.pen.setColor(QColor(color))
@@ -204,6 +207,9 @@ class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
+
+    def remove(self):
+        self.canvas().getAxes(self._axis).removeItem(self._obj)
 
 
 class _PyqtgraphCrossAnnotation(CrossAnnotation):
@@ -236,6 +242,10 @@ class _PyqtgraphCrossAnnotation(CrossAnnotation):
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
 
+    def remove(self):
+        self.canvas().getAxes(self._axis).removeItem(self._obj.lines[0])
+        self.canvas().getAxes(self._axis).removeItem(self._obj.lines[1])
+
 
 class _CrosshairItem(pg.GraphicsObject):
     sigRegionChangeFinished = pyqtSignal(object)
@@ -248,18 +258,13 @@ class _CrosshairItem(pg.GraphicsObject):
         self.moving = False
         self.mouseHovering = False
         self._bounds = None
-        self.lines = [pg.InfiniteLine(angle=0), pg.InfiniteLine(angle=90)]
-        tr = QTransform()
-        tr.scale(1, -1)
-        self.lines[0].setTransform(tr)
-        self.lines[1].setTransform(tr)
+        self.lines = [pg.InfiniteLine(values[0], 0), pg.InfiniteLine(values[1], 90)]
         for line in self.lines:
             line.setParentItem(self)
             line.sigPositionChangeFinished.connect(self.lineMoveFinished)
         self.lines[0].sigPositionChanged.connect(lambda: self.lineMoved(0))
         self.lines[1].sigPositionChanged.connect(lambda: self.lineMoved(1))
         self.setMovable(True)
-        self.setPosition(values)
 
     def getPosition(self):
         r = (self.lines[1].value(), self.lines[0].value())

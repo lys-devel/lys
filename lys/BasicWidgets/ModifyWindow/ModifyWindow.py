@@ -15,7 +15,8 @@ from .AreaSettingsGUI import MarginAdjustBox, ResizeBox
 
 from .TextAnnotationGUI import TextAnnotationBox
 from .LineAnnotationGUI import LineAnnotationBox, InfiniteLineAnnotationBox
-from .RegionAnnotationGUI import RectAnnotationBox
+from .RegionAnnotationGUI import RectAnnotationBox, RegionAnnotationBox, FreeRegionAnnotationBox
+from .CrossAnnotationGUI import CrossAnnotationBox
 from .InfoGUI import RegionInfoBox
 
 # temporary dictionary to save canvas settings
@@ -262,9 +263,15 @@ class _AnnotationTab(QWidget):
             tab.addTab(InfiniteLineAnnotationBox(canvas), 'V/H Line')
         if len(canvas.getRectAnnotations()) != 0:
             tab.addTab(RectAnnotationBox(canvas), 'Rect')
+        if len(canvas.getRegionAnnotations()) != 0:
+            tab.addTab(RegionAnnotationBox(canvas), 'Region')
+        if len(canvas.getFreeRegionAnnotations()) != 0:
+            tab.addTab(FreeRegionAnnotationBox(canvas), 'Free')
+        if len(canvas.getCrossAnnotations()) != 0:
+            tab.addTab(CrossAnnotationBox(canvas), 'Cross')
         self._test = QPushButton('Legend(test)')
         self._test.clicked.connect(self.test)
-        tab.addTab(self._test, 'Legend')
+        #tab.addTab(self._test, 'Legend')
         layout.addWidget(tab)
         self.setLayout(layout)
 
