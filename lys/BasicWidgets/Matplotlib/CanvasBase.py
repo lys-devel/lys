@@ -141,37 +141,6 @@ class ExtendCanvas(CanvasBase, FigureCanvas):
     def finalize(self):
         self.figure.canvas = None
 
-    def SaveFigure(self, path, format):
-        self.getFigure().savefig(path, transparent=True, format=format)
-
-    def CopyToClipboard(self):
-        clipboard = QApplication.clipboard()
-        mime = QMimeData()
-        mime.setData('Encapsulated PostScript', self.__toData('eps'))
-        mime.setData('application/postscript', self.__toData('eps'))
-        mime.setData('Scalable Vector Graphics', self.__toData('svg'))
-        mime.setData('application/svg+xml', self.__toData('svg'))
-        mime.setData('Portable Document Format', self.__toData('pdf'))
-        mime.setData('application/pdf', self.__toData('pdf'))
-        try:
-            mime.setText(self.__toData('pdf').hex())
-        except Exception:
-            import traceback
-            print(traceback.format_exc())
-        buf = io.BytesIO()
-        self.getFigure().savefig(buf, transparent=True)
-        mime.setImageData(QImage.fromData(buf.getvalue()))
-        buf.close()
-        clipboard.setMimeData(mime)
-
-    def __toData(self, format):
-        buf = io.BytesIO()
-        self.getFigure().savefig(buf, format=format, transparent=True)
-        buf.seek(0)
-        data = buf.read()
-        buf.close()
-        return data
-
 
 """
 

@@ -1,6 +1,6 @@
 import os
 import weakref
-from LysQt.QtWidgets import QWidget, QCheckBox, QTabWidget, QHBoxLayout, QVBoxLayout, QPushButton, QFileDialog
+from LysQt.QtWidgets import QWidget, QCheckBox, QTabWidget, QHBoxLayout, QVBoxLayout, QPushButton, QFileDialog, QGroupBox
 from LysQt.QtCore import Qt
 
 from lys.widgets import LysSubWindow
@@ -294,22 +294,22 @@ class _OtherTab(QWidget):
         self.setLayout(layout)
 
 
-class SaveBox(QWidget):
+class SaveBox(QGroupBox):
     def __init__(self, canvas):
-        super().__init__()
+        super().__init__("Export")
         self.canvas = canvas
         self.__initlayout()
 
     def __initlayout(self):
         lay = QVBoxLayout()
-        self._save = QPushButton('Save', clicked=self.Save)
+        self._save = QPushButton('Export image', clicked=self.Save)
         lay.addWidget(self._save)
-        self._copy = QPushButton('Copy', clicked=self.Copy)
+        self._copy = QPushButton('Copy to clipboard', clicked=self.Copy)
         lay.addWidget(self._copy)
         self.setLayout(lay)
 
     def Copy(self):
-        self.canvas.CopyToClipboard()
+        self.canvas.copyToClipboard()
 
     def Save(self):
         filters = ['PDF file (*.pdf)', 'EPS file (*.eps)', 'PNG file (*.png)', 'SVG file (*.svg)']
@@ -326,4 +326,4 @@ class SaveBox(QWidget):
             savename += ext
         else:
             savename = name + ext + exts[filters.index(res[1])]
-        self.canvas.SaveFigure(savename, exts[filters.index(res[1])].replace('.', ''))
+        self.canvas.saveFigure(savename, exts[filters.index(res[1])].replace('.', ''))

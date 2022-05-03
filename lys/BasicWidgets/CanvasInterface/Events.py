@@ -21,9 +21,13 @@ class CanvasKeyboardEvent(CanvasPart):
 
     @saveCanvas
     def _keyPressed(self, e):
-        if e.key() == Qt.Key_A:
+        if e.key() == Qt.Key_A and e.modifiers() == Qt.ControlModifier:
             for i in self.canvas().getRGBs() + self.canvas().getImages():
                 i.setColorRange()
+        if e.key() == Qt.Key_C and e.modifiers() == Qt.ControlModifier:
+            self.canvas().copyToClipboard()
+        if e.key() == Qt.Key_G and e.modifiers() == Qt.ControlModifier:
+            self.canvas().openModifyWindow()
 
 
 class CanvasMouseEvent(CanvasPart):

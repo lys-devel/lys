@@ -132,8 +132,6 @@ class Graph(_SizeAdjustableWindow):
             self.setHeight(self.height())
 
     def keyPress(self, e):
-        if e.key() == Qt.Key_G:
-            ModifyWindow(self.canvas, self)
         if e.key() == Qt.Key_F:
             wavelis = []
             for d in self.canvas.getLines():
@@ -168,9 +166,6 @@ class Graph(_SizeAdjustableWindow):
         super().closeEvent(event)
         if event.isAccepted():
             self.canvas.finalize()
-
-    def Append(self, wave, axis="BottomLeft", contour=False, vector=False):
-        return self.canvas.Append(wave, axis, contour=contour, vector=vector)
 
     def Duplicate(self, lib=None):
         dic = {}
