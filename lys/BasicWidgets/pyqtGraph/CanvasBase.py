@@ -29,9 +29,11 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
     def __init__(self, dpi=100):
         CanvasBase.__init__(self)
         pg.PlotWidget.__init__(self)
+        self._flg = True
         self.__initFigure()
         self.updated.connect(self.update)
         self.__initCanvasParts()
+        self.scene().sigMouseHover.connect(self._hover)
         self._helper = _dragHelper(self)
         self.getAxes('BottomLeft').mouseDragEvent = self._helper.onDrag
 
@@ -57,13 +59,21 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.addCanvasPart(_PyqtgraphMouseEvent(self))
         self.initCanvas.emit()
 
+    def _hover(self, list):
+        self._flg = len(list) == 1
+
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)
         self.mouseReleased.emit(event)
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        self.mousePressed.emit(event)
+        if self._flg:  # ignore when the event is processed by pyqtgraph
+            self.mousePressed.emit(event)
+
+    def mouseMoveEvent(self, event):
+        super().mouseMoveEvent(event)
+        self.mouseMoved.emit(event)
 
     def keyPressEvent(self, event):
         self.keyPressed.emit(event)
@@ -79,5 +89,4 @@ class _dragHelper:
         self._obj = weakref.ref(obj)
 
     def onDrag(self, event):
-        self._obj().mouseMoved.emit(event)
         event.accept()

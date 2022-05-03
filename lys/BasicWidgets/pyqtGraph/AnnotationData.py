@@ -118,6 +118,7 @@ class _PyqtgraphRectAnnotation(RectAnnotation):
         self.canvas().getAxes(self._axis).removeItem(self._obj)
 
 
+
 class _PyqtgraphRegionAnnotation(RegionAnnotation):
     """Implementation of RegionAnnotation for pyqtgraph"""
 

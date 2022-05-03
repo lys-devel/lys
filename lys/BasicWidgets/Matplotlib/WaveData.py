@@ -113,12 +113,21 @@ class _MatplotlibVector(VectorData):
 
     def __init__(self, canvas, wave, axis):
         super().__init__(canvas, wave, axis)
+        self._axis = axis
         xx, yy = np.meshgrid(wave.x, wave.y)
         self._obj = canvas.getAxes(axis).quiver(xx, yy, np.real(wave.data.T), np.imag(wave.data.T), pivot="mid")
+        canvas.axisRangeChanged.connect(self._updateData)
 
     def _updateData(self):
         X, Y = np.meshgrid(self.getFilteredWave().x, self.getFilteredWave().y)
-        self._obj.set_UVC(np.real(self.getFilteredWave().data.T), np.imag(self.getFilteredWave().data.T))
+        data_x = np.array(np.real(self.getFilteredWave().data.T))
+        data_y = np.array(np.imag(self.getFilteredWave().data.T))
+        rx, ry = self.canvas().getAxisRange(self._axis)
+        if rx[0] > rx[1]:
+            data_x = -data_x
+        if ry[0] > ry[1]:
+            data_y = -data_y
+        self._obj.set_UVC(data_x, data_y)
         self._obj.set_offsets(np.array([X.flatten(), Y.flatten()]).T)
 
     def _setVisible(self, visible):
