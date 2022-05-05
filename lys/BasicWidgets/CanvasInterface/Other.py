@@ -18,6 +18,11 @@ class CanvasUtilities(CanvasPart):
         mod = ModifyWindow(self.canvas(), parent, showArea=isinstance(parent, Graph))
         return mod
 
+    def openFittingWindow(self):
+        from lys.fitting import FittingWindow
+        fit = FittingWindow(self._getParent(), self.canvas())
+        return fit
+
     def _getParent(self):
         parent = self.canvas().parentWidget()
         while(parent is not None):

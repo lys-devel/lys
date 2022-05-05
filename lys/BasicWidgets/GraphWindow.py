@@ -7,7 +7,6 @@ from .Commons.ExtendTable import *
 from .ModifyWindow.ModifyWindow import *
 from .Matplotlib import ExtendCanvas
 from .pyqtGraph import pyqtCanvas
-from .FittingWindow import *
 
 
 class _SizeAdjustableWindow(AutoSavedWindow):
@@ -132,12 +131,6 @@ class Graph(_SizeAdjustableWindow):
             self.setHeight(self.height())
 
     def keyPress(self, e):
-        if e.key() == Qt.Key_F:
-            wavelis = []
-            for d in self.canvas.getLines():
-                if d.getWave().FileName is not None:
-                    wavelis.append(d.getWave())
-            FittingWindow(self, wavelis, self.canvas)
         if e.key() == Qt.Key_L:
             wavelis = []
             for d in self.canvas.getImages():

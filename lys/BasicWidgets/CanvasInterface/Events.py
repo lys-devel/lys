@@ -28,6 +28,8 @@ class CanvasKeyboardEvent(CanvasPart):
             self.canvas().copyToClipboard()
         if e.key() == Qt.Key_G and e.modifiers() == Qt.ControlModifier:
             self.canvas().openModifyWindow()
+        if e.key() == Qt.Key_F and e.modifiers() == Qt.ControlModifier:
+            self.canvas().openFittingWindow()
 
 
 class CanvasMouseEvent(CanvasPart):

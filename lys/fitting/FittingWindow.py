@@ -1,26 +1,23 @@
-#!/usr/bin/env python
-import sys
-import os
-from PyQt5.QtGui import *
-from .Fitting.FittingWidget import FittingWidget
-from .Fitting.LineProfile import LineProfileWidget
 from lys.widgets import LysSubWindow
+
+from .FittingWidget import FittingWidget
+from .LineProfile import LineProfileWidget
 
 
 class FittingWindow(LysSubWindow):
-    def __init__(self, parent, wavelist, canvas=None):
+    def __init__(self, parent, canvas):
         super().__init__()
-        self._initlayout(wavelist, canvas)
-        self.adjustSize()
-        self.updateGeometry()
+        self._initlayout(canvas)
         self.attach(parent)
-        self.show()
         self.attachTo()
 
-    def _initlayout(self, wavelist, canvas):
+    def _initlayout(self, canvas):
         self.setWindowTitle("Fitting Window")
-        w = FittingWidget(wavelist, canvas)
+        w = FittingWidget(canvas)
         self.setWidget(w)
+        self.adjustSize()
+        self.updateGeometry()
+        self.show()
 
 
 class LineProfileWindow(LysSubWindow):
