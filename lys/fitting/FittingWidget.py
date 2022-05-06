@@ -1,11 +1,11 @@
 import inspect
 import itertools
 import numpy as np
-from PyQt5.QtWidgets import QAbstractItemView, QVBoxLayout, QWidget, QComboBox, QPushButton, QTreeView, QHBoxLayout, QCheckBox, QMenu, QDialog, QMessageBox
+from PyQt5.QtWidgets import QAction, QLineEdit, QAbstractItemView, QVBoxLayout, QWidget, QComboBox, QPushButton, QTreeView, QHBoxLayout, QCheckBox, QMenu, QDialog, QMessageBox, QFileDialog, QLabel, QGridLayout
 from PyQt5.QtGui import QCursor, QStandardItem, QStandardItemModel
 from PyQt5.QtCore import pyqtSignal, Qt, QObject
 
-from lys import Wave
+from lys import Wave, display
 from lys.widgets import ScientificSpinBox
 from lys.decorators import avoidCircularReference
 from .Functions import functions
@@ -75,8 +75,11 @@ class _FittingInfo(QObject):
     def functions(self):
         return self._funcs
 
-    def addFunction(self, name):
-        item = _FuncInfo(name)
+    def addFunction(self, func):
+        if isinstance(func, dict):
+            item = _FuncInfo.loadFromDictionary(func)
+        else:
+            item = _FuncInfo(func)
         item.updated.connect(self.updated)
         self._funcs.append(item)
         self.functionAdded.emit(item)
@@ -87,19 +90,54 @@ class _FittingInfo(QObject):
         self.functionRemoved.emit(index)
         self.updated.emit()
 
-    def fit(self, parent):
+    def clear(self):
+        while len(self.functions) != 0:
+            self.removeFunction(0)
+
+    def fit(self, parent, range, xdata=None):
         guess = self.fitParameters
         bounds = np.array(list(itertools.chain(*[fi.range for fi in self._funcs])))
         for g, b in zip(guess, bounds):
             if g < b[0] or g > b[1] or b[0] > b[1]:
                 QMessageBox.warning(parent, "Error", "Fit error: all fitting parameters should between minimum and maximum.")
-                return
-        res, sig = fit(self.fitFunction, self._wave.x, self._wave.data, guess=guess, bounds=bounds.T)
+                return False
+        data, x = self.__loadData(range, xdata)
+        res, sig = fit(self.fitFunction, x, data, guess=guess, bounds=bounds.T)
         n = 0
         for fi in self._funcs:
             m = len(fi.parameters)
             fi.setValue(res[n:n + m])
             n = n + m
+        return True
+
+    def __loadData(self, range, xdata):
+        axis = self._wave.x
+        range = list(range)
+        if range[0] is None:
+            range[0] = np.min(axis) - 1
+        if range[1] is None:
+            range[1] = np.max(axis) + 1
+        p = self._wave.posToPoint(range, axis=0)
+        if xdata is None:
+            x = self._wave.x
+        else:
+            x = self._wave.note[xdata]
+        return self._wave.data[p[0]:p[1]], x[p[0]:p[1]]
+
+    def getParamValue(self, index_f, index_p):
+        if len(self.functions) > index_f:
+            f = self.functions[index_f]
+            if len(f.value) > index_p:
+                return f.value[index_p]
+
+    def saveAsDictionary(self):
+        return {"function_" + str(i): f.saveAsDictionary() for i, f in enumerate(self.functions)}
+
+    def loadFromDictionary(self, dic):
+        i = 0
+        while "function_" + str(i) in dic:
+            self.addFunction(dic["function_" + str(i)])
+            i += 1
 
     @property
     def fitFunction(self):
@@ -159,17 +197,29 @@ class _FuncInfo(QObject):
                 res.append((p.value, p.value))
         return res
 
+    def saveAsDictionary(self):
+        d = {"param_" + str(i): p.saveAsDictionary() for i, p in enumerate(self.parameters)}
+        d["name"] = self._name
+        return d
+
+    @classmethod
+    def loadFromDictionary(cls, dic):
+        obj = cls(dic["name"])
+        for i, p in enumerate(obj.parameters):
+            p.loadParameters(**dic["param_" + str(i)])
+        return obj
+
 
 class _ParamInfo(QObject):
     stateChanged = pyqtSignal(object)
 
-    def __init__(self, name):
+    def __init__(self, name, value=1, range=(0, 1), enabled=True, minMaxEnabled=(False, False)):
         super().__init__()
         self._name = name
-        self._value = 0
-        self._range = [0, 1]
-        self._use = True
-        self._min, self._max = False, False
+        self._value = value
+        self._range = range
+        self._use = enabled
+        self._min, self._max = minMaxEnabled
 
     @property
     def name(self):
@@ -210,6 +260,16 @@ class _ParamInfo(QObject):
     def minMaxEnabled(self):
         return self._min, self._max
 
+    def saveAsDictionary(self):
+        return {"name": self._name, "value": self.value, "range": self.range, "enabled": self.enabled, "minMaxEnabled": self.minMaxEnabled}
+
+    def loadParameters(self, name, value, range, enabled, minMaxEnabled):
+        self._name = name
+        self._value = value
+        self._range = range
+        self._use = enabled
+        self._min, self._max = minMaxEnabled
+
 
 class FittingWidget(QWidget):
     def __init__(self, canvas):
@@ -222,22 +282,55 @@ class FittingWidget(QWidget):
 
     def __initlayout(self):
         self._tree = FittingTree()
+        self._tree.plotRequired.connect(self.__plot)
         self._target = QComboBox()
         self._target.addItems([item.name for item in self._items])
         self._target.currentIndexChanged.connect(self.__targetChanged)
+
+        self._xdata = QComboBox()
+        self._xdata.addItems(["x axis", "from Wave.note"])
+        self._xdata.currentTextChanged.connect(self.__changeXAxis)
+        self._keyLabel = QLabel("Key")
+        self._keyText = QLineEdit()
+        self._keyLabel.hide()
+        self._keyText.hide()
+
+        self._min = ScientificSpinBox()
+        self._max = ScientificSpinBox()
+        self._min.setEnabled(False)
+        self._max.setEnabled(False)
+        self._useMin = QCheckBox("min", stateChanged=self._min.setEnabled)
+        self._useMax = QCheckBox("max", stateChanged=self._max.setEnabled)
+
+        g = QGridLayout()
+        g.addWidget(QLabel("Target"), 0, 0)
+        g.addWidget(self._target, 0, 1, 1, 2)
+        g.addWidget(QLabel("x data"), 1, 0)
+        g.addWidget(self._xdata, 1, 1, 1, 2)
+        g.addWidget(self._keyLabel, 2, 0)
+        g.addWidget(self._keyText, 2, 1, 1, 2)
+        g.addWidget(QLabel("Region"), 3, 0)
+        g.addWidget(self._useMin, 3, 1)
+        g.addWidget(self._useMax, 3, 2)
+        g.addWidget(QPushButton("Load from Graph", clicked=self.__loadFromGraph), 4, 0)
+        g.addWidget(self._min, 4, 1)
+        g.addWidget(self._max, 4, 2)
+
         self._append = QCheckBox("Append result", stateChanged=self.__append)
+        self._all = QCheckBox("Apply to all")
 
-        self._exec = QPushButton('Fit', clicked=lambda: self._currentItem.fit(self))
-        #self._expo = QPushButton('Append Result', clicked=self.__export)
+        hbox1 = QHBoxLayout()
+        hbox1.addWidget(self._append)
+        hbox1.addWidget(self._all)
 
+        self._exec = QPushButton('Fit', clicked=self.__fit)
         hbox3 = QHBoxLayout()
         hbox3.addWidget(self._exec)
-        # hbox3.addWidget(self._expo)
 
         vbox1 = QVBoxLayout()
-        vbox1.addWidget(self._target)
+        vbox1.addLayout(g)
         vbox1.addWidget(self._tree)
-        vbox1.addWidget(self._append)
+        vbox1.addLayout(hbox1)
         vbox1.addLayout(hbox3)
         self.setLayout(vbox1)
         self.adjustSize()
@@ -254,22 +347,84 @@ class FittingWidget(QWidget):
             self._append.setChecked(self._ctrls[i].state)
             self._ctrls[i].stateChanged.connect(self._append.setChecked)
 
+    def __fit(self):
+        if self._all.isChecked():
+            msg = "This operation will delete all fitting results except displayed and then fit all data in the graph using displayed fitting function. Are your really want to proceed?"
+            res = QMessageBox.information(self, "Warning", msg, QMessageBox.Yes | QMessageBox.No)
+            if res == QMessageBox.Yes:
+                d = self._currentItem.saveAsDictionary()
+                for item in self._items:
+                    if item != self._currentItem:
+                        item.clear()
+                        item.loadFromDictionary(d)
+                    res = item.fit(self, self.__loadRange(), self.__loadXAxis())
+                    if not res:
+                        return
+            QMessageBox.information(self, "Information", "All fittings finished.", QMessageBox.Yes)
+        else:
+            self._currentItem.fit(self, self.__loadRange(), self.__loadXAxis())
+
+    def __loadRange(self):
+        r = [0, 0]
+        if self._useMin.isChecked():
+            r[0] = self._min.value()
+        else:
+            r[0] = None
+        if self._useMax.isChecked():
+            r[1] = self._max.value()
+        else:
+            r[1] = None
+        return tuple(r)
+
+    def __loadXAxis(self):
+        if self._xdata.currentText() == "x axis":
+            return None
+        else:
+            return self._keyText.text()
+
     def __append(self, state):
-        self._ctrls[self._target.currentIndex()].set(state)
+        if self._all.isChecked():
+            for c in self._ctrls:
+                c.set(state)
+        else:
+            self._ctrls[self._target.currentIndex()].set(state)
+
+    def __changeXAxis(self, txt):
+        self._keyLabel.setVisible(txt == "from Wave.note")
+        self._keyText.setVisible(txt == "from Wave.note")
+
+    def __loadFromGraph(self):
+        if self.canvas.isRangeSelected():
+            r = np.array(self.canvas.selectedRange()).T[0]
+            self._min.setValue(min(*r))
+            self._max.setValue(max(*r))
+            self._useMin.setChecked(True)
+            self._useMax.setChecked(True)
+        else:
+            QMessageBox.information(self, "Warning", "Please select region by dragging in the graph.")
+
+    def __plot(self, f, p):
+        res = []
+        for item in self._items:
+            tmp = item.getParamValue(f, p)
+            if tmp is None:
+                QMessageBox.information(self, "Warning", "All data should be fitted by the same function to plot parameter.")
+                return
+            res.append(tmp)
+        display(res)
 
     @property
     def _currentItem(self):
         return self._items[self._target.currentIndex()]
 
-    def __export(self):
-        pass
-
 
 class FittingTree(QTreeView):
+    plotRequired = pyqtSignal(int, int)
+
     def __init__(self):
         super().__init__()
         self._obj = None
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.setSelectionMode(QAbstractItemView.SingleSelection)
         self.setSelectionBehavior(QAbstractItemView.SelectRows)
         self._model = QStandardItemModel(0, 2)
         self._model.setHeaderData(0, Qt.Horizontal, 'Name')
@@ -278,6 +433,8 @@ class FittingTree(QTreeView):
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._buildContextMenu)
         self._funcs = []
+        self.__copied = None
+        self.__allCopied = None
 
     def set(self, obj):
         if self._obj is not None:
@@ -293,18 +450,35 @@ class FittingTree(QTreeView):
             self.__addItem(f)
 
     def _buildContextMenu(self, qPoint):
+        isFunc = self.__currentItemIndex() is not None or len(self.selectedIndexes()) == 0
         menu = QMenu(self)
-        for label in ['Add Function', 'Remove Function', 'Clear']:
-            menu.addAction(label)
-        action = menu.exec_(QCursor.pos())
-        if action is None:
-            return
-        if action.text() == 'Add Function':
-            self.__addFunction()
-        if action.text() == 'Remove Function':
-            self.__removeFunction()
-        if action.text() == 'Clear':
-            self.clear()
+        if not isFunc:
+            menu.addAction(QAction('Plot this parameter', self, triggered=self.__plot))
+        menu.addAction(QAction('Add Function', self, triggered=self.__addFunction))
+        if isFunc:
+            menu.addAction(QAction('Remove Function', self, triggered=self.__removeFunction))
+        menu.addAction(QAction('Clear', self, triggered=self.__clear))
+        menu.addSeparator()
+        if isFunc:
+            menu.addAction(QAction('Copy Function', self, triggered=self.__copyFunction))
+            menu.addAction(QAction('Paste Function', self, triggered=self.__pasteFunction))
+        menu.addAction(QAction('Copy All Functions', self, triggered=lambda: self.__copyFunction(all=True)))
+        menu.addAction(QAction('Paste All Functions', self, triggered=lambda: self.__pasteFunction(all=True)))
+        menu.addSeparator()
+        menu.addAction(QAction('Import from File', self, triggered=self.__import))
+        menu.addAction(QAction('Export to File', self, triggered=self.__export))
+        menu.exec_(QCursor.pos())
+
+    def __currentItemIndex(self):
+        for i in self.selectedIndexes():
+            for j in range(self._model.rowCount() - 1, -1, -1):
+                if self._model.item(j, 0).index() == i:
+                    return j
+
+    def __plot(self):
+        p = self.selectedIndexes()[0].row()
+        f = self.selectedIndexes()[0].parent().row()
+        self.plotRequired.emit(f, p)
 
     def __addFunction(self):
         dialog = _FuncSelectDialog(self)
@@ -316,14 +490,42 @@ class FittingTree(QTreeView):
         self._funcs.append(_SingleFuncGUI(funcItem, self, self._model))
 
     def __removeFunction(self):
-        for i in self.selectedIndexes():
-            for j in range(self._model.rowCount() - 1, -1, -1):
-                if self._model.item(j, 0).index() == i:
-                    self._obj.removeFunction(j)
+        self._obj.removeFunction(self.__currentItemIndex())
 
-    def clear(self):
-        while len(self._obj.functions) != 0:
-            self._obj.removeFunction(0)
+    def __copyFunction(self, all=False):
+        if all:
+            self.__allCopied = self._obj.saveAsDictionary()
+        else:
+            self.__copied = self._obj.functions[self.__currentItemIndex()].saveAsDictionary()
+
+    def __pasteFunction(self, all=False):
+        if all:
+            if self.__allCopied is None:
+                return None
+            self.__clear()
+            self._obj.loadFromDictionary(self.__allCopied)
+        else:
+            if self.__copied is None:
+                return
+            self._obj.addFunction(self.__copied)
+
+    def __export(self):
+        path, type = QFileDialog.getSaveFileName(self, "Save fitting results", filter="Dictionary (*.dic);;All files (*.*)")
+        if len(path) != 0:
+            if not path.endswith(".dic"):
+                path = path + ".dic"
+            with open(path, "w") as f:
+                f.write(str(self._obj.saveAsDictionary()))
+
+    def __import(self):
+        fname = QFileDialog.getOpenFileName(self, 'Load fitting', filter="Dictionary (*.dic);;All files (*.*)")
+        if fname[0]:
+            with open(fname[0], "r") as f:
+                d = eval(f.read())
+            self._obj.loadFromDictionary(d)
+
+    def __clear(self):
+        self._obj.clear()
 
 
 class _FuncSelectDialog(QDialog):

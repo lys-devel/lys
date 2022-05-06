@@ -100,7 +100,7 @@ class _RegionSelector(QObject):
     def _mousePressed(self, e):
         if e.button() == Qt.LeftButton:
             self.__start = self.canvas.mapPosition(e, "BottomLeft")
-            self.canvas.setSelectedRange([self.__start, self.__start])
+            self.canvas.clearSelectedRange()
             if self.canvas.toolState() == "Select":
                 self.__select_rect = True
 
