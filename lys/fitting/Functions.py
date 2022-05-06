@@ -1,11 +1,11 @@
 
 import numpy as np
-from scipy import ndimage, special
+from scipy import special
 from collections import OrderedDict
 
 
 def const(x, value):
-    return np.ones(x.shape) * value
+    return np.ones([x.shape[0]]) * value
 
 
 def linear(x, a, b):
@@ -52,24 +52,6 @@ def relaxOsci(x, position, height, frequency, phase, offset, relax):
     return height * np.heaviside(x - position, 0.5) * np.exp(-(x - position) / relax) * (offset + np.cos(frequency * (x - position) + phase * np.pi / 180))
 
 
-class GaussConvolved(object):
-    def __init__(self, f):
-        self.f = f
-
-    def func(self, x, *p):
-        res = self.f.func(x, *p[:len(p) - 1])
-        res = ndimage.gaussian_filter(res, sigma=p[len(p) - 1] / np.sqrt(8 * np.log(2)))
-        return res
-
-    def nparam(self):
-        return self.f.nparam() + 1
-
-    def params(self):
-        res = self.f.params()
-        res.append('Resolution')
-        return res
-
-
 functions = OrderedDict()
 functions["Const"] = const
 functions["Linear"] = linear
@@ -85,11 +67,7 @@ functions["relaxOsci"] = relaxOsci
 functions["Error"] = error
 
 
-def findFuncByInstance(instance):
-    for key in functions.keys():
-        if functions[key] == instance:
-            return key
-
-
-def addFunction(name, funcObj):
-    functions[name] = funcObj
+def addFittingFunction(func, name):
+    if name is None:
+        name = func.__name__
+    functions[name] = func

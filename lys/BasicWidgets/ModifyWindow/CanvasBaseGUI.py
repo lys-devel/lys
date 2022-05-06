@@ -1,6 +1,6 @@
 from PyQt5.QtCore import Qt, QMimeData, pyqtSignal, QSize, QItemSelectionModel
 from PyQt5.QtGui import QCursor, QStandardItem, QStandardItemModel
-from PyQt5.QtWidgets import QTreeView, QFileDialog, QInputDialog, QGridLayout, QLabel, QVBoxLayout, QWidget, QGroupBox, QComboBox, QPushButton, QMenu, QAbstractItemView, QAction
+from PyQt5.QtWidgets import QDialog, QSpinBox, QTreeView, QFileDialog, QInputDialog, QGridLayout, QLabel, QVBoxLayout, QWidget, QGroupBox, QComboBox, QPushButton, QMenu, QAbstractItemView, QAction
 
 from lys import Wave, glb
 from lys.widgets import ScientificSpinBox
@@ -129,6 +129,8 @@ class DataSelectionBox(_DataSelectionBoxBase):
             raw.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("Wave", vector=True)))
         raw.addAction(QAction('Edit', self, triggered=lambda: self.__edit("Wave")))
         raw.addAction(QAction('Export', self, triggered=lambda: self.__export("Wave")))
+        if self.__dim == 2:
+            raw.addAction(QAction('Convert to 1D waves', self, triggered=lambda: self.__to1d("Wave")))
         raw.addAction(QAction('Send to shell', self, triggered=lambda: self.__send("Wave")))
 
         pr = menu.addMenu("Processed data")
@@ -140,6 +142,8 @@ class DataSelectionBox(_DataSelectionBoxBase):
             pr.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("ProcessedWave", vector=True)))
         pr.addAction(QAction('Edit', self, triggered=lambda: self.__edit("ProcessedWave")))
         pr.addAction(QAction('Export', self, triggered=lambda: self.__export("ProcessedWave")))
+        if self.__dim == 2:
+            pr.addAction(QAction('Convert to 1D waves', self, triggered=lambda: self.__to1d("ProcessedWave")))
         pr.addAction(QAction('Send to shell', self, triggered=lambda: self.__send("ProcessedWave")))
         menu.exec_(QCursor.pos())
 
@@ -207,6 +211,24 @@ class DataSelectionBox(_DataSelectionBoxBase):
             d = self.__getWaves(waveType)[0]
             d.export(path, type=type)
 
+    def __to1d(self, waveType):
+        from lys import display
+        d = self.__getWaves(waveType)[0]
+        w = d.duplicate()
+        dialog = _SliceDialog(w, self)
+        result = dialog.exec_()
+        if result:
+            axis, n = dialog.getParams()
+            result = []
+            for i in range(n):
+                if axis == "y":
+                    index = int(w.data.shape[0] / n * i)
+                    result.append(Wave(w.data[index, :], w.y))
+                else:
+                    index = int(w.data.shape[1] / n * i)
+                    result.append(Wave(w.data[:, index], w.x))
+        display(*result)
+
     def __send(self, waveType):
         d = self.__getWaves(waveType)[0]
         w = d.duplicate()
@@ -214,6 +236,38 @@ class DataSelectionBox(_DataSelectionBoxBase):
         if ok:
             w.name = text
             glb.shell().addObject(w, text)
+
+
+class _SliceDialog(QDialog):
+    def __init__(self, wave, parent=None):
+        super().__init__(parent)
+        self.wave = wave
+        self.combo = QComboBox()
+        self.combo.addItems(["x", "y"])
+        self.combo.currentTextChanged.connect(self._update)
+
+        self.slice = QSpinBox()
+        self.slice.setRange(0, 10000)
+
+        g = QGridLayout()
+        g.addWidget(QLabel("Cut along"), 0, 0)
+        g.addWidget(self.combo, 0, 1)
+        g.addWidget(QLabel("Num. of slices"), 1, 0)
+        g.addWidget(self.slice, 1, 1)
+        g.addWidget(QPushButton('O K', clicked=self.accept), 2, 0)
+        g.addWidget(QPushButton('CALCEL', clicked=self.reject), 2, 1)
+
+        self.setLayout(g)
+        self._update("x")
+
+    def _update(self, txt):
+        if txt == "x":
+            self.slice.setValue(self.wave.data.shape[1])
+        else:
+            self.slice.setValue(self.wave.data.shape[0])
+
+    def getParams(self):
+        return self.combo.currentText(), self.slice.value()
 
 
 class OffsetAdjustBox(QWidget):

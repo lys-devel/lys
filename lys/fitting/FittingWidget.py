@@ -1,7 +1,7 @@
 import inspect
 import itertools
 import numpy as np
-from PyQt5.QtWidgets import QAction, QLineEdit, QAbstractItemView, QVBoxLayout, QWidget, QComboBox, QPushButton, QTreeView, QHBoxLayout, QCheckBox, QMenu, QDialog, QMessageBox, QFileDialog, QLabel, QGridLayout
+from PyQt5.QtWidgets import QGroupBox, QAction, QLineEdit, QAbstractItemView, QVBoxLayout, QWidget, QComboBox, QPushButton, QTreeView, QHBoxLayout, QCheckBox, QMenu, QDialog, QMessageBox, QFileDialog, QLabel, QGridLayout
 from PyQt5.QtGui import QCursor, QStandardItem, QStandardItemModel
 from PyQt5.QtCore import pyqtSignal, Qt, QObject
 
@@ -15,13 +15,14 @@ from .Fitting import fit, sumFunction
 class _ResultController(QObject):
     stateChanged = pyqtSignal(bool)
 
-    def __init__(self, canvas, line, info):
+    def __init__(self, canvas, data, info, manager):
         super().__init__()
         self._canvas = canvas
         self._state = False
-        self._line = line
+        self._data = data
         self._info = info
         self._info.updated.connect(self._update)
+        self._mgr = manager
         self._fitted = None
         self._obj = None
 
@@ -31,15 +32,16 @@ class _ResultController(QObject):
             if f is None:
                 self._remove()
                 return False
+            wave = self._data.getWave()
             p = self._info.fitParameters
-            x = self._line.getWave().x
+            _, x, axis = self._mgr.getDataForFit(wave)
             if self._fitted is None:
-                self._fitted = Wave(f(x, *p), x, name=self._line.getWave().name + "_fit")
+                self._fitted = Wave(f(x, *p), axis, name=wave.name + "_fit")
             else:
                 self._fitted.data = f(x, *p)
-                self._fitted.x = x
+                self._fitted.x = axis
             if self._obj is None:
-                self._obj = self._canvas.Append(self._fitted, offset=self._line.getOffset())
+                self._obj = self._canvas.Append(self._fitted, offset=self._data.getOffset())
         else:
             self._remove()
 
@@ -57,19 +59,51 @@ class _ResultController(QObject):
         return self._state
 
 
+class _DataManager(QObject):
+    def __init__(self):
+        super().__init__()
+        self._range = [None, None]
+        self._xdata = None
+
+    def getDataForFit(self, wave):
+        axis = wave.x
+        range = list(self._range)
+        if range[0] is None:
+            range[0] = np.min(axis) - 1
+        if range[1] is None:
+            range[1] = np.max(axis) + 1
+        p = wave.posToPoint(range, axis=0)
+        if self._xdata is None:
+            x = wave.x
+        else:
+            x = wave.note[self._xdata]
+        return wave.data[p[0]:p[1]], x[p[0]:p[1]], wave.x[p[0]:p[1]]
+
+    def getOffset(self, line):
+        return line.getOffset()
+
+    def setRange(self, range):
+        print("range", range)
+        self._range = range
+
+    def setAxisType(self, t):
+        self._xdata = t
+
+
 class _FittingInfo(QObject):
     functionAdded = pyqtSignal(object)
     functionRemoved = pyqtSignal(object)
     updated = pyqtSignal()
 
-    def __init__(self, wave):
+    def __init__(self, data, manager):
         super().__init__()
-        self._wave = wave
+        self._data = data
+        self._mgr = manager
         self._funcs = []
 
     @property
     def name(self):
-        return self._wave.name
+        return self._data.name
 
     @property
     def functions(self):
@@ -94,14 +128,14 @@ class _FittingInfo(QObject):
         while len(self.functions) != 0:
             self.removeFunction(0)
 
-    def fit(self, parent, range, xdata=None):
+    def fit(self, parent):
         guess = self.fitParameters
         bounds = np.array(list(itertools.chain(*[fi.range for fi in self._funcs])))
         for g, b in zip(guess, bounds):
             if g < b[0] or g > b[1] or b[0] > b[1]:
                 QMessageBox.warning(parent, "Error", "Fit error: all fitting parameters should between minimum and maximum.")
                 return False
-        data, x = self.__loadData(range, xdata)
+        data, x, _ = self._mgr.getDataForFit(self._data)
         res, sig = fit(self.fitFunction, x, data, guess=guess, bounds=bounds.T)
         n = 0
         for fi in self._funcs:
@@ -109,20 +143,6 @@ class _FittingInfo(QObject):
             fi.setValue(res[n:n + m])
             n = n + m
         return True
-
-    def __loadData(self, range, xdata):
-        axis = self._wave.x
-        range = list(range)
-        if range[0] is None:
-            range[0] = np.min(axis) - 1
-        if range[1] is None:
-            range[1] = np.max(axis) + 1
-        p = self._wave.posToPoint(range, axis=0)
-        if xdata is None:
-            x = self._wave.x
-        else:
-            x = self._wave.note[xdata]
-        return self._wave.data[p[0]:p[1]], x[p[0]:p[1]]
 
     def getParamValue(self, index_f, index_p):
         if len(self.functions) > index_f:
@@ -271,12 +291,90 @@ class _ParamInfo(QObject):
         self._min, self._max = minMaxEnabled
 
 
+class DataAxisWidget(QGroupBox):
+    def __init__(self, obj, canvas):
+        super().__init__("x axis")
+        self.__initlayout()
+        self._obj = obj
+        self._canvas = canvas
+
+    def __initlayout(self):
+        self._xdata = QComboBox()
+        self._xdata.addItems(["x axis", "from Wave.note"])
+        self._xdata.currentTextChanged.connect(self.__changeXAxis)
+        self._keyLabel = QLabel("Key")
+        self._keyText = QLineEdit()
+        self._keyText.textChanged.connect(self.__setXAxis)
+        self._keyLabel.hide()
+        self._keyText.hide()
+
+        self._min = ScientificSpinBox()
+        self._max = ScientificSpinBox()
+        self._min.valueChanged.connect(self.__loadRange)
+        self._max.valueChanged.connect(self.__loadRange)
+        self._min.setEnabled(False)
+        self._max.setEnabled(False)
+        self._useMin = QCheckBox("min", stateChanged=self._min.setEnabled)
+        self._useMax = QCheckBox("max", stateChanged=self._max.setEnabled)
+        self._useMin.stateChanged.connect(self.__loadRange)
+        self._useMax.stateChanged.connect(self.__loadRange)
+
+        g = QGridLayout()
+        g.addWidget(QLabel("x data"), 0, 0)
+        g.addWidget(self._xdata, 0, 1, 1, 2)
+        g.addWidget(self._keyLabel, 1, 0)
+        g.addWidget(self._keyText, 1, 1, 1, 2)
+        g.addWidget(QLabel("Region"), 2, 0)
+        g.addWidget(self._useMin, 2, 1)
+        g.addWidget(self._useMax, 2, 2)
+        g.addWidget(QPushButton("Load from Graph", clicked=self.__loadFromGraph), 3, 0)
+        g.addWidget(self._min, 3, 1)
+        g.addWidget(self._max, 3, 2)
+
+        self.setLayout(g)
+
+    def __loadRange(self):
+        r = [0, 0]
+        if self._useMin.isChecked():
+            r[0] = self._min.value()
+        else:
+            r[0] = None
+        if self._useMax.isChecked():
+            r[1] = self._max.value()
+        else:
+            r[1] = None
+        self._obj.setRange(tuple(r))
+
+    def __changeXAxis(self, txt):
+        self._keyLabel.setVisible(txt == "from Wave.note")
+        self._keyText.setVisible(txt == "from Wave.note")
+        self.__setXAxis()
+
+    def __setXAxis(self):
+        if self._xdata.currentText() == "x axis":
+            self._obj.setAxisType(None)
+        else:
+            self._obj.setAxisType(self._keyText.text())
+
+    def __loadFromGraph(self):
+        if self._canvas.isRangeSelected():
+            r = np.array(self._canvas.selectedRange()).T[0]
+            self._min.setValue(min(*r))
+            self._max.setValue(max(*r))
+            self._useMin.setChecked(True)
+            self._useMax.setChecked(True)
+            self.__loadRange()
+        else:
+            QMessageBox.information(self, "Warning", "Please select region by dragging in the graph.")
+
+
 class FittingWidget(QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
-        self._items = [_FittingInfo(line.getWave()) for line in canvas.getLines()]
-        self._ctrls = [_ResultController(canvas, line, item) for line, item in zip(canvas.getLines(), self._items)]
+        self._data = _DataManager()
+        self._items = [_FittingInfo(line.getWave(), self._data) for line in self.canvas.getLines()]
+        self._ctrls = [_ResultController(canvas, data, item, self._data) for data, item in zip(self.canvas.getLines(), self._items)]
         self.__initlayout()
         self.__targetChanged(0, init=True)
 
@@ -287,34 +385,11 @@ class FittingWidget(QWidget):
         self._target.addItems([item.name for item in self._items])
         self._target.currentIndexChanged.connect(self.__targetChanged)
 
-        self._xdata = QComboBox()
-        self._xdata.addItems(["x axis", "from Wave.note"])
-        self._xdata.currentTextChanged.connect(self.__changeXAxis)
-        self._keyLabel = QLabel("Key")
-        self._keyText = QLineEdit()
-        self._keyLabel.hide()
-        self._keyText.hide()
+        hbox2 = QHBoxLayout()
+        hbox2.addWidget(QLabel("Target"))
+        hbox2.addWidget(self._target)
 
-        self._min = ScientificSpinBox()
-        self._max = ScientificSpinBox()
-        self._min.setEnabled(False)
-        self._max.setEnabled(False)
-        self._useMin = QCheckBox("min", stateChanged=self._min.setEnabled)
-        self._useMax = QCheckBox("max", stateChanged=self._max.setEnabled)
-
-        g = QGridLayout()
-        g.addWidget(QLabel("Target"), 0, 0)
-        g.addWidget(self._target, 0, 1, 1, 2)
-        g.addWidget(QLabel("x data"), 1, 0)
-        g.addWidget(self._xdata, 1, 1, 1, 2)
-        g.addWidget(self._keyLabel, 2, 0)
-        g.addWidget(self._keyText, 2, 1, 1, 2)
-        g.addWidget(QLabel("Region"), 3, 0)
-        g.addWidget(self._useMin, 3, 1)
-        g.addWidget(self._useMax, 3, 2)
-        g.addWidget(QPushButton("Load from Graph", clicked=self.__loadFromGraph), 4, 0)
-        g.addWidget(self._min, 4, 1)
-        g.addWidget(self._max, 4, 2)
+        dm = DataAxisWidget(self._data, self.canvas)
 
         self._append = QCheckBox("Append result", stateChanged=self.__append)
         self._all = QCheckBox("Apply to all")
@@ -323,12 +398,13 @@ class FittingWidget(QWidget):
         hbox1.addWidget(self._append)
         hbox1.addWidget(self._all)
 
-        self._exec = QPushButton('Fit', clicked=self.__fit)
+        exec = QPushButton('Fit', clicked=self.__fit)
         hbox3 = QHBoxLayout()
-        hbox3.addWidget(self._exec)
+        hbox3.addWidget(exec)
 
         vbox1 = QVBoxLayout()
-        vbox1.addLayout(g)
+        vbox1.addLayout(hbox2)
+        vbox1.addWidget(dm)
         vbox1.addWidget(self._tree)
         vbox1.addLayout(hbox1)
         vbox1.addLayout(hbox3)
@@ -357,30 +433,12 @@ class FittingWidget(QWidget):
                     if item != self._currentItem:
                         item.clear()
                         item.loadFromDictionary(d)
-                    res = item.fit(self, self.__loadRange(), self.__loadXAxis())
+                    res = item.fit(self)
                     if not res:
                         return
             QMessageBox.information(self, "Information", "All fittings finished.", QMessageBox.Yes)
         else:
-            self._currentItem.fit(self, self.__loadRange(), self.__loadXAxis())
-
-    def __loadRange(self):
-        r = [0, 0]
-        if self._useMin.isChecked():
-            r[0] = self._min.value()
-        else:
-            r[0] = None
-        if self._useMax.isChecked():
-            r[1] = self._max.value()
-        else:
-            r[1] = None
-        return tuple(r)
-
-    def __loadXAxis(self):
-        if self._xdata.currentText() == "x axis":
-            return None
-        else:
-            return self._keyText.text()
+            self._currentItem.fit(self)
 
     def __append(self, state):
         if self._all.isChecked():
@@ -388,20 +446,6 @@ class FittingWidget(QWidget):
                 c.set(state)
         else:
             self._ctrls[self._target.currentIndex()].set(state)
-
-    def __changeXAxis(self, txt):
-        self._keyLabel.setVisible(txt == "from Wave.note")
-        self._keyText.setVisible(txt == "from Wave.note")
-
-    def __loadFromGraph(self):
-        if self.canvas.isRangeSelected():
-            r = np.array(self.canvas.selectedRange()).T[0]
-            self._min.setValue(min(*r))
-            self._max.setValue(max(*r))
-            self._useMin.setChecked(True)
-            self._useMax.setChecked(True)
-        else:
-            QMessageBox.information(self, "Warning", "Please select region by dragging in the graph.")
 
     def __plot(self, f, p):
         res = []

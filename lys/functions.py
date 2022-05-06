@@ -110,5 +110,19 @@ def registerFileLoader(type, func):
     _dic[type] = func
 
 
+def registerFittingFunction(func, name=None):
+    """
+    Register fitting function for lys fitting module.
+
+    The fitting can be done when Ctrl+F is pressed on the graphs with 1D data.
+
+    Args:
+        func(callable): The function. The information of the function should be obtained from inspect.signature.
+        name(str): The name of the function. If it is None, then func.__name__ is used.
+    """
+    from .fitting import addFittingFunction
+    addFittingFunction(func, name)
+
+
 def edit(data):
     pass

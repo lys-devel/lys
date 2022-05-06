@@ -1,7 +1,6 @@
 from lys.widgets import LysSubWindow
 
 from .FittingWidget import FittingWidget
-from .LineProfile import LineProfileWidget
 
 
 class FittingWindow(LysSubWindow):
@@ -18,19 +17,3 @@ class FittingWindow(LysSubWindow):
         self.adjustSize()
         self.updateGeometry()
         self.show()
-
-
-class LineProfileWindow(LysSubWindow):
-    def __init__(self, parent, wavelist, canvas=None):
-        super().__init__()
-        self._initlayout(wavelist, canvas)
-        self.adjustSize()
-        self.updateGeometry()
-        self.attach(parent)
-        self.show()
-        self.attachTo()
-
-    def _initlayout(self, wavelist, canvas):
-        self.setWindowTitle("Line Profile Window")
-        w = LineProfileWidget(wavelist, canvas)
-        self.setWidget(w)
