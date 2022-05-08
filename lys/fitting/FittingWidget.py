@@ -83,7 +83,6 @@ class _DataManager(QObject):
         return line.getOffset()
 
     def setRange(self, range):
-        print("range", range)
         self._range = range
 
     def setAxisType(self, t):

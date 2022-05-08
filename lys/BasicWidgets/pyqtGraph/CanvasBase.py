@@ -1,4 +1,5 @@
 import weakref
+import pyqtgraph
 
 import pyqtgraph as pg
 from LysQt.QtGui import QMouseEvent
@@ -60,7 +61,10 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.initCanvas.emit()
 
     def _hover(self, list):
-        self._flg = len(list) == 1
+        self._flg = True
+        for item in list:
+            if isinstance(item, (pyqtgraph.ROI, pyqtgraph.InfiniteLine)):
+                self._flg = False
 
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)
