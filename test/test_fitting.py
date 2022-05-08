@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 
-from lys.fitting import fit
+from lys.fitting import fit, sumFunction
 
 
 class fitting_test(unittest.TestCase):
@@ -12,7 +12,7 @@ class fitting_test(unittest.TestCase):
         self.assertAlmostEqual(c[0], 1)
         self.assertAlmostEqual(c[1], 0)
 
-        c, sig = fit([lambda x, a: a * x, lambda x, C: x * 0 + C], x, y)
+        c, sig = fit(sumFunction([lambda x, a: a * x, lambda x, C: x * 0 + C]), x, y)
         self.assertAlmostEqual(c[0], 1)
         self.assertAlmostEqual(c[1], 0)
 

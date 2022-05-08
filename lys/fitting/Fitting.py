@@ -24,7 +24,7 @@ def fit(f, xdata, ydata, guess=None, bounds=None):
     if guess is None:
         guess = [1 for _ in range(_nparam(f))]
     if bounds is None:
-        res, tmp = optimize.curve_fit(f, xdata, ydata, guess)
+        res, sig = optimize.curve_fit(f, xdata, ydata, guess)
     else:
         fixed = []
         b_low, b_high = [], []
