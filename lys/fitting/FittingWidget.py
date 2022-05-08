@@ -176,7 +176,7 @@ class _FuncInfo(QObject):
         super().__init__()
         self._name = name
         param = inspect.signature(functions[name]).parameters
-        self._params = [_ParamInfo(n) for n in list(param.keys())[1:]]
+        self._params = [_ParamInfo(n, p) for n, p in zip(list(param.keys())[1:], list(param.values())[1:])]
         for p in self._params:
             p.stateChanged.connect(self.updated)
 
@@ -232,10 +232,15 @@ class _FuncInfo(QObject):
 class _ParamInfo(QObject):
     stateChanged = pyqtSignal(object)
 
-    def __init__(self, name, value=1, range=(0, 1), enabled=True, minMaxEnabled=(False, False)):
+    def __init__(self, name, param, value=None, range=(0, 1), enabled=True, minMaxEnabled=(False, False)):
         super().__init__()
         self._name = name
-        self._value = value
+        if param.default != inspect._empty:
+            self._value = param.default
+        else:
+            self._value = 1
+        if value is not None:
+            self._value = value
         self._range = range
         self._use = enabled
         self._min, self._max = minMaxEnabled

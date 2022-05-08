@@ -8,7 +8,7 @@ def const(x, value):
     return np.ones([x.shape[0]]) * value
 
 
-def linear(x, a, b):
+def linear(x, a=1, b=0):
     return a * x + b
 
 
