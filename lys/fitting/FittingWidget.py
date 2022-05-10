@@ -1,7 +1,7 @@
 import inspect
 import itertools
 import numpy as np
-from PyQt5.QtWidgets import QGroupBox, QAction, QLineEdit, QAbstractItemView, QVBoxLayout, QWidget, QComboBox, QPushButton, QTreeView, QHBoxLayout, QCheckBox, QMenu, QDialog, QMessageBox, QFileDialog, QLabel, QGridLayout
+from PyQt5.QtWidgets import QApplication, QGroupBox, QAction, QLineEdit, QAbstractItemView, QVBoxLayout, QWidget, QComboBox, QPushButton, QTreeView, QHBoxLayout, QCheckBox, QMenu, QDialog, QMessageBox, QFileDialog, QLabel, QGridLayout
 from PyQt5.QtGui import QCursor, QStandardItem, QStandardItemModel
 from PyQt5.QtCore import pyqtSignal, Qt, QObject
 
@@ -195,6 +195,10 @@ class _FuncInfo(QObject):
     @property
     def function(self):
         return functions[self._name]
+
+    @property
+    def paramNames(self):
+        return [p.name for p in self.parameters]
 
     @property
     def value(self):
@@ -499,15 +503,19 @@ class FittingTree(QTreeView):
 
     def _buildContextMenu(self, qPoint):
         isFunc = self.__currentItemIndex() is not None or len(self.selectedIndexes()) == 0
+        selected = self.__currentItemIndex() is not None
         menu = QMenu(self)
         if not isFunc:
             menu.addAction(QAction('Plot this parameter', self, triggered=self.__plot))
         menu.addAction(QAction('Add Function', self, triggered=self.__addFunction))
-        if isFunc:
+        if isFunc and selected:
             menu.addAction(QAction('Remove Function', self, triggered=self.__removeFunction))
         menu.addAction(QAction('Clear', self, triggered=self.__clear))
         menu.addSeparator()
-        if isFunc:
+        if isFunc and selected:
+            menu.addAction(QAction('Copy Parameters as list', self, triggered=lambda: self.__copyParams("list")))
+            menu.addAction(QAction('Copy Parameters as dict', self, triggered=lambda: self.__copyParams("dict")))
+            menu.addSeparator()
             menu.addAction(QAction('Copy Function', self, triggered=self.__copyFunction))
             menu.addAction(QAction('Paste Function', self, triggered=self.__pasteFunction))
         menu.addAction(QAction('Copy All Functions', self, triggered=lambda: self.__copyFunction(all=True)))
@@ -539,6 +547,16 @@ class FittingTree(QTreeView):
 
     def __removeFunction(self):
         self._obj.removeFunction(self.__currentItemIndex())
+
+    def __copyParams(self, type="list"):
+        values = self._obj.functions[self.__currentItemIndex()].value
+        if type == "list":
+            obj = values
+        else:
+            obj = {n: v for n, v in zip(self._obj.functions[self.__currentItemIndex()].paramNames, values)}
+        cb = QApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(str(obj), mode=cb.Clipboard)
 
     def __copyFunction(self, all=False):
         if all:
