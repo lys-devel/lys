@@ -131,12 +131,6 @@ class Graph(_SizeAdjustableWindow):
             self.setHeight(self.height())
 
     def keyPress(self, e):
-        if e.key() == Qt.Key_L:
-            wavelis = []
-            for d in self.canvas.getImages():
-                if d.getWave().FileName is not None:
-                    wavelis.append(d.getWave())
-            LineProfileWindow(self, wavelis, self.canvas)
         if e.key() == Qt.Key_S:
             if e.modifiers() == Qt.ShiftModifier | Qt.ControlModifier:
                 self.__saveAs()

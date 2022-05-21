@@ -6,7 +6,7 @@ from pathlib import Path
 
 from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget, QTextEdit
 from LysQt.QtCore import Qt, pyqtSignal, QPoint
-from . import home, load, SettingDict
+from . import home, load
 from .generalWidgets import ScientificSpinBox, ColorSelection, ColormapSelection
 
 
@@ -140,6 +140,16 @@ class LysSubWindow(QMdiSubWindow):
     """
     *closed* signal is emitted when the window is closed.
     """
+    saved = pyqtSignal(dict)
+    """
+    *saved* signal is emitted when the saveSettings method is called.
+    User settings can be stored in dictionary.
+    """
+    loaded = pyqtSignal(dict)
+    """
+    *loaded* signal is emitted when the loadSettings method is called.
+    User settings can be restored from dictionary.
+    """
 
     def __init__(self, floating=False):
         from . import glb
@@ -206,23 +216,40 @@ class LysSubWindow(QMdiSubWindow):
         Export all widgets settings from default setting file specified by name.
         User input on various widgets are easily loaded from file by :meth:`restoreSettings`.
         """
-        _save(self, file)
+        data = _save(self)
+        self.saved.emit(data)
+        file = os.path.abspath(file)
+        os.makedirs(os.path.dirname(file), exist_ok=True)
+        with open(file, 'w') as f:
+            f.write(str(data))
 
     def restoreSettings(self, file):
         """
         Import all widgets settings from default setting file specified by name.
         User input on various widgets are easily exported to file by :meth:`saveSettings`.
         """
-        return _restore(self, file)
+        if os.path.exists(file):
+            with open(file, 'r') as f:
+                data = eval(f.read())
+            _restore(self, data)
+            self.loaded.emit(data)
+
+    def setSettingFile(self, file):
+        """
+        Enable automatic setting storing by saveSettings.
+        restoreSettings will be called when this functions is called.
+        """
+        from . import glb
+        glb.mainWindow().closed.connect(lambda: self.saveSettings(file))
+        self.closed.connect(lambda: self.saveSettings(file))
+        self.restoreSettings(file)
 
     def isFloating(self):
         """Return if the window is out of the mdi window or not"""
         return self._floating
 
 
-def _restore(self, file):
-    settings = SettingDict(file)
-
+def _restore(self, settings):
     for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
         name = obj.objectName()
         if _checkName(name):
@@ -263,8 +290,8 @@ def _restore(self, file):
                 obj.setPlainText(settings[name])
 
 
-def _save(self, file):
-    settings = SettingDict(file)
+def _save(self):
+    settings = dict()
 
     for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
         name = obj.objectName()
