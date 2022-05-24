@@ -66,7 +66,7 @@ class CanvasMouseEvent(CanvasPart):
         self._select = _RegionSelector(self, canvas)
         self._line = _LineDrawer(self, canvas)
         self._iline = _InfiniteLineDrawer(self, canvas)
-        self._line = _RectDrawer(self, canvas)
+        self._rect = _RectDrawer(self, canvas)
         self._region = _RegionDrawer(self, canvas)
         self._fregion = _FreeRegionDrawer(self, canvas)
         self._cross = _CrosshairDrawer(self, canvas)

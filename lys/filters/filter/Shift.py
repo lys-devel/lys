@@ -4,9 +4,10 @@ import dask.array as da
 
 from lys import DaskWave
 from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.widgets import ScientificSpinBox
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QGridLayout, QSpinBox, QLabel, AxisCheckLayout, QHBoxLayout, QComboBox
+from .CommonWidgets import QGridLayout, QLabel, AxisCheckLayout, QHBoxLayout, QComboBox
 
 
 class ShiftFilter(FilterInterface):
@@ -140,8 +141,7 @@ class _ImageShiftSetting(FilterSettingBase):
         self._dim = dimension
         self._values = []
         for i in range(dimension):
-            wid = QSpinBox()
-            wid.setRange(-1000000, 1000000)
+            wid = ScientificSpinBox()
             self._values.append(wid)
             self._layout.addWidget(QLabel('Axis' + str(i + 1)), 0, i)
             self._layout.addWidget(wid, 1, i)

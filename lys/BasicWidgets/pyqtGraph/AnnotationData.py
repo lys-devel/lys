@@ -23,9 +23,8 @@ class _PyqtgraphLineAnnotation(LineAnnotation):
         self._axes.addItem(self._obj)
 
     def _setPosition(self, pos):
-        self._obj.setPos(0, 0)
-        self._obj.getHandles()[0].setPos(*pos[0])
-        self._obj.getHandles()[1].setPos(*pos[1])
+        self._obj.movePoint(self._obj.getHandles()[0], pos[0], finish=False)
+        self._obj.movePoint(self._obj.getHandles()[1], pos[1])
 
     def _setLineColor(self, color):
         self._obj.pen.setColor(QColor(color))
@@ -116,7 +115,6 @@ class _PyqtgraphRectAnnotation(RectAnnotation):
 
     def remove(self):
         self.canvas().getAxes(self._axis).removeItem(self._obj)
-
 
 
 class _PyqtgraphRegionAnnotation(RegionAnnotation):
