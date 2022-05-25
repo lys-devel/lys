@@ -4,7 +4,7 @@ from PyQt5.QtGui import QBrush, QColor, QCursor
 from PyQt5.QtCore import Qt, QAbstractItemModel, QVariant, QModelIndex, pyqtSignal, QSize, QItemSelectionModel
 
 import numpy as np
-from lys import filters, display, Wave, Graph, pyqtCanvas, CanvasBase, edit, glb
+from lys import filters, display, Wave, frontCanvas, pyqtCanvas, CanvasBase, edit, glb
 
 from ..MultiCutExecutors import PointExecutor, RegionExecutor, FreeLineExecutor
 from ..MultiCut import ExecutorList, SwitchableObjects, controlledObjects
@@ -575,7 +575,7 @@ class CutTab(QWidget):
 
     def getTargetCanvas(self):
         if self._usegraph.isChecked():
-            return Graph.active().canvas
+            return frontCanvas()
         else:
             pos, wid = self._table.getGridPos()
             return self.grid.itemAtPosition(*pos)

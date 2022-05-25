@@ -6,7 +6,7 @@ from LysQt.QtCore import QMimeData, Qt
 from LysQt.QtWidgets import QApplication
 from LysQt.QtGui import QImage
 
-from ..CanvasInterface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent, CanvasUtilities
+from ..CanvasInterface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasFocusEvent, CanvasMouseEvent, CanvasUtilities
 from .AxisSettings import _MatplotlibAxes, _MatplotlibTicks
 from .AxisLabelSettings import _MatplotlibAxisLabel, _MatplotlibTickLabel
 from .AreaSettings import _MatplotlibMargin, _MatplotlibCanvasSize
@@ -57,6 +57,7 @@ class ExtendCanvas(CanvasBase, FigureCanvas):
         self.addCanvasPart(CanvasUtilities(self))
         self.addCanvasPart(CanvasKeyboardEvent(self))
         self.addCanvasPart(_MatplotlibMouseEvent(self))
+        self.addCanvasPart(CanvasFocusEvent(self))
         self.initCanvas.emit()
 
     def mouseReleaseEvent(self, event):
@@ -74,6 +75,10 @@ class ExtendCanvas(CanvasBase, FigureCanvas):
     def keyPressEvent(self, event):
         super().keyPressEvent(event)
         self.keyPressed.emit(event)
+
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        self.focused.emit(event)
 
     @saveCanvas
     def _onScroll(self, event):

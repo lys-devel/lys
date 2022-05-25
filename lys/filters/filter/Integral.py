@@ -355,10 +355,13 @@ class _CircleSetting(FilterSettingBase):
             c.setAxis(i)
 
     def _LoadFromFreeLine(self):
-        from lys import Graph
-        c = Graph.active().canvas
-        line = c.getAnnotations("line")[0]
-        pos = np.array(c.getAnnotLinePosition(line)).T
+        from lys import frontCanvas
+        c = frontCanvas()
+        lines = c.getLineAnnotations()
+        if len(lines) == 0:
+            return
+        line = lines[0]
+        pos = np.array(line.getPosition())
         for c, i in zip(self.center, pos[0]):
             c.setValue(i)
         r = np.linalg.norm(pos[0] - pos[1])

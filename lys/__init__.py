@@ -1,6 +1,6 @@
 from . import errors
 from . import QtSystem
-from .functions import home, load, edit, registerFileLoader, loadableFiles, registerFittingFunction
+from .functions import home, load, edit, registerFileLoader, loadableFiles, registerFittingFunction, frontCanvas
 from .core import SettingDict, Wave, DaskWave
 from .Tasks import task, tasks
 from . import FileView
