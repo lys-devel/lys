@@ -1,4 +1,5 @@
 import time
+import weakref
 import numpy as np
 
 from LysQt.QtGui import QKeyEvent, QMouseEvent
@@ -32,6 +33,35 @@ class CanvasKeyboardEvent(CanvasPart):
             self.canvas().openFittingWindow()
 
 
+_front = []
+
+
+def getFrontCanvas(exclude=[]):
+    if not hasattr(exclude, "__iter__"):
+        exclude = [exclude]
+    for canvas in reversed(_front):
+        c = canvas()
+        if c is not None and c not in exclude:
+            return c
+
+
+class CanvasFocusEvent(CanvasPart):
+    focused = pyqtSignal(object)
+    """
+    Emitted when the canvas is focused
+    """
+
+    def __init__(self, canvas):
+        super().__init__(canvas)
+        self.focused.connect(self._setFrontCanvas)
+        self._setFrontCanvas()
+
+    def _setFrontCanvas(self):
+        _front.append(weakref.ref(self.canvas()))
+        if len(_front) > 1000:
+            _front.pop(0)
+
+
 class CanvasMouseEvent(CanvasPart):
     """
     Basic keyborad event class of Canvas.
@@ -62,11 +92,10 @@ class CanvasMouseEvent(CanvasPart):
         self.mouseReleased.connect(self._mouseReleased)
         self.doubleClicked.connect(canvas.openModifyWindow)
         self._clicktime = 0
-
         self._select = _RegionSelector(self, canvas)
         self._line = _LineDrawer(self, canvas)
         self._iline = _InfiniteLineDrawer(self, canvas)
-        self._line = _RectDrawer(self, canvas)
+        self._rect = _RectDrawer(self, canvas)
         self._region = _RegionDrawer(self, canvas)
         self._fregion = _FreeRegionDrawer(self, canvas)
         self._cross = _CrosshairDrawer(self, canvas)

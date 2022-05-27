@@ -1,10 +1,9 @@
-from LysQt.QtGui import *
-from LysQt.QtWidgets import QSizePolicy
+from LysQt.QtCore import Qt
+from LysQt.QtWidgets import QSizePolicy, QMdiArea, QFileDialog, QWidget, QGridLayout
 
-from lys import registerFileLoader
-from lys.widgets import AutoSavedWindow, _ExtendMdiArea
-from .Commons.ExtendTable import *
-from .ModifyWindow.ModifyWindow import *
+from lys import registerFileLoader, frontCanvas, Wave
+from lys.widgets import AutoSavedWindow, _ExtendMdiArea, LysSubWindow
+from .Commons.ExtendTable import ExtendTable
 from .Matplotlib import ExtendCanvas
 from .pyqtGraph import pyqtCanvas
 
@@ -37,24 +36,11 @@ class Graph(_SizeAdjustableWindow):
     graphLibrary = "matplotlib"
 
     @classmethod
-    def active(cls, n=0, exclude=None):
-        list = _ExtendMdiArea.current().subWindowList(order=QMdiArea.ActivationHistoryOrder)
-        m = 0
-        for l in reversed(list):
-            if isinstance(l, Graph):
-                if exclude == l or exclude == l.canvas:
-                    continue
-                if m == n:
-                    return l
-                else:
-                    m += 1
-
-    @classmethod
     def closeAllGraphs(cls):
         list = _ExtendMdiArea.current().subWindowList(order=QMdiArea.ActivationHistoryOrder)
-        for l in reversed(list):
-            if isinstance(l, Graph):
-                l.close(force=True)
+        for item in reversed(list):
+            if isinstance(item, Graph):
+                item.close(force=True)
 
     def _prefix(self):
         return 'graph'
@@ -135,7 +121,7 @@ class Graph(_SizeAdjustableWindow):
             if e.modifiers() == Qt.ShiftModifier | Qt.ControlModifier:
                 self.__saveAs()
             elif e.modifiers() == Qt.ControlModifier:
-                if self.FileName() == None:
+                if self.FileName() is None:
                     self.__saveAs()
                 else:
                     self.Save()
@@ -164,20 +150,21 @@ class Graph(_SizeAdjustableWindow):
 
 def display(*args, lib=None, **kwargs):
     g = Graph(lib=lib)
-    return append(*args, graph=g, **kwargs)
+    append(*args, canvas=g.canvas, **kwargs)
+    return g
 
 
-def append(*args, graph=None, exclude=None, **kwargs):
-    if graph is None:
-        g = Graph.active(exclude=exclude)
+def append(*args, canvas=None, exclude=[], **kwargs):
+    if canvas is None:
+        c = frontCanvas(exclude=exclude)
     else:
-        g = graph
+        c = canvas
     for wave in args:
         if isinstance(wave, Wave):
-            g.Append(wave, **kwargs)
+            c.Append(wave, **kwargs)
         else:
-            g.Append(Wave(wave), **kwargs)
-    return g
+            c.Append(Wave(wave), **kwargs)
+    return c
 
 
 class MultipleGrid(LysSubWindow):

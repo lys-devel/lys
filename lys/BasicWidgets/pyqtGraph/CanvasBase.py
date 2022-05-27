@@ -4,7 +4,7 @@ import pyqtgraph
 import pyqtgraph as pg
 from LysQt.QtGui import QMouseEvent
 
-from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent, CanvasUtilities
+from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent, CanvasFocusEvent, CanvasUtilities
 from .AxisSettings import _pyqtGraphAxes, _pyqtGraphTicks
 from .AxisLabelSettings import _PyqtgraphAxisLabel, _PyqtgraphTickLabel
 from .AreaSettings import _PyqtGraphMargin, _PyqtGraphCanvasSize
@@ -58,6 +58,7 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.addCanvasPart(CanvasUtilities(self))
         self.addCanvasPart(CanvasKeyboardEvent(self))
         self.addCanvasPart(_PyqtgraphMouseEvent(self))
+        self.addCanvasPart(CanvasFocusEvent(self))
         self.initCanvas.emit()
 
     def _hover(self, list):
@@ -82,6 +83,10 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
     def keyPressEvent(self, event):
         self.keyPressed.emit(event)
         super().keyPressEvent(event)
+
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        self.focused.emit(event)
 
     def _onDrag(self, event):
         self.mouseMoved.emit(event)

@@ -6,7 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 from lys import *
-from lys import glb
+from lys import glb, frontCanvas
 from ..MultiCutExecutors import PointExecutor
 
 
@@ -87,9 +87,9 @@ class AnimationTab(QGroupBox):
         self.layout.insertWidget(0, self.__axis)
 
     def __loadCanvasSettings(self):
-        if Graph.active() is None:
+        c = frontCanvas()
+        if c is None:
             return None, None
-        c = Graph.active().canvas
         d = {}
         c.SaveAsDictionary(d)
         dic = {t: d[t] for t in ['AxisSetting', 'TickSetting', 'AxisRange', 'LabelSetting', 'TickLabelSetting', 'Size', 'Margin']}

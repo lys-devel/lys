@@ -126,3 +126,17 @@ def registerFittingFunction(func, name=None):
 
 def edit(data):
     pass
+
+
+def frontCanvas(exclude=[]):
+    """
+    Get the front canvas.
+
+    Args:
+        exclude(list of canvas): If the front canvas is in exclude, the it will be ignored.
+
+    Return:
+        canvas: The front canvas
+    """
+    from .BasicWidgets import getFrontCanvas
+    return getFrontCanvas(exclude=exclude)

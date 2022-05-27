@@ -1,12 +1,13 @@
+import cv2
 import numpy as np
 import dask.array as da
 from scipy import ndimage
 
-from lys import DaskWave
+from lys import DaskWave, frontCanvas
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QGridLayout, QComboBox, ScientificSpinBox, QLabel, QHBoxLayout, QVBoxLayout, AxisSelectionLayout
+from .CommonWidgets import QGridLayout, QComboBox, ScientificSpinBox, QLabel, QHBoxLayout, QVBoxLayout, AxisSelectionLayout, QPushButton, QMessageBox
 
 
 class SetAxisFilter(FilterInterface):
@@ -123,7 +124,12 @@ class Rotation2DFilter(FilterInterface):
 
 class SymmetrizeFilter(FilterInterface):
     """
-    Symmetrize data.
+    Symmetrize 2D data.
+
+    Args:
+        rotation(int): The image is *rotation*-fold symmetrized.
+        center(length 2 sequence): The central position of rotation.
+        axes(length 2 sequence): The axes to be symmetrized.
     """
 
     def __init__(self, rotation, center, axes=(0, 1)):
@@ -151,20 +157,27 @@ def _symmetrze(data, rotation, center):
     s = data.shape
     dx = (s[0] - 1) / 2 - center[0]
     dy = (s[1] - 1) / 2 - center[1]
-    tmp = ndimage.shift(data, [dx, dy], cval=np.NaN, order=0)
+    tmp = ndimage.shift(data, [dx, dy], cval=np.NaN, order=1)
     mask = np.where(np.isnan(tmp), 0, 1)
     tmp[np.isnan(tmp)] = 0
-    dlis = np.array([ndimage.rotate(tmp, 360 / rotation * i, reshape=False, cval=0) for i in range(rotation)])
-    mlis = np.array([ndimage.rotate(mask, 360 / rotation * i, reshape=False, cval=0) for i in range(rotation)])
+    dlis = np.array([ndimage.rotate(tmp, 360 / rotation * i, reshape=False, cval=0, order=1) for i in range(rotation)])
+    mlis = np.array([ndimage.rotate(mask, 360 / rotation * i, reshape=False, cval=0, order=1) for i in range(rotation)])
     sum = dlis.sum(axis=0)
     m_sum = mlis.sum(axis=0)
     sum[m_sum < 1] = np.nan
     m_sum[m_sum < 1] = 1
 
-    return ndimage.shift(sum / m_sum, [-dx, -dy], cval=np.NaN, order=0)
+    return ndimage.shift(sum / m_sum, [-dx, -dy], cval=np.NaN, order=1)
 
 
 class OffsetFilter(FilterInterface):
+    """
+    Add offset to data.
+
+    Args:
+        offset(list): The offset added for each axes.
+    """
+
     def __init__(self, offset):
         self._offset = offset
 
@@ -192,6 +205,59 @@ class OffsetFilter(FilterInterface):
 
     def getParameters(self):
         return {"offset": self._offset}
+
+
+class MirrorFilter(FilterInterface):
+    """
+    Reflect 2D data with respect to a line.
+
+    Args:
+        positions(2*2 array): The positions that specify mirror axis in the form of [(x1, y1), (x2, y2)].
+        axes(length 2 sequence): The axes to be symmetrized.
+        sum(bool): If sum is False, the image is reflected with respect to the mirror axis. Otherwise, the mirrored image is added to the original image.
+    """
+
+    def __init__(self, positions, axes=(0, 1), sum=True):
+        self._pos = np.array(positions)
+        self._axes = axes
+        self._sum = sum
+
+    def _calcPosition(self, x0, y0, a, b, c):
+        x1 = (-a**2 * x0 - 2 * a * b * y0 - 2 * a * c + b**2 * x0) / (a**2 + b**2)
+        y1 = (a**2 * y0 - 2 * a * b * x0 - b**2 * y0 - 2 * b * c) / (a**2 + b**2)
+        return x1, y1
+
+    def _calcCoords(self, wave):
+        x, y = wave.getAxis(self._axes[0]), wave.getAxis(self._axes[1])
+        dx, dy = (x[-1] - x[0]) / (len(x) - 1), (y[-1] - y[0]) / (len(y) - 1)
+        pos = [[(self._pos[i][0] - x[0]) / dx, (self._pos[i][1] - y[0]) / dy] for i in range(2)]
+        a, b, c = pos[1][1] - pos[0][1], -pos[1][0] + pos[0][0], pos[1][0] * pos[0][1] - pos[1][1] * pos[0][0]
+
+        xy = np.arange(wave.data.shape[self._axes[0]]), np.arange(wave.data.shape[self._axes[0]])
+        xy = np.array(np.meshgrid(*xy)).transpose(1, 2, 0)
+        xy = np.array([[self._calcPosition(x0, y0, a, b, c) for x0, y0 in tmp] for tmp in xy]).transpose(2, 1, 0)
+        return xy
+
+    def _execute(self, wave, *args, **kwargs):
+        coords = self._calcCoords(wave)
+
+        def _mirror(data):
+            if len(data) <= 2:
+                return np.empty((1,))
+            mir = ndimage.map_coordinates(data, coords, cval=np.nan, order=1)
+            if self._sum:
+                norm = np.where(np.isnan(data), 0, 1) + np.where(np.isnan(mir), 0, 1)
+                norm[norm == 0] = 1
+                return (np.nan_to_num(data) + np.nan_to_num(mir)) / norm
+            else:
+                return mir
+
+        gumap = da.gufunc(_mirror, signature="(i,j)->(i,j)", output_dtypes=float, vectorize=True, axes=[tuple(self._axes), tuple(self._axes)], allow_rechunk=True)
+        data = gumap(wave.data)
+        return DaskWave(data, *wave.axes, **wave.note)
+
+    def getParameters(self):
+        return {"positions": self._pos.tolist(), "axes": self._axes, "sum": self._sum}
 
 
 @filterGUI(SetAxisFilter)
@@ -341,6 +407,63 @@ class _SymmetrizeSetting(FilterSettingBase):
             c.setAxis(i)
 
 
+@ filterGUI(MirrorFilter)
+class _MirrorSetting(FilterSettingBase):
+    def __init__(self, dim):
+        super().__init__(dim)
+        self.axes = [AxisSelectionLayout("Axis1", dim=dim, init=0), AxisSelectionLayout("Axis2", dim=dim, init=1)]
+        self._combo = QComboBox()
+        self._combo.addItems(["Sum", "Mirror"])
+        self._p1 = [ScientificSpinBox(), ScientificSpinBox()]
+        self._p2 = [ScientificSpinBox(), ScientificSpinBox()]
+
+        l0 = QGridLayout()
+        l0.addWidget(QLabel("Position 1"), 0, 0)
+        l0.addWidget(self._p1[0], 0, 1)
+        l0.addWidget(self._p1[1], 0, 2)
+        l0.addWidget(QLabel("Position 2"), 1, 0)
+        l0.addWidget(self._p2[0], 1, 1)
+        l0.addWidget(self._p2[1], 1, 2)
+        l0.addWidget(QPushButton("From LineAnnot.", clicked=self.__load), 0, 3)
+        l0.addWidget(QLabel("Output"), 2, 0)
+        l0.addWidget(self._combo, 2, 1, 1, 2)
+
+        lv = QVBoxLayout()
+        lv.addLayout(self.axes[0])
+        lv.addLayout(self.axes[1])
+        lv.addLayout(l0)
+        self.setLayout(lv)
+
+    def __load(self):
+        c = frontCanvas()
+        lines = c.getLineAnnotations()
+        if len(lines) == 0:
+            QMessageBox.information(self, "Warning", "No line annotation found on the front canvas.\nAdd line annotation by right click -> draw line.")
+            return
+        line = lines[0]
+        p1, p2 = line.getPosition()
+        self._p1[0].setValue(p1[0])
+        self._p1[1].setValue(p1[1])
+        self._p2[0].setValue(p2[0])
+        self._p2[1].setValue(p2[1])
+
+    def getParameters(self):
+        pos = [[p.value() for p in self._p1], [p.value() for p in self._p2]]
+        return {"positions": pos, "sum": self._combo.currentText() == "Sum", "axes": [c.getAxis() for c in self.axes]}
+
+    def setParameters(self, positions, axes, sum):
+        self._p1[0].setValue(positions[0][0])
+        self._p1[1].setValue(positions[0][1])
+        self._p2[0].setValue(positions[1][0])
+        self._p2[1].setValue(positions[1][1])
+        if sum:
+            self._combo.setCurrentText("Sum")
+        else:
+            self._combo.setCurrentText("Mirror")
+        for c, i in zip(self.axes, axes):
+            c.setAxis(i)
+
+
 addFilter(SetAxisFilter, gui=_SetAxisSetting, guiName="Set axis", guiGroup="Axis")
 addFilter(AxisShiftFilter, gui=_ShiftSetting, guiName="Shift axis", guiGroup="Axis")
 addFilter(MagnificationFilter, gui=_MagnificationSetting, guiName="Scale axis", guiGroup="Axis")
@@ -348,3 +471,4 @@ addFilter(OffsetFilter)
 
 addFilter(Rotation2DFilter, gui=_Rotation2DSetting, guiName="Rotate image", guiGroup="Image transformation")
 addFilter(SymmetrizeFilter, gui=_SymmetrizeSetting, guiName="Symmetrize", guiGroup="Symmetric operation")
+addFilter(MirrorFilter, gui=_MirrorSetting, guiName="Mirror", guiGroup="Symmetric operation")

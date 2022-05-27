@@ -104,27 +104,33 @@ class _FreeLineSetting(FilterSettingBase):
         self.__initlayout()
 
     def __initlayout(self):
-        h3 = QHBoxLayout()
         self.width = QSpinBox()
         self.width.setValue(3)
         self.load = QPushButton("Load from Graph", clicked=self.__load)
+
+        h3 = QHBoxLayout()
         h3.addWidget(QLabel("Width"))
         h3.addWidget(self.width)
         h3.addWidget(self.load)
+
         self.axis1 = AxisSelectionLayout("Axis 1", self.dim, 0)
         self.from1 = ScientificSpinBox()
+        self.from2 = ScientificSpinBox()
+
+        self.axis2 = AxisSelectionLayout("Axis 2", self.dim, 1)
         self.to1 = ScientificSpinBox()
+        self.to2 = ScientificSpinBox()
+
         h1 = QHBoxLayout()
         h1.addLayout(self.axis1)
         h1.addWidget(self.from1)
         h1.addWidget(self.to1)
-        self.axis2 = AxisSelectionLayout("Axis 2", self.dim, 1)
-        self.from2 = ScientificSpinBox()
-        self.to2 = ScientificSpinBox()
+
         h2 = QHBoxLayout()
         h2.addLayout(self.axis2)
         h2.addWidget(self.from2)
         h2.addWidget(self.to2)
+
         self._layout = QVBoxLayout()
         self._layout.addLayout(h3)
         self._layout.addLayout(h1)
@@ -132,12 +138,11 @@ class _FreeLineSetting(FilterSettingBase):
         self.setLayout(self._layout)
 
     def __load(self):
-        from lys import Graph
-        g = Graph.active()
-        if g is None:
+        from lys import frontCanvas
+        c = frontCanvas()
+        if c is None:
             return
-        c = g.canvas
-        lines = c.getAnnotations("line")
+        lines = c.getLineAnnotations()
         if len(lines) == 0:
             return
         if self.dim != 2:
@@ -150,7 +155,7 @@ class _FreeLineSetting(FilterSettingBase):
             else:
                 return
         line = lines[0]
-        p = c.getAnnotLinePosition(line)
+        p = np.array(line.getPosition()).T
         self.from1.setValue(p[0][0])
         self.to1.setValue(p[0][1])
         self.from2.setValue(p[1][0])

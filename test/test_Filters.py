@@ -424,6 +424,24 @@ class Filters_test(unittest.TestCase):
         assert_array_equal(result.x, [-3, -2, -1, 0, 1, 2, 3, 4])
         self.assertEqual(result.name, "wave")
 
+        # Symmetrize
+        w = Wave(np.random.rand(51, 51), name="wave")
+        f = filters.SymmetrizeFilter(rotation=4, center=[25, 25])
+        f1 = filters.SymmetrizeFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_almost_equal(result.data, result.data[::-1, ::-1])
+        self.assertEqual(result.name, "wave")
+
+        # Mirror
+        w = Wave(np.random.rand(51, 51), name="wave")
+        f = filters.MirrorFilter(positions=[(0, 0), (1, 1)])
+        f1 = filters.MirrorFilter(**f.getParameters())
+        self.assertEqual(f1.getRelativeDimension(), 0)
+        result = f1.execute(w)
+        assert_array_almost_equal(result.data, result.data.T)
+        self.assertEqual(result.name, "wave")
+
     def test_math(self):
         # simple math
         w = Wave([1, 2, 3], [1, 2, 3], name="wave")

@@ -5,6 +5,6 @@ from .Data import CanvasData, LineData, ImageData, RGBData, VectorData, ContourD
 from .Font import FontInfo, CanvasFont
 from .Annotation import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, FreeRegionAnnotation, CrossAnnotation, TextAnnotation
 from .ContextMenu import CanvasContextMenu
-from .Events import CanvasKeyboardEvent, CanvasMouseEvent
+from .Events import CanvasKeyboardEvent, CanvasMouseEvent, CanvasFocusEvent, getFrontCanvas
 from .CanvasBase import CanvasBase, saveCanvas
 from .Other import CanvasUtilities

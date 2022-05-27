@@ -194,8 +194,8 @@ class RegionSelectWidget(QGridLayout):
         self.loadClicked.emit(self)
 
     def __load(self, obj):
-        from lys import Graph
-        c = Graph.active().canvas
+        from lys import frontCanvas
+        c = frontCanvas()
         if c is not None:
             r = c.selectedRange()
             if self.dim == 2:

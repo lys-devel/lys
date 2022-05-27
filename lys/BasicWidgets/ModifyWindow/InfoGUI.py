@@ -1,7 +1,5 @@
 import numpy as np
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QGroupBox, QVBoxLayout, QLabel
 
 
 class RegionInfoBox(QGroupBox):
@@ -23,9 +21,9 @@ class RegionInfoBox(QGroupBox):
         else:
             r = np.array(range).T
             txt = "Selected Range in axis units:\n"
-            p1 = np.array([min(*r[0]), min(*r[1])]) #left-bottom edge of the selected region
-            p2 = np.array([max(*r[0]), max(*r[1])]) #right-top edge of the selected region
-            txt += "x = [{:.3f}, {:.3f}], y= [{:.3f}, {:.3f}]\n".format(p1[0],p2[0], p1[1], p2[1])
+            p1 = np.array([min(*r[0]), min(*r[1])])  # left-bottom edge of the selected region
+            p2 = np.array([max(*r[0]), max(*r[1])])  # right-top edge of the selected region
+            txt += "x = [{:.3f}, {:.3f}], y= [{:.3f}, {:.3f}]\n".format(p1[0], p2[0], p1[1], p2[1])
             txt += "distance = {:.3f}\n".format(np.linalg.norm(p1 - p2))
             waves = self.canvas.getWaveData()
             if len(waves) != 0:
