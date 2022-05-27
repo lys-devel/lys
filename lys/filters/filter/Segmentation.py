@@ -161,18 +161,26 @@ class _ThresholdSetting(FilterSettingBase):
 
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._layout = QHBoxLayout()
+
         self._c = ScientificSpinBox()
         self._c.setValue(1)
-        self._layout.addWidget(QLabel('Threshold'))
-        self._layout.addWidget(self._c)
+
+        self._output = QComboBox()
+        self._output.addItems(['Mask', 'MaskedData', 'Mask_inv', 'MaskedData_inv'])
+
+        self._layout = QGridLayout()
+        self._layout.addWidget(QLabel('Threshold'), 0, 0)
+        self._layout.addWidget(QLabel('Output'), 0, 1)
+        self._layout.addWidget(self._c, 1, 0)
+        self._layout.addWidget(self._output)
         self.setLayout(self._layout)
 
     def getParameters(self):
-        return {"threshold": self._c.value(), "output": "Mask"}
+        return {"threshold": self._c.value(), "output": self._output.currentText()}
 
     def setParameters(self, threshold, output):
         self._c.setValue(threshold)
+        self._output.setCurrentText(output)
 
 
 addFilter(ThresholdFilter, gui=_ThresholdSetting, guiName="Threshold", guiGroup="Segmentation")
