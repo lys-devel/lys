@@ -48,7 +48,11 @@ class CanvasContextMenu(CanvasPart):
         m.addSeparator()
         m.addAction(self.__ag.addAction(self._cross))
 
-        menu.addAction(QAction('Add Text', self, triggered=self.__addText))
+        menu.addAction(QAction('Add Text Annotation', self, triggered=self.__addText))
+
+        m = menu.addMenu('Duplicate as')
+        m.addAction(QAction('Matplotlib', self, triggered=lambda: self.__duplicate('matplotlib')))
+        m.addAction(QAction('PyqtGraph', self, triggered=lambda: self.__duplicate('pyqtgraph')))
         menu.exec_(QCursor.pos())
 
     def toolState(self):
@@ -106,3 +110,6 @@ class CanvasContextMenu(CanvasPart):
         self.canvas().addText("text")
         mod = self.canvas().openModifyWindow()
         mod.selectTab("Annot.")
+
+    def __duplicate(self, lib):
+        self.canvas().duplicate(lib=lib)

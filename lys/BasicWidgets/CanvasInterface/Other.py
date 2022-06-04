@@ -73,6 +73,6 @@ class CanvasUtilities(CanvasPart):
     def duplicate(self, lib=None):
         from lys import display
         d = self.canvas().SaveAsDictionary()
-        g = display()
+        g = display(lib=lib)
         g.LoadFromDictionary(d)
         return g
