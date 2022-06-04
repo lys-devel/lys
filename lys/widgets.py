@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget, QTextEdit
-from LysQt.QtCore import Qt, pyqtSignal, QPoint
+from LysQt.QtCore import Qt, pyqtSignal, QPoint, QTimer
 from . import home, load
 from .generalWidgets import ScientificSpinBox, ColorSelection, ColormapSelection
 
@@ -132,9 +132,17 @@ class LysSubWindow(QMdiSubWindow):
     """
     *resized* signal is emitted when the window is resized.
     """
+    resizeFinished = pyqtSignal()
+    """
+    *resizedFinished* signal is emitted when the resize of the window is finished.
+    """
     moved = pyqtSignal()
     """
     *moved* signal is emitted when the window is moved.
+    """
+    moveFinished = pyqtSignal()
+    """
+    *moveFinished* signal is emitted when the move of the window is finished.
     """
     closed = pyqtSignal(object)
     """
@@ -156,6 +164,12 @@ class LysSubWindow(QMdiSubWindow):
         super().__init__()
         self._parent = None
         self._floating = floating
+        self._resizeTimer = QTimer(self)
+        self._resizeTimer.timeout.connect(self.resizeFinished)
+        self._resizeTimer.setSingleShot(True)
+        self._moveTimer = QTimer(self)
+        self._moveTimer.timeout.connect(self.resizeFinished)
+        self._moveTimer.setSingleShot(True)
         if floating:
             LysSubWindow.__win.append(self)
             glb.mainWindow().closed.connect(self.close)
@@ -168,11 +182,17 @@ class LysSubWindow(QMdiSubWindow):
     def resizeEvent(self, event):
         """Reimplementation of resizeEvent in QMdiSubWindow"""
         self.resized.emit()
+        if self._resizeTimer.isActive():
+            self._resizeTimer.stop()
+        self._resizeTimer.start(300)
         return super().resizeEvent(event)
 
     def moveEvent(self, event):
         """Reimplementation of moveEvent in QMdiSubWindow"""
         self.moved.emit()
+        if self._moveTimer.isActive():
+            self._moveTimer.stop()
+        self._moveTimer.start(300)
         return super().moveEvent(event)
 
     def closeEvent(self, event):

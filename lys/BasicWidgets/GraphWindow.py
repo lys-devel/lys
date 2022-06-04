@@ -42,28 +42,19 @@ class Graph(_SizeAdjustableWindow):
             if isinstance(item, Graph):
                 item.close(force=True)
 
-    def _prefix(self):
-        return 'graph'
-
-    def _suffix(self):
-        return '.grf'
-
     def __init__(self, file=None, lib=None, **kwargs):
         super().__init__(file, **kwargs)
-        if file is not None:
-            lib = self._loadLibType(file)
-        if lib is None:
-            lib = Graph.graphLibrary
-        if lib == "matplotlib":
-            self.canvas = ExtendCanvas()
-        elif lib == "pyqtgraph":
-            self.canvas = pyqtCanvas()
+        self.canvas = self.__loadCanvas(file, lib)
         self.setWidget(self.canvas)
         self.canvas.show()
-        self.canvas.canvasResized.connect(self._resizeCanvas)
-        self.canvas.keyPressed.connect(self.keyPress)
+        self.canvas.saveCanvas.connect(self.__saveGraphSettings)
+        self.canvas.loadCanvas.connect(self.__loadGraphSettings)
+        self.canvas.canvasResized.connect(self.__resizeCanvas)
+        self.canvas.keyPressed.connect(self.__keyPress)
         self.resized.connect(self.canvas.parentResized)
         self.canvas.updated.connect(lambda: self.Save(temporary=True))
+        self.resizeFinished.connect(lambda: self.Save(temporary=True))
+        self.moveFinished.connect(lambda: self.Save(temporary=True))
         if file is not None:
             self._load(file)
         else:
@@ -74,26 +65,17 @@ class Graph(_SizeAdjustableWindow):
             return getattr(self.canvas, key)
         return super().__getattr__(key)
 
-    def _save(self, file):
-        d = {}
-        if isinstance(self.canvas, ExtendCanvas):
-            d['Library'] = 'matplotlib'
-        elif isinstance(self.canvas, pyqtCanvas):
-            d['Library'] = 'pyqtgraph'
-        self.canvas.SaveAsDictionary(d)
-        d['Graph'] = {}
-        d['Graph']['Position_x'] = self.pos().x()
-        d['Graph']['Position_y'] = self.pos().y()
-        with open(file, 'w') as f:
-            f.write(str(d))
+    def __loadCanvas(self, file, lib):
+        if file is not None:
+            lib = self.__loadLibType(file)
+        if lib is None:
+            lib = Graph.graphLibrary
+        if lib == "matplotlib":
+            return ExtendCanvas()
+        elif lib == "pyqtgraph":
+            return pyqtCanvas()
 
-    def _load(self, file):
-        with open(file, 'r') as f:
-            d = eval(f.read())
-        self.move(d['Graph']['Position_x'], d['Graph']['Position_y'])
-        self.canvas.LoadFromDictionary(d)
-
-    def _loadLibType(self, file):
+    def __loadLibType(self, file):
         with open(file, 'r') as f:
             d = eval(f.read())
         if 'Library' in d:
@@ -101,7 +83,18 @@ class Graph(_SizeAdjustableWindow):
         else:
             return "matplotlib"
 
-    def _resizeCanvas(self, canvas):
+    def __saveGraphSettings(self, d):
+        if isinstance(self.canvas, ExtendCanvas):
+            d['Library'] = 'matplotlib'
+        elif isinstance(self.canvas, pyqtCanvas):
+            d['Library'] = 'pyqtgraph'
+        d['Graph'] = {'Position_x': self.pos().x(), 'Position_y': self.pos().y()}
+
+    def __loadGraphSettings(self, d):
+        if "Graph" in d:
+            self.move(d['Graph']['Position_x'], d['Graph']['Position_y'])
+
+    def __resizeCanvas(self, canvas):
         self.setWidth(0)
         self.setHeight(0)
         self.adjustSize()
@@ -116,7 +109,7 @@ class Graph(_SizeAdjustableWindow):
         elif hmode in ["Plan", "Aspect"] and wmode in ["Absolute", "Per Unit"]:
             self.setHeight(self.height())
 
-    def keyPress(self, e):
+    def __keyPress(self, e):
         if e.key() == Qt.Key_S:
             if e.modifiers() == Qt.ShiftModifier | Qt.ControlModifier:
                 self.__saveAs()
@@ -132,6 +125,22 @@ class Graph(_SizeAdjustableWindow):
             if not path.endswith('.grf'):
                 path += '.grf'
             self.Save(path)
+
+    def _save(self, file):
+        d = self.canvas.SaveAsDictionary()
+        with open(file, 'w') as f:
+            f.write(str(d))
+
+    def _load(self, file):
+        with open(file, 'r') as f:
+            d = eval(f.read())
+        self.canvas.LoadFromDictionary(d)
+
+    def _prefix(self):
+        return 'graph'
+
+    def _suffix(self):
+        return '.grf'
 
     def closeEvent(self, event):
         super().closeEvent(event)

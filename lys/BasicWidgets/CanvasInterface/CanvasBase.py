@@ -24,6 +24,26 @@ def saveCanvas(func):
     return wrapper
 
 
+def disableSaveCanvas(func):
+    """
+    When methods of :class:`CanvasBase` or :class:'CanvasPart' that is decorated by *disableSaveCanvas* is called, then *updated* signal of the canvas is *not* emitted in that method. 
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        if isinstance(args[0], CanvasPart):
+            canvas = args[0].canvas()
+        else:
+            canvas = args[0]
+        if canvas._saveflg:
+            res = func(*args, **kwargs)
+        else:
+            canvas._saveflg = True
+            res = func(*args, **kwargs)
+            canvas._saveflg = False
+        return res
+    return wrapper
+
+
 _saveCanvasDummy = saveCanvas
 
 

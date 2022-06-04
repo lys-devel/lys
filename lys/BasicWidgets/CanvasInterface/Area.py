@@ -1,7 +1,7 @@
 import warnings
 from LysQt.QtCore import pyqtSignal
 from lys.errors import NotImplementedWarning
-from .CanvasBase import CanvasPart, saveCanvas
+from .CanvasBase import CanvasPart, saveCanvas, disableSaveCanvas
 
 
 class CanvasMargin(CanvasPart):
@@ -196,7 +196,7 @@ class CanvasSize(CanvasPart):
         """
         return self.__dic[type]
 
-    @ saveCanvas
+    @disableSaveCanvas
     def parentResized(self):
         wp = self.__dic['Width']['mode']
         hp = self.__dic['Height']['mode']
