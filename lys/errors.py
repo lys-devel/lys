@@ -1,3 +1,5 @@
+import warnings
+
 
 class NotImplementedWarning(Warning):
     pass
@@ -5,3 +7,6 @@ class NotImplementedWarning(Warning):
 
 class NotSupportedWarning(Warning):
     pass
+
+
+warnings.simplefilter("once", NotSupportedWarning)

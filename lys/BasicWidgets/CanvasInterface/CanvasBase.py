@@ -1,6 +1,9 @@
 import functools
 import weakref
+import warnings
 from PyQt5.QtCore import QObject, pyqtSignal
+
+from lys.errors import NotSupportedWarning
 
 
 def saveCanvas(func):
@@ -109,7 +112,9 @@ class CanvasBase(object):
         Args:
             dictionary(dict): The content of the canvas is loaded from *dictionary*.
         """
-        self.loadCanvas.emit(dictionary)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", NotSupportedWarning)
+            self.loadCanvas.emit(dictionary)
 
     def finalize(self):
         """

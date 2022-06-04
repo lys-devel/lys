@@ -6,10 +6,12 @@ To see help of lys, type [python -m lys -h]
 import sys
 import shutil
 import argparse
+import warnings
 from importlib import import_module
 
 # QApplication is created in main Package
 import lys
+from lys.errors import NotSupportedWarning
 
 # Help
 parser = argparse.ArgumentParser(prog='lys', usage="python -m lys (options)", add_help=True)
@@ -49,5 +51,7 @@ if not args.noplugin:
 else:
     print("lys is launched wih -np option. No plugin loaded.")
 
-lys.glb.restoreWorkspaces()
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", NotSupportedWarning)
+    lys.glb.restoreWorkspaces()
 sys.exit(lys.QtSystem.app.exec())
