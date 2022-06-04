@@ -125,8 +125,6 @@ class Graph(_SizeAdjustableWindow):
                     self.__saveAs()
                 else:
                     self.Save()
-        if e.key() == Qt.Key_D:
-            self.Duplicate(lib=Graph.graphLibrary)
 
     def __saveAs(self):
         path, _ = QFileDialog.getSaveFileName(filter="Graph (*.grf)")
@@ -139,13 +137,6 @@ class Graph(_SizeAdjustableWindow):
         super().closeEvent(event)
         if event.isAccepted():
             self.canvas.finalize()
-
-    def Duplicate(self, lib=None):
-        dic = {}
-        self.canvas.SaveAsDictionary(dic)
-        g = Graph(lib=lib)
-        g.canvas.LoadFromDictionary(dic)
-        return g
 
 
 def display(*args, lib=None, **kwargs):

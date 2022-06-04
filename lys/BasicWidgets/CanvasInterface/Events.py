@@ -31,6 +31,8 @@ class CanvasKeyboardEvent(CanvasPart):
             self.canvas().openModifyWindow()
         if e.key() == Qt.Key_F and e.modifiers() == Qt.ControlModifier:
             self.canvas().openFittingWindow()
+        if e.key() == Qt.Key_D and e.modifiers() == Qt.ControlModifier:
+            self.canvas().duplicate()
 
 
 _front = []
