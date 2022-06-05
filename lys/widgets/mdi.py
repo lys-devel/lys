@@ -40,12 +40,12 @@ class _ExtendMdiArea(QMdiArea):
         return [w.FileName() for w in self._autoWindows() if w.FileName() is not None]
 
     def _autoWindows(self):
-        return [w for w in self.subWindowList(order=QMdiArea.ActivationHistoryOrder) if isinstance(w, AutoSavedWindow)]
+        return [w for w in self.subWindowList(order=QMdiArea.ActivationHistoryOrder) if isinstance(w, _AutoSavedWindow)]
 
     def addSubWindow(self, window):
         super().addSubWindow(window)
         window.closed.connect(lambda: self.removeSubWindow(window))
-        if isinstance(window, AutoSavedWindow):
+        if isinstance(window, _AutoSavedWindow):
             if not window.FileName() in self._fileNames():
                 window.saved.connect(self.update)
                 self.update()
@@ -53,7 +53,7 @@ class _ExtendMdiArea(QMdiArea):
     def removeSubWindow(self, window, store=False):
         if window in self.subWindowList():
             super().removeSubWindow(window)
-            if isinstance(window, AutoSavedWindow) and not store:
+            if isinstance(window, _AutoSavedWindow) and not store:
                 if os.path.exists(window.TemporaryFile()):
                     os.remove(window.TemporaryFile())
                 self.update()
@@ -353,7 +353,7 @@ def _checkName(name):
         return True
 
 
-class AutoSavedWindow(LysSubWindow):
+class _AutoSavedWindow(LysSubWindow):
     """
     This is a base widget class for auto save feature, which is mainly used for Graph class.
 

@@ -2,12 +2,12 @@ from LysQt.QtCore import Qt
 from LysQt.QtWidgets import QSizePolicy, QFileDialog
 
 from lys.decorators import suppressLysWarnings
-from lys.widgets import AutoSavedWindow
+from ..mdi import _AutoSavedWindow
 from .Matplotlib import ExtendCanvas
 from .pyqtGraph import pyqtCanvas
 
 
-class _SizeAdjustableWindow(AutoSavedWindow):
+class _SizeAdjustableWindow(_AutoSavedWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setWidth(0)

@@ -6,12 +6,10 @@ To see help of lys, type [python -m lys -h]
 import sys
 import shutil
 import argparse
-import warnings
 from importlib import import_module
 
 # QApplication is created in main Package
 import lys
-from lys.errors import NotSupportedWarning
 
 # Help
 parser = argparse.ArgumentParser(prog='lys', usage="python -m lys (options)", add_help=True)
