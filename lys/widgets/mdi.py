@@ -6,8 +6,7 @@ from pathlib import Path
 
 from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget, QTextEdit
 from LysQt.QtCore import Qt, pyqtSignal, QPoint, QTimer
-from . import home, load
-from .generalWidgets import ScientificSpinBox, ColorSelection, ColormapSelection
+from lys import home, load
 
 
 class _ExtendMdiArea(QMdiArea):
@@ -160,7 +159,7 @@ class LysSubWindow(QMdiSubWindow):
     """
 
     def __init__(self, floating=False):
-        from . import glb
+        from lys import glb
         super().__init__()
         self._parent = None
         self._floating = floating
@@ -259,7 +258,7 @@ class LysSubWindow(QMdiSubWindow):
         Enable automatic setting storing by saveSettings.
         restoreSettings will be called when this functions is called.
         """
-        from . import glb
+        from lys import glb
         glb.mainWindow().closed.connect(lambda: self.saveSettings(file))
         self.closed.connect(lambda: self.saveSettings(file))
         self.restoreSettings(file)

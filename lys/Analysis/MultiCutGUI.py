@@ -1,5 +1,7 @@
+from LysQt.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QTabWidget, QPushButton, QLineEdit, QCheckBox, QFileDialog
+from LysQt.QtCore import Qt
 
-from lys import *
+from lys import Wave, DaskWave, Graph
 from lys.widgets import LysSubWindow
 from .MultiCut import *
 from .MultiCutGUIs import *

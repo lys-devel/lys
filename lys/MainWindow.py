@@ -9,9 +9,7 @@ from LysQt.QtGui import QColor, QTextCursor, QTextOption, QTextCursor
 from LysQt.QtCore import Qt, pyqtSignal, QEvent
 
 from . import glb, home, SettingDict, Graph
-
-from .FileView import FileSystemView
-from .widgets import _ExtendMdiArea
+from .widgets import _ExtendMdiArea, FileSystemView
 
 
 class MainWindow(QMainWindow):

@@ -11,7 +11,7 @@ from LysQt.QtWidgets import QFileSystemModel, QHBoxLayout, QVBoxLayout, QLabel, 
 from LysQt.QtCore import Qt, QDir, QDirIterator, QSortFilterProxyModel, QUrl
 from LysQt.QtGui import QCursor
 
-from . import load
+from lys import load
 
 
 class FileSystemView(QWidget):

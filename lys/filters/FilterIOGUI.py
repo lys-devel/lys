@@ -3,7 +3,7 @@ import os
 from LysQt.QtWidgets import QMenu, QAction, QFileDialog, QMessageBox, QInputDialog, QDialog, QPushButton, QHBoxLayout, QVBoxLayout
 
 from lys import home, filters
-from lys.FileView import FileSystemView
+from lys.widgets import FileSystemView
 
 
 class FilterViewWidget(FileSystemView):
