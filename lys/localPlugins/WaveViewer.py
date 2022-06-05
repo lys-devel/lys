@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
-from lys import display, Table, MultiCut, glb
+from lys import display, edit, MultiCut, glb
 
 
 class _WaveModel(QAbstractItemModel):
@@ -88,9 +88,8 @@ class WaveViewer(QTreeView):
         display(*self.__getWaves())
 
     def _edit(self, type):
-        t = Table()
         for w in self.__getWaves():
-            t.Append(w)
+            edit(w)
 
     def _multicut(self, type):
         MultiCut(self.__getWaves()[0])

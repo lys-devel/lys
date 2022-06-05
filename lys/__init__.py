@@ -3,7 +3,7 @@ from . import QtSystem
 from .functions import home, load, edit, display, append, registerFileLoader, loadableFiles, registerFittingFunction, frontCanvas
 from .core import SettingDict, Wave, DaskWave
 
-from . import widgets
+#from .widgets import Table
 
 from .Tasks import task, tasks
 from . import filters

@@ -1,5 +1,5 @@
-from lys.widgets import LysSubWindow
-from .Commons.ExtendTable import ExtendTable
+from .. import LysSubWindow
+from .ExtendTable import ExtendTable
 
 
 class Table(LysSubWindow):

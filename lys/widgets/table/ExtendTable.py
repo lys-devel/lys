@@ -1,11 +1,12 @@
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-
-from lys import *
 import numpy
 import numpy as np
 import scipy.constants
+
+from PyQt5.QtGui import QStandardItemModel, QCursor
+from PyQt5.QtWidgets import QWidget, QLineEdit, QHBoxLayout, QLabel, QVBoxLayout, QTableView, QMenu, QAction, QFileDialog
+from PyQt5.QtCore import QItemSelection, pyqtSignal, QModelIndex, Qt
+
+from lys import Wave
 
 
 class ExtendTable(QWidget):
@@ -30,9 +31,6 @@ class ExtendTable(QWidget):
         layout.addLayout(h1)
         layout.addWidget(self._etable)
         self.setLayout(layout)
-
-    def Append(self, wave):
-        self._etable.Append(wave)
 
     def checkState(self, index):
         self._etable.checkState(index)
@@ -118,7 +116,7 @@ class SpreadSheet(object):
                     try:
                         exec(str(self._data[i][j]) + data, locals(), self._dict)
                         self.saveAutoSaved()
-                    except:
+                    except Exception:
                         print("[Table] Error on exec:", str(self._data[i][j]) + data)
                         import inspect
                         print(inspect.stack()[1][3])
@@ -168,9 +166,9 @@ class SpreadSheet(object):
                     "Obj(" + str(index) + ").data[" + str(k) + "]", i + k, j)
         else:
             for k in range(len(w.data)):
-                for l in range(len(w.data[0])):
+                for item in range(len(w.data[0])):
                     self.setData(
-                        "Obj(" + str(index) + ").data[" + str(k) + "][" + str(l) + "]", i + l, j + k)
+                        "Obj(" + str(index) + ").data[" + str(k) + "][" + str(item) + "]", i + item, j + k)
 
     def Resize(self, size=(300, 300)):
         data_old = np.array(self._data)
@@ -350,8 +348,8 @@ class _ExtendTableTable(QTableView):
         return data
 
     def _removeNans(self, data):
-        data = data[:, ~np.all(data == None, axis=0)]
-        data = data[~np.all(data == None, axis=1), :]
+        data = data[:, ~np.all(data is None, axis=0)]
+        data = data[~np.all(data is None, axis=1), :]
         return data
 
     def buildContextMenu(self):
