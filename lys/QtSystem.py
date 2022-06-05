@@ -6,7 +6,7 @@ No pulic function and class in this file
 import sys
 import os
 import traceback
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtWebEngineWidgets import QWebEnginePage
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 

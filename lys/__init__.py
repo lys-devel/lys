@@ -9,3 +9,8 @@ from .filters import filtersGUI
 from .BasicWidgets import *
 from .Analysis import MultiCut
 from . import glb
+
+# register file loaders
+registerFileLoader(".npz", Wave)
+registerFileLoader(".dic", SettingDict)
+registerFileLoader(".grf", Graph)

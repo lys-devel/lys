@@ -1,9 +1,8 @@
 from LysQt.QtCore import Qt
-from LysQt.QtWidgets import QSizePolicy, QMdiArea, QFileDialog
+from LysQt.QtWidgets import QSizePolicy, QFileDialog
 
-from lys import registerFileLoader
 from lys.decorators import suppressLysWarnings
-from lys.widgets import AutoSavedWindow, _ExtendMdiArea
+from lys.widgets import AutoSavedWindow
 from .Matplotlib import ExtendCanvas
 from .pyqtGraph import pyqtCanvas
 
@@ -42,13 +41,6 @@ def lysCanvas(lib="matplotlib"):
 
 class Graph(_SizeAdjustableWindow):
     graphLibrary = "matplotlib"
-
-    @classmethod
-    def closeAllGraphs(cls):
-        list = _ExtendMdiArea.current().subWindowList(order=QMdiArea.ActivationHistoryOrder)
-        for item in reversed(list):
-            if isinstance(item, Graph):
-                item.close(force=True)
 
     def __init__(self, file=None, lib=None, **kwargs):
         super().__init__(file, **kwargs)
@@ -151,6 +143,3 @@ class Graph(_SizeAdjustableWindow):
         super().closeEvent(event)
         if event.isAccepted():
             self.canvas.finalize()
-
-
-registerFileLoader(".grf", Graph)

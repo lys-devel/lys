@@ -8,8 +8,6 @@ import dask.array as da
 
 from LysQt.QtCore import QObject, pyqtSignal
 
-from . import registerFileLoader
-
 
 class SettingDict(dict):
     """Wrapped dict, internally used to automatically save settings
@@ -947,8 +945,3 @@ class DaskWave(WaveBase):
             return d
         else:
             super().__getitem__(key)
-
-
-# register file loaders
-registerFileLoader(".npz", Wave)
-registerFileLoader(".dic", SettingDict)

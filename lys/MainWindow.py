@@ -4,11 +4,11 @@ import traceback
 import rlcompleter
 
 
-from LysQt.QtWidgets import QMainWindow, QSplitter, QWidget, QHBoxLayout, QTabWidget, QTextEdit, QTabBar, QSizePolicy
+from LysQt.QtWidgets import QMainWindow, QSplitter, QWidget, QHBoxLayout, QTabWidget, QTextEdit, QTabBar, QMdiArea
 from LysQt.QtGui import QColor, QTextCursor, QTextOption, QTextCursor
-from LysQt.QtCore import Qt, pyqtSignal, QEvent, QSize
+from LysQt.QtCore import Qt, pyqtSignal, QEvent
 
-from . import glb, home, SettingDict
+from . import glb, home, SettingDict, Graph
 
 from .FileView import FileSystemView
 from .widgets import _ExtendMdiArea
@@ -193,7 +193,16 @@ class MainWindow(QMainWindow):
         """
         return self._fileView
 
-    def _mdiArea(self, workspace="default"):
+    def closeAllGraphs(self, workspace=None):
+        """
+        Close all graphs in the workspace.
+        """
+        list = self._mdiArea(workspace=workspace).subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        for item in reversed(list):
+            if isinstance(item, Graph):
+                item.close(force=True)
+
+    def _mdiArea(self, workspace=None):
         if workspace == "__all__":
             return self._workspace
         i = self._mainTab.currentIndex()

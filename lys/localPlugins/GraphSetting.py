@@ -39,7 +39,7 @@ def _register():
 
     # close all
     close = graph.addAction("Close all Graphs")
-    close.triggered.connect(Graph.closeAllGraphs)
+    close.triggered.connect(glb.mainWindow().closeAllGraphs)
     close.setShortcut("Ctrl+K")
 
 
