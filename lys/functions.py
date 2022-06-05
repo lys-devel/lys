@@ -138,7 +138,7 @@ def frontCanvas(exclude=[]):
     Return:
         canvas: The front canvas
     """
-    from .BasicWidgets import getFrontCanvas
+    from .widgets import getFrontCanvas
     return getFrontCanvas(exclude=exclude)
 
 
@@ -154,7 +154,7 @@ def display(*args, lib=None, **kwargs):
     Returns:
         Graph: The graph that contains the waves.
     """
-    from .BasicWidgets import Graph
+    from .widgets import Graph
     g = Graph(lib=lib)
     append(*args, canvas=g.canvas, **kwargs)
     return g

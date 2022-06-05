@@ -3,10 +3,10 @@ import os
 import shutil
 from pathlib import Path
 
-from LysQt.QtWidgets import QAction, QMenu
 
 from lys import home, glb
-from lys.FileView import _moveFiles
+from lys.widgets.fileView import _moveFiles
+from LysQt.QtWidgets import QAction, QMenu
 
 
 class FileView_test(unittest.TestCase):

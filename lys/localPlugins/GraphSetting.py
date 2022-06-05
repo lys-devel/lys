@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QActionGroup
 
-from lys import home, SettingDict, Graph, glb, display
+from lys import home, SettingDict, glb, display
+from lys.widgets import Graph
 
 _setting = SettingDict(home() + "/.lys/settings/graph.dic")
 

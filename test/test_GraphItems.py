@@ -3,7 +3,7 @@ import shutil
 import os
 import warnings
 
-from lys import glb, home, Wave, Graph, errors, filters
+from lys import glb, home, Wave, display, errors, filters
 
 
 class Graph_test(unittest.TestCase):
@@ -15,7 +15,7 @@ class Graph_test(unittest.TestCase):
             if os.path.exists(home() + "/.lys"):
                 shutil.rmtree(home() + "/.lys")
             glb.createMainWindow(show=False, restore=True)
-        self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
+        self.graphs = [display(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
         #self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
 
     def test_CanvasData(self):

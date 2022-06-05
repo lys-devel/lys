@@ -4,7 +4,7 @@ import pyqtgraph
 import pyqtgraph as pg
 from LysQt.QtGui import QMouseEvent
 
-from ..CanvasInterface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent, CanvasFocusEvent, CanvasUtilities
+from ..interface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent, CanvasFocusEvent, CanvasUtilities
 from .AxisSettings import _pyqtGraphAxes, _pyqtGraphTicks
 from .AxisLabelSettings import _PyqtgraphAxisLabel, _PyqtgraphTickLabel
 from .AreaSettings import _PyqtGraphMargin, _PyqtGraphCanvasSize

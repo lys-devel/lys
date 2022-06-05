@@ -3,7 +3,7 @@ import copy
 import numpy as np
 from matplotlib import lines, cm, colors
 from matplotlib.contour import QuadContourSet
-from ..CanvasInterface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
+from ..interface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 
 
 def _setZ(obj, z):

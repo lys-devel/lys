@@ -1,6 +1,8 @@
 import unittest
+import os
+import shutil
 
-from lys import glb
+from lys import glb, home
 
 
 class global_test(unittest.TestCase):

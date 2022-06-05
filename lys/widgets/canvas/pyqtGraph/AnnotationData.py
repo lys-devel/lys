@@ -7,7 +7,7 @@ from LysQt.QtGui import QColor, QTransform, QFont, QColor
 from lys.errors import NotSupportedWarning
 from lys.decorators import avoidCircularReference
 
-from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation, FreeRegionAnnotation, TextAnnotation
+from ..interface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation, FreeRegionAnnotation, TextAnnotation
 
 _styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
 

@@ -6,7 +6,7 @@ import warnings
 import matplotlib as mpl
 import matplotlib.font_manager as fm
 
-from lys import glb, home, Graph, errors
+from lys import glb, home, display, errors
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 
 
@@ -19,7 +19,7 @@ class Graph_test(unittest.TestCase):
             if os.path.exists(home() + "/.lys"):
                 shutil.rmtree(home() + "/.lys")
             glb.createMainWindow(show=False, restore=True)
-        self.graphs = [Graph(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
+        self.graphs = [display(lib=lib) for lib in ["matplotlib", "pyqtgraph"]]
         #self.graphs = [Graph(lib=lib) for lib in ["matplotlib"]]
 
     def test_Area(self):

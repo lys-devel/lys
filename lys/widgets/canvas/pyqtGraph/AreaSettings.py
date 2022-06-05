@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from LysQt.QtWidgets import QDesktopWidget
 
-from ..CanvasInterface import CanvasMargin, CanvasSize
+from ..interface import CanvasMargin, CanvasSize
 
 
 class _PyqtGraphMargin(CanvasMargin):

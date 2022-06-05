@@ -4,7 +4,7 @@ import pyqtgraph as pg
 from LysQt.QtGui import QColor
 
 from lys.errors import NotSupportedWarning
-from ..CanvasInterface import CanvasAxes, CanvasTicks
+from ..interface import CanvasAxes, CanvasTicks
 
 _opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 _Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom', 'left': 'Right', 'right': 'Left', 'bottom': 'Top', 'top': 'Bottom'}

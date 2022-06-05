@@ -4,8 +4,8 @@ from PyQt5.QtGui import QBrush, QColor, QCursor
 from PyQt5.QtCore import Qt, QAbstractItemModel, QVariant, QModelIndex, pyqtSignal, QSize, QItemSelectionModel
 
 import numpy as np
-from lys import filters, display, Wave, frontCanvas, CanvasBase, edit, glb
-from lys.BasicWidgets import lysCanvas
+from lys import filters, display, Wave, frontCanvas, edit, glb
+from lys.widgets import lysCanvas, CanvasBase
 
 from ..MultiCutExecutors import PointExecutor, RegionExecutor, FreeLineExecutor
 from ..MultiCut import ExecutorList, SwitchableObjects, controlledObjects

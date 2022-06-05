@@ -1,6 +1,6 @@
 
 from .CanvasBase import *
-from ..CanvasInterface import CanvasAxisLabel, CanvasTickLabel
+from ..interface import CanvasAxisLabel, CanvasTickLabel
 
 
 class _MatplotlibAxisLabel(CanvasAxisLabel):
@@ -60,4 +60,3 @@ class _MatplotlibTickLabel(CanvasTickLabel):
                 tick.set_fontname(family)
             axis = 'y'
         axes.tick_params(which='major', labelsize=size, labelcolor=color, axis=axis)
-

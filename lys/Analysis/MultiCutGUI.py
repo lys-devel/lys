@@ -1,7 +1,7 @@
 from LysQt.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QTabWidget, QPushButton, QLineEdit, QCheckBox, QFileDialog
 from LysQt.QtCore import Qt
 
-from lys import Wave, DaskWave, Graph
+from lys import Wave, DaskWave, frontCanvas
 from lys.widgets import LysSubWindow
 from .MultiCut import *
 from .MultiCutGUIs import *
@@ -153,8 +153,7 @@ class MultiCut(GridAttachedWindow):
             self.load(Wave(fname))
 
     def _loadRegion(self, obj):
-        g = Graph.active()
-        c = g.canvas
+        c = frontCanvas()
         if c is not None:
             r = c.selectedRange()
             p1, p2 = r[0], r[1]

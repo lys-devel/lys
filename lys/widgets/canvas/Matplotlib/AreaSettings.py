@@ -1,4 +1,4 @@
-from ..CanvasInterface import CanvasMargin, CanvasSize
+from ..interface import CanvasMargin, CanvasSize
 
 
 class _MatplotlibMargin(CanvasMargin):

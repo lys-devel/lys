@@ -1,6 +1,6 @@
 from matplotlib import ticker, patches
 
-from ..CanvasInterface import CanvasAxes, CanvasTicks
+from ..interface import CanvasAxes, CanvasTicks
 
 _opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 _Opposite = {'Left': 'Right', 'Right': 'Left', 'Bottom': 'Top', 'Top': 'Bottom'}

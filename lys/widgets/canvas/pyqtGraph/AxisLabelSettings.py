@@ -3,7 +3,7 @@ import warnings
 from LysQt.QtGui import QFont
 
 from lys.errors import NotSupportedWarning
-from ..CanvasInterface import CanvasAxisLabel, CanvasTickLabel
+from ..interface import CanvasAxisLabel, CanvasTickLabel
 
 _opposite = {'Left': 'right', 'Right': 'left', 'Bottom': 'top', 'Top': 'bottom'}
 

@@ -8,8 +8,8 @@ from LysQt.QtWidgets import QMainWindow, QSplitter, QWidget, QHBoxLayout, QTabWi
 from LysQt.QtGui import QColor, QTextCursor, QTextOption, QTextCursor
 from LysQt.QtCore import Qt, pyqtSignal, QEvent
 
-from . import glb, home, SettingDict, Graph
-from .widgets import _ExtendMdiArea, FileSystemView
+from . import glb, home, SettingDict
+from .widgets import _ExtendMdiArea, FileSystemView, Graph
 
 
 class MainWindow(QMainWindow):

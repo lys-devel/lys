@@ -13,7 +13,7 @@ class CanvasUtilities(CanvasPart):
     """
 
     def openModifyWindow(self):
-        from lys import Graph
+        from lys.widgets import Graph
         from ..ModifyWindow import ModifyWindow
         parent = self._getParent()
         mod = ModifyWindow(self.canvas(), parent, showArea=isinstance(parent, Graph))

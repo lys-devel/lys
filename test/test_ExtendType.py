@@ -2,7 +2,8 @@ import unittest
 import shutil
 import os
 import warnings
-from lys import load, filters, glb, home, Graph, errors
+from lys import load, filters, glb, home, errors
+from lys.widgets import Graph
 
 
 class ExtendType_test(unittest.TestCase):

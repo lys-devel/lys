@@ -6,7 +6,7 @@ from LysQt.QtCore import QMimeData, Qt
 from LysQt.QtWidgets import QApplication
 from LysQt.QtGui import QImage
 
-from ..CanvasInterface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasFocusEvent, CanvasMouseEvent, CanvasUtilities
+from ..interface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasFocusEvent, CanvasMouseEvent, CanvasUtilities
 from .AxisSettings import _MatplotlibAxes, _MatplotlibTicks
 from .AxisLabelSettings import _MatplotlibAxisLabel, _MatplotlibTickLabel
 from .AreaSettings import _MatplotlibMargin, _MatplotlibCanvasSize

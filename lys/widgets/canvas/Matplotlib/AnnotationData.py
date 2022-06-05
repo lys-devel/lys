@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import transforms, patches
 
-from ..CanvasInterface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, TextAnnotation, RectAnnotation, RegionAnnotation, FreeRegionAnnotation, CrossAnnotation
+from ..interface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, TextAnnotation, RectAnnotation, RegionAnnotation, FreeRegionAnnotation, CrossAnnotation
 
 
 class _MatplotlibLineAnnotation(LineAnnotation):

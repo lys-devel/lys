@@ -7,7 +7,7 @@ import pyqtgraph as pg
 from LysQt.QtCore import Qt
 from LysQt.QtGui import QColor, QTransform
 from lys.errors import NotSupportedWarning
-from ..CanvasInterface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
+from ..interface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 
 
 def _setZ(obj, z):
