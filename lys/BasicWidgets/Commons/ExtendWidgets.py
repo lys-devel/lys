@@ -3,7 +3,7 @@ import shutil
 import fnmatch
 import itertools
 from lys import Wave
-from lys.BasicWidgets.GraphWindow import Graph, Table
+from lys.BasicWidgets import Graph, Table
 from lys import load, home
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *

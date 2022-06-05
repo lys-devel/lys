@@ -1,9 +1,9 @@
 from LysQt.QtCore import Qt
-from LysQt.QtWidgets import QSizePolicy, QMdiArea, QFileDialog, QWidget, QGridLayout
+from LysQt.QtWidgets import QSizePolicy, QMdiArea, QFileDialog
 
-from lys import registerFileLoader, frontCanvas, Wave
-from lys.widgets import AutoSavedWindow, _ExtendMdiArea, LysSubWindow
-from .Commons.ExtendTable import ExtendTable
+from lys import registerFileLoader
+from lys.decorators import suppressLysWarnings
+from lys.widgets import AutoSavedWindow, _ExtendMdiArea
 from .Matplotlib import ExtendCanvas
 from .pyqtGraph import pyqtCanvas
 
@@ -30,6 +30,14 @@ class _SizeAdjustableWindow(AutoSavedWindow):
         else:
             self.setMinimumHeight(val)
             self.setMaximumHeight(val)
+
+
+@suppressLysWarnings
+def lysCanvas(lib="matplotlib"):
+    if lib == "matplotlib":
+        return ExtendCanvas()
+    elif lib == "pyqtgraph":
+        return pyqtCanvas()
 
 
 class Graph(_SizeAdjustableWindow):
@@ -70,10 +78,7 @@ class Graph(_SizeAdjustableWindow):
             lib = self.__loadLibType(file)
         if lib is None:
             lib = Graph.graphLibrary
-        if lib == "matplotlib":
-            return ExtendCanvas()
-        elif lib == "pyqtgraph":
-            return pyqtCanvas()
+        return lysCanvas(lib)
 
     def __loadLibType(self, file):
         with open(file, 'r') as f:
@@ -146,83 +151,6 @@ class Graph(_SizeAdjustableWindow):
         super().closeEvent(event)
         if event.isAccepted():
             self.canvas.finalize()
-
-
-def display(*args, lib=None, **kwargs):
-    g = Graph(lib=lib)
-    append(*args, canvas=g.canvas, **kwargs)
-    return g
-
-
-def append(*args, canvas=None, exclude=[], **kwargs):
-    if canvas is None:
-        c = frontCanvas(exclude=exclude)
-    else:
-        c = canvas
-    for wave in args:
-        if isinstance(wave, Wave):
-            c.Append(wave, **kwargs)
-        else:
-            c.Append(Wave(wave), **kwargs)
-    return c
-
-
-class MultipleGrid(LysSubWindow):
-    def __init__(self):
-        super().__init__()
-        self.__initlayout()
-        self.resize(400, 400)
-
-    def __initlayout(self):
-        self.layout = QGridLayout()
-        w = QWidget()
-        w.setLayout(self.layout)
-        self.setWidget(w)
-
-    def Append(self, widget, x, y, w, h):
-        for i in range(x, x + w):
-            for j in range(y, y + h):
-                wid = self.itemAtPosition(i, j)
-                if wid is not None:
-                    self.layout.removeWidget(wid)
-                    wid.deleteLater()
-                    # if isinstance(wid, BasicEventCanvasBase):
-                    #    wid.emitCloseEvent()
-        self.layout.addWidget(widget, x, y, w, h)
-
-    def setSize(self, size):
-        for s in range(size):
-            self.layout.setColumnStretch(s, 1)
-            self.layout.setRowStretch(s, 1)
-
-    def itemAtPosition(self, i, j):
-        item = self.layout.itemAtPosition(i, j)
-        if item is not None:
-            return item.widget()
-        else:
-            return None
-
-
-class Table(LysSubWindow):
-    def __init__(self, wave=None):
-        super().__init__()
-        self.setWindowTitle("Table Window")
-        self.resize(400, 400)
-        self.__initlayout(wave)
-
-    def __initlayout(self, wave):
-        self._etable = ExtendTable(wave)
-        self.setWidget(self._etable)
-        self.show()
-
-    def Append(self, wave):
-        self._etable.Append(wave)
-
-    def checkState(self, index):
-        self._etable.checkState(index)
-
-    def SetSize(self, size):
-        self._etable.SetSize(size)
 
 
 registerFileLoader(".grf", Graph)

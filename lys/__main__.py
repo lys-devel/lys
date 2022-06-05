@@ -51,7 +51,5 @@ if not args.noplugin:
 else:
     print("lys is launched wih -np option. No plugin loaded.")
 
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore", NotSupportedWarning)
-    lys.glb.restoreWorkspaces()
+lys.glb.restoreWorkspaces()
 sys.exit(lys.QtSystem.app.exec())

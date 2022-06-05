@@ -140,3 +140,45 @@ def frontCanvas(exclude=[]):
     """
     from .BasicWidgets import getFrontCanvas
     return getFrontCanvas(exclude=exclude)
+
+
+def display(*args, lib=None, **kwargs):
+    """
+    Display Waves as graph.
+
+    Args:
+        args: The waves to be added. If the item is not Wave, then it is automatically converted to Wave.
+        lib ('matplotlib' or 'pyqtgraph'): The library used to create canvas. 
+        kwargs: The keywords arguments that is passed to Append method of canvas.
+
+    Returns:
+        Graph: The graph that contains the waves.
+    """
+    from .BasicWidgets import Graph
+    g = Graph(lib=lib)
+    append(*args, canvas=g.canvas, **kwargs)
+    return g
+
+
+def append(*args, canvas=None, exclude=[], **kwargs):
+    """
+    Append waves to the front canvas. 
+
+    Args:
+        args: The waves to be added. If the item is not Wave, then it is automatically converted to Wave.
+        canvas (CanvasBase): The canvas to which the wave are appended. If canvas is None, then front canvas is used.
+        exclude (list of canvas): If the front canvas is in *exclude*, then it is ignored and next canvas is used.
+        kwargs: The keywords arguments that is passed to Append method of canvas.
+
+    """
+    from .core import Wave
+    if canvas is None:
+        c = frontCanvas(exclude=exclude)
+    else:
+        c = canvas
+    for wave in args:
+        if isinstance(wave, Wave):
+            c.Append(wave, **kwargs)
+        else:
+            c.Append(Wave(wave), **kwargs)
+    return c

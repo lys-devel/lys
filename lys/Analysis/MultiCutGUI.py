@@ -1,7 +1,42 @@
 
 from lys import *
+from lys.widgets import LysSubWindow
 from .MultiCut import *
 from .MultiCutGUIs import *
+
+
+class MultipleGrid(LysSubWindow):
+    def __init__(self):
+        super().__init__()
+        self.__initlayout()
+        self.resize(400, 400)
+
+    def __initlayout(self):
+        self.layout = QGridLayout()
+        w = QWidget()
+        w.setLayout(self.layout)
+        self.setWidget(w)
+
+    def Append(self, widget, x, y, w, h):
+        for i in range(x, x + w):
+            for j in range(y, y + h):
+                wid = self.itemAtPosition(i, j)
+                if wid is not None:
+                    self.layout.removeWidget(wid)
+                    wid.deleteLater()
+        self.layout.addWidget(widget, x, y, w, h)
+
+    def setSize(self, size):
+        for s in range(size):
+            self.layout.setColumnStretch(s, 1)
+            self.layout.setRowStretch(s, 1)
+
+    def itemAtPosition(self, i, j):
+        item = self.layout.itemAtPosition(i, j)
+        if item is not None:
+            return item.widget()
+        else:
+            return None
 
 
 class GridAttachedWindow(LysSubWindow):
