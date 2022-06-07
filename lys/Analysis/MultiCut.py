@@ -1,16 +1,15 @@
 import numpy as np
 
-from LysQt.QtCore import QObject, pyqtSignal
-
 from lys import DaskWave
+from lys.Qt import QtCore
 from lys.filters import Filters, SliceFilter, EmptyFilter, IntegralAllFilter, TransposeFilter
 
 from .MultiCutExecutors import FreeLineExecutor, DefaultExecutor
 
 
-class controlledObjects(QObject):
-    appended = pyqtSignal(object)
-    removed = pyqtSignal(object)
+class controlledObjects(QtCore.QObject):
+    appended = QtCore.pyqtSignal(object)
+    removed = QtCore.pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
@@ -90,7 +89,7 @@ class SwitchableObjects(controlledObjects):
 
 
 class ExecutorList(controlledObjects):
-    updated = pyqtSignal(tuple)
+    updated = QtCore.pyqtSignal(tuple)
 
     def __init__(self):
         super().__init__()

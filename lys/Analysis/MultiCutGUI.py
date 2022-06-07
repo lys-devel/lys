@@ -1,10 +1,8 @@
-from LysQt.QtWidgets import QWidget, QGridLayout, QVBoxLayout, QHBoxLayout, QTabWidget, QPushButton, QLineEdit, QCheckBox, QFileDialog
-from LysQt.QtCore import Qt
+from lys.Qt import QtWidgets, QtCore
 
 from lys import Wave, DaskWave, frontCanvas
 from lys.widgets import LysSubWindow
-from .MultiCut import *
-from .MultiCutGUIs import *
+from .MultiCutGUIs import CutTab, AnimationTab, PrefilterTab, ExportDataTab
 
 
 class MultipleGrid(LysSubWindow):
@@ -14,8 +12,8 @@ class MultipleGrid(LysSubWindow):
         self.resize(400, 400)
 
     def __initlayout(self):
-        self.layout = QGridLayout()
-        w = QWidget()
+        self.layout = QtWidgets.QGridLayout()
+        w = QtWidgets.QWidget()
         w.setLayout(self.layout)
         self.setWidget(w)
 
@@ -78,15 +76,15 @@ class MultiCut(GridAttachedWindow):
             self.load(wave)
 
     def keyPress(self, e):
-        if e.key() == Qt.Key_M:
+        if e.key() == QtCore.Qt.Key_M:
             self.show()
 
     def __exportTab(self):
         self._ani = AnimationTab(self._cut.getExecutorList())
         self._data = ExportDataTab()
         self._ani.updated.connect(self._cut.update)
-        w = QWidget()
-        lay = QVBoxLayout(self)
+        w = QtWidgets.QWidget()
+        lay = QtWidgets.QVBoxLayout(self)
         lay.addWidget(self._data)
         lay.addWidget(self._ani)
         lay.addStretch()
@@ -97,26 +95,26 @@ class MultiCut(GridAttachedWindow):
         self._pre = PrefilterTab(self._loadRegion)
         self._pre.filterApplied.connect(self._filterApplied)
         self._cut = CutTab(self, self.grid)
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(self._pre, "Prefilter")
         tab.addTab(self._cut, "Cut")
         tab.addTab(self.__exportTab(), "Export")
 
-        self.__file = QLineEdit()
-        btn = QPushButton("Load", clicked=self.load)
-        self.__useDask = QCheckBox("Dask")
+        self.__file = QtWidgets.QLineEdit()
+        btn = QtWidgets.QPushButton("Load", clicked=self.load)
+        self.__useDask = QtWidgets.QCheckBox("Dask")
         self.__useDask.setChecked(True)
 
-        h1 = QHBoxLayout()
+        h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(btn)
         h1.addWidget(self.__file)
         h1.addWidget(self.__useDask)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(tab)
         layout.addLayout(h1)
 
-        wid = QWidget()
+        wid = QtWidgets.QWidget()
         wid.setLayout(layout)
         self.setWidget(wid)
         self.adjustSize()
@@ -134,7 +132,7 @@ class MultiCut(GridAttachedWindow):
 
     def load(self, file):
         if file is False:
-            fname = QFileDialog.getOpenFileName(self, 'Select data file')[0]
+            fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Select data file')[0]
         else:
             fname = file
         if isinstance(fname, str):

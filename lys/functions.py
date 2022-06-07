@@ -128,6 +128,11 @@ def edit(data):
     pass
 
 
+def multicut(*args, **kwargs):
+    from .Analysis import MultiCut
+    MultiCut(*args, **kwargs)
+
+
 def frontCanvas(exclude=[]):
     """
     Get the front canvas.

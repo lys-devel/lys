@@ -1,11 +1,9 @@
-from PyQt5.QtWidgets import QDialog, QSpinBox, QRadioButton, QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QMessageBox
-from PyQt5.QtCore import pyqtSignal
-
 from lys import DaskWave, filters
+from lys.Qt import QtWidgets, QtCore
 
 
-class _chunkDialog(QDialog):
-    class customSpinBox(QSpinBox):
+class _chunkDialog(QtWidgets.QDialog):
+    class customSpinBox(QtWidgets.QSpinBox):
         def __init__(self, value):
             super().__init__()
             self.setRange(-1, value)
@@ -35,22 +33,22 @@ class _chunkDialog(QDialog):
     def __init__(self, size):
         super().__init__(None)
 
-        self.btn1 = QRadioButton("Auto")
-        self.btn2 = QRadioButton("Custom")
+        self.btn1 = QtWidgets.QRadioButton("Auto")
+        self.btn2 = QtWidgets.QRadioButton("Custom")
         self.btn2.setChecked(True)
 
-        self.ok = QPushButton("O K", clicked=self._ok)
-        self.cancel = QPushButton("CANCEL", clicked=self._cancel)
-        h1 = QHBoxLayout()
+        self.ok = QtWidgets.QPushButton("O K", clicked=self._ok)
+        self.cancel = QtWidgets.QPushButton("CANCEL", clicked=self._cancel)
+        h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(self.ok)
         h1.addWidget(self.cancel)
 
         self.chunks = [self.customSpinBox(i) for i in size]
-        h2 = QHBoxLayout()
+        h2 = QtWidgets.QHBoxLayout()
         for c in self.chunks:
             h2.addWidget(c)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.btn1)
         layout.addWidget(self.btn2)
         layout.addLayout(h2)
@@ -72,9 +70,9 @@ class _chunkDialog(QDialog):
             return self.ok, tuple([c.value() for c in self.chunks])
 
 
-class PrefilterTab(QWidget):
+class PrefilterTab(QtWidgets.QWidget):
 
-    filterApplied = pyqtSignal(object)
+    filterApplied = QtCore.pyqtSignal(object)
 
     def __init__(self, loader):
         super().__init__()
@@ -84,13 +82,13 @@ class PrefilterTab(QWidget):
         self.__chunk = "auto"
 
     def __initlayout__(self, loader):
-        self.layout = QVBoxLayout()
+        self.layout = QtWidgets.QVBoxLayout()
 
         self.filt = filters.FiltersGUI(regionLoader=loader)
         self.layout.addWidget(self.filt)
-        h1 = QHBoxLayout()
-        h1.addWidget(QPushButton("Rechunk", clicked=self._chunk))
-        h1.addWidget(QPushButton("Apply filters", clicked=self._click))
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QPushButton("Rechunk", clicked=self._chunk))
+        h1.addWidget(QtWidgets.QPushButton("Apply filters", clicked=self._click))
         self.layout.addLayout(h1)
 
         self.setLayout(self.layout)
@@ -106,8 +104,8 @@ class PrefilterTab(QWidget):
         waves = DaskWave(self.wave, chunks=self.__chunk)
         waves = self.filt.GetFilters().execute(waves)
         if self.__outputShape != waves.data.shape and self.__outputShape is not None:
-            ret = QMessageBox.information(self, "Caution", "The shape of the processed wave will be changed and the graphs will be disconnected. Do you really want to proceed?", QMessageBox.Yes, QMessageBox.No)
-            if ret == QMessageBox.No:
+            ret = QtWidgets.QMessageBox.information(self, "Caution", "The shape of the processed wave will be changed and the graphs will be disconnected. Do you really want to proceed?", QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
+            if ret == QtWidgets.QMessageBox.No:
                 return
         self.__outputShape = waves.data.shape
         waves.persist()

@@ -1,13 +1,11 @@
-from PyQt5.QtWidgets import QWidget, QApplication, QGridLayout, QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QSpinBox
-from PyQt5.QtCore import Qt, QObject, pyqtSignal
-
+from lys.Qt import QtCore, QtWidgets
 from lys.widgets import LysSubWindow, ScientificSpinBox
 from lys.filters import FreeLineFilter
 from lys.decorators import avoidCircularReference
 
 
-class AllExecutor(QObject):
-    updated = pyqtSignal(tuple)
+class AllExecutor(QtCore.QObject):
+    updated = QtCore.pyqtSignal(tuple)
 
     def __init__(self, axis):
         super().__init__()
@@ -18,7 +16,7 @@ class AllExecutor(QObject):
 
     def set(self, wave, slices, sumlist, ignore=[]):
         if self.axis in ignore:
-            return sl, []
+            return []
         else:
             slices[self.axis] = slice(None, None, None)
             sumlist.append(self.axis)
@@ -27,8 +25,8 @@ class AllExecutor(QObject):
         return "All executor for axis = " + str(self.axis)
 
 
-class DefaultExecutor(QObject):
-    updated = pyqtSignal(tuple)
+class DefaultExecutor(QtCore.QObject):
+    updated = QtCore.pyqtSignal(tuple)
 
     def __init__(self, axis):
         super().__init__()
@@ -47,8 +45,8 @@ class DefaultExecutor(QObject):
         return "Default executor for axis = " + str(self.axis)
 
 
-class RegionExecutor(QObject):
-    updated = pyqtSignal(tuple)
+class RegionExecutor(QtCore.QObject):
+    updated = QtCore.pyqtSignal(tuple)
 
     def __init__(self, axes, range=None):
         super().__init__()
@@ -111,13 +109,13 @@ class RegionExecutor(QObject):
 
 
 class RegionExecutorDialog(LysSubWindow):
-    accepted = pyqtSignal()
-    rejected = pyqtSignal()
+    accepted = QtCore.pyqtSignal()
+    rejected = QtCore.pyqtSignal()
 
     def __init__(self, axes, parent, parentWidget):
         super().__init__()
         self.setWindowTitle("Region Executor Setting")
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.flg = False
         self.__parent = parent
         self.__parent.updated.connect(self._parentUpdated)
@@ -134,23 +132,23 @@ class RegionExecutorDialog(LysSubWindow):
             v[1].setValue(val[1])
             v[0].valueChanged.connect(self._updateValues)
             v[1].valueChanged.connect(self._updateValues)
-        grid = QGridLayout()
+        grid = QtWidgets.QGridLayout()
         for n, i in enumerate(self._axes):
-            grid.addWidget(QLabel("Axis " + str(i)), n, 0)
+            grid.addWidget(QtWidgets.QLabel("Axis " + str(i)), n, 0)
             grid.addWidget(self._vals[n][0], n, 1)
             grid.addWidget(self._vals[n][1], n, 2)
-        h1 = QHBoxLayout()
-        h1.addWidget(QPushButton("O K", clicked=self.accept))
-        h1.addWidget(QPushButton("CANCEL", clicked=self.reject))
-        h2 = QHBoxLayout()
-        h2.addWidget(QPushButton("Copy", clicked=self.copy))
-        h2.addWidget(QPushButton("Paste", clicked=self.paste))
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QPushButton("O K", clicked=self.accept))
+        h1.addWidget(QtWidgets.QPushButton("CANCEL", clicked=self.reject))
+        h2 = QtWidgets.QHBoxLayout()
+        h2.addWidget(QtWidgets.QPushButton("Copy", clicked=self.copy))
+        h2.addWidget(QtWidgets.QPushButton("Paste", clicked=self.paste))
 
-        v1 = QVBoxLayout()
+        v1 = QtWidgets.QVBoxLayout()
         v1.addLayout(grid)
         v1.addLayout(h2)
         v1.addLayout(h1)
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(v1)
         self.setWidget(w)
         self.adjustSize()
@@ -180,20 +178,20 @@ class RegionExecutorDialog(LysSubWindow):
         self.rejected.emit()
 
     def copy(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
         cb.setText(str(self.__parent.getRange()), mode=cb.Clipboard)
 
     def paste(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         v = eval(cb.text(mode=cb.Clipboard))
         for v, val in zip(self._vals, v):
             v[0].setValue(val[0])
             v[1].setValue(val[1])
 
 
-class PointExecutor(QObject):
-    updated = pyqtSignal(tuple)
+class PointExecutor(QtCore.QObject):
+    updated = QtCore.pyqtSignal(tuple)
 
     def __init__(self, axes, pos=None):
         super().__init__()
@@ -254,13 +252,13 @@ class PointExecutor(QObject):
 
 
 class PointExecutorDialog(LysSubWindow):
-    accepted = pyqtSignal()
-    rejected = pyqtSignal()
+    accepted = QtCore.pyqtSignal()
+    rejected = QtCore.pyqtSignal()
 
     def __init__(self, axes, parent, parentWidget):
         super().__init__()
         self.setWindowTitle("Point Executor Setting")
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.flg = False
         self.__parent = parent
         self.__parent.updated.connect(self._parentUpdated)
@@ -275,22 +273,22 @@ class PointExecutorDialog(LysSubWindow):
         for v, val in zip(self._vals, self.__parent.getPosition()):
             v.setValue(val)
             v.valueChanged.connect(self._updateValues)
-        grid = QGridLayout()
+        grid = QtWidgets.QGridLayout()
         for n, i in enumerate(self._axes):
-            grid.addWidget(QLabel("Axis " + str(i)), n, 0)
+            grid.addWidget(QtWidgets.QLabel("Axis " + str(i)), n, 0)
             grid.addWidget(self._vals[n], n, 1)
-        h1 = QHBoxLayout()
-        h1.addWidget(QPushButton("O K", clicked=self.accept))
-        h1.addWidget(QPushButton("CANCEL", clicked=self.reject))
-        h2 = QHBoxLayout()
-        h2.addWidget(QPushButton("Copy", clicked=self.copy))
-        h2.addWidget(QPushButton("Paste", clicked=self.paste))
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QPushButton("O K", clicked=self.accept))
+        h1.addWidget(QtWidgets.QPushButton("CANCEL", clicked=self.reject))
+        h2 = QtWidgets.QHBoxLayout()
+        h2.addWidget(QtWidgets.QPushButton("Copy", clicked=self.copy))
+        h2.addWidget(QtWidgets.QPushButton("Paste", clicked=self.paste))
 
-        v1 = QVBoxLayout()
+        v1 = QtWidgets.QVBoxLayout()
         v1.addLayout(grid)
         v1.addLayout(h2)
         v1.addLayout(h1)
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(v1)
         self.setWidget(w)
         self.adjustSize()
@@ -319,19 +317,19 @@ class PointExecutorDialog(LysSubWindow):
         self.rejected.emit()
 
     def copy(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
         cb.setText(str(self.__parent.getPosition()), mode=cb.Clipboard)
 
     def paste(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         v = eval(cb.text(mode=cb.Clipboard))
         self.__parent.setPosition(v)
 
 
-class FreeLineExecutor(QObject):
+class FreeLineExecutor(QtCore.QObject):
     _id = 10000
-    updated = pyqtSignal(tuple)
+    updated = QtCore.pyqtSignal(tuple)
 
     def __init__(self, axes, pos=None, width=1):
         super().__init__()
@@ -386,13 +384,13 @@ class FreeLineExecutor(QObject):
 
 
 class FreeLineExecutorDialog(LysSubWindow):
-    accepted = pyqtSignal()
-    rejected = pyqtSignal()
+    accepted = QtCore.pyqtSignal()
+    rejected = QtCore.pyqtSignal()
 
     def __init__(self, axes, parent, parentWidget):
         super().__init__()
         self.setWindowTitle("Free Line Executor Setting")
-        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.flg = False
         self.__parent = parent
         self.__parent.updated.connect(self._parentUpdated)
@@ -411,28 +409,28 @@ class FreeLineExecutorDialog(LysSubWindow):
         for v, val in zip(self._val2, self.__parent.getPosition()[1]):
             v.setValue(val)
             v.valueChanged.connect(self._updateValues)
-        l = QGridLayout()
+        lay = QtWidgets.QGridLayout()
         for n, i in enumerate(self._axes):
-            l.addWidget(QLabel("Point " + str(n)), n, 0)
-            l.addWidget(self._val1[n], 0, n + 1)
-            l.addWidget(self._val2[n], 1, n + 1)
+            lay.addWidget(QtWidgets.QLabel("Point " + str(n)), n, 0)
+            lay.addWidget(self._val1[n], 0, n + 1)
+            lay.addWidget(self._val2[n], 1, n + 1)
         self.width = ScientificSpinBox()
         self.width.setValue(self.__parent.getWidth())
         self.width.valueChanged.connect(self._updateValues)
-        l.addWidget(QLabel("Width"), n + 1, 0)
-        l.addWidget(self.width, n + 1, 1)
-        h1 = QHBoxLayout()
-        h1.addWidget(QPushButton("O K", clicked=self.accept))
-        h1.addWidget(QPushButton("CANCEL", clicked=self.reject))
-        h2 = QHBoxLayout()
-        h2.addWidget(QPushButton("Copy", clicked=self.copy))
-        h2.addWidget(QPushButton("Paste", clicked=self.paste))
+        lay.addWidget(QtWidgets.QLabel("Width"), n + 1, 0)
+        lay.addWidget(self.width, n + 1, 1)
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QPushButton("O K", clicked=self.accept))
+        h1.addWidget(QtWidgets.QPushButton("CANCEL", clicked=self.reject))
+        h2 = QtWidgets.QHBoxLayout()
+        h2.addWidget(QtWidgets.QPushButton("Copy", clicked=self.copy))
+        h2.addWidget(QtWidgets.QPushButton("Paste", clicked=self.paste))
 
-        v1 = QVBoxLayout()
-        v1.addLayout(l)
+        v1 = QtWidgets.QVBoxLayout()
+        v1.addLayout(lay)
         v1.addLayout(h2)
         v1.addLayout(h1)
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(v1)
         self.setWidget(w)
         self.adjustSize()
@@ -465,12 +463,12 @@ class FreeLineExecutorDialog(LysSubWindow):
         self.rejected.emit()
 
     def copy(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
         cb.setText(str([self.__parent.getPosition(), self.__parent.getWidth()]), mode=cb.Clipboard)
 
     def paste(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         v = eval(cb.text(mode=cb.Clipboard))
         self.__parent.setPosition(v[0])
         self.__parent.setWidth(v[1])

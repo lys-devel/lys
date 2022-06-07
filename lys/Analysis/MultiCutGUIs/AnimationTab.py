@@ -1,29 +1,27 @@
 import logging
-
 from matplotlib import animation
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 
-from lys import *
 from lys import glb, frontCanvas
+from lys.Qt import QtWidgets, QtCore
+from lys.widgets import lysCanvas
+
 from ..MultiCutExecutors import PointExecutor
 
 
-class AnimationTab(QGroupBox):
-    updated = pyqtSignal(int)
+class AnimationTab(QtWidgets.QGroupBox):
+    updated = QtCore.pyqtSignal(int)
     _type = [".mp4 (ffmpeg required)", ".gif"]
 
-    class _axisWidget(QWidget):
+    class _axisWidget(QtWidgets.QWidget):
         def __init__(self, dim):
             super().__init__()
             self.__initlayout(dim)
 
         def __initlayout(self, dim):
-            self.grp1 = QButtonGroup(self)
-            self._btn1 = [QRadioButton(str(d)) for d in range(dim)]
-            layout = QHBoxLayout()
-            layout.addWidget(QLabel("Axis"))
+            self.grp1 = QtWidgets.QButtonGroup(self)
+            self._btn1 = [QtWidgets.QRadioButton(str(d)) for d in range(dim)]
+            layout = QtWidgets.QHBoxLayout()
+            layout.addWidget(QtWidgets.QLabel("Axis"))
             for i, b in enumerate(self._btn1):
                 self.grp1.addButton(b)
             for i, b in enumerate(self._btn1):
@@ -40,18 +38,18 @@ class AnimationTab(QGroupBox):
         self.__exe = executor
 
     def __initlayout(self):
-        self.layout = QVBoxLayout()
+        self.layout = QtWidgets.QVBoxLayout()
 
         self.__axis = self._axisWidget(2)
 
-        btn = QPushButton("Create animation", clicked=self.__animation)
-        self.__filename = QLineEdit()
-        self.__types = QComboBox()
+        btn = QtWidgets.QPushButton("Create animation", clicked=self.__animation)
+        self.__filename = QtWidgets.QLineEdit()
+        self.__types = QtWidgets.QComboBox()
         self.__types.addItems(self._type)
-        g = QGridLayout()
-        g.addWidget(QLabel("Filename"), 0, 0)
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("Filename"), 0, 0)
         g.addWidget(self.__filename, 0, 1)
-        g.addWidget(QLabel("Type"), 1, 0)
+        g.addWidget(QtWidgets.QLabel("Type"), 1, 0)
         g.addWidget(self.__types, 1, 1)
         self.layout.addWidget(self.__axis)
         self.layout.addLayout(g)
@@ -61,20 +59,20 @@ class AnimationTab(QGroupBox):
         self.setLayout(self.layout)
 
     def __makeTimeOptionLayout(self):
-        self.__useTime = QCheckBox('Draw frame')
-        self.__timeoffset = QDoubleSpinBox()
+        self.__useTime = QtWidgets.QCheckBox('Draw frame')
+        self.__timeoffset = QtWidgets.QDoubleSpinBox()
         self.__timeoffset.setRange(float('-inf'), float('inf'))
-        self.__timeunit = QLineEdit()
-        hbox1 = QHBoxLayout()
+        self.__timeunit = QtWidgets.QLineEdit()
+        hbox1 = QtWidgets.QHBoxLayout()
         hbox1.addWidget(self.__useTime)
         hbox1.addWidget(self.__timeoffset)
         hbox1.addWidget(self.__timeunit)
         return hbox1
 
     def __makeGeneralFuncLayout(self):
-        self.__useFunc = QCheckBox("Use general func f(canv, i, axis)")
-        self.__funcName = QLineEdit()
-        h1 = QHBoxLayout()
+        self.__useFunc = QtWidgets.QCheckBox("Use general func f(canv, i, axis)")
+        self.__funcName = QtWidgets.QLineEdit()
+        h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(self.__useFunc)
         h1.addWidget(self.__funcName)
         return h1
@@ -100,7 +98,7 @@ class AnimationTab(QGroupBox):
         logging.info('[Animation] Analysis started.')
         dic, data = self.__loadCanvasSettings()
         if dic is None:
-            QMessageBox.information(self, "Error", "You should specify the Graph that is used to create animation.", QMessageBox.Yes)
+            QtWidgets.QMessageBox.information(self, "Error", "You should specify the Graph that is used to create animation.", QtWidgets.QMessageBox.Yes)
             return
         axis = self.wave.getAxis(self.__axis.getAxis())
         self.__pexe = PointExecutor(self.__axis.getAxis())
@@ -109,13 +107,13 @@ class AnimationTab(QGroupBox):
         params = self.__prepareOptionalParams()
         name = self.__filename.text()
         if len(name) == 0:
-            QMessageBox.information(self, "Error", "Filename is required to make animation.", QMessageBox.Yes)
+            QtWidgets.QMessageBox.information(self, "Error", "Filename is required to make animation.", QtWidgets.QMessageBox.Yes)
             return
         if self.__types.currentText() == ".gif":
             name += ".gif"
         else:
             if "ffmpeg" not in animation.writers:
-                QMessageBox.information(self, "Error", "FFMPEG is required to make mp4 animation.", QMessageBox.Yes)
+                QtWidgets.QMessageBox.information(self, "Error", "FFMPEG is required to make mp4 animation.", QtWidgets.QMessageBox.Yes)
                 return
             name += ".mp4"
         self._makeAnime(name, dic, data, axis, params, self.__pexe)
@@ -129,7 +127,7 @@ class AnimationTab(QGroupBox):
         return params
 
     def _makeAnime(self, file, dic, data, axis, params, exe):
-        c = ExtendCanvas()
+        c = lysCanvas(lib="matplotlib")
         c.Append(data)
         c.LoadFromDictionary(dic)
         ani = animation.FuncAnimation(c.getFigure(), _frame, fargs=(c, axis, params, exe), frames=len(axis), interval=30, repeat=False, init_func=_init)
@@ -140,7 +138,7 @@ class AnimationTab(QGroupBox):
         ani.save(file, writer=writer)
         self.__exe.remove(self.__pexe)
         self.__exe.restoreEnabledState()
-        QMessageBox.information(self, "Info", "Animation is saved to " + file, QMessageBox.Yes)
+        QtWidgets.QMessageBox.information(self, "Info", "Animation is saved to " + file, QtWidgets.QMessageBox.Yes)
         return file
 
 
