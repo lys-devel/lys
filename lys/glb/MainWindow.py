@@ -3,16 +3,14 @@ import sys
 import traceback
 import rlcompleter
 
+from lys import home, SettingDict
+from lys.widgets import _ExtendMdiArea, FileSystemView, Graph
+from lys.Qt import QtWidgets, QtCore, QtGui
 
-from LysQt.QtWidgets import QMainWindow, QSplitter, QWidget, QHBoxLayout, QTabWidget, QTextEdit, QTabBar, QMdiArea
-from LysQt.QtGui import QColor, QTextCursor, QTextOption, QTextCursor
-from LysQt.QtCore import Qt, pyqtSignal, QEvent
-
-from . import glb, home, SettingDict
-from .widgets import _ExtendMdiArea, FileSystemView, Graph
+from .shell import ExtendShell
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
     """
     *Main window* class gives several methods to customize lys GUI.
 
@@ -20,7 +18,7 @@ class MainWindow(QMainWindow):
 
     Developers can access :class:`.FileView.FileSystemView` by :attr:`fileView` property.
     """
-    beforeClosed = pyqtSignal(QEvent)
+    beforeClosed = QtCore.pyqtSignal(QtCore.QEvent)
     """
     beforeClosed(event) signal is submitted when close button of lys is clicked.
 
@@ -34,7 +32,7 @@ class MainWindow(QMainWindow):
         >>> main = glb.mainWindow()
         >>> main.beforeClosed.connect(lambda event: print("Main window closed."))
     """
-    closed = pyqtSignal()
+    closed = QtCore.pyqtSignal()
     """
     beforeClosed(event) signal is submitted when main window of lys is closed.
 
@@ -71,19 +69,19 @@ class MainWindow(QMainWindow):
     def __initUI(self):
         self.setWindowTitle('lys')
 
-        self._mainTab = QTabWidget()
+        self._mainTab = QtWidgets.QTabWidget()
         self._mainTab.setTabsClosable(True)
         self.__addWorkspace("default")
-        self._mainTab.addTab(QWidget(), "+")
-        self._mainTab.tabBar().tabButton(0, QTabBar.RightSide).resize(0, 0)
-        self._mainTab.tabBar().tabButton(1, QTabBar.RightSide).resize(0, 0)
+        self._mainTab.addTab(QtWidgets.QWidget(), "+")
+        self._mainTab.tabBar().tabButton(0, QtWidgets.QTabBar.RightSide).resize(0, 0)
+        self._mainTab.tabBar().tabButton(1, QtWidgets.QTabBar.RightSide).resize(0, 0)
         self.__loadWorkspace()
         self._mainTab.setCurrentIndex(0)
         self._mainTab.currentChanged.connect(self._changeTab)
         self._mainTab.tabCloseRequested.connect(self._closeTab)
         self._side = self.__sideBar()
 
-        sp = QSplitter(Qt.Horizontal)
+        sp = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
         sp.addWidget(self._mainTab)
         sp.addWidget(self._side)
         self.setCentralWidget(sp)
@@ -91,20 +89,20 @@ class MainWindow(QMainWindow):
     def __sideBar(self):
         self._fileView = FileSystemView(home(), drop=True)
 
-        self._tab_up = QTabWidget()
+        self._tab_up = QtWidgets.QTabWidget()
         self._tab_up.addTab(_CommandLogWidget(self), "Command")
 
-        self._tab = QTabWidget()
+        self._tab = QtWidgets.QTabWidget()
         self._tab.addTab(self._fileView, "File")
 
-        layout_h = QSplitter(Qt.Vertical)
+        layout_h = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         layout_h.addWidget(self._tab_up)
-        layout_h.addWidget(_CommandLineEdit(glb.shell()))
+        layout_h.addWidget(_CommandLineEdit(ExtendShell._instance))
         layout_h.addWidget(self._tab)
 
-        lay = QHBoxLayout()
+        lay = QtWidgets.QHBoxLayout()
         lay.addWidget(layout_h)
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(lay)
         return w
 
@@ -164,7 +162,7 @@ class MainWindow(QMainWindow):
         This method adds tab in the side bar.
 
         Args:
-            widget(QWidget): widget to be added.
+            widget(QtWidgets.QWidget): widget to be added.
             name(str): Name of a tab.
             position('up' or 'down'): TabWidget to be added to.
 
@@ -172,7 +170,7 @@ class MainWindow(QMainWindow):
 
             >>> from lys import glb
             >>> main = glb.mainWindow()
-            >>> main.addTab(QWidget(), "TestTab", "up")
+            >>> main.addTab(QtWidgets.QWidget(), "TestTab", "up")
 
         """
         if position == "up":
@@ -195,7 +193,7 @@ class MainWindow(QMainWindow):
         """
         Close all graphs in the workspace.
         """
-        list = self._mdiArea(workspace=workspace).subWindowList(order=QMdiArea.ActivationHistoryOrder)
+        list = self._mdiArea(workspace=workspace).subWindowList(order=QtWidgets.QMdiArea.ActivationHistoryOrder)
         for item in reversed(list):
             if isinstance(item, Graph):
                 item.close(force=True)
@@ -209,7 +207,7 @@ class MainWindow(QMainWindow):
         return self._workspace[i]
 
 
-class _CommandLogWidget(QTextEdit):
+class _CommandLogWidget(QtWidgets.QTextEdit):
     """Simple command log widget"""
     class _Logger(object):
         def __init__(self, editor, out, color):
@@ -225,16 +223,16 @@ class _CommandLogWidget(QTextEdit):
         def flush(self):
             pass
     __logFile = ".lys/commandlog.log"
-    updated = pyqtSignal(str, QColor)
+    updated = QtCore.pyqtSignal(str, QtGui.QColor)
 
     def __init__(self, parent):
         super().__init__(parent)
         self.setReadOnly(True)
         self.setUndoRedoEnabled(False)
-        self.setWordWrapMode(QTextOption.NoWrap)
+        self.setWordWrapMode(QtGui.QTextOption.NoWrap)
         self.__load()
         sys.stdout = self._out = self._Logger(self, sys.stdout, self.textColor())
-        sys.stderr = self._err = self._Logger(self, sys.stderr, QColor(255, 0, 0))
+        sys.stderr = self._err = self._Logger(self, sys.stderr, QtGui.QColor(255, 0, 0))
         self.updated.connect(self._update)
 
     def __load(self):
@@ -253,14 +251,14 @@ class _CommandLogWidget(QTextEdit):
             f.write(data)
 
     def _update(self, message, color):
-        self.moveCursor(QTextCursor.End)
+        self.moveCursor(QtGui.QTextCursor.End)
         self.setTextColor(color)
         self.insertPlainText(message)
-        self.moveCursor(QTextCursor.StartOfLine)
+        self.moveCursor(QtGui.QTextCursor.StartOfLine)
         self._save()
 
 
-class _CommandLineEdit(QTextEdit):
+class _CommandLineEdit(QtWidgets.QTextEdit):
     def __init__(self, shell):
         super().__init__()
         self.setPlaceholderText("Type python command and press enter")
@@ -307,8 +305,8 @@ class _CommandLineEdit(QTextEdit):
             if tmp is not None:
                 self.setText(self.__prefix + tmp + self.__suffix)
                 c = self.textCursor()
-                c.movePosition(QTextCursor.Start)
-                c.movePosition(QTextCursor.Right, n=len(self.__prefix + tmp))
+                c.movePosition(QtGui.QTextCursor.Start)
+                c.movePosition(QtGui.QTextCursor.Right, n=len(self.__prefix + tmp))
                 self.setTextCursor(c)
                 self.__tabn += 1
         except Exception:
@@ -332,13 +330,13 @@ class _CommandLineEdit(QTextEdit):
             print(res)
 
     def event(self, event):
-        if event.type() == QEvent.KeyPress:
-            if event.key() == Qt.Key_Tab:
+        if event.type() == QtCore.QEvent.KeyPress:
+            if event.key() == QtCore.Qt.Key_Tab:
                 return self._complete()
             else:
                 self._resetComplete()
 
-            if event.key() == Qt.Key_Up:
+            if event.key() == QtCore.Qt.Key_Up:
                 log = self.shell.commandLog
                 if len(log) == 0:
                     return True
@@ -348,7 +346,7 @@ class _CommandLineEdit(QTextEdit):
                 self.setText(log[len(log) - self.__logn])
                 return True
 
-            if event.key() == Qt.Key_Down:
+            if event.key() == QtCore.Qt.Key_Down:
                 log = self.shell.commandLog
                 if not self.__logn == 0:
                     self.__logn -= 1
@@ -357,7 +355,7 @@ class _CommandLineEdit(QTextEdit):
                 else:
                     self.setText(log[max(0, len(log) - self.__logn)])
                 return True
-            if event.key() == Qt.Key_Return and (event.modifiers() == Qt.NoModifier):
+            if event.key() == QtCore.Qt.Key_Return and (event.modifiers() == QtCore.Qt.NoModifier):
                 self.__SendCommand()
                 return True
 

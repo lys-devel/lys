@@ -3,11 +3,11 @@ import glob
 import sys
 import traceback
 
-from LysQt.QtCore import QObject, pyqtSignal
-from . import home
+from lys import home
+from lys.Qt import QtCore
 
 
-class ExtendShell(QObject):
+class ExtendShell(QtCore.QObject):
     """
     Extended shell object that is used for Python Interface in lys.
 
@@ -40,7 +40,7 @@ class ExtendShell(QObject):
 
     """
     _instance = None
-    commandExecuted = pyqtSignal(str)
+    commandExecuted = QtCore.pyqtSignal(str)
     """
     *commandExecuted* signal is emitted after when :func:`eval` and :func:`exec` is called.
     """
