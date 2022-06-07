@@ -3,9 +3,9 @@ from scipy.interpolate import interpn, interp2d, interp1d
 
 from lys import DaskWave
 from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.Qt import QtWidgets
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QLabel, QSpinBox, QGridLayout
 
 
 class InterpFilter(FilterInterface):
@@ -79,10 +79,10 @@ class _InterpSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)
         self._vals = []
-        self._layout = QGridLayout()
+        self._layout = QtWidgets.QGridLayout()
         for d in range(dim):
-            self._layout.addWidget(QLabel("Axis" + str(d + 1)), 0, d)
-            v = QSpinBox()
+            self._layout.addWidget(QtWidgets.QLabel("Axis" + str(d + 1)), 0, d)
+            v = QtWidgets.QSpinBox()
             v.setRange(0, 100000)
             self._vals.append(v)
             self._layout.addWidget(v, 1, d)

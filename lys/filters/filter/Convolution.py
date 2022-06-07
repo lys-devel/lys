@@ -1,14 +1,13 @@
 import numpy as np
+from scipy.ndimage import filters
 import dask.array as da
 from dask_image import ndfilters as dfilters
-from scipy.ndimage import filters
 
 from lys import DaskWave
-from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.filters import filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
 from .Differentiate import _AxisCheckSetting
-from .CommonWidgets import *
 
 
 class _ConvolutionFilter(FilterInterface):

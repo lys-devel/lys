@@ -1,4 +1,4 @@
-from LysQt.QtWidgets import QWidget
+from lys.Qt import QtWidgets
 
 # all filter classes
 _filterClasses = {}
@@ -11,7 +11,7 @@ def __registerLocals():
     _filterGroups[''] = _DeleteSetting
 
 
-class _DeleteSetting(QWidget):
+class _DeleteSetting(QtWidgets.QWidget):
     def __init__(self, dimension=2):
         super().__init__(None)
 

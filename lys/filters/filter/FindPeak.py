@@ -3,10 +3,11 @@ from scipy.signal import argrelextrema
 from scipy.ndimage import median_filter
 
 from lys import DaskWave
+from lys.Qt import QtWidgets
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QComboBox, QSpinBox, AxisSelectionLayout, QHBoxLayout, QLabel, QVBoxLayout, QGridLayout
+from .CommonWidgets import AxisSelectionLayout
 
 
 class PeakFilter(FilterInterface):
@@ -125,20 +126,20 @@ def _reorder(data, size):
 class _PeakSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._combo = QComboBox()
+        self._combo = QtWidgets.QComboBox()
         self._combo.addItems(["ArgRelMax", "ArgRelMin"])
-        self._order = QSpinBox()
+        self._order = QtWidgets.QSpinBox()
         self._order.setValue(1)
-        self._value = QSpinBox()
+        self._value = QtWidgets.QSpinBox()
         self._value.setValue(3)
         self._axis = AxisSelectionLayout("Axis", dimension)
-        h1 = QHBoxLayout()
+        h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(self._combo)
-        h1.addWidget(QLabel("order"))
+        h1.addWidget(QtWidgets.QLabel("order"))
         h1.addWidget(self._order)
-        h1.addWidget(QLabel("size"))
+        h1.addWidget(QtWidgets.QLabel("size"))
         h1.addWidget(self._value)
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self._axis)
         layout.addLayout(h1)
         self.setLayout(layout)
@@ -161,16 +162,16 @@ class _PeakPostSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
         self._axis = AxisSelectionLayout("Find peak along axis (should be 2)", dimension)
-        self._size1 = QSpinBox()
+        self._size1 = QtWidgets.QSpinBox()
         self._size1.setValue(15)
-        self._size2 = QSpinBox()
+        self._size2 = QtWidgets.QSpinBox()
         self._size2.setValue(5)
-        g = QGridLayout()
-        g.addWidget(QLabel("Median along axis 0"), 0, 0)
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("Median along axis 0"), 0, 0)
         g.addWidget(self._size1, 0, 1)
-        g.addWidget(QLabel("Median along axis 3"), 1, 0)
+        g.addWidget(QtWidgets.QLabel("Median along axis 3"), 1, 0)
         g.addWidget(self._size2, 1, 1)
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self._axis)
         layout.addLayout(g)
         self.setLayout(layout)
@@ -191,13 +192,13 @@ class _PeakReorderSetting(FilterSettingBase):
         self._peak = AxisSelectionLayout("Peak index axis", dimension)
         self._scan = AxisSelectionLayout("Scan axis", dimension)
 
-        self._size = QSpinBox()
+        self._size = QtWidgets.QSpinBox()
         self._size.setValue(9)
-        h1 = QHBoxLayout()
-        h1.addWidget(QLabel("Median size"))
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QLabel("Median size"))
         h1.addWidget(self._size)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self._peak)
         layout.addLayout(self._scan)
         layout.addLayout(h1)

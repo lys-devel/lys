@@ -1,9 +1,9 @@
 
 from lys import DaskWave
+from lys.Qt import QtWidgets
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QSpinBox, QGridLayout, QLabel
 
 
 class RechunkFilter(FilterInterface):
@@ -34,10 +34,10 @@ class RechunkFilter(FilterInterface):
 class _RechunkSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._chunk = [QSpinBox() for _ in range(dimension)]
-        grid = QGridLayout()
+        self._chunk = [QtWidgets.QSpinBox() for _ in range(dimension)]
+        grid = QtWidgets.QGridLayout()
         for i in range(dimension):
-            grid.addWidget(QLabel("Dim " + str(i + 1)), 0, i)
+            grid.addWidget(QtWidgets.QLabel("Dim " + str(i + 1)), 0, i)
             grid.addWidget(self._chunk[i], 1, i)
         self.setLayout(grid)
 

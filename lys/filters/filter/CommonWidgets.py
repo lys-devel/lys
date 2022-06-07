@@ -1,17 +1,16 @@
-from LysQt.QtGui import *
-from LysQt.QtCore import *
-from LysQt.QtWidgets import *
+from lys import frontCanvas
+from lys.Qt import QtWidgets, QtCore
 from lys.widgets import ScientificSpinBox
 
 
-class SpinBoxOverOne(QSpinBox):
+class SpinBoxOverOne(QtWidgets.QSpinBox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setMinimum(1)
         self.setValue(1)
 
 
-class OddSpinBox(QSpinBox):
+class OddSpinBox(QtWidgets.QSpinBox):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setMinimum(1)
@@ -24,17 +23,17 @@ class OddSpinBox(QSpinBox):
             self.setValue(val - 1)
 
 
-class kernelSizeLayout(QGridLayout):
+class kernelSizeLayout(QtWidgets.QGridLayout):
     def __init__(self, dimension=2, odd=True):
         super().__init__()
-        self.addWidget(QLabel('Kernel Size'), 1, 0)
+        self.addWidget(QtWidgets.QLabel('Kernel Size'), 1, 0)
         if odd:
             spin = OddSpinBox
         else:
             spin = SpinBoxOverOne
         self._kernels = [spin() for d in range(dimension)]
         for i, k in enumerate(self._kernels):
-            self.addWidget(QLabel('Axis' + str(i + 1)), 0, i + 1)
+            self.addWidget(QtWidgets.QLabel('Axis' + str(i + 1)), 0, i + 1)
             self.addWidget(k, 1, i + 1)
 
     def getKernelSize(self):
@@ -45,14 +44,14 @@ class kernelSizeLayout(QGridLayout):
             k.setValue(v)
 
 
-class kernelSigmaLayout(QGridLayout):
+class kernelSigmaLayout(QtWidgets.QGridLayout):
     def __init__(self, dimension=2):
         super().__init__()
-        self.addWidget(QLabel('Sigma'), 1, 0)
+        self.addWidget(QtWidgets.QLabel('Sigma'), 1, 0)
         self._kernels = [ScientificSpinBox() for d in range(dimension)]
         for i, k in enumerate(self._kernels):
             k.setMinimum(0)
-            self.addWidget(QLabel('Axis' + str(i + 1)), 0, i + 1)
+            self.addWidget(QtWidgets.QLabel('Axis' + str(i + 1)), 0, i + 1)
             self.addWidget(k, 1, i + 1)
 
     def getKernelSigma(self):
@@ -63,10 +62,10 @@ class kernelSigmaLayout(QGridLayout):
             k.setValue(v)
 
 
-class AxisCheckLayout(QHBoxLayout):
+class AxisCheckLayout(QtWidgets.QHBoxLayout):
     def __init__(self, dim):
         super().__init__()
-        self._axes = [QCheckBox("Axis" + str(i)) for i in range(dim)]
+        self._axes = [QtWidgets.QCheckBox("Axis" + str(i)) for i in range(dim)]
         for a in self._axes:
             self.addWidget(a)
 
@@ -85,13 +84,13 @@ class AxisCheckLayout(QHBoxLayout):
                 a.setChecked(False)
 
 
-class AxisSelectionLayout(QHBoxLayout):
+class AxisSelectionLayout(QtWidgets.QHBoxLayout):
     def __init__(self, label, dim=2, init=0):
         super().__init__()
         self.dimension = 0
-        self.group = QButtonGroup()
+        self.group = QtWidgets.QButtonGroup()
         self.childs = []
-        self.addWidget(QLabel(label))
+        self.addWidget(QtWidgets.QLabel(label))
         self.setDimension(dim)
         if init >= len(self.childs):
             init = 0
@@ -102,7 +101,7 @@ class AxisSelectionLayout(QHBoxLayout):
             self.removeWidget(c)
             self.group.removeButton(c)
             c.deleteLater()
-        self.childs = [QRadioButton(str(i)) for i in range(self.dimension)]
+        self.childs = [QtWidgets.QRadioButton(str(i)) for i in range(self.dimension)]
         for c in self.childs:
             self.addWidget(c)
             self.group.addButton(c)
@@ -126,7 +125,7 @@ class AxisSelectionLayout(QHBoxLayout):
         self.group.setExclusive(True)
 
 
-class AxesSelectionDialog(QDialog):
+class AxesSelectionDialog(QtWidgets.QDialog):
     def __init__(self, dim=2):
         super().__init__()
         self.dim = dim
@@ -136,12 +135,12 @@ class AxesSelectionDialog(QDialog):
     def __initlayout(self):
         self.axis1 = AxisSelectionLayout("Axis 1", self.dim, 0)
         self.axis2 = AxisSelectionLayout("Axis 2", self.dim, 1)
-        ok = QPushButton("O K", clicked=self.accept)
-        cancel = QPushButton("CALCEL", clicked=self.close)
-        h1 = QHBoxLayout()
+        ok = QtWidgets.QPushButton("O K", clicked=self.accept)
+        cancel = QtWidgets.QPushButton("CALCEL", clicked=self.close)
+        h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(ok)
         h1.addWidget(cancel)
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self.axis1)
         layout.addLayout(self.axis2)
         layout.addLayout(h1)
@@ -155,8 +154,8 @@ class AxesSelectionDialog(QDialog):
         return (self.axis1.getAxis(), self.axis2.getAxis())
 
 
-class RegionSelectWidget(QGridLayout):
-    loadClicked = pyqtSignal(object)
+class RegionSelectWidget(QtWidgets.QGridLayout):
+    loadClicked = QtCore.pyqtSignal(object)
 
     def __init__(self, parent, dim, loader=None, check=False):
         super().__init__()
@@ -166,24 +165,24 @@ class RegionSelectWidget(QGridLayout):
         self.__initLayout(dim, loader)
 
     def __initLayout(self, dim, loader):
-        self.__loadPrev = QPushButton('Load from Graph', clicked=self.__loadFromPrev)
+        self.__loadPrev = QtWidgets.QPushButton('Load from Graph', clicked=self.__loadFromPrev)
         if loader is None:
             self.loadClicked.connect(self.__load)
         else:
             self.loadClicked.connect(loader)
         self.addWidget(self.__loadPrev, 0, 0)
 
-        self.addWidget(QLabel("from"), 1, 0)
-        self.addWidget(QLabel("to"), 2, 0)
+        self.addWidget(QtWidgets.QLabel("from"), 1, 0)
+        self.addWidget(QtWidgets.QLabel("to"), 2, 0)
         self.start = [ScientificSpinBox() for d in range(dim)]
         self.end = [ScientificSpinBox() for d in range(dim)]
         i = 1
         self._checkWidgets = []
         for s, e in zip(self.start, self.end):
             if self._check:
-                check = QCheckBox("Axis" + str(i))
+                check = QtWidgets.QCheckBox("Axis" + str(i))
             else:
-                check = QLabel("Axis" + str(i))
+                check = QtWidgets.QLabel("Axis" + str(i))
             self._checkWidgets.append(check)
             self.addWidget(check, 0, i)
             self.addWidget(s, 1, i)
@@ -194,7 +193,6 @@ class RegionSelectWidget(QGridLayout):
         self.loadClicked.emit(self)
 
     def __load(self, obj):
-        from lys import frontCanvas
         c = frontCanvas()
         if c is not None:
             r = c.selectedRange()

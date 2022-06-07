@@ -2,7 +2,7 @@ import logging
 import os
 
 from lys import glb
-from lys import QtWidgets, QtCore
+from lys.Qt import QtWidgets, QtCore
 
 
 class TextEditLogger(logging.Handler):

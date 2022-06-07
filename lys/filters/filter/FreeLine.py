@@ -3,11 +3,14 @@ from scipy import ndimage
 import dask.array as da
 
 
-from lys import DaskWave
+from lys import DaskWave, frontCanvas
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
+from lys.Qt import QtWidgets
+from lys.widgets import ScientificSpinBox
+
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QHBoxLayout, QSpinBox, QPushButton, QLabel, ScientificSpinBox, AxisSelectionLayout, QVBoxLayout, QHBoxLayout, AxesSelectionDialog
+from .CommonWidgets import AxisSelectionLayout, AxesSelectionDialog
 
 
 class FreeLineFilter(FilterInterface):
@@ -104,12 +107,12 @@ class _FreeLineSetting(FilterSettingBase):
         self.__initlayout()
 
     def __initlayout(self):
-        self.width = QSpinBox()
+        self.width = QtWidgets.QSpinBox()
         self.width.setValue(3)
-        self.load = QPushButton("Load from Graph", clicked=self.__load)
+        self.load = QtWidgets.QPushButton("Load from Graph", clicked=self.__load)
 
-        h3 = QHBoxLayout()
-        h3.addWidget(QLabel("Width"))
+        h3 = QtWidgets.QHBoxLayout()
+        h3.addWidget(QtWidgets.QLabel("Width"))
         h3.addWidget(self.width)
         h3.addWidget(self.load)
 
@@ -121,24 +124,23 @@ class _FreeLineSetting(FilterSettingBase):
         self.to1 = ScientificSpinBox()
         self.to2 = ScientificSpinBox()
 
-        h1 = QHBoxLayout()
+        h1 = QtWidgets.QHBoxLayout()
         h1.addLayout(self.axis1)
         h1.addWidget(self.from1)
         h1.addWidget(self.to1)
 
-        h2 = QHBoxLayout()
+        h2 = QtWidgets.QHBoxLayout()
         h2.addLayout(self.axis2)
         h2.addWidget(self.from2)
         h2.addWidget(self.to2)
 
-        self._layout = QVBoxLayout()
+        self._layout = QtWidgets.QVBoxLayout()
         self._layout.addLayout(h3)
         self._layout.addLayout(h1)
         self._layout.addLayout(h2)
         self.setLayout(self._layout)
 
     def __load(self):
-        from lys import frontCanvas
         c = frontCanvas()
         if c is None:
             return

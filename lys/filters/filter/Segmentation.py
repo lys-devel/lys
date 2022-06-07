@@ -5,10 +5,11 @@ from scipy.ndimage import gaussian_filter
 
 
 from lys import DaskWave
+from lys.Qt import QtWidgets, QtCore
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import pyqtSignal, QComboBox, QSpinBox, ScientificSpinBox, QGridLayout, QLabel, AxisSelectionLayout, QVBoxLayout, QHBoxLayout
+from .CommonWidgets import ScientificSpinBox, AxisSelectionLayout
 
 
 class ThresholdFilter(FilterInterface):
@@ -111,33 +112,33 @@ def _applyMask(data, method, output, size, c):
 
 @filterGUI(AdaptiveThresholdFilter)
 class _AdaptiveThresholdSetting(FilterSettingBase):
-    finished = pyqtSignal()
+    finished = QtCore.pyqtSignal()
 
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._method = QComboBox()
+        self._method = QtWidgets.QComboBox()
         self._method.addItem('Median')
         self._method.addItem('Gaussian')
-        self._output = QComboBox()
+        self._output = QtWidgets.QComboBox()
         self._output.addItems(['Mask', 'Mask (inv)', 'Masked data', 'Masked data (inv)'])
-        self._bsize = QSpinBox()
+        self._bsize = QtWidgets.QSpinBox()
         self._bsize.setRange(1, 100000)
         self._bsize.setValue(11)
         self._c = ScientificSpinBox()
         self._c.setValue(2)
 
-        self._layout = QGridLayout()
-        self._layout.addWidget(QLabel('Method'), 0, 0)
+        self._layout = QtWidgets.QGridLayout()
+        self._layout.addWidget(QtWidgets.QLabel('Method'), 0, 0)
         self._layout.addWidget(self._method, 1, 0)
-        self._layout.addWidget(QLabel('Output'), 0, 1)
+        self._layout.addWidget(QtWidgets.QLabel('Output'), 0, 1)
         self._layout.addWidget(self._output, 1, 1)
-        self._layout.addWidget(QLabel('Block size'), 0, 2)
+        self._layout.addWidget(QtWidgets.QLabel('Block size'), 0, 2)
         self._layout.addWidget(self._bsize, 1, 2)
-        self._layout.addWidget(QLabel('C'), 0, 3)
+        self._layout.addWidget(QtWidgets.QLabel('C'), 0, 3)
         self._layout.addWidget(self._c, 1, 3)
 
         self.axes = [AxisSelectionLayout("Axis1", dim=dimension, init=0), AxisSelectionLayout("Axis2", dim=dimension, init=1)]
-        lv = QVBoxLayout()
+        lv = QtWidgets.QVBoxLayout()
         lv.addLayout(self._layout)
         lv.addLayout(self.axes[0])
         lv.addLayout(self.axes[1])
@@ -157,7 +158,7 @@ class _AdaptiveThresholdSetting(FilterSettingBase):
 
 @filterGUI(ThresholdFilter)
 class _ThresholdSetting(FilterSettingBase):
-    finished = pyqtSignal()
+    finished = QtCore.pyqtSignal()
 
     def __init__(self, dimension=2):
         super().__init__(dimension)
@@ -165,12 +166,12 @@ class _ThresholdSetting(FilterSettingBase):
         self._c = ScientificSpinBox()
         self._c.setValue(1)
 
-        self._output = QComboBox()
+        self._output = QtWidgets.QComboBox()
         self._output.addItems(['Mask', 'MaskedData', 'Mask_inv', 'MaskedData_inv'])
 
-        self._layout = QGridLayout()
-        self._layout.addWidget(QLabel('Threshold'), 0, 0)
-        self._layout.addWidget(QLabel('Output'), 0, 1)
+        self._layout = QtWidgets.QGridLayout()
+        self._layout.addWidget(QtWidgets.QLabel('Threshold'), 0, 0)
+        self._layout.addWidget(QtWidgets.QLabel('Output'), 0, 1)
         self._layout.addWidget(self._c, 1, 0)
         self._layout.addWidget(self._output)
         self.setLayout(self._layout)

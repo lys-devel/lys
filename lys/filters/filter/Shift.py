@@ -3,11 +3,12 @@ import numpy as np
 import dask.array as da
 
 from lys import DaskWave
+from lys.Qt import QtWidgets
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 from lys.widgets import ScientificSpinBox
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QGridLayout, QLabel, AxisCheckLayout, QHBoxLayout, QComboBox
+from .CommonWidgets import AxisCheckLayout
 
 
 class ShiftFilter(FilterInterface):
@@ -137,13 +138,13 @@ class ReflectFilter(FilterInterface):
 class _ImageShiftSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._layout = QGridLayout()
+        self._layout = QtWidgets.QGridLayout()
         self._dim = dimension
         self._values = []
         for i in range(dimension):
             wid = ScientificSpinBox()
             self._values.append(wid)
-            self._layout.addWidget(QLabel('Axis' + str(i + 1)), 0, i)
+            self._layout.addWidget(QtWidgets.QLabel('Axis' + str(i + 1)), 0, i)
             self._layout.addWidget(wid, 1, i)
         self.setLayout(self._layout)
 
@@ -173,8 +174,8 @@ class _ReverseSetting(FilterSettingBase):
 class _RollSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)
-        layout = QHBoxLayout()
-        self._combo = QComboBox()
+        layout = QtWidgets.QHBoxLayout()
+        self._combo = QtWidgets.QComboBox()
         self._combo.addItems(["1/2", "1/4", "-1/4"])
         self._axes = AxisCheckLayout(dim)
         layout.addWidget(self._combo)
@@ -193,8 +194,8 @@ class _RollSetting(FilterSettingBase):
 class _ReflectSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)
-        layout = QHBoxLayout()
-        self._combo = QComboBox()
+        layout = QtWidgets.QHBoxLayout()
+        self._combo = QtWidgets.QComboBox()
         self._combo.addItem("first")
         self._combo.addItem("last")
         self._combo.addItem("center")

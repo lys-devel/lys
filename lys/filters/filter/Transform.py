@@ -1,13 +1,13 @@
-import cv2
 import numpy as np
 import dask.array as da
 from scipy import ndimage
 
 from lys import DaskWave, frontCanvas
+from lys.Qt import QtWidgets
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QGridLayout, QComboBox, ScientificSpinBox, QLabel, QHBoxLayout, QVBoxLayout, AxisSelectionLayout, QPushButton, QMessageBox
+from .CommonWidgets import ScientificSpinBox, AxisSelectionLayout
 
 
 class SetAxisFilter(FilterInterface):
@@ -264,20 +264,20 @@ class MirrorFilter(FilterInterface):
 class _SetAxisSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._layout = QGridLayout()
-        self._axis = QComboBox()
+        self._layout = QtWidgets.QGridLayout()
+        self._axis = QtWidgets.QComboBox()
         for i in range(dimension):
             self._axis.addItem("Axis" + str(i + 1))
-        self._type = QComboBox()
+        self._type = QtWidgets.QComboBox()
         self._type.addItem("Start & Stop")
         self._type.addItem("Start & Step")
         self._val1 = ScientificSpinBox()
         self._val2 = ScientificSpinBox()
         self._val2.setValue(1)
-        self._layout.addWidget(QLabel('Axis'), 0, 0)
-        self._layout.addWidget(QLabel('Type'), 0, 1)
-        self._layout.addWidget(QLabel('Start'), 0, 2)
-        self._layout.addWidget(QLabel('Stop/Step'), 0, 3)
+        self._layout.addWidget(QtWidgets.QLabel('Axis'), 0, 0)
+        self._layout.addWidget(QtWidgets.QLabel('Type'), 0, 1)
+        self._layout.addWidget(QtWidgets.QLabel('Start'), 0, 2)
+        self._layout.addWidget(QtWidgets.QLabel('Stop/Step'), 0, 3)
         self._layout.addWidget(self._axis, 1, 0)
         self._layout.addWidget(self._type, 1, 1)
         self._layout.addWidget(self._val1, 1, 2)
@@ -305,13 +305,13 @@ class _SetAxisSetting(FilterSettingBase):
 class _ShiftSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._layout = QGridLayout()
+        self._layout = QtWidgets.QGridLayout()
         self._dim = dimension
         self._values = []
         for i in range(dimension):
             wid = ScientificSpinBox()
             self._values.append(wid)
-            self._layout.addWidget(QLabel('Axis' + str(i + 1)), 0, i)
+            self._layout.addWidget(QtWidgets.QLabel('Axis' + str(i + 1)), 0, i)
             self._layout.addWidget(wid, 1, i)
         self.setLayout(self._layout)
 
@@ -327,14 +327,14 @@ class _ShiftSetting(FilterSettingBase):
 class _MagnificationSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._layout = QGridLayout()
+        self._layout = QtWidgets.QGridLayout()
         self._dim = dimension
         self._values = []
         for i in range(dimension):
             wid = ScientificSpinBox()
             wid.setValue(1)
             self._values.append(wid)
-            self._layout.addWidget(QLabel('Axis' + str(i + 1)), 0, i)
+            self._layout.addWidget(QtWidgets.QLabel('Axis' + str(i + 1)), 0, i)
             self._layout.addWidget(wid, 1, i)
         self.setLayout(self._layout)
 
@@ -351,14 +351,14 @@ class _Rotation2DSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
         self._rot = ScientificSpinBox()
-        self._layout = QHBoxLayout()
-        self._layout.addWidget(QLabel('Rotation'))
+        self._layout = QtWidgets.QHBoxLayout()
+        self._layout.addWidget(QtWidgets.QLabel('Rotation'))
         self._layout.addWidget(self._rot)
 
         self.axis1 = AxisSelectionLayout("Axis 1", self.dim, 0)
         self.axis2 = AxisSelectionLayout("Axis 2", self.dim, 1)
 
-        lay = QVBoxLayout()
+        lay = QtWidgets.QVBoxLayout()
         lay.addLayout(self._layout)
         lay.addLayout(self.axis1)
         lay.addLayout(self.axis2)
@@ -377,20 +377,20 @@ class _Rotation2DSetting(FilterSettingBase):
 class _SymmetrizeSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)
-        layout = QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         self.axes = [AxisSelectionLayout("Axis1", dim=dim, init=0), AxisSelectionLayout("Axis2", dim=dim, init=1)]
-        self._combo = QComboBox()
+        self._combo = QtWidgets.QComboBox()
         self._combo.addItems(["1", "2", "3", "4", "6"])
-        l0 = QGridLayout()
+        l0 = QtWidgets.QGridLayout()
         self._center = [ScientificSpinBox(), ScientificSpinBox()]
-        l0.addWidget(QLabel("Symmetry (fold)"), 0, 0)
+        l0.addWidget(QtWidgets.QLabel("Symmetry (fold)"), 0, 0)
         l0.addWidget(self._combo, 1, 0)
-        l0.addWidget(QLabel("Center1"), 0, 1)
+        l0.addWidget(QtWidgets.QLabel("Center1"), 0, 1)
         l0.addWidget(self._center[0], 1, 1)
-        l0.addWidget(QLabel("Center2"), 0, 2)
+        l0.addWidget(QtWidgets.QLabel("Center2"), 0, 2)
         l0.addWidget(self._center[1], 1, 2)
         layout.addLayout(l0)
-        lv = QVBoxLayout()
+        lv = QtWidgets.QVBoxLayout()
         lv.addLayout(self.axes[0])
         lv.addLayout(self.axes[1])
         lv.addLayout(layout)
@@ -412,23 +412,23 @@ class _MirrorSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)
         self.axes = [AxisSelectionLayout("Axis1", dim=dim, init=0), AxisSelectionLayout("Axis2", dim=dim, init=1)]
-        self._combo = QComboBox()
+        self._combo = QtWidgets.QComboBox()
         self._combo.addItems(["Sum", "Mirror"])
         self._p1 = [ScientificSpinBox(), ScientificSpinBox()]
         self._p2 = [ScientificSpinBox(), ScientificSpinBox()]
 
-        l0 = QGridLayout()
-        l0.addWidget(QLabel("Position 1"), 0, 0)
+        l0 = QtWidgets.QGridLayout()
+        l0.addWidget(QtWidgets.QLabel("Position 1"), 0, 0)
         l0.addWidget(self._p1[0], 0, 1)
         l0.addWidget(self._p1[1], 0, 2)
-        l0.addWidget(QLabel("Position 2"), 1, 0)
+        l0.addWidget(QtWidgets.QLabel("Position 2"), 1, 0)
         l0.addWidget(self._p2[0], 1, 1)
         l0.addWidget(self._p2[1], 1, 2)
-        l0.addWidget(QPushButton("From LineAnnot.", clicked=self.__load), 0, 3)
-        l0.addWidget(QLabel("Output"), 2, 0)
+        l0.addWidget(QtWidgets.QPushButton("From LineAnnot.", clicked=self.__load), 0, 3)
+        l0.addWidget(QtWidgets.QLabel("Output"), 2, 0)
         l0.addWidget(self._combo, 2, 1, 1, 2)
 
-        lv = QVBoxLayout()
+        lv = QtWidgets.QVBoxLayout()
         lv.addLayout(self.axes[0])
         lv.addLayout(self.axes[1])
         lv.addLayout(l0)
@@ -438,7 +438,7 @@ class _MirrorSetting(FilterSettingBase):
         c = frontCanvas()
         lines = c.getLineAnnotations()
         if len(lines) == 0:
-            QMessageBox.information(self, "Warning", "No line annotation found on the front canvas.\nAdd line annotation by right click -> draw line.")
+            QtWidgets.QMessageBox.information(self, "Warning", "No line annotation found on the front canvas.\nAdd line annotation by right click -> draw line.")
             return
         line = lines[0]
         p1, p2 = line.getPosition()

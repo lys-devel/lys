@@ -1,19 +1,18 @@
 import inspect
 import itertools
 import numpy as np
-from PyQt5.QtWidgets import QApplication, QGroupBox, QAction, QLineEdit, QAbstractItemView, QVBoxLayout, QWidget, QComboBox, QPushButton, QTreeView, QHBoxLayout, QCheckBox, QMenu, QDialog, QMessageBox, QFileDialog, QLabel, QGridLayout
-from PyQt5.QtGui import QCursor, QStandardItem, QStandardItemModel
-from PyQt5.QtCore import pyqtSignal, Qt, QObject
 
 from lys import Wave, display
+from lys.Qt import QtWidgets, QtGui, QtCore
 from lys.widgets import ScientificSpinBox
 from lys.decorators import avoidCircularReference
+
 from .Functions import functions
 from .Fitting import fit, sumFunction
 
 
-class _ResultController(QObject):
-    stateChanged = pyqtSignal(bool)
+class _ResultController(QtCore.QObject):
+    stateChanged = QtCore.pyqtSignal(bool)
 
     def __init__(self, canvas, data, info, manager):
         super().__init__()
@@ -59,7 +58,7 @@ class _ResultController(QObject):
         return self._state
 
 
-class _DataManager(QObject):
+class _DataManager(QtCore.QObject):
     def __init__(self):
         super().__init__()
         self._range = [None, None]
@@ -89,10 +88,10 @@ class _DataManager(QObject):
         self._xdata = t
 
 
-class _FittingInfo(QObject):
-    functionAdded = pyqtSignal(object)
-    functionRemoved = pyqtSignal(object)
-    updated = pyqtSignal()
+class _FittingInfo(QtCore.QObject):
+    functionAdded = QtCore.pyqtSignal(object)
+    functionRemoved = QtCore.pyqtSignal(object)
+    updated = QtCore.pyqtSignal()
 
     def __init__(self, data, manager):
         super().__init__()
@@ -132,7 +131,7 @@ class _FittingInfo(QObject):
         bounds = np.array(list(itertools.chain(*[fi.range for fi in self._funcs])))
         for g, b in zip(guess, bounds):
             if g < b[0] or g > b[1] or b[0] > b[1]:
-                QMessageBox.warning(parent, "Error", "Fit error: all fitting parameters should between minimum and maximum.")
+                QtWidgets.QMessageBox.warning(parent, "Error", "Fit error: all fitting parameters should between minimum and maximum.")
                 return False
         data, x, _ = self._mgr.getDataForFit(self._data)
         res, sig = fit(self.fitFunction, x, data, guess=guess, bounds=bounds.T)
@@ -169,8 +168,8 @@ class _FittingInfo(QObject):
         return np.array(list(itertools.chain(*[fi.value for fi in self._funcs])))
 
 
-class _FuncInfo(QObject):
-    updated = pyqtSignal()
+class _FuncInfo(QtCore.QObject):
+    updated = QtCore.pyqtSignal()
 
     def __init__(self, name):
         super().__init__()
@@ -233,8 +232,8 @@ class _FuncInfo(QObject):
         return obj
 
 
-class _ParamInfo(QObject):
-    stateChanged = pyqtSignal(object)
+class _ParamInfo(QtCore.QObject):
+    stateChanged = QtCore.pyqtSignal(object)
 
     def __init__(self, name, param, value=None, range=(0, 1), enabled=True, minMaxEnabled=(False, False)):
         super().__init__()
@@ -299,7 +298,7 @@ class _ParamInfo(QObject):
         self._min, self._max = minMaxEnabled
 
 
-class DataAxisWidget(QGroupBox):
+class DataAxisWidget(QtWidgets.QGroupBox):
     def __init__(self, obj, canvas):
         super().__init__("x axis")
         self.__initlayout()
@@ -307,11 +306,11 @@ class DataAxisWidget(QGroupBox):
         self._canvas = canvas
 
     def __initlayout(self):
-        self._xdata = QComboBox()
+        self._xdata = QtWidgets.QComboBox()
         self._xdata.addItems(["x axis", "from Wave.note"])
         self._xdata.currentTextChanged.connect(self.__changeXAxis)
-        self._keyLabel = QLabel("Key")
-        self._keyText = QLineEdit()
+        self._keyLabel = QtWidgets.QLabel("Key")
+        self._keyText = QtWidgets.QLineEdit()
         self._keyText.textChanged.connect(self.__setXAxis)
         self._keyLabel.hide()
         self._keyText.hide()
@@ -322,20 +321,20 @@ class DataAxisWidget(QGroupBox):
         self._max.valueChanged.connect(self.__loadRange)
         self._min.setEnabled(False)
         self._max.setEnabled(False)
-        self._useMin = QCheckBox("min", stateChanged=self._min.setEnabled)
-        self._useMax = QCheckBox("max", stateChanged=self._max.setEnabled)
+        self._useMin = QtWidgets.QCheckBox("min", stateChanged=self._min.setEnabled)
+        self._useMax = QtWidgets.QCheckBox("max", stateChanged=self._max.setEnabled)
         self._useMin.stateChanged.connect(self.__loadRange)
         self._useMax.stateChanged.connect(self.__loadRange)
 
-        g = QGridLayout()
-        g.addWidget(QLabel("x data"), 0, 0)
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("x data"), 0, 0)
         g.addWidget(self._xdata, 0, 1, 1, 2)
         g.addWidget(self._keyLabel, 1, 0)
         g.addWidget(self._keyText, 1, 1, 1, 2)
-        g.addWidget(QLabel("Region"), 2, 0)
+        g.addWidget(QtWidgets.QLabel("Region"), 2, 0)
         g.addWidget(self._useMin, 2, 1)
         g.addWidget(self._useMax, 2, 2)
-        g.addWidget(QPushButton("Load from Graph", clicked=self.__loadFromGraph), 3, 0)
+        g.addWidget(QtWidgets.QPushButton("Load from Graph", clicked=self.__loadFromGraph), 3, 0)
         g.addWidget(self._min, 3, 1)
         g.addWidget(self._max, 3, 2)
 
@@ -373,10 +372,10 @@ class DataAxisWidget(QGroupBox):
             self._useMax.setChecked(True)
             self.__loadRange()
         else:
-            QMessageBox.information(self, "Warning", "Please select region by dragging in the graph.")
+            QtWidgets.QMessageBox.information(self, "Warning", "Please select region by dragging in the graph.")
 
 
-class FittingWidget(QWidget):
+class FittingWidget(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -389,28 +388,28 @@ class FittingWidget(QWidget):
     def __initlayout(self):
         self._tree = FittingTree()
         self._tree.plotRequired.connect(self.__plot)
-        self._target = QComboBox()
+        self._target = QtWidgets.QComboBox()
         self._target.addItems([item.name for item in self._items])
         self._target.currentIndexChanged.connect(self.__targetChanged)
 
-        hbox2 = QHBoxLayout()
-        hbox2.addWidget(QLabel("Target"))
+        hbox2 = QtWidgets.QHBoxLayout()
+        hbox2.addWidget(QtWidgets.QLabel("Target"))
         hbox2.addWidget(self._target)
 
         dm = DataAxisWidget(self._data, self.canvas)
 
-        self._append = QCheckBox("Append result", stateChanged=self.__append)
-        self._all = QCheckBox("Apply to all")
+        self._append = QtWidgets.QCheckBox("Append result", stateChanged=self.__append)
+        self._all = QtWidgets.QCheckBox("Apply to all")
 
-        hbox1 = QHBoxLayout()
+        hbox1 = QtWidgets.QHBoxLayout()
         hbox1.addWidget(self._append)
         hbox1.addWidget(self._all)
 
-        exec = QPushButton('Fit', clicked=self.__fit)
-        hbox3 = QHBoxLayout()
+        exec = QtWidgets.QPushButton('Fit', clicked=self.__fit)
+        hbox3 = QtWidgets.QHBoxLayout()
         hbox3.addWidget(exec)
 
-        vbox1 = QVBoxLayout()
+        vbox1 = QtWidgets.QVBoxLayout()
         vbox1.addLayout(hbox2)
         vbox1.addWidget(dm)
         vbox1.addWidget(self._tree)
@@ -434,8 +433,8 @@ class FittingWidget(QWidget):
     def __fit(self):
         if self._all.isChecked():
             msg = "This operation will delete all fitting results except displayed and then fit all data in the graph using displayed fitting function. Are your really want to proceed?"
-            res = QMessageBox.information(self, "Warning", msg, QMessageBox.Yes | QMessageBox.No)
-            if res == QMessageBox.Yes:
+            res = QtWidgets.QMessageBox.information(self, "Warning", msg, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+            if res == QtWidgets.QMessageBox.Yes:
                 d = self._currentItem.saveAsDictionary()
                 for item in self._items:
                     if item != self._currentItem:
@@ -444,7 +443,7 @@ class FittingWidget(QWidget):
                     res = item.fit(self)
                     if not res:
                         return
-            QMessageBox.information(self, "Information", "All fittings finished.", QMessageBox.Yes)
+            QtWidgets.QMessageBox.information(self, "Information", "All fittings finished.", QtWidgets.QMessageBox.Yes)
         else:
             self._currentItem.fit(self)
 
@@ -460,7 +459,7 @@ class FittingWidget(QWidget):
         for item in self._items:
             tmp = item.getParamValue(f, p)
             if tmp is None:
-                QMessageBox.information(self, "Warning", "All data should be fitted by the same function to plot parameter.")
+                QtWidgets.QMessageBox.information(self, "Warning", "All data should be fitted by the same function to plot parameter.")
                 return
             res.append(tmp)
         display(res)
@@ -470,19 +469,19 @@ class FittingWidget(QWidget):
         return self._items[self._target.currentIndex()]
 
 
-class FittingTree(QTreeView):
-    plotRequired = pyqtSignal(int, int)
+class FittingTree(QtWidgets.QTreeView):
+    plotRequired = QtCore.pyqtSignal(int, int)
 
     def __init__(self):
         super().__init__()
         self._obj = None
-        self.setSelectionMode(QAbstractItemView.SingleSelection)
-        self.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self._model = QStandardItemModel(0, 2)
-        self._model.setHeaderData(0, Qt.Horizontal, 'Name')
-        self._model.setHeaderData(1, Qt.Horizontal, 'Value')
+        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self._model = QtGui.QStandardItemModel(0, 2)
+        self._model.setHeaderData(0, QtCore.Qt.Horizontal, 'Name')
+        self._model.setHeaderData(1, QtCore.Qt.Horizontal, 'Value')
         self.setModel(self._model)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._buildContextMenu)
         self._funcs = []
         self.__copied = None
@@ -504,26 +503,26 @@ class FittingTree(QTreeView):
     def _buildContextMenu(self, qPoint):
         isFunc = self.__currentItemIndex() is not None or len(self.selectedIndexes()) == 0
         selected = self.__currentItemIndex() is not None
-        menu = QMenu(self)
+        menu = QtWidgets.QMenu(self)
         if not isFunc:
-            menu.addAction(QAction('Plot this parameter', self, triggered=self.__plot))
-        menu.addAction(QAction('Add Function', self, triggered=self.__addFunction))
+            menu.addAction(QtWidgets.QAction('Plot this parameter', self, triggered=self.__plot))
+        menu.addAction(QtWidgets.QAction('Add Function', self, triggered=self.__addFunction))
         if isFunc and selected:
-            menu.addAction(QAction('Remove Function', self, triggered=self.__removeFunction))
-        menu.addAction(QAction('Clear', self, triggered=self.__clear))
+            menu.addAction(QtWidgets.QAction('Remove Function', self, triggered=self.__removeFunction))
+        menu.addAction(QtWidgets.QAction('Clear', self, triggered=self.__clear))
         menu.addSeparator()
         if isFunc and selected:
-            menu.addAction(QAction('Copy Parameters as list', self, triggered=lambda: self.__copyParams("list")))
-            menu.addAction(QAction('Copy Parameters as dict', self, triggered=lambda: self.__copyParams("dict")))
+            menu.addAction(QtWidgets.QAction('Copy Parameters as list', self, triggered=lambda: self.__copyParams("list")))
+            menu.addAction(QtWidgets.QAction('Copy Parameters as dict', self, triggered=lambda: self.__copyParams("dict")))
             menu.addSeparator()
-            menu.addAction(QAction('Copy Function', self, triggered=self.__copyFunction))
-            menu.addAction(QAction('Paste Function', self, triggered=self.__pasteFunction))
-        menu.addAction(QAction('Copy All Functions', self, triggered=lambda: self.__copyFunction(all=True)))
-        menu.addAction(QAction('Paste All Functions', self, triggered=lambda: self.__pasteFunction(all=True)))
+            menu.addAction(QtWidgets.QAction('Copy Function', self, triggered=self.__copyFunction))
+            menu.addAction(QtWidgets.QAction('Paste Function', self, triggered=self.__pasteFunction))
+        menu.addAction(QtWidgets.QAction('Copy All Functions', self, triggered=lambda: self.__copyFunction(all=True)))
+        menu.addAction(QtWidgets.QAction('Paste All Functions', self, triggered=lambda: self.__pasteFunction(all=True)))
         menu.addSeparator()
-        menu.addAction(QAction('Import from File', self, triggered=self.__import))
-        menu.addAction(QAction('Export to File', self, triggered=self.__export))
-        menu.exec_(QCursor.pos())
+        menu.addAction(QtWidgets.QAction('Import from File', self, triggered=self.__import))
+        menu.addAction(QtWidgets.QAction('Export to File', self, triggered=self.__export))
+        menu.exec_(QtGui.QCursor.pos())
 
     def __currentItemIndex(self):
         for i in self.selectedIndexes():
@@ -554,7 +553,7 @@ class FittingTree(QTreeView):
             obj = values
         else:
             obj = {n: v for n, v in zip(self._obj.functions[self.__currentItemIndex()].paramNames, values)}
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
         cb.setText(str(obj), mode=cb.Clipboard)
 
@@ -576,7 +575,7 @@ class FittingTree(QTreeView):
             self._obj.addFunction(self.__copied)
 
     def __export(self):
-        path, type = QFileDialog.getSaveFileName(self, "Save fitting results", filter="Dictionary (*.dic);;All files (*.*)")
+        path, type = QtWidgets.QFileDialog.getSaveFileName(self, "Save fitting results", filter="Dictionary (*.dic);;All files (*.*)")
         if len(path) != 0:
             if not path.endswith(".dic"):
                 path = path + ".dic"
@@ -584,7 +583,7 @@ class FittingTree(QTreeView):
                 f.write(str(self._obj.saveAsDictionary()))
 
     def __import(self):
-        fname = QFileDialog.getOpenFileName(self, 'Load fitting', filter="Dictionary (*.dic);;All files (*.*)")
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Load fitting', filter="Dictionary (*.dic);;All files (*.*)")
         if fname[0]:
             with open(fname[0], "r") as f:
                 d = eval(f.read())
@@ -594,17 +593,17 @@ class FittingTree(QTreeView):
         self._obj.clear()
 
 
-class _FuncSelectDialog(QDialog):
+class _FuncSelectDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.combo = QComboBox()
+        self.combo = QtWidgets.QComboBox()
         self.combo.addItems(functions.keys())
 
-        h1 = QHBoxLayout()
-        h1.addWidget(QPushButton('O K', clicked=self.accept))
-        h1.addWidget(QPushButton('CALCEL', clicked=self.reject))
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QPushButton('O K', clicked=self.accept))
+        h1.addWidget(QtWidgets.QPushButton('CALCEL', clicked=self.reject))
 
-        v1 = QVBoxLayout()
+        v1 = QtWidgets.QVBoxLayout()
         v1.addWidget(self.combo)
         v1.addLayout(h1)
         self.setLayout(v1)
@@ -613,7 +612,7 @@ class _FuncSelectDialog(QDialog):
         return self.combo.currentText()
 
 
-class _SingleFuncGUI(QStandardItem):
+class _SingleFuncGUI(QtGui.QStandardItem):
     def __init__(self, obj, tree, model):
         super().__init__(obj.name)
         self._obj = obj
@@ -621,19 +620,19 @@ class _SingleFuncGUI(QStandardItem):
         self._params = [_SingleParamGUI(p, self, tree) for p in obj.parameters]
 
 
-class _checkableSpinBoxItem(QObject):
-    valueChanged = pyqtSignal(float)
-    stateChanged = pyqtSignal(bool)
+class _checkableSpinBoxItem(QtCore.QObject):
+    valueChanged = QtCore.pyqtSignal(float)
+    stateChanged = QtCore.pyqtSignal(bool)
 
     def __init__(self, name, tree, parent):
         super().__init__()
-        self._item = QStandardItem(name)
+        self._item = QtGui.QStandardItem(name)
         self._item.setCheckable(True)
 
         self._value = ScientificSpinBox()
         self._value.valueChanged.connect(self.valueChanged)
 
-        item2 = QStandardItem()
+        item2 = QtGui.QStandardItem()
         parent.appendRow([self._item, item2])
         tree.setIndexWidget(item2.index(), self._value)
 
@@ -649,25 +648,25 @@ class _checkableSpinBoxItem(QObject):
 
     def setChecked(self, state):
         if state:
-            self._item.setCheckState(Qt.Checked)
+            self._item.setCheckState(QtCore.Qt.Checked)
         else:
-            self._item.setCheckState(Qt.Unchecked)
+            self._item.setCheckState(QtCore.Qt.Unchecked)
 
     @property
     def checked(self):
-        return self.item.checkState() == Qt.Checked
+        return self.item.checkState() == QtCore.Qt.Checked
 
     def _itemChanged(self, item):
         if item == self._item:
-            self.stateChanged.emit(item.checkState() == Qt.Checked)
+            self.stateChanged.emit(item.checkState() == QtCore.Qt.Checked)
 
     @property
     def item(self):
         return self._item
 
 
-class _SingleParamGUI(QObject):
-    updated = pyqtSignal()
+class _SingleParamGUI(QtCore.QObject):
+    updated = QtCore.pyqtSignal()
 
     def __init__(self, obj, parent, tree):
         super().__init__()

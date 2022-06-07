@@ -1,12 +1,11 @@
 import numpy as np
 
-from LysQt.QtCore import Qt, pyqtSignal
-from LysQt.QtWidgets import QWidget, QComboBox, QVBoxLayout, QLabel, QScrollArea, QHBoxLayout, QMenu, QAction, QTabWidget, QPushButton, QInputDialog
-
 from lys import filters
+from lys.Qt import QtCore, QtWidgets
 from lys.widgets import LysSubWindow
 
 from .FilterIOGUI import FilterExportDialog, FilterImportDialog
+from .FilterManager import _filterGroups
 
 
 def filterGUI(filterClass):
@@ -16,7 +15,7 @@ def filterGUI(filterClass):
     return _filterGUI
 
 
-class FilterSettingBase(QWidget):
+class FilterSettingBase(QtWidgets.QWidget):
     def __init__(self, dimension):
         super().__init__()
         self.dim = dimension
@@ -46,11 +45,10 @@ class FilterSettingBase(QWidget):
 # interface for setting group GUI
 
 
-class FilterGroupSetting(QWidget):
-    filterChanged = pyqtSignal(QWidget)
+class FilterGroupSetting(QtWidgets.QWidget):
+    filterChanged = QtCore.pyqtSignal(QtWidgets.QWidget)
 
     def __init__(self, dimension=2, layout=None, filterDict=None):
-        from .FilterManager import _filterGroups
         super().__init__()
         self.dim = dimension
         if filterDict is None:
@@ -58,12 +56,12 @@ class FilterGroupSetting(QWidget):
         else:
             self._filters = filterDict
 
-        self._combo = QComboBox()
+        self._combo = QtWidgets.QComboBox()
         for f in sorted(self._filters.keys()):
             self._combo.addItem(f, f)
         self._combo.currentTextChanged.connect(self._update)
-        vlayout = QVBoxLayout()
-        vlayout.addWidget(QLabel('Type'))
+        vlayout = QtWidgets.QVBoxLayout()
+        vlayout.addWidget(QtWidgets.QLabel('Type'))
         vlayout.addWidget(self._combo)
         self.setLayout(vlayout)
         self._layout = layout
@@ -119,21 +117,21 @@ class FilterGroupSetting(QWidget):
         self.dim = dimension
 
 
-class _PreFilterSetting(QWidget):
-    filterAdded = pyqtSignal(QWidget)
-    filterDeleted = pyqtSignal(QWidget)
-    filterMoved = pyqtSignal(QWidget, str)
-    filterInserted = pyqtSignal(QWidget, str)
+class _PreFilterSetting(QtWidgets.QWidget):
+    filterAdded = QtCore.pyqtSignal(QtWidgets.QWidget)
+    filterDeleted = QtCore.pyqtSignal(QtWidgets.QWidget)
+    filterMoved = QtCore.pyqtSignal(QtWidgets.QWidget, str)
+    filterInserted = QtCore.pyqtSignal(QtWidgets.QWidget, str)
 
     def __init__(self, parent, dimension=2, loader=None):
         super().__init__()
-        h1 = QHBoxLayout()
+        h1 = QtWidgets.QHBoxLayout()
         self.root = _RootSetting(dimension, h1)
         self.root.filterChanged.connect(self._filt)
-        self._layout = QVBoxLayout()
+        self._layout = QtWidgets.QVBoxLayout()
         self._layout.addLayout(h1)
         self.setLayout(self._layout)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._contextMenu)
         self._child = None
 
@@ -159,12 +157,12 @@ class _PreFilterSetting(QWidget):
         self.root.setDimension(dimension)
 
     def _contextMenu(self, point):
-        menu = QMenu(self)
-        delete = QAction('Delete', triggered=lambda: self.filterDeleted.emit(self))
-        up = QAction('Move to up', triggered=lambda: self.filterMoved.emit(self, "up"))
-        down = QAction('Move to down', triggered=lambda: self.filterMoved.emit(self, "down"))
-        insup = QAction('Insert filter (up)', triggered=lambda: self.filterInserted.emit(self, "up"))
-        insdown = QAction('Insert filter (down)', triggered=lambda: self.filterInserted.emit(self, "down"))
+        menu = QtWidgets.QMenu(self)
+        delete = QtWidgets.QAction('Delete', triggered=lambda: self.filterDeleted.emit(self))
+        up = QtWidgets.QAction('Move to up', triggered=lambda: self.filterMoved.emit(self, "up"))
+        down = QtWidgets.QAction('Move to down', triggered=lambda: self.filterMoved.emit(self, "down"))
+        insup = QtWidgets.QAction('Insert filter (up)', triggered=lambda: self.filterInserted.emit(self, "up"))
+        insdown = QtWidgets.QAction('Insert filter (down)', triggered=lambda: self.filterInserted.emit(self, "down"))
         for item in [up, down, insup, insdown, delete]:
             menu.addAction(item)
         menu.exec_(self.mapToGlobal(point))
@@ -174,7 +172,7 @@ class _RootSetting(FilterGroupSetting):
     pass
 
 
-class FiltersGUI(QWidget):
+class FiltersGUI(QtWidgets.QWidget):
     def __init__(self, dimension=2, regionLoader=None):
         super().__init__()
         self.loader = regionLoader
@@ -188,28 +186,28 @@ class FiltersGUI(QWidget):
         return filters.Filters(res)
 
     def __initLayout(self):
-        self._tab = QTabWidget()
+        self._tab = QtWidgets.QTabWidget()
         self.__tabs = [_SubFiltersGUI(self.dim, self.loader)]
         self.__preIndex = 0
         self._tab.addTab(self.__tabs[0], "d = " + str(self.dim))
-        self._tab.addTab(QWidget(), "+")
+        self._tab.addTab(QtWidgets.QWidget(), "+")
         self._tab.currentChanged.connect(self.__addTab)
-        self._tab.tabBar().setContextMenuPolicy(Qt.CustomContextMenu)
+        self._tab.tabBar().setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self._tab.tabBar().customContextMenuRequested.connect(self._tabContext)
 
-        save = QPushButton("Save", clicked=self._save)
-        load = QPushButton("Load", clicked=self._load)
-        clear = QPushButton("Clear", clicked=self.clear)
-        exp = QPushButton("Export", clicked=self._export)
-        imp = QPushButton("Import", clicked=self._import)
-        hbox2 = QHBoxLayout()
+        save = QtWidgets.QPushButton("Save", clicked=self._save)
+        load = QtWidgets.QPushButton("Load", clicked=self._load)
+        clear = QtWidgets.QPushButton("Clear", clicked=self.clear)
+        exp = QtWidgets.QPushButton("Export", clicked=self._export)
+        imp = QtWidgets.QPushButton("Import", clicked=self._import)
+        hbox2 = QtWidgets.QHBoxLayout()
         hbox2.addWidget(save)
         hbox2.addWidget(load)
         hbox2.addWidget(exp)
         hbox2.addWidget(imp)
         hbox2.addWidget(clear)
 
-        vbox = QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(self._tab)
         vbox.addLayout(hbox2)
         self.setLayout(vbox)
@@ -229,20 +227,20 @@ class FiltersGUI(QWidget):
         self._tab.insertTab(len(self.__tabs) - 1, w, "d = " + str(dim))
 
     def _tabContext(self, point):
-        menu = QMenu(self)
-        delete = QAction('Delete tab', triggered=self._delete)
-        clear = QAction('Clear tab', triggered=lambda: self.clear(self.__preIndex))
-        change = QAction('Change dimension of tab', triggered=self._setDim)
-        exp = QAction('Export filter in tab', triggered=lambda: self._export(self.__preIndex))
-        imp = QAction('Import filter to tab', triggered=lambda: self._import(self.__preIndex))
-        save = QAction('Save filter in tab', triggered=lambda: self._save(self.__preIndex))
-        load = QAction('Load filter to tab', triggered=lambda: self._load(self.__preIndex))
+        menu = QtWidgets.QMenu(self)
+        delete = QtWidgets.QAction('Delete tab', triggered=self._delete)
+        clear = QtWidgets.QAction('Clear tab', triggered=lambda: self.clear(self.__preIndex))
+        change = QtWidgets.QAction('Change dimension of tab', triggered=self._setDim)
+        exp = QtWidgets.QAction('Export filter in tab', triggered=lambda: self._export(self.__preIndex))
+        imp = QtWidgets.QAction('Import filter to tab', triggered=lambda: self._import(self.__preIndex))
+        save = QtWidgets.QAction('Save filter in tab', triggered=lambda: self._save(self.__preIndex))
+        load = QtWidgets.QAction('Load filter to tab', triggered=lambda: self._load(self.__preIndex))
         for item in [save, load, exp, imp, change, clear, delete]:
             menu.addAction(item)
         menu.exec_(self.mapToGlobal(point))
 
     def _setDim(self):
-        dim, ok = QInputDialog().getInt(self, "Enter New dimension", "Dimension:")
+        dim, ok = QtWidgets.QInputDialog().getInt(self, "Enter New dimension", "Dimension:")
         if ok:
             self.setDimension(dim, self.__preIndex)
 
@@ -326,7 +324,7 @@ class FiltersGUI(QWidget):
             self.__tabs[index].SetFilters(filt)
 
 
-class _SubFiltersGUI(QScrollArea):
+class _SubFiltersGUI(QtWidgets.QScrollArea):
     def __init__(self, dimension=2, regionLoader=None):
         super().__init__()
         self._flist = []
@@ -358,10 +356,10 @@ class _SubFiltersGUI(QScrollArea):
             self._flist[len(self._flist) - 1].SetFilter(f)
 
     def __initLayout(self):
-        self._layout = QVBoxLayout()
+        self._layout = QtWidgets.QVBoxLayout()
         self._layout.addStretch()
         self._addFirst()
-        inner = QWidget()
+        inner = QtWidgets.QWidget()
         inner.setLayout(self._layout)
         self.setWidgetResizable(True)
         self.setWidget(inner)
@@ -420,24 +418,24 @@ class _SubFiltersGUI(QScrollArea):
 
 
 class FiltersDialog(LysSubWindow):
-    applied = pyqtSignal(object)
+    applied = QtCore.pyqtSignal(object)
 
     def __init__(self, dim):
         super().__init__()
         self.filters = FiltersGUI(dim)
 
-        self.ok = QPushButton("O K", clicked=self._ok)
-        self.cancel = QPushButton("CANCEL", clicked=self._cancel)
-        self.apply = QPushButton("Apply", clicked=self._apply)
-        h1 = QHBoxLayout()
+        self.ok = QtWidgets.QPushButton("O K", clicked=self._ok)
+        self.cancel = QtWidgets.QPushButton("CANCEL", clicked=self._cancel)
+        self.apply = QtWidgets.QPushButton("Apply", clicked=self._apply)
+        h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(self.ok)
         h1.addWidget(self.cancel)
         h1.addWidget(self.apply)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.filters)
         layout.addLayout(h1)
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(layout)
         self.setWidget(w)
         self.resize(500, 500)

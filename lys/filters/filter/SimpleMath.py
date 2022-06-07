@@ -2,10 +2,11 @@ import numpy as np
 import dask.array as da
 
 from lys import DaskWave
+from lys.Qt import QtWidgets
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QLineEdit, QComboBox, QHBoxLayout, QLabel, ScientificSpinBox
+from .CommonWidgets import ScientificSpinBox
 
 
 class SimpleMathFilter(FilterInterface):
@@ -66,7 +67,7 @@ class PhaseFilter(FilterInterface):
     """
     Rotate complex value by *rot*
 
-    Args:  
+    Args:
         rot(float): rotation angle.
         unit('deg' or 'rad'): unit used to specify rotation angle.
     """
@@ -110,13 +111,13 @@ class _SimpleMathSetting(FilterSettingBase):
 
     def __init__(self, dim):
         super().__init__(dim)
-        self._val = QLineEdit()
+        self._val = QtWidgets.QLineEdit()
         self._val.setText("0")
-        self._type = QComboBox()
+        self._type = QtWidgets.QComboBox()
         self._type.addItems(self._ops)
 
-        self._layout = QHBoxLayout()
-        self._layout.addWidget(QLabel('data'))
+        self._layout = QtWidgets.QHBoxLayout()
+        self._layout.addWidget(QtWidgets.QLabel('data'))
         self._layout.addWidget(self._type)
         self._layout.addWidget(self._val)
         self.setLayout(self._layout)
@@ -135,8 +136,8 @@ class _ComplexSetting(FilterSettingBase):
 
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        layout = QHBoxLayout()
-        self._combo = QComboBox()
+        layout = QtWidgets.QHBoxLayout()
+        self._combo = QtWidgets.QComboBox()
         self._combo.addItems(self.types)
         layout.addWidget(self._combo)
         self.setLayout(layout)
@@ -152,10 +153,10 @@ class _ComplexSetting(FilterSettingBase):
 class _PhaseSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        layout = QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         self._phase = ScientificSpinBox()
         layout.addWidget(self._phase)
-        layout.addWidget(QLabel("deg"))
+        layout.addWidget(QtWidgets.QLabel("deg"))
         self.setLayout(layout)
 
     def getParameters(self):
@@ -169,10 +170,10 @@ class _PhaseSetting(FilterSettingBase):
 class _NanToNumSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._val = QLineEdit()
+        self._val = QtWidgets.QLineEdit()
         self._val.setText("0")
-        layout = QHBoxLayout()
-        layout.addWidget(QLabel("Value: "))
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(QtWidgets.QLabel("Value: "))
         layout.addWidget(self._val)
         self.setLayout(layout)
 

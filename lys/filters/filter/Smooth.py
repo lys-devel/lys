@@ -61,7 +61,7 @@ class GaussianFilter(FilterInterface):
         kernel = []
         for i in range(wave.data.ndim):
             ax = wave.getAxis(i)
-            kernel.append(self._kernel[i]/abs(ax[1]-ax[0])/(2*np.sqrt(2*np.log(2))))
+            kernel.append(self._kernel[i] / abs(ax[1] - ax[0]) / (2 * np.sqrt(2 * np.log(2))))
         data = self._applyFunc(ndfilters.gaussian_filter, wave.data, sigma=kernel)
         return DaskWave(data, *wave.axes, **wave.note)
 

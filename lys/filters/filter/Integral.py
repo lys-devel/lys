@@ -1,11 +1,12 @@
 import numpy as np
 import dask.array as da
 
-from lys import DaskWave
+from lys import DaskWave, frontCanvas
 from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.Qt import QtWidgets
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QComboBox, QVBoxLayout, AxisCheckLayout, QLabel, ScientificSpinBox, RegionSelectWidget, AxisSelectionLayout, QGridLayout, QPushButton
+from .CommonWidgets import AxisCheckLayout, ScientificSpinBox, RegionSelectWidget, AxisSelectionLayout
 
 
 def _getSumFunction(sumtype):
@@ -139,7 +140,7 @@ class IntegralCircleFilter(FilterInterface):
 
     Circularly integrate *f*(*x*,*y*) and returns *f*(*r*).
 
-    This filter is under development. 
+    This filter is under development.
 
     See :class:`.FilterInterface.FilterInterface` for general description of Filters.
 
@@ -147,8 +148,6 @@ class IntegralCircleFilter(FilterInterface):
         center(tuple of size 2): position where *r* = 0
         radiuses(tuple of size 2):
         axes(tuple of size 2): axes to be integrated, i.e. (x,y)
-
-
 
     """
 
@@ -281,10 +280,10 @@ class _IntegralAllSetting(FilterSettingBase):
 
     def __init__(self, dim):
         super().__init__(dim)
-        self.type = QComboBox()
+        self.type = QtWidgets.QComboBox()
         self.type.addItems(self._sumtypes)
         self.axes = AxisCheckLayout(dim)
-        lv = QVBoxLayout()
+        lv = QtWidgets.QVBoxLayout()
         lv.addWidget(self.type)
         lv.addLayout(self.axes)
         self.setLayout(lv)
@@ -303,10 +302,10 @@ class _IntegralSetting(FilterSettingBase):
 
     def __init__(self, dim):
         super().__init__(dim)
-        self.type = QComboBox()
+        self.type = QtWidgets.QComboBox()
         self.type.addItems(self._sumtypes)
         self.range = RegionSelectWidget(self, dim)
-        lv = QVBoxLayout()
+        lv = QtWidgets.QVBoxLayout()
         lv.addWidget(self.type)
         lv.addLayout(self.range)
         self.setLayout(lv)
@@ -327,17 +326,17 @@ class _CircleSetting(FilterSettingBase):
         self.axes = [AxisSelectionLayout("Axis1", dim=dim, init=0), AxisSelectionLayout("Axis2", dim=dim, init=1)]
         self.center = [ScientificSpinBox(), ScientificSpinBox()]
         self.radiuses = [ScientificSpinBox(), ScientificSpinBox()]
-        l0 = QGridLayout()
-        l0.addWidget(QLabel("Center1"), 0, 0)
+        l0 = QtWidgets.QGridLayout()
+        l0.addWidget(QtWidgets.QLabel("Center1"), 0, 0)
         l0.addWidget(self.center[0], 1, 0)
-        l0.addWidget(QLabel("Center2"), 0, 1)
+        l0.addWidget(QtWidgets.QLabel("Center2"), 0, 1)
         l0.addWidget(self.center[1], 1, 1)
-        l0.addWidget(QLabel("R"), 0, 2)
+        l0.addWidget(QtWidgets.QLabel("R"), 0, 2)
         l0.addWidget(self.radiuses[0], 1, 2)
-        l0.addWidget(QLabel("dr"), 0, 3)
+        l0.addWidget(QtWidgets.QLabel("dr"), 0, 3)
         l0.addWidget(self.radiuses[1], 1, 3)
-        l0.addWidget(QPushButton("Load from freeline", clicked=self._LoadFromFreeLine), 1, 4)
-        lh = QVBoxLayout()
+        l0.addWidget(QtWidgets.QPushButton("Load from freeline", clicked=self._LoadFromFreeLine), 1, 4)
+        lh = QtWidgets.QVBoxLayout()
         lh.addLayout(self.axes[0])
         lh.addLayout(self.axes[1])
         lh.addLayout(l0)
@@ -355,7 +354,6 @@ class _CircleSetting(FilterSettingBase):
             c.setAxis(i)
 
     def _LoadFromFreeLine(self):
-        from lys import frontCanvas
         c = frontCanvas()
         lines = c.getLineAnnotations()
         if len(lines) == 0:

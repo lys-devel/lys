@@ -3,10 +3,11 @@ import dask.array as da
 import itertools
 
 from lys import DaskWave
+from lys.Qt import QtWidgets
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import kernelSizeLayout, AxisCheckLayout, QSpinBox, ScientificSpinBox, QComboBox, QLabel, QGridLayout
+from .CommonWidgets import kernelSizeLayout, AxisCheckLayout, ScientificSpinBox
 
 
 class ReduceSizeFilter(FilterInterface):
@@ -145,17 +146,17 @@ class _PaddingSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
         self._axes = AxisCheckLayout(dimension)
-        self._size = QSpinBox()
+        self._size = QtWidgets.QSpinBox()
         self._size.setRange(1, 100000)
         self._size.setValue(200)
         self._value = ScientificSpinBox()
-        self._direction = QComboBox()
+        self._direction = QtWidgets.QComboBox()
         self._direction.addItems(["first", "last", "both"])
-        self._layout = QGridLayout()
-        self._layout.addWidget(QLabel("axes"), 0, 0)
-        self._layout.addWidget(QLabel("direction"), 0, 1)
-        self._layout.addWidget(QLabel("size"), 0, 2)
-        self._layout.addWidget(QLabel("value"), 0, 3)
+        self._layout = QtWidgets.QGridLayout()
+        self._layout.addWidget(QtWidgets.QLabel("axes"), 0, 0)
+        self._layout.addWidget(QtWidgets.QLabel("direction"), 0, 1)
+        self._layout.addWidget(QtWidgets.QLabel("size"), 0, 2)
+        self._layout.addWidget(QtWidgets.QLabel("value"), 0, 3)
         self._layout.addLayout(self._axes, 1, 0)
         self._layout.addWidget(self._direction, 1, 1)
         self._layout.addWidget(self._size, 1, 2)

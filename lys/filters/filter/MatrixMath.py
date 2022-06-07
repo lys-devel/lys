@@ -1,10 +1,11 @@
 import numpy as np
 
 from lys import DaskWave
+from lys.Qt import QtWidgets
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import QHBoxLayout, QComboBox, AxisSelectionLayout, QSpinBox, QGridLayout, QPushButton, QLineEdit, QLabel, QVBoxLayout
+from .CommonWidgets import AxisSelectionLayout
 
 
 class SelectIndexFilter(FilterInterface):
@@ -100,7 +101,7 @@ class SliceFilter(FilterInterface):
 
 class IndexMathFilter(FilterInterface):
     """
-    Calculate wave[*index1*] op wave[*index2*] (op = +-\*/).
+    Calculate wave[*index1*] op wave[*index2*].
 
     Args:
         axis(int): axis to be calculated
@@ -170,13 +171,13 @@ class TransposeFilter(FilterInterface):
         return {"axes": self._axes}
 
 
-class _IndexLayout(QHBoxLayout):
+class _IndexLayout(QtWidgets.QHBoxLayout):
     def __init__(self, dim):
         super().__init__()
         self._axis = AxisSelectionLayout("Axis", dim)
-        self._index = QSpinBox()
+        self._index = QtWidgets.QSpinBox()
         self.addLayout(self._axis)
-        self.addWidget(QLabel("Index"))
+        self.addWidget(QtWidgets.QLabel("Index"))
         self.addWidget(self._index)
 
     def getAxisAndIndex(self):
@@ -211,17 +212,17 @@ class _IndexMathSetting(FilterSettingBase):
 
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        self._combo = QComboBox()
+        self._combo = QtWidgets.QComboBox()
         self._combo.addItems(self._types)
         self._axis = AxisSelectionLayout("Axis", dimension)
-        self._index1 = QSpinBox()
-        self._index2 = QSpinBox()
-        h1 = QHBoxLayout()
-        h1.addWidget(QLabel("Indices"))
+        self._index1 = QtWidgets.QSpinBox()
+        self._index2 = QtWidgets.QSpinBox()
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QLabel("Indices"))
         h1.addWidget(self._index1)
         h1.addWidget(self._combo)
         h1.addWidget(self._index2)
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self._axis)
         layout.addLayout(h1)
         self.setLayout(layout)
@@ -240,15 +241,15 @@ class _IndexMathSetting(FilterSettingBase):
 class _TransposeSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        lay = QHBoxLayout()
-        self.val = QLineEdit()
+        lay = QtWidgets.QHBoxLayout()
+        self.val = QtWidgets.QLineEdit()
         st = ""
         for d in range(dimension):
             st += str(d) + ", "
         self.val.setText(st[:-2])
 
         lay.addWidget(self.val)
-        lay.addWidget(QPushButton("Reverse", clicked=self._click))
+        lay.addWidget(QtWidgets.QPushButton("Reverse", clicked=self._click))
         self.setLayout(lay)
 
     def _click(self):
@@ -273,16 +274,16 @@ class _TransposeSetting(FilterSettingBase):
 class _SliceSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
-        lay = QGridLayout()
-        lay.addWidget(QLabel("Start"), 0, 1)
-        lay.addWidget(QLabel("Stop"), 0, 2)
-        lay.addWidget(QLabel("Step"), 0, 3)
+        lay = QtWidgets.QGridLayout()
+        lay.addWidget(QtWidgets.QLabel("Start"), 0, 1)
+        lay.addWidget(QtWidgets.QLabel("Stop"), 0, 2)
+        lay.addWidget(QtWidgets.QLabel("Step"), 0, 3)
         for d in range(dimension):
-            lay.addWidget(QLabel("Axis" + str(d)), 1 + d, 0)
+            lay.addWidget(QtWidgets.QLabel("Axis" + str(d)), 1 + d, 0)
 
-        self._start = [QSpinBox() for d in range(dimension)]
-        self._stop = [QSpinBox() for d in range(dimension)]
-        self._step = [QSpinBox() for d in range(dimension)]
+        self._start = [QtWidgets.QSpinBox() for d in range(dimension)]
+        self._stop = [QtWidgets.QSpinBox() for d in range(dimension)]
+        self._step = [QtWidgets.QSpinBox() for d in range(dimension)]
         for d in range(dimension):
             self._start[d].setRange(-1000000, 1000000)
             self._stop[d].setRange(-1000000, 1000000)

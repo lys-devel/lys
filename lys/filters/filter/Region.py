@@ -4,10 +4,11 @@ from scipy.optimize import minimize
 from scipy.ndimage import map_coordinates
 
 from lys import Wave, DaskWave
+from lys.Qt import QtWidgets
 from lys.filters import FilterSettingBase, filterGUI, addFilter
 
 from .FilterInterface import FilterInterface
-from .CommonWidgets import RegionSelectWidget, QComboBox, QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QLineEdit, AxisSelectionLayout, QFileDialog, QSpinBox
+from .CommonWidgets import RegionSelectWidget, AxisSelectionLayout
 
 
 class NormalizeFilter(FilterInterface):
@@ -250,11 +251,11 @@ class _ReferenceNormalizeSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)
         self.__axis = AxisSelectionLayout("Axis", dim)
-        self.__type = QComboBox()
+        self.__type = QtWidgets.QComboBox()
         self.__type.addItems(["Diff", "Divide"])
-        self.__ref = QComboBox()
+        self.__ref = QtWidgets.QComboBox()
         self.__ref.addItems(["First", "Last"])
-        hbox = QHBoxLayout()
+        hbox = QtWidgets.QHBoxLayout()
         hbox.addLayout(self.__axis)
         hbox.addWidget(self.__type)
         hbox.addWidget(self.__ref)
@@ -299,15 +300,15 @@ class _SelectRegionSetting(FilterSettingBase):
 class _MaskSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)
-        self.__filename = QLineEdit()
+        self.__filename = QtWidgets.QLineEdit()
 
-        hbox = QHBoxLayout()
+        hbox = QtWidgets.QHBoxLayout()
         hbox.addWidget(self.__filename)
-        hbox.addWidget(QPushButton("Load", clicked=self._LoadMask))
+        hbox.addWidget(QtWidgets.QPushButton("Load", clicked=self._LoadMask))
         self.setLayout(hbox)
 
     def _LoadMask(self):
-        file, _ = QFileDialog.getOpenFileName(None, 'Open file', filter="npz(*.npz)")
+        file, _ = QtWidgets.QFileDialog.getOpenFileName(None, 'Open file', filter="npz(*.npz)")
         if 0 != len(file):
             self.__filename.setText(file)
 
@@ -323,20 +324,20 @@ class _RefShiftSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)
         self.range = RegionSelectWidget(self, dim)
-        self.combo = QComboBox()
+        self.combo = QtWidgets.QComboBox()
         for d in range(dim):
             self.combo.addItem("Axis" + str(d + 1))
-        self._order = QSpinBox()
+        self._order = QtWidgets.QSpinBox()
         self._order.setValue(3)
         self._order.setRange(1, 5)
 
-        hbox = QHBoxLayout()
-        hbox.addWidget(QLabel("Axis"))
+        hbox = QtWidgets.QHBoxLayout()
+        hbox.addWidget(QtWidgets.QLabel("Axis"))
         hbox.addWidget(self.combo)
-        hbox.addWidget(QLabel("Order"))
+        hbox.addWidget(QtWidgets.QLabel("Order"))
         hbox.addWidget(self._order)
 
-        vbox = QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.addLayout(hbox)
         vbox.addLayout(self.range)
         self.setLayout(vbox)
