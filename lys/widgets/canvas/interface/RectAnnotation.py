@@ -1,5 +1,6 @@
 import warnings
-from LysQt.QtCore import pyqtSignal
+
+from lys.Qt import QtCore
 from lys.errors import NotImplementedWarning
 
 from .CanvasBase import saveCanvas
@@ -27,7 +28,7 @@ class RectAnnotation(AnnotationWithLine):
         rect = g.canvas.addRectAnnotation()
         rect.setLineColor("#ff0000")
     """
-    regionChanged = pyqtSignal(list)
+    regionChanged = QtCore.pyqtSignal(list)
     """PyqtSignal that is emitted when the rectangle is changed."""
 
     def __init__(self, canvas, pos, size, axis):

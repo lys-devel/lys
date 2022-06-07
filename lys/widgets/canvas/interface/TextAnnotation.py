@@ -1,5 +1,6 @@
 import warnings
-from LysQt.QtCore import pyqtSignal
+
+from lys.Qt import QtCore
 from lys.errors import NotImplementedWarning
 
 from .CanvasBase import saveCanvas
@@ -26,7 +27,7 @@ class TextAnnotation(AnnotationData):
         line = g.addText('test')
     """
 
-    edited = pyqtSignal(str)
+    edited = QtCore.pyqtSignal(str)
     """Pyqtsignal that is emitted when the text is edited."""
 
     def __init__(self, canvas, text, pos, axis):
@@ -85,7 +86,7 @@ class TextAnnotation(AnnotationData):
 
         When the *transformation* is 'axes', the annotation is fixed in the canvas.
 
-        When the *transformation* is 'data', the position of the annotation is changed when the view range of the canvas is changed. 
+        When the *transformation* is 'data', the position of the annotation is changed when the view range of the canvas is changed.
 
         Args:
             transformation('axes' or 'data'): The transformation.
@@ -136,7 +137,7 @@ class TextAnnotation(AnnotationData):
         Set the style of the bounding box.
 
         Args:
-            style(str): 'none', 'square', 'circle', 'round', 'round4', 'larrow', 'rarrow', 'darrow', 'roundtooth', or 'sawtooth' 
+            style(str): 'none', 'square', 'circle', 'round', 'round4', 'larrow', 'rarrow', 'darrow', 'roundtooth', or 'sawtooth'
         """
         self._setBoxStyle(style)
         self._appearance['boxStyle'] = style

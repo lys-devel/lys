@@ -1,6 +1,4 @@
-from LysQt.QtCore import Qt
-from LysQt.QtWidgets import QSizePolicy, QFileDialog
-
+from lys.Qt import QtCore, QtWidgets
 from lys.decorators import suppressLysWarnings
 from ..mdi import _AutoSavedWindow
 from .Matplotlib import ExtendCanvas
@@ -12,7 +10,7 @@ class _SizeAdjustableWindow(_AutoSavedWindow):
         super().__init__(*args, **kwargs)
         self.setWidth(0)
         self.setHeight(0)
-        self.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored)
 
     def setWidth(self, val):
         if val == 0:
@@ -107,17 +105,17 @@ class Graph(_SizeAdjustableWindow):
             self.setHeight(self.height())
 
     def __keyPress(self, e):
-        if e.key() == Qt.Key_S:
-            if e.modifiers() == Qt.ShiftModifier | Qt.ControlModifier:
+        if e.key() == QtCore.Qt.Key_S:
+            if e.modifiers() == QtCore.Qt.ShiftModifier | QtCore.Qt.ControlModifier:
                 self.__saveAs()
-            elif e.modifiers() == Qt.ControlModifier:
+            elif e.modifiers() == QtCore.Qt.ControlModifier:
                 if self.FileName() is None:
                     self.__saveAs()
                 else:
                     self.Save()
 
     def __saveAs(self):
-        path, _ = QFileDialog.getSaveFileName(filter="Graph (*.grf)")
+        path, _ = QtWidgets.QFileDialog.getSaveFileName(filter="Graph (*.grf)")
         if len(path) != 0:
             if not path.endswith('.grf'):
                 path += '.grf'

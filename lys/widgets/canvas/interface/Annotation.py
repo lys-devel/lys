@@ -1,7 +1,7 @@
 import warnings
 import numpy as np
 
-from LysQt.QtCore import pyqtSignal
+from lys.Qt import QtCore
 
 from lys.errors import NotImplementedWarning
 from .LineAnnotation import LineAnnotation, InfiniteLineAnnotation
@@ -22,7 +22,7 @@ class CanvasAnnotation(CanvasPart):
         canvas(.CanvasBase.CanvasBase): The parent canvas.
     """
     _axisDict = {1: "BottomLeft", 2: "TopLeft", 3: "BottomRight", 4: "TopRight", "BottomLeft": "BottomLeft", "TopLeft": "TopLeft", "BottomRight": "BottomRight", "TopRight": "TopRight"}
-    annotationChanged = pyqtSignal()
+    annotationChanged = QtCore.pyqtSignal()
     """pyqtSignal that is emitted when annotations are added or removed."""
 
     def __init__(self, canvas):

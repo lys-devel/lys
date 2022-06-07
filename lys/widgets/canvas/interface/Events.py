@@ -2,8 +2,8 @@ import time
 import weakref
 import numpy as np
 
-from LysQt.QtGui import QKeyEvent, QMouseEvent
-from LysQt.QtCore import pyqtSignal, Qt, QObject
+from lys.Qt import QtGui, QtCore
+
 from .CanvasBase import CanvasPart, saveCanvas
 
 
@@ -11,7 +11,7 @@ class CanvasKeyboardEvent(CanvasPart):
     """
     Basic keyborad event class of Canvas.
     """
-    keyPressed = pyqtSignal(QKeyEvent)
+    keyPressed = QtCore.pyqtSignal(QtGui.QKeyEvent)
     """
     Emitted when a key is pressed.
     """
@@ -22,16 +22,16 @@ class CanvasKeyboardEvent(CanvasPart):
 
     @saveCanvas
     def _keyPressed(self, e):
-        if e.key() == Qt.Key_A and e.modifiers() == Qt.ControlModifier:
+        if e.key() == QtCore.Qt.Key_A and e.modifiers() == QtCore.Qt.ControlModifier:
             for i in self.canvas().getRGBs() + self.canvas().getImages():
                 i.setColorRange()
-        if e.key() == Qt.Key_C and e.modifiers() == Qt.ControlModifier:
+        if e.key() == QtCore.Qt.Key_C and e.modifiers() == QtCore.Qt.ControlModifier:
             self.canvas().copyToClipboard()
-        if e.key() == Qt.Key_G and e.modifiers() == Qt.ControlModifier:
+        if e.key() == QtCore.Qt.Key_G and e.modifiers() == QtCore.Qt.ControlModifier:
             self.canvas().openModifyWindow()
-        if e.key() == Qt.Key_F and e.modifiers() == Qt.ControlModifier:
+        if e.key() == QtCore.Qt.Key_F and e.modifiers() == QtCore.Qt.ControlModifier:
             self.canvas().openFittingWindow()
-        if e.key() == Qt.Key_D and e.modifiers() == Qt.ControlModifier:
+        if e.key() == QtCore.Qt.Key_D and e.modifiers() == QtCore.Qt.ControlModifier:
             self.canvas().duplicate()
 
 
@@ -48,7 +48,7 @@ def getFrontCanvas(exclude=[]):
 
 
 class CanvasFocusEvent(CanvasPart):
-    focused = pyqtSignal(object)
+    focused = QtCore.pyqtSignal(object)
     """
     Emitted when the canvas is focused
     """
@@ -68,23 +68,23 @@ class CanvasMouseEvent(CanvasPart):
     """
     Basic keyborad event class of Canvas.
     """
-    mousePressed = pyqtSignal(object)
+    mousePressed = QtCore.pyqtSignal(object)
     """
     Emitted when a mouse is pressed.
     """
-    mouseReleased = pyqtSignal(object)
+    mouseReleased = QtCore.pyqtSignal(object)
     """
     Emitted when a mouse is released.
     """
-    mouseMoved = pyqtSignal(object)
+    mouseMoved = QtCore.pyqtSignal(object)
     """
     Emitted when a mouse is moved.
     """
-    clicked = pyqtSignal(object)
+    clicked = QtCore.pyqtSignal(object)
     """
     Emitted when a mouse is clicked.
     """
-    doubleClicked = pyqtSignal(object)
+    doubleClicked = QtCore.pyqtSignal(object)
     """
     Emitted when a mouse is double-clicked.
     """
@@ -119,7 +119,7 @@ class CanvasMouseEvent(CanvasPart):
         raise NotImplementedError(str(type(self)) + " does not implement mapPosition(event, axis) method.")
 
 
-class _RegionSelector(QObject):
+class _RegionSelector(QtCore.QObject):
     def __init__(self, parent, canvas):
         super().__init__()
         self.canvas = canvas
@@ -129,7 +129,7 @@ class _RegionSelector(QObject):
         parent.mouseMoved.connect(self._mouseMoved)
 
     def _mousePressed(self, e):
-        if e.button() == Qt.LeftButton:
+        if e.button() == QtCore.Qt.LeftButton:
             self.__start = self.canvas.mapPosition(e, "BottomLeft")
             self.canvas.clearSelectedRange()
             if self.canvas.toolState() == "Select":
@@ -141,11 +141,11 @@ class _RegionSelector(QObject):
             self.canvas.setSelectedRange([self.__start, end])
 
     def _mouseReleased(self, e):
-        if self.__select_rect and e.button() == Qt.LeftButton:
+        if self.__select_rect and e.button() == QtCore.Qt.LeftButton:
             self.__select_rect = False
 
 
-class _LineDrawer(QObject):
+class _LineDrawer(QtCore.QObject):
     def __init__(self, parent, canvas):
         super().__init__()
         self.canvas = canvas
@@ -156,7 +156,7 @@ class _LineDrawer(QObject):
         parent.mouseMoved.connect(self._mouseMoved)
 
     def _mousePressed(self, e):
-        if e.button() == Qt.LeftButton:
+        if e.button() == QtCore.Qt.LeftButton:
             self.__start = self.canvas.mapPosition(e, "BottomLeft")
             if self.canvas.toolState() == "Line":
                 self._busy = True
@@ -170,12 +170,12 @@ class _LineDrawer(QObject):
                 self._line.setPosition([self.__start, end])
 
     def _mouseReleased(self, e):
-        if self._busy and e.button() == Qt.LeftButton:
+        if self._busy and e.button() == QtCore.Qt.LeftButton:
             self._busy = False
             self._line = None
 
 
-class _InfiniteLineDrawer(QObject):
+class _InfiniteLineDrawer(QtCore.QObject):
     def __init__(self, parent, canvas):
         super().__init__()
         self.canvas = canvas
@@ -186,7 +186,7 @@ class _InfiniteLineDrawer(QObject):
         parent.mouseMoved.connect(self._mouseMoved)
 
     def _mousePressed(self, e):
-        if e.button() == Qt.LeftButton:
+        if e.button() == QtCore.Qt.LeftButton:
             self.__start = self.canvas.mapPosition(e, "BottomLeft")
             if self.canvas.toolState() == "VLine":
                 self._index = 0
@@ -201,11 +201,11 @@ class _InfiniteLineDrawer(QObject):
             self._line.setPosition(end[self._index])
 
     def _mouseReleased(self, e):
-        if self._line is not None and e.button() == Qt.LeftButton:
+        if self._line is not None and e.button() == QtCore.Qt.LeftButton:
             self._line = None
 
 
-class _RectDrawer(QObject):
+class _RectDrawer(QtCore.QObject):
     def __init__(self, parent, canvas):
         super().__init__()
         self.canvas = canvas
@@ -216,7 +216,7 @@ class _RectDrawer(QObject):
         parent.mouseMoved.connect(self._mouseMoved)
 
     def _mousePressed(self, e):
-        if e.button() == Qt.LeftButton:
+        if e.button() == QtCore.Qt.LeftButton:
             self.__start = self.canvas.mapPosition(e, "BottomLeft")
             if self.canvas.toolState() == "Rect":
                 self._busy = True
@@ -232,12 +232,12 @@ class _RectDrawer(QObject):
                 self._rect.setRegion(np.array([self.__start, end]).T)
 
     def _mouseReleased(self, e):
-        if self._busy and e.button() == Qt.LeftButton:
+        if self._busy and e.button() == QtCore.Qt.LeftButton:
             self._busy = False
             self._rect = None
 
 
-class _RegionDrawer(QObject):
+class _RegionDrawer(QtCore.QObject):
     def __init__(self, parent, canvas):
         super().__init__()
         self.canvas = canvas
@@ -248,7 +248,7 @@ class _RegionDrawer(QObject):
         parent.mouseMoved.connect(self._mouseMoved)
 
     def _mousePressed(self, e):
-        if e.button() == Qt.LeftButton:
+        if e.button() == QtCore.Qt.LeftButton:
             self.__start = self.canvas.mapPosition(e, "BottomLeft")
             if self.canvas.toolState() == "VRegion":
                 self._busy = True
@@ -270,12 +270,12 @@ class _RegionDrawer(QObject):
                 self._region.setRegion(region)
 
     def _mouseReleased(self, e):
-        if self._busy and e.button() == Qt.LeftButton:
+        if self._busy and e.button() == QtCore.Qt.LeftButton:
             self._busy = False
             self._region = None
 
 
-class _FreeRegionDrawer(QObject):
+class _FreeRegionDrawer(QtCore.QObject):
     def __init__(self, parent, canvas):
         super().__init__()
         self.canvas = canvas
@@ -286,7 +286,7 @@ class _FreeRegionDrawer(QObject):
         parent.mouseMoved.connect(self._mouseMoved)
 
     def _mousePressed(self, e):
-        if e.button() == Qt.LeftButton:
+        if e.button() == QtCore.Qt.LeftButton:
             self.__start = self.canvas.mapPosition(e, "BottomLeft")
             if self.canvas.toolState() == "FreeRegion":
                 self._busy = True
@@ -300,12 +300,12 @@ class _FreeRegionDrawer(QObject):
                 self._line.setRegion([self.__start, end])
 
     def _mouseReleased(self, e):
-        if self._busy and e.button() == Qt.LeftButton:
+        if self._busy and e.button() == QtCore.Qt.LeftButton:
             self._busy = False
             self._line = None
 
 
-class _CrosshairDrawer(QObject):
+class _CrosshairDrawer(QtCore.QObject):
     def __init__(self, parent, canvas):
         super().__init__()
         self.canvas = canvas
@@ -315,7 +315,7 @@ class _CrosshairDrawer(QObject):
         parent.mouseMoved.connect(self._mouseMoved)
 
     def _mousePressed(self, e):
-        if e.button() == Qt.LeftButton:
+        if e.button() == QtCore.Qt.LeftButton:
             self.__start = self.canvas.mapPosition(e, "BottomLeft")
             if self.canvas.toolState() == "Cross":
                 self._line = self.canvas.addCrossAnnotation(self.__start)
@@ -326,5 +326,5 @@ class _CrosshairDrawer(QObject):
             self._line.setPosition(end)
 
     def _mouseReleased(self, e):
-        if self._line is not None and e.button() == Qt.LeftButton:
+        if self._line is not None and e.button() == QtCore.Qt.LeftButton:
             self._line = None

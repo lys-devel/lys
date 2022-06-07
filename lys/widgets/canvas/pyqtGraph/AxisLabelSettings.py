@@ -1,7 +1,7 @@
 
 import warnings
-from LysQt.QtGui import QFont
 
+from lys.Qt import QtGui
 from lys.errors import NotSupportedWarning
 from ..interface import CanvasAxisLabel, CanvasTickLabel
 
@@ -46,6 +46,6 @@ class _PyqtgraphTickLabel(CanvasTickLabel):
 
     def _setTickLabelFont(self, axis, family, size, color):
         ax = self.canvas().fig.getAxis(axis.lower())
-        ax.setStyle(tickFont=QFont(family, size))
+        ax.setStyle(tickFont=QtGui.QFont(family, size))
         if color != "black" and color != "#000000":
             warnings.warn("pyqtGraph does not support changing color of tick.", NotSupportedWarning)

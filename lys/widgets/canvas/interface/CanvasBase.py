@@ -1,7 +1,7 @@
 import functools
 import weakref
-from PyQt5.QtCore import QObject, pyqtSignal
 
+from lys.Qt import QtCore
 from lys.decorators import suppressLysWarnings
 
 
@@ -28,7 +28,7 @@ def saveCanvas(func):
 
 def disableSaveCanvas(func):
     """
-    When methods of :class:`CanvasBase` or :class:'CanvasPart' that is decorated by *disableSaveCanvas* is called, then *updated* signal of the canvas is *not* emitted in that method. 
+    When methods of :class:`CanvasBase` or :class:'CanvasPart' that is decorated by *disableSaveCanvas* is called, then *updated* signal of the canvas is *not* emitted in that method.
     """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -60,13 +60,13 @@ class CanvasBase(object):
 
     Users can access all public methods of the classes above.
     """
-    saveCanvas = pyqtSignal(dict)
+    saveCanvas = QtCore.pyqtSignal(dict)
     """pyqtSignal that is emitted when :meth:`SaveAsDictionary` is called."""
-    loadCanvas = pyqtSignal(dict)
+    loadCanvas = QtCore.pyqtSignal(dict)
     """pyqtSignal that is emitted when :meth:`LoadFromDictionary` is called."""
-    initCanvas = pyqtSignal()
+    initCanvas = QtCore.pyqtSignal()
     """pyqtSignal that is emitted when the canvas is initialized."""
-    updated = pyqtSignal()
+    updated = QtCore.pyqtSignal()
     """pyqtSignal that is emitted when the canvas is updated."""
 
     def __init__(self):
@@ -125,7 +125,7 @@ class CanvasBase(object):
         pass
 
 
-class CanvasPart(QObject):
+class CanvasPart(QtCore.QObject):
     """
     The canvas that inherit :class:`CanvasBase` class is composed of multiple *CanvasPart*.
     """

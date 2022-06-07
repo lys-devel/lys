@@ -1,10 +1,7 @@
-import io
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
-from LysQt.QtCore import QMimeData, Qt
-from LysQt.QtWidgets import QApplication
-from LysQt.QtGui import QImage
+from lys.Qt import QtCore
 
 from ..interface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasFocusEvent, CanvasMouseEvent, CanvasUtilities
 from .AxisSettings import _MatplotlibAxes, _MatplotlibTicks
@@ -38,7 +35,7 @@ class ExtendCanvas(CanvasBase, FigureCanvas):
     def __init__(self, dpi=100):
         CanvasBase.__init__(self)
         FigureCanvas.__init__(self, Figure(dpi=dpi))
-        self.setFocusPolicy(Qt.StrongFocus)  # requires to enable key events
+        self.setFocusPolicy(QtCore.Qt.StrongFocus)  # requires to enable key events
         self.updated.connect(self.draw)
         self.__initCanvasParts()
         self.mpl_connect('scroll_event', self._onScroll)

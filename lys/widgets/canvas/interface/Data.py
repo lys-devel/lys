@@ -3,8 +3,8 @@ import io
 import numpy as np
 import _pickle as cPickle
 
-from LysQt.QtCore import pyqtSignal
 from lys import Wave, filters, load
+from lys.Qt import QtCore
 from lys.errors import NotImplementedWarning
 
 from .CanvasBase import CanvasPart, saveCanvas
@@ -17,7 +17,7 @@ from .Contour import ContourData
 
 
 class CanvasData(CanvasPart):
-    dataChanged = pyqtSignal()
+    dataChanged = QtCore.pyqtSignal()
     """pyqtSignal that is emittd when data is added/removed/changed."""
 
     def __init__(self, canvas):

@@ -1,11 +1,11 @@
 import weakref
 
-from LysQt.QtWidgets import QGroupBox, QLabel, QDoubleSpinBox, QGridLayout, QVBoxLayout, QHBoxLayout, QComboBox
+from lys.Qt import QtWidgets
 
 from .AxisSettingsGUI import AxisSelectionWidget
 
 
-class MarginAdjustBox(QGroupBox):
+class MarginAdjustBox(QtWidgets.QGroupBox):
     def __init__(self, canvas):
         super().__init__("Margin")
         self.canvas = canvas
@@ -13,7 +13,7 @@ class MarginAdjustBox(QGroupBox):
 
     def _initlayout(self, canvas):
         m = canvas.getMargin(raw=True)
-        self._vals = [QDoubleSpinBox() for _ in range(4)]
+        self._vals = [QtWidgets.QDoubleSpinBox() for _ in range(4)]
         for v, mv in zip(self._vals, m):
             v.setRange(0, 1)
             v.setSingleStep(0.05)
@@ -21,11 +21,11 @@ class MarginAdjustBox(QGroupBox):
             v.setValue(mv)
             v.valueChanged.connect(self._valueChanged)
 
-        grid = QGridLayout()
-        grid.addWidget(QLabel('Left'), 0, 0)
-        grid.addWidget(QLabel('Right'), 0, 2)
-        grid.addWidget(QLabel('Bottom'), 1, 0)
-        grid.addWidget(QLabel('Top'), 1, 2)
+        grid = QtWidgets.QGridLayout()
+        grid.addWidget(QtWidgets.QLabel('Left'), 0, 0)
+        grid.addWidget(QtWidgets.QLabel('Right'), 0, 2)
+        grid.addWidget(QtWidgets.QLabel('Bottom'), 1, 0)
+        grid.addWidget(QtWidgets.QLabel('Top'), 1, 2)
         grid.addWidget(self._vals[0], 0, 1)
         grid.addWidget(self._vals[1], 0, 3)
         grid.addWidget(self._vals[2], 1, 1)
@@ -36,8 +36,8 @@ class MarginAdjustBox(QGroupBox):
         self.canvas.setMargin(*[v.value() for v in self._vals])
 
 
-class ResizeBox(QGroupBox):
-    class _AreaBox(QGroupBox):
+class ResizeBox(QtWidgets.QGroupBox):
+    class _AreaBox(QtWidgets.QGroupBox):
         def __init__(self, title, canvas, axis):
             super().__init__(title)
             self._axis = axis
@@ -49,37 +49,37 @@ class ResizeBox(QGroupBox):
             self._partner = weakref.ref(partner)
 
         def _initlayout(self, canvas):
-            self.cw = QComboBox()
+            self.cw = QtWidgets.QComboBox()
             self.cw.addItems(['Auto', 'Absolute', 'Per Unit', 'Aspect', 'Plan'])
             self.cw.activated.connect(self.__ModeChanged)
 
-            self.spin1 = QDoubleSpinBox()
+            self.spin1 = QtWidgets.QDoubleSpinBox()
             self.spin1.valueChanged.connect(self.__Changed)
             self.spin1.setDecimals(5)
-            self.lab1 = QLabel(' * Height')
-            tmp1 = QHBoxLayout()
+            self.lab1 = QtWidgets.QLabel(' * Height')
+            tmp1 = QtWidgets.QHBoxLayout()
             tmp1.addWidget(self.spin1)
             tmp1.addWidget(self.lab1)
 
-            self.lab2_1 = QLabel('*')
-            self.lab2_2 = QLabel('Range')
+            self.lab2_1 = QtWidgets.QLabel('*')
+            self.lab2_2 = QtWidgets.QLabel('Range')
             self.combo2 = AxisSelectionWidget(canvas)
             self.combo2.activated.connect(self.__Changed)
-            tmp2 = QHBoxLayout()
+            tmp2 = QtWidgets.QHBoxLayout()
             tmp2.addWidget(self.lab2_1)
             tmp2.addWidget(self.combo2)
             tmp2.addWidget(self.lab2_2)
 
-            self.lab3_1 = QLabel('/')
-            self.lab3_2 = QLabel('Range')
+            self.lab3_1 = QtWidgets.QLabel('/')
+            self.lab3_2 = QtWidgets.QLabel('Range')
             self.combo3 = AxisSelectionWidget(canvas)
             self.combo3.activated.connect(self.__Changed)
-            tmp3 = QHBoxLayout()
+            tmp3 = QtWidgets.QHBoxLayout()
             tmp3.addWidget(self.lab3_1)
             tmp3.addWidget(self.combo3)
             tmp3.addWidget(self.lab3_2)
 
-            layout = QVBoxLayout()
+            layout = QtWidgets.QVBoxLayout()
             layout.addWidget(self.cw)
             layout.addLayout(tmp1)
             layout.addLayout(tmp2)
@@ -228,7 +228,7 @@ class ResizeBox(QGroupBox):
     def __init__(self, canvas):
         super().__init__("Graph Size")
         self.canvas = canvas
-        layout_h = QHBoxLayout(self)
+        layout_h = QtWidgets.QHBoxLayout(self)
         gw = self._AreaBox('Width', canvas, 0)
         gh = self._AreaBox('Height', canvas, 1)
         gw.setPartner(gh)

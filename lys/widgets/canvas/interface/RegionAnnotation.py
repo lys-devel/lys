@@ -1,5 +1,6 @@
 import warnings
-from LysQt.QtCore import pyqtSignal
+
+from lys.Qt import QtCore
 from lys.errors import NotImplementedWarning
 
 from .CanvasBase import saveCanvas
@@ -26,7 +27,7 @@ class RegionAnnotation(AnnotationWithLine):
         rect = g.canvas.addRegionAnnotation()
         rect.setLineColor("#ff0000")
     """
-    regionChanged = pyqtSignal(tuple)
+    regionChanged = QtCore.pyqtSignal(tuple)
     """PyqtSignal that is emitted when the region is changed."""
 
     def __init__(self, canvas, region, orientation, axis):
@@ -95,9 +96,9 @@ class FreeRegionAnnotation(AnnotationWithLine):
         rect = g.canvas.addFreeRegionAnnotation()
         rect.setLineColor("#ff0000")
     """
-    regionChanged = pyqtSignal(list)
+    regionChanged = QtCore.pyqtSignal(list)
     """PyqtSignal that is emitted when the region is changed."""
-    widthChanged = pyqtSignal(float)
+    widthChanged = QtCore.pyqtSignal(float)
     """PyqtSignal that is emitted when the region width is changed."""
 
     def __init__(self, canvas, region, width, axis):

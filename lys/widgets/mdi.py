@@ -3,13 +3,11 @@ import sys
 import traceback
 from pathlib import Path
 
-
-from LysQt.QtWidgets import QMdiArea, QMdiSubWindow, QMessageBox, QSpinBox, QDoubleSpinBox, QCheckBox, QRadioButton, QComboBox, QLineEdit, QListWidget, QTextEdit
-from LysQt.QtCore import Qt, pyqtSignal, QPoint, QTimer
 from lys import home, load
+from lys.Qt import QtCore, QtWidgets
 
 
-class _ExtendMdiArea(QMdiArea):
+class _ExtendMdiArea(QtWidgets.QMdiArea):
     """
     MdiArea that manage AutoSavedWindows.
     """
@@ -40,7 +38,7 @@ class _ExtendMdiArea(QMdiArea):
         return [w.FileName() for w in self._autoWindows() if w.FileName() is not None]
 
     def _autoWindows(self):
-        return [w for w in self.subWindowList(order=QMdiArea.ActivationHistoryOrder) if isinstance(w, _AutoSavedWindow)]
+        return [w for w in self.subWindowList(order=QtWidgets.QMdiArea.ActivationHistoryOrder) if isinstance(w, _AutoSavedWindow)]
 
     def addSubWindow(self, window):
         super().addSubWindow(window)
@@ -110,7 +108,7 @@ class _ExtendMdiArea(QMdiArea):
         print('Too many windows.', file=sys.stderr)
 
 
-class LysSubWindow(QMdiSubWindow):
+class LysSubWindow(QtWidgets.QMdiSubWindow):
     """
     LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.
 
@@ -127,32 +125,32 @@ class LysSubWindow(QMdiSubWindow):
     """
     __win = []
 
-    resized = pyqtSignal()
+    resized = QtCore.pyqtSignal()
     """
     *resized* signal is emitted when the window is resized.
     """
-    resizeFinished = pyqtSignal()
+    resizeFinished = QtCore.pyqtSignal()
     """
     *resizedFinished* signal is emitted when the resize of the window is finished.
     """
-    moved = pyqtSignal()
+    moved = QtCore.pyqtSignal()
     """
     *moved* signal is emitted when the window is moved.
     """
-    moveFinished = pyqtSignal()
+    moveFinished = QtCore.pyqtSignal()
     """
     *moveFinished* signal is emitted when the move of the window is finished.
     """
-    closed = pyqtSignal(object)
+    closed = QtCore.pyqtSignal(object)
     """
     *closed* signal is emitted when the window is closed.
     """
-    saved = pyqtSignal(dict)
+    saved = QtCore.pyqtSignal(dict)
     """
     *saved* signal is emitted when the saveSettings method is called.
     User settings can be stored in dictionary.
     """
-    loaded = pyqtSignal(dict)
+    loaded = QtCore.pyqtSignal(dict)
     """
     *loaded* signal is emitted when the loadSettings method is called.
     User settings can be restored from dictionary.
@@ -163,10 +161,10 @@ class LysSubWindow(QMdiSubWindow):
         super().__init__()
         self._parent = None
         self._floating = floating
-        self._resizeTimer = QTimer(self)
+        self._resizeTimer = QtCore.QTimer(self)
         self._resizeTimer.timeout.connect(self.resizeFinished)
         self._resizeTimer.setSingleShot(True)
-        self._moveTimer = QTimer(self)
+        self._moveTimer = QtCore.QTimer(self)
         self._moveTimer.timeout.connect(self.resizeFinished)
         self._moveTimer.setSingleShot(True)
         if floating:
@@ -174,7 +172,7 @@ class LysSubWindow(QMdiSubWindow):
             glb.mainWindow().closed.connect(self.close)
         else:
             _ExtendMdiArea.current().addSubWindow(self)
-        self.setAttribute(Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.updateGeometry()
         self.show()
 
@@ -228,7 +226,7 @@ class LysSubWindow(QMdiSubWindow):
         if self._parent is not None:
             pos = self._parent.pos()
             frm = self._parent.frameGeometry()
-            self.move(QPoint(pos.x() + frm.width(), pos.y()))
+            self.move(QtCore.QPoint(pos.x() + frm.width(), pos.y()))
 
     def saveSettings(self, file):
         """
@@ -269,19 +267,19 @@ class LysSubWindow(QMdiSubWindow):
 
 
 def _restore(self, settings):
-    for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
+    for obj in self.findChildren(QtWidgets.QSpinBox) + self.findChildren(QtWidgets.QDoubleSpinBox):
         name = obj.objectName()
         if _checkName(name):
             if name in settings:
                 obj.setValue(settings[name])
 
-    for obj in self.findChildren(QCheckBox) + self.findChildren(QRadioButton):
+    for obj in self.findChildren(QtWidgets.QCheckBox) + self.findChildren(QtWidgets.QRadioButton):
         name = obj.objectName()
         if _checkName(name):
             if name in settings:
                 obj.setChecked(settings[name])
 
-    for obj in self.findChildren(QComboBox):
+    for obj in self.findChildren(QtWidgets.QComboBox):
         name = obj.objectName()
         if _checkName(name):
             if name in settings:
@@ -289,20 +287,20 @@ def _restore(self, settings):
                 if i != -1:
                     obj.setCurrentIndex(i)
 
-    for obj in self.findChildren(QLineEdit):
+    for obj in self.findChildren(QtWidgets.QLineEdit):
         name = obj.objectName()
         if _checkName(name):
             if name in settings:
                 obj.setText(settings[name])
 
-    for obj in self.findChildren(QListWidget):
+    for obj in self.findChildren(QtWidgets.QListWidget):
         name = obj.objectName()
         if _checkName(name):
             obj.clear()
             if name in settings:
                 obj.addItems(settings[name])
 
-    for obj in self.findChildren(QTextEdit):
+    for obj in self.findChildren(QtWidgets.QTextEdit):
         name = obj.objectName()
         if _checkName(name):
             if name in settings:
@@ -312,32 +310,32 @@ def _restore(self, settings):
 def _save(self):
     settings = dict()
 
-    for obj in self.findChildren(QSpinBox) + self.findChildren(QDoubleSpinBox):
+    for obj in self.findChildren(QtWidgets.QSpinBox) + self.findChildren(QtWidgets.QDoubleSpinBox):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = obj.value()
 
-    for obj in self.findChildren(QCheckBox) + self.findChildren(QRadioButton):
+    for obj in self.findChildren(QtWidgets.QCheckBox) + self.findChildren(QtWidgets.QRadioButton):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = obj.isChecked()
 
-    for obj in self.findChildren(QComboBox):
+    for obj in self.findChildren(QtWidgets.QComboBox):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = obj.currentText()
 
-    for obj in self.findChildren(QLineEdit):
+    for obj in self.findChildren(QtWidgets.QLineEdit):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = obj.text()
 
-    for obj in self.findChildren(QListWidget):
+    for obj in self.findChildren(QtWidgets.QListWidget):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = [obj.item(i).text() for i in range(obj.count())]
 
-    for obj in self.findChildren(QTextEdit):
+    for obj in self.findChildren(QtWidgets.QTextEdit):
         name = obj.objectName()
         if _checkName(name):
             settings[name] = obj.toPlainText()
@@ -366,7 +364,7 @@ class _AutoSavedWindow(LysSubWindow):
     To gives default file name, the class should also implement :meth:`_prefix` and :meth:`_suffix` methods, in addition to :meth:`save` method.
 
     """
-    saved = pyqtSignal()
+    saved = QtCore.pyqtSignal()
     """*saved* signal is emitted when it is saved."""
 
     def __new__(cls, file=None, warn=True, **kwargs):
@@ -378,13 +376,13 @@ class _AutoSavedWindow(LysSubWindow):
                     print(file + " has been loaded in " + obj._mdiArea()._workspace, file=sys.stderr)
                 return None
             elif warn:
-                msg = QMessageBox(parent=_ExtendMdiArea.current())
-                msg.setIcon(QMessageBox.Warning)
+                msg = QtWidgets.QMessageBox(parent=_ExtendMdiArea.current())
+                msg.setIcon(QtWidgets.QMessageBox.Warning)
                 msg.setText(file + " has been loaded in " + obj._mdiArea()._workspace + ". Do you want to move it to current workspace?")
                 msg.setWindowTitle("Caution")
-                msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+                msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
                 ok = msg.exec_()
-                if ok == QMessageBox.Cancel:
+                if ok == QtWidgets.QMessageBox.Cancel:
                     return None
                 else:
                     obj.close(force=True)
@@ -449,19 +447,19 @@ class _AutoSavedWindow(LysSubWindow):
     def closeEvent(self, event):
         """Reimplementation of closeEvent in QMdiSubWindow"""
         if self.__closeflg:
-            msg = QMessageBox(parent=_ExtendMdiArea.current())
-            msg.setIcon(QMessageBox.Warning)
+            msg = QtWidgets.QMessageBox(parent=_ExtendMdiArea.current())
+            msg.setIcon(QtWidgets.QMessageBox.Warning)
             msg.setWindowTitle("Caution")
             if self.__file is None:
                 msg.setText("This window is not saved. Do you really want to close it?")
-                msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+                msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
             else:
                 msg.setText("Do you want to save the content of this window to " + self.__file + "?")
-                msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+                msg.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel)
             ok = msg.exec_()
-            if ok == QMessageBox.Cancel:
+            if ok == QtWidgets.QMessageBox.Cancel:
                 return event.ignore()
-            if ok == QMessageBox.Yes:
+            if ok == QtWidgets.QMessageBox.Yes:
                 self.Save()
         return super().closeEvent(event)
 

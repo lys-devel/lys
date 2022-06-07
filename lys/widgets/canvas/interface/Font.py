@@ -1,7 +1,7 @@
 import matplotlib as mpl
 import matplotlib.font_manager as fm
 
-from LysQt.QtCore import pyqtSignal
+from lys.Qt import QtCore
 from .CanvasBase import CanvasPart, saveCanvas
 
 
@@ -33,10 +33,10 @@ class FontInfo(object):
         for f in fonts:
             try:
                 n = fm.FontProperties(fname=f).get_name()
-                if not n in cls._fonts:
+                if n not in cls._fonts:
                     cls._fonts.append(n)
                 cls._fonts = sorted(cls._fonts)
-            except:
+            except Exception:
                 pass
 
     @classmethod
@@ -65,7 +65,7 @@ class FontInfo(object):
 
 class CanvasFont(CanvasPart):
     """Font manager class for canvas."""
-    fontChanged = pyqtSignal(str)
+    fontChanged = QtCore.pyqtSignal(str)
     """Emitted when fonts are changed."""
 
     def __init__(self, canvas):

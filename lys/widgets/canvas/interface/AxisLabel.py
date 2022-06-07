@@ -1,5 +1,7 @@
 import warnings
+
 from lys.errors import NotImplementedWarning
+
 from .Font import FontInfo
 from .CanvasBase import CanvasPart, saveCanvas
 

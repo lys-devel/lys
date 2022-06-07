@@ -1,13 +1,13 @@
 import numpy as np
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QLabel, QGridLayout, QPushButton, QApplication
 
+from lys.Qt import QtWidgets
 from lys.widgets import ScientificSpinBox
 from lys.decorators import avoidCircularReference
 
 from .AnnotationGUI import AnnotationSelectionBox, LineColorAdjustBox, LineStyleAdjustBox
 
 
-class _RectPositionAdjustBox(QWidget):
+class _RectPositionAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
@@ -18,23 +18,23 @@ class _RectPositionAdjustBox(QWidget):
         self._y1 = ScientificSpinBox(valueChanged=self._chgPos)
         self._x2 = ScientificSpinBox(valueChanged=self._chgPos)
         self._y2 = ScientificSpinBox(valueChanged=self._chgPos)
-        self._label = QLabel()
+        self._label = QtWidgets.QLabel()
 
-        g = QGridLayout()
-        g.addWidget(QLabel("Point 1"), 1, 0)
-        g.addWidget(QLabel("Point 2"), 2, 0)
-        g.addWidget(QLabel("x axis"), 0, 1)
-        g.addWidget(QLabel("y axis"), 0, 2)
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("Point 1"), 1, 0)
+        g.addWidget(QtWidgets.QLabel("Point 2"), 2, 0)
+        g.addWidget(QtWidgets.QLabel("x axis"), 0, 1)
+        g.addWidget(QtWidgets.QLabel("y axis"), 0, 2)
         g.addWidget(self._x1, 1, 1)
         g.addWidget(self._y1, 1, 2)
         g.addWidget(self._x2, 2, 1)
         g.addWidget(self._y2, 2, 2)
-        g.addWidget(QLabel("Distance"), 3, 0)
+        g.addWidget(QtWidgets.QLabel("Distance"), 3, 0)
         g.addWidget(self._label, 3, 1, 1, 2)
-        g.addWidget(QPushButton("Copy", clicked=self._copy), 4, 1)
-        g.addWidget(QPushButton("Paste", clicked=self._paste), 4, 2)
+        g.addWidget(QtWidgets.QPushButton("Copy", clicked=self._copy), 4, 1)
+        g.addWidget(QtWidgets.QPushButton("Paste", clicked=self._paste), 4, 2)
 
-        v = QVBoxLayout()
+        v = QtWidgets.QVBoxLayout()
         v.addLayout(g)
         v.addStretch()
 
@@ -64,12 +64,12 @@ class _RectPositionAdjustBox(QWidget):
 
     def _copy(self):
         if len(self.data) != 0:
-            cb = QApplication.clipboard()
+            cb = QtWidgets.QApplication.clipboard()
             cb.clear(mode=cb.Clipboard)
             cb.setText(str(self.data[0].getRegion()), mode=cb.Clipboard)
 
     def _paste(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         v = np.array(eval(cb.text(mode=cb.Clipboard)))
         if v.shape[0] == v.shape[1] == 2:
             for d in self.data:
@@ -85,7 +85,7 @@ class _RectPositionAdjustBox(QWidget):
         self._loadstate()
 
 
-class RectAnnotationBox(QWidget):
+class RectAnnotationBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -99,25 +99,25 @@ class RectAnnotationBox(QWidget):
         sel.selected.connect(lsty.setData)
         sel.selected.connect(pos.setData)
 
-        lv1 = QVBoxLayout()
+        lv1 = QtWidgets.QVBoxLayout()
         lv1.addWidget(lcol)
         lv1.addWidget(lsty)
         lv1.addStretch()
 
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(lv1)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(pos, 'Position')
         tab.addTab(w, 'Appearance')
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
 
 
-class _RegionPositionAdjustBox(QWidget):
+class _RegionPositionAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
@@ -126,17 +126,17 @@ class _RegionPositionAdjustBox(QWidget):
     def __initlayout(self):
         self._x1 = ScientificSpinBox(valueChanged=self._chgPos)
         self._x2 = ScientificSpinBox(valueChanged=self._chgPos)
-        self._label = QLabel()
+        self._label = QtWidgets.QLabel()
 
-        g = QGridLayout()
-        g.addWidget(QLabel("Point 1"), 0, 0)
-        g.addWidget(QLabel("Point 2"), 1, 0)
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("Point 1"), 0, 0)
+        g.addWidget(QtWidgets.QLabel("Point 2"), 1, 0)
         g.addWidget(self._x1, 0, 1, 1, 2)
         g.addWidget(self._x2, 1, 1, 1, 2)
-        g.addWidget(QPushButton("Copy", clicked=self._copy), 2, 1)
-        g.addWidget(QPushButton("Paste", clicked=self._paste), 2, 2)
+        g.addWidget(QtWidgets.QPushButton("Copy", clicked=self._copy), 2, 1)
+        g.addWidget(QtWidgets.QPushButton("Paste", clicked=self._paste), 2, 2)
 
-        v = QVBoxLayout()
+        v = QtWidgets.QVBoxLayout()
         v.addWidget(self._label)
         v.addLayout(g)
         v.addStretch()
@@ -161,12 +161,12 @@ class _RegionPositionAdjustBox(QWidget):
 
     def _copy(self):
         if len(self.data) != 0:
-            cb = QApplication.clipboard()
+            cb = QtWidgets.QApplication.clipboard()
             cb.clear(mode=cb.Clipboard)
             cb.setText(str(self.data[0].getRegion()), mode=cb.Clipboard)
 
     def _paste(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         v = np.array(eval(cb.text(mode=cb.Clipboard)))
         if v.shape[0] == 2:
             for d in self.data:
@@ -182,7 +182,7 @@ class _RegionPositionAdjustBox(QWidget):
         self._loadstate()
 
 
-class RegionAnnotationBox(QWidget):
+class RegionAnnotationBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -196,25 +196,25 @@ class RegionAnnotationBox(QWidget):
         sel.selected.connect(lsty.setData)
         sel.selected.connect(pos.setData)
 
-        lv1 = QVBoxLayout()
+        lv1 = QtWidgets.QVBoxLayout()
         lv1.addWidget(lcol)
         lv1.addWidget(lsty)
         lv1.addStretch()
 
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(lv1)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(pos, 'Position')
         tab.addTab(w, 'Appearance')
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
 
 
-class _FreeRegionPositionAdjustBox(QWidget):
+class _FreeRegionPositionAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
@@ -226,25 +226,25 @@ class _FreeRegionPositionAdjustBox(QWidget):
         self._x2 = ScientificSpinBox(valueChanged=self._chgPos)
         self._y2 = ScientificSpinBox(valueChanged=self._chgPos)
         self._wid = ScientificSpinBox(valueChanged=self._chgPos)
-        self._label = QLabel()
+        self._label = QtWidgets.QLabel()
 
-        g = QGridLayout()
-        g.addWidget(QLabel("Point 1"), 1, 0)
-        g.addWidget(QLabel("Point 2"), 2, 0)
-        g.addWidget(QLabel("Width"), 3, 0)
-        g.addWidget(QLabel("x axis"), 0, 1)
-        g.addWidget(QLabel("y axis"), 0, 2)
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("Point 1"), 1, 0)
+        g.addWidget(QtWidgets.QLabel("Point 2"), 2, 0)
+        g.addWidget(QtWidgets.QLabel("Width"), 3, 0)
+        g.addWidget(QtWidgets.QLabel("x axis"), 0, 1)
+        g.addWidget(QtWidgets.QLabel("y axis"), 0, 2)
         g.addWidget(self._x1, 1, 1)
         g.addWidget(self._y1, 1, 2)
         g.addWidget(self._x2, 2, 1)
         g.addWidget(self._y2, 2, 2)
         g.addWidget(self._wid, 3, 1, 1, 2)
-        g.addWidget(QLabel("Distance"), 4, 0)
+        g.addWidget(QtWidgets.QLabel("Distance"), 4, 0)
         g.addWidget(self._label, 4, 1, 1, 2)
-        g.addWidget(QPushButton("Copy", clicked=self._copy), 5, 1)
-        g.addWidget(QPushButton("Paste", clicked=self._paste), 5, 2)
+        g.addWidget(QtWidgets.QPushButton("Copy", clicked=self._copy), 5, 1)
+        g.addWidget(QtWidgets.QPushButton("Paste", clicked=self._paste), 5, 2)
 
-        v = QVBoxLayout()
+        v = QtWidgets.QVBoxLayout()
         v.addLayout(g)
         v.addStretch()
 
@@ -277,12 +277,12 @@ class _FreeRegionPositionAdjustBox(QWidget):
 
     def _copy(self):
         if len(self.data) != 0:
-            cb = QApplication.clipboard()
+            cb = QtWidgets.QApplication.clipboard()
             cb.clear(mode=cb.Clipboard)
             cb.setText(str((self.data[0].getRegion(), self.data[0].getWidth())), mode=cb.Clipboard)
 
     def _paste(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         val = eval(cb.text(mode=cb.Clipboard))
         v, w = np.array(val[0]), val[1]
         if v.shape[0] == v.shape[1] == 2:
@@ -300,7 +300,7 @@ class _FreeRegionPositionAdjustBox(QWidget):
         self._loadstate()
 
 
-class FreeRegionAnnotationBox(QWidget):
+class FreeRegionAnnotationBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -314,19 +314,19 @@ class FreeRegionAnnotationBox(QWidget):
         sel.selected.connect(lsty.setData)
         sel.selected.connect(pos.setData)
 
-        lv1 = QVBoxLayout()
+        lv1 = QtWidgets.QVBoxLayout()
         lv1.addWidget(lcol)
         lv1.addWidget(lsty)
         lv1.addStretch()
 
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(lv1)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(pos, 'Position')
         tab.addTab(w, 'Appearance')
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)

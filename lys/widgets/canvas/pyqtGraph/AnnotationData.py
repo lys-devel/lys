@@ -1,15 +1,14 @@
 import warnings
-import pyqtgraph as pg
 import numpy as np
-from LysQt.QtCore import Qt, pyqtSignal, QRectF
-from LysQt.QtGui import QColor, QTransform, QFont, QColor
+import pyqtgraph as pg
 
+from lys.Qt import QtCore, QtGui
 from lys.errors import NotSupportedWarning
 from lys.decorators import avoidCircularReference
 
 from ..interface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, RectAnnotation, RegionAnnotation, CrossAnnotation, FreeRegionAnnotation, TextAnnotation
 
-_styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
+_styles = {'solid': QtCore.Qt.SolidLine, 'dashed': QtCore.Qt.DashLine, 'dashdot': QtCore.Qt.DashDotLine, 'dotted': QtCore.Qt.DotLine, 'None': QtCore.Qt.NoPen}
 
 
 class _PyqtgraphLineAnnotation(LineAnnotation):
@@ -27,7 +26,7 @@ class _PyqtgraphLineAnnotation(LineAnnotation):
         self._obj.movePoint(self._obj.getHandles()[1], pos[1])
 
     def _setLineColor(self, color):
-        self._obj.pen.setColor(QColor(color))
+        self._obj.pen.setColor(QtGui.QColor(color))
 
     def _setLineStyle(self, style):
         self._obj.pen.setStyle(_styles[style])
@@ -66,7 +65,7 @@ class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
         self._obj.setValue(pos)
 
     def _setLineColor(self, color):
-        self._obj.pen.setColor(QColor(color))
+        self._obj.pen.setColor(QtGui.QColor(color))
 
     def _setLineStyle(self, style):
         self._obj.pen.setStyle(_styles[style])
@@ -99,7 +98,7 @@ class _PyqtgraphRectAnnotation(RectAnnotation):
         self._obj.setSize((region[0][1] - region[0][0], region[1][1] - region[1][0]))
 
     def _setLineColor(self, color):
-        self._obj.pen.setColor(QColor(color))
+        self._obj.pen.setColor(QtGui.QColor(color))
 
     def _setLineStyle(self, style):
         self._obj.pen.setStyle(_styles[style])
@@ -131,8 +130,8 @@ class _PyqtgraphRegionAnnotation(RegionAnnotation):
         self._obj.setRegion(region)
 
     def _setLineColor(self, color):
-        self._obj.lines[0].pen.setColor(QColor(color))
-        self._obj.lines[1].pen.setColor(QColor(color))
+        self._obj.lines[0].pen.setColor(QtGui.QColor(color))
+        self._obj.lines[1].pen.setColor(QtGui.QColor(color))
 
     def _setLineStyle(self, style):
         self._obj.lines[0].pen.setStyle(_styles[style])
@@ -193,7 +192,7 @@ class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
         self._obj.setAngle(np.angle(d[0] + 1j * d[1], deg=True))
 
     def _setLineColor(self, color):
-        self._obj.pen.setColor(QColor(color))
+        self._obj.pen.setColor(QtGui.QColor(color))
 
     def _setLineStyle(self, style):
         self._obj.pen.setStyle(_styles[style])
@@ -224,8 +223,8 @@ class _PyqtgraphCrossAnnotation(CrossAnnotation):
         self._obj.lines[1].setValue(pos[0])
 
     def _setLineColor(self, color):
-        self._obj.lines[0].pen.setColor(QColor(color))
-        self._obj.lines[1].pen.setColor(QColor(color))
+        self._obj.lines[0].pen.setColor(QtGui.QColor(color))
+        self._obj.lines[1].pen.setColor(QtGui.QColor(color))
 
     def _setLineStyle(self, style):
         self._obj.lines[0].pen.setStyle(_styles[style])
@@ -247,12 +246,12 @@ class _PyqtgraphCrossAnnotation(CrossAnnotation):
 
 
 class _CrosshairItem(pg.GraphicsObject):
-    sigRegionChangeFinished = pyqtSignal(object)
-    sigRegionChanged = pyqtSignal(object)
+    sigRegionChangeFinished = QtCore.pyqtSignal(object)
+    sigRegionChanged = QtCore.pyqtSignal(object)
 
     def __init__(self, values=(0, 1), pen=None):
         super().__init__()
-        self.bounds = QRectF()
+        self.bounds = QtCore.QRectF()
         self.blockLineSignal = False
         self.moving = False
         self.mouseHovering = False
@@ -281,8 +280,8 @@ class _CrosshairItem(pg.GraphicsObject):
         self.lineMoveFinished()
 
     def setMovable(self, m):
-        for l in self.lines:
-            l.setMovable(m)
+        for line in self.lines:
+            line.setMovable(m)
         self.movable = m
         self.setAcceptHoverEvents(m)
 
@@ -371,8 +370,8 @@ class _PyqtgraphTextAnnotation(TextAnnotation):
         self.setPosition((x_new, y_new))
 
     def _setFont(self, family, size, color):
-        self._obj.setColor(QColor(color))
-        self._obj.setFont(QFont(family, size))
+        self._obj.setColor(QtGui.QColor(color))
+        self._obj.setFont(QtGui.QFont(family, size))
 
     def _setBoxStyle(self, style):
         warnings.warn("pyqtGraph does not support bounding box of text.", NotSupportedWarning)

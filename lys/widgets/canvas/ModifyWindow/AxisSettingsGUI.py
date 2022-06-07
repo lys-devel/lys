@@ -1,10 +1,10 @@
 import numpy as np
 
-from LysQt.QtWidgets import QComboBox, QGroupBox, QWidget, QHBoxLayout, QVBoxLayout, QGridLayout, QLabel, QPushButton, QCheckBox, QDoubleSpinBox
+from lys.Qt import QtWidgets
 from lys.widgets import ScientificSpinBox, ColorSelection
 
 
-class AxisSelectionWidget(QComboBox):
+class AxisSelectionWidget(QtWidgets.QComboBox):
     def __init__(self, canvas):
         super().__init__()
         canvas.axisChanged.connect(lambda: self.__setItem(canvas))
@@ -15,7 +15,7 @@ class AxisSelectionWidget(QComboBox):
         self.addItems(canvas.axisList())
 
 
-class _AxisRangeAdjustBox(QGroupBox):
+class _AxisRangeAdjustBox(QtWidgets.QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__('Axis Range')
         self._parent = parent
@@ -26,7 +26,7 @@ class _AxisRangeAdjustBox(QGroupBox):
 
     def __initlayout(self):
 
-        self.__combo = QComboBox()
+        self.__combo = QtWidgets.QComboBox()
         self.__combo.addItem('Auto')
         self.__combo.addItem('Manual')
         self.__combo.activated.connect(self.__OnModeChanged)
@@ -34,17 +34,17 @@ class _AxisRangeAdjustBox(QGroupBox):
         self.__spin1 = ScientificSpinBox(valueChanged=self.__spinChanged)
         self.__spin2 = ScientificSpinBox(valueChanged=self.__spinChanged)
 
-        layout_h1 = QHBoxLayout()
-        layout_h1.addWidget(QLabel('Min'), 1)
+        layout_h1 = QtWidgets.QHBoxLayout()
+        layout_h1.addWidget(QtWidgets.QLabel('Min'), 1)
         layout_h1.addWidget(self.__spin1, 2)
 
-        layout_h2 = QHBoxLayout()
-        layout_h2.addWidget(QLabel('Max'), 1)
+        layout_h2 = QtWidgets.QHBoxLayout()
+        layout_h2.addWidget(QtWidgets.QLabel('Max'), 1)
         layout_h2.addWidget(self.__spin2, 2)
 
-        rev = QPushButton("Reverse", clicked=self.__reverse)
+        rev = QtWidgets.QPushButton("Reverse", clicked=self.__reverse)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.__combo)
         layout.addLayout(layout_h1)
         layout.addLayout(layout_h2)
@@ -97,7 +97,7 @@ class _AxisRangeAdjustBox(QGroupBox):
             self.canvas.setAxisRange(self._parent.getCurrentAxis(), [mi, ma])
 
 
-class _AxisAdjustBox(QGroupBox):
+class _AxisAdjustBox(QtWidgets.QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__("Axis Setting")
         self.canvas = canvas
@@ -108,21 +108,21 @@ class _AxisAdjustBox(QGroupBox):
 
     def __initlayout(self):
 
-        self.__mirror = QCheckBox("Mirror")
+        self.__mirror = QtWidgets.QCheckBox("Mirror")
         self.__mirror.stateChanged.connect(self.__mirrorChanged)
-        self.__mode = QComboBox()
+        self.__mode = QtWidgets.QComboBox()
         self.__mode.addItems(['linear', 'log'])
         self.__mode.activated.connect(self.__chgmod)
         self.__color = ColorSelection()
         self.__color.colorChanged.connect(self.__changeColor)
-        self.__spin1 = QDoubleSpinBox()
+        self.__spin1 = QtWidgets.QDoubleSpinBox()
         self.__spin1.valueChanged.connect(self.__setThick)
 
-        gl = QGridLayout()
+        gl = QtWidgets.QGridLayout()
         gl.addWidget(self.__mirror, 0, 0)
-        gl.addWidget(QLabel('Mode'), 1, 0)
-        gl.addWidget(QLabel('Color'), 2, 0)
-        gl.addWidget(QLabel('Thick'), 3, 0)
+        gl.addWidget(QtWidgets.QLabel('Mode'), 1, 0)
+        gl.addWidget(QtWidgets.QLabel('Color'), 2, 0)
+        gl.addWidget(QtWidgets.QLabel('Thick'), 3, 0)
         gl.addWidget(self.__mode, 1, 1)
         gl.addWidget(self.__color, 2, 1)
         gl.addWidget(self.__spin1, 3, 1)
@@ -163,7 +163,7 @@ class _AxisAdjustBox(QGroupBox):
             self.canvas.setAxisColor(ax, self.__color.getColor())
 
 
-class _TickAdjustBox(QGroupBox):
+class _TickAdjustBox(QtWidgets.QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__("Tick Setting")
         self.canvas = canvas
@@ -173,50 +173,50 @@ class _TickAdjustBox(QGroupBox):
         self.update()
 
     def __initlayout(self):
-        self.__mode = QComboBox()
+        self.__mode = QtWidgets.QComboBox()
         self.__mode.addItems(['in', 'out', 'none'])
-        self.__mir = QCheckBox('Mirror')
+        self.__mir = QtWidgets.QCheckBox('Mirror')
         self.__mir.stateChanged.connect(self.__chon)
 
         self.__mode.activated.connect(self.__chgmod)
         self.__spin1 = ScientificSpinBox()
         self.__spin1.valueChanged.connect(self.__chnum)
         self.__spin1.setRange(0, np.inf)
-        self.__spin2 = QDoubleSpinBox()
+        self.__spin2 = QtWidgets.QDoubleSpinBox()
         self.__spin2.valueChanged.connect(self.__chlen)
         self.__spin2.setRange(0, np.inf)
-        self.__spin3 = QDoubleSpinBox()
+        self.__spin3 = QtWidgets.QDoubleSpinBox()
         self.__spin3.valueChanged.connect(self.__chwid)
         self.__spin3.setRange(0, np.inf)
 
-        self.__minor = QCheckBox('Minor')
+        self.__minor = QtWidgets.QCheckBox('Minor')
         self.__minor.stateChanged.connect(self.__minorChanged)
         self.__spin4 = ScientificSpinBox()
         self.__spin4.valueChanged.connect(self.__chnum2)
-        self.__spin5 = QDoubleSpinBox()
+        self.__spin5 = QtWidgets.QDoubleSpinBox()
         self.__spin5.valueChanged.connect(self.__chlen2)
-        self.__spin6 = QDoubleSpinBox()
+        self.__spin6 = QtWidgets.QDoubleSpinBox()
         self.__spin6.valueChanged.connect(self.__chwid2)
 
-        gl = QGridLayout()
-        gl.addWidget(QLabel('Location'), 0, 0)
+        gl = QtWidgets.QGridLayout()
+        gl.addWidget(QtWidgets.QLabel('Location'), 0, 0)
         gl.addWidget(self.__mode, 0, 1)
         gl.addWidget(self.__mir, 0, 2)
 
-        gl.addWidget(QLabel('Major'), 1, 0)
-        gl.addWidget(QLabel('Interval'), 2, 0)
+        gl.addWidget(QtWidgets.QLabel('Major'), 1, 0)
+        gl.addWidget(QtWidgets.QLabel('Interval'), 2, 0)
         gl.addWidget(self.__spin1, 2, 1)
-        gl.addWidget(QLabel('Length'), 3, 0)
+        gl.addWidget(QtWidgets.QLabel('Length'), 3, 0)
         gl.addWidget(self.__spin2, 3, 1)
-        gl.addWidget(QLabel('Width'), 4, 0)
+        gl.addWidget(QtWidgets.QLabel('Width'), 4, 0)
         gl.addWidget(self.__spin3, 4, 1)
 
         gl.addWidget(self.__minor, 1, 2)
-        gl.addWidget(QLabel('Interval'), 2, 2)
+        gl.addWidget(QtWidgets.QLabel('Interval'), 2, 2)
         gl.addWidget(self.__spin4, 2, 3)
-        gl.addWidget(QLabel('Length'), 3, 2)
+        gl.addWidget(QtWidgets.QLabel('Length'), 3, 2)
         gl.addWidget(self.__spin5, 3, 3)
-        gl.addWidget(QLabel('Width'), 4, 2)
+        gl.addWidget(QtWidgets.QLabel('Width'), 4, 2)
         gl.addWidget(self.__spin6, 4, 3)
         self.setLayout(gl)
 
@@ -311,18 +311,18 @@ class _TickAdjustBox(QGroupBox):
         self.__flg = False
 
 
-class AxisAndTickBox(QWidget):
+class AxisAndTickBox(QtWidgets.QWidget):
     def __init__(self, parent, canvas):
         super().__init__()
         self._range = _AxisRangeAdjustBox(parent, canvas)
         self._axis = _AxisAdjustBox(parent, canvas)
         self._tick = _TickAdjustBox(parent, canvas)
 
-        layout_h1 = QHBoxLayout()
+        layout_h1 = QtWidgets.QHBoxLayout()
         layout_h1.addWidget(self._range)
         layout_h1.addWidget(self._axis)
 
-        layout = QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         layout.addLayout(layout_h1)
         layout.addWidget(self._tick)
         self.setLayout(layout)

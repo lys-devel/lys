@@ -1,5 +1,3 @@
-
-from .CanvasBase import *
 from ..interface import CanvasAxisLabel, CanvasTickLabel
 
 

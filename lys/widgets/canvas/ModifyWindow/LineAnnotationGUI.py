@@ -1,13 +1,13 @@
 import numpy as np
-from PyQt5.QtWidgets import QGridLayout, QLabel, QWidget, QVBoxLayout, QTabWidget, QPushButton, QApplication, QHBoxLayout
 
+from lys.Qt import QtWidgets
 from lys.widgets import ScientificSpinBox
 from lys.decorators import avoidCircularReference
 
 from .AnnotationGUI import AnnotationSelectionBox, LineColorAdjustBox, LineStyleAdjustBox
 
 
-class _LinePositionAdjustBox(QWidget):
+class _LinePositionAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
@@ -18,23 +18,23 @@ class _LinePositionAdjustBox(QWidget):
         self._y1 = ScientificSpinBox(valueChanged=self._chgPos)
         self._x2 = ScientificSpinBox(valueChanged=self._chgPos)
         self._y2 = ScientificSpinBox(valueChanged=self._chgPos)
-        self._label = QLabel()
+        self._label = QtWidgets.QLabel()
 
-        g = QGridLayout()
-        g.addWidget(QLabel("Point 1"), 1, 0)
-        g.addWidget(QLabel("Point 2"), 2, 0)
-        g.addWidget(QLabel("x axis"), 0, 1)
-        g.addWidget(QLabel("y axis"), 0, 2)
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("Point 1"), 1, 0)
+        g.addWidget(QtWidgets.QLabel("Point 2"), 2, 0)
+        g.addWidget(QtWidgets.QLabel("x axis"), 0, 1)
+        g.addWidget(QtWidgets.QLabel("y axis"), 0, 2)
         g.addWidget(self._x1, 1, 1)
         g.addWidget(self._y1, 1, 2)
         g.addWidget(self._x2, 2, 1)
         g.addWidget(self._y2, 2, 2)
-        g.addWidget(QLabel("Distance"), 3, 0)
+        g.addWidget(QtWidgets.QLabel("Distance"), 3, 0)
         g.addWidget(self._label, 3, 1, 1, 2)
-        g.addWidget(QPushButton("Copy", clicked=self._copy), 4, 1)
-        g.addWidget(QPushButton("Paste", clicked=self._paste), 4, 2)
+        g.addWidget(QtWidgets.QPushButton("Copy", clicked=self._copy), 4, 1)
+        g.addWidget(QtWidgets.QPushButton("Paste", clicked=self._paste), 4, 2)
 
-        v = QVBoxLayout()
+        v = QtWidgets.QVBoxLayout()
         v.addLayout(g)
         v.addStretch()
 
@@ -64,12 +64,12 @@ class _LinePositionAdjustBox(QWidget):
 
     def _copy(self):
         if len(self.data) != 0:
-            cb = QApplication.clipboard()
+            cb = QtWidgets.QApplication.clipboard()
             cb.clear(mode=cb.Clipboard)
             cb.setText(str(self.data[0].getPosition()), mode=cb.Clipboard)
 
     def _paste(self):
-        cb = QApplication.clipboard()
+        cb = QtWidgets.QApplication.clipboard()
         v = np.array(eval(cb.text(mode=cb.Clipboard)))
         if v.shape[0] == v.shape[1] == 2:
             for d in self.data:
@@ -85,7 +85,7 @@ class _LinePositionAdjustBox(QWidget):
         self._loadstate()
 
 
-class LineAnnotationBox(QWidget):
+class LineAnnotationBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -98,24 +98,24 @@ class LineAnnotationBox(QWidget):
         sel.selected.connect(stl.setData)
         sel.selected.connect(pos.setData)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
 
-        lv1 = QVBoxLayout()
-        lv1.addWidget(QLabel('Color'))
+        lv1 = QtWidgets.QVBoxLayout()
+        lv1.addWidget(QtWidgets.QLabel('Color'))
         lv1.addWidget(col)
         lv1.addWidget(stl)
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(lv1)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(pos, 'Position')
         tab.addTab(w, 'Appearance')
         layout.addWidget(tab)
         self.setLayout(layout)
 
 
-class _InfiniteLinePositionAdjustBox(QWidget):
+class _InfiniteLinePositionAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
@@ -123,13 +123,13 @@ class _InfiniteLinePositionAdjustBox(QWidget):
 
     def __initlayout(self):
         self._pos = ScientificSpinBox(valueChanged=self._chgPos)
-        self._label = QLabel()
+        self._label = QtWidgets.QLabel()
 
-        h = QHBoxLayout()
-        h.addWidget(QLabel("Position"))
+        h = QtWidgets.QHBoxLayout()
+        h.addWidget(QtWidgets.QLabel("Position"))
         h.addWidget(self._pos)
 
-        v = QVBoxLayout()
+        v = QtWidgets.QVBoxLayout()
         v.addWidget(self._label)
         v.addLayout(h)
         v.addStretch()
@@ -158,7 +158,7 @@ class _InfiniteLinePositionAdjustBox(QWidget):
         self._loadstate()
 
 
-class InfiniteLineAnnotationBox(QWidget):
+class InfiniteLineAnnotationBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -171,20 +171,18 @@ class InfiniteLineAnnotationBox(QWidget):
         sel.selected.connect(stl.setData)
         sel.selected.connect(pos.setData)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
 
-        lv1 = QVBoxLayout()
-        lv1.addWidget(QLabel('Color'))
+        lv1 = QtWidgets.QVBoxLayout()
+        lv1.addWidget(QtWidgets.QLabel('Color'))
         lv1.addWidget(col)
         lv1.addWidget(stl)
-        w = QWidget()
+        w = QtWidgets.QWidget()
         w.setLayout(lv1)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(pos, 'Position')
         tab.addTab(w, 'Appearance')
         layout.addWidget(tab)
         self.setLayout(layout)
-
-

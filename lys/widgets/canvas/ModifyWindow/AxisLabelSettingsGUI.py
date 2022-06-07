@@ -1,9 +1,8 @@
-from LysQt.QtWidgets import QGroupBox, QCheckBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, QTextEdit, QLabel, QWidget
-
+from lys.Qt import QtWidgets
 from .FontGUI import FontSelector
 
 
-class _AxisLabelAdjustBox(QGroupBox):
+class _AxisLabelAdjustBox(QtWidgets.QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__("Axis Label")
         self.__flg = False
@@ -19,24 +18,24 @@ class _AxisLabelAdjustBox(QGroupBox):
             return [self._parent.getCurrentAxis()]
 
     def __initlayout(self):
-        self.__on = QCheckBox('Put label')
+        self.__on = QtWidgets.QCheckBox('Put label')
         self.__on.stateChanged.connect(self.__visible)
-        self.__pos = QDoubleSpinBox()
+        self.__pos = QtWidgets.QDoubleSpinBox()
         self.__pos.setRange(-1000, 1000)
         self.__pos.setSingleStep(0.02)
         self.__pos.valueChanged.connect(self.__posChanged)
 
-        lay = QHBoxLayout()
+        lay = QtWidgets.QHBoxLayout()
         lay.addWidget(self.__on)
-        lay.addWidget(QLabel('Position'))
+        lay.addWidget(QtWidgets.QLabel('Position'))
         lay.addWidget(self.__pos)
 
-        self.__label = QTextEdit()
+        self.__label = QtWidgets.QTextEdit()
         self.__label.setMinimumHeight(10)
         self.__label.setMaximumHeight(50)
         self.__label.textChanged.connect(self.__labelChanged)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(lay)
         layout.addWidget(self.__label)
         self.setLayout(layout)
@@ -68,7 +67,7 @@ class _AxisLabelAdjustBox(QGroupBox):
             self.canvas.setAxisLabelCoords(axis, self.__pos.value())
 
 
-class _TickLabelAdjustBox(QGroupBox):
+class _TickLabelAdjustBox(QtWidgets.QGroupBox):
     def __init__(self, parent, canvas):
         super().__init__("Tick Label")
         self.__flg = False
@@ -101,11 +100,11 @@ class _TickLabelAdjustBox(QGroupBox):
             return [self._parent.getCurrentAxis()]
 
     def __initlayout(self):
-        self.__on = QCheckBox('Put label')
+        self.__on = QtWidgets.QCheckBox('Put label')
         self.__on.stateChanged.connect(self.__visible)
-        self.__mir = QCheckBox('Mirror')
+        self.__mir = QtWidgets.QCheckBox('Mirror')
         self.__mir.stateChanged.connect(self.__visible_mirror)
-        layout = QHBoxLayout()
+        layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self.__on)
         layout.addWidget(self.__mir)
         self.setLayout(layout)
@@ -125,13 +124,13 @@ class _TickLabelAdjustBox(QGroupBox):
         self.update()
 
 
-class AxisAndTickLabelBox(QWidget):
+class AxisAndTickLabelBox(QtWidgets.QWidget):
     def __init__(self, parent, canvas):
         super().__init__()
         self._axis = _AxisLabelAdjustBox(parent, canvas)
         self._tick = _TickLabelAdjustBox(parent, canvas)
 
-        layout = QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self._axis)
         layout.addWidget(self._tick)
         layout.addStretch()
@@ -142,7 +141,7 @@ class AxisAndTickLabelBox(QWidget):
         self._tick.update()
 
 
-class AxisFontBox(QWidget):
+class AxisFontBox(QtWidgets.QWidget):
     def __init__(self, parent, canvas):
         super().__init__()
         self._parent = parent
@@ -152,7 +151,7 @@ class AxisFontBox(QWidget):
         self._tick = FontSelector('Tick Font')
         self._tick.fontChanged.connect(self._tickChanged)
 
-        layout = QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         layout.addWidget(self._axis)
         layout.addWidget(self._tick)
         layout.addStretch()

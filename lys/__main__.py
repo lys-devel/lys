@@ -50,4 +50,4 @@ else:
     print("lys is launched wih -np option. No plugin loaded.")
 
 lys.glb.restoreWorkspaces()
-sys.exit(lys.QtSystem.app.exec())
+sys.exit(lys.Qt.app.exec())

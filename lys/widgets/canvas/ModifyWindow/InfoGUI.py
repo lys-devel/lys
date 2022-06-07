@@ -1,8 +1,9 @@
 import numpy as np
-from PyQt5.QtWidgets import QGroupBox, QVBoxLayout, QLabel
+
+from lys.Qt import QtWidgets
 
 
-class RegionInfoBox(QGroupBox):
+class RegionInfoBox(QtWidgets.QGroupBox):
     def __init__(self, canvas):
         super().__init__("Region Info")
         self.canvas = canvas
@@ -10,8 +11,8 @@ class RegionInfoBox(QGroupBox):
         self.canvas.selectedRangeChanged.connect(self._changed)
 
     def __initlayout(self):
-        layout = QVBoxLayout()
-        self.label = QLabel("Information for selected region will be displayed here")
+        layout = QtWidgets.QVBoxLayout()
+        self.label = QtWidgets.QLabel("Information for selected region will be displayed here")
         layout.addWidget(self.label)
         self.setLayout(layout)
 

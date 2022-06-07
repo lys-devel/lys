@@ -1,8 +1,7 @@
 import os
 import weakref
-from LysQt.QtWidgets import QWidget, QCheckBox, QTabWidget, QHBoxLayout, QVBoxLayout, QPushButton, QFileDialog, QGroupBox
-from LysQt.QtCore import Qt
 
+from lys.Qt import QtCore, QtWidgets
 from lys.widgets import LysSubWindow
 
 from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
@@ -38,7 +37,7 @@ class ModifyWindow(LysSubWindow):
 
     def _initlayout(self, canvas, showArea):
         self.setWindowTitle("Modify Window")
-        self._tab = QTabWidget()
+        self._tab = QtWidgets.QTabWidget()
         if showArea:
             self._tab.addTab(_AreaTab(canvas), "Area")
         self._tab.addTab(_AxisTab(canvas), "Axis")
@@ -62,7 +61,7 @@ class ModifyWindow(LysSubWindow):
         self._tab.setCurrentIndex(list.index(tab))
 
 
-class _AreaTab(QWidget):
+class _AreaTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -72,13 +71,13 @@ class _AreaTab(QWidget):
         self._size = ResizeBox(canvas)
         self._margin = MarginAdjustBox(canvas)
 
-        sav = QPushButton('Copy settings', clicked=self._save)
-        lod = QPushButton('Paste settings', clicked=self._load)
-        hbox = QHBoxLayout()
+        sav = QtWidgets.QPushButton('Copy settings', clicked=self._save)
+        lod = QtWidgets.QPushButton('Paste settings', clicked=self._load)
+        hbox = QtWidgets.QHBoxLayout()
         hbox.addWidget(sav)
         hbox.addWidget(lod)
 
-        self.layout = QVBoxLayout(self)
+        self.layout = QtWidgets.QVBoxLayout(self)
         self.layout.addWidget(self._size)
         self.layout.addWidget(self._margin)
         self.layout.addStretch()
@@ -98,7 +97,7 @@ class _AreaTab(QWidget):
         self.canvas.LoadFromDictionary(d)
 
 
-class _AxisTab(QWidget):
+class _AxisTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -106,12 +105,12 @@ class _AxisTab(QWidget):
 
     def _initlayout(self, canvas):
         self._axis = AxisSelectionWidget(canvas)
-        self._all = QCheckBox("Apply to all axes")
+        self._all = QtWidgets.QCheckBox("Apply to all axes")
         self._all.setChecked(False)
 
-        h1 = QHBoxLayout()
+        h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(self._axis)
-        h1.addWidget(self._all, alignment=Qt.AlignRight)
+        h1.addWidget(self._all, alignment=QtCore.Qt.AlignRight)
 
         ax_tick = AxisAndTickBox(self, canvas)
         ax_label = AxisAndTickLabelBox(self, canvas)
@@ -120,16 +119,16 @@ class _AxisTab(QWidget):
         self._axis.activated.connect(ax_label.update)
         self._axis.activated.connect(font.update)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(ax_tick, 'Main')
         tab.addTab(ax_label, 'Label')
         tab.addTab(font, 'Font')
 
-        hbox = QHBoxLayout()
-        hbox.addWidget(QPushButton('Copy setttings', clicked=self._save))
-        hbox.addWidget(QPushButton('Paste settings', clicked=self._load))
+        hbox = QtWidgets.QHBoxLayout()
+        hbox.addWidget(QtWidgets.QPushButton('Copy setttings', clicked=self._save))
+        hbox.addWidget(QtWidgets.QPushButton('Paste settings', clicked=self._load))
 
-        layout = QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         layout.addLayout(h1)
         layout.addWidget(tab)
         layout.addLayout(hbox)
@@ -154,7 +153,7 @@ class _AxisTab(QWidget):
         self.canvas.LoadFromDictionary(d)
 
 
-class _LineTab(QWidget):
+class _LineTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -167,17 +166,17 @@ class _LineTab(QWidget):
         sel.selected.connect(app.setLines)
         sel.selected.connect(off.setData)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(app, 'Appearance')
         tab.addTab(off, 'Offset')
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
 
 
-class _ImageTab(QWidget):
+class _ImageTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -190,17 +189,17 @@ class _ImageTab(QWidget):
         sel.selected.connect(im.setImages)
         sel.selected.connect(off.setData)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(im, 'Color')
         tab.addTab(off, 'Offset')
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
 
 
-class _RGBTab(QWidget):
+class _RGBTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -213,17 +212,17 @@ class _RGBTab(QWidget):
         sel.selected.connect(rgb.setRGBs)
         sel.selected.connect(off.setData)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(rgb, 'Color')
         tab.addTab(off, 'Offset')
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
 
 
-class _VectorTab(QWidget):
+class _VectorTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -236,25 +235,25 @@ class _VectorTab(QWidget):
         sel.selected.connect(vec.setVectors)
         sel.selected.connect(off.setData)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(vec, 'Vector')
         tab.addTab(off, 'Offset')
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)
 
 
-class _AnnotationTab(QWidget):
+class _AnnotationTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
         self._initlayout(canvas)
 
     def _initlayout(self, canvas):
-        layout = QVBoxLayout(self)
-        tab = QTabWidget()
+        layout = QtWidgets.QVBoxLayout(self)
+        tab = QtWidgets.QTabWidget()
         if len(canvas.getTextAnnotations()) != 0:
             tab.addTab(TextAnnotationBox(canvas), 'Text')
         if len(canvas.getLineAnnotations()) != 0:
@@ -269,9 +268,8 @@ class _AnnotationTab(QWidget):
             tab.addTab(FreeRegionAnnotationBox(canvas), 'Free')
         if len(canvas.getCrossAnnotations()) != 0:
             tab.addTab(CrossAnnotationBox(canvas), 'Cross')
-        self._test = QPushButton('Legend(test)')
+        self._test = QtWidgets.QPushButton('Legend(test)')
         self._test.clicked.connect(self.test)
-        #tab.addTab(self._test, 'Legend')
         layout.addWidget(tab)
         self.setLayout(layout)
 
@@ -280,31 +278,31 @@ class _AnnotationTab(QWidget):
         self.canvas.draw()
 
 
-class _OtherTab(QWidget):
+class _OtherTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
         self._initlayout(canvas)
 
     def _initlayout(self, canvas):
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(SaveBox(canvas))
         layout.addWidget(RegionInfoBox(canvas))
         layout.addStretch()
         self.setLayout(layout)
 
 
-class SaveBox(QGroupBox):
+class SaveBox(QtWidgets.QGroupBox):
     def __init__(self, canvas):
         super().__init__("Export")
         self.canvas = canvas
         self.__initlayout()
 
     def __initlayout(self):
-        lay = QVBoxLayout()
-        self._save = QPushButton('Export image', clicked=self.Save)
+        lay = QtWidgets.QVBoxLayout()
+        self._save = QtWidgets.QPushButton('Export image', clicked=self.Save)
         lay.addWidget(self._save)
-        self._copy = QPushButton('Copy to clipboard', clicked=self.Copy)
+        self._copy = QtWidgets.QPushButton('Copy to clipboard', clicked=self.Copy)
         lay.addWidget(self._copy)
         self.setLayout(lay)
 
@@ -317,7 +315,7 @@ class SaveBox(QGroupBox):
         f = ""
         for fil in filters:
             f += fil + ";;"
-        res = QFileDialog.getSaveFileName(self, 'Open file', os.getcwd(), f, filters[0])
+        res = QtWidgets.QFileDialog.getSaveFileName(self, 'Open file', os.getcwd(), f, filters[0])
         if len(res[0]) == 0:
             return
         name, ext = os.path.splitext(res[0])

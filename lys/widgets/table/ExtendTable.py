@@ -2,14 +2,11 @@ import numpy
 import numpy as np
 import scipy.constants
 
-from PyQt5.QtGui import QStandardItemModel, QCursor
-from PyQt5.QtWidgets import QWidget, QLineEdit, QHBoxLayout, QLabel, QVBoxLayout, QTableView, QMenu, QAction, QFileDialog
-from PyQt5.QtCore import QItemSelection, pyqtSignal, QModelIndex, Qt
-
 from lys import Wave
+from lys.Qt import QtGui, QtWidgets, QtCore
 
 
-class ExtendTable(QWidget):
+class ExtendTable(QtWidgets.QWidget):
     def __init__(self, wave=None, overwrite=True):
         super().__init__()
         self.row = None
@@ -19,15 +16,15 @@ class ExtendTable(QWidget):
             self.Set(wave, overwrite)
 
     def __initlayout(self):
-        self._line = QLineEdit()
+        self._line = QtWidgets.QLineEdit()
         self._line.textChanged.connect(self.edited)
-        h1 = QHBoxLayout()
-        h1.addWidget(QLabel("Expr."))
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QLabel("Expr."))
         h1.addWidget(self._line)
         self._etable = _ExtendTableTable()
         self._etable.selected.connect(self.selectionChanged)
         self._etable.changed.connect(self.selectionChanged)
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(h1)
         layout.addWidget(self._etable)
         self.setLayout(layout)
@@ -190,11 +187,11 @@ class SpreadSheet(object):
             w.Save()  # this is deprecated
 
 
-class _ExtendTableTable(QTableView):
-    selected = pyqtSignal(QItemSelection, QItemSelection)
-    changed = pyqtSignal(QModelIndex, QModelIndex)
+class _ExtendTableTable(QtWidgets.QTableView):
+    selected = QtCore.pyqtSignal(QtCore.QItemSelection, QtCore.QItemSelection)
+    changed = QtCore.pyqtSignal(QtCore.QModelIndex, QtCore.QModelIndex)
 
-    class ArrayModel(QStandardItemModel):
+    class ArrayModel(QtGui.QStandardItemModel):
         def __init__(self, checkable=False):
             super().__init__()
             self.clear()
@@ -209,15 +206,15 @@ class _ExtendTableTable(QTableView):
             else:
                 return self.num2alpha(num // 26) + chr(64 + num % 26)
 
-        def data(self, index, role=Qt.DisplayRole):
-            if role == Qt.DisplayRole:
+        def data(self, index, role=QtCore.Qt.DisplayRole):
+            if role == QtCore.Qt.DisplayRole:
                 return self.sheet(index.row(), index.column())
-            if role == role == Qt.EditRole:
+            if role == role == QtCore.Qt.EditRole:
                 return self.sheet[index.row(), index.column()]
             return super().data(index, role)
 
-        def setData(self, index, value, role=Qt.EditRole):
-            if role == Qt.EditRole:
+        def setData(self, index, value, role=QtCore.Qt.EditRole):
+            if role == QtCore.Qt.EditRole:
                 item = index.model().itemFromIndex(index)
                 res = value
                 if self.overwrite and len(res) != 0:
@@ -244,7 +241,7 @@ class _ExtendTableTable(QTableView):
             if index.column() == 0 and self.__checkable:
                 item = index.model().itemFromIndex(index)
                 item.setCheckable(True)
-                return super().flags(index) | Qt.ItemIsUserCheckable
+                return super().flags(index) | QtCore.Qt.ItemIsUserCheckable
             return super().flags(index)
 
         def SetOverwrite(self, b):
@@ -257,7 +254,7 @@ class _ExtendTableTable(QTableView):
         self.sheet = self._model.sheet
         self.SetOverwrite(overwrite)
         self.__menu = []
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         if data is not None:
             self.Append(data)
@@ -353,32 +350,31 @@ class _ExtendTableTable(QTableView):
         return data
 
     def buildContextMenu(self):
-        menu = QMenu(self)
+        menu = QtWidgets.QMenu(self)
         for act in self.__menu:
             menu.addAction(act)
         try:
             data = self._makeDataFromSelection()
-        except Exception as e:
+        except Exception:
             import traceback
             traceback.print_exc()
         else:
             if len(data) != 0:
                 if not hasattr(data[0], "__iter__") and data.dtype == float:
-                    send = QMenu("1DData")
+                    send = QtWidgets.QMenu("1DData")
                     send.addAction(
-                        QAction("Export", self, triggered=self._export1D))
+                        QtWidgets.QAction("Export", self, triggered=self._export1D))
                     menu.addMenu(send)
                 elif data.dtype == float:
                     if len(data) == 2:
-                        send1D = QMenu("1D Wave")
+                        send1D = QtWidgets.QMenu("1D Wave")
                         menu.addMenu(send1D)
-                        send1D.addAction(
-                            QAction("Export", self, triggered=self._export1D))
-                    send = QMenu("2D Wave")
+                        send1D.addAction(QtWidgets.QAction("Export", self, triggered=self._export1D))
+                    send = QtWidgets.QMenu("2D Wave")
                     menu.addMenu(send)
                     send.addAction(
-                        QAction("Export", self, triggered=self._export2D))
-        menu.exec_(QCursor.pos())
+                        QtWidgets.QAction("Export", self, triggered=self._export2D))
+        menu.exec_(QtGui.QCursor.pos())
 
     def _export1D(self):
         w = Wave()
@@ -390,7 +386,7 @@ class _ExtendTableTable(QTableView):
         for f in Wave().SupportedFormats():
             filt = filt + f + ";;"
         filt = filt[:len(filt) - 2]
-        path, type = QFileDialog.getSaveFileName(filter=filt)
+        path, type = QtWidgets.QFileDialog.getSaveFileName(filter=filt)
         w.export(path, type=type)
 
     def _export2D(self):
@@ -398,7 +394,7 @@ class _ExtendTableTable(QTableView):
         for f in Wave().SupportedFormats():
             filt = filt + f + ";;"
         filt = filt[:len(filt) - 2]
-        path, type = QFileDialog.getSaveFileName(filter=filt)
+        path, type = QtWidgets.QFileDialog.getSaveFileName(filter=filt)
         w = Wave()
         w.data = self._makeDataFromSelection()
         w.export(path, type=type)

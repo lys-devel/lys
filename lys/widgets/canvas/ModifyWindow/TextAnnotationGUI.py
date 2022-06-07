@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import QLabel, QVBoxLayout, QGridLayout, QWidget, QTextEdit, QComboBox, QTabWidget
-
+from lys.Qt import QtWidgets
 from lys.widgets import ColorSelection, ScientificSpinBox
 from lys.decorators import avoidCircularReference
 
@@ -7,7 +6,7 @@ from .FontGUI import FontSelector
 from .AnnotationGUI import AnnotationSelectionBox
 
 
-class _TextEditBox(QWidget):
+class _TextEditBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -16,12 +15,12 @@ class _TextEditBox(QWidget):
     def __initlayout(self):
         self.__font = FontSelector("Font")
         self.__font.fontChanged.connect(self.__fontChanged)
-        self.__txt = QTextEdit()
+        self.__txt = QtWidgets.QTextEdit()
         self.__txt.textChanged.connect(self.__txtChanged)
         self.__txt.setMinimumHeight(10)
         self.__txt.setMaximumHeight(50)
 
-        v = QVBoxLayout()
+        v = QtWidgets.QVBoxLayout()
         v.addWidget(self.__font)
         v.addWidget(self.__txt)
         self.setLayout(v)
@@ -49,18 +48,18 @@ class _TextEditBox(QWidget):
         self.__loadstate()
 
 
-class _TextMoveBox(QWidget):
+class _TextMoveBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
         self.canvas = canvas
 
     def __initlayout(self):
-        self.__modex = QComboBox()
+        self.__modex = QtWidgets.QComboBox()
         self.__modex.addItems(['data', 'axes'])
         self.__modex.activated.connect(self.__chgMod)
 
-        self.__modey = QComboBox()
+        self.__modey = QtWidgets.QComboBox()
         self.__modey.addItems(['data', 'axes'])
         self.__modey.activated.connect(self.__chgMod)
 
@@ -73,15 +72,15 @@ class _TextMoveBox(QWidget):
         self.__x.valueChanged.connect(self.__changePos)
         self.__y.valueChanged.connect(self.__changePos)
 
-        gl = QGridLayout()
-        gl.addWidget(QLabel('x'), 0, 0)
-        gl.addWidget(QLabel('y'), 0, 1)
+        gl = QtWidgets.QGridLayout()
+        gl.addWidget(QtWidgets.QLabel('x'), 0, 0)
+        gl.addWidget(QtWidgets.QLabel('y'), 0, 1)
         gl.addWidget(self.__x, 1, 0)
         gl.addWidget(self.__y, 1, 1)
         gl.addWidget(self.__modex, 2, 0)
         gl.addWidget(self.__modey, 2, 1)
 
-        v = QVBoxLayout()
+        v = QtWidgets.QVBoxLayout()
         v.addLayout(gl)
         v.addStretch()
 
@@ -123,7 +122,7 @@ class _TextMoveBox(QWidget):
             d.setPosition(p)
 
 
-class _AnnotationBoxAdjustBox(QWidget):
+class _AnnotationBoxAdjustBox(QtWidgets.QWidget):
     list = ['none', 'square', 'circle', 'round', 'round4', 'larrow', 'rarrow', 'darrow', 'roundtooth', 'sawtooth']
 
     def __init__(self, canvas):
@@ -132,7 +131,7 @@ class _AnnotationBoxAdjustBox(QWidget):
         self.__initlayout()
 
     def __initlayout(self):
-        self.__mode = QComboBox()
+        self.__mode = QtWidgets.QComboBox()
         self.__mode.addItems(self.list)
         self.__mode.activated.connect(self.__modeChanged)
 
@@ -141,15 +140,15 @@ class _AnnotationBoxAdjustBox(QWidget):
         self.__ec = ColorSelection()
         self.__ec.colorChanged.connect(self.__colorChanged)
 
-        gl = QGridLayout()
-        gl.addWidget(QLabel('Mode'), 0, 0)
+        gl = QtWidgets.QGridLayout()
+        gl.addWidget(QtWidgets.QLabel('Mode'), 0, 0)
         gl.addWidget(self.__mode, 0, 1)
-        gl.addWidget(QLabel('Face Color'), 1, 0)
+        gl.addWidget(QtWidgets.QLabel('Face Color'), 1, 0)
         gl.addWidget(self.__fc, 1, 1)
-        gl.addWidget(QLabel('Edge Color'), 2, 0)
+        gl.addWidget(QtWidgets.QLabel('Edge Color'), 2, 0)
         gl.addWidget(self.__ec, 2, 1)
 
-        v = QVBoxLayout()
+        v = QtWidgets.QVBoxLayout()
         v.addLayout(gl)
         v.addStretch()
         self.setLayout(v)
@@ -177,7 +176,7 @@ class _AnnotationBoxAdjustBox(QWidget):
         self.__loadstate()
 
 
-class TextAnnotationBox(QWidget):
+class TextAnnotationBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -189,12 +188,12 @@ class TextAnnotationBox(QWidget):
         sel.selected.connect(move.setData)
         sel.selected.connect(box.setData)
 
-        tab = QTabWidget()
+        tab = QtWidgets.QTabWidget()
         tab.addTab(edit, 'Text')
         tab.addTab(move, 'Position')
         tab.addTab(box, 'Box')
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
         self.setLayout(layout)

@@ -1,8 +1,7 @@
 import warnings
 import pyqtgraph as pg
 
-from LysQt.QtGui import QColor
-
+from lys.Qt import QtGui
 from lys.errors import NotSupportedWarning
 from ..interface import CanvasAxes, CanvasTicks
 
@@ -52,7 +51,7 @@ class _pyqtGraphAxes(CanvasAxes):
         self._axes_txy_com.sigRangeChanged.connect(lambda: self.__viewRangeChanged("Right"))
 
     def __initROI(self):
-        pen = pg.mkPen(QColor('#ff0000'))
+        pen = pg.mkPen(QtGui.QColor('#ff0000'))
         self.__roi = pg.RectROI([0, 0], [0, 0], invertible=True, movable=False, resizable=False, pen=pen)
         self.__roi.setZValue(100000)
         self.__roi.hide()
@@ -64,10 +63,6 @@ class _pyqtGraphAxes(CanvasAxes):
         self._axes_tx_com.setGeometry(self._axes.sceneBoundingRect())
         self._axes_ty_com.setGeometry(self._axes.sceneBoundingRect())
         self._axes_txy_com.setGeometry(self._axes.sceneBoundingRect())
-        #self.axes_tx_com.linkedViewChanged(self.axes, self.axes_tx_com.XAxis)
-        #self.axes_ty_com.linkedViewChanged(self.axes, self.axes_ty_com.YAxis)
-        #self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.XAxis)
-        #self.axes_txy_com.linkedViewChanged(self.axes, self.axes_txy_com.YAxis)
         self.__resizing = False
 
     def __viewRangeChanged(self, axis):
@@ -174,9 +169,9 @@ class _pyqtGraphAxes(CanvasAxes):
             pen = a.pen()
             if isinstance(color, tuple):
                 col = [c * 255 for c in color]
-                pen.setColor(QColor(*col))
+                pen.setColor(QtGui.QColor(*col))
             else:
-                pen.setColor(QColor(color))
+                pen.setColor(QtGui.QColor(color))
             a.setPen(pen)
 
     def _setMirrorAxis(self, axis, value):

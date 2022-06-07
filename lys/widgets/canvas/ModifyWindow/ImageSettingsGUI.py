@@ -1,9 +1,8 @@
-from LysQt.QtWidgets import QHBoxLayout, QVBoxLayout, QLabel, QPushButton, QWidget, QComboBox, QGridLayout, QDoubleSpinBox
-
+from lys.Qt import QtWidgets
 from lys.widgets import ScientificSpinBox, ColormapSelection, ColorSelection
 
 
-class _rangeWidget(QHBoxLayout):
+class _rangeWidget(QtWidgets.QHBoxLayout):
     def __init__(self, title, auto=0):
         super().__init__()
         self.__autovalue = auto
@@ -14,10 +13,10 @@ class _rangeWidget(QHBoxLayout):
         self.__spin2 = ScientificSpinBox()
         self.__spin2.valueChanged.connect(self.setAbsolute)
 
-        self.addWidget(QLabel(title))
+        self.addWidget(QtWidgets.QLabel(title))
         self.addWidget(self.__spin2)
-        self.addWidget(QPushButton("Auto", clicked=lambda: self.setAbsolute(self.__autovalue)))
-        self.addWidget(QPushButton("Zero", clicked=lambda: self.setAbsolute(0)))
+        self.addWidget(QtWidgets.QPushButton("Auto", clicked=lambda: self.setAbsolute(self.__autovalue)))
+        self.addWidget(QtWidgets.QPushButton("Zero", clicked=lambda: self.setAbsolute(0)))
 
     def setAbsolute(self, val):
         self.__spin2.setValue(val)
@@ -29,7 +28,7 @@ class _rangeWidget(QHBoxLayout):
         self.__autovalue = val
 
 
-class ImageColorAdjustBox(QWidget):
+class ImageColorAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -44,7 +43,7 @@ class ImageColorAdjustBox(QWidget):
         self.__start.valueChanged.connect(self.__changerange)
         self.__end.valueChanged.connect(self.__changerange)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.__cmap)
         layout.addLayout(self.__start)
         layout.addLayout(self.__end)
@@ -84,7 +83,7 @@ class ImageColorAdjustBox(QWidget):
             self.__loadflg = False
 
 
-class RGBColorAdjustBox(QWidget):
+class RGBColorAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
@@ -92,7 +91,7 @@ class RGBColorAdjustBox(QWidget):
         self.__initlayout()
 
     def __initlayout(self):
-        self.__rot = QDoubleSpinBox()
+        self.__rot = QtWidgets.QDoubleSpinBox()
         self.__rot.setRange(0, 360)
         self.__rot.valueChanged.connect(self.__changerot)
         self.__start = _rangeWidget("Min", 0)
@@ -100,11 +99,11 @@ class RGBColorAdjustBox(QWidget):
         self.__start.valueChanged.connect(self.__changerange)
         self.__end.valueChanged.connect(self.__changerange)
 
-        h1 = QHBoxLayout()
-        h1.addWidget(QLabel('Color Rotation'))
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QLabel('Color Rotation'))
         h1.addWidget(self.__rot)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(h1)
         layout.addLayout(self.__start)
         layout.addLayout(self.__end)
@@ -135,7 +134,7 @@ class RGBColorAdjustBox(QWidget):
                 im.setColorRotation(self.__rot.value())
 
 
-class VectorAdjustBox(QWidget):
+class VectorAdjustBox(QtWidgets.QWidget):
     _pivots = ["tail", "middle", "tip"]
 
     def __init__(self, canvas):
@@ -145,7 +144,7 @@ class VectorAdjustBox(QWidget):
         self.__flg = False
 
     def __initlayout(self):
-        self.__pivot = QComboBox()
+        self.__pivot = QtWidgets.QComboBox()
         self.__pivot.addItems(self._pivots)
         self.__pivot.currentTextChanged.connect(self.__changePivot)
         self.__scale = ScientificSpinBox()
@@ -155,17 +154,17 @@ class VectorAdjustBox(QWidget):
         self.__color = ColorSelection()
         self.__color.colorChanged.connect(self.__changeColor)
 
-        grid1 = QGridLayout()
-        grid1.addWidget(QLabel("Pivot"), 0, 0)
-        grid1.addWidget(QLabel("color"), 1, 0)
-        grid1.addWidget(QLabel("scale"), 2, 0)
-        grid1.addWidget(QLabel("width"), 3, 0)
+        grid1 = QtWidgets.QGridLayout()
+        grid1.addWidget(QtWidgets.QLabel("Pivot"), 0, 0)
+        grid1.addWidget(QtWidgets.QLabel("color"), 1, 0)
+        grid1.addWidget(QtWidgets.QLabel("scale"), 2, 0)
+        grid1.addWidget(QtWidgets.QLabel("width"), 3, 0)
         grid1.addWidget(self.__pivot, 0, 1)
         grid1.addWidget(self.__color, 1, 1)
         grid1.addWidget(self.__scale, 2, 1)
         grid1.addWidget(self.__width, 3, 1)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addLayout(grid1)
         layout.addStretch()
         self.setLayout(layout)

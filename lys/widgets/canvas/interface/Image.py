@@ -1,5 +1,6 @@
 import numpy as np
 import warnings
+
 from lys.errors import NotImplementedWarning
 
 from .CanvasBase import saveCanvas

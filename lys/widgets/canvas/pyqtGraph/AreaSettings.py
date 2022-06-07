@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-from LysQt.QtWidgets import QDesktopWidget
-
+from lys.Qt import QtWidgets
 from ..interface import CanvasMargin, CanvasSize
 
 
@@ -11,7 +9,7 @@ class _PyqtGraphMargin(CanvasMargin):
         self.canvas().setContentsMargins(left, right, top, bottom)
 
 
-_unit = 2.54 / QDesktopWidget().physicalDpiX()  # cm/pixel
+_unit = 2.54 / QtWidgets.QDesktopWidget().physicalDpiX()  # cm/pixel
 
 
 class _PyqtGraphCanvasSize(CanvasSize):

@@ -1,7 +1,6 @@
 import io
-from LysQt.QtWidgets import QApplication
-from LysQt.QtCore import QMimeData
-from LysQt.QtGui import QImage
+
+from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import LysSubWindow
 
 from .CanvasBase import CanvasPart, saveCanvas
@@ -32,9 +31,9 @@ class CanvasUtilities(CanvasPart):
             parent = parent.parentWidget()
 
     def __duplicateCanvas(self):
-        from ..Matplotlib import ExtendCanvas
+        from lys.widgets import lysCanvas
         d = self.canvas().SaveAsDictionary()
-        c = ExtendCanvas()
+        c = lysCanvas()
         c.LoadFromDictionary(d)
         return c
 
@@ -43,8 +42,8 @@ class CanvasUtilities(CanvasPart):
 
     def copyToClipboard(self):
         c = self.__duplicateCanvas()
-        clipboard = QApplication.clipboard()
-        mime = QMimeData()
+        clipboard = QtWidgets.QApplication.clipboard()
+        mime = QtCore.QMimeData()
         mime.setData('Encapsulated PostScript', self.__toData(c, 'eps'))
         mime.setData('application/postscript', self.__toData(c, 'eps'))
         mime.setData('Scalable Vector Graphics', self.__toData(c, 'svg'))
@@ -58,7 +57,7 @@ class CanvasUtilities(CanvasPart):
             print(traceback.format_exc())
         buf = io.BytesIO()
         c.getFigure().savefig(buf, transparent=True)
-        mime.setImageData(QImage.fromData(buf.getvalue()))
+        mime.setImageData(QtGui.QImage.fromData(buf.getvalue()))
         buf.close()
         clipboard.setMimeData(mime)
 

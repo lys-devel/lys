@@ -6,15 +6,12 @@ import itertools
 import logging
 from pathlib import Path
 
-from LysQt.QtWidgets import QLineEdit, QWidget, QTreeView, QInputDialog
-from LysQt.QtWidgets import QFileSystemModel, QHBoxLayout, QVBoxLayout, QLabel, QAbstractItemView, QAction, QMenu, QMessageBox
-from LysQt.QtCore import Qt, QDir, QDirIterator, QSortFilterProxyModel, QUrl
-from LysQt.QtGui import QCursor
 
 from lys import load
+from lys.Qt import QtWidgets, QtCore, QtGui
 
 
-class FileSystemView(QWidget):
+class FileSystemView(QtWidgets.QWidget):
     """
     *FileSystemView* is a custom widget to see files in lys, which is mainly used in main window.
 
@@ -32,7 +29,7 @@ class FileSystemView(QWidget):
 
     """
 
-    def __init__(self, path, model=QFileSystemModel(), drop=False, filter=True, menu=True):
+    def __init__(self, path, model=QtWidgets.QFileSystemModel(), drop=False, filter=True, menu=True):
         super().__init__()
         self._path = path
         self.__initUI(self._path, model, drop, filter)
@@ -44,29 +41,29 @@ class FileSystemView(QWidget):
     def __initUI(self, path, model, drop=False, filter=True):
         self._Model = _FileSystemModel(path, model, drop)
 
-        self._tree = QTreeView()
+        self._tree = QtWidgets.QTreeView()
         self._tree.setModel(self._Model)
         self._tree.setRootIndex(self._Model.indexFromPath(path))
-        self._tree.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self._tree.customContextMenuRequested.connect(self._buildContextMenu)
 
-        self._tree.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self._tree.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self._tree.setDragEnabled(True)
         self._tree.setAcceptDrops(True)
         self._tree.setDropIndicatorShown(True)
-        self._tree.setDragDropMode(QAbstractItemView.InternalMove)
+        self._tree.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
         self._tree.setColumnHidden(3, True)
         self._tree.setColumnHidden(2, True)
         self._tree.setColumnHidden(1, True)
 
-        edit = QLineEdit()
+        edit = QtWidgets.QLineEdit()
         edit.textChanged.connect(self._Model.SetNameFilter)
 
-        h1 = QHBoxLayout()
-        h1.addWidget(QLabel("Filter"))
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QLabel("Filter"))
         h1.addWidget(edit)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self._tree)
         if filter:
             layout.addLayout(h1)
@@ -137,7 +134,7 @@ class FileSystemView(QWidget):
         self._tree.setRootIndex(self._Model.indexFromPath(path))
 
 
-class _FileSystemModel(QSortFilterProxyModel):
+class _FileSystemModel(QtCore.QSortFilterProxyModel):
     """Model class for FileSystemView"""
 
     def __init__(self, path, model, drop=False):
@@ -145,7 +142,7 @@ class _FileSystemModel(QSortFilterProxyModel):
         self._path = path
         self._drop = drop
         self.mod = model
-        self.mod.setFilter(QDir.AllDirs | QDir.Files | QDir.NoDotAndDotDot)
+        self.mod.setFilter(QtCore.QDir.AllDirs | QtCore.QDir.Files | QtCore.QDir.NoDotAndDotDot)
         self.mod.setRootPath(self._path)
         self.setSourceModel(self.mod)
         self._exclude = ["*__pycache__", "*dask-worker-space"]
@@ -163,7 +160,7 @@ class _FileSystemModel(QSortFilterProxyModel):
     def SetNameFilter(self, filters):
         filters = [fil for fil in filters.split(" ") if len(fil) != 0]
         self._filters = self.__makeFilterString(filters)
-        it = QDirIterator(self._path, self._filters, QDir.Dirs | QDir.Files, QDirIterator.Subdirectories)
+        it = QtCore.QDirIterator(self._path, self._filters, QtCore.QDir.Dirs | QtCore.QDir.Files, QtCore.QDirIterator.Subdirectories)
         self._matched = []
         while it.hasNext():
             self._matched.append(it.next().replace(self._path + "/", ""))
@@ -181,7 +178,7 @@ class _FileSystemModel(QSortFilterProxyModel):
 
     def filterAcceptsRow(self, row, parent):
         index = self.mod.index(row, 0, parent)
-        name = self.mod.data(index, Qt.DisplayRole)
+        name = self.mod.data(index, QtCore.Qt.DisplayRole)
         path = self.mod.filePath(index).replace(self._path + "/", "")
         for exc in self._exclude:
             if fnmatch.fnmatch(name, exc):
@@ -208,12 +205,12 @@ class _FileSystemModel(QSortFilterProxyModel):
 
     def flags(self, index):
         if self._drop:
-            return super().flags(index) | Qt.ItemIsDropEnabled | Qt.ItemIsDragEnabled
+            return super().flags(index) | QtCore.Qt.ItemIsDropEnabled | QtCore.Qt.ItemIsDragEnabled
         else:
             return super().flags(index)
 
     def supportedDropActions(self):
-        return Qt.MoveAction
+        return QtCore.Qt.MoveAction
 
     def canDropMimeData(self, data, action, row, column, parent):
         return True
@@ -222,7 +219,7 @@ class _FileSystemModel(QSortFilterProxyModel):
         targetDir = Path(self.mod.filePath(self.mapToSource(parent)))
         if targetDir.is_file():
             targetDir = targetDir.parent
-        files = [Path(QUrl(url).toLocalFile()) for url in data.text().splitlines()]
+        files = [Path(QtCore.QUrl(url).toLocalFile()) for url in data.text().splitlines()]
         targets = [Path(str(targetDir.absolute()) + "/" + f.name) for f in files]
         _moveFiles(files, targets)
         return True
@@ -245,16 +242,16 @@ class _contextMenuBuilder:
         self._SetDefaultMenu()
 
     def _SetDefaultMenu(self):
-        self._new = QAction('New Directory', triggered=self.__newdir)
-        self._load = QAction('Load', triggered=self.__load)
-        self._prt = QAction('Print', triggered=self.__print)
+        self._new = QtWidgets.QAction('New Directory', triggered=self.__newdir)
+        self._load = QtWidgets.QAction('Load', triggered=self.__load)
+        self._prt = QtWidgets.QAction('Print', triggered=self.__print)
 
-        self._delete = QAction('Delete', triggered=self.__del)
-        self._rename = QAction('Rename', triggered=self.__rename)
+        self._delete = QtWidgets.QAction('Delete', triggered=self.__del)
+        self._rename = QtWidgets.QAction('Rename', triggered=self.__rename)
 
-        self._cut = QAction('Cut', triggered=self.__cut)
-        self._copy = QAction('Copy', triggered=self.__copy)
-        self._paste = QAction('Paste', triggered=self.__paste)
+        self._cut = QtWidgets.QAction('Cut', triggered=self.__cut)
+        self._copy = QtWidgets.QAction('Copy', triggered=self.__copy)
+        self._paste = QtWidgets.QAction('Paste', triggered=self.__paste)
 
         menu = {}
         menu["dir_single"] = self._makeMenu([self._new, self._load, self._prt, "sep", self._cut, self._copy, self._paste, "sep", self._rename, self._delete])
@@ -294,16 +291,16 @@ class _contextMenuBuilder:
         self.__actions[ext + "_multi"] = menu_m
 
     def _duplicateMenu(self, origin):
-        result = QMenu()
+        result = QtWidgets.QMenu()
         for m in origin.actions():
-            if isinstance(m, QMenu):
+            if isinstance(m, QtWidgets.QMenu):
                 result.addMenu(self._duplicateMenu(m))
             else:
                 result.addAction(m)
         return result
 
     def _makeMenu(self, list):
-        result = QMenu()
+        result = QtWidgets.QMenu()
         for item in list:
             if item == "sep":
                 result.addSeparator()
@@ -314,7 +311,7 @@ class _contextMenuBuilder:
     def build(self, paths):
         self._paths = paths
         tp = self._judgeFileType(self._paths)
-        self.__actions[tp].exec_(QCursor.pos())
+        self.__actions[tp].exec_(QtGui.QCursor.pos())
 
     def _test(self, tp):
         return self.__actions[tp]
@@ -350,20 +347,20 @@ class _contextMenuBuilder:
                 print("Failed to load " + p, file=sys.stderr)
 
     def __newdir(self):
-        text, ok = QInputDialog.getText(None, 'Create directory', 'Directory name:')
+        text, ok = QtWidgets.QInputDialog.getText(None, 'Create directory', 'Directory name:')
         if ok and not len(text) == 0:
             for p in self._paths:
                 os.makedirs(p + '/' + text, exist_ok=True)
 
     def __del(self):
         paths = self._paths
-        msg = QMessageBox(parent=self._parent)
-        msg.setIcon(QMessageBox.Warning)
+        msg = QtWidgets.QMessageBox(parent=self._parent)
+        msg.setIcon(QtWidgets.QMessageBox.Warning)
         msg.setText("Are you really want to delete " + str(len(paths)) + " items?")
         msg.setWindowTitle("Caution")
-        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
         ok = msg.exec_()
-        if ok == QMessageBox.Ok:
+        if ok == QtWidgets.QMessageBox.Ok:
             for p in paths:
                 if os.path.isfile(p):
                     os.remove(p)
@@ -386,7 +383,7 @@ class _contextMenuBuilder:
 
     def __rename(self):
         file = Path(self._paths[0])
-        target, ok = QInputDialog.getText(None, "Rename", "Enter new name", text=file.name)
+        target, ok = QtWidgets.QInputDialog.getText(None, "Rename", "Enter new name", text=file.name)
         if ok:
             target = Path(str(file.parent.absolute()) + "/" + target)
             _moveFiles(file, target)
@@ -411,27 +408,27 @@ def _moveFiles(files, targets, copy=False):
             elif state == "noall":
                 pass
             else:
-                from . import glb
-                msgBox = QMessageBox(glb.mainWindow())
-                msgBox.setIcon(QMessageBox.Warning)
+                from lys import glb
+                msgBox = QtWidgets.QMessageBox(glb.mainWindow())
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
                 msgBox.setWindowTitle("Caution")
                 msgBox.setText(str(newfile.absolute()) + " exists. Do you want to overwrite it?")
                 if len(files) == 1:
-                    msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+                    msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel)
                 else:
-                    msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.YesAll | QMessageBox.NoAll | QMessageBox.Cancel)
-                msgBox.setDefaultButton(QMessageBox.Cancel)
+                    msgBox.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.YesAll | QtWidgets.QMessageBox.NoAll | QtWidgets.QMessageBox.Cancel)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
                 result = msgBox.exec_()
-                if result == QMessageBox.Yes:
+                if result == QtWidgets.QMessageBox.Yes:
                     pair.append([orig, newfile])
-                elif result == QMessageBox.No:
+                elif result == QtWidgets.QMessageBox.No:
                     pass
-                elif result == QMessageBox.YesAll:
+                elif result == QtWidgets.QMessageBox.YesAll:
                     state = "yesall"
                     pair.append([orig, newfile])
-                elif result == QMessageBox.NoAll:
+                elif result == QtWidgets.QMessageBox.NoAll:
                     state = "noall"
-                elif result == QMessageBox.Cancel:
+                elif result == QtWidgets.QMessageBox.Cancel:
                     return False
         else:
             pair.append([orig, newfile])

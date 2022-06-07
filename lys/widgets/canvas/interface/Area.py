@@ -1,6 +1,8 @@
 import warnings
-from LysQt.QtCore import pyqtSignal
+
+from lys.Qt import QtCore
 from lys.errors import NotImplementedWarning
+
 from .CanvasBase import CanvasPart, saveCanvas, disableSaveCanvas
 
 
@@ -19,7 +21,7 @@ class CanvasMargin(CanvasPart):
         # (0.2, 0.3, 0.8, 0.9)
     """
 
-    marginChanged = pyqtSignal()
+    marginChanged = QtCore.pyqtSignal()
     """Emitted when margin is changed."""
 
     def __init__(self, canvas):
@@ -69,7 +71,7 @@ class CanvasMargin(CanvasPart):
         """Get margin of canvas.
 
         Return:
-            float of length 4: The value of margin. If *raw* is False, actual margin used for display is returned. 
+            float of length 4: The value of margin. If *raw* is False, actual margin used for display is returned.
         """
         if raw:
             return self._margins
@@ -90,7 +92,7 @@ class CanvasMargin(CanvasPart):
 
 class CanvasSize(CanvasPart):
     """
-    Abstract base class of CanvasSize. 
+    Abstract base class of CanvasSize.
     All methods in this interface can be accessed from :class:`CanvasBase` instance.
     Developers should implement abstract methods _setAuto, _setAbsolute, _setAspect, and _getSize.
 
@@ -104,7 +106,7 @@ class CanvasSize(CanvasPart):
         # (4, 5)
     """
 
-    canvasResized = pyqtSignal(object)
+    canvasResized = QtCore.pyqtSignal(object)
     """Emitted when canvas size is changed."""
 
     def __init__(self, canvas):
@@ -143,8 +145,8 @@ class CanvasSize(CanvasPart):
             type ('Width' or 'Height'): specify which size is set.
             mode ('Auto' or 'Absolute' or 'Per Unit' or 'Aspect' or 'Plan'): see description.
             value (float): the value to be set.
-            axis1 ('Left' or 'Right' or 'Bottom' or 'Top'): see description. 
-            axis2 ('Left' or 'Right' or 'Bottom' or 'Top'): see description. 
+            axis1 ('Left' or 'Right' or 'Bottom' or 'Top'): see description.
+            axis2 ('Left' or 'Right' or 'Bottom' or 'Top'): see description.
         """
         other = {"Height": "Width", "Width": "Height"}
         if type == "Both":
@@ -181,18 +183,18 @@ class CanvasSize(CanvasPart):
         """Get canvas size.
 
          Return:
-            float of length 2: Canvas size. 
+            float of length 2: Canvas size.
          """
         return self._getSize()
 
     def getSizeParams(self, type):
         """
-        Get size parameters (mode, value, axis1, axis2) as dictionary. 
+        Get size parameters (mode, value, axis1, axis2) as dictionary.
 
         See :meth:`setCanvasSize` for the description of each parameters
 
         Return:
-            dictionary: size parameters. 
+            dictionary: size parameters.
         """
         return self.__dic[type]
 

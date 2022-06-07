@@ -4,8 +4,7 @@ import numpy as np
 from matplotlib import cm
 import pyqtgraph as pg
 
-from LysQt.QtCore import Qt
-from LysQt.QtGui import QColor, QTransform
+from lys.Qt import QtCore, QtGui
 from lys.errors import NotSupportedWarning
 from ..interface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 
@@ -16,7 +15,7 @@ def _setZ(obj, z):
 
 class _PyqtgraphLine(LineData):
     """Implementation of LineData for pyqtgraph"""
-    __styles = {'solid': Qt.SolidLine, 'dashed': Qt.DashLine, 'dashdot': Qt.DashDotLine, 'dotted': Qt.DotLine, 'None': Qt.NoPen}
+    __styles = {'solid': QtCore.Qt.SolidLine, 'dashed': QtCore.Qt.DashLine, 'dashdot': QtCore.Qt.DashDotLine, 'dotted': QtCore.Qt.DotLine, 'None': QtCore.Qt.NoPen}
     __symbols = {"circle": "o", "cross": "x", "tri_down": "t", "tri_up": "t1", "tri_right": "t2", "tri_left": "t3", "square": "s", "pentagon": "p", "hexagon": "h", "star": "star", "plus": "+", "diamond": "d", "None": None}
 
     def __init__(self, canvas, wave, axis):
@@ -65,10 +64,10 @@ class _PyqtgraphLine(LineData):
 
     def _setColor(self, color):
         p = self._getSymbolPen()
-        p.setColor(QColor(color))
+        p.setColor(QtGui.QColor(color))
         self._obj.setSymbolPen(p)
         p = self._getLinePen()
-        p.setColor(QColor(color))
+        p.setColor(QtGui.QColor(color))
         self._obj.setPen(p)
 
     def _setStyle(self, style):
@@ -109,9 +108,6 @@ class _PyqtgraphLine(LineData):
         else:
             warnings.warn("pyqtGraph does not support filling [" + filling + "]", NotSupportedWarning)
 
-    def _setZ(self, z):
-        self._obj.setZValue(z)
-
 
 def _calcExtent2D(wav):
     xstart = wav.x[0]
@@ -131,7 +127,7 @@ def _calcExtent2D(wav):
     ymag = (yend - ystart) / len(wav.y)
     xshift = xstart
     yshift = ystart
-    tr = QTransform()
+    tr = QtGui.QTransform()
     tr.scale(xmag, ymag)
     tr.translate(xshift / xmag, yshift / ymag)
     return tr

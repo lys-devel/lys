@@ -1,6 +1,4 @@
-from LysQt.QtCore import Qt
-from LysQt.QtWidgets import QMenu, QAction, QActionGroup
-from LysQt.QtGui import QCursor
+from lys.Qt import QtCore, QtWidgets, QtGui
 
 from .CanvasBase import CanvasPart, saveCanvas
 
@@ -8,31 +6,31 @@ from .CanvasBase import CanvasPart, saveCanvas
 class CanvasContextMenu(CanvasPart):
     def __init__(self, canvas):
         super().__init__(canvas)
-        self.__ag = QActionGroup(self)
-        self._sel = QAction('Select Range', self, checkable=True, checked=True)
-        self._line = QAction('Draw Line', self, checked=False, checkable=True)
-        self._vline = QAction('Draw Vertical Line', self, checked=False, checkable=True)
-        self._hline = QAction('Draw Horizontal Line', self, checked=False, checkable=True)
-        self._rect = QAction('Draw Rectangle', self, checked=False, checkable=True)
-        self._vregion = QAction('Draw Vertical Region', self, checked=False, checkable=True)
-        self._hregion = QAction('Draw Horizontal Region', self, checked=False, checkable=True)
-        self._free = QAction('Draw Free Region', self, checked=False, checkable=True)
-        self._cross = QAction('Draw Cross', self, checked=False, checkable=True)
+        self.__ag = QtWidgets.QActionGroup(self)
+        self._sel = QtWidgets.QAction('Select Range', self, checkable=True, checked=True)
+        self._line = QtWidgets.QAction('Draw Line', self, checked=False, checkable=True)
+        self._vline = QtWidgets.QAction('Draw Vertical Line', self, checked=False, checkable=True)
+        self._hline = QtWidgets.QAction('Draw Horizontal Line', self, checked=False, checkable=True)
+        self._rect = QtWidgets.QAction('Draw Rectangle', self, checked=False, checkable=True)
+        self._vregion = QtWidgets.QAction('Draw Vertical Region', self, checked=False, checkable=True)
+        self._hregion = QtWidgets.QAction('Draw Horizontal Region', self, checked=False, checkable=True)
+        self._free = QtWidgets.QAction('Draw Free Region', self, checked=False, checkable=True)
+        self._cross = QtWidgets.QAction('Draw Cross', self, checked=False, checkable=True)
         self.__ag.triggered.connect(lambda x: x.setChecked(True))
-        canvas.setContextMenuPolicy(Qt.CustomContextMenu)
+        canvas.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         canvas.customContextMenuRequested.connect(self._constructContextMenu)
 
     def _constructContextMenu(self):
-        menu = QMenu()
-        menu.addAction(QAction('Auto scale axes', self, triggered=self.__auto))
+        menu = QtWidgets.QMenu()
+        menu.addAction(QtWidgets.QAction('Auto scale axes', self, triggered=self.__auto))
         if self.canvas().isRangeSelected():
             m = menu.addMenu('Expand and Shrink')
-            m.addAction(QAction('Expand', self, triggered=lambda: self.__exec('Expand')))
-            m.addAction(QAction('Horizontal Expand', self, triggered=lambda: self.__exec('Horizontal Expand')))
-            m.addAction(QAction('Vertical Expand', self, triggered=lambda: self.__exec('Vertical Expand')))
-            m.addAction(QAction('Shrink', self, triggered=lambda: self.__exec('Shrink')))
-            m.addAction(QAction('Horizontal Shrink', self, triggered=lambda: self.__exec('Horizontal Shrink')))
-            m.addAction(QAction('Vertical Shrink', self, triggered=lambda: self.__exec('Vertical Shrink')))
+            m.addAction(QtWidgets.QAction('Expand', self, triggered=lambda: self.__exec('Expand')))
+            m.addAction(QtWidgets.QAction('Horizontal Expand', self, triggered=lambda: self.__exec('Horizontal Expand')))
+            m.addAction(QtWidgets.QAction('Vertical Expand', self, triggered=lambda: self.__exec('Vertical Expand')))
+            m.addAction(QtWidgets.QAction('Shrink', self, triggered=lambda: self.__exec('Shrink')))
+            m.addAction(QtWidgets.QAction('Horizontal Shrink', self, triggered=lambda: self.__exec('Horizontal Shrink')))
+            m.addAction(QtWidgets.Action('Vertical Shrink', self, triggered=lambda: self.__exec('Vertical Shrink')))
 
         m = menu.addMenu('Tools')
         m.addAction(self.__ag.addAction(self._sel))
@@ -48,12 +46,12 @@ class CanvasContextMenu(CanvasPart):
         m.addSeparator()
         m.addAction(self.__ag.addAction(self._cross))
 
-        menu.addAction(QAction('Add Text Annotation', self, triggered=self.__addText))
+        menu.addAction(QtWidgets.QAction('Add Text Annotation', self, triggered=self.__addText))
 
         m = menu.addMenu('Duplicate as')
-        m.addAction(QAction('Matplotlib', self, triggered=lambda: self.__duplicate('matplotlib')))
-        m.addAction(QAction('PyqtGraph', self, triggered=lambda: self.__duplicate('pyqtgraph')))
-        menu.exec_(QCursor.pos())
+        m.addAction(QtWidgets.QAction('Matplotlib', self, triggered=lambda: self.__duplicate('matplotlib')))
+        m.addAction(QtWidgets.QAction('PyqtGraph', self, triggered=lambda: self.__duplicate('pyqtgraph')))
+        menu.exec_(QtGui.QCursor.pos())
 
     def toolState(self):
         if self._sel.isChecked():

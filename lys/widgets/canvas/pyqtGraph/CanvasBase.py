@@ -1,8 +1,7 @@
 import weakref
-import pyqtgraph
-
 import pyqtgraph as pg
-from LysQt.QtGui import QMouseEvent
+
+from lys.Qt import QtGui
 
 from ..interface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent, CanvasFocusEvent, CanvasUtilities
 from .AxisSettings import _pyqtGraphAxes, _pyqtGraphTicks
@@ -18,7 +17,7 @@ pg.setConfigOption('foreground', 'k')
 class _PyqtgraphMouseEvent(CanvasMouseEvent):
     def mapPosition(self, event, axis):
         ax = self.canvas().getAxes(axis)
-        if isinstance(event, QMouseEvent):
+        if isinstance(event, QtGui.QMouseEvent):
             pos = event.pos()
         else:
             pos = event.scenePos()
@@ -64,7 +63,7 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
     def _hover(self, list):
         self._flg = True
         for item in list:
-            if isinstance(item, (pyqtgraph.ROI, pyqtgraph.InfiniteLine)):
+            if isinstance(item, (pg.ROI, pg.InfiniteLine)):
                 self._flg = False
 
     def mouseReleaseEvent(self, event):

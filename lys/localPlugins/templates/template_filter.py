@@ -44,7 +44,7 @@ class _FilterNameSetting(FilterSettingBase):
     def __init__(self, dimension):
         """
         __init__ must take an argument that indicate dimension of input data.
-        Initialize widgets (see manuals of PyQt5 and PySide2) after calling super().__init__(dimension).
+        Initialize widgets (see documentation of PyQt5 and PySide2) after calling super().__init__(dimension).
         """
         super().__init__(dimension)
         self._spin1 = QtWidgets.QSpinBox()

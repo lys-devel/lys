@@ -2,12 +2,11 @@
 import math
 import numpy as np
 from matplotlib import cm
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QColor, QImage, QPixmap, QStandardItem, QStandardItemModel, QValidator
-from PyQt5.QtWidgets import QPushButton, QColorDialog, QWidget, QDoubleSpinBox, QComboBox, QCheckBox, QVBoxLayout, QHBoxLayout, QLabel
+
+from lys.Qt import QtCore, QtWidgets, QtGui
 
 
-class ScientificSpinBox(QDoubleSpinBox):
+class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
     """
     Spin box that displays values in sdientific notation, which is frequently used in lys.
     """
@@ -31,9 +30,9 @@ class ScientificSpinBox(QDoubleSpinBox):
         try:
             float(text)
         except Exception:
-            return (QValidator.Intermediate, text, pos)
+            return (QtGui.QValidator.Intermediate, text, pos)
         else:
-            return (QValidator.Acceptable, text, pos)
+            return (QtGui.QValidator.Acceptable, text, pos)
 
     def stepBy(self, steps):
         """stepBy"""
@@ -49,8 +48,8 @@ class ScientificSpinBox(QDoubleSpinBox):
         self.setValue(v + steps * n)
 
 
-class ColorSelection(QPushButton):
-    colorChanged = pyqtSignal(object)
+class ColorSelection(QtWidgets.QPushButton):
+    colorChanged = QtCore.pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
@@ -58,7 +57,7 @@ class ColorSelection(QPushButton):
         self.__color = "black"
 
     def OnClicked(self):
-        res = QColorDialog.getColor(QColor(self.getColor()))
+        res = QtWidgets.QColorDialog.getColor(QtGui.QColor(self.getColor()))
         if res.isValid():
             self.setColor(res.name())
             self.colorChanged.emit(self.getColor())
@@ -77,7 +76,7 @@ class ColorSelection(QPushButton):
         return self.__color
 
     def getColorAsArray(self):
-        return QColor(self.getColor())
+        return QtGui.QColor(self.getColor())
 
 
 _cmaps = [('Perceptually Uniform Sequential', [
@@ -109,14 +108,13 @@ def _cmap2pixmap(cmap, steps=128):
     sm.norm.vmax = 1.0
     inds = np.linspace(0, 1, steps)
     rgbas = sm.to_rgba(inds)
-    rgbas = [QColor(int(r * 255), int(g * 255),
-                    int(b * 255), int(a * 255)).rgba() for r, g, b, a in rgbas]
-    im = QImage(steps, 1, QImage.Format_Indexed8)
+    rgbas = [QtGui.QColor(int(r * 255), int(g * 255), int(b * 255), int(a * 255)).rgba() for r, g, b, a in rgbas]
+    im = QtGui.QImage(steps, 1, QtGui.QImage.Format_Indexed8)
     im.setColorTable(rgbas)
     for i in range(steps):
         im.setPixel(i, 0, i)
     im = im.scaled(100, 15)
-    pm = QPixmap.fromImage(im)
+    pm = QtGui.QPixmap.fromImage(im)
     return pm
 
 
@@ -129,20 +127,20 @@ def _loadCmaps():
 _loadCmaps()
 
 
-class ColormapSelection(QWidget):
-    colorChanged = pyqtSignal()
+class ColormapSelection(QtWidgets.QWidget):
+    colorChanged = QtCore.pyqtSignal()
 
-    class _ColorCombo(QComboBox):
+    class _ColorCombo(QtWidgets.QComboBox):
         def __init__(self):
             super().__init__()
-            model = QStandardItemModel()
+            model = QtGui.QStandardItemModel()
             self.setModel(model)
             self.__list = []
             n = 0
             for item in _cmaps:
                 for i in item[1]:
-                    data = QStandardItem(i)
-                    data.setData(_cmapdic[i], Qt.DecorationRole)
+                    data = QtGui.QStandardItem(i)
+                    data.setData(_cmapdic[i], QtCore.Qt.DecorationRole)
                     model.setItem(n, data)
                     self.__list.append(i)
                     n += 1
@@ -154,7 +152,7 @@ class ColormapSelection(QWidget):
         super().__init__()
         self.__combo = ColormapSelection._ColorCombo()
         self.__combo.activated.connect(self.__changed)
-        self.__opacity = QDoubleSpinBox()
+        self.__opacity = QtWidgets.QDoubleSpinBox()
         self.__opacity.setRange(0, 1)
         self.__opacity.setSingleStep(0.1)
         self.__opacity.setDecimals(2)
@@ -163,18 +161,18 @@ class ColormapSelection(QWidget):
         self.__gamma.setRange(0, 1000)
         self.__gamma.setDecimals(2)
         self.__gamma.valueChanged.connect(self.__changed)
-        self.__check = QCheckBox("Rev")
+        self.__check = QtWidgets.QCheckBox("Rev")
         self.__check.stateChanged.connect(self.__changed)
-        self.__log = QCheckBox("Log")
+        self.__log = QtWidgets.QCheckBox("Log")
         self.__log.stateChanged.connect(self.__changed)
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
 
-        layout_h = QHBoxLayout()
+        layout_h = QtWidgets.QHBoxLayout()
         if opacity:
-            layout_h.addWidget(QLabel('Opac'))
+            layout_h.addWidget(QtWidgets.QLabel('Opac'))
             layout_h.addWidget(self.__opacity)
         if gamma:
-            layout_h.addWidget(QLabel('Gam'))
+            layout_h.addWidget(QtWidgets.QLabel('Gam'))
             layout_h.addWidget(self.__gamma)
         if reverse:
             layout_h.addWidget(self.__check)

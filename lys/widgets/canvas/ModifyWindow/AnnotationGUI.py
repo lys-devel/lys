@@ -1,25 +1,22 @@
-from PyQt5.QtCore import Qt, pyqtSignal, QItemSelectionModel, QSize
-from PyQt5.QtGui import QStandardItemModel, QStandardItem, QCursor
-from PyQt5.QtWidgets import QTreeView, QAbstractItemView, QLabel, QDoubleSpinBox, QGridLayout, QGroupBox, QComboBox, QMenu
-
+from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import ColorSelection
 
 
-class _Model(QStandardItemModel):
+class _Model(QtGui.QStandardItemModel):
     def __init__(self, canvas, type='text'):
         super().__init__(0, 3)
-        self.setHeaderData(0, Qt.Horizontal, 'Line')
-        self.setHeaderData(1, Qt.Horizontal, 'Axis')
-        self.setHeaderData(2, Qt.Horizontal, 'Zorder')
+        self.setHeaderData(0, QtCore.Qt.Horizontal, 'Line')
+        self.setHeaderData(1, QtCore.Qt.Horizontal, 'Axis')
+        self.setHeaderData(2, QtCore.Qt.Horizontal, 'Zorder')
         self.canvas = canvas
         self.type = type
 
     def clear(self):
         super().clear()
         self.setColumnCount(3)
-        self.setHeaderData(0, Qt.Horizontal, 'Annotation')
-        self.setHeaderData(1, Qt.Horizontal, 'Axis')
-        self.setHeaderData(2, Qt.Horizontal, 'Zorder')
+        self.setHeaderData(0, QtCore.Qt.Horizontal, 'Annotation')
+        self.setHeaderData(1, QtCore.Qt.Horizontal, 'Axis')
+        self.setHeaderData(2, QtCore.Qt.Horizontal, 'Zorder')
     """
     def supportedDropActions(self):
         return Qt.MoveAction
@@ -54,8 +51,8 @@ class _Model(QStandardItemModel):
     """
 
 
-class AnnotationSelectionBox(QTreeView):
-    selected = pyqtSignal(list)
+class AnnotationSelectionBox(QtWidgets.QTreeView):
+    selected = QtCore.pyqtSignal(list)
 
     def __init__(self, canvas, type='text'):
         super().__init__()
@@ -64,13 +61,13 @@ class AnnotationSelectionBox(QTreeView):
         self.__initlayout()
         self._loadstate()
         self.canvas.annotationChanged.connect(self._loadstate)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.flg = False
 
     def __initlayout(self):
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
         self.setDropIndicatorShown(True)
         self.__model = _Model(self.canvas, self.__type)
         self.setModel(self.__model)
@@ -82,12 +79,12 @@ class AnnotationSelectionBox(QTreeView):
         list = self.canvas.getAnnotations(self.__type)
         self.__model.clear()
         for i, data in enumerate(list):
-            self.__model.setItem(i, 0, QStandardItem(data.getName()))
-            self.__model.setItem(i, 1, QStandardItem(data.getAxis()))
-            self.__model.setItem(i, 2, QStandardItem(str(data.getZOrder())))
+            self.__model.setItem(i, 0, QtGui.QStandardItem(data.getName()))
+            self.__model.setItem(i, 1, QtGui.QStandardItem(data.getAxis()))
+            self.__model.setItem(i, 2, QtGui.QStandardItem(str(data.getZOrder())))
             if data in selected:
                 index = self.__model.item(i).index()
-                self.selectionModel().select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+                self.selectionModel().select(index, QtCore.QItemSelectionModel.Select | QtCore.QItemSelectionModel.Rows)
         self.flg = False
 
     def _onSelected(self):
@@ -104,7 +101,7 @@ class AnnotationSelectionBox(QTreeView):
         return [list[i.row()] for i in self.selectedIndexes() if i.column() == 0]
 
     def sizeHint(self):
-        return QSize(150, 100)
+        return QtCore.QSize(150, 100)
 
     def OnAnnotationEdited(self):
         list = self.canvas.getAnnotations(self.__type)
@@ -114,12 +111,12 @@ class AnnotationSelectionBox(QTreeView):
             i += 1
 
     def buildContextMenu(self, qPoint):
-        menu = QMenu(self)
+        menu = QtWidgets.QMenu(self)
         menulabels = ['show', 'hide', 'remove']
         actionlist = []
         for label in menulabels:
             actionlist.append(menu.addAction(label))
-        action = menu.exec_(QCursor.pos())
+        action = menu.exec_(QtGui.QCursor.pos())
         if action is None:
             return
 
@@ -153,7 +150,7 @@ class LineColorAdjustBox(ColorSelection):
         self._loadstate()
 
 
-class LineStyleAdjustBox(QGroupBox):
+class LineStyleAdjustBox(QtWidgets.QGroupBox):
     __list = ['solid', 'dashed', 'dashdot', 'dotted', 'None']
 
     def __init__(self, canvas, type="line"):
@@ -161,16 +158,16 @@ class LineStyleAdjustBox(QGroupBox):
         self.type = type
         self.canvas = canvas
 
-        self.__combo = QComboBox()
+        self.__combo = QtWidgets.QComboBox()
         self.__combo.addItems(self.__list)
         self.__combo.activated.connect(self.__changeStyle)
-        self.__spin1 = QDoubleSpinBox()
+        self.__spin1 = QtWidgets.QDoubleSpinBox()
         self.__spin1.valueChanged.connect(self.__valueChange)
 
-        layout = QGridLayout()
-        layout.addWidget(QLabel('Type'), 0, 0)
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(QtWidgets.QLabel('Type'), 0, 0)
         layout.addWidget(self.__combo, 1, 0)
-        layout.addWidget(QLabel('Width'), 0, 1)
+        layout.addWidget(QtWidgets.QLabel('Width'), 0, 1)
         layout.addWidget(self.__spin1, 1, 1)
 
         self.setLayout(layout)

@@ -1,5 +1,6 @@
 import warnings
-from LysQt.QtCore import pyqtSignal
+
+from lys.Qt import QtCore
 from lys.errors import NotImplementedWarning
 
 from .CanvasBase import saveCanvas
@@ -26,7 +27,7 @@ class LineAnnotation(AnnotationWithLine):
         line = g.addLineAnnotation()
         line.setLineColor("#ff0000")
     """
-    positionChanged = pyqtSignal(tuple)
+    positionChanged = QtCore.pyqtSignal(tuple)
     """PyqtSignal that is emitted when the position of the line is changed."""
 
     def __init__(self, canvas, pos, axis):
@@ -85,7 +86,7 @@ class InfiniteLineAnnotation(AnnotationWithLine):
         line = g.canvas.addInfiniteLineAnnotation()
         line.setLineColor("#ff0000")
     """
-    positionChanged = pyqtSignal(float)
+    positionChanged = QtCore.pyqtSignal(float)
     """PyqtSignal that is emitted when the position of the line is changed."""
 
     def __init__(self, canvas, pos, orientation, axis):

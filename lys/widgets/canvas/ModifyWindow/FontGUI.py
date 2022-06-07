@@ -1,12 +1,11 @@
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QGroupBox, QComboBox, QDoubleSpinBox, QHBoxLayout, QVBoxLayout, QLabel, QCheckBox
-
-from ..interface import FontInfo
+from lys.Qt import QtCore, QtWidgets
 from lys.widgets import ColorSelection
 
+from ..interface import FontInfo
 
-class FontSelector(QGroupBox):
-    fontChanged = pyqtSignal(dict)
+
+class FontSelector(QtWidgets.QGroupBox):
+    fontChanged = QtCore.pyqtSignal(dict)
 
     def __init__(self, name):
         super().__init__(name)
@@ -14,21 +13,21 @@ class FontSelector(QGroupBox):
         self.__initlayout()
 
     def __initlayout(self):
-        self.__font = QComboBox()
+        self.__font = QtWidgets.QComboBox()
         self.__font.addItems(FontInfo.fonts())
         self.__font.activated.connect(self.__fontChanged)
-        self.__size = QDoubleSpinBox()
+        self.__size = QtWidgets.QDoubleSpinBox()
         self.__size.valueChanged.connect(self.__fontChanged)
         self.__color = ColorSelection()
         self.__color.colorChanged.connect(self.__fontChanged)
 
-        lay = QHBoxLayout()
-        lay.addWidget(QLabel('Size'))
+        lay = QtWidgets.QHBoxLayout()
+        lay.addWidget(QtWidgets.QLabel('Size'))
         lay.addWidget(self.__size)
-        lay.addWidget(QLabel('Color'))
+        lay.addWidget(QtWidgets.QLabel('Color'))
         lay.addWidget(self.__color)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.__font)
         layout.addLayout(lay)
         self.setLayout(layout)
@@ -49,7 +48,7 @@ class FontSelector(QGroupBox):
         self.fontChanged.emit(self.getFont())
 
 
-class FontSelectBox(QGroupBox):
+class FontSelectBox(QtWidgets.QGroupBox):
     def __init__(self, canvas, name='Default'):
         super().__init__(name + ' Font')
         self.canvas = canvas
@@ -65,7 +64,7 @@ class FontSelectBox(QGroupBox):
             self.__loadstate()
 
     def __initlayout(self):
-        self.__font = QComboBox()
+        self.__font = QtWidgets.QComboBox()
         font = self.canvas.getCanvasFont(self.__name)
         d = font.family
         for f in FontInfo._fonts:
@@ -73,22 +72,22 @@ class FontSelectBox(QGroupBox):
         if d not in FontInfo._fonts:
             self.__font.addItem(d)
         self.__font.activated.connect(self.__fontChanged)
-        self.__def = QCheckBox('Use default')
+        self.__def = QtWidgets.QCheckBox('Use default')
         self.__def.stateChanged.connect(self.__setdefault)
-        self.__size = QDoubleSpinBox()
+        self.__size = QtWidgets.QDoubleSpinBox()
         self.__size.valueChanged.connect(self.__fontChanged)
         self.__color = ColorSelection()
         self.__color.colorChanged.connect(self.__fontChanged)
 
-        lay = QHBoxLayout()
+        lay = QtWidgets.QHBoxLayout()
         if not self.__name == 'Default':
             lay.addWidget(self.__def)
-        lay.addWidget(QLabel('Size'))
+        lay.addWidget(QtWidgets.QLabel('Size'))
         lay.addWidget(self.__size)
-        lay.addWidget(QLabel('Color'))
+        lay.addWidget(QtWidgets.QLabel('Color'))
         lay.addWidget(self.__color)
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.__font)
         layout.addLayout(lay)
         self.setLayout(layout)
@@ -116,8 +115,8 @@ class FontSelectBox(QGroupBox):
         self.canvas.setCanvasFontDefault(val, self.__name)
 
 
-class FontSelectWidget(QGroupBox):
-    fontChanged = pyqtSignal()
+class FontSelectWidget(QtWidgets.QGroupBox):
+    fontChanged = QtCore.pyqtSignal()
 
     def __init__(self, canvas, name='Default'):
         super().__init__('Font')
@@ -134,26 +133,26 @@ class FontSelectWidget(QGroupBox):
             self.setFont(self.canvas.getCanvasFont(self.__name))
 
     def __initlayout(self):
-        layout = QVBoxLayout()
-        lay = QHBoxLayout()
-        self.__font = QComboBox()
+        layout = QtWidgets.QVBoxLayout()
+        lay = QtWidgets.QHBoxLayout()
+        self.__font = QtWidgets.QComboBox()
 
         for f in FontInfo._fonts:
             self.__font.addItem(f)
         font = self.canvas.getCanvasFont(self.__name)
         d = font.family
-        if not d in FontInfo._fonts:
+        if d not in FontInfo._fonts:
             self.__font.addItem(d)
         self.__font.activated.connect(self.__Changed)
         layout.addWidget(self.__font)
-        self.__def = QCheckBox('Use default')
+        self.__def = QtWidgets.QCheckBox('Use default')
         self.__def.stateChanged.connect(self.__Changed)
         lay.addWidget(self.__def)
-        lay.addWidget(QLabel('Size'))
-        self.__size = QDoubleSpinBox()
+        lay.addWidget(QtWidgets.QLabel('Size'))
+        self.__size = QtWidgets.QDoubleSpinBox()
         self.__size.valueChanged.connect(self.__Changed)
         lay.addWidget(self.__size)
-        lay.addWidget(QLabel('Color'))
+        lay.addWidget(QtWidgets.QLabel('Color'))
         self.__color = ColorSelection()
         self.__color.colorChanged.connect(self.__Changed)
         lay.addWidget(self.__color)

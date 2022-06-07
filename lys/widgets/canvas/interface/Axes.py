@@ -1,7 +1,9 @@
 import warnings
 import numpy as np
-from LysQt.QtCore import pyqtSignal
+
+from lys.Qt import QtCore
 from lys.errors import NotImplementedWarning
+
 from .CanvasBase import CanvasPart, saveCanvas
 
 
@@ -11,13 +13,13 @@ class CanvasAxes(CanvasPart):
     All methods in this interface can be accessed from :class:`CanvasBase` instance.
     Developers should implement a abstract methods.
     """
-    axisChanged = pyqtSignal(str)
+    axisChanged = QtCore.pyqtSignal(str)
     """Emitted when the right or top axis is added."""
 
-    axisRangeChanged = pyqtSignal()
+    axisRangeChanged = QtCore.pyqtSignal()
     """Emitted when the range of axes is changed."""
 
-    selectedRangeChanged = pyqtSignal(object)
+    selectedRangeChanged = QtCore.pyqtSignal(object)
     """Emitted when the selected range of axes is changed."""
 
     def __init__(self, canvas):
@@ -147,7 +149,7 @@ class CanvasAxes(CanvasPart):
             axis ('Left', 'Right', 'Bottom', 'Top', 'BottomLeft', 'BottomRight', 'TopLeft', or 'TopRight'): The axis.
 
         Return:
-            length 2 sequence: The axis range in the form of (x1, x2). 
+            length 2 sequence: The axis range in the form of (x1, x2).
 
         See also:
             :meth:`setAxisRange`, :meth:`setAutoScaleAxis`

@@ -1,5 +1,5 @@
+from . import Qt
 from . import errors
-from . import QtSystem
 from .functions import home, load, edit, display, append, registerFileLoader, loadableFiles, registerFittingFunction, frontCanvas, multicut
 from .core import SettingDict, Wave, DaskWave
 

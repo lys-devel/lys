@@ -1,6 +1,6 @@
-import warnings
 import numpy as np
 from matplotlib.colors import hsv_to_rgb
+
 from lys.errors import NotImplementedWarning
 
 from .CanvasBase import saveCanvas

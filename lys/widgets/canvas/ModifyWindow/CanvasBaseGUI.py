@@ -1,31 +1,28 @@
-from PyQt5.QtCore import Qt, QMimeData, pyqtSignal, QSize, QItemSelectionModel
-from PyQt5.QtGui import QCursor, QStandardItem, QStandardItemModel
-from PyQt5.QtWidgets import QDialog, QSpinBox, QTreeView, QFileDialog, QInputDialog, QGridLayout, QLabel, QVBoxLayout, QWidget, QGroupBox, QComboBox, QPushButton, QMenu, QAbstractItemView, QAction
-
 from lys import Wave, glb
+from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import ScientificSpinBox
 
 
-class _Model(QStandardItemModel):
+class _Model(QtGui.QStandardItemModel):
     def __init__(self, canvas):
         super().__init__(0, 3)
-        self.setHeaderData(0, Qt.Horizontal, 'Line')
-        self.setHeaderData(1, Qt.Horizontal, 'Axis')
-        self.setHeaderData(2, Qt.Horizontal, 'Zorder')
+        self.setHeaderData(0, QtCore.Qt.Horizontal, 'Line')
+        self.setHeaderData(1, QtCore.Qt.Horizontal, 'Axis')
+        self.setHeaderData(2, QtCore.Qt.Horizontal, 'Zorder')
         self.canvas = canvas
 
     def clear(self):
         super().clear()
         self.setColumnCount(3)
-        self.setHeaderData(0, Qt.Horizontal, 'Line')
-        self.setHeaderData(1, Qt.Horizontal, 'Axis')
-        self.setHeaderData(2, Qt.Horizontal, 'Zorder')
+        self.setHeaderData(0, QtCore.Qt.Horizontal, 'Line')
+        self.setHeaderData(1, QtCore.Qt.Horizontal, 'Axis')
+        self.setHeaderData(2, QtCore.Qt.Horizontal, 'Zorder')
 
     def supportedDropActions(self):
-        return Qt.MoveAction
+        return QtCore.Qt.MoveAction
 
     def mimeData(self, indexes):
-        mimedata = QMimeData()
+        mimedata = QtCore.QMimeData()
         data = []
         for i in indexes:
             if i.column() != 2:
@@ -52,8 +49,8 @@ class _Model(QStandardItemModel):
         return False
 
 
-class _DataSelectionBoxBase(QTreeView):
-    selected = pyqtSignal(list)
+class _DataSelectionBoxBase(QtWidgets.QTreeView):
+    selected = QtCore.pyqtSignal(list)
 
     def __init__(self, canvas, dim, type):
         super().__init__()
@@ -65,9 +62,9 @@ class _DataSelectionBoxBase(QTreeView):
         canvas.dataChanged.connect(self._loadstate)
 
     def __initlayout(self):
-        self.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
-        self.setDragDropMode(QAbstractItemView.InternalMove)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
         self.setDropIndicatorShown(True)
         self.__model = _Model(self.canvas)
         self.setModel(self.__model)
@@ -79,12 +76,12 @@ class _DataSelectionBoxBase(QTreeView):
         list = self.canvas.getWaveData(self.__type)
         self.__model.clear()
         for i, data in enumerate(list):
-            self.__model.setItem(i, 0, QStandardItem(data.getWave().name))
-            self.__model.setItem(i, 1, QStandardItem(data.getAxis()))
-            self.__model.setItem(i, 2, QStandardItem(str(data.getZOrder())))
+            self.__model.setItem(i, 0, QtGui.QStandardItem(data.getWave().name))
+            self.__model.setItem(i, 1, QtGui.QStandardItem(data.getAxis()))
+            self.__model.setItem(i, 2, QtGui.QStandardItem(str(data.getZOrder())))
             if data in selected:
                 index = self.__model.item(i).index()
-                self.selectionModel().select(index, QItemSelectionModel.Select | QItemSelectionModel.Rows)
+                self.selectionModel().select(index, QtCore.QItemSelectionModel.Select | QtCore.QItemSelectionModel.Rows)
         self.flg = False
 
     def _onSelected(self):
@@ -101,51 +98,51 @@ class _DataSelectionBoxBase(QTreeView):
         return [list[i.row()] for i in self.selectedIndexes() if i.column() == 0]
 
     def sizeHint(self):
-        return QSize(150, 100)
+        return QtCore.QSize(150, 100)
 
 
 class DataSelectionBox(_DataSelectionBoxBase):
     def __init__(self, canvas, dim, type, *args, **kwargs):
         super().__init__(canvas, dim, type, *args, **kwargs)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
         self.canvas = canvas
         self.__dim = dim
 
     def buildContextMenu(self, qPoint):
-        menu = QMenu(self)
-        menu.addAction(QAction('Show', self, triggered=lambda: self.__visible(True)))
-        menu.addAction(QAction('Hide', self, triggered=lambda: self.__visible(False)))
-        menu.addAction(QAction('Remove', self, triggered=self.__remove))
-        menu.addAction(QAction('Duplicate', self, triggered=self.__duplicate))
-        menu.addAction(QAction('Process', self, triggered=self.__process))
+        menu = QtWidgets.QMenu(self)
+        menu.addAction(QtWidgets.QAction('Show', self, triggered=lambda: self.__visible(True)))
+        menu.addAction(QtWidgets.QAction('Hide', self, triggered=lambda: self.__visible(False)))
+        menu.addAction(QtWidgets.QAction('Remove', self, triggered=self.__remove))
+        menu.addAction(QtWidgets.QAction('Duplicate', self, triggered=self.__duplicate))
+        menu.addAction(QtWidgets.QAction('Process', self, triggered=self.__process))
 
         raw = menu.addMenu("Raw data")
-        raw.addAction(QAction('Display', self, triggered=lambda: self.__display("Wave")))
-        raw.addAction(QAction('Append', self, triggered=lambda: self.__append("Wave")))
-        raw.addAction(QAction('Print', self, triggered=lambda: self.__print("Wave")))
-        raw.addAction(QAction('MultiCut', self, triggered=lambda: self.__multicut("Wave")))
+        raw.addAction(QtWidgets.QAction('Display', self, triggered=lambda: self.__display("Wave")))
+        raw.addAction(QtWidgets.QAction('Append', self, triggered=lambda: self.__append("Wave")))
+        raw.addAction(QtWidgets.QAction('Print', self, triggered=lambda: self.__print("Wave")))
+        raw.addAction(QtWidgets.QAction('MultiCut', self, triggered=lambda: self.__multicut("Wave")))
         if self.__dim == 3 or self.__dim == "rgb":
-            raw.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("Wave", vector=True)))
-        raw.addAction(QAction('Edit', self, triggered=lambda: self.__edit("Wave")))
-        raw.addAction(QAction('Export', self, triggered=lambda: self.__export("Wave")))
+            raw.addAction(QtWidgets.QAction('Append as Vector', self, triggered=lambda: self.__append("Wave", vector=True)))
+        raw.addAction(QtWidgets.QAction('Edit', self, triggered=lambda: self.__edit("Wave")))
+        raw.addAction(QtWidgets.QAction('Export', self, triggered=lambda: self.__export("Wave")))
         if self.__dim == 2:
-            raw.addAction(QAction('Convert to 1D waves', self, triggered=lambda: self.__to1d("Wave")))
-        raw.addAction(QAction('Send to shell', self, triggered=lambda: self.__send("Wave")))
+            raw.addAction(QtWidgets.QAction('Convert to 1D waves', self, triggered=lambda: self.__to1d("Wave")))
+        raw.addAction(QtWidgets.QAction('Send to shell', self, triggered=lambda: self.__send("Wave")))
 
         pr = menu.addMenu("Processed data")
-        pr.addAction(QAction('Display', self, triggered=lambda: self.__display("ProcessedWave")))
-        pr.addAction(QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
-        pr.addAction(QAction('Print', self, triggered=lambda: self.__print("ProcessedWave")))
-        pr.addAction(QAction('MultiCut', self, triggered=lambda: self.__multicut("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('Display', self, triggered=lambda: self.__display("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('Print', self, triggered=lambda: self.__print("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('MultiCut', self, triggered=lambda: self.__multicut("ProcessedWave")))
         if self.__dim == 3 or self.__dim == "rgb":
-            pr.addAction(QAction('Append as Vector', self, triggered=lambda: self.__append("ProcessedWave", vector=True)))
-        pr.addAction(QAction('Edit', self, triggered=lambda: self.__edit("ProcessedWave")))
-        pr.addAction(QAction('Export', self, triggered=lambda: self.__export("ProcessedWave")))
+            pr.addAction(QtWidgets.QAction('Append as Vector', self, triggered=lambda: self.__append("ProcessedWave", vector=True)))
+        pr.addAction(QtWidgets.QAction('Edit', self, triggered=lambda: self.__edit("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('Export', self, triggered=lambda: self.__export("ProcessedWave")))
         if self.__dim == 2:
-            pr.addAction(QAction('Convert to 1D waves', self, triggered=lambda: self.__to1d("ProcessedWave")))
-        pr.addAction(QAction('Send to shell', self, triggered=lambda: self.__send("ProcessedWave")))
-        menu.exec_(QCursor.pos())
+            pr.addAction(QtWidgets.QAction('Convert to 1D waves', self, triggered=lambda: self.__to1d("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('Send to shell', self, triggered=lambda: self.__send("ProcessedWave")))
+        menu.exec_(QtGui.QCursor.pos())
 
     def __getWaves(self, type="Wave"):
         res = []
@@ -206,7 +203,7 @@ class DataSelectionBox(_DataSelectionBoxBase):
         for f in Wave.SupportedFormats():
             filt = filt + f + ";;"
         filt = filt[:len(filt) - 2]
-        path, type = QFileDialog.getSaveFileName(filter=filt)
+        path, type = QtWidgets.QFileDialog.getSaveFileName(filter=filt)
         if len(path) != 0:
             d = self.__getWaves(waveType)[0]
             d.export(path, type=type)
@@ -232,30 +229,30 @@ class DataSelectionBox(_DataSelectionBoxBase):
     def __send(self, waveType):
         d = self.__getWaves(waveType)[0]
         w = d.duplicate()
-        text, ok = QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
+        text, ok = QtWidgets.QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
         if ok:
             w.name = text
             glb.shell().addObject(w, text)
 
 
-class _SliceDialog(QDialog):
+class _SliceDialog(QtWidgets.QDialog):
     def __init__(self, wave, parent=None):
         super().__init__(parent)
         self.wave = wave
-        self.combo = QComboBox()
+        self.combo = QtWidgets.QComboBox()
         self.combo.addItems(["x", "y"])
         self.combo.currentTextChanged.connect(self._update)
 
-        self.slice = QSpinBox()
+        self.slice = QtWidgets.QSpinBox()
         self.slice.setRange(0, 10000)
 
-        g = QGridLayout()
-        g.addWidget(QLabel("Cut along"), 0, 0)
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("Cut along"), 0, 0)
         g.addWidget(self.combo, 0, 1)
-        g.addWidget(QLabel("Num. of slices"), 1, 0)
+        g.addWidget(QtWidgets.QLabel("Num. of slices"), 1, 0)
         g.addWidget(self.slice, 1, 1)
-        g.addWidget(QPushButton('O K', clicked=self.accept), 2, 0)
-        g.addWidget(QPushButton('CALCEL', clicked=self.reject), 2, 1)
+        g.addWidget(QtWidgets.QPushButton('O K', clicked=self.accept), 2, 0)
+        g.addWidget(QtWidgets.QPushButton('CALCEL', clicked=self.reject), 2, 1)
 
         self.setLayout(g)
         self._update("x")
@@ -270,14 +267,14 @@ class _SliceDialog(QDialog):
         return self.combo.currentText(), self.slice.value()
 
 
-class OffsetAdjustBox(QWidget):
+class OffsetAdjustBox(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.__initlayout()
         self.__flg = False
 
     def __initlayout(self):
-        vbox = QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(self.__offsetBox())
         vbox.addWidget(self.__sideBySideBox())
         self.setLayout(vbox)
@@ -287,36 +284,36 @@ class OffsetAdjustBox(QWidget):
         self.__spin2 = ScientificSpinBox(valueChanged=lambda: self.__dataChanged('y offset'))
         self.__spin3 = ScientificSpinBox(valueChanged=lambda: self.__dataChanged('x muloffset'))
         self.__spin4 = ScientificSpinBox(valueChanged=lambda: self.__dataChanged('y muloffset'))
-        gl = QGridLayout()
-        gl.addWidget(QLabel('x offset'), 0, 0)
-        gl.addWidget(QLabel('y offset'), 0, 1)
-        gl.addWidget(QLabel('x muloffset'), 2, 0)
-        gl.addWidget(QLabel('y muloffset'), 2, 1)
+        gl = QtWidgets.QGridLayout()
+        gl.addWidget(QtWidgets.QLabel('x offset'), 0, 0)
+        gl.addWidget(QtWidgets.QLabel('y offset'), 0, 1)
+        gl.addWidget(QtWidgets.QLabel('x muloffset'), 2, 0)
+        gl.addWidget(QtWidgets.QLabel('y muloffset'), 2, 1)
         gl.addWidget(self.__spin1, 1, 0)
         gl.addWidget(self.__spin3, 3, 0)
         gl.addWidget(self.__spin2, 1, 1)
         gl.addWidget(self.__spin4, 3, 1)
-        gr1 = QGroupBox('Offset')
+        gr1 = QtWidgets.QGroupBox('Offset')
         gr1.setLayout(gl)
         return gr1
 
     def __sideBySideBox(self):
         self.__spinfrom = ScientificSpinBox()
         self.__spindelta = ScientificSpinBox()
-        btn = QPushButton('Set', clicked=self.__sidebyside)
-        self.__type = QComboBox()
+        btn = QtWidgets.QPushButton('Set', clicked=self.__sidebyside)
+        self.__type = QtWidgets.QComboBox()
         self.__type.addItems(['y offset', 'x offset', 'y muloffset', 'x muloffset'])
 
-        g2 = QGridLayout()
-        g2.addWidget(QLabel('from'), 0, 0)
+        g2 = QtWidgets.QGridLayout()
+        g2.addWidget(QtWidgets.QLabel('from'), 0, 0)
         g2.addWidget(self.__spinfrom, 1, 0)
-        g2.addWidget(QLabel('delta'), 0, 1)
+        g2.addWidget(QtWidgets.QLabel('delta'), 0, 1)
         g2.addWidget(self.__spindelta, 1, 1)
-        g2.addWidget(QLabel('type'), 0, 2)
+        g2.addWidget(QtWidgets.QLabel('type'), 0, 2)
         g2.addWidget(self.__type, 1, 2)
         g2.addWidget(btn, 2, 1)
 
-        gr2 = QGroupBox('Side by side')
+        gr2 = QtWidgets.QGroupBox('Side by side')
         gr2.setLayout(g2)
         return gr2
 
