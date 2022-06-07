@@ -1,11 +1,8 @@
 import logging
 import os
 
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-
 from lys import glb
+from lys import QtWidgets, QtCore
 
 
 class TextEditLogger(logging.Handler):
@@ -52,8 +49,8 @@ class TextEditLogger(logging.Handler):
         pass
 
 
-class LogWidget(QWidget):
-    updated = pyqtSignal(str)
+class LogWidget(QtWidgets.QWidget):
+    updated = QtCore.pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -61,26 +58,26 @@ class LogWidget(QWidget):
         self.__initlayout()
 
     def __initlayout(self):
-        self._loglevel = QHBoxLayout()
-        self._loglevel.addWidget(QRadioButton("Error", toggled=lambda: self._debugLevel(40)))
-        war = QRadioButton("Warning", toggled=lambda: self._debugLevel(logging.WARNING))
+        self._loglevel = QtWidgets.QHBoxLayout()
+        self._loglevel.addWidget(QtWidgets.QRadioButton("Error", toggled=lambda: self._debugLevel(40)))
+        war = QtWidgets.QRadioButton("Warning", toggled=lambda: self._debugLevel(logging.WARNING))
         self._loglevel.addWidget(war)
-        inf = QRadioButton("Info", toggled=lambda: self._debugLevel(logging.INFO))
+        inf = QtWidgets.QRadioButton("Info", toggled=lambda: self._debugLevel(logging.INFO))
         self._loglevel.addWidget(inf)
-        self._loglevel.addWidget(QRadioButton("Debug", toggled=lambda: self._debugLevel(10)))
+        self._loglevel.addWidget(QtWidgets.QRadioButton("Debug", toggled=lambda: self._debugLevel(10)))
         war.toggle()
 
-        self.filt = QLineEdit()
+        self.filt = QtWidgets.QLineEdit()
         self.filt.textChanged.connect(self._filter)
-        h1 = QHBoxLayout()
-        h1.addWidget(QLabel("Filter"))
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QLabel("Filter"))
         h1.addWidget(self.filt)
 
-        self.widget = QPlainTextEdit(self)
+        self.widget = QtWidgets.QPlainTextEdit(self)
         self.widget.setReadOnly(True)
         self.updated.connect(self.widget.setPlainText)
 
-        l2 = QVBoxLayout()
+        l2 = QtWidgets.QVBoxLayout()
         l2.addLayout(self._loglevel)
         l2.addLayout(h1)
         l2.addWidget(self.widget)

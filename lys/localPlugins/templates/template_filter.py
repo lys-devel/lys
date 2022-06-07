@@ -1,16 +1,16 @@
-""" 
+"""
 The template for making new filter that can be used in MultiCut.
 This file can be used without edit. The sample filter is registered in 'User Defined Filters' in MultiCut.
 See Section 'Making a new filter' in menu (Help -> Open lys reference) for detail
 """
 
 
-# We recommend users to import Qt widgets from LysQt, which is alias to Qt5 libraries (PyQt5 or PySide2)
-from LysQt.QtWidgets import QSpinBox, QVBoxLayout
-
 # Required lys modules for making filter
 from lys import DaskWave
 from lys.filters import FilterSettingBase, filterGUI, addFilter, FilterInterface
+
+# We recommend users to import Qt widgets from llys, which is alias to Qt5 libraries (PyQt5 or PySide2)
+from lys.Qt import QtWidgets
 
 
 class FilterName(FilterInterface):
@@ -47,10 +47,10 @@ class _FilterNameSetting(FilterSettingBase):
         Initialize widgets (see manuals of PyQt5 and PySide2) after calling super().__init__(dimension).
         """
         super().__init__(dimension)
-        self._spin1 = QSpinBox()
-        self._spin2 = QSpinBox()
+        self._spin1 = QtWidgets.QSpinBox()
+        self._spin2 = QtWidgets.QSpinBox()
 
-        layout = QVBoxLayout()
+        layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self._spin1)
         layout.addWidget(self._spin2)
 

@@ -3,23 +3,20 @@ import os
 
 import autopep8
 
-from PyQt5.QtCore import Qt, QRegExp, pyqtSignal, QEvent, QPoint
-from PyQt5.QtGui import QSyntaxHighlighter, QColor, QFont, QTextCharFormat, QKeyEvent, QPainter, QTextCursor
-from PyQt5.QtWidgets import QMessageBox, QPlainTextEdit, QWidget, QInputDialog
-
 from lys import glb, home, registerFileLoader
+from lys.Qt import QtWidgets, QtGui, QtCore
 from lys.widgets import LysSubWindow
 
 
 def format(color, style=''):
     """Return a QTextCharFormat with the given attributes.
     """
-    _color = QColor(color)
+    _color = QtGui.QColor(color)
 
-    _format = QTextCharFormat()
+    _format = QtGui.QTextCharFormat()
     _format.setForeground(_color)
     if 'bold' in style:
-        _format.setFontWeight(QFont.Bold)
+        _format.setFontWeight(QtGui.QFont.Bold)
     if 'italic' in style:
         _format.setFontItalic(True)
 
@@ -42,7 +39,7 @@ STYLES = {
 }
 
 
-class PythonHighlighter(QSyntaxHighlighter):
+class PythonHighlighter(QtGui.QSyntaxHighlighter):
     """Syntax highlighter for the Python language.
     """
     # Python keywords
@@ -76,13 +73,13 @@ class PythonHighlighter(QSyntaxHighlighter):
     ]
 
     def __init__(self, document):
-        QSyntaxHighlighter.__init__(self, document)
+        QtGui.QSyntaxHighlighter.__init__(self, document)
 
         # Multi-line strings (expression, flag, style)
         # FIXME: The triple-quotes in these two lines will mess up the
         # syntax highlighting from this point onward
-        self.tri_single = (QRegExp("'''"), 1, STYLES['string2'])
-        self.tri_double = (QRegExp('"""'), 2, STYLES['string2'])
+        self.tri_single = (QtCore.QRegExp("'''"), 1, STYLES['string2'])
+        self.tri_double = (QtCore.QRegExp('"""'), 2, STYLES['string2'])
 
         rules = []
 
@@ -121,7 +118,7 @@ class PythonHighlighter(QSyntaxHighlighter):
         ]
 
         # Build a QRegExp for each pattern
-        self.rules = [(QRegExp(pat), index, fmt)
+        self.rules = [(QtCore.QRegExp(pat), index, fmt)
                       for (pat, index, fmt) in rules]
 
     def highlightBlock(self, text):
@@ -186,26 +183,26 @@ class PythonHighlighter(QSyntaxHighlighter):
             return False
 
 
-class _PlainTextEdit(QPlainTextEdit):
-    keyPressed = pyqtSignal(QKeyEvent)
+class _PlainTextEdit(QtWidgets.QPlainTextEdit):
+    keyPressed = QtCore.pyqtSignal(QtGui.QKeyEvent)
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.setLineWrapMode(QPlainTextEdit.NoWrap)
+        self.setLineWrapMode(QtWidgets.QPlainTextEdit.NoWrap)
         self.metrics = self.fontMetrics()
         self.setTabStopWidth(self.metrics.width(" ") * 6)
         self.setViewportMargins(self.metrics.width("8") * 8, 0, 0, 0)
-        self.numberArea = QWidget(self)
+        self.numberArea = QtWidgets.QWidget(self)
         self.numberArea.setGeometry(0, 0, self.fontMetrics().width("8") * 8, self.height())
         self.numberArea.installEventFilter(self)
 
     def keyPressEvent(self, event):
         self.keyPressed.emit(event)
-        if event.key() == Qt.Key_Tab:
+        if event.key() == QtCore.Qt.Key_Tab:
             self.insertPlainText('    ')
             return event.ignore()
         super().keyPressEvent(event)
-        if event.key() == Qt.Key_Return:
+        if event.key() == QtCore.Qt.Key_Return:
             for i in range(self.textCursor().block().previous().text().count('    ')):
                 self.insertPlainText('    ')
 
@@ -218,24 +215,24 @@ class _PlainTextEdit(QPlainTextEdit):
         self.numberArea.setGeometry(0, 0, self.fontMetrics().width("8") * 8, self.height() + num)
 
     def eventFilter(self, obj, event):
-        if obj == self.numberArea and event.type() == QEvent.Paint:
+        if obj == self.numberArea and event.type() == QtCore.QEvent.Paint:
             self.drawLineNumbers(obj)
             return True
         return False
 
     def drawLineNumbers(self, o):
-        c = self.cursorForPosition(QPoint(0, 0))
+        c = self.cursorForPosition(QtCore.QPoint(0, 0))
         block = c.block()
-        paint = QPainter()
+        paint = QtGui.QPainter()
         paint.begin(o)
-        paint.setPen(QColor('gray'))
-        paint.setFont(QFont())
+        paint.setPen(QtGui.QColor('gray'))
+        paint.setFont(QtGui.QFont())
         while block.isValid():
             c.setPosition(block.position())
             r = self.cursorRect(c)
             if r.bottom() > self.height() + 10:
                 break
-            paint.drawText(QPoint(10, r.bottom() - 3), str(block.blockNumber() + 1))
+            paint.drawText(QtCore.QPoint(10, r.bottom() - 3), str(block.blockNumber() + 1))
             block = block.next()
         paint.end()
 
@@ -314,8 +311,8 @@ class PythonEditor(LysSubWindow):
             self.setWindowTitle(os.path.basename(self.file))
 
     def keyPressed(self, event):
-        if event.key() == Qt.Key_S:
-            if (event.modifiers() and Qt.ControlModifier):
+        if event.key() == QtCore.Qt.Key_S:
+            if (event.modifiers() and QtCore.Qt.ControlModifier):
                 self.save()
 
     def save(self):
@@ -327,8 +324,8 @@ class PythonEditor(LysSubWindow):
         p = c.position()
         self.widget.selectAll()
         self.widget.insertPlainText(fixed)
-        c.movePosition(QTextCursor.Start)
-        c.movePosition(QTextCursor.Right, n=p)
+        c.movePosition(QtGui.QTextCursor.Start)
+        c.movePosition(QtGui.QTextCursor.Right, n=p)
         self.widget.setTextCursor(c)
         self.updated = False
         self.refreshTitle()
@@ -345,18 +342,18 @@ class PythonEditor(LysSubWindow):
         if not self.updated:
             PythonEditor._Remove(self)
             return
-        msg = QMessageBox(self)
-        msg.setIcon(QMessageBox.Warning)
+        msg = QtWidgets.QMessageBox(self)
+        msg.setIcon(QtWidgets.QMessageBox.Warning)
         msg.setText("Do you want to save changes?")
         msg.setWindowTitle(os.path.basename(self.file))
-        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+        msg.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel)
         ok = msg.exec_()
-        if ok == QMessageBox.Cancel:
+        if ok == QtWidgets.QMessageBox.Cancel:
             event.ignore()
             return
-        if ok == QMessageBox.No:
+        if ok == QtWidgets.QMessageBox.No:
             self.updated = False
-        if ok == QMessageBox.Yes:
+        if ok == QtWidgets.QMessageBox.Yes:
             self.save()
         event.accept()
         PythonEditor._Remove(self)
@@ -367,7 +364,7 @@ class PythonEditor(LysSubWindow):
 
 
 def _enterName():
-    txt, ok = QInputDialog.getText(glb.mainWindow(), "New .py file", "Enter filename")
+    txt, ok = QtWidgets.QInputDialog.getText(glb.mainWindow(), "New .py file", "Enter filename")
     if ok and len(txt) != 0:
         if not txt.endswith(".py"):
             txt = txt + ".py"
@@ -387,11 +384,11 @@ def _makeNewPy(name, text=""):
 
 
 def _makeFilterTemplate():
-    name, ok = QInputDialog.getText(glb.mainWindow(), "New filter", "Enter new filter name", text="Filter")
+    name, ok = QtWidgets.QInputDialog.getText(glb.mainWindow(), "New filter", "Enter new filter name", text="Filter")
     if ok:
         pyfile = home() + "/module/" + name + ".py"
         if os.path.exists(pyfile):
-            QMessageBox.information(glb.mainWindow(), "Caution", "File " + name + ".py already exists.")
+            QtWidgets.QMessageBox.information(glb.mainWindow(), "Caution", "File " + name + ".py already exists.")
             return
         filename = os.path.dirname(__file__) + "/templates/template_filter.py"
         with open(filename, "r") as f:

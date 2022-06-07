@@ -1,23 +1,19 @@
-
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-
-from lys import display, edit, MultiCut, glb
+from lys import display, edit, MultiCut, glb, Wave
+from lys.Qt import QtWidgets, QtCore, QtGui
 
 
-class _WaveModel(QAbstractItemModel):
+class _WaveModel(QtCore.QAbstractItemModel):
     def __init__(self, shell):
         super().__init__()
         self._shell = shell
         self._shell.commandExecuted.connect(self.update)
-        self.setHeaderData(0, Qt.Horizontal, 'Name')
-        self.setHeaderData(1, Qt.Horizontal, 'Type')
-        self.setHeaderData(2, Qt.Horizontal, 'Shape')
+        self.setHeaderData(0, QtCore.Qt.Horizontal, 'Name')
+        self.setHeaderData(1, QtCore.Qt.Horizontal, 'Type')
+        self.setHeaderData(2, QtCore.Qt.Horizontal, 'Shape')
 
-    def data(self, index, role=Qt.DisplayRole):
-        if not index.isValid() or not role == Qt.DisplayRole:
-            return QVariant()
+    def data(self, index, role=QtCore.Qt.DisplayRole):
+        if not index.isValid() or not role == QtCore.Qt.DisplayRole:
+            return QtCore.QVariant()
         d = self._getWaves()
         if index.column() == 0:
             return list(d.keys())[index.row()]
@@ -37,13 +33,13 @@ class _WaveModel(QAbstractItemModel):
     def index(self, row, column, parent):
         if not parent.isValid():
             return self.createIndex(row, column, None)
-        return QModelIndex()
+        return QtCore.QModelIndex()
 
     def parent(self, index):
-        return QModelIndex()
+        return QtCore.QModelIndex()
 
     def headerData(self, section, orientation, role):
-        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
+        if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             if section == 0:
                 return "Name"
             if section == 1:
@@ -52,29 +48,28 @@ class _WaveModel(QAbstractItemModel):
                 return "Shape"
 
     def _getWaves(self):
-        from lys import Wave
         return {key: value for key, value in self._shell.dict.items() if isinstance(value, Wave)}
 
     def update(self):
-        size = self.rowCount(parent=QModelIndex())
-        self.rowsInserted.emit(QModelIndex(), 0, size)
+        size = self.rowCount(parent=QtCore.QModelIndex())
+        self.rowsInserted.emit(QtCore.QModelIndex(), 0, size)
 
 
-class WaveViewer(QTreeView):
+class WaveViewer(QtWidgets.QTreeView):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.__model = _WaveModel(glb.shell())
         self.setModel(self.__model)
-        self.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self.buildContextMenu)
 
     def buildContextMenu(self):
-        menu = QMenu(self)
-        menu.addAction(QAction("Display", self, triggered=self._disp))
-        menu.addAction(QAction("Edit", self, triggered=self._edit))
-        menu.addAction(QAction("MultiCut", self, triggered=self._multicut))
-        menu.addAction(QAction("Delete", self, triggered=self._delete))
-        menu.exec_(QCursor.pos())
+        menu = QtWidgets.QMenu(self)
+        menu.addAction(QtWidgets.QAction("Display", self, triggered=self._disp))
+        menu.addAction(QtWidgets.QAction("Edit", self, triggered=self._edit))
+        menu.addAction(QtWidgets.QAction("MultiCut", self, triggered=self._multicut))
+        menu.addAction(QtWidgets.QAction("Delete", self, triggered=self._delete))
+        menu.exec_(QtGui.QCursor.pos())
 
     def __getWaves(self):
         index = self.selectionModel().selectedIndexes()

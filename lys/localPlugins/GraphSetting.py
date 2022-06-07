@@ -1,9 +1,6 @@
-#!/usr/bin/python3
-# -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QActionGroup
-
 from lys import home, SettingDict, glb, display
 from lys.widgets import Graph
+from lys.Qt import QtWidgets
 
 _setting = SettingDict(home() + "/.lys/settings/graph.dic")
 
@@ -24,7 +21,7 @@ def _register():
     l1.setCheckable(True)
     l2 = lib.addAction("pyqtGraph")
     l2.setCheckable(True)
-    group = QActionGroup(lib)
+    group = QtWidgets.QActionGroup(lib)
     group.addAction(l1)
     group.addAction(l2)
     if Graph.graphLibrary == "matplotlib":

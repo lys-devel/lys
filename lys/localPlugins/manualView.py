@@ -3,17 +3,15 @@ from pathlib import Path
 import lys
 from lys import glb
 from lys.widgets import LysSubWindow
-
-from LysQt.QtCore import QUrl
-from LysQt.QtWebEngineWidgets import QWebEngineView
+from lys.Qt import QtCore, QtWebEngineWidgets
 
 
 class manualView(LysSubWindow):
     def __init__(self):
         super().__init__()
         url = str(Path(lys.__file__).parent.parent) + "/docs/_build/html/index.html"
-        self.browser = QWebEngineView()
-        self.browser.load(QUrl.fromLocalFile(url))
+        self.browser = QtWebEngineWidgets.QWebEngineView()
+        self.browser.load(QtCore.QUrl.fromLocalFile(url))
         self.setWidget(self.browser)
         self.adjustSize()
 

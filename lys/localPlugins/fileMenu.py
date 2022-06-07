@@ -1,5 +1,5 @@
 from lys import glb, load, display, append, edit, MultiCut
-from LysQt.QtWidgets import QAction, QMenu
+from lys.Qt import QtWidgets
 
 fileView = glb.mainWindow().fileView
 
@@ -28,12 +28,12 @@ def _edit():
         edit(w)
 
 
-disp = QAction('Display', triggered=_display)
-apnd = QAction('Append', triggered=_append)
-mcut = QAction('MultiCut', triggered=_multicut)
-edits = QAction('Edit', triggered=_edit)
+disp = QtWidgets.QAction('Display', triggered=_display)
+apnd = QtWidgets.QAction('Append', triggered=_append)
+mcut = QtWidgets.QAction('MultiCut', triggered=_multicut)
+edits = QtWidgets.QAction('Edit', triggered=_edit)
 
-menu = QMenu()
+menu = QtWidgets.QMenu()
 menu.addAction(disp)
 menu.addAction(apnd)
 menu.addAction(mcut)

@@ -6,7 +6,7 @@ import atexit
 import numpy as np
 import dask.array as da
 
-from LysQt.QtCore import QObject, pyqtSignal
+from lys.Qt import QtCore
 
 
 class SettingDict(dict):
@@ -402,7 +402,7 @@ def _produceWave(data, axes, note):
     return Wave(data, *axes, **note)
 
 
-class WaveBase(QObject):
+class WaveBase(QtCore.QObject):
     """
     Base class of :class:`Wave` and :class:`DaskWave`.
 
@@ -522,7 +522,7 @@ class Wave(WaveBase):
     See also:
         :attr:`data`, :attr:`axes`, :attr:`note`
     """
-    modified = pyqtSignal(object)
+    modified = QtCore.pyqtSignal(object)
     """
     *modified* is a pyqtSignal, which is emitted when *Wave* is changed.
 
@@ -844,7 +844,7 @@ class DaskWave(WaveBase):
             cls.client = Client(cluster)
             atexit.register(closeClient)
             print("[DaskWave] Local cluster launched:", cls.client)
-        except:
+        except Exception:
             print("[DaskWave] failed to initialize local cluster for parallel computing.")
 
     def __init__(self, data, *axes, chunks="auto", **note):
