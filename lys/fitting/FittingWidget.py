@@ -76,7 +76,7 @@ class _DataManager(QtCore.QObject):
             x = wave.x
         else:
             x = wave.note[self._xdata]
-        return wave.data[p[0]:p[1]], x[p[0]:p[1]], wave.x[p[0]:p[1]]
+        return wave.data[p[0]:p[1]+1], x[p[0]:p[1]+1], wave.x[p[0]:p[1]+1]
 
     def getOffset(self, line):
         return line.getOffset()

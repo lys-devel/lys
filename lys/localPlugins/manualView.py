@@ -1,4 +1,5 @@
 from pathlib import Path
+import webbrowser
 
 import lys
 from lys import glb
@@ -17,11 +18,12 @@ class manualView(LysSubWindow):
 
 
 def _register():
+    url = str(Path(lys.__file__).parent.parent) + "/docs/_build/html/index.html"
     menu = glb.mainWindow().menuBar()
     prog = menu.addMenu("Help")
 
     proc = prog.addAction("Open lys reference")
-    proc.triggered.connect(lambda: manualView())
+    proc.triggered.connect(lambda: webbrowser.open(url))
     proc.setShortcut("Ctrl+M")
 
 
