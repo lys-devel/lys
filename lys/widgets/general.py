@@ -42,9 +42,28 @@ class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
         else:
             val = np.log10(abs(v))
             p = math.floor(val)
-            if math.floor(abs(v) / (10**p)) == 1:  # and np.sign(steps) != np.sign(v):
-                p = p - 1
+            a = np.round(v/10**p, 5)
+            if int(a) == 10:
+                a = 1
+                p = p-1
+            p = p-1
+            if abs(abs(a) - 1) < 1e-5 and steps * a < 0:
+                p = p-1
             n = 10 ** p
+            if steps * a > 0:
+                if 2 <= abs(a) < 3:
+                    n *= 2
+                elif 3 <= abs(a) < 5:
+                    n *= 4
+                elif abs(a) >= 5:
+                    n *= 5
+            else:
+                if 2 < abs(a) <= 3:
+                    n *= 2
+                elif 3 < abs(a) <= 5:
+                    n *= 4
+                elif abs(a) > 5 or abs(abs(a)-1) < 1e-5:
+                    n *= 5
         self.setValue(v + steps * n)
 
 
