@@ -22,6 +22,7 @@ class CanvasContextMenu(CanvasPart):
 
     def _constructContextMenu(self):
         menu = QtWidgets.QMenu()
+        menu.addAction(QtWidgets.QAction('Graph settings', self, triggered=lambda: self.canvas().openModifyWindow(), shortcut="Ctrl+G"))
         menu.addAction(QtWidgets.QAction('Auto scale axes', self, triggered=self.__auto))
         if self.canvas().isRangeSelected():
             m = menu.addMenu('Expand and Shrink')
@@ -30,7 +31,7 @@ class CanvasContextMenu(CanvasPart):
             m.addAction(QtWidgets.QAction('Vertical Expand', self, triggered=lambda: self.__exec('Vertical Expand')))
             m.addAction(QtWidgets.QAction('Shrink', self, triggered=lambda: self.__exec('Shrink')))
             m.addAction(QtWidgets.QAction('Horizontal Shrink', self, triggered=lambda: self.__exec('Horizontal Shrink')))
-            m.addAction(QtWidgets.Action('Vertical Shrink', self, triggered=lambda: self.__exec('Vertical Shrink')))
+            m.addAction(QtWidgets.QAction('Vertical Shrink', self, triggered=lambda: self.__exec('Vertical Shrink')))
 
         m = menu.addMenu('Tools')
         m.addAction(self.__ag.addAction(self._sel))
