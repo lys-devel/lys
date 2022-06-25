@@ -50,9 +50,9 @@ class Graph(_SizeAdjustableWindow):
         self.canvas.canvasResized.connect(self.__resizeCanvas)
         self.canvas.keyPressed.connect(self.__keyPress)
         self.resized.connect(self.canvas.parentResized)
-        self.canvas.updated.connect(lambda: self.Save(temporary=True))
-        self.resizeFinished.connect(lambda: self.Save(temporary=True))
-        self.moveFinished.connect(lambda: self.Save(temporary=True))
+        self.canvas.updated.connect(self.modified)
+        self.resizeFinished.connect(self.modified)
+        self.moveFinished.connect(self.modified)
         if file is not None:
             self._load(file)
         else:
@@ -132,7 +132,7 @@ class Graph(_SizeAdjustableWindow):
         self.canvas.LoadFromDictionary(d)
 
     def _prefix(self):
-        return 'graph'
+        return 'Graph'
 
     def _suffix(self):
         return '.grf'

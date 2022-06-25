@@ -1,6 +1,7 @@
 import os
 import sys
 import traceback
+import shutil
 from pathlib import Path
 
 from lys import home, load
@@ -27,15 +28,17 @@ class _ExtendMdiArea(QtWidgets.QMdiArea):
     def update(self):
         dic = {}
         for i, w in enumerate(self._autoWindows()):
-            d = {}
-            d["FileName"] = w.FileName()
-            d["TemporaryFile"] = w.TemporaryFile()
-            dic[i] = d
+            if w.FileName() is None:
+                file = None
+            else:
+                file = Path(w.FileName())
+                if Path.cwd() in file.parents:
+                    file = str(file.relative_to(Path.cwd()))
+                else:
+                    file = str(file.resolve())
+            dic[i] = {"FileName": file, "TemporaryFile": str(Path(w.TemporaryFile()).relative_to(Path.cwd()))}
         with open(self._dicFile, 'w') as f:
             f.write(str(dic))
-
-    def _fileNames(self):
-        return [w.FileName() for w in self._autoWindows() if w.FileName() is not None]
 
     def _autoWindows(self):
         return [w for w in self.subWindowList(order=QtWidgets.QMdiArea.ActivationHistoryOrder) if isinstance(w, _AutoSavedWindow)]
@@ -44,8 +47,8 @@ class _ExtendMdiArea(QtWidgets.QMdiArea):
         super().addSubWindow(window)
         window.closed.connect(lambda: self.removeSubWindow(window))
         if isinstance(window, _AutoSavedWindow):
-            if not window.FileName() in self._fileNames():
-                window.saved.connect(self.update)
+            if window.FileName() not in [w.FileName() for w in self._autoWindows() if w.FileName() is not None]:
+                window.fileChanged.connect(self.update)
                 self.update()
 
     def removeSubWindow(self, window, store=False):
@@ -82,9 +85,12 @@ class _ExtendMdiArea(QtWidgets.QMdiArea):
             try:
                 w = load(dic[i]["TemporaryFile"], tmpFile=dic[i]["TemporaryFile"])
                 w._changeFileName(dic[i]["FileName"])
+                w.fileChanged.connect(self.update)
             except Exception as e:
-                print("Load is skipped because of Failure:", e, file=sys.stderr)
+                print("Load is skipped because of Failure (The file is temporary saved in ./backup):", e, file=sys.stderr)
                 print(traceback.format_exc(), file=sys.stderr)
+                os.makedirs("backup", exist_ok=True)
+                shutil.copy2(dic[i]["TemporaryFile"], "backup/")
             i += 1
         self.update()
 
@@ -351,34 +357,24 @@ def _checkName(name):
         return True
 
 
-class _AutoSavedWindow(LysSubWindow):
-    """
-    This is a base widget class for auto save feature, which is mainly used for Graph class.
-
-    When a *AutoSavedWindow* is instantiated, it is automatically added to current MdiArea.
-
-    At the same time, the window is connected to a temporary file in .lys/workspace/. See :meth:`Save` for detail.
-
-    This functionarity is realized by calling :meth:`_save` method, which should be implemented in class that inherit *AutoSavedWindow*
-
-    To gives default file name, the class should also implement :meth:`_prefix` and :meth:`_suffix` methods, in addition to :meth:`save` method.
-
-    """
-    saved = QtCore.pyqtSignal()
-    """*saved* signal is emitted when it is saved."""
+class _ConservableWindow(LysSubWindow):
+    modified = QtCore.pyqtSignal()
+    """*modified* signal is emitted when the content of the window is changed."""
+    fileChanged = QtCore.pyqtSignal()
+    """*fileChanged* signal is emitted when it is saved."""
 
     def __new__(cls, file=None, warn=True, **kwargs):
         obj = _ExtendMdiArea.loadedWindow(file)
         if obj is not None:
             obj.raise_()
-            if obj._mdiArea() == _ExtendMdiArea.current():
+            if obj.__mdiArea() == _ExtendMdiArea.current():
                 if warn:
-                    print(file + " has been loaded in " + obj._mdiArea()._workspace, file=sys.stderr)
+                    print(file + " has been loaded in " + obj.__mdiArea()._workspace, file=sys.stderr)
                 return None
             elif warn:
                 msg = QtWidgets.QMessageBox(parent=_ExtendMdiArea.current())
                 msg.setIcon(QtWidgets.QMessageBox.Warning)
-                msg.setText(file + " has been loaded in " + obj._mdiArea()._workspace + ". Do you want to move it to current workspace?")
+                msg.setText(file + " has been loaded in " + obj.__mdiArea()._workspace + ". Do you want to move it to current workspace?")
                 msg.setWindowTitle("Caution")
                 msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
                 ok = msg.exec_()
@@ -389,54 +385,48 @@ class _AutoSavedWindow(LysSubWindow):
                     return super().__new__(cls)
         return super().__new__(cls)
 
-    def __init__(self, file=None, *args, tmpFile=None, **kwargs):
-        self.__closeflg = True
-        self.__modified = False
-        if file is None:
-            self.__file = None
-        else:
-            self.__file = os.path.abspath(file)
-        if tmpFile is None:
-            self.__tmpFile = _ExtendMdiArea.current().tmpFilePath(self._prefix(), self._suffix())
-        else:
-            self.__tmpFile = tmpFile
-        super().__init__()
-        self.setWindowTitle(self.Name())
-
-    def _changeFileName(self, file):
-        self.__file = file
-        self.setWindowTitle(self.Name())
-
-    def _mdiArea(self):
+    def __mdiArea(self):
         parent = self
         while not isinstance(parent, _ExtendMdiArea):
             parent = parent.parent()
         return parent
 
-    def Save(self, file=None, temporary=False):
+    def __init__(self, file=None, *args, **kwargs):
+        if file is None:
+            self.__file = None
+        else:
+            self.__file = os.path.abspath(file)
+        super().__init__()
+        self.__closeflg = True
+        self.__modified = False
+        self.setWindowTitle(self.Name())
+        self.modified.connect(self.__onModified)
+
+    def __onModified(self):
+        self.__modified = True
+        self.setWindowTitle(self.Name())
+
+    def _changeFileName(self, file, mkdir=False):
+        if file is None:
+            self.__file = None
+        else:
+            self.__file = os.path.abspath(file)
+            if mkdir:
+                os.makedirs(os.path.dirname(self.__file), exist_ok=True)
+        self.setWindowTitle(self.Name())
+
+    def Save(self, file=None):
         """
         Save the content of the window.
 
-        If *file* is given, the content of the window is saved via _save method.
-
-        If *file* is not given, it is saved in the last-saved file if it exists.
-
-        If *temporary* is True, it is saved in the temporary file in .lys/workspace/ automatically.
-
         Args:
-            file(str): the file to be saved.
+            file(str): The file to be saved. If *file* is None, the window is saved in the last-saved file.
         """
-        if temporary:
-            os.makedirs(os.path.dirname(self.__tmpFile), exist_ok=True)
-            self._save(self.__tmpFile)
-            self.__modified = True
-        else:
-            if file is not None:
-                self.__file = os.path.abspath(file)
-                os.makedirs(os.path.dirname(self.__file), exist_ok=True)
-            self._save(self.__file)
-            self.saved.emit()
-            self.__modified = False
+        if file is not None:
+            self._changeFileName(file, mkdir=True)
+            self.fileChanged.emit()
+        self._save(self.__file)
+        self.__modified = False
         self.setWindowTitle(self.Name())
 
     def close(self, force=False):
@@ -453,9 +443,11 @@ class _AutoSavedWindow(LysSubWindow):
             if self.__file is None:
                 msg.setText("This window is not saved. Do you really want to close it?")
                 msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-            else:
+            elif self.__modified:
                 msg.setText("Do you want to save the content of this window to " + self.__file + "?")
                 msg.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Cancel)
+            else:
+                return super().closeEvent(event)
             ok = msg.exec_()
             if ok == QtWidgets.QMessageBox.Cancel:
                 return event.ignore()
@@ -467,25 +459,49 @@ class _AutoSavedWindow(LysSubWindow):
         """Return filename that saves content of the window"""
         return self.__file
 
-    def TemporaryFile(self):
-        """Return temporary filename that hold content of the window"""
-        return self.__tmpFile
-
     def Name(self):
         """Return name of the window, which is automatically determined by filename."""
         if self.__file is not None:
             p = Path(self.FileName())
-            p = p.relative_to(home())
+            if Path.cwd() in p.parents:
+                p = p.relative_to(home())
+            else:
+                p = p.resolve()
             name = str(p)
             if self.__modified:
                 name += "*"
             return name
         else:
-            file = self.TemporaryFile()
-            return os.path.basename(file) + " (temporary)"
+            return "Untitled"
 
     def _save(self, file):
         raise NotImplementedError
+
+
+class _AutoSavedWindow(_ConservableWindow):
+    def __init__(self, *args, tmpFile=None, **kwargs):
+        if tmpFile is None:
+            self.__tmpFile = _ExtendMdiArea.current().tmpFilePath(self._prefix(), self._suffix())
+        else:
+            self.__tmpFile = tmpFile
+        super().__init__(*args, **kwargs)
+        self.modified.connect(self.__save)
+
+    def __save(self):
+        os.makedirs(os.path.dirname(self.__tmpFile), exist_ok=True)
+        self._save(self.__tmpFile)
+
+    def TemporaryFile(self):
+        """Return temporary filename that hold content of the window"""
+        return os.path.abspath(self.__tmpFile)
+
+    def Name(self):
+        """Return name of the window, which is automatically determined by filename."""
+        if self.FileName() is not None:
+            return super().Name()
+        else:
+            file = self.TemporaryFile()
+            return os.path.basename(file) + " (not saved)"
 
     def _prefix(self):
         pass

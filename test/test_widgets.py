@@ -3,22 +3,20 @@ import os
 import shutil
 import warnings
 
-import lys
-
-from LysQt.QtWidgets import QSpinBox
-
 from lys import glb, home, registerFileLoader, errors
-from lys.widgets import LysSubWindow, AutoSavedWindow, _ExtendMdiArea
+from lys.Qt import QtWidgets
+from lys.widgets import LysSubWindow, _ExtendMdiArea
+from lys.widgets.mdi import _AutoSavedWindow
 
 
 class testSubWindow(LysSubWindow):
     def __init__(self):
         super().__init__()
-        self.spin = QSpinBox(objectName="spin1")
+        self.spin = QtWidgets.QSpinBox(objectName="spin1")
         self.setWidget(self.spin)
 
 
-class testAutoSavedWindow(AutoSavedWindow):
+class testAutoSavedWindow(_AutoSavedWindow):
     def __init__(self, file=None, **kwargs):
         super().__init__(file)
         if file is None:
@@ -29,7 +27,7 @@ class testAutoSavedWindow(AutoSavedWindow):
 
     def setText(self, txt):
         self.text = txt
-        self.Save(temporary=True)
+        self.modified.emit()
 
     def _save(self, file):
         with open(file, "w") as f:
