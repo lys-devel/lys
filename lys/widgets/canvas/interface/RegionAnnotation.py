@@ -31,7 +31,7 @@ class RegionAnnotation(AnnotationWithLine):
     """PyqtSignal that is emitted when the region is changed."""
 
     def __init__(self, canvas, region, orientation, axis):
-        super().__init__(canvas, "test", axis)
+        super().__init__(canvas, "region", axis)
         self._initialize(region, orientation, axis)
         self._region = region
         self._orientation = orientation
@@ -102,7 +102,7 @@ class FreeRegionAnnotation(AnnotationWithLine):
     """PyqtSignal that is emitted when the region width is changed."""
 
     def __init__(self, canvas, region, width, axis):
-        super().__init__(canvas, "test", axis)
+        super().__init__(canvas, "fregion", axis)
         self._initialize(region, width, axis)
         self._region = region
         self._width = width

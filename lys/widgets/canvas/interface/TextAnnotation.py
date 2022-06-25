@@ -31,7 +31,7 @@ class TextAnnotation(AnnotationData):
     """Pyqtsignal that is emitted when the text is edited."""
 
     def __init__(self, canvas, text, pos, axis):
-        super().__init__(canvas, "test", axis)
+        super().__init__(canvas, "text", axis)
         self._initialize(text, pos, axis)
         self._text = ""
         self.setText(text)

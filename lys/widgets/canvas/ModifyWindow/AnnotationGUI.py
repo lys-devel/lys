@@ -1,3 +1,5 @@
+import numpy as np
+
 from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import ColorSelection
 
@@ -9,6 +11,18 @@ class _Model(QtCore.QAbstractItemModel):
         self.__type = type
         canvas.annotationChanged.connect(lambda: self.layoutChanged.emit())
 
+    def setData(self, index, value, role=QtCore.Qt.EditRole):
+        if role == QtCore.Qt.EditRole:
+            wave = self.canvas.getAnnotations(self.__type)[index.row()]
+            if index.column() == 0:
+                name = str(value)
+                if len(name) != 0:
+                    wave.setName(name)
+            if index.column() == 2:
+                z = int(value)
+                wave.setZOrder(z)
+        return super().setData(index, value, role)
+
     def data(self, index, role):
         if not index.isValid() or not role == QtCore.Qt.DisplayRole:
             return QtCore.QVariant()
@@ -19,6 +33,12 @@ class _Model(QtCore.QAbstractItemModel):
             return annot.getAxis()
         elif index.column() == 2:
             return annot.getZOrder()
+
+    def flags(self, index):
+        if index.column() in [0, 2]:
+            return super().flags(index) | QtCore.Qt.ItemIsEditable
+        else:
+            return super().flags(index)
 
     def rowCount(self, parent):
         if parent.isValid():
@@ -74,23 +94,46 @@ class AnnotationSelectionBox(QtWidgets.QTreeView):
             i += 1
 
     def _buildContextMenu(self, qPoint):
-        menu = QtWidgets.QMenu(self)
-        menulabels = ['show', 'hide', 'remove']
-        actionlist = []
-        for label in menulabels:
-            actionlist.append(menu.addAction(label))
-        action = menu.exec_(QtGui.QCursor.pos())
-        if action is None:
-            return
-
         list = self._selectedData()
-        for data in list:
-            if action.text() == 'show':
-                data.setVisible(True)
-            elif action.text() == 'hide':
-                data.setVisible(False)
-            elif action.text() == 'remove':
-                self.canvas.removeAnnotation(data)
+        menu = QtWidgets.QMenu(self)
+        menu.addAction(QtWidgets.QAction('Show', self, triggered=lambda: [data.setVisible(True) for data in list]))
+        menu.addAction(QtWidgets.QAction('Hide', self, triggered=lambda: [data.setVisible(False) for data in list]))
+        menu.addAction(QtWidgets.QAction('Remove', self, triggered=lambda: [self.canvas.removeAnnotation(data) for data in list]))
+        menu.addAction(QtWidgets.QAction('Z order', self, triggered=self.__zorder))
+        menu.exec_(QtGui.QCursor.pos())
+
+    def __zorder(self):
+        data = self._selectedData()
+        d = _ZOrderDialog(np.max([item.getZOrder() for item in data]))
+        if d.exec_():
+            fr, step = d.getParams()
+            for i, item in enumerate(data):
+                item.setZOrder(fr + step * i)
+
+
+class _ZOrderDialog(QtWidgets.QDialog):
+    def __init__(self, init, parent=None):
+        super().__init__(parent)
+        self._from = QtWidgets.QSpinBox()
+        self._from.setRange(0, 1000000)
+        self._from.setValue(init)
+        self._delta = QtWidgets.QSpinBox()
+        self._delta.setRange(0, 1000000)
+        self._delta.setValue(1)
+
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("From"), 0, 0)
+        g.addWidget(self._from, 1, 0)
+        g.addWidget(QtWidgets.QLabel("Delta"), 0, 1)
+        g.addWidget(self._delta, 1, 1)
+
+        g.addWidget(QtWidgets.QPushButton("O K", clicked=self.accept), 2, 0)
+        g.addWidget(QtWidgets.QPushButton("CANCEL", clicked=self.reject), 2, 1)
+
+        self.setLayout(g)
+
+    def getParams(self):
+        return self._from.value(), self._delta.value()
 
 
 class LineColorAdjustBox(ColorSelection):

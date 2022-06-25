@@ -31,7 +31,7 @@ class LineAnnotation(AnnotationWithLine):
     """PyqtSignal that is emitted when the position of the line is changed."""
 
     def __init__(self, canvas, pos, axis):
-        super().__init__(canvas, "test", axis)
+        super().__init__(canvas, "line", axis)
         self._initialize(pos, axis)
         self._pos = pos
 
@@ -90,7 +90,7 @@ class InfiniteLineAnnotation(AnnotationWithLine):
     """PyqtSignal that is emitted when the position of the line is changed."""
 
     def __init__(self, canvas, pos, orientation, axis):
-        super().__init__(canvas, "test", axis)
+        super().__init__(canvas, "inf line", axis)
         self._initialize(pos, orientation, axis)
         self._pos = pos
         self._orientation = orientation

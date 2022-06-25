@@ -4,6 +4,10 @@ from matplotlib import transforms, patches
 from ..interface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, TextAnnotation, RectAnnotation, RegionAnnotation, FreeRegionAnnotation, CrossAnnotation
 
 
+def _setZ(obj, z):
+    obj.set_zorder(z - 100000)
+
+
 class _MatplotlibLineAnnotation(LineAnnotation):
     def _initialize(self, pos, axis):
         axes = self.canvas().getAxes(axis)
@@ -23,7 +27,7 @@ class _MatplotlibLineAnnotation(LineAnnotation):
         self._obj.set_linewidth(width)
 
     def _setZOrder(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
@@ -67,7 +71,7 @@ class _MatplotlibInfiniteLineAnnotation(InfiniteLineAnnotation):
         self._obj.set_linewidth(width)
 
     def _setZOrder(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
@@ -99,7 +103,7 @@ class _MatplotlibRectAnnotation(RectAnnotation):
         self._obj.set_linewidth(width)
 
     def _setZOrder(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
@@ -144,7 +148,7 @@ class _MatplotlibRegionAnnotation(RegionAnnotation):
         self._obj.set_linewidth(width)
 
     def _setZOrder(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
@@ -189,7 +193,7 @@ class _MatplotlibFreeRegionAnnotation(FreeRegionAnnotation):
         self._obj.set_linewidth(width)
 
     def _setZOrder(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
@@ -229,8 +233,8 @@ class _MatplotlibCrossAnnotation(CrossAnnotation):
         self._obj.lines[1].set_linewidth(width)
 
     def _setZOrder(self, z):
-        self._obj.lines[0].set_zorder(z)
-        self._obj.lines[1].set_zorder(z)
+        _setZ(self._obj.lines[0], z)
+        _setZ(self._obj.lines[1], z)
 
     def _setVisible(self, visible):
         self._obj.lines[0].set_visible(visible)
@@ -295,7 +299,7 @@ class _MatplotlibTextAnnotation(TextAnnotation):
             box.set_edgecolor(edgeColor)
 
     def _setZOrder(self, z):
-        self._obj.set_zorder(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)

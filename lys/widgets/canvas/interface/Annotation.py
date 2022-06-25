@@ -28,6 +28,9 @@ class CanvasAnnotation(CanvasPart):
     def __init__(self, canvas):
         super().__init__(canvas)
         self._annotations = []
+        self._indices = {}
+        self.canvas().saveCanvas.connect(self.__saveGeneral)
+        self.canvas().loadCanvas.connect(self.__loadGeneral)
         self.canvas().saveCanvas.connect(self.__saveLines)
         self.canvas().loadCanvas.connect(self.__loadLines)
         self.canvas().saveCanvas.connect(self.__saveInfiniteLines)
@@ -42,6 +45,21 @@ class CanvasAnnotation(CanvasPart):
         self.canvas().loadCanvas.connect(self.__loadCross)
         self.canvas().saveCanvas.connect(self.__saveText)
         self.canvas().loadCanvas.connect(self.__loadText)
+
+    def _getDefaultAnnotationName(self, type):
+        if type in self._indices:
+            i = self._indices[type] + 1
+        else:
+            i = 1
+        self._indices[type] = i
+        return type + str(i)
+
+    def __saveGeneral(self, d):
+        d["AnnotationsIndices"] = self._indices
+
+    def __loadGeneral(self, d):
+        if "AnnotationIndices" in d:
+            self._indices = dict(d["AnnotationIndices"])
 
     def __getRange(self, dir, axis):
         if dir == "x":

@@ -11,6 +11,10 @@ from ..interface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation
 _styles = {'solid': QtCore.Qt.SolidLine, 'dashed': QtCore.Qt.DashLine, 'dashdot': QtCore.Qt.DashDotLine, 'dotted': QtCore.Qt.DotLine, 'None': QtCore.Qt.NoPen}
 
 
+def _setZ(obj, z):
+    obj.setZValue(z - 100000)
+
+
 class _PyqtgraphLineAnnotation(LineAnnotation):
     """Implementation of LineAnnotation for pyqtgraph"""
 
@@ -35,7 +39,7 @@ class _PyqtgraphLineAnnotation(LineAnnotation):
         self._obj.pen.setWidth(width)
 
     def _setZOrder(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -74,7 +78,7 @@ class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
         self._obj.pen.setWidth(width)
 
     def _setZOrder(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -107,7 +111,7 @@ class _PyqtgraphRectAnnotation(RectAnnotation):
         self._obj.pen.setWidth(width)
 
     def _setZOrder(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -142,7 +146,7 @@ class _PyqtgraphRegionAnnotation(RegionAnnotation):
         self._obj.lines[1].pen.setWidth(width)
 
     def _setZOrder(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -201,7 +205,7 @@ class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
         self._obj.pen.setWidth(width)
 
     def _setZOrder(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -235,7 +239,7 @@ class _PyqtgraphCrossAnnotation(CrossAnnotation):
         self._obj.lines[1].pen.setWidth(width)
 
     def _setZOrder(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -380,7 +384,7 @@ class _PyqtgraphTextAnnotation(TextAnnotation):
         warnings.warn("pyqtGraph does not support bounding box of text.", NotSupportedWarning)
 
     def _setZOrder(self, z):
-        self._obj.setZValue(z)
+        _setZ(self._obj, z)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
@@ -415,120 +419,3 @@ class _PyqtgraphAnnotation(CanvasAnnotation):
 
     def _removeAnnotation(self, obj):
         obj.remove()
-
-
-"""
-
-
-class AnnotationMovableCanvas(AnnotationEditableCanvas):
-
-    @saveCanvas
-    def setAnnotPosition(self, indexes, xy):
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            l.obj.set_position(xy)
-        self._emitAnnotationSelected()
-
-    def getAnnotPosition(self, indexes):
-        res = []
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            res.append(l.obj.get_position())
-        return res
-
-    @saveCanvas
-    def setAnnotPositionMode(self, indexes, mode):
-
-
-
-class AnnotationBoxAdjustableCanvas(AnnotationMovableCanvas):
-
-    @saveCanvas
-    def setAnnotBoxStyle(self, indexes, style):
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            box = l.obj.get_bbox_patch()
-            if style == 'none':
-                if box is not None:
-                    box.set_visible(False)
-            else:
-                l.obj.set_bbox(dict(boxstyle=style))
-                self.setAnnotBoxColor([l.id], 'w')
-                self.setAnnotBoxEdgeColor([l.id], 'k')
-
-    def _checkBoxStyle(self, box):
-        if isinstance(box, BoxStyle.Square):
-            return 'square'
-        elif isinstance(box, BoxStyle.Circle):
-            return 'circle'
-        elif isinstance(box, BoxStyle.DArrow):
-            return 'darrow'
-        elif isinstance(box, BoxStyle.RArrow):
-            return 'rarrow'
-        elif isinstance(box, BoxStyle.LArrow):
-            return 'larrow'
-        elif isinstance(box, BoxStyle.Round):
-            return 'round'
-        elif isinstance(box, BoxStyle.Round4):
-            return 'round4'
-        elif isinstance(box, BoxStyle.Roundtooth):
-            return 'roundtooth'
-        elif isinstance(box, BoxStyle.Sawtooth):
-            return 'sawtooth'
-        return 'none'
-
-    def getAnnotBoxStyle(self, indexes):
-        res = []
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            box = l.obj.get_bbox_patch()
-            if box is None:
-                res.append('none')
-                continue
-            if not box.get_visible():
-                res.append('none')
-                continue
-            else:
-                res.append(self._checkBoxStyle(box.get_boxstyle()))
-                continue
-        return res
-
-    @saveCanvas
-    def setAnnotBoxColor(self, indexes, color):
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            box = l.obj.get_bbox_patch()
-            if box is not None:
-                box.set_facecolor(color)
-
-    def getAnnotBoxColor(self, indexes):
-        res = []
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            box = l.obj.get_bbox_patch()
-            if box is None:
-                res.append('w')
-            else:
-                res.append(box.get_facecolor())
-        return res
-
-    @saveCanvas
-    def setAnnotBoxEdgeColor(self, indexes, color):
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            box = l.obj.get_bbox_patch()
-            if box is not None:
-                box.set_edgecolor(color)
-
-    def getAnnotBoxEdgeColor(self, indexes):
-        res = []
-        list = self.getAnnotationFromIndexes(indexes)
-        for l in list:
-            box = l.obj.get_bbox_patch()
-            if box is None:
-                res.append('k')
-            else:
-                res.append(box.get_edgecolor())
-        return res
-
-"""

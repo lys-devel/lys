@@ -31,7 +31,7 @@ class CrossAnnotation(AnnotationWithLine):
     """PyqtSignal that is emitted when the region is changed."""
 
     def __init__(self, canvas, pos, axis):
-        super().__init__(canvas, "test", axis)
+        super().__init__(canvas, "cross", axis)
         self._initialize(pos, axis)
         self._pos = pos
 
