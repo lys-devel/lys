@@ -57,7 +57,7 @@ class _Model(QtCore.QAbstractItemModel):
         return QtCore.QModelIndex()
 
     def headerData(self, section, orientation, role):
-        header = ["Name", "Axis", "Zorder"]
+        header = ["Name", "Axis", "Z order"]
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return header[section]
 
@@ -98,6 +98,7 @@ class AnnotationSelectionBox(QtWidgets.QTreeView):
         menu = QtWidgets.QMenu(self)
         menu.addAction(QtWidgets.QAction('Show', self, triggered=lambda: [data.setVisible(True) for data in list]))
         menu.addAction(QtWidgets.QAction('Hide', self, triggered=lambda: [data.setVisible(False) for data in list]))
+        menu.addSeparator()
         menu.addAction(QtWidgets.QAction('Remove', self, triggered=lambda: [self.canvas.removeAnnotation(data) for data in list]))
         menu.addAction(QtWidgets.QAction('Z order', self, triggered=self.__zorder))
         menu.exec_(QtGui.QCursor.pos())

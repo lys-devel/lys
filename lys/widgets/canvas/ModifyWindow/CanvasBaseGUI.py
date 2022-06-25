@@ -58,7 +58,7 @@ class _Model(QtCore.QAbstractItemModel):
         return QtCore.QModelIndex()
 
     def headerData(self, section, orientation, role):
-        header = ["Name", "Axis", "Zorder"]
+        header = ["Name", "Axis", "Z order"]
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return header[section]
 
@@ -99,9 +99,11 @@ class DataSelectionBox(_DataSelectionBoxBase):
         menu = QtWidgets.QMenu(self)
         menu.addAction(QtWidgets.QAction('Show', self, triggered=lambda: self.__visible(True)))
         menu.addAction(QtWidgets.QAction('Hide', self, triggered=lambda: self.__visible(False)))
-        menu.addAction(QtWidgets.QAction('z order', self, triggered=self.__zorder))
+        menu.addSeparator()
         menu.addAction(QtWidgets.QAction('Remove', self, triggered=self.__remove))
         menu.addAction(QtWidgets.QAction('Duplicate', self, triggered=self.__duplicate))
+        menu.addAction(QtWidgets.QAction('Z order', self, triggered=self.__zorder))
+        menu.addSeparator()
         menu.addAction(QtWidgets.QAction('Process', self, triggered=self.__process))
 
         raw = menu.addMenu("Raw data")
