@@ -2,53 +2,44 @@ from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import ColorSelection
 
 
-class _Model(QtGui.QStandardItemModel):
-    def __init__(self, canvas, type='text'):
-        super().__init__(0, 3)
-        self.setHeaderData(0, QtCore.Qt.Horizontal, 'Line')
-        self.setHeaderData(1, QtCore.Qt.Horizontal, 'Axis')
-        self.setHeaderData(2, QtCore.Qt.Horizontal, 'Zorder')
+class _Model(QtCore.QAbstractItemModel):
+    def __init__(self, canvas, type):
+        super().__init__()
         self.canvas = canvas
-        self.type = type
+        self.__type = type
+        canvas.annotationChanged.connect(lambda: self.layoutChanged.emit())
 
-    def clear(self):
-        super().clear()
-        self.setColumnCount(3)
-        self.setHeaderData(0, QtCore.Qt.Horizontal, 'Annotation')
-        self.setHeaderData(1, QtCore.Qt.Horizontal, 'Axis')
-        self.setHeaderData(2, QtCore.Qt.Horizontal, 'Zorder')
-    """
-    def supportedDropActions(self):
-        return Qt.MoveAction
+    def data(self, index, role):
+        if not index.isValid() or not role == QtCore.Qt.DisplayRole:
+            return QtCore.QVariant()
+        annot = self.canvas.getAnnotations(self.__type)[index.row()]
+        if index.column() == 0:
+            return annot.getName()
+        elif index.column() == 1:
+            return annot.getAxis()
+        elif index.column() == 2:
+            return annot.getZOrder()
 
-    def mimeData(self, indexes):
-        mimedata = QMimeData()
-        data = []
-        for i in indexes:
-            if i.column() != 2:
-                continue
-            t = eval(self.itemFromIndex(i).text())
-            data.append(t)
-        mimedata.setData('index', str(data).encode('utf-8'))
-        mimedata.setText(str(data))
-        return mimedata
+    def rowCount(self, parent):
+        if parent.isValid():
+            return 0
+        return len(self.canvas.getAnnotations(self.__type))
 
-    def mimeTypes(self):
-        return ['index']
+    def columnCount(self, parent):
+        return 3
 
-    def dropMimeData(self, data, action, row, column, parent):
-        f = eval(data.text())
-        par = self.itemFromIndex(parent)
-        if par is None:
-            if row == -1 and column == -1:
-                self.canvas.moveAnnotation(f, type=self.type)
-            else:
-                self.canvas.moveAnnotation(f, self.item(row, 2).text(), type=self.type)
-        else:
-            self.canvas.moveAnnotation(f, self.item(self.itemFromIndex(parent).row(), 2).text(), type=self.type)
-        self.canvas._emitAnnotationChanged()
-        return False
-    """
+    def index(self, row, column, parent):
+        if not parent.isValid():
+            return self.createIndex(row, column)
+        return QtCore.QModelIndex()
+
+    def parent(self, index):
+        return QtCore.QModelIndex()
+
+    def headerData(self, section, orientation, role):
+        header = ["Name", "Axis", "Zorder"]
+        if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
+            return header[section]
 
 
 class AnnotationSelectionBox(QtWidgets.QTreeView):
@@ -59,45 +50,17 @@ class AnnotationSelectionBox(QtWidgets.QTreeView):
         self.canvas = canvas
         self.__type = type
         self.__initlayout()
-        self._loadstate()
-        self.canvas.annotationChanged.connect(self._loadstate)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
-        self.flg = False
+        self.customContextMenuRequested.connect(self._buildContextMenu)
 
     def __initlayout(self):
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-        self.setDropIndicatorShown(True)
         self.__model = _Model(self.canvas, self.__type)
         self.setModel(self.__model)
-        self.selectionModel().selectionChanged.connect(self._onSelected)
-
-    def _loadstate(self):
-        self.flg = True
-        selected = self._selectedData()
-        list = self.canvas.getAnnotations(self.__type)
-        self.__model.clear()
-        for i, data in enumerate(list):
-            self.__model.setItem(i, 0, QtGui.QStandardItem(data.getName()))
-            self.__model.setItem(i, 1, QtGui.QStandardItem(data.getAxis()))
-            self.__model.setItem(i, 2, QtGui.QStandardItem(str(data.getZOrder())))
-            if data in selected:
-                index = self.__model.item(i).index()
-                self.selectionModel().select(index, QtCore.QItemSelectionModel.Select | QtCore.QItemSelectionModel.Rows)
-        self.flg = False
-
-    def _onSelected(self):
-        if self.flg:
-            return
-        self.flg = True
-        self.selected.emit(self._selectedData())
-        self.flg = False
+        self.selectionModel().selectionChanged.connect(lambda: self.selected.emit(self._selectedData()))
 
     def _selectedData(self):
         list = self.canvas.getAnnotations(self.__type)
-        if len(list) != self.__model.rowCount():
-            return []
         return [list[i.row()] for i in self.selectedIndexes() if i.column() == 0]
 
     def sizeHint(self):
@@ -110,7 +73,7 @@ class AnnotationSelectionBox(QtWidgets.QTreeView):
             self.__model.itemFromIndex(self.__model.index(len(list) - i, 0)).setText(item.name)
             i += 1
 
-    def buildContextMenu(self, qPoint):
+    def _buildContextMenu(self, qPoint):
         menu = QtWidgets.QMenu(self)
         menulabels = ['show', 'hide', 'remove']
         actionlist = []

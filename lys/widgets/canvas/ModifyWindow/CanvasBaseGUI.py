@@ -1,4 +1,6 @@
-from lys import Wave, glb
+import numpy as np
+
+from lys import Wave, glb, display, append
 from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import ScientificSpinBox
 
@@ -10,16 +12,34 @@ class _Model(QtCore.QAbstractItemModel):
         self.__type = type
         canvas.dataChanged.connect(lambda: self.layoutChanged.emit())
 
+    def setData(self, index, value, role=QtCore.Qt.EditRole):
+        if role == QtCore.Qt.EditRole:
+            wave = self.canvas.getWaveData(self.__type)[index.row()]
+            if index.column() == 0:
+                name = str(value)
+                if len(name) != 0:
+                    wave.setName(name)
+            if index.column() == 2:
+                z = int(value)
+                wave.setZOrder(z)
+        return super().setData(index, value, role)
+
     def data(self, index, role):
         if not index.isValid() or not role == QtCore.Qt.DisplayRole:
             return QtCore.QVariant()
-        waves = self.canvas.getWaveData(self.__type)
+        wave = self.canvas.getWaveData(self.__type)[index.row()]
         if index.column() == 0:
-            return waves[index.row()].getWave().name
+            return wave.getName()
         elif index.column() == 1:
-            return waves[index.row()].getAxis()
+            return wave.getAxis()
         elif index.column() == 2:
-            return waves[index.row()].getZOrder()
+            return str(wave.getZOrder())
+
+    def flags(self, index):
+        if index.column() in [0, 2]:
+            return super().flags(index) | QtCore.Qt.ItemIsEditable
+        else:
+            return super().flags(index)
 
     def rowCount(self, parent):
         if parent.isValid():
@@ -38,7 +58,7 @@ class _Model(QtCore.QAbstractItemModel):
         return QtCore.QModelIndex()
 
     def headerData(self, section, orientation, role):
-        header = ["Wave", "Axis", "Zorder"]
+        header = ["Name", "Axis", "Zorder"]
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return header[section]
 
@@ -51,13 +71,10 @@ class _DataSelectionBoxBase(QtWidgets.QTreeView):
         self.canvas = canvas
         self.__type = type
         self.__initlayout()
-        self.flg = False
 
     def __initlayout(self):
         self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
-        self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
-        self.setDropIndicatorShown(True)
         self.__model = _Model(self.canvas, self.__type)
         self.setModel(self.__model)
         self.selectionModel().selectionChanged.connect(lambda: self.selected.emit(self._selectedData()))
@@ -82,12 +99,13 @@ class DataSelectionBox(_DataSelectionBoxBase):
         menu = QtWidgets.QMenu(self)
         menu.addAction(QtWidgets.QAction('Show', self, triggered=lambda: self.__visible(True)))
         menu.addAction(QtWidgets.QAction('Hide', self, triggered=lambda: self.__visible(False)))
+        menu.addAction(QtWidgets.QAction('ZOrder', self, triggered=self.__zorder))
         menu.addAction(QtWidgets.QAction('Remove', self, triggered=self.__remove))
         menu.addAction(QtWidgets.QAction('Duplicate', self, triggered=self.__duplicate))
         menu.addAction(QtWidgets.QAction('Process', self, triggered=self.__process))
 
         raw = menu.addMenu("Raw data")
-        raw.addAction(QtWidgets.QAction('Display', self, triggered=lambda: self.__display("Wave")))
+        raw.addAction(QtWidgets.QAction('Display', self, triggered=lambda: display(*self.__getWaves("Wave"))))
         raw.addAction(QtWidgets.QAction('Append', self, triggered=lambda: self.__append("Wave")))
         raw.addAction(QtWidgets.QAction('Print', self, triggered=lambda: self.__print("Wave")))
         raw.addAction(QtWidgets.QAction('MultiCut', self, triggered=lambda: self.__multicut("Wave")))
@@ -100,7 +118,7 @@ class DataSelectionBox(_DataSelectionBoxBase):
         raw.addAction(QtWidgets.QAction('Send to shell', self, triggered=lambda: self.__send("Wave")))
 
         pr = menu.addMenu("Processed data")
-        pr.addAction(QtWidgets.QAction('Display', self, triggered=lambda: self.__display("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('Display', self, triggered=lambda: display(*self.__getWaves("ProcessedWave"))))
         pr.addAction(QtWidgets.QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
         pr.addAction(QtWidgets.QAction('Print', self, triggered=lambda: self.__print("ProcessedWave")))
         pr.addAction(QtWidgets.QAction('MultiCut', self, triggered=lambda: self.__multicut("ProcessedWave")))
@@ -130,12 +148,7 @@ class DataSelectionBox(_DataSelectionBoxBase):
         for d in self._selectedData():
             self.canvas.Remove(d)
 
-    def __display(self, type, **kwargs):
-        from lys import display
-        display(*self.__getWaves(type), **kwargs)
-
     def __append(self, type, **kwargs):
-        from lys import append
         append(*self.__getWaves(type), exclude=self.canvas, **kwargs)
 
     def __duplicate(self):
@@ -178,7 +191,6 @@ class DataSelectionBox(_DataSelectionBoxBase):
             d.export(path, type=type)
 
     def __to1d(self, waveType):
-        from lys import display
         d = self.__getWaves(waveType)[0]
         w = d.duplicate()
         dialog = _SliceDialog(w, self)
@@ -196,12 +208,45 @@ class DataSelectionBox(_DataSelectionBoxBase):
         display(*result)
 
     def __send(self, waveType):
-        d = self.__getWaves(waveType)[0]
-        w = d.duplicate()
-        text, ok = QtWidgets.QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
+        dat = self._selectedData()[0]
+        text, ok = QtWidgets.QInputDialog.getText(None, "Send to shell", "Enter wave name", text=dat.getName())
         if ok:
+            w = self.__getWaves(waveType)[0].duplicate()
             w.name = text
             glb.shell().addObject(w, text)
+
+    def __zorder(self):
+        data = self._selectedData()
+        d = _ZOrderDialog(np.max([item.getZOrder() for item in data]))
+        if d.exec_():
+            fr, step = d.getParams()
+            for i, item in enumerate(data):
+                item.setZOrder(fr + step * i)
+
+
+class _ZOrderDialog(QtWidgets.QDialog):
+    def __init__(self, init, parent=None):
+        super().__init__(parent)
+        self._from = QtWidgets.QSpinBox()
+        self._from.setRange(0, 1000000)
+        self._from.setValue(init)
+        self._delta = QtWidgets.QSpinBox()
+        self._delta.setRange(0, 1000000)
+        self._delta.setValue(1)
+
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("From"), 0, 0)
+        g.addWidget(self._from, 1, 0)
+        g.addWidget(QtWidgets.QLabel("Delta"), 0, 1)
+        g.addWidget(self._delta, 1, 1)
+
+        g.addWidget(QtWidgets.QPushButton("O K", clicked=self.accept), 2, 0)
+        g.addWidget(QtWidgets.QPushButton("CANCEL", clicked=self.reject), 2, 1)
+
+        self.setLayout(g)
+
+    def getParams(self):
+        return self._from.value(), self._delta.value()
 
 
 class _SliceDialog(QtWidgets.QDialog):
