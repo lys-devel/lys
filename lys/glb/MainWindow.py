@@ -79,6 +79,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self._mainTab.setCurrentIndex(0)
         self._mainTab.currentChanged.connect(self._changeTab)
         self._mainTab.tabCloseRequested.connect(self._closeTab)
+        self._mainTab.tabBar().setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self._mainTab.tabBar().customContextMenuRequested.connect(self.__tabContextMenu)
         self._side = self.__sideBar()
 
         sp = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
@@ -106,6 +108,18 @@ class MainWindow(QtWidgets.QMainWindow):
         w.setLayout(lay)
         return w
 
+    def __tabContextMenu(self, qPoint):
+        index = self._mainTab.tabBar().tabAt(qPoint)
+        menu = QtWidgets.QMenu(self)
+        menu.addAction(QtWidgets.QAction("Rename", self, triggered=lambda: self.__renameTab(index)))
+        menu.exec_(QtGui.QCursor.pos())
+
+    def __renameTab(self, index):
+        text, ok = QtWidgets.QInputDialog.getText(self, "Rename tab", "Enter new name", text=self._mdiArea()._workspace)
+        if ok:
+            self._mdiArea().setName(text)
+            self._mainTab.setTabText(index, text)
+
     def __addWorkspace(self, workspace="default"):
         work = _ExtendMdiArea(self, workspace)
         self._workspace.append(work)
@@ -122,6 +136,7 @@ class MainWindow(QtWidgets.QMainWindow):
         for i, work in enumerate(self._workspace):
             self._mainTab.setCurrentIndex(i)
             work.RestoreAllWindows()
+            self._mainTab.setTabText(i, work.getName())
             self.closed.connect(work.StoreAllWindows)
         self._mainTab.setCurrentIndex(0)
 

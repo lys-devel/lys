@@ -24,9 +24,17 @@ class _ExtendMdiArea(QtWidgets.QMdiArea):
         self._workspace = workspace
         self._dicFile = home() + '/.lys/workspace/' + workspace + '/winDict.dic'
         self._windir = home() + '/.lys/workspace/' + workspace + '/wins'
+        self._name = workspace
+
+    def setName(self, name):
+        self._name = name
+        self.update()
+
+    def getName(self):
+        return self._name
 
     def update(self):
-        dic = {}
+        dic = {"Name": self._name}
         for i, w in enumerate(self._autoWindows()):
             if w.FileName() is None:
                 file = None
@@ -79,6 +87,7 @@ class _ExtendMdiArea(QtWidgets.QMdiArea):
                 dic = eval(f.read())
         else:
             dic = {}
+        self._name = dic.get("Name", self._workspace)
         # load all windows and disconnect if it is temporary
         i = 0
         while i in dic:

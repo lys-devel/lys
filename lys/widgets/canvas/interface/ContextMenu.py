@@ -21,8 +21,10 @@ class CanvasContextMenu(CanvasPart):
         canvas.customContextMenuRequested.connect(self._constructContextMenu)
 
     def _constructContextMenu(self):
+        from lys import glb
         menu = QtWidgets.QMenu()
         menu.addAction(QtWidgets.QAction('Graph settings', self, triggered=lambda: self.canvas().openModifyWindow(), shortcut="Ctrl+G"))
+        menu.addSeparator()
         menu.addAction(QtWidgets.QAction('Auto scale axes', self, triggered=self.__auto))
         if self.canvas().isRangeSelected():
             m = menu.addMenu('Expand and Shrink')
