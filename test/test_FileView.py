@@ -6,7 +6,7 @@ from pathlib import Path
 
 from lys import home, glb
 from lys.widgets.fileView import _moveFiles
-from LysQt.QtWidgets import QAction, QMenu
+from lys.Qt import QtWidgets
 
 
 class FileView_test(unittest.TestCase):
@@ -61,8 +61,8 @@ class FileView_test(unittest.TestCase):
         # registerFileMenu
         def _change():
             self._flg1 = True
-        menu = QMenu()
-        action = QAction("Test", triggered=_change)
+        menu = QtWidgets.QMenu()
+        action = QtWidgets.QAction("Test", triggered=_change)
         menu.addAction(action)
         view.registerFileMenu("txt", menu)
         single = view._builder._test("txt_single").actions()[0]

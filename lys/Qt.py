@@ -7,7 +7,15 @@ No pulic function and class in this file
 import sys
 import os
 import traceback
-from PyQt5 import QtWidgets, QtGui, QtCore, QtWebEngineWidgets
+from PyQt5 import QtWidgets, QtGui, QtCore
+try:
+    from PyQt5 import QtOpenGL
+except Exception:
+    pass
+try:
+    from PyQt5 import QtWebEngineWidgets
+except Exception:
+    pass
 
 
 def _handle_exception(exc_type, exc_value, exc_traceback):
@@ -23,20 +31,5 @@ def _handle_exception(exc_type, exc_value, exc_traceback):
     sys.stderr.write("".join(traceback.format_exception(exc_type, exc_value, exc_traceback)))
 
 
-def __set_qt_bindings(package):
-    import builtins
-    __import__ = builtins.__import__
-
-    def hook(name, *args, **kwargs):
-        root, sep, other = name.partition('.')
-        if root == 'LysQt':
-            name = package + sep + other
-        # if root == "ExtendAnalysis":
-        #    name = "lys" + sep + other
-        return __import__(name, *args, **kwargs)
-    builtins.__import__ = hook
-
-
 sys.excepthook = _handle_exception
-__set_qt_bindings("PyQt5")
 app = QtWidgets.QApplication([])
