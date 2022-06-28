@@ -7,13 +7,14 @@ No pulic function and class in this file
 import sys
 import os
 import traceback
-from PyQt5 import QtWidgets, QtGui, QtCore
+
+from qtpy import QtWidgets, QtGui
 try:
-    from PyQt5 import QtOpenGL
+    from qtpy import QtOpenGL
 except Exception:
     pass
 try:
-    from PyQt5 import QtWebEngineWidgets
+    from qtpy import QtWebEngineWidgets
 except Exception:
     pass
 
@@ -33,3 +34,7 @@ def _handle_exception(exc_type, exc_value, exc_traceback):
 
 sys.excepthook = _handle_exception
 app = QtWidgets.QApplication([])
+
+
+def start():
+    sys.exit(app.exec_())

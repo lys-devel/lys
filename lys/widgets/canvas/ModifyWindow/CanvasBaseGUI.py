@@ -26,7 +26,7 @@ class _Model(QtCore.QAbstractItemModel):
 
     def data(self, index, role):
         if not index.isValid() or not role == QtCore.Qt.DisplayRole:
-            return QtCore.QVariant()
+            return
         wave = self.canvas.getWaveData(self.__type)[index.row()]
         if index.column() == 0:
             return wave.getName()
@@ -296,10 +296,14 @@ class OffsetAdjustBox(QtWidgets.QWidget):
         self.setLayout(vbox)
 
     def __offsetBox(self):
-        self.__spin1 = ScientificSpinBox(valueChanged=lambda: self.__dataChanged('x offset'))
-        self.__spin2 = ScientificSpinBox(valueChanged=lambda: self.__dataChanged('y offset'))
-        self.__spin3 = ScientificSpinBox(valueChanged=lambda: self.__dataChanged('x muloffset'))
-        self.__spin4 = ScientificSpinBox(valueChanged=lambda: self.__dataChanged('y muloffset'))
+        self.__spin1 = ScientificSpinBox()
+        self.__spin2 = ScientificSpinBox()
+        self.__spin3 = ScientificSpinBox()
+        self.__spin4 = ScientificSpinBox()
+        self.__spin1.valueChanged.connect(lambda: self.__dataChanged('x offset'))
+        self.__spin2.valueChanged.connect(lambda: self.__dataChanged('y offset'))
+        self.__spin3.valueChanged.connect(lambda: self.__dataChanged('x muloffset'))
+        self.__spin4.valueChanged.connect(lambda: self.__dataChanged('y muloffset'))
         gl = QtWidgets.QGridLayout()
         gl.addWidget(QtWidgets.QLabel('x offset'), 0, 0)
         gl.addWidget(QtWidgets.QLabel('y offset'), 0, 1)

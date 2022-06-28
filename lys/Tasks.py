@@ -1,12 +1,11 @@
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-
 from concurrent.futures import *
 from loky import get_reusable_executor
 
+from lys.Qt import QtCore, QtWidgets
 
-class Tasks(QObject):
-    updated = pyqtSignal()
+
+class Tasks(QtCore.QObject):
+    updated = QtCore.pyqtSignal()
     _list = []
     _submitlist = []
 
@@ -125,7 +124,6 @@ class Callable(object):
 
 class CallableList(Callable):
     def __init__(self, callables):
-        #print("callable list __init__")
         self._calls = []
         self._children = callables
         self.count = len(self._children)
@@ -143,7 +141,6 @@ class CallableList(Callable):
     def _childFinished(self, res):
         self.count -= 1
         if self.count == 0:
-            #print("Callablelist. children finished.")
             for c in self._calls:
                 c(self)
         tasks.update()
@@ -210,9 +207,9 @@ _thread = ThreadPoolExecutor(max_workers=20)
 _process = get_reusable_executor(timeout=None)
 
 
-class _parallelExecutor(QObject):
-    finished = pyqtSignal(object)
-    _prefinish = pyqtSignal(object)
+class _parallelExecutor(QtCore.QObject):
+    finished = QtCore.pyqtSignal(object)
+    _prefinish = QtCore.pyqtSignal(object)
     _n = 0
 
     @classmethod

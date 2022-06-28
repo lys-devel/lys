@@ -11,11 +11,13 @@ class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
     Spin box that displays values in sdientific notation, which is frequently used in lys.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, valueChanged=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.setRange(-np.inf, np.inf)
         self.setDecimals(128)
         self.setAccelerated(True)
+        if valueChanged is not None:
+            self.valueChanged.connect(valueChanged)
 
     def textFromValue(self, value):
         """textFromValue"""
@@ -42,13 +44,13 @@ class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
         else:
             val = np.log10(abs(v))
             p = math.floor(val)
-            a = np.round(v/10**p, 5)
+            a = np.round(v / 10**p, 5)
             if int(a) == 10:
                 a = 1
-                p = p-1
-            p = p-1
+                p = p - 1
+            p = p - 1
             if abs(abs(a) - 1) < 1e-5 and steps * a < 0:
-                p = p-1
+                p = p - 1
             n = 10 ** p
             if steps * a > 0:
                 if 2 <= abs(a) < 3:
@@ -62,7 +64,7 @@ class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
                     n *= 2
                 elif 3 < abs(a) <= 5:
                     n *= 4
-                elif abs(a) > 5 or abs(abs(a)-1) < 1e-5:
+                elif abs(a) > 5 or abs(abs(a) - 1) < 1e-5:
                     n *= 5
         self.setValue(v + steps * n)
 

@@ -25,7 +25,7 @@ class _Model(QtCore.QAbstractItemModel):
 
     def data(self, index, role):
         if not index.isValid() or not role == QtCore.Qt.DisplayRole:
-            return QtCore.QVariant()
+            return
         annot = self.canvas.getAnnotations(self.__type)[index.row()]
         if index.column() == 0:
             return annot.getName()

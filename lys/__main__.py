@@ -3,7 +3,6 @@ lys main module.
 To see help of lys, type [python -m lys -h]
 """
 
-import sys
 import shutil
 import argparse
 from importlib import import_module
@@ -47,7 +46,7 @@ if not args.noplugin:
         for plugin in args.plugin:
             import_module(plugin)
 else:
-    print("lys is launched wih -np option. No plugin loaded.")
+    print("lys is launched wih -np option. No plugin is loaded.")
 
 lys.glb.restoreWorkspaces()
-sys.exit(lys.Qt.app.exec())
+lys.Qt.start()

@@ -59,12 +59,18 @@ class LogWidget(QtWidgets.QWidget):
 
     def __initlayout(self):
         self._loglevel = QtWidgets.QHBoxLayout()
-        self._loglevel.addWidget(QtWidgets.QRadioButton("Error", toggled=lambda: self._debugLevel(40)))
-        war = QtWidgets.QRadioButton("Warning", toggled=lambda: self._debugLevel(logging.WARNING))
+        err = QtWidgets.QRadioButton("Error")
+        err.toggled.connect(lambda: self._debugLevel(40))
+        war = QtWidgets.QRadioButton("Warning")
+        war.toggled.connect(lambda: self._debugLevel(logging.WARNING))
+        inf = QtWidgets.QRadioButton("Info")
+        inf.toggled.connect(lambda: self._debugLevel(logging.INFO))
+        deb = QtWidgets.QRadioButton("Debug")
+        deb.toggled.connect(lambda: self._debugLevel(10))
+        self._loglevel.addWidget(err)
         self._loglevel.addWidget(war)
-        inf = QtWidgets.QRadioButton("Info", toggled=lambda: self._debugLevel(logging.INFO))
         self._loglevel.addWidget(inf)
-        self._loglevel.addWidget(QtWidgets.QRadioButton("Debug", toggled=lambda: self._debugLevel(10)))
+        self._loglevel.addWidget(deb)
         war.toggle()
 
         self.filt = QtWidgets.QLineEdit()
