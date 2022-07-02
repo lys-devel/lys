@@ -3,6 +3,7 @@ import numpy as np
 from lys import Wave, glb, display, append
 from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import ScientificSpinBox
+from lys.decorators import avoidCircularReference
 
 
 class _Model(QtCore.QAbstractItemModel):
@@ -219,7 +220,7 @@ class DataSelectionBox(_DataSelectionBoxBase):
 
     def __zorder(self):
         data = self._selectedData()
-        d = _ZOrderDialog(np.max([item.getZOrder() for item in data]))
+        d = _ZOrderDialog(np.min([item.getZOrder() for item in data]))
         if d.exec_():
             fr, step = d.getParams()
             for i, item in enumerate(data):
@@ -287,13 +288,13 @@ class OffsetAdjustBox(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.__initlayout()
-        self.__flg = False
 
     def __initlayout(self):
         vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(self.__offsetBox())
         vbox.addWidget(self.__sideBySideBox())
         self.setLayout(vbox)
+        self.__setEnabled(False)
 
     def __offsetBox(self):
         self.__spin1 = ScientificSpinBox()
@@ -320,7 +321,7 @@ class OffsetAdjustBox(QtWidgets.QWidget):
     def __sideBySideBox(self):
         self.__spinfrom = ScientificSpinBox()
         self.__spindelta = ScientificSpinBox()
-        btn = QtWidgets.QPushButton('Set', clicked=self.__sidebyside)
+        self.__set = QtWidgets.QPushButton('Set', clicked=self.__sidebyside)
         self.__type = QtWidgets.QComboBox()
         self.__type.addItems(['y offset', 'x offset', 'y muloffset', 'x muloffset'])
 
@@ -331,7 +332,7 @@ class OffsetAdjustBox(QtWidgets.QWidget):
         g2.addWidget(self.__spindelta, 1, 1)
         g2.addWidget(QtWidgets.QLabel('type'), 0, 2)
         g2.addWidget(self.__type, 1, 2)
-        g2.addWidget(btn, 2, 1)
+        g2.addWidget(self.__set, 2, 1)
 
         gr2 = QtWidgets.QGroupBox('Side by side')
         gr2.setLayout(g2)
@@ -352,27 +353,39 @@ class OffsetAdjustBox(QtWidgets.QWidget):
                 r[3] = f + delta * i
             d.setOffset(r)
 
+    @avoidCircularReference
     def __dataChanged(self, type):
-        if not self.__flg:
-            for d in self._data:
-                r = list(d.getOffset())
-                if type == 'x offset':
-                    r[0] = self.__spin1.value()
-                if type == 'y offset':
-                    r[1] = self.__spin2.value()
-                if type == 'x muloffset':
-                    r[2] = self.__spin3.value()
-                if type == 'y muloffset':
-                    r[3] = self.__spin4.value()
-                d.setOffset(r)
+        for d in self._data:
+            r = list(d.getOffset())
+            if type == 'x offset':
+                r[0] = self.__spin1.value()
+            if type == 'y offset':
+                r[1] = self.__spin2.value()
+            if type == 'x muloffset':
+                r[2] = self.__spin3.value()
+            if type == 'y muloffset':
+                r[3] = self.__spin4.value()
+            d.setOffset(r)
 
+    def __setEnabled(self, b):
+        self.__spin1.setEnabled(b)
+        self.__spin2.setEnabled(b)
+        self.__spin3.setEnabled(b)
+        self.__spin4.setEnabled(b)
+        self.__spinfrom.setEnabled(b)
+        self.__spindelta.setEnabled(b)
+        self.__type.setEnabled(b)
+        self.__set.setEnabled(b)
+
+    @avoidCircularReference
     def setData(self, data):
         self._data = data
-        self.__flg = True
         if len(data) != 0:
+            self.__setEnabled(True)
             off = data[0].getOffset()
             self.__spin1.setValue(off[0])
             self.__spin2.setValue(off[1])
             self.__spin3.setValue(off[2])
             self.__spin4.setValue(off[3])
-        self.__flg = False
+        else:
+            self.__setEnabled(False)

@@ -204,6 +204,13 @@ class ColormapSelection(QtWidgets.QWidget):
         layout.addWidget(self.__combo)
         self.setLayout(layout)
 
+    def setEnabled(self, b):
+        self.__combo.setEnabled(b)
+        self.__opacity.setEnabled(b)
+        self.__gamma.setEnabled(b)
+        self.__check.setEnabled(b)
+        self.__log.setEnabled(b)
+
     def __changed(self):
         self.colorChanged.emit()
 

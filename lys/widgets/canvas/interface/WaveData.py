@@ -202,5 +202,5 @@ class WaveData(CanvasPart):
     def _updateData(self):
         raise NotImplementedError(str(type(self)) + " does not implement _updateData() method.")
 
-    def _loadAppearance(self):
+    def _loadAppearance(self, appearance):
         raise NotImplementedError(str(type(self)) + " does not implement _loadAppearance(appearance) method.")

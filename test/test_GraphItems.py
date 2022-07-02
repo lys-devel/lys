@@ -3,6 +3,8 @@ import shutil
 import os
 import warnings
 
+import numpy as np
+
 from lys import glb, home, Wave, display, errors, filters
 
 
@@ -206,3 +208,32 @@ class Graph_test(unittest.TestCase):
             self.assertEqual(v.getScale(), 4)
             self.assertEqual(v.getPivot(), 'tail')
             self.assertEqual(v.getColor(), '#ff0000')
+
+    def test_Contour(self):
+        for g in self.graphs:
+            c = g.canvas
+
+            line = c.Append(Wave(np.random.rand(100, 100)), contour=True)
+            line.setLevel(0.5)
+            self.assertEqual(line.getLevel(), 0.5)
+
+            line.setColor('#ff0000')
+            self.assertEqual(line.getColor(), '#ff0000')
+
+            line.setWidth(3)
+            self.assertEqual(line.getWidth(), 3)
+
+            line.setStyle("dashed")
+            self.assertEqual(line.getStyle(), 'dashed')
+
+            ap = line.saveAppearance()
+            line.setLevel(0.4)
+            line.setColor('#ff00ff')
+            line.setWidth(4)
+            line.setStyle("solid")
+
+            line.loadAppearance(ap)
+            self.assertEqual(line.getLevel(), 0.5)
+            self.assertEqual(line.getColor(), '#ff0000')
+            self.assertEqual(line.getWidth(), 3)
+            self.assertEqual(line.getStyle(), 'dashed')

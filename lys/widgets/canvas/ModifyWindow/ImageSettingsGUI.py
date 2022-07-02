@@ -1,5 +1,11 @@
+import numpy as np
+from matplotlib import cm
+
 from lys.Qt import QtWidgets
 from lys.widgets import ScientificSpinBox, ColormapSelection, ColorSelection
+from lys.decorators import avoidCircularReference
+
+from .LineSettingsGUI import _LineStyleAdjustBox, _LineColorSideBySideDialog
 
 
 class _rangeWidget(QtWidgets.QHBoxLayout):
@@ -15,8 +21,10 @@ class _rangeWidget(QtWidgets.QHBoxLayout):
 
         self.addWidget(QtWidgets.QLabel(title))
         self.addWidget(self.__spin2)
-        self.addWidget(QtWidgets.QPushButton("Auto", clicked=lambda: self.setAbsolute(self.__autovalue)))
-        self.addWidget(QtWidgets.QPushButton("Zero", clicked=lambda: self.setAbsolute(0)))
+        self.__auto = QtWidgets.QPushButton("Auto", clicked=lambda: self.setAbsolute(self.__autovalue))
+        self.__zero = QtWidgets.QPushButton("Zero", clicked=lambda: self.setAbsolute(0))
+        self.addWidget(self.__auto)
+        self.addWidget(self.__zero)
 
     def setAbsolute(self, val):
         self.__spin2.setValue(val)
@@ -27,13 +35,18 @@ class _rangeWidget(QtWidgets.QHBoxLayout):
     def setAutoValue(self, val):
         self.__autovalue = val
 
+    def setEnabled(self, b):
+        self.__spin2.setEnabled(b)
+        self.__auto.setEnabled(b)
+        self.__zero.setEnabled(b)
+
 
 class ImageColorAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
         self.__initlayout()
-        self.__loadflg = False
+        self.__setEnabled(False)
 
     def __initlayout(self):
         self.__cmap = ColormapSelection()
@@ -50,26 +63,30 @@ class ImageColorAdjustBox(QtWidgets.QWidget):
         layout.addStretch()
         self.setLayout(layout)
 
-    def __changerange(self):
-        if self.__loadflg:
-            return
+    def __setEnabled(self, b):
+        self.__cmap.setEnabled(b)
+        self.__start.setEnabled(b)
+        self.__end.setEnabled(b)
+
+    @avoidCircularReference
+    def __changerange(self, *args, **kwargs):
         for im in self._images:
             im.setColorRange(self.__start.getValue(), self.__end.getValue())
             im.setLog(self.__cmap.isLog())
 
-    def __changeColormap(self):
-        if self.__loadflg:
-            return
+    @avoidCircularReference
+    def __changeColormap(self, *args, **kwargs):
         for im in self._images:
             im.setColormap(self.__cmap.currentColor())
             im.setGamma(self.__cmap.gamma())
             im.setOpacity(self.__cmap.opacity())
         self.__changerange()
 
+    @avoidCircularReference
     def setImages(self, images):
         self._images = images
         if len(images) != 0:
-            self.__loadflg = True
+            self.__setEnabled(True)
             self.__cmap.setColormap(images[0].getColormap())
             self.__cmap.setOpacity(images[0].getOpacity())
             self.__cmap.setGamma(images[0].getGamma())
@@ -80,15 +97,16 @@ class ImageColorAdjustBox(QtWidgets.QWidget):
             min, max = images[0].getColorRange()
             self.__start.setAbsolute(min)
             self.__end.setAbsolute(max)
-            self.__loadflg = False
+        else:
+            self.__setEnabled(False)
 
 
 class RGBColorAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
-        self.__loadflg = False
         self.__initlayout()
+        self.__setEnable(False)
 
     def __initlayout(self):
         self.__rot = QtWidgets.QDoubleSpinBox()
@@ -110,10 +128,12 @@ class RGBColorAdjustBox(QtWidgets.QWidget):
         layout.addStretch()
         self.setLayout(layout)
 
+    @avoidCircularReference
     def setRGBs(self, images):
         self._images = images
         if len(images) != 0:
-            self.__loadflg = True
+            self.__setEnable(True)
+            self.__rot.setEnabled(np.array([len(i.getFilteredWave().shape) == 2 for i in images]).any())
             self.__rot.setValue(images[0].getColorRotation())
             min, max = images[0].getAutoColorRange()
             self.__start.setAutoValue(min)
@@ -121,17 +141,23 @@ class RGBColorAdjustBox(QtWidgets.QWidget):
             min, max = images[0].getColorRange()
             self.__start.setAbsolute(min)
             self.__end.setAbsolute(max)
-            self.__loadflg = False
+        else:
+            self.__setEnable(False)
 
-    def __changerange(self):
-        if not self.__loadflg:
-            for im in self._images:
-                im.setColorRange(self.__start.getValue(), self.__end.getValue())
+    def __setEnable(self, b):
+        self.__rot.setEnabled(b)
+        self.__start.setEnabled(b)
+        self.__end.setEnabled(b)
 
-    def __changerot(self):
-        if not self.__loadflg:
-            for im in self._images:
-                im.setColorRotation(self.__rot.value())
+    @avoidCircularReference
+    def __changerange(self, *args, **kwargs):
+        for im in self._images:
+            im.setColorRange(self.__start.getValue(), self.__end.getValue())
+
+    @avoidCircularReference
+    def __changerot(self, *args, **kwargs):
+        for im in self._images:
+            im.setColorRotation(self.__rot.value())
 
 
 class VectorAdjustBox(QtWidgets.QWidget):
@@ -141,7 +167,7 @@ class VectorAdjustBox(QtWidgets.QWidget):
         super().__init__()
         self.canvas = canvas
         self.__initlayout()
-        self.__flg = False
+        self.__setEnabled(False)
 
     def __initlayout(self):
         self.__pivot = QtWidgets.QComboBox()
@@ -169,32 +195,144 @@ class VectorAdjustBox(QtWidgets.QWidget):
         layout.addStretch()
         self.setLayout(layout)
 
+    def __setEnabled(self, b):
+        self.__pivot.setEnabled(b)
+        self.__scale.setEnabled(b)
+        self.__width.setEnabled(b)
+        self.__color.setEnabled(b)
+
+    @avoidCircularReference
     def setVectors(self, vectors):
         self._vectors = vectors
-        self.__flg = True
         if len(vectors) != 0:
+            self.__setEnabled(True)
             self.__scale.setValue(vectors[0].getScale())
             self.__width.setValue(vectors[0].getWidth())
             self.__color.setColor(vectors[0].getColor())
             self.__pivot.setCurrentText(vectors[0].getPivot())
-        self.__flg = False
+        else:
+            self.__setEnabled(False)
 
+    @avoidCircularReference
     def __changeLength(self, value):
-        if not self.__flg:
-            for v in self._vectors:
-                v.setScale(value)
+        for v in self._vectors:
+            v.setScale(value)
 
+    @avoidCircularReference
     def __changeWidth(self, value):
-        if not self.__flg:
-            for v in self._vectors:
-                v.setWidth(value)
+        for v in self._vectors:
+            v.setWidth(value)
 
+    @avoidCircularReference
     def __changeColor(self, color):
-        if not self.__flg:
-            for v in self._vectors:
-                v.setColor(color)
+        for v in self._vectors:
+            v.setColor(color)
 
+    @avoidCircularReference
     def __changePivot(self):
-        if not self.__flg:
-            for v in self._vectors:
-                v.setPivot(self.__pivot.currentText())
+        for v in self._vectors:
+            v.setPivot(self.__pivot.currentText())
+
+
+class ContourAdjustBox(QtWidgets.QWidget):
+    def __init__(self, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self.__initlayout(canvas)
+        self.__setEnabled(False)
+
+    def __initlayout(self, canvas):
+        self.__level = ScientificSpinBox(valueChanged=self.__changeLevel)
+
+        h2 = QtWidgets.QHBoxLayout()
+        h2.addWidget(QtWidgets.QLabel("Level"))
+        h2.addWidget(self.__level)
+        h2.addWidget(QtWidgets.QPushButton("Side by side", clicked=self.__sideBySide_level))
+
+        self.__color = ColorSelection()
+        self.__color.colorChanged.connect(self.__changeColor)
+
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QLabel("Color"))
+        h1.addWidget(self.__color)
+        h1.addWidget(QtWidgets.QPushButton("Side by side", clicked=self.__sideBySide_color))
+
+        self._style = _LineStyleAdjustBox(canvas)
+        self._style.widthChanged.connect(lambda w: [line.setWidth(w) for line in self._contours])
+        self._style.styleChanged.connect(lambda s: [line.setStyle(s) for line in self._contours])
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addLayout(h2)
+        layout.addLayout(h1)
+        layout.addWidget(self._style)
+        layout.addStretch()
+        self.setLayout(layout)
+
+    def __setEnabled(self, b):
+        self.__color.setEnabled(b)
+        self._style.setEnabled(b)
+
+    @avoidCircularReference
+    def __changeColor(self, color):
+        for c in self._contours:
+            c.setColor(color)
+
+    @avoidCircularReference
+    def __changeLevel(self, level):
+        for c in self._contours:
+            c.setLevel(level)
+
+    @avoidCircularReference
+    def setContours(self, contours):
+        self._contours = contours
+        if len(contours) != 0:
+            self.__setEnabled(True)
+            self.__level.setValue(contours[0].getLevel())
+            self.__color.setColor(contours[0].getColor())
+            self._style.setWidth(contours[0].getWidth())
+            self._style.setStyle(contours[0].getStyle())
+        else:
+            self.__setEnabled(False)
+
+    def __sideBySide_color(self):
+        d = _LineColorSideBySideDialog()
+        res = d.exec_()
+        if res == QtWidgets.QDialog.Accepted:
+            c = d.getColor()
+            if c == "" or c == "_r":
+                return
+            sm = cm.ScalarMappable(cmap=c)
+            rgbas = sm.to_rgba(np.linspace(0, 1, len(self._contours)), bytes=True)
+            rgbas = [('#{0:02x}{1:02x}{2:02x}').format(r, g, b) for r, g, b, a in rgbas]
+            for line, color in zip(self._contours, rgbas):
+                line.setColor(color)
+
+    def __sideBySide_level(self):
+        d = _LevelDialog(np.min([item.getLevel() for item in self._contours]))
+        if d.exec_():
+            fr, step = d.getParams()
+            for i, item in enumerate(self._contours):
+                item.setLevel(fr + step * i)
+
+
+class _LevelDialog(QtWidgets.QDialog):
+    def __init__(self, init, parent=None):
+        super().__init__(parent)
+        self._from = ScientificSpinBox()
+        self._from.setValue(init)
+        self._delta = ScientificSpinBox()
+        self._delta.setValue(1)
+
+        g = QtWidgets.QGridLayout()
+        g.addWidget(QtWidgets.QLabel("From"), 0, 0)
+        g.addWidget(self._from, 1, 0)
+        g.addWidget(QtWidgets.QLabel("Delta"), 0, 1)
+        g.addWidget(self._delta, 1, 1)
+
+        g.addWidget(QtWidgets.QPushButton("O K", clicked=self.accept), 2, 0)
+        g.addWidget(QtWidgets.QPushButton("CANCEL", clicked=self.reject), 2, 1)
+
+        self.setLayout(g)
+
+    def getParams(self):
+        return self._from.value(), self._delta.value()

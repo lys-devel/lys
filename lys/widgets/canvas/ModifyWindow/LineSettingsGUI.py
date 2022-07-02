@@ -59,6 +59,10 @@ class _LineStyleAdjustBox(QtWidgets.QGroupBox):
     def setStyle(self, style):
         self.__combo.setCurrentText(style)
 
+    def setEnabled(self, b):
+        self.__combo.setEnabled(b)
+        self.__spin1.setEnabled(b)
+
 
 class _MarkerStyleAdjustBox(QtWidgets.QGroupBox):
     markerChanged = QtCore.pyqtSignal(str)
@@ -112,6 +116,12 @@ class _MarkerStyleAdjustBox(QtWidgets.QGroupBox):
     def setMarkerThick(self, thick):
         self.__spin2.setValue(thick)
 
+    def setEnabled(self, b):
+        self.__combo.setEnabled(b)
+        self.__spin1.setEnabled(b)
+        self.__fill.setEnabled(b)
+        self.__spin2.setEnabled(b)
+
 
 class AppearanceBox(QtWidgets.QWidget):
     def __init__(self, canvas):
@@ -120,6 +130,7 @@ class AppearanceBox(QtWidgets.QWidget):
 
         self._color = ColorSelection()
         self._color.colorChanged.connect(lambda c: [line.setColor(c) for line in self._lines])
+        self._side = QtWidgets.QPushButton('Side by Side', clicked=self.__sidebyside)
 
         self._style = _LineStyleAdjustBox(canvas)
         self._style.widthChanged.connect(lambda w: [line.setWidth(w) for line in self._lines])
@@ -134,7 +145,7 @@ class AppearanceBox(QtWidgets.QWidget):
         layout_h1 = QtWidgets.QHBoxLayout()
         layout_h1.addWidget(QtWidgets.QLabel('Color'))
         layout_h1.addWidget(self._color)
-        layout_h1.addWidget(QtWidgets.QPushButton('Side by Side', clicked=self.__sidebyside))
+        layout_h1.addWidget(self._side)
 
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(layout_h1)
@@ -142,6 +153,7 @@ class AppearanceBox(QtWidgets.QWidget):
         layout.addWidget(self._marker)
 
         self.setLayout(layout)
+        self.__setEnabled(False)
 
     def __sidebyside(self):
         d = _LineColorSideBySideDialog()
@@ -159,6 +171,7 @@ class AppearanceBox(QtWidgets.QWidget):
     def setLines(self, lines):
         self._lines = lines
         if len(lines) != 0:
+            self.__setEnabled(True)
             self._color.setColor(lines[0].getColor())
             self._style.setWidth(lines[0].getWidth())
             self._style.setStyle(lines[0].getStyle())
@@ -166,3 +179,11 @@ class AppearanceBox(QtWidgets.QWidget):
             self._marker.setMarkerSize(lines[0].getMarkerSize())
             self._marker.setMarkerFilling(lines[0].getMarkerFilling())
             self._marker.setMarkerThick(lines[0].getMarkerThick())
+        else:
+            self.__setEnabled(False)
+
+    def __setEnabled(self, b):
+        self._color.setEnabled(b)
+        self._side.setEnabled(b)
+        self._style.setEnabled(b)
+        self._marker.setEnabled(b)

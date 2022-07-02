@@ -174,7 +174,47 @@ class _MatplotlibContour(ContourData):
 
     def __init__(self, canvas, wave, axis):
         super().__init__(canvas, wave, axis)
-        self._obj = canvas.getAxes(axis).contour(wave.data.T[::-1, :], [0.5], extent=_calcExtent2D(wave), colors=['red'])
+        self._axis = axis
+        self._obj = canvas.getAxes(axis).contour(wave.data.T[::-1, :], [0.5], extent=_calcExtent2D(wave))
+
+    def _updateData(self):
+        w = self.getFilteredWave()
+        for o in self._obj.collections:
+            o.remove()
+        self._obj = self.canvas().getAxes(self._axis).contour(w.data.T[::-1, :], [0.5], extent=_calcExtent2D(w))
+
+    def __update(self, level=None):
+        if level is None:
+            level = self.getLevel()
+        for o in self._obj.collections:
+            o.remove()
+        w = self.getFilteredWave()
+        self._obj = self.canvas().getAxes(self._axis).contour(w.data.T[::-1, :], [level], extent=_calcExtent2D(w))
+        color = self.getColor()
+        style = self.getStyle()
+        width = self.getWidth()
+        for o in self._obj.collections:
+            if color is not None:
+                o.set_color(color)
+            if style is not None:
+                o.set_linestyle(style)
+            if width is not None:
+                o.set_linewidth(width)
+
+    def _setLevel(self, level):
+        self.__update(level=level)
+
+    def _setColor(self, color):
+        for o in self._obj.collections:
+            o.set_color(color)
+
+    def _setStyle(self, style):
+        for o in self._obj.collections:
+            o.set_linestyle(style)
+
+    def _setWidth(self, width):
+        for o in self._obj.collections:
+            o.set_linewidth(width)
 
     def _setVisible(self, visible):
         for o in self._obj.collections:

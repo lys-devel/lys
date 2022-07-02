@@ -53,7 +53,7 @@ class RGBData(WaveData):
     @saveCanvas
     def setColorRotation(self, rot):
         """
-        Rotate color map of the RGB image.
+        Rotate color map of the RGB image if the data is complex.
 
         Args:
             rot(float): The rotation.

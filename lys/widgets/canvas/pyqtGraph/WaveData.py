@@ -210,12 +210,43 @@ class _PyqtgraphRGB(RGBData):
 
 class _PyqtgraphContour(ContourData):
     """Implementation of ContourData for pyqtgraph"""
+    __styles = {'solid': QtCore.Qt.SolidLine, 'dashed': QtCore.Qt.DashLine, 'dashdot': QtCore.Qt.DashDotLine, 'dotted': QtCore.Qt.DotLine, 'None': QtCore.Qt.NoPen}
 
     def __init__(self, canvas, wave, axis):
         super().__init__(canvas, wave, axis)
         self._obj = pg.IsocurveItem(data=wave.data, level=0.5, pen='r')
         self._obj.setTransform(_calcExtent2D(wave))
         canvas.getAxes(axis).addItem(self._obj)
+
+    def _updateData(self):
+        w = self.getFilteredWave()
+        self._obj.setData(w.data)
+        self._obj.setTransform(_calcExtent2D(w))
+
+    def _setLevel(self, level):
+        self._obj.setLevel(level)
+
+    def _getLinePen(self):
+        p = self._obj.pen
+        if isinstance(p, tuple):
+            return pg.mkPen(color=p)
+        else:
+            return p
+
+    def _setColor(self, color):
+        p = self._getLinePen()
+        p.setColor(QtGui.QColor(color))
+        self._obj.setPen(p)
+
+    def _setStyle(self, style):
+        p = self._getLinePen()
+        p.setStyle(self.__styles[style])
+        self._obj.setPen(p)
+
+    def _setWidth(self, width):
+        p = self._getLinePen()
+        p.setWidth(width)
+        self._obj.setPen(p)
 
     def _setVisible(self, visible):
         self._obj.setVisible(visible)

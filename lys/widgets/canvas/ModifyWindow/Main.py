@@ -6,7 +6,7 @@ from lys.widgets import LysSubWindow
 
 from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
 from .LineSettingsGUI import AppearanceBox
-from .ImageSettingsGUI import ImageColorAdjustBox, RGBColorAdjustBox, VectorAdjustBox
+from .ImageSettingsGUI import ImageColorAdjustBox, RGBColorAdjustBox, VectorAdjustBox, ContourAdjustBox
 
 from .AxisSettingsGUI import AxisSelectionWidget, AxisAndTickBox
 from .AxisLabelSettingsGUI import AxisAndTickLabelBox, AxisFontBox
@@ -45,6 +45,8 @@ class ModifyWindow(LysSubWindow):
             self._tab.addTab(_LineTab(canvas), "Lines")
         if len(canvas.getImages()) != 0:
             self._tab.addTab(_ImageTab(canvas), "Images")
+        if len(canvas.getContours()) != 0:
+            self._tab.addTab(_ContourTab(canvas), "Contours")
         if len(canvas.getRGBs()) != 0:
             self._tab.addTab(_RGBTab(canvas), "RGB")
         if len(canvas.getVectorFields()) != 0:
@@ -191,6 +193,29 @@ class _ImageTab(QtWidgets.QWidget):
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(im, 'Color')
+        tab.addTab(off, 'Offset')
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(sel)
+        layout.addWidget(tab)
+        self.setLayout(layout)
+
+
+class _ContourTab(QtWidgets.QWidget):
+    def __init__(self, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self._initlayout(canvas)
+
+    def _initlayout(self, canvas):
+        cn = ContourAdjustBox(canvas)
+        off = OffsetAdjustBox()
+        sel = DataSelectionBox(canvas, 2, "contour")
+        sel.selected.connect(cn.setContours)
+        sel.selected.connect(off.setData)
+
+        tab = QtWidgets.QTabWidget()
+        tab.addTab(cn, 'Appearance')
         tab.addTab(off, 'Offset')
 
         layout = QtWidgets.QVBoxLayout()
