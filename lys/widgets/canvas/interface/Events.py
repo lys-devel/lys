@@ -95,6 +95,7 @@ class CanvasMouseEvent(CanvasPart):
         self.doubleClicked.connect(canvas.openModifyWindow)
         self._clicktime = 0
         self._select = _RegionSelector(self, canvas)
+        self._move = _RangeMove(self, canvas)
         self._line = _LineDrawer(self, canvas)
         self._iline = _InfiniteLineDrawer(self, canvas)
         self._rect = _RectDrawer(self, canvas)
@@ -143,6 +144,55 @@ class _RegionSelector(QtCore.QObject):
     def _mouseReleased(self, e):
         if self.__select_rect and e.button() == QtCore.Qt.LeftButton:
             self.__select_rect = False
+
+
+class _RangeMove(QtCore.QObject):
+    def __init__(self, parent, canvas):
+        super().__init__()
+        self.__flg = False
+        self.canvas = canvas
+        parent.mousePressed.connect(self._mousePressed)
+        parent.mouseReleased.connect(self._mouseReleased)
+        parent.mouseMoved.connect(self._mouseMoved)
+
+    def _mousePressed(self, e):
+        if e.button() == QtCore.Qt.LeftButton:
+            if self.canvas.toolState() == "Move":
+                self.__flg = True
+                self.__saveState(e)
+
+    def _mouseMoved(self, e):
+        if self.__flg:
+            if self.canvas.toolState() == "Move":
+                end_bottom, end_left = self.canvas.mapPosition(e, "BottomLeft")
+                db, dl = -(end_bottom - self.__start_bottom), -(end_left - self.__start_left)
+                self.canvas.setAxisRange("Bottom", [self.__bottom[0] + db, self.__bottom[1] + db])
+                self.canvas.setAxisRange("Left", [self.__left[0] + dl, self.__left[1] + dl])
+                if self.canvas.axisIsValid("Right"):
+                    end_right = self.canvas.mapPosition(e, "BottomRight")[1]
+                    dr = -(end_right - self.__start_right)
+                    self.canvas.setAxisRange("Right", [self.__right[0] + dr, self.__right[1] + dr])
+                if self.canvas.axisIsValid("Top"):
+                    end_top = self.canvas.mapPosition(e, "TopLeft")[0]
+                    dt = -(end_top - self.__start_top)
+                    self.canvas.setAxisRange("Top", [self.__top[0] + dt, self.__top[1] + dt])
+                self.__saveState(e)
+
+    def _mouseReleased(self, e):
+        if self.__flg is not None and e.button() == QtCore.Qt.LeftButton:
+            if self.canvas.toolState() == "Move":
+                self.__flg = False
+
+    def __saveState(self, e):
+        self.__start_bottom, self.__start_left = self.canvas.mapPosition(e, "BottomLeft")
+        self.__bottom = self.canvas.getAxisRange("Bottom")
+        self.__left = self.canvas.getAxisRange("Left")
+        if self.canvas.axisIsValid("Right"):
+            self.__start_right = self.canvas.mapPosition(e, "BottomRight")[1]
+            self.__right = self.canvas.getAxisRange("Right")
+        if self.canvas.axisIsValid("Top"):
+            self.__start_top = self.canvas.mapPosition(e, "TopLeft")[0]
+            self.__top = self.canvas.getAxisRange("Top")
 
 
 class _LineDrawer(QtCore.QObject):

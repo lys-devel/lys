@@ -8,6 +8,7 @@ class CanvasContextMenu(CanvasPart):
         super().__init__(canvas)
         self.__ag = QtWidgets.QActionGroup(self)
         self._sel = QtWidgets.QAction('Select Range', self, checkable=True, checked=True)
+        self._mov = QtWidgets.QAction('Move Axes', self, checkable=True, checked=False)
         self._line = QtWidgets.QAction('Draw Line', self, checked=False, checkable=True)
         self._vline = QtWidgets.QAction('Draw Vertical Line', self, checked=False, checkable=True)
         self._hline = QtWidgets.QAction('Draw Horizontal Line', self, checked=False, checkable=True)
@@ -35,8 +36,9 @@ class CanvasContextMenu(CanvasPart):
             m.addAction(QtWidgets.QAction('Horizontal Shrink', self, triggered=lambda: self.__exec('Horizontal Shrink')))
             m.addAction(QtWidgets.QAction('Vertical Shrink', self, triggered=lambda: self.__exec('Vertical Shrink')))
 
-        m = menu.addMenu('Tools')
+        m = menu.addMenu('Mouse drag')
         m.addAction(self.__ag.addAction(self._sel))
+        m.addAction(self.__ag.addAction(self._mov))
         m.addSeparator()
         m.addAction(self.__ag.addAction(self._line))
         m.addAction(self.__ag.addAction(self._vline))
@@ -59,6 +61,8 @@ class CanvasContextMenu(CanvasPart):
     def toolState(self):
         if self._sel.isChecked():
             return "Select"
+        elif self._mov.isChecked():
+            return "Move"
         elif self._line.isChecked():
             return "Line"
         elif self._vline.isChecked():
