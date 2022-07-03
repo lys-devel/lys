@@ -11,6 +11,7 @@ class _RectPositionAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
+        self.__setEnabled(False)
         self.data = []
 
     def __initlayout(self):
@@ -31,8 +32,10 @@ class _RectPositionAdjustBox(QtWidgets.QWidget):
         g.addWidget(self._y2, 2, 2)
         g.addWidget(QtWidgets.QLabel("Distance"), 3, 0)
         g.addWidget(self._label, 3, 1, 1, 2)
-        g.addWidget(QtWidgets.QPushButton("Copy", clicked=self._copy), 4, 1)
-        g.addWidget(QtWidgets.QPushButton("Paste", clicked=self._paste), 4, 2)
+        self.__copy = QtWidgets.QPushButton("Copy", clicked=self._copy)
+        self.__paste = QtWidgets.QPushButton("Paste", clicked=self._paste)
+        g.addWidget(self.__copy, 4, 1)
+        g.addWidget(self.__paste, 4, 2)
 
         v = QtWidgets.QVBoxLayout()
         v.addLayout(g)
@@ -40,9 +43,19 @@ class _RectPositionAdjustBox(QtWidgets.QWidget):
 
         self.setLayout(v)
 
+    def __setEnabled(self, b):
+        self._x1.setEnabled(b)
+        self._y1.setEnabled(b)
+        self._x2.setEnabled(b)
+        self._y2.setEnabled(b)
+        self._label.setEnabled(b)
+        self.__copy.setEnabled(b)
+        self.__paste.setEnabled(b)
+
     @avoidCircularReference
     def _loadstate(self, *args, **kwargs):
         if len(self.data) != 0:
+            self.__setEnabled(True)
             d = self.data[0]
             p1, p2 = d.getRegion()
             self._x1.setValue(p1[0])
@@ -52,6 +65,8 @@ class _RectPositionAdjustBox(QtWidgets.QWidget):
             dx, dy = p2[0] - p1[0], p2[1] - p1[1]
             txt = "dx = {:.3g}, dy = {:.3g}, d = {:.3g}".format(dx, dy, np.sqrt(dx**2 + dy**2))
             self._label.setText(txt)
+        else:
+            self.__setEnabled(False)
 
     @avoidCircularReference
     def _chgPos(self, *args, **kwargs):
@@ -121,6 +136,7 @@ class _RegionPositionAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
+        self.__setEnabled(False)
         self.data = []
 
     def __initlayout(self):
@@ -133,8 +149,10 @@ class _RegionPositionAdjustBox(QtWidgets.QWidget):
         g.addWidget(QtWidgets.QLabel("Point 2"), 1, 0)
         g.addWidget(self._x1, 0, 1, 1, 2)
         g.addWidget(self._x2, 1, 1, 1, 2)
-        g.addWidget(QtWidgets.QPushButton("Copy", clicked=self._copy), 2, 1)
-        g.addWidget(QtWidgets.QPushButton("Paste", clicked=self._paste), 2, 2)
+        self.__copy = QtWidgets.QPushButton("Copy", clicked=self._copy)
+        self.__paste = QtWidgets.QPushButton("Paste", clicked=self._paste)
+        g.addWidget(self.__copy, 2, 1)
+        g.addWidget(self.__paste, 2, 2)
 
         v = QtWidgets.QVBoxLayout()
         v.addWidget(self._label)
@@ -142,14 +160,24 @@ class _RegionPositionAdjustBox(QtWidgets.QWidget):
         v.addStretch()
         self.setLayout(v)
 
+    def __setEnabled(self, b):
+        self._x1.setEnabled(b)
+        self._x2.setEnabled(b)
+        self._label.setEnabled(b)
+        self.__copy.setEnabled(b)
+        self.__paste.setEnabled(b)
+
     @avoidCircularReference
     def _loadstate(self, *args, **kwargs):
         if len(self.data) != 0:
+            self.__setEnabled(True)
             d = self.data[0]
             self._label.setText("Orientation: " + d.getOrientation())
             p1, p2 = d.getRegion()
             self._x1.setValue(p1)
             self._x2.setValue(p2)
+        else:
+            self.__setEnabled(False)
 
     @avoidCircularReference
     def _chgPos(self, *args, **kwargs):
@@ -218,6 +246,7 @@ class _FreeRegionPositionAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
+        self.__setEnabled(False)
         self.data = []
 
     def __initlayout(self):
@@ -241,8 +270,10 @@ class _FreeRegionPositionAdjustBox(QtWidgets.QWidget):
         g.addWidget(self._wid, 3, 1, 1, 2)
         g.addWidget(QtWidgets.QLabel("Distance"), 4, 0)
         g.addWidget(self._label, 4, 1, 1, 2)
-        g.addWidget(QtWidgets.QPushButton("Copy", clicked=self._copy), 5, 1)
-        g.addWidget(QtWidgets.QPushButton("Paste", clicked=self._paste), 5, 2)
+        self.__copy = QtWidgets.QPushButton("Copy", clicked=self._copy)
+        self.__paste = QtWidgets.QPushButton("Paste", clicked=self._paste)
+        g.addWidget(self.__copy, 5, 1)
+        g.addWidget(self.__paste, 5, 2)
 
         v = QtWidgets.QVBoxLayout()
         v.addLayout(g)
@@ -250,9 +281,20 @@ class _FreeRegionPositionAdjustBox(QtWidgets.QWidget):
 
         self.setLayout(v)
 
+    def __setEnabled(self, b):
+        self._x1.setEnabled(b)
+        self._x2.setEnabled(b)
+        self._y1.setEnabled(b)
+        self._y2.setEnabled(b)
+        self._wid.setEnabled(b)
+        self._label.setEnabled(b)
+        self.__copy.setEnabled(b)
+        self.__paste.setEnabled(b)
+
     @avoidCircularReference
     def _loadstate(self, *args, **kwargs):
         if len(self.data) != 0:
+            self.__setEnabled(True)
             d = self.data[0]
             p1, p2 = d.getRegion()
             self._x1.setValue(p1[0])
@@ -263,6 +305,8 @@ class _FreeRegionPositionAdjustBox(QtWidgets.QWidget):
             dx, dy = p2[0] - p1[0], p2[1] - p1[1]
             txt = "dx = {:.3g}, dy = {:.3g}, d = {:.3g}".format(dx, dy, np.sqrt(dx**2 + dy**2))
             self._label.setText(txt)
+        else:
+            self.__setEnabled(False)
 
     @avoidCircularReference
     def _chgPos(self, *args, **kwargs):

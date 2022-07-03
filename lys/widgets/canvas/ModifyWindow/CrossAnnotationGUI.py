@@ -11,6 +11,7 @@ class _CrossPositionAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
+        self.__setEnabled(False)
         self.data = []
 
     def __initlayout(self):
@@ -22,8 +23,10 @@ class _CrossPositionAdjustBox(QtWidgets.QWidget):
         g.addWidget(QtWidgets.QLabel("y"), 1, 0)
         g.addWidget(self._x, 0, 1, 1, 2)
         g.addWidget(self._y, 1, 1, 1, 2)
-        g.addWidget(QtWidgets.QPushButton("Copy", clicked=self._copy), 2, 1)
-        g.addWidget(QtWidgets.QPushButton("Paste", clicked=self._paste), 2, 2)
+        self.__copy = QtWidgets.QPushButton("Copy", clicked=self._copy)
+        self.__paste = QtWidgets.QPushButton("Paste", clicked=self._paste)
+        g.addWidget(self.__copy, 2, 1)
+        g.addWidget(self.__paste, 2, 2)
 
         v = QtWidgets.QVBoxLayout()
         v.addLayout(g)
@@ -31,12 +34,21 @@ class _CrossPositionAdjustBox(QtWidgets.QWidget):
 
         self.setLayout(v)
 
+    def __setEnabled(self, b):
+        self._x.setEnabled(b)
+        self._y.setEnabled(b)
+        self.__copy.setEnabled(b)
+        self.__paste.setEnabled(b)
+
     @avoidCircularReference
     def _loadstate(self, *args, **kwargs):
         if len(self.data) != 0:
+            self.__setEnabled(True)
             x, y = self.data[0].getPosition()
             self._x.setValue(x)
             self._y.setValue(y)
+        else:
+            self.__setEnabled(False)
 
     @avoidCircularReference
     def _chgPos(self, *args, **kwargs):

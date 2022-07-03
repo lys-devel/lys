@@ -11,6 +11,7 @@ class _TextEditBox(QtWidgets.QWidget):
         super().__init__()
         self.canvas = canvas
         self.__initlayout()
+        self.__setEnabled(False)
 
     def __initlayout(self):
         self.__font = FontSelector("Font")
@@ -25,12 +26,19 @@ class _TextEditBox(QtWidgets.QWidget):
         v.addWidget(self.__txt)
         self.setLayout(v)
 
+    def __setEnabled(self, b):
+        self.__font.setEnabled(b)
+        self.__txt.setEnabled(b)
+
     @avoidCircularReference
     def __loadstate(self):
         if not len(self.data) == 0:
+            self.__setEnabled(True)
             data = self.data[0]
             self.__txt.setText(data.getText())
             self.__font.setFont(**data.getFont())
+        else:
+            self.__setEnabled(False)
 
     @avoidCircularReference
     def __txtChanged(self):
@@ -52,6 +60,7 @@ class _TextMoveBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.__initlayout()
+        self.__setEnabled(False)
         self.canvas = canvas
 
     def __initlayout(self):
@@ -86,13 +95,21 @@ class _TextMoveBox(QtWidgets.QWidget):
 
         self.setLayout(v)
 
+    def __setEnabled(self, b):
+        self.__x.setEnabled(b)
+        self.__y.setEnabled(b)
+        self.__modex.setEnabled(b)
+        self.__modey.setEnabled(b)
+
     def setData(self, data):
         self.data = data
         self.__loadstate()
 
     def __loadstate(self):
         if len(self.data) == 0:
+            self.__setEnabled(False)
             return
+        self.__setEnabled(True)
         d = self.data[0]
         t = d.getTransform()
         if isinstance(t, str):
@@ -129,6 +146,7 @@ class _AnnotationBoxAdjustBox(QtWidgets.QWidget):
         super().__init__()
         self.canvas = canvas
         self.__initlayout()
+        self.__setEnabled(False)
 
     def __initlayout(self):
         self.__mode = QtWidgets.QComboBox()
@@ -153,13 +171,21 @@ class _AnnotationBoxAdjustBox(QtWidgets.QWidget):
         v.addStretch()
         self.setLayout(v)
 
+    def __setEnabled(self, b):
+        self.__mode.setEnabled(b)
+        self.__fc.setEnabled(b)
+        self.__ec.setEnabled(b)
+
     def __loadstate(self):
         if not len(self.data) == 0:
+            self.__setEnabled(True)
             d = self.data[0]
             self.__mode.setCurrentText(d.getBoxStyle())
             f, e = d.getBoxColor()
             self.__fc.setColor(f)
             self.__ec.setColor(e)
+        else:
+            self.__setEnabled(False)
 
     @avoidCircularReference
     def __modeChanged(self, mode):

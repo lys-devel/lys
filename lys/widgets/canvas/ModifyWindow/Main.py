@@ -30,6 +30,7 @@ class ModifyWindow(LysSubWindow):
         if ModifyWindow.instance is not None:
             if ModifyWindow.instance() is not None:
                 ModifyWindow.instance().close()
+        self._canvas = canvas
         self._initlayout(canvas, showArea)
         self.attach(parent)
         self.attachTo()
@@ -38,25 +39,32 @@ class ModifyWindow(LysSubWindow):
     def _initlayout(self, canvas, showArea):
         self.setWindowTitle("Modify Window")
         self._tab = QtWidgets.QTabWidget()
-        if showArea:
-            self._tab.addTab(_AreaTab(canvas), "Area")
+        self._tab.tabBar().setStyleSheet("QTabBar::tab::disabled {width: 0; height: 0; margin: 0; padding: 0; border: none;} ")
+        self._tab.addTab(_AreaTab(canvas), "Area")
         self._tab.addTab(_AxisTab(canvas), "Axis")
-        if len(canvas.getLines()) != 0:
-            self._tab.addTab(_LineTab(canvas), "Lines")
-        if len(canvas.getImages()) != 0:
-            self._tab.addTab(_ImageTab(canvas), "Images")
-        if len(canvas.getContours()) != 0:
-            self._tab.addTab(_ContourTab(canvas), "Contours")
-        if len(canvas.getRGBs()) != 0:
-            self._tab.addTab(_RGBTab(canvas), "RGB")
-        if len(canvas.getVectorFields()) != 0:
-            self._tab.addTab(_VectorTab(canvas), "Vector")
+        self._tab.addTab(_LineTab(canvas), "Lines")
+        self._tab.addTab(_ImageTab(canvas), "Images")
+        self._tab.addTab(_ContourTab(canvas), "Contours")
+        self._tab.addTab(_RGBTab(canvas), "RGB")
+        self._tab.addTab(_VectorTab(canvas), "Vector")
         self._tab.addTab(_AnnotationTab(canvas), "Annot.")
         self._tab.addTab(_OtherTab(canvas), 'Other')
+        self.__setEnabled()
+        if not showArea:
+            self._tab.setTabEnabled(0, False)
+            self._tab.setCurrentIndex(1)
         self.setWidget(self._tab)
         self.adjustSize()
         self.updateGeometry()
         self.show()
+
+    def __setEnabled(self):
+        self._tab.setTabEnabled(2, len(self._canvas.getLines()) != 0)
+        self._tab.setTabEnabled(3, len(self._canvas.getImages()) != 0)
+        self._tab.setTabEnabled(4, len(self._canvas.getContours()) != 0)
+        self._tab.setTabEnabled(5, len(self._canvas.getRGBs()) != 0)
+        self._tab.setTabEnabled(6, len(self._canvas.getVectorFields()) != 0)
+        self._tab.setTabEnabled(7, len(self._canvas.getAnnotations()) != 0)
 
     def selectTab(self, tab):
         list = [self._tab.tabText(i) for i in range(self._tab.count())]

@@ -143,6 +143,7 @@ class LineColorAdjustBox(ColorSelection):
         self.type = type
         self.canvas = canvas
         self.colorChanged.connect(self.__changed)
+        self.setEnabled(False)
 
     def __changed(self):
         for d in self.data:
@@ -150,7 +151,10 @@ class LineColorAdjustBox(ColorSelection):
 
     def _loadstate(self):
         if len(self.data) != 0:
+            self.setEnabled(True)
             self.setColor(self.data[0].getLineColor())
+        else:
+            self.setEnabled(False)
 
     def setData(self, data):
         self.data = data
@@ -178,6 +182,11 @@ class LineStyleAdjustBox(QtWidgets.QGroupBox):
         layout.addWidget(self.__spin1, 1, 1)
 
         self.setLayout(layout)
+        self.__setEnabled(False)
+
+    def __setEnabled(self, b):
+        self.__combo.setEnabled(b)
+        self.__spin1.setEnabled(b)
 
     def __changeStyle(self):
         res = self.__combo.currentText()
@@ -191,9 +200,12 @@ class LineStyleAdjustBox(QtWidgets.QGroupBox):
 
     def _loadstate(self):
         if len(self.data) != 0:
+            self.__setEnabled(True)
             d = self.data[0]
             self.__combo.setCurrentText(d.getLineStyle())
             self.__spin1.setValue(d.getLineWidth())
+        else:
+            self.__setEnabled(False)
 
     def setData(self, data):
         self.data = data
