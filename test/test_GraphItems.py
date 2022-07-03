@@ -110,6 +110,14 @@ class Graph_test(unittest.TestCase):
             line.setMarkerFilling('full')
             self.assertEqual(line.getMarkerFilling(), 'full')
 
+            line.setErrorbar(4, direction="y")
+            line.setErrorbar(3, direction="x")
+            self.assertEqual(line.getErrorbar("y"), 4)
+            self.assertEqual(line.getErrorbar("x"), 3)
+
+            line.setCapSize(3)
+            self.assertEqual(line.getCapSize(), 3)
+
             ap = line.saveAppearance()
             line.setColor('#ff00ff')
             line.setWidth(4)
@@ -118,6 +126,8 @@ class Graph_test(unittest.TestCase):
             line.setMarkerSize(3)
             line.setMarkerThick(2)
             line.setMarkerFilling('none')
+            line.setErrorbar(5, direction="y")
+            line.setCapSize(2)
 
             line.loadAppearance(ap)
             self.assertEqual(line.getWidth(), 3)
@@ -126,6 +136,8 @@ class Graph_test(unittest.TestCase):
             self.assertEqual(line.getMarkerSize(), 5)
             self.assertEqual(line.getMarkerThick(), 3)
             self.assertEqual(line.getMarkerFilling(), 'full')
+            self.assertEqual(line.getErrorbar("y"), 4)
+            self.assertEqual(line.getCapSize(), 3)
 
     def test_Image(self):
         for g in self.graphs:

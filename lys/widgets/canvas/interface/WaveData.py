@@ -27,7 +27,7 @@ class WaveData(CanvasPart):
         self._offset = (0, 0, 0, 0)
         self._filter = None
         self._filteredWave = wave
-        self._z = 'default'
+        self._z = 0
 
     @saveCanvas
     def _update(self, *args, **kwargs):

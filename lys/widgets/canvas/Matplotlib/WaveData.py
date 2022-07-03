@@ -15,39 +15,91 @@ class _MatplotlibLine(LineData):
 
     def __init__(self, canvas, wave, axis):
         super().__init__(canvas, wave, axis)
-        self._obj, = canvas.getAxes(axis).plot(wave.x, wave.data)
-        self._obj.set_pickradius(5)
+        self._obj = canvas.getAxes(axis).errorbar(wave.x, wave.data)
 
     def _updateData(self):
-        self._obj.set_data(self.getFilteredWave().x, self.getFilteredWave().data)
+        self.__update()
 
     def _setVisible(self, visible):
-        self._obj.set_visible(visible)
+        self._obj.lines[0].set_visible(visible)
 
     def _setZ(self, z):
-        _setZ(self._obj, z)
+        _setZ(self._obj.lines[0], z)
+        for line in self._obj.lines[1] + self._obj.lines[2]:
+            _setZ(line, z - 1)
 
     def _setColor(self, color):
-        self._obj.set_color(color)
+        self._obj.lines[0].set_color(color)
+        for line in self._obj.lines[1] + self._obj.lines[2]:
+            line.set_color(color)
 
     def _setStyle(self, style):
-        self._obj.set_linestyle(style)
+        self._obj.lines[0].set_linestyle(style)
 
     def _setWidth(self, width):
-        self._obj.set_linewidth(width)
+        self._obj.lines[0].set_linewidth(width)
+        for line in self._obj.lines[1]:
+            line.set_markeredgewidth(width)
+        for line in self._obj.lines[2]:
+            line.set_linewidth(width)
 
     def _setMarker(self, marker):
         dic = {value: key for key, value in lines.Line2D.markers.items()}
-        self._obj.set_marker(dic[marker])
+        self._obj.lines[0].set_marker(dic[marker])
 
     def _setMarkerSize(self, size):
-        self._obj.set_markersize(size)
+        self._obj.lines[0].set_markersize(size)
 
     def _setMarkerThick(self, thick):
-        self._obj.set_markeredgewidth(thick)
+        self._obj.lines[0].set_markeredgewidth(thick)
 
     def _setMarkerFilling(self, filling):
-        self._obj.set_fillstyle(filling)
+        self._obj.lines[0].set_fillstyle(filling)
+
+    def __update(self, error=None, direction=None, capsize=None):
+        self._obj.remove()
+        wave = self.getFilteredWave()
+        xerr = yerr = error
+        if direction == "x" or direction is None:
+            yerr = self._getErrorbarData(self.getErrorbar("y"))
+        if direction == "y" or direction is None:
+            xerr = self._getErrorbarData(self.getErrorbar("x"))
+        if capsize is None:
+            capsize = self.getCapSize()
+        self._obj = self.canvas().getAxes(self._axis).errorbar(wave.x, wave.data, xerr=xerr, yerr=yerr, capsize=capsize)
+        visible = self.getVisible()
+        if visible is not None:
+            self._setVisible(visible)
+        z = self.getZOrder()
+        if z is not None:
+            self._setZ(z)
+        color = self.getColor()
+        if color is not None:
+            self._setColor(color)
+        style = self.getStyle()
+        if style is not None:
+            self._setStyle(style)
+        width = self.getWidth()
+        if width is not None:
+            self._setWidth(width)
+        marker = self.getMarker()
+        if marker is not None:
+            self._setMarker(marker)
+        msize = self.getMarkerSize()
+        if msize is not None:
+            self._setMarkerSize(msize)
+        mthick = self.getMarkerThick()
+        if mthick is not None:
+            self._setMarkerThick(mthick)
+        mfill = self.getMarkerFilling()
+        if mfill is not None:
+            self._setMarkerFilling(mfill)
+
+    def _setErrorbar(self, error, direction):
+        self.__update(error, direction, self.getCapSize())
+
+    def _setCapSize(self, capsize):
+        self.__update(capsize=capsize)
 
 
 def _calcExtent2D(wav):

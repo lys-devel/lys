@@ -25,7 +25,9 @@ class _PyqtgraphLine(LineData):
         else:
             data = wave.data
         self._obj = pg.PlotDataItem(x=wave.x, y=data)
+        self._err = pg.ErrorBarItem(x=wave.x, y=data, left=0, right=0, top=0, bottom=0, pen=pg.mkPen())
         canvas.getAxes(axis).addItem(self._obj)
+        canvas.getAxes(axis).addItem(self._err)
 
     def _updateData(self):
         wave = self.getFilteredWave()
@@ -69,6 +71,9 @@ class _PyqtgraphLine(LineData):
         p = self._getLinePen()
         p.setColor(QtGui.QColor(color))
         self._obj.setPen(p)
+        p = self._err.opts["pen"]
+        p.setColor(QtGui.QColor(color))
+        self._err.setData(pen=p)
 
     def _setStyle(self, style):
         p = self._getLinePen()
@@ -79,6 +84,9 @@ class _PyqtgraphLine(LineData):
         p = self._getLinePen()
         p.setWidth(width)
         self._obj.setPen(p)
+        p = self._err.opts["pen"]
+        p.setWidth(width)
+        self._err.setData(pen=p)
 
     def _setMarker(self, marker):
         if marker in self.__symbols:
@@ -107,6 +115,29 @@ class _PyqtgraphLine(LineData):
             self._obj.setSymbolBrush(None)
         else:
             warnings.warn("pyqtGraph does not support filling [" + filling + "]", NotSupportedWarning)
+
+    def _setErrorbar(self, error, direction):
+        if direction == "y":
+            if error is None:
+                self._err.setData(bottom=None, top=None)
+            elif isinstance(error, float):
+                self._err.setData(bottom=error, top=error)
+            elif len(np.array(error).shape) == 1:
+                self._err.setData(bottom=error, top=error)
+            elif len(np.array(error).shape) == 2:
+                self._err.setData(bottom=error[0], top=error[1])
+        if direction == "x":
+            if error is None:
+                self._err.setData(left=None, right=None)
+            elif isinstance(error, float):
+                self._err.setData(left=error, right=error)
+            elif len(np.array(error).shape) == 1:
+                self._err.setData(left=error, right=error)
+            elif len(np.array(error).shape) == 2:
+                self._err.setData(left=error[0], right=error[1])
+
+    def _setCapSize(self, capsize):
+        self._err.setData(beam=capsize)
 
 
 def _calcExtent2D(wav):

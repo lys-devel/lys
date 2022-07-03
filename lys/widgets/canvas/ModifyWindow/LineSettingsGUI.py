@@ -3,7 +3,7 @@ from matplotlib import cm
 from matplotlib.lines import Line2D
 
 from lys.Qt import QtCore, QtWidgets
-from lys.widgets import ColormapSelection, ColorSelection
+from lys.widgets import ColormapSelection, ColorSelection, ScientificSpinBox
 
 
 class _LineColorSideBySideDialog(QtWidgets.QDialog):
@@ -187,3 +187,114 @@ class AppearanceBox(QtWidgets.QWidget):
         self._side.setEnabled(b)
         self._style.setEnabled(b)
         self._marker.setEnabled(b)
+
+
+class _ErrorAdjustBox(QtWidgets.QGroupBox):
+    def __init__(self, direction):
+        super().__init__(direction + " error")
+        self._data = []
+        self.__initlayout()
+        self._direction = direction
+
+    def __initlayout(self):
+        self.__type = QtWidgets.QComboBox()
+        self.__type.addItems(["None", "Const", "Wave note"])
+        self.__type.currentTextChanged.connect(self.__typeChanged)
+
+        self.__value = ScientificSpinBox(valueChanged=self.__valueChanged)
+        self.__valueLabel = QtWidgets.QLabel("Value")
+
+        self.__note = QtWidgets.QLineEdit(textChanged=self.__noteChanged)
+        self.__noteLabel = QtWidgets.QLabel("Key")
+
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(QtWidgets.QLabel("Type"), 0, 0)
+        layout.addWidget(self.__valueLabel, 1, 0)
+        layout.addWidget(self.__noteLabel, 2, 0)
+        layout.addWidget(self.__type, 0, 1)
+        layout.addWidget(self.__value, 1, 1)
+        layout.addWidget(self.__note, 2, 1)
+        self.setLayout(layout)
+        self.__typeChanged("None")
+
+    def __setEnabled(self, b):
+        self.__type.setEnabled(b)
+        self.__value.setEnabled(b)
+        self.__note.setEnabled(b)
+
+    def setData(self, data):
+        self._data = data
+        if len(data) != 0:
+            self.__setEnabled(True)
+            err = data[0].getErrorbar(self._direction)
+            if err is None:
+                self.__type.setCurrentText("None")
+            elif isinstance(err, str):
+                self.__type.setCurrentText("Wave note")
+                self.__note.setText(err)
+            else:
+                self.__type.setCurrentText("Const")
+                self.__value.setValue(err)
+        else:
+            self.__setEnabled(False)
+
+    def __typeChanged(self, txt):
+        self.__value.hide()
+        self.__valueLabel.hide()
+        self.__note.hide()
+        self.__noteLabel.hide()
+        if txt == "Const":
+            self.__value.show()
+            self.__valueLabel.show()
+            self.__valueChanged()
+        elif txt == "Wave note":
+            self.__note.show()
+            self.__noteLabel.show()
+            self.__noteChanged()
+        else:
+            for d in self._data:
+                d.setErrorbar(None, direction=self._direction)
+
+    def __valueChanged(self):
+        for d in self._data:
+            d.setErrorbar(self.__value.value(), direction=self._direction)
+
+    def __noteChanged(self):
+        for d in self._data:
+            d.setErrorbar(self.__note.text(), direction=self._direction)
+
+
+class ErrorBox(QtWidgets.QWidget):
+    def __init__(self, canvas):
+        super().__init__()
+        self.__cap = ScientificSpinBox(valueChanged=self.__capChanged)
+        self.__cap.setRange(0, np.inf)
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QLabel("Cap size"))
+        h1.addWidget(self.__cap)
+
+        self._x = _ErrorAdjustBox("x")
+        self._y = _ErrorAdjustBox("y")
+        layout = QtWidgets.QVBoxLayout()
+        layout.addLayout(h1)
+        layout.addWidget(self._y)
+        layout.addWidget(self._x)
+        layout.addStretch()
+        self.setLayout(layout)
+
+    def setEnabled(self, b):
+        self.__cap.setEnabled(b)
+
+    def setData(self, data):
+        self._data = data
+        if len(data) > 0:
+            self.setEnabled(True)
+            self.__cap.setValue(data[0].getCapSize())
+        else:
+            self.setEnabled(False)
+        self._x.setData(data)
+        self._y.setData(data)
+
+    def __capChanged(self):
+        for d in self._data:
+            d.setCapSize(self.__cap.value())
