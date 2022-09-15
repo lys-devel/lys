@@ -1,4 +1,4 @@
-from matplotlib import ticker, patches
+from matplotlib import ticker, patches, pyplot
 
 from ..interface import CanvasAxes, CanvasTicks
 
