@@ -8,3 +8,4 @@ from .ContextMenu import CanvasContextMenu
 from .Events import CanvasKeyboardEvent, CanvasMouseEvent, CanvasFocusEvent, getFrontCanvas
 from .CanvasBase import CanvasBase, saveCanvas
 from .Other import CanvasUtilities
+from .Legend import CanvasLegend

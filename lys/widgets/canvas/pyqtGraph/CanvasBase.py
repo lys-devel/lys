@@ -9,6 +9,7 @@ from .AxisLabelSettings import _PyqtgraphAxisLabel, _PyqtgraphTickLabel
 from .AreaSettings import _PyqtGraphMargin, _PyqtGraphCanvasSize
 from .WaveData import _PyqtgraphData
 from .AnnotationData import _PyqtgraphAnnotation
+from .LegendSettings import _PyqtgraphLegend
 
 pg.setConfigOption('background', 'w')
 pg.setConfigOption('foreground', 'k')
@@ -43,6 +44,9 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.fig.showAxis('right')
         self.fig.showAxis('top')
 
+    def getPlotItem(self):
+        return self.fig
+
     def __initCanvasParts(self):
         self.addCanvasPart(_PyqtgraphData(self))
         self.addCanvasPart(_pyqtGraphAxes(self))
@@ -58,6 +62,7 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.addCanvasPart(CanvasKeyboardEvent(self))
         self.addCanvasPart(_PyqtgraphMouseEvent(self))
         self.addCanvasPart(CanvasFocusEvent(self))
+        self.addCanvasPart(_PyqtgraphLegend(self))
         self.initCanvas.emit()
 
     def _hover(self, list):

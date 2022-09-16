@@ -298,3 +298,39 @@ class ErrorBox(QtWidgets.QWidget):
     def __capChanged(self):
         for d in self._data:
             d.setCapSize(self.__cap.value())
+
+
+class LegendBox(QtWidgets.QWidget):
+    def __init__(self, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self._lines = []
+        self.__initlayout()
+
+    def __initlayout(self):
+        lay = QtWidgets.QVBoxLayout()
+
+        self.__visible = QtWidgets.QCheckBox("Show legend", toggled=lambda b: [line.setLegendVisible(b) for line in self._lines])
+        self.__label = QtWidgets.QLineEdit(textChanged=lambda t: [line.setLegendLabel(t) for line in self._lines])
+
+        h = QtWidgets.QHBoxLayout()
+        h.addWidget(QtWidgets.QLabel('Label'))
+        h.addWidget(self.__label)
+
+        lay.addWidget(self.__visible)
+        lay.addLayout(h)
+        lay.addStretch()
+        self.setLayout(lay)
+
+    def setData(self, lines):
+        self._lines = lines
+        if len(lines) != 0:
+            self.__setEnabled(True)
+            self.__visible.setChecked(lines[0].getLegendVisible())
+            self.__label.setText(lines[0].getLegendLabel())
+        else:
+            self.__setEnabled(False)
+
+    def __setEnabled(self, b):
+        self.__visible.setEnabled(b)
+        self.__label.setEnabled(b)

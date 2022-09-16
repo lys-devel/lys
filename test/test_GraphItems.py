@@ -118,6 +118,12 @@ class Graph_test(unittest.TestCase):
             line.setCapSize(3)
             self.assertEqual(line.getCapSize(), 3)
 
+            line.setLegendVisible(True)
+            self.assertTrue(line.getLegendVisible())
+
+            line.setLegendLabel("test")
+            self.assertEqual(line.getLegendLabel(), "test")
+
             ap = line.saveAppearance()
             line.setColor('#ff00ff')
             line.setWidth(4)
@@ -128,6 +134,8 @@ class Graph_test(unittest.TestCase):
             line.setMarkerFilling('none')
             line.setErrorbar(5, direction="y")
             line.setCapSize(2)
+            line.setLegendVisible(False)
+            line.setLegendLabel("aaa")
 
             line.loadAppearance(ap)
             self.assertEqual(line.getWidth(), 3)
@@ -138,6 +146,8 @@ class Graph_test(unittest.TestCase):
             self.assertEqual(line.getMarkerFilling(), 'full')
             self.assertEqual(line.getErrorbar("y"), 4)
             self.assertEqual(line.getCapSize(), 3)
+            self.assertTrue(line.getLegendVisible())
+            self.assertEqual(line.getLegendLabel(), "test")
 
     def test_Image(self):
         for g in self.graphs:

@@ -9,6 +9,7 @@ from .AxisLabelSettings import _MatplotlibAxisLabel, _MatplotlibTickLabel
 from .AreaSettings import _MatplotlibMargin, _MatplotlibCanvasSize
 from .AnnotationData import _MatplotlibAnnotation
 from .WaveData import _MatplotlibData
+from .LegendSettings import _MatplotlibLegend
 
 
 class _MatplotlibMouseEvent(CanvasMouseEvent):
@@ -55,6 +56,7 @@ class ExtendCanvas(CanvasBase, FigureCanvas):
         self.addCanvasPart(CanvasKeyboardEvent(self))
         self.addCanvasPart(_MatplotlibMouseEvent(self))
         self.addCanvasPart(CanvasFocusEvent(self))
+        self.addCanvasPart(_MatplotlibLegend(self))
         self.initCanvas.emit()
 
     def mouseReleaseEvent(self, event):

@@ -254,6 +254,46 @@ class LineData(WaveData):
         """
         return self.__getAppearance('capsize', 0)
 
+    @saveCanvas
+    def setLegendVisible(self, visible):
+        """
+        Set the visibility of the legend.
+
+        Args:
+            visible(bool): The visibility.
+        """
+        self._setLegendVisible(visible)
+        self.__setAppearance("legendVisible", visible)
+
+    def getLegendVisible(self):
+        """
+        Get the visibility of the legend.
+
+        Returns:
+            bool: The visibility.
+        """
+        return self.__getAppearance('legendVisible', False)
+
+    @saveCanvas
+    def setLegendLabel(self, label):
+        """
+        Set the label of the legend.
+
+        Args:
+            label(str): The label.
+        """
+        self._setLegendLabel(label)
+        self.__setAppearance("legendLabel", label)
+
+    def getLegendLabel(self):
+        """
+        Get the label of the legend.
+
+        Returns:
+            str: The label.
+        """
+        return self.__getAppearance('legendLabel', '')
+
     def _loadAppearance(self, appearance):
         if 'LineColor' in appearance:
             self.setColor(appearance['LineColor'])
@@ -271,6 +311,8 @@ class LineData(WaveData):
         self.setErrorbar(appearance.get('xerror'), "x")
         self.setErrorbar(appearance.get('yerror'), "y")
         self.setCapSize(appearance.get('capsize', 0))
+        self.setLegendLabel(appearance.get('legendLabel', self.getName()))
+        self.setLegendVisible(appearance.get('legendVisible', False))
 
     def _setColor(self, color):
         warnings.warn(str(type(self)) + " does not implement _setColor(color) method.", NotImplementedWarning)
@@ -292,3 +334,9 @@ class LineData(WaveData):
 
     def _setMarkerFilling(self, type):
         warnings.warn(str(type(self)) + " does not implement _setMarkerFilling(filling) method.", NotImplementedWarning)
+
+    def _setLegendVisible(self, visible):
+        warnings.warn(str(type(self)) + " does not implement _setLegendVisible(visible) method.", NotImplementedWarning)
+
+    def _setLegendLabel(self, label):
+        warnings.warn(str(type(self)) + " does not implement _setLegendLabel(label) method.", NotImplementedWarning)

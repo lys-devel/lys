@@ -5,7 +5,7 @@ from lys.Qt import QtCore, QtWidgets
 from lys.widgets import LysSubWindow
 
 from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
-from .LineSettingsGUI import AppearanceBox, ErrorBox
+from .LineSettingsGUI import AppearanceBox, ErrorBox, LegendBox
 from .ImageSettingsGUI import ImageColorAdjustBox, RGBColorAdjustBox, VectorAdjustBox, ContourAdjustBox
 
 from .AxisSettingsGUI import AxisSelectionWidget, AxisAndTickBox
@@ -173,15 +173,18 @@ class _LineTab(QtWidgets.QWidget):
         app = AppearanceBox(canvas)
         err = ErrorBox(canvas)
         off = OffsetAdjustBox()
+        leg = LegendBox(canvas)
         sel = DataSelectionBox(canvas, 1, "line")
         sel.selected.connect(app.setLines)
         sel.selected.connect(err.setData)
         sel.selected.connect(off.setData)
+        sel.selected.connect(leg.setData)
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(app, 'Appearance')
         tab.addTab(err, 'Errorbar')
         tab.addTab(off, 'Offset')
+        tab.addTab(leg, 'Legend')
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)

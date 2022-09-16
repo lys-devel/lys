@@ -139,6 +139,23 @@ class _PyqtgraphLine(LineData):
     def _setCapSize(self, capsize):
         self._err.setData(beam=capsize)
 
+    def _setLegendVisible(self, visible):
+        leg = self.canvas().getLegend()
+        exist = leg.getLabel(self._obj) is not None
+        if visible:
+            if not exist:
+                leg.addItem(self._obj, self.getLegendLabel())
+        elif exist:
+            leg.removeItem(self._obj)
+        self.canvas().updateLegends()
+
+    def _setLegendLabel(self, label):
+        leg = self.canvas().getLegend()
+        if self.getLegendVisible():
+            leg.removeItem(self._obj)
+            leg.addItem(self._obj, label)
+        self.canvas().updateLegends()
+
 
 def _calcExtent2D(wav):
     xstart = wav.x[0]

@@ -21,7 +21,9 @@ class _MatplotlibLine(LineData):
         self.__update()
 
     def _setVisible(self, visible):
+        self._appearance['Visible'] = visible
         self._obj.lines[0].set_visible(visible)
+        self.canvas().updateLegends()
 
     def _setZ(self, z):
         _setZ(self._obj.lines[0], z)
@@ -32,9 +34,11 @@ class _MatplotlibLine(LineData):
         self._obj.lines[0].set_color(color)
         for line in self._obj.lines[1] + self._obj.lines[2]:
             line.set_color(color)
+        self.canvas().updateLegends()
 
     def _setStyle(self, style):
         self._obj.lines[0].set_linestyle(style)
+        self.canvas().updateLegends()
 
     def _setWidth(self, width):
         self._obj.lines[0].set_linewidth(width)
@@ -42,19 +46,24 @@ class _MatplotlibLine(LineData):
             line.set_markeredgewidth(width)
         for line in self._obj.lines[2]:
             line.set_linewidth(width)
+        self.canvas().updateLegends()
 
     def _setMarker(self, marker):
         dic = {value: key for key, value in lines.Line2D.markers.items()}
         self._obj.lines[0].set_marker(dic[marker])
+        self.canvas().updateLegends()
 
     def _setMarkerSize(self, size):
         self._obj.lines[0].set_markersize(size)
+        self.canvas().updateLegends()
 
     def _setMarkerThick(self, thick):
         self._obj.lines[0].set_markeredgewidth(thick)
+        self.canvas().updateLegends()
 
     def _setMarkerFilling(self, filling):
         self._obj.lines[0].set_fillstyle(filling)
+        self.canvas().updateLegends()
 
     def __update(self, error=None, direction=None, capsize=None):
         self._obj.remove()
@@ -94,12 +103,21 @@ class _MatplotlibLine(LineData):
         mfill = self.getMarkerFilling()
         if mfill is not None:
             self._setMarkerFilling(mfill)
+        self.canvas().updateLegends()
 
     def _setErrorbar(self, error, direction):
         self.__update(error, direction, self.getCapSize())
 
     def _setCapSize(self, capsize):
         self.__update(capsize=capsize)
+
+    def _setLegendVisible(self, visible):
+        self._appearance["legendVisible"] = visible
+        self.canvas().updateLegends()
+
+    def _setLegendLabel(self, label):
+        self._appearance["legendLabel"] = label
+        self.canvas().updateLegends()
 
 
 def _calcExtent2D(wav):
