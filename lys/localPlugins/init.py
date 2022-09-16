@@ -5,7 +5,6 @@ from . import ImageLoad
 from . import Logger
 from . import StringEditor
 from . import WaveViewer
-from . import TaskViewer
 
 # Menus
 from . import PythonEditor
