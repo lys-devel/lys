@@ -143,18 +143,30 @@ class _PyqtgraphLine(LineData):
         leg = self.canvas().getLegend()
         exist = leg.getLabel(self._obj) is not None
         if visible:
-            if not exist:
-                leg.addItem(self._obj, self.getLegendLabel())
+            self.setLegendText(self.getLegendLabel())
         elif exist:
             leg.removeItem(self._obj)
         self.canvas().updateLegends()
 
     def _setLegendLabel(self, label):
-        leg = self.canvas().getLegend()
         if self.getLegendVisible():
-            leg.removeItem(self._obj)
-            leg.addItem(self._obj, label)
+            self.setLegendText(label)
         self.canvas().updateLegends()
+
+    def setLegendText(self, label=None, font=None):
+        leg = self.canvas().getLegend()
+        if label is None:
+            label = self.getLegendLabel()
+        if font is None:
+            font = self.canvas().getLegendFont()
+        if leg.getLabel(self._obj) is not None:
+            leg.removeItem(self._obj)
+        css = '<style type="text/css"> p {font-family: '
+        css += font['family'] + '; font-size: '
+        css += str(font['size']) + 'pt; color: "'
+        css += font['color'] + '"} </style>'
+        css += "<p>" + label + "</p>"
+        leg.addItem(self._obj, css)
 
 
 def _calcExtent2D(wav):

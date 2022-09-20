@@ -206,6 +206,7 @@ class CanvasSize(CanvasPart):
             self.setCanvasSize('Width', **self.__dic['Width'])
         if hp in ['Aspect', 'Plan'] and wp == 'Auto':
             self.setCanvasSize('Height', **self.__dic['Height'])
+        self.canvasResized.emit(self.canvas())
 
     def _save(self, dictionary):
         dic = {}

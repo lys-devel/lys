@@ -4,6 +4,9 @@ from matplotlib.lines import Line2D
 
 from lys.Qt import QtCore, QtWidgets
 from lys.widgets import ColormapSelection, ColorSelection, ScientificSpinBox
+from lys.decorators import avoidCircularReference
+
+from .FontGUI import FontSelector
 
 
 class _LineColorSideBySideDialog(QtWidgets.QDialog):
@@ -304,6 +307,7 @@ class LegendBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self.canvas = canvas
+        self.canvas.legendPositionChanged.connect(self.__updatePosition)
         self._lines = []
         self.__initlayout()
 
@@ -317,10 +321,59 @@ class LegendBox(QtWidgets.QWidget):
         h.addWidget(QtWidgets.QLabel('Label'))
         h.addWidget(self.__label)
 
+        self.__font = FontSelector('Font')
+        self.__font.fontChanged.connect(lambda: self.canvas.setLegendFont(**self.__font.getFont()))
+        self.__font.setFont(**self.canvas.getLegendFont())
+
         lay.addWidget(self.__visible)
         lay.addLayout(h)
+        lay.addWidget(self.__appearanceBox())
+        lay.addWidget(self.__positionBox())
+        lay.addWidget(self.__font)
         lay.addStretch()
         self.setLayout(lay)
+
+    def __positionBox(self):
+        pos = self.canvas.getLegendPosition()
+        self.__x = QtWidgets.QDoubleSpinBox(valueChanged=self.__changePosition)
+        self.__x.setRange(-1, 2)
+        self.__x.setSingleStep(0.05)
+        self.__x.setDecimals(5)
+        self.__y = QtWidgets.QDoubleSpinBox(valueChanged=self.__changePosition)
+        self.__y.setRange(-1, 2)
+        self.__y.setSingleStep(0.05)
+        self.__y.setDecimals(5)
+        self.__x.setValue(pos[0])
+        self.__y.setValue(pos[1])
+
+        h = QtWidgets.QGridLayout()
+        h.addWidget(QtWidgets.QLabel("x"), 0, 0)
+        h.addWidget(QtWidgets.QLabel("y"), 0, 1)
+        h.addWidget(self.__x, 1, 0)
+        h.addWidget(self.__y, 1, 1)
+
+        box = QtWidgets.QGroupBox("Position")
+        box.setLayout(h)
+        return box
+
+    @avoidCircularReference
+    def __updatePosition(self, pos):
+        self.__x.setValue(pos[0])
+        self.__y.setValue(pos[1])
+
+    def __appearanceBox(self):
+        self.__frameVisible = QtWidgets.QCheckBox("Show Frame")
+        self.__frameVisible.setChecked(self.canvas.getLegendFrameVisible())
+        self.__frameVisible.toggled.connect(self.canvas.setLegendFrameVisible)
+        g = QtWidgets.QGridLayout()
+        g.addWidget(self.__frameVisible, 0, 0)
+
+        box = QtWidgets.QGroupBox("Appearance")
+        box.setLayout(g)
+        return box
+
+    def __changePosition(self):
+        self.canvas.setLegendPosition((self.__x.value(), self.__y.value()))
 
     def setData(self, lines):
         self._lines = lines
