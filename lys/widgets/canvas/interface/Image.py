@@ -156,12 +156,35 @@ class ImageData(WaveData):
         """
         return self.__getAppearance('Log')
 
+    @saveCanvas
+    def setColorbarVisible(self, visible):
+        """
+        Set the visibility of the colorbar.
+
+        Args:
+            visible(bool): The visibility.
+        """
+        self._setColorbarVisible(visible)
+        self.__setAppearance("colorbarVisible", visible)
+        self.canvas().refreshCanvasSize()
+        self.canvas().refreshMargin()
+
+    def getColorbarVisible(self):
+        """
+        Get the visibility of the colorbar.
+
+        Returns:
+            bool: The visibility.
+        """
+        return self.__getAppearance('colorbarVisible', False)
+
     def _loadAppearance(self, appearance):
         self.setColormap(appearance.get('Colormap', 'gray'))
         self.setGamma(appearance.get('ColorGamma', 1.0))
         self.setOpacity(appearance.get('Opacity', 1.0))
         self.setColorRange(*appearance.get('Range', self.getAutoColorRange()))
         self.setLog(appearance.get('Log', False))
+        self.setColorbarVisible(appearance.get('ColorbarVisible', False))
 
     def _setColormap(self, cmap):
         warnings.warn(str(type(self)) + " does not implement _setColormap(cmap) method.", NotImplementedWarning)

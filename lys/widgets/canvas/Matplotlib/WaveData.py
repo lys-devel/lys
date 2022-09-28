@@ -17,6 +17,9 @@ class _MatplotlibLine(LineData):
         super().__init__(canvas, wave, axis)
         self._obj = canvas.getAxes(axis).errorbar(wave.x, wave.data)
 
+    def remove(self):
+        self._obj.remove()
+
     def _updateData(self):
         self.__update()
 
@@ -135,7 +138,15 @@ class _MatplotlibImage(ImageData):
 
     def __init__(self, canvas, wave, axis):
         super().__init__(canvas, wave, axis)
+        self._axis = axis
         self._obj = canvas.getAxes(axis).imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=_calcExtent2D(wave), picker=True)
+        self._colorbar = None
+        self.canvas().canvasResized.connect(self.__resized)
+
+    def remove(self):
+        if self._colorbar is not None:
+            self._colorbar.remove()
+        self._obj.remove()
 
     def _updateData(self):
         self._obj.set_data(self.getFilteredWave().data.swapaxes(0, 1))
@@ -177,6 +188,24 @@ class _MatplotlibImage(ImageData):
     def _setOpacity(self, value):
         self._obj.set_alpha(value)
 
+    def _setColorbarVisible(self, visible):
+        fig = self.canvas().getFigure()
+        if visible:
+            if self._colorbar is None:
+                self._colorbar = fig.colorbar(self._obj, ax=self.canvas().getAxes(self._axis))
+        else:
+            if self._colorbar is not None:
+                self._colorbar.remove()
+                self._colorbar = None
+
+    def __resized(self):
+        if self._colorbar is not None:
+            m = self.canvas().getMargin()
+            self._colorbar.ax.set_position([m[1] + 0.05, m[2], 0.05, m[3] - m[2]])
+
+    def colorbar(self):
+        return self._colorbar
+
 
 class _MatplotlibVector(VectorData):
     """Implementation of VectorData for matplotlib"""
@@ -187,6 +216,9 @@ class _MatplotlibVector(VectorData):
         xx, yy = np.meshgrid(wave.x, wave.y)
         self._obj = canvas.getAxes(axis).quiver(xx, yy, np.real(wave.data.T), np.imag(wave.data.T), pivot="mid")
         canvas.axisRangeChanged.connect(self._updateData)
+
+    def remove(self):
+        self._obj.remove()
 
     def _updateData(self):
         X, Y = np.meshgrid(self.getFilteredWave().x, self.getFilteredWave().y)
@@ -227,6 +259,9 @@ class _MatplotlibRGB(RGBData):
         w = self.getRGBWave()
         self._obj = canvas.getAxes(axis).imshow(w.data.swapaxes(0, 1), aspect='auto', extent=_calcExtent2D(w), picker=True)
 
+    def remove(self):
+        self._obj.remove()
+
     def _updateData(self):
         wave = self.getRGBWave()
         self._obj.set_data(wave.data.swapaxes(0, 1))
@@ -246,6 +281,10 @@ class _MatplotlibContour(ContourData):
         super().__init__(canvas, wave, axis)
         self._axis = axis
         self._obj = canvas.getAxes(axis).contour(wave.data.T[::-1, :], [0.5], extent=_calcExtent2D(wave))
+
+    def remove(self):
+        for o in self._obj.collections:
+            o.remove()
 
     def _updateData(self):
         w = self.getFilteredWave()
@@ -312,8 +351,4 @@ class _MatplotlibData(CanvasData):
         return _MatplotlibVector(self.canvas(), wav, axis)
 
     def _remove(self, data):
-        if isinstance(data._obj, QuadContourSet):
-            for o in data._obj.collections:
-                o.remove()
-        else:
-            data._obj.remove()
+        data.remove()

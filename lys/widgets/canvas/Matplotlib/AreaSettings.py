@@ -44,4 +44,7 @@ class _MatplotlibCanvasSize(CanvasSize):
         return (wr, hr)
 
     def _adjust(self):
+        m = self.canvas().getMargin()
+        for ax in self.canvas().axisList():
+            self.canvas().getAxes(ax).set_position([m[0], m[2], m[1] - m[0], m[3] - m[2]])
         self.canvas().resize(self.canvas().getFigure().get_figwidth() * 100, self.canvas().getFigure().get_figheight() * 100)

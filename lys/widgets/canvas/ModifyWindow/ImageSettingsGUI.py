@@ -101,6 +101,77 @@ class ImageColorAdjustBox(QtWidgets.QWidget):
             self.__setEnabled(False)
 
 
+class ColorbarAdjustBox(QtWidgets.QWidget):
+    def __init__(self, canvas):
+        super().__init__()
+        self.canvas = canvas
+        self.__initlayout()
+        self.__setEnabled(False)
+
+    def __initlayout(self):
+        self.__vis = QtWidgets.QCheckBox("Show colorbar")
+        self.__vis.toggled.connect(lambda b: [im.setColorbarVisible(b) for im in self._images])
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.__vis)
+        layout.addStretch()
+        self.setLayout(layout)
+        return
+
+        self.__cmap = ColormapSelection()
+        self.__cmap.colorChanged.connect(self.__changeColormap)
+        self.__start = _rangeWidget("Min", 0)
+        self.__end = _rangeWidget("Max", 1)
+        self.__start.valueChanged.connect(self.__changerange)
+        self.__end.valueChanged.connect(self.__changerange)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.__cmap)
+        layout.addLayout(self.__start)
+        layout.addLayout(self.__end)
+        layout.addStretch()
+        self.setLayout(layout)
+
+    def __setEnabled(self, b):
+        self.__vis.setEnabled(b)
+        return
+        self.__start.setEnabled(b)
+        self.__end.setEnabled(b)
+
+    @avoidCircularReference
+    def __changerange(self, *args, **kwargs):
+        for im in self._images:
+            im.setColorRange(self.__start.getValue(), self.__end.getValue())
+            im.setLog(self.__cmap.isLog())
+
+    @avoidCircularReference
+    def __changeColormap(self, *args, **kwargs):
+        for im in self._images:
+            im.setColormap(self.__cmap.currentColor())
+            im.setGamma(self.__cmap.gamma())
+            im.setOpacity(self.__cmap.opacity())
+        self.__changerange()
+
+    @avoidCircularReference
+    def setData(self, images):
+        self._images = images
+        if len(images) != 0:
+            self.__setEnabled(True)
+            self.__vis.setChecked(images[0].getColorbarVisible())
+            return
+            self.__cmap.setColormap(images[0].getColormap())
+            self.__cmap.setOpacity(images[0].getOpacity())
+            self.__cmap.setGamma(images[0].getGamma())
+            self.__cmap.setLog(images[0].isLog())
+            min, max = images[0].getAutoColorRange()
+            self.__start.setAutoValue(min)
+            self.__end.setAutoValue(max)
+            min, max = images[0].getColorRange()
+            self.__start.setAbsolute(min)
+            self.__end.setAbsolute(max)
+        else:
+            self.__setEnabled(False)
+
+
 class RGBColorAdjustBox(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()

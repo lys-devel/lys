@@ -54,6 +54,8 @@ class CanvasMargin(CanvasPart):
                 r = 0.80
             else:
                 r = 0.85
+            if any([im.getColorbarVisible() for im in self.canvas().getImages()]):
+                r = r - 0.1
         if b == 0:
             b = 0.2
         if t == 0:
@@ -77,6 +79,12 @@ class CanvasMargin(CanvasPart):
             return self._margins
         else:
             return self._margins_act
+
+    def refreshMargin(self):
+        """
+        Refresh margin based on the present setting.
+        """
+        self.setMargin(*self.getMargin(raw=True))
 
     def _save(self, dictionary):
         dictionary['Margin'] = self._margins
@@ -207,6 +215,11 @@ class CanvasSize(CanvasPart):
         if hp in ['Aspect', 'Plan'] and wp == 'Auto':
             self.setCanvasSize('Height', **self.__dic['Height'])
         self.canvasResized.emit(self.canvas())
+
+    @saveCanvas
+    def refreshCanvasSize(self):
+        self.setCanvasSize('Width', **self.__dic['Width'])
+        self.setCanvasSize('Height', **self.__dic['Height'])
 
     def _save(self, dictionary):
         dic = {}

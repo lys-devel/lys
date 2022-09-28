@@ -6,7 +6,7 @@ from lys.widgets import LysSubWindow
 
 from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
 from .LineSettingsGUI import AppearanceBox, ErrorBox, LegendBox
-from .ImageSettingsGUI import ImageColorAdjustBox, RGBColorAdjustBox, VectorAdjustBox, ContourAdjustBox
+from .ImageSettingsGUI import ImageColorAdjustBox, ColorbarAdjustBox, RGBColorAdjustBox, VectorAdjustBox, ContourAdjustBox
 
 from .AxisSettingsGUI import AxisSelectionWidget, AxisAndTickBox
 from .AxisLabelSettingsGUI import AxisAndTickLabelBox, AxisFontBox
@@ -201,13 +201,16 @@ class _ImageTab(QtWidgets.QWidget):
     def _initlayout(self, canvas):
         im = ImageColorAdjustBox(canvas)
         off = OffsetAdjustBox()
+        col = ColorbarAdjustBox(canvas)
         sel = DataSelectionBox(canvas, 2, "image")
         sel.selected.connect(im.setImages)
         sel.selected.connect(off.setData)
+        sel.selected.connect(col.setData)
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(im, 'Color')
         tab.addTab(off, 'Offset')
+        tab.addTab(col, 'Colorbar')
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)

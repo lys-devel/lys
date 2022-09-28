@@ -12,14 +12,24 @@ class MarginAdjustBox(QtWidgets.QGroupBox):
         self._initlayout(canvas)
 
     def _initlayout(self, canvas):
-        m = canvas.getMargin(raw=True)
         self._vals = [QtWidgets.QDoubleSpinBox() for _ in range(4)]
-        for v, mv in zip(self._vals, m):
+        for v in self._vals:
             v.setRange(0, 1)
             v.setSingleStep(0.05)
             v.setSpecialValueText("Auto")
-            v.setValue(mv)
             v.valueChanged.connect(self._valueChanged)
+
+        m = canvas.getMargin(raw=True)
+        self._vals[0].setValue(m[0])
+        if m[1] == 0:
+            self._vals[1].setValue(0)
+        else:
+            self._vals[1].setValue(1 - m[1])
+        self._vals[2].setValue(m[2])
+        if m[3] == 0:
+            self._vals[3].setValue(0)
+        else:
+            self._vals[3].setValue(1 - m[3])
 
         grid = QtWidgets.QGridLayout()
         grid.addWidget(QtWidgets.QLabel('Left'), 0, 0)
@@ -33,7 +43,15 @@ class MarginAdjustBox(QtWidgets.QGroupBox):
         self.setLayout(grid)
 
     def _valueChanged(self):
-        self.canvas.setMargin(*[v.value() for v in self._vals])
+        m0 = self._vals[0].value()
+        m1 = self._vals[1].value()
+        if m1 != 0:
+            m1 = 1 - m1
+        m2 = self._vals[2].value()
+        m3 = self._vals[3].value()
+        if m3 != 0:
+            m3 = 1 - m3
+        self.canvas.setMargin(m0, m1, m2, m3)
 
 
 class ResizeBox(QtWidgets.QGroupBox):
