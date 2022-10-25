@@ -37,33 +37,33 @@ class CanvasUtilities(CanvasPart):
         c.LoadFromDictionary(d)
         return c
 
-    def saveFigure(self, path, format):
-        self.__duplicateCanvas().getFigure().savefig(path, transparent=True, format=format)
+    def saveFigure(self, path, format, dpi=100):
+        self.__duplicateCanvas().getFigure().savefig(path, transparent=True, format=format, dpi=dpi)
 
-    def copyToClipboard(self):
+    def copyToClipboard(self, dpi=100):
         c = self.__duplicateCanvas()
         clipboard = QtWidgets.QApplication.clipboard()
         mime = QtCore.QMimeData()
-        mime.setData('Encapsulated PostScript', self.__toData(c, 'eps'))
-        mime.setData('application/postscript', self.__toData(c, 'eps'))
-        mime.setData('Scalable Vector Graphics', self.__toData(c, 'svg'))
-        mime.setData('application/svg+xml', self.__toData(c, 'svg'))
-        mime.setData('Portable Document Format', self.__toData(c, 'pdf'))
-        mime.setData('application/pdf', self.__toData(c, 'pdf'))
+        mime.setData('Encapsulated PostScript', self.__toData(c, 'eps', dpi=dpi))
+        mime.setData('application/postscript', self.__toData(c, 'eps', dpi=dpi))
+        mime.setData('Scalable Vector Graphics', self.__toData(c, 'svg', dpi=dpi))
+        mime.setData('application/svg+xml', self.__toData(c, 'svg', dpi=dpi))
+        mime.setData('Portable Document Format', self.__toData(c, 'pdf', dpi=dpi))
+        mime.setData('application/pdf', self.__toData(c, 'pdf', dpi=dpi))
         try:
-            mime.setText(self.__toData(c, 'pdf').hex())
+            mime.setText(self.__toData(c, 'pdf', dpi=dpi).hex())
         except Exception:
             import traceback
             print(traceback.format_exc())
         buf = io.BytesIO()
-        c.getFigure().savefig(buf, transparent=True)
+        c.getFigure().savefig(buf, transparent=True, dpi=dpi)
         mime.setImageData(QtGui.QImage.fromData(buf.getvalue()))
         buf.close()
         clipboard.setMimeData(mime)
 
-    def __toData(self, canvas, format):
+    def __toData(self, canvas, format, dpi=100):
         buf = io.BytesIO()
-        canvas.getFigure().savefig(buf, format=format, transparent=True)
+        canvas.getFigure().savefig(buf, format=format, transparent=True, dpi=dpi)
         buf.seek(0)
         data = buf.read()
         buf.close()

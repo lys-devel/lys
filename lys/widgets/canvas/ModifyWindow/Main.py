@@ -341,15 +341,25 @@ class SaveBox(QtWidgets.QGroupBox):
         self.__initlayout()
 
     def __initlayout(self):
-        lay = QtWidgets.QVBoxLayout()
         self._save = QtWidgets.QPushButton('Export image', clicked=self.Save)
-        lay.addWidget(self._save)
         self._copy = QtWidgets.QPushButton('Copy to clipboard', clicked=self.Copy)
+
+        self._dpi = QtWidgets.QSpinBox()
+        self._dpi.setRange(1, 10000)
+        self._dpi.setValue(100)
+
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QLabel("dpi:"))
+        h1.addWidget(self._dpi)
+
+        lay = QtWidgets.QVBoxLayout()
+        lay.addWidget(self._save)
         lay.addWidget(self._copy)
+        lay.addLayout(h1)
         self.setLayout(lay)
 
     def Copy(self):
-        self.canvas.copyToClipboard()
+        self.canvas.copyToClipboard(dpi=self._dpi.value())
 
     def Save(self):
         filters = ['PDF file (*.pdf)', 'EPS file (*.eps)', 'PNG file (*.png)', 'SVG file (*.svg)']
@@ -366,4 +376,4 @@ class SaveBox(QtWidgets.QGroupBox):
             savename += ext
         else:
             savename = name + ext + exts[filters.index(res[1])]
-        self.canvas.saveFigure(savename, exts[filters.index(res[1])].replace('.', ''))
+        self.canvas.saveFigure(savename, exts[filters.index(res[1])].replace('.', ''), dpi=self._dpi.value())

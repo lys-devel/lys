@@ -141,6 +141,8 @@ class _MatplotlibImage(ImageData):
         self._axis = axis
         self._obj = canvas.getAxes(axis).imshow(wave.data.swapaxes(0, 1), aspect='auto', extent=_calcExtent2D(wave), picker=True)
         self._colorbar = None
+        self._cpos = (0, 0)
+        self._csize = (0.04, 1)
         self.canvas().canvasResized.connect(self.__resized)
 
     def remove(self):
@@ -188,20 +190,41 @@ class _MatplotlibImage(ImageData):
     def _setOpacity(self, value):
         self._obj.set_alpha(value)
 
-    def _setColorbarVisible(self, visible):
+    def __showColorbar(self, visible, direction='vertical'):
         fig = self.canvas().getFigure()
         if visible:
+            if self.getColorbarDirection() != direction:
+                self._colorbar.remove()
+                self._colorbar = None
             if self._colorbar is None:
-                self._colorbar = fig.colorbar(self._obj, ax=self.canvas().getAxes(self._axis))
+                self._colorbar = fig.colorbar(self._obj, ax=self.canvas().getAxes(self._axis), orientation=direction)
+                self._colorbar.ax.set_aspect("auto")
         else:
             if self._colorbar is not None:
                 self._colorbar.remove()
                 self._colorbar = None
 
+    def _setColorbarVisible(self, visible):
+        self.__showColorbar(visible, self.getColorbarDirection())
+
+    def _setColorbarDirection(self, direction):
+        self.__showColorbar(self.getColorbarVisible(), direction)
+
+    def _setColorbarPosition(self, pos):
+        self._cpos = pos
+        self.__resized()
+
+    def _setColorbarSize(self, size):
+        self._csize = size
+        self.__resized()
+
     def __resized(self):
         if self._colorbar is not None:
             m = self.canvas().getMargin()
-            self._colorbar.ax.set_position([m[1] + 0.05, m[2], 0.05, m[3] - m[2]])
+            if self.getColorbarDirection() == "vertical":
+                self._colorbar.ax.set_position([m[1] + self._cpos[0], m[2] + self._cpos[1], self._csize[0], (m[3] - m[2]) * self._csize[1]])
+            else:
+                self._colorbar.ax.set_position([m[0] + self._cpos[1], m[3] + self._cpos[0], (m[1] - m[0]) * self._csize[1], self._csize[0]])
 
     def colorbar(self):
         return self._colorbar

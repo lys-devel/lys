@@ -110,64 +110,88 @@ class ColorbarAdjustBox(QtWidgets.QWidget):
 
     def __initlayout(self):
         self.__vis = QtWidgets.QCheckBox("Show colorbar")
-        self.__vis.toggled.connect(lambda b: [im.setColorbarVisible(b) for im in self._images])
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self.__vis)
-        layout.addStretch()
-        self.setLayout(layout)
-        return
+        self.__vis.toggled.connect(self.__enabled)
 
-        self.__cmap = ColormapSelection()
-        self.__cmap.colorChanged.connect(self.__changeColormap)
-        self.__start = _rangeWidget("Min", 0)
-        self.__end = _rangeWidget("Max", 1)
-        self.__start.valueChanged.connect(self.__changerange)
-        self.__end.valueChanged.connect(self.__changerange)
+        self.__dir = QtWidgets.QComboBox()
+        self.__dir.addItems(["vertical", "horizontal"])
+        self.__dir.currentTextChanged.connect(self.__setDirection)
+
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(self.__vis)
+        h1.addWidget(self.__dir)
+
+        self.__x = QtWidgets.QDoubleSpinBox()
+        self.__x.setSingleStep(0.01)
+        self.__x.setRange(-1, 2)
+        self.__x.valueChanged.connect(self.__setColorbarSize)
+        self.__y = QtWidgets.QDoubleSpinBox()
+        self.__y.setSingleStep(0.1)
+        self.__y.setRange(-1, 2)
+        self.__y.valueChanged.connect(self.__setColorbarSize)
+        self.__wid = QtWidgets.QDoubleSpinBox()
+        self.__wid.setSingleStep(0.01)
+        self.__wid.setRange(0, 2)
+        self.__wid.valueChanged.connect(self.__setColorbarSize)
+        self.__len = QtWidgets.QDoubleSpinBox()
+        self.__len.setSingleStep(0.1)
+        self.__len.setRange(0, 2)
+        self.__len.valueChanged.connect(self.__setColorbarSize)
+
+        g1 = QtWidgets.QGridLayout()
+        g1.addWidget(QtWidgets.QLabel("x"), 0, 0)
+        g1.addWidget(QtWidgets.QLabel("y"), 0, 1)
+        g1.addWidget(self.__x, 1, 0)
+        g1.addWidget(self.__y, 1, 1)
+        g1.addWidget(QtWidgets.QLabel("Width"), 2, 0)
+        g1.addWidget(QtWidgets.QLabel("Length"), 2, 1)
+        g1.addWidget(self.__wid, 3, 0)
+        g1.addWidget(self.__len, 3, 1)
+        grp1 = QtWidgets.QGroupBox("Position and size")
+        grp1.setLayout(g1)
 
         layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self.__cmap)
-        layout.addLayout(self.__start)
-        layout.addLayout(self.__end)
+        layout.addLayout(h1)
+        layout.addWidget(grp1)
         layout.addStretch()
         self.setLayout(layout)
 
     def __setEnabled(self, b):
         self.__vis.setEnabled(b)
-        return
-        self.__start.setEnabled(b)
-        self.__end.setEnabled(b)
+        self.__len.setEnabled(b)
+        self.__wid.setEnabled(b)
+        self.__x.setEnabled(b)
+        self.__y.setEnabled(b)
 
-    @avoidCircularReference
-    def __changerange(self, *args, **kwargs):
+    def __enabled(self, b):
         for im in self._images:
-            im.setColorRange(self.__start.getValue(), self.__end.getValue())
-            im.setLog(self.__cmap.isLog())
+            im.setColorbarVisible(b)
+        self.__x.setEnabled(b)
+        self.__y.setEnabled(b)
+        self.__len.setEnabled(b)
+        self.__wid.setEnabled(b)
 
-    @avoidCircularReference
-    def __changeColormap(self, *args, **kwargs):
+    @ avoidCircularReference
+    def __setColorbarSize(self, *args):
         for im in self._images:
-            im.setColormap(self.__cmap.currentColor())
-            im.setGamma(self.__cmap.gamma())
-            im.setOpacity(self.__cmap.opacity())
-        self.__changerange()
+            im.setColorbarPosition((self.__x.value(), self.__y.value()))
+            im.setColorbarSize((self.__wid.value(), self.__len.value()))
 
-    @avoidCircularReference
+    @ avoidCircularReference
+    def __setDirection(self, dir):
+        for im in self._images:
+            im.setColorbarDirection(dir)
+
+    @ avoidCircularReference
     def setData(self, images):
         self._images = images
         if len(images) != 0:
             self.__setEnabled(True)
             self.__vis.setChecked(images[0].getColorbarVisible())
-            return
-            self.__cmap.setColormap(images[0].getColormap())
-            self.__cmap.setOpacity(images[0].getOpacity())
-            self.__cmap.setGamma(images[0].getGamma())
-            self.__cmap.setLog(images[0].isLog())
-            min, max = images[0].getAutoColorRange()
-            self.__start.setAutoValue(min)
-            self.__end.setAutoValue(max)
-            min, max = images[0].getColorRange()
-            self.__start.setAbsolute(min)
-            self.__end.setAbsolute(max)
+            self.__enabled(images[0].getColorbarVisible())
+            self.__x.setValue(images[0].getColorbarPosition()[0])
+            self.__y.setValue(images[0].getColorbarPosition()[1])
+            self.__wid.setValue(images[0].getColorbarSize()[0])
+            self.__len.setValue(images[0].getColorbarSize()[1])
         else:
             self.__setEnabled(False)
 
@@ -199,7 +223,7 @@ class RGBColorAdjustBox(QtWidgets.QWidget):
         layout.addStretch()
         self.setLayout(layout)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def setRGBs(self, images):
         self._images = images
         if len(images) != 0:
@@ -220,12 +244,12 @@ class RGBColorAdjustBox(QtWidgets.QWidget):
         self.__start.setEnabled(b)
         self.__end.setEnabled(b)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def __changerange(self, *args, **kwargs):
         for im in self._images:
             im.setColorRange(self.__start.getValue(), self.__end.getValue())
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def __changerot(self, *args, **kwargs):
         for im in self._images:
             im.setColorRotation(self.__rot.value())
@@ -272,7 +296,7 @@ class VectorAdjustBox(QtWidgets.QWidget):
         self.__width.setEnabled(b)
         self.__color.setEnabled(b)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def setVectors(self, vectors):
         self._vectors = vectors
         if len(vectors) != 0:
@@ -284,22 +308,22 @@ class VectorAdjustBox(QtWidgets.QWidget):
         else:
             self.__setEnabled(False)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def __changeLength(self, value):
         for v in self._vectors:
             v.setScale(value)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def __changeWidth(self, value):
         for v in self._vectors:
             v.setWidth(value)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def __changeColor(self, color):
         for v in self._vectors:
             v.setColor(color)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def __changePivot(self):
         for v in self._vectors:
             v.setPivot(self.__pivot.currentText())
@@ -343,17 +367,17 @@ class ContourAdjustBox(QtWidgets.QWidget):
         self.__color.setEnabled(b)
         self._style.setEnabled(b)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def __changeColor(self, color):
         for c in self._contours:
             c.setColor(color)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def __changeLevel(self, level):
         for c in self._contours:
             c.setLevel(level)
 
-    @avoidCircularReference
+    @ avoidCircularReference
     def setContours(self, contours):
         self._contours = contours
         if len(contours) != 0:
