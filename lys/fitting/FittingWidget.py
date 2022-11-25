@@ -25,6 +25,18 @@ class _ResultController(QtCore.QObject):
         self._fitted = None
         self._obj = None
 
+    def calculateResidualSum(self):
+        wave = self._data.getWave()
+        f = self._info.fitFunction
+        p = self._info.fitParameters
+        _, x, axis = self._mgr.getDataForFit(wave)
+        if self._fitted is None:
+            self._fitted = Wave(f(x, *p), axis, name=wave.name + "_fit")
+        else:
+            self._fitted.data = f(x, *p)
+            self._fitted.x = axis
+        return np.sum(abs(wave.data - self._fitted.data)**2) / len(wave.data)
+
     def _update(self):
         if self._state:
             f = self._info.fitFunction
@@ -76,7 +88,7 @@ class _DataManager(QtCore.QObject):
             x = wave.x
         else:
             x = wave.note[self._xdata]
-        return wave.data[p[0]:p[1]+1], x[p[0]:p[1]+1], wave.x[p[0]:p[1]+1]
+        return wave.data[p[0]:p[1] + 1], x[p[0]:p[1] + 1], wave.x[p[0]:p[1] + 1]
 
     def getOffset(self, line):
         return line.getOffset()
@@ -406,8 +418,10 @@ class FittingWidget(QtWidgets.QWidget):
         hbox1.addWidget(self._all)
 
         exec = QtWidgets.QPushButton('Fit', clicked=self.__fit)
+        resi = QtWidgets.QPushButton('Residual sum', clicked=self.__resi)
         hbox3 = QtWidgets.QHBoxLayout()
         hbox3.addWidget(exec)
+        hbox3.addWidget(resi)
 
         vbox1 = QtWidgets.QVBoxLayout()
         vbox1.addLayout(hbox2)
@@ -429,6 +443,10 @@ class FittingWidget(QtWidgets.QWidget):
             self._old_ctrl = self._ctrls[i]
             self._append.setChecked(self._ctrls[i].state)
             self._ctrls[i].stateChanged.connect(self._append.setChecked)
+
+    def __resi(self):
+        R = self._ctrls[self._target.currentIndex()].calculateResidualSum()
+        print("Residual sum:", R)
 
     def __fit(self):
         if self._all.isChecked():
