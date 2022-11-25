@@ -35,7 +35,7 @@ class _ResultController(QtCore.QObject):
         else:
             self._fitted.data = f(x, *p)
             self._fitted.x = axis
-        return np.sum(abs(wave.data - self._fitted.data)**2) / len(wave.data)
+        return np.sqrt(np.sum(abs(wave.data - self._fitted.data)**2)) / len(wave.data)
 
     def _update(self):
         if self._state:
