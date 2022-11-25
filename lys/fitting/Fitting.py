@@ -34,7 +34,7 @@ def fit(f, xdata, ydata, guess=None, bounds=None):
             else:
                 b_low.append(bounds[0][i])
                 b_high.append(bounds[1][i])
-        for i in fixed:
+        for i in reversed(fixed):
             f = _fixFunc(f, i, bounds[0][i])
         guess = [g for i, g in enumerate(guess) if i not in fixed]
         res, sig = optimize.curve_fit(f, xdata, ydata, guess, bounds=(b_low, b_high))
