@@ -1,8 +1,11 @@
 import numpy as np
+import dask.array as da
 from dask_image import ndfilters
 
 from lys import DaskWave
 from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.Qt import QtWidgets
+from lys.widgets import ScientificSpinBox
 
 from .FilterInterface import FilterInterface
 from .CommonWidgets import kernelSizeLayout, kernelSigmaLayout
@@ -69,6 +72,24 @@ class GaussianFilter(FilterInterface):
         return {"kernel": self._kernel}
 
 
+class RemoveImpulsiveNoise(FilterInterface):
+    def __init__(self, kernel, threshold):
+        self._kernel = kernel
+        self._threshold = threshold
+
+    def _execute(self, wave, *args, **kwargs):
+        median = self._applyFunc(ndfilters.median_filter, wave.data, size=self._kernel)
+        diff = da.absolute(median - wave.data)
+        data = da.where(diff > self._threshold, median, wave.data)
+        return DaskWave(data, *wave.axes, **wave.note)
+
+    def getParameters(self):
+        return {"kernel": self._kernel, "threshold": self._threshold}
+
+    def getRelativeDimension(self):
+        return 0
+
+
 @filterGUI(MedianFilter)
 class _MedianSetting(FilterSettingBase):
     def __init__(self, dimension=2):
@@ -111,6 +132,32 @@ class _GaussianSetting(FilterSettingBase):
         self._layout.setKernelSigma(kernel)
 
 
+@ filterGUI(RemoveImpulsiveNoise)
+class _RemoveImpulsiveNoiseSetting(FilterSettingBase):
+    def __init__(self, dimension):
+        super().__init__(dimension)
+        self._threshold = ScientificSpinBox()
+        self._threshold.setValue(1e8)
+        self._kernel = kernelSizeLayout(dimension)
+
+        h = QtWidgets.QHBoxLayout()
+        h.addWidget(QtWidgets.QLabel("Threshold"))
+        h.addWidget(self._threshold)
+
+        v = QtWidgets.QVBoxLayout()
+        v.addLayout(h)
+        v.addLayout(self._kernel)
+        self.setLayout(v)
+
+    def getParameters(self):
+        return {"kernel": self._kernel.getKernelSize(), "threshold": self._threshold.value()}
+
+    def setParameters(self, kernel, threshold):
+        self._threshold.setValue(threshold)
+        self._kernel.setKernelSize(kernel)
+
+
 addFilter(MedianFilter, gui=_MedianSetting, guiName="Median", guiGroup="Smoothing")
 addFilter(AverageFilter, gui=_AverageSetting, guiName="Average", guiGroup="Smoothing")
 addFilter(GaussianFilter, gui=_GaussianSetting, guiName="Gaussian", guiGroup="Smoothing")
+addFilter(RemoveImpulsiveNoise, gui=_RemoveImpulsiveNoiseSetting, guiName="RemoveImpulsiveNoise", guiGroup="Smoothing")
