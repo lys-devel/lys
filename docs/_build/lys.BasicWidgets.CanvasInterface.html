@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CanvasInterface package &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CanvasBase module" href="graph/CanvasBase.html" />
+    <link rel="prev" title="widgets module" href="lys_/widgets.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lys.html">lys package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">CanvasInterface package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#base-class-of-canvas">Base class of canvas</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graph/CanvasBase.html">CanvasBase module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/Events.html">Events module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#components-of-canvas">Components of canvas</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graph/Area.html">Area module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/Axes.html">Axes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/AxisLabels.html">AxisLabel module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/Data.html">Data module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/Annotation.html">Annotation module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#interface-to-data">Interface to data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graph/WaveData.html">WaveData module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/Line.html">Line module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/Image.html">Image module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/RGB.html">RGB module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/Vector.html">Vector module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/Contour.html">Contour module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#interface-to-annotations">Interface to annotations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="graph/AnnotationData.html">AnnotationData module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/TextAnnot.html">TextAnnotation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/LineAnnot.html">LineAnnotation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/RegionAnnot.html">RegionAnnotation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/CrossAnnot.html">CrossAnnotation module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="graph/RectAnnot.html">RectAnnotation module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html">lys.Analysis package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.html">lys.filters package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">Python API</a></li>
+      <li class="breadcrumb-item active">CanvasInterface package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lys.BasicWidgets.CanvasInterface.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="canvasinterface-package">
+<h1>CanvasInterface package<a class="headerlink" href="#canvasinterface-package" title="Permalink to this heading"></a></h1>
+<section id="base-class-of-canvas">
+<h2>Base class of canvas<a class="headerlink" href="#base-class-of-canvas" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="graph/CanvasBase.html">CanvasBase module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/Events.html">Events module</a></li>
+</ul>
+</div>
+</section>
+<section id="components-of-canvas">
+<h2>Components of canvas<a class="headerlink" href="#components-of-canvas" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="graph/Area.html">Area module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/Axes.html">Axes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/AxisLabels.html">AxisLabel module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/Data.html">Data module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/Annotation.html">Annotation module</a></li>
+</ul>
+</div>
+</section>
+<section id="interface-to-data">
+<h2>Interface to data<a class="headerlink" href="#interface-to-data" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="graph/WaveData.html">WaveData module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/Line.html">Line module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/Image.html">Image module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/RGB.html">RGB module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/Vector.html">Vector module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/Contour.html">Contour module</a></li>
+</ul>
+</div>
+</section>
+<section id="interface-to-annotations">
+<h2>Interface to annotations<a class="headerlink" href="#interface-to-annotations" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="graph/AnnotationData.html">AnnotationData module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/TextAnnot.html">TextAnnotation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/LineAnnot.html">LineAnnotation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/RegionAnnot.html">RegionAnnotation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/CrossAnnot.html">CrossAnnotation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="graph/RectAnnot.html">RectAnnotation module</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lys_/widgets.html" class="btn btn-neutral float-left" title="widgets module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="graph/CanvasBase.html" class="btn btn-neutral float-right" title="CanvasBase module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

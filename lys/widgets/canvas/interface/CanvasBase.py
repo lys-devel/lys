@@ -124,6 +124,24 @@ class CanvasBase(object):
         """
         pass
 
+    def delayUpdate(self):
+        """
+        This method should be used (as [*with*] block) when the canvas is heavily modified to avoid drawing repeatedly.
+        """
+        return _CanvasLocker(self)
+
+
+class _CanvasLocker:
+    def __init__(self, canvas):
+        self.canvas = canvas
+
+    def __enter__(self):
+        self.canvas._saveflg = True
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.canvas._saveflg = False
+        self.canvas.updated.emit()
+
 
 class CanvasPart(QtCore.QObject):
     """
