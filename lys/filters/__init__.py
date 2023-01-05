@@ -1,7 +1,5 @@
 
-from .FilterManager import addFilter, getFilter, getFilterGui, getFilterGuiName, getFilterName
-from .filtersGUI import FiltersGUI, FiltersDialog, FilterSettingBase, filterGUI
+from .function import addFilter, getFilter, getFilterGui, getFilterGuiName, getFilterName, fromFile, fromString, toString
+from .interface import FilterSettingBase, filterGUI, FilterInterface, Filters
+from .filtersGUI import FiltersGUI, FiltersDialog
 from .filter import *
-fromFile = Filters.fromFile
-fromString = Filters.fromString
-toString = Filters.toString

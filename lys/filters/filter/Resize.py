@@ -4,9 +4,8 @@ import itertools
 
 from lys import DaskWave
 from lys.Qt import QtWidgets
-from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 
-from .FilterInterface import FilterInterface
 from .CommonWidgets import kernelSizeLayout, AxisCheckLayout, ScientificSpinBox
 
 

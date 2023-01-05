@@ -1,5 +1,4 @@
-from .FilterInterface import EmptyFilter
-from .filters import Filters
+from .Empty import EmptyFilter
 from .SimpleMath import *
 from .Transform import *
 from .Segmentation import *

@@ -2,10 +2,8 @@ import numpy as np
 from scipy.interpolate import interpn, interp2d, interp1d
 
 from lys import DaskWave
-from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 from lys.Qt import QtWidgets
-
-from .FilterInterface import FilterInterface
 
 
 class InterpFilter(FilterInterface):

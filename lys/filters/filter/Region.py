@@ -5,9 +5,8 @@ from scipy.ndimage import map_coordinates
 
 from lys import Wave, DaskWave
 from lys.Qt import QtWidgets
-from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 
-from .FilterInterface import FilterInterface
 from .CommonWidgets import RegionSelectWidget, AxisSelectionLayout
 
 

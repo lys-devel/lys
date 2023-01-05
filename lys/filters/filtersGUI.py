@@ -4,39 +4,7 @@ from lys import filters
 from lys.Qt import QtCore, QtWidgets
 from lys.widgets import LysSubWindow
 
-from .FilterManager import _filterGroups
-
-
-def filterGUI(filterClass):
-    def _filterGUI(cls):
-        cls._filClass = filterClass
-        return cls
-    return _filterGUI
-
-
-class FilterSettingBase(QtWidgets.QWidget):
-    dimensionChanged = QtCore.pyqtSignal()
-
-    def __init__(self, dimension):
-        super().__init__()
-        self.dim = dimension
-
-    def GetFilter(self):
-        return self._filClass(**self.getParameters())
-
-    @classmethod
-    def getFilterClass(cls):
-        if hasattr(cls, "_filClass"):
-            return cls._filClass
-
-    def getDimension(self):
-        return self.dim
-
-    def setParameters(self, **kwargs):
-        raise NotImplementedError("Method setParameters should be implemented.")
-
-    def getParameters(self):
-        raise NotImplementedError("Method getParameters should be implemented.")
+from .function import _filterGroups
 
 
 class FiltersGUI(QtWidgets.QTreeWidget):

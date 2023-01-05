@@ -3,11 +3,10 @@ import dask.array as da
 from dask_image import ndfilters
 
 from lys import DaskWave
-from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 from lys.Qt import QtWidgets
 from lys.widgets import ScientificSpinBox
 
-from .FilterInterface import FilterInterface
 from .CommonWidgets import kernelSizeLayout, kernelSigmaLayout
 
 

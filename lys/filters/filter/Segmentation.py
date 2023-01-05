@@ -6,9 +6,8 @@ from scipy.ndimage import gaussian_filter
 
 from lys import DaskWave
 from lys.Qt import QtWidgets, QtCore
-from lys.filters import FilterSettingBase, filterGUI, addFilter
+from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 
-from .FilterInterface import FilterInterface
 from .CommonWidgets import ScientificSpinBox, AxisSelectionLayout
 
 

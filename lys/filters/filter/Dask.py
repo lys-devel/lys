@@ -1,9 +1,7 @@
 
 from lys import DaskWave
 from lys.Qt import QtWidgets
-from lys.filters import FilterSettingBase, filterGUI, addFilter
-
-from .FilterInterface import FilterInterface
+from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 
 
 class RechunkFilter(FilterInterface):

@@ -4,9 +4,8 @@ import dask.array as da
 from dask_image import ndfilters as dfilters
 
 from lys import DaskWave
-from lys.filters import filterGUI, addFilter
+from lys.filters import FilterInterface, filterGUI, addFilter
 
-from .FilterInterface import FilterInterface
 from .Differentiate import _AxisCheckSetting
 
 
