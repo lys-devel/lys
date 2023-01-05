@@ -92,7 +92,7 @@ class MultiCut(GridAttachedWindow):
         return w
 
     def __initlayout__(self):
-        self._pre = PrefilterTab(self._loadRegion)
+        self._pre = PrefilterTab()
         self._pre.filterApplied.connect(self._filterApplied)
         self._cut = CutTab(self, self.grid)
         tab = QtWidgets.QTabWidget()
@@ -149,15 +149,6 @@ class MultiCut(GridAttachedWindow):
             self._pre.setWave(self.wave)
         else:
             self.load(Wave(fname))
-
-    def _loadRegion(self, obj):
-        c = frontCanvas()
-        if c is not None:
-            r = c.selectedRange()
-            p1, p2 = r[0], r[1]
-            axes = self._cut.findAxisFromCanvas(c)
-            obj.setRegion(axes[0], (p1[0], p2[0]))
-            obj.setRegion(axes[1], (p1[1], p2[1]))
 
     def useDask(self):
         return self.__useDask.isChecked()

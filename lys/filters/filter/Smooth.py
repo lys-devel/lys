@@ -86,9 +86,6 @@ class RemoveImpulsiveNoise(FilterInterface):
     def getParameters(self):
         return {"kernel": self._kernel, "threshold": self._threshold}
 
-    def getRelativeDimension(self):
-        return 0
-
 
 @filterGUI(MedianFilter)
 class _MedianSetting(FilterSettingBase):

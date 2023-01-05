@@ -283,6 +283,7 @@ class _IntegralAllSetting(FilterSettingBase):
         self.type = QtWidgets.QComboBox()
         self.type.addItems(self._sumtypes)
         self.axes = AxisCheckLayout(dim)
+        self.axes.stateChanged.connect(self.dimensionChanged)
         lv = QtWidgets.QVBoxLayout()
         lv.addWidget(self.type)
         lv.addLayout(self.axes)
@@ -304,19 +305,29 @@ class _IntegralSetting(FilterSettingBase):
         super().__init__(dim)
         self.type = QtWidgets.QComboBox()
         self.type.addItems(self._sumtypes)
-        self.range = RegionSelectWidget(self, dim)
+        self.range = RegionSelectWidget(self, dim, check=True)
+        self.range.stateChanged.connect(self.dimensionChanged)
         lv = QtWidgets.QVBoxLayout()
         lv.addWidget(self.type)
         lv.addLayout(self.range)
         self.setLayout(lv)
 
     def getParameters(self):
-        return {"range": self.range.getRegion(), "sumtype": self.type.currentText()}
+        res = []
+        for r, c in zip(self.range.getRegion(), self.range.getChecked()):
+            if c:
+                res.append(r)
+            else:
+                res.append([0, 0])
+        return {"range": res, "sumtype": self.type.currentText()}
 
     def setParameters(self, range, sumtype):
         self.type.setCurrentIndex(self._sumtypes.index(sumtype))
+        checked = []
         for i, r in enumerate(range):
             self.range.setRegion(i, r)
+            checked.append(not (r[0] == 0 and r[1] == 0))
+        self.range.setChecked(checked)
 
 
 @filterGUI(IntegralCircleFilter)

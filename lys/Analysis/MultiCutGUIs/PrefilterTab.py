@@ -74,17 +74,17 @@ class PrefilterTab(QtWidgets.QWidget):
 
     filterApplied = QtCore.pyqtSignal(object)
 
-    def __init__(self, loader):
+    def __init__(self):
         super().__init__()
-        self.__initlayout__(loader)
+        self.__initlayout__()
         self.wave = None
         self.__outputShape = None
         self.__chunk = "auto"
 
-    def __initlayout__(self, loader):
+    def __initlayout__(self):
         self.layout = QtWidgets.QVBoxLayout()
 
-        self.filt = filters.FiltersGUI(regionLoader=loader)
+        self.filt = filters.FiltersGUI()
         self.layout.addWidget(self.filt)
         h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(QtWidgets.QPushButton("Rechunk", clicked=self._chunk))

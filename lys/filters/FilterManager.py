@@ -1,29 +1,8 @@
-from lys.Qt import QtWidgets
-
 # all filter classes
 _filterClasses = {}
-
+_filterGuis = {}
 # all filter GUIs
 _filterGroups = {}
-
-
-def __registerLocals():
-    _filterGroups[''] = _DeleteSetting
-
-
-class _DeleteSetting(QtWidgets.QWidget):
-    def __init__(self, dimension=2):
-        super().__init__(None)
-
-    @classmethod
-    def _havingFilter(cls, f):
-        return None
-
-    def getFilter(self):
-        return None
-
-    def getRelativeDimension(self):
-        return 0
 
 
 def addFilter(filter, filterName=None, gui=None, guiName=None, guiGroup=None):
@@ -46,6 +25,7 @@ def addFilter(filter, filterName=None, gui=None, guiName=None, guiGroup=None):
     _filterClasses[filterName] = filter
     # register gui
     if gui is not None:
+        _filterGuis[filterName] = gui
         if guiGroup is None:
             _filterGroups[guiName] = gui
         elif guiGroup in _filterGroups:
@@ -61,4 +41,24 @@ def getFilter(name):
         return None
 
 
-__registerLocals()
+def getFilterName(filter):
+    for key, item in _filterClasses.items():
+        if item == type(filter) or item == filter:
+            return key
+
+
+def getFilterGui(filter):
+    return _filterGuis[getFilterName(filter)]
+
+
+def getFilterGuiName(filter):
+    for key, item in _filterGroups.items():
+        if key == "":
+            continue
+        if isinstance(item, dict):
+            for key2, item2 in item.items():
+                if item2.getFilterClass() == filter or item2.getFilterClass() == type(filter):
+                    return key2
+        else:
+            if item.getFilterClass() == filter or item.getFilterClass() == type(filter):
+                return key

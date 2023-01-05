@@ -63,10 +63,13 @@ class kernelSigmaLayout(QtWidgets.QGridLayout):
 
 
 class AxisCheckLayout(QtWidgets.QHBoxLayout):
+    stateChanged = QtCore.pyqtSignal()
+
     def __init__(self, dim):
         super().__init__()
         self._axes = [QtWidgets.QCheckBox("Axis" + str(i)) for i in range(dim)]
         for a in self._axes:
+            a.stateChanged.connect(self.stateChanged)
             self.addWidget(a)
 
     def GetChecked(self):
@@ -156,6 +159,7 @@ class AxesSelectionDialog(QtWidgets.QDialog):
 
 class RegionSelectWidget(QtWidgets.QGridLayout):
     loadClicked = QtCore.pyqtSignal(object)
+    stateChanged = QtCore.pyqtSignal()
 
     def __init__(self, parent, dim, loader=None, check=False):
         super().__init__()
@@ -181,6 +185,7 @@ class RegionSelectWidget(QtWidgets.QGridLayout):
         for s, e in zip(self.start, self.end):
             if self._check:
                 check = QtWidgets.QCheckBox("Axis" + str(i))
+                check.stateChanged.connect(self.stateChanged)
             else:
                 check = QtWidgets.QLabel("Axis" + str(i))
             self._checkWidgets.append(check)

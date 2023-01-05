@@ -31,7 +31,10 @@ class WaveData(CanvasPart):
 
     @saveCanvas
     def _update(self, *args, **kwargs):
-        self._filteredWave = self._calcFilteredWave(self._wave, self._offset, self._filter)
+        if self._offset == (0, 0, 0, 0) and self._filter is None:
+            self._filteredWave = self._wave
+        else:
+            self._filteredWave = self._calcFilteredWave(self._wave, self._offset, self._filter)
         self._updateData()
         self.modified.emit()
 
@@ -120,8 +123,9 @@ class WaveData(CanvasPart):
         Args:
             offset(tuple of length 4 float): The offset in the form of (x0, y0, x1, y1).
         """
-        self._offset = offset
-        self._update()
+        if self._offset != offset:
+            self._offset = offset
+            self._update()
 
     def getOffset(self):
         """
@@ -142,8 +146,9 @@ class WaveData(CanvasPart):
         Args:
             filter(filterr): The filter. See :class:`lys.filters.filter.FilterInterface.FilterInterface`
         """
-        self._filter = filter
-        self._update()
+        if self._filter != filter:
+            self._filter = filter
+            self._update()
 
     def getFilter(self):
         return self._filter

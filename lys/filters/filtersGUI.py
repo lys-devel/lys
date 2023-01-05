@@ -4,7 +4,6 @@ from lys import filters
 from lys.Qt import QtCore, QtWidgets
 from lys.widgets import LysSubWindow
 
-from .FilterIOGUI import FilterExportDialog, FilterImportDialog
 from .FilterManager import _filterGroups
 
 
@@ -16,24 +15,22 @@ def filterGUI(filterClass):
 
 
 class FilterSettingBase(QtWidgets.QWidget):
+    dimensionChanged = QtCore.pyqtSignal()
+
     def __init__(self, dimension):
         super().__init__()
         self.dim = dimension
 
-    @classmethod
-    def _havingFilter(cls, f):
-        if not hasattr(cls, "_filClass"):
-            raise TypeError("FilterGUI should decorated by @filterGUI.")
-        if isinstance(f, cls._filClass):
-            return True
-
     def GetFilter(self):
         return self._filClass(**self.getParameters())
 
-    def parseFromFilter(self, f):
-        gui = type(self)(self.dim)
-        gui.setParameters(**f.getParameters())
-        return gui
+    @classmethod
+    def getFilterClass(cls):
+        if hasattr(cls, "_filClass"):
+            return cls._filClass
+
+    def getDimension(self):
+        return self.dim
 
     def setParameters(self, **kwargs):
         raise NotImplementedError("Method setParameters should be implemented.")
@@ -42,379 +39,216 @@ class FilterSettingBase(QtWidgets.QWidget):
         raise NotImplementedError("Method getParameters should be implemented.")
 
 
-# interface for setting group GUI
-
-
-class FilterGroupSetting(QtWidgets.QWidget):
-    filterChanged = QtCore.pyqtSignal(QtWidgets.QWidget)
-
-    def __init__(self, dimension=2, layout=None, filterDict=None):
-        super().__init__()
+class FiltersGUI(QtWidgets.QTreeWidget):
+    def __init__(self, dimension=2, parent=None):
+        super().__init__(parent=parent)
         self.dim = dimension
-        if filterDict is None:
-            self._filters = _filterGroups
-        else:
-            self._filters = filterDict
-
-        self._combo = QtWidgets.QComboBox()
-        for f in sorted(self._filters.keys()):
-            self._combo.addItem(f, f)
-        self._combo.currentTextChanged.connect(self._update)
-        vlayout = QtWidgets.QVBoxLayout()
-        vlayout.addWidget(QtWidgets.QLabel('Type'))
-        vlayout.addWidget(self._combo)
-        self.setLayout(vlayout)
-        self._layout = layout
-        self._layout.addWidget(self)
-        self._childGroup = None
-        self._update(self._combo.currentText())
-
-    def _initControlLayout(self):
-        return None
-
-    def _update(self, text=None):
-        if text is None:
-            text = self._combo.currentText()
-        if text in self._filters:
-            self._removeChildGroup()
-            if isinstance(self._filters[text], dict):
-                self.filter = FilterGroupSetting(self.dim, layout=self._layout, filterDict=self._filters[text])
-                self._addGroup(self.filter)
-            else:
-                self.filter = self._filters[text](self.dim)
-                self.filterChanged.emit(self.filter)
-
-    def _addGroup(self, g):
-        self._childGroup = g
-        g.filterChanged.connect(self.filterChanged)
-        self._layout.addWidget(g)
-        g._update()
-
-    def _removeChildGroup(self):
-        if self._childGroup is not None:
-            self._childGroup._removeChildGroup()
-            self._childGroup.filterChanged.disconnect(self.filterChanged)
-            self._layout.removeWidget(self._childGroup)
-            self._childGroup.deleteLater()
-            self._childGroup = None
-
-    @classmethod
-    def _havingFilter(cls, f, dic):
-        for key, s in dic.items():
-            if isinstance(s, dict):
-                if cls._havingFilter(f, dic=s) is not None:
-                    return key
-            elif s._havingFilter(f) is not None:
-                return key
-
-    def parseFromFilter(self, f):
-        name = self._havingFilter(f, self._filters)
-        if name is not None:
-            self._combo.setCurrentIndex(self._combo.findData(name))
-        return self.filter.parseFromFilter(f)
-
-    def setDimension(self, dimension):
-        self.dim = dimension
-
-
-class _PreFilterSetting(QtWidgets.QWidget):
-    filterAdded = QtCore.pyqtSignal(QtWidgets.QWidget)
-    filterDeleted = QtCore.pyqtSignal(QtWidgets.QWidget)
-    filterMoved = QtCore.pyqtSignal(QtWidgets.QWidget, str)
-    filterInserted = QtCore.pyqtSignal(QtWidgets.QWidget, str)
-
-    def __init__(self, parent, dimension=2, loader=None):
-        super().__init__()
-        h1 = QtWidgets.QHBoxLayout()
-        self.root = _RootSetting(dimension, h1)
-        self.root.filterChanged.connect(self._filt)
-        self._layout = QtWidgets.QVBoxLayout()
-        self._layout.addLayout(h1)
-        self.setLayout(self._layout)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self._contextMenu)
-        self._child = None
-
-    def _filt(self, widget):
-        if self._child is not None:
-            self._layout.removeWidget(self._child)
-            self._child.deleteLater()
-            self._child = None
-        self._layout.addWidget(widget)
-        self._child = widget
-        self.filterAdded.emit(self)
-
-    def GetFilter(self):
-        if self._child is not None:
-            return self._child.GetFilter()
-
-    def SetFilter(self, filt):
-        obj = self.root.parseFromFilter(filt)
-        self._filt(obj)
-
-    def clear(self, dimension=2):
-        self.root._combo.setCurrentIndex(0)
-        self.root.setDimension(dimension)
-
-    def _contextMenu(self, point):
-        menu = QtWidgets.QMenu(self)
-        delete = QtWidgets.QAction('Delete', triggered=lambda: self.filterDeleted.emit(self))
-        up = QtWidgets.QAction('Move to up', triggered=lambda: self.filterMoved.emit(self, "up"))
-        down = QtWidgets.QAction('Move to down', triggered=lambda: self.filterMoved.emit(self, "down"))
-        insup = QtWidgets.QAction('Insert filter (up)', triggered=lambda: self.filterInserted.emit(self, "up"))
-        insdown = QtWidgets.QAction('Insert filter (down)', triggered=lambda: self.filterInserted.emit(self, "down"))
-        for item in [up, down, insup, insdown, delete]:
-            menu.addAction(item)
-        menu.exec_(self.mapToGlobal(point))
-
-
-class _RootSetting(FilterGroupSetting):
-    pass
-
-
-class FiltersGUI(QtWidgets.QWidget):
-    def __init__(self, dimension=2, regionLoader=None):
-        super().__init__()
-        self.loader = regionLoader
-        self.dim = dimension
-        self.__initLayout()
-
-    def GetFilters(self):
-        res = []
-        for t in self.__tabs:
-            res.extend(t.GetFilters().getFilters())
-        return filters.Filters(res)
-
-    def __initLayout(self):
-        self._tab = QtWidgets.QTabWidget()
-        self.__tabs = [_SubFiltersGUI(self.dim, self.loader)]
-        self.__preIndex = 0
-        self._tab.addTab(self.__tabs[0], "d = " + str(self.dim))
-        self._tab.addTab(QtWidgets.QWidget(), "+")
-        self._tab.currentChanged.connect(self.__addTab)
-        self._tab.tabBar().setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self._tab.tabBar().customContextMenuRequested.connect(self._tabContext)
-
-        save = QtWidgets.QPushButton("Save", clicked=self._save)
-        load = QtWidgets.QPushButton("Load", clicked=self._load)
-        clear = QtWidgets.QPushButton("Clear", clicked=self.clear)
-        exp = QtWidgets.QPushButton("Export", clicked=self._export)
-        imp = QtWidgets.QPushButton("Import", clicked=self._import)
-        hbox2 = QtWidgets.QHBoxLayout()
-        hbox2.addWidget(save)
-        hbox2.addWidget(load)
-        hbox2.addWidget(exp)
-        hbox2.addWidget(imp)
-        hbox2.addWidget(clear)
-
-        vbox = QtWidgets.QVBoxLayout()
-        vbox.addWidget(self._tab)
-        vbox.addLayout(hbox2)
-        self.setLayout(vbox)
-
-    def __addTab(self, index):
-        if index != len(self.__tabs):
-            self.__preIndex = index
-            return
-        dim = self.dim + int(np.sum([f.getRelativeDimension() for f in self.GetFilters().getFilters()]))
-        self.__insertNewTab(dim)
-        self.__preIndex = index
-        self._tab.setCurrentIndex(self.__preIndex)
-
-    def __insertNewTab(self, dim):
-        w = _SubFiltersGUI(dim, self.loader)
-        self.__tabs.append(w)
-        self._tab.insertTab(len(self.__tabs) - 1, w, "d = " + str(dim))
-
-    def _tabContext(self, point):
-        menu = QtWidgets.QMenu(self)
-        delete = QtWidgets.QAction('Delete tab', triggered=self._delete)
-        clear = QtWidgets.QAction('Clear tab', triggered=lambda: self.clear(self.__preIndex))
-        change = QtWidgets.QAction('Change dimension of tab', triggered=self._setDim)
-        exp = QtWidgets.QAction('Export filter in tab', triggered=lambda: self._export(self.__preIndex))
-        imp = QtWidgets.QAction('Import filter to tab', triggered=lambda: self._import(self.__preIndex))
-        save = QtWidgets.QAction('Save filter in tab', triggered=lambda: self._save(self.__preIndex))
-        load = QtWidgets.QAction('Load filter to tab', triggered=lambda: self._load(self.__preIndex))
-        for item in [save, load, exp, imp, change, clear, delete]:
-            menu.addAction(item)
-        menu.exec_(self.mapToGlobal(point))
-
-    def _setDim(self):
-        dim, ok = QtWidgets.QInputDialog().getInt(self, "Enter New dimension", "Dimension:")
-        if ok:
-            self.setDimension(dim, self.__preIndex)
-
-    def setDimension(self, dimension, index=0):
-        self.__tabs[index].setDimension(dimension)
-        self._tab.setTabText(index, "d = " + str(dimension))
-        self.dim = dimension
-
-    def clear(self, index=False):
-        if index is False:
-            while len(self.__tabs) > 1:
-                self.__preIndex = 1
-                self._delete()
-            self.__tabs[0].clear()
-        else:
-            self.__tabs[index].clear()
-
-    def _delete(self):
-        tab = self.__preIndex
-        if tab == 0:
-            return
-        self._tab.removeTab(tab)
-        self.__tabs.pop(tab)
-        self.__preIndex = tab - 1
-        self._tab.setCurrentIndex(tab - 1)
-
-    def _save(self, index=False):
-        self.saveAs(".lys/quickFilter.fil", index)
-
-    def _load(self, index=False):
-        self.loadFrom(".lys/quickFilter.fil", index)
-
-    def _export(self, index=-1):
-        d = FilterExportDialog(self)
-        ok = d.exec_()
-        if ok:
-            path = d.getExportPath()
-            self.saveAs(path, index)
-
-    def _import(self, index=-1):
-        d = FilterImportDialog(self)
-        ok = d.exec_()
-        if ok:
-            path = d.getImportPath()
-            self.loadFrom(path, index)
-
-    def saveAs(self, file, index=False):
-        if index is False:
-            filt = self.GetFilters()
-        else:
-            filt = self.__tabs[index].GetFilters()
-        filt.dimension = self.dim
-        filt.saveAsFile(file)
-        print("Filter is saved to", file)
-
-    def loadFrom(self, file, index=False):
-        with open(file, 'r') as f:
-            data = eval(f.read())
-        self.loadFromString(data, index)
-
-    def loadFromString(self, str, index=False):
-        self.loadFilters(filters.Filters.fromString(str), index)
-
-    def loadFilters(self, filt, index=False):
-        if index is False:
-            self.clear()
-            fs = filt.getFilters()
-            res, tmp = [], []
-            dim = self.dim
-            for f in fs:
-                tmp.append(f)
-                if f.getRelativeDimension() != 0 and f != fs[len(fs) - 1]:
-                    dim += f.getRelativeDimension()
-                    self.__insertNewTab(dim)
-                    res.append(tmp)
-                    tmp = []
-            res.append(tmp)
-            for tab, fil in zip(self.__tabs, res):
-                tab.SetFilters(filters.Filters(fil))
-        else:
-            self.__tabs[index].SetFilters(filt)
-
-
-class _SubFiltersGUI(QtWidgets.QScrollArea):
-    def __init__(self, dimension=2, regionLoader=None):
-        super().__init__()
-        self._flist = []
-        self.loader = regionLoader
-        self.dim = dimension
-        self.__initLayout()
+        self.customContextMenuRequested.connect(self._context)
+        self.setHeaderLabel("Filters: Right click to edit")
 
     def setDimension(self, dimension):
-        if self.dim != dimension:
-            self.dim = dimension
-            self.clear()
+        self.dim = dimension
+        self._update()
+
+    def _context(self, point):
+        menu = QtWidgets.QMenu(self)
+        menus = []
+        menus.append(QtWidgets.QAction('Add a filter', triggered=lambda: self.__add()))
+        if self.__currentIndex() != -1:
+            menus.append(QtWidgets.QAction('Insert a filter above', triggered=lambda: self.__add(self.__currentIndex())))
+            menus.append(QtWidgets.QAction('Insert a filter below', triggered=lambda: self.__add(self.__currentIndex() + 1)))
+            menus.append("sep")
+            menus.append(QtWidgets.QAction('Move up', triggered=lambda: self.__move(self.__currentIndex(), "up")))
+            menus.append(QtWidgets.QAction('Move down', triggered=lambda: self.__move(self.__currentIndex(), "down")))
+        menus.append("sep")
+        if self.topLevelItemCount() != 0:
+            menus.append(QtWidgets.QAction('Copy filters', triggered=self.__copy))
+        menus.append(QtWidgets.QAction('Paste filters', triggered=self.__paste))
+        menus.append("sep")
+        if self.topLevelItemCount() != 0:
+            menus.append(QtWidgets.QAction('Export to file', triggered=self.__export))
+        menus.append(QtWidgets.QAction('Import from file', triggered=self.__import))
+        menus.append("sep")
+        if self.__currentIndex() != -1:
+            menus.append(QtWidgets.QAction('Delete', triggered=self.__delete))
+        if self.topLevelItemCount() != 0:
+            menus.append(QtWidgets.QAction('Clear', triggered=self.clear))
+
+        # add actions and separators
+        for item in menus:
+            if item == "sep":
+                menu.addSeparator()
+            else:
+                menu.addAction(item)
+        menu.exec_(self.mapToGlobal(point))
+
+    def __currentIndex(self):
+        item = self.currentItem()
+        if item is None:
+            return -1
+        if item.parent() is not None:
+            item = item.parent()
+        return self.indexOfTopLevelItem(item)
+
+    def __add(self, index=-1):
+        d = _FilterSelectionDialog(self)
+        ok = d.exec_()
+        if ok:
+            self.__addItem(d.getFilterClass(), index=index)
+            self._update()
+
+    def __addItem(self, filter, index=-1, params=None):
+        w = filters.getFilterGui(filter)(self.__getDimension(index))
+        if params is not None:
+            w.setParameters(**params)
+        w.dimensionChanged.connect(self._update)
+        item = QtWidgets.QTreeWidgetItem([filters.getFilterGuiName(filter)])
+        child = QtWidgets.QTreeWidgetItem([""])
+        item.addChild(child)
+        self.setItemWidget(child, 0, w)
+        if index == -1:
+            self.addTopLevelItem(item)
+        else:
+            self.insertTopLevelItem(index, item)
+
+    def __getDimension(self, index=-1):
+        dims = [f.getRelativeDimension() for f in self.GetFilters().getFilters()]
+        if index == -1:
+            return self.dim + int(np.sum(dims))
+        else:
+            return self.dim + int(np.sum(dims[:index]))
+
+    def __delete(self):
+        for item in self.selectedItems():
+            if item.parent() is not None:
+                item = item.parent()
+            self.takeTopLevelItem(self.indexOfTopLevelItem(item))
+        self._update()
+
+    def __move(self, index, type="up"):
+        parent = self.topLevelItem(index)
+        wid = self.itemWidget(parent.child(0), 0)
+        self.takeTopLevelItem(index)
+        if type == "up":
+            self.__addItem(wid._filClass, index - 1, wid.getParameters())
+        else:
+            self.__addItem(wid._filClass, index - 1, wid.getParameters())
 
     def clear(self):
-        while(len(self._flist) > 1):
-            self._delete(self._flist[0])
-        self._flist[0].clear(dimension=self.dim)
+        while self.topLevelItemCount() != 0:
+            self.takeTopLevelItem(0)
+
+    def _update(self):
+        dim = int(self.dim)
+        for i in range(self.topLevelItemCount()):
+            parent = self.topLevelItem(i)
+            child = parent.child(0)
+            w = self.itemWidget(child, 0)
+            if dim != w.getDimension():
+                wid = filters.getFilterGui(parent.text(0))(dim)
+                wid.setParameters(**w.getParameters())
+                self.removeItemWidget(child, 0)
+                self.setItemWidget(child, 0, wid)
+                wid.dimensionChanged.connect(self._update)
+            dim += w.GetFilter().getRelativeDimension()
 
     def GetFilters(self):
         res = []
-        for f in self._flist:
-            filt = f.GetFilter()
-            if filt is not None:
-                res.append(filt)
+        for i in range(self.topLevelItemCount()):
+            w = self.itemWidget(self.topLevelItem(i).child(0), 0)
+            res.append(w.GetFilter())
         return filters.Filters(res)
 
-    def SetFilters(self, filt):
+    def setFilters(self, filt):
         self.clear()
         for f in filt.getFilters():
-            self._flist[len(self._flist) - 1].SetFilter(f)
+            self.__addItem(f, params=f.getParameters())
+        self._update()
 
-    def __initLayout(self):
-        self._layout = QtWidgets.QVBoxLayout()
-        self._layout.addStretch()
-        self._addFirst()
-        inner = QtWidgets.QWidget()
-        inner.setLayout(self._layout)
-        self.setWidgetResizable(True)
-        self.setWidget(inner)
+    def __copy(self):
+        filt = self.GetFilters()
+        filt.dimension = self.dim
+        filt.saveAsFile(".lys/quickFilter.fil")
 
-    def __makeNewItem(self):
-        item = _PreFilterSetting(self, self.dim, self.loader)
-        item.filterAdded.connect(self._add)
-        item.filterDeleted.connect(self._delete)
-        item.filterMoved.connect(self._move)
-        item.filterInserted.connect(self._insert)
-        return item
+    def __paste(self):
+        filt = filters.fromFile(".lys/quickFilter.fil")
+        self.setFilters(filt)
 
-    def _addFirst(self):
-        first = self.__makeNewItem()
-        self._flist.append(first)
-        self._layout.insertWidget(0, first)
+    def __export(self):
+        path, type = QtWidgets.QFileDialog.getSaveFileName(self, "Save Filters", filter="Filter (*.fil);;All files (*.*)")
+        if len(path) != 0:
+            if not path.endswith(".fil"):
+                path = path + ".fil"
+            filt = self.GetFilters()
+            filt.dimension = self.dim
+            filt.saveAsFile(path)
 
-    def _add(self, item):
-        if self._flist[len(self._flist) - 1] == item:
-            newitem = self.__makeNewItem()
-            self._layout.insertWidget(self._layout.count() - 1, newitem)
-            self._flist.append(newitem)
+    def __import(self):
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Load Filters', filter="Filter (*.fil);;All files (*.*)")
+        if fname[0]:
+            filt = filters.fromFile(fname[0])
+            self.setFilters(filt)
 
-    def _delete(self, item, force=False):
-        if self._layout.indexOf(item) != len(self._flist) - 1 or force:
-            self._layout.removeWidget(item)
-            item.deleteLater()
-            self._flist.remove(item)
 
-    def _move(self, item, direction):
-        index = self._layout.indexOf(item)
-        if index == 0 and direction == "up":
-            return
-        if index == len(self._flist) - 2 and direction == "down":
-            return
-        self._layout.removeWidget(item)
-        self._flist.remove(item)
-        if direction == "up":
-            pos = index - 1
+class _FilterSelectionDialog(QtWidgets.QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Select filter")
+        self.__initlayout()
+        self.show()
+
+    def __initlayout(self):
+        self.sel = _FilterSelectionWidget(self)
+
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QPushButton("O K", clicked=self.__ok))
+        h1.addWidget(QtWidgets.QPushButton("CANCEL", clicked=self.reject))
+
+        v1 = QtWidgets.QVBoxLayout()
+        v1.addWidget(self.sel)
+        v1.addLayout(h1)
+        self.setLayout(v1)
+
+    def __ok(self):
+        self._filter = self.sel.getFilterClass()
+        if self._filter is None:
+            msgBox = QtWidgets.QMessageBox(parent=self)
+            msgBox.setText("Please select filter.")
+            msgBox.addButton(QtWidgets.QMessageBox.Ok)
+            msgBox.exec_()
         else:
-            pos = index + 1
-        self._layout.insertWidget(pos, item)
-        self._flist.insert(pos, item)
+            self.accept()
 
-    def _insert(self, item, direction):
-        index = self._layout.indexOf(item)
-        if index >= len(self._flist) - 2 and direction == "down":
-            return
-        if direction == "up":
-            pos = index
+    def getFilterClass(self):
+        return self._filter
+
+
+class _FilterSelectionWidget(QtWidgets.QTreeWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.__initItems()
+        self.setHeaderLabel("List of Filters")
+
+    def __initItems(self):
+        for key, value in _filterGroups.items():
+            if key == "":
+                continue
+            item = QtWidgets.QTreeWidgetItem([key])
+            if isinstance(value, dict):
+                for key2 in value.keys():
+                    item2 = QtWidgets.QTreeWidgetItem([key2])
+                    item.addChild(item2)
+            self.addTopLevelItem(item)
+
+    def getFilterClass(self):
+        item = self.currentItem()
+        if item.childCount() != 0:
+            return None
+        if item.parent() is not None:
+            return _filterGroups[item.parent().text(0)][item.text(0)]._filClass
         else:
-            pos = index + 1
-        newitem = self.__makeNewItem()
-        self._layout.insertWidget(pos, newitem)
-        self._flist.insert(pos, newitem)
+            return _filterGroups[item.text(0)]._filClass
 
 
 class FiltersDialog(LysSubWindow):
@@ -422,7 +256,7 @@ class FiltersDialog(LysSubWindow):
 
     def __init__(self, dim):
         super().__init__()
-        self.filters = FiltersGUI(dim)
+        self.filters = FiltersGUI(dim, parent=self)
 
         self.ok = QtWidgets.QPushButton("O K", clicked=self._ok)
         self.cancel = QtWidgets.QPushButton("CANCEL", clicked=self._cancel)
@@ -453,4 +287,4 @@ class FiltersDialog(LysSubWindow):
         self.applied.emit(self.filters.GetFilters())
 
     def setFilter(self, filt):
-        self.filters.loadFilters(filt)
+        self.filters.setFilters(filt)
