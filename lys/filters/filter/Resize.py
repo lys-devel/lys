@@ -86,7 +86,9 @@ class PaddingFilter(FilterInterface):
         self.direction = position
 
     def _execute(self, wave, *args, **kwargs):
-        axes = [self._createAxis(wave, ax) for ax in self.axes]
+        axes = wave.axes
+        for ax in self.axes:
+            axes[ax] = self._createAxis(wave, ax)
         data = wave.data
         for ax in self.axes:
             data = self._createData(data, ax)
