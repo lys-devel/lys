@@ -14,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../lys.html">lys package</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a><ul class="current">
@@ -57,13 +60,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#interface-to-annotations">Interface to annotations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#lys-basicwidgets-canvasinterface-annotguicanvas-module">lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -81,10 +82,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api.html">Python API</a> &raquo;</li>
-          <li><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a> &raquo;</li>
-      <li>WaveData module</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+      <li class="breadcrumb-item active">WaveData module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/graph/WaveData.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,185 +95,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-lys.BasicWidgets.CanvasInterface.WaveData">
-<span id="wavedata-module"></span><h1>WaveData module<a class="headerlink" href="#module-lys.BasicWidgets.CanvasInterface.WaveData" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.WaveData.</span></span><span class="sig-name descname"><span class="pre">WaveData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart" title="lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.CanvasInterface.CanvasBase.CanvasPart</span></code></a></p>
-<p>Interface to access wave data in the canvas.</p>
-<p>This class is inherited by <a class="reference internal" href="Line.html#lys.BasicWidgets.CanvasInterface.Line.LineData" title="lys.BasicWidgets.CanvasInterface.Line.LineData"><code class="xref py py-class docutils literal notranslate"><span class="pre">Line.LineData</span></code></a>, <a class="reference internal" href="Image.html#lys.BasicWidgets.CanvasInterface.Image.ImageData" title="lys.BasicWidgets.CanvasInterface.Image.ImageData"><code class="xref py py-class docutils literal notranslate"><span class="pre">Image.ImageData</span></code></a>, <a class="reference internal" href="RGB.html#lys.BasicWidgets.CanvasInterface.RGB.RGBData" title="lys.BasicWidgets.CanvasInterface.RGB.RGBData"><code class="xref py py-class docutils literal notranslate"><span class="pre">RGB.RGBData</span></code></a>,  <a class="reference internal" href="Vector.html#lys.BasicWidgets.CanvasInterface.Vector.VectorData" title="lys.BasicWidgets.CanvasInterface.Vector.VectorData"><code class="xref py py-class docutils literal notranslate"><span class="pre">Vector.VectorData</span></code></a>, and <a class="reference internal" href="Contour.html#lys.BasicWidgets.CanvasInterface.Contour.ContourData" title="lys.BasicWidgets.CanvasInterface.Contour.ContourData"><code class="xref py py-class docutils literal notranslate"><span class="pre">Contour.ContourData</span></code></a>.</p>
-<p>Instance of WaveData is automatically generated by display or append methods.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getAxis">
-<span class="sig-name descname"><span class="pre">getAxis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.getAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getAxis" title="Permalink to this definition"></a></dt>
-<dd><p>Get the axis to which the data was added.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The axis (‘BottomLeft’, ‘TopLeft’, ‘BottomRight’, or ‘TopRight’).</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getFilter">
-<span class="sig-name descname"><span class="pre">getFilter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.getFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getFilter" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getFilteredWave">
-<span class="sig-name descname"><span class="pre">getFilteredWave</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.getFilteredWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getFilteredWave" title="Permalink to this definition"></a></dt>
-<dd><p>Get the wave to which offset and filter have been applied.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The filtered wave.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../lys_/core.html#lys.core.Wave" title="lys.core.Wave">Wave</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getOffset">
-<span class="sig-name descname"><span class="pre">getOffset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.getOffset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getOffset" title="Permalink to this definition"></a></dt>
-<dd><p>Get the offset to the data.</p>
-<p>See <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setOffset" title="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setOffset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setOffset()</span></code></a> for detail.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The offset in the form of (x0, y0, x1, y1).</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple of length 4 float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getVisible">
-<span class="sig-name descname"><span class="pre">getVisible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.getVisible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getVisible" title="Permalink to this definition"></a></dt>
-<dd><p>Get the visibility of the data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The visibility of the data.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getWave">
-<span class="sig-name descname"><span class="pre">getWave</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.getWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getWave" title="Permalink to this definition"></a></dt>
-<dd><p>Get the wave.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The wave.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../lys_/core.html#lys.core.Wave" title="lys.core.Wave">Wave</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getZOrder">
-<span class="sig-name descname"><span class="pre">getZOrder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.getZOrder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.getZOrder" title="Permalink to this definition"></a></dt>
-<dd><p>Get the z order of the data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The z order.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.loadAppearance">
-<span class="sig-name descname"><span class="pre">loadAppearance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">appearance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.loadAppearance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.loadAppearance" title="Permalink to this definition"></a></dt>
-<dd><p>Load appearance from dictionary.</p>
-<p>Users can save/load appearance of data by save/loadAppearance methods.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>appearance</strong> (<em>dict</em>) – dictionary that include all appearance information, which is usually generated by <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.saveAppearance" title="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.saveAppearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">saveAppearance()</span></code></a> method.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.modified">
-<span class="sig-name descname"><span class="pre">modified</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.modified" title="Permalink to this definition"></a></dt>
-<dd><p>This pyqtSignal is emimtted when the data is changed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.saveAppearance">
-<span class="sig-name descname"><span class="pre">saveAppearance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.saveAppearance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.saveAppearance" title="Permalink to this definition"></a></dt>
-<dd><p>Save appearance from dictionary.</p>
-<p>Users can save/load appearance of data by save/loadAppearance methods.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>dictionary that include all appearance information.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setFilter">
-<span class="sig-name descname"><span class="pre">setFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.setFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setFilter" title="Permalink to this definition"></a></dt>
-<dd><p>Apply filter to the data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filter</strong> (<em>filterr</em>) – The filter. See <a class="reference internal" href="../lys.filters.filter.html#lys.filters.filter.FilterInterface.FilterInterface" title="lys.filters.filter.FilterInterface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.filters.filter.FilterInterface.FilterInterface</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setOffset">
-<span class="sig-name descname"><span class="pre">setOffset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.setOffset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setOffset" title="Permalink to this definition"></a></dt>
-<dd><p>Set the offset to the data.</p>
-<p>The data is offset as x’=x*x1+x0 and y’=y*y1+y0.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>offset</strong> (<em>tuple of length 4 float</em>) – The offset in the form of (x0, y0, x1, y1).</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setVisible">
-<span class="sig-name descname"><span class="pre">setVisible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.setVisible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setVisible" title="Permalink to this definition"></a></dt>
-<dd><p>Set the visibility of the data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>visible</strong> (<em>bool</em>) – The visibility of the data.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setZOrder">
-<span class="sig-name descname"><span class="pre">setZOrder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/WaveData.html#WaveData.setZOrder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.WaveData.WaveData.setZOrder" title="Permalink to this definition"></a></dt>
-<dd><p>Set the z order of the data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>z</strong> (<em>int</em>) – The z order.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="wavedata-module">
+<h1>WaveData module<a class="headerlink" href="#wavedata-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

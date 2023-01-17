@@ -13,7 +13,9 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -55,9 +57,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>lys.Analysis.MultiCutGUI</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.Analysis.MultiCutGUI</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -67,10 +69,45 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.Analysis.MultiCutGUI</h1><div class="highlight"><pre>
-<span></span>
-<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.MultiCut</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">.MultiCutGUIs</span> <span class="kn">import</span> <span class="o">*</span>
+<span></span><span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
+
+<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">DaskWave</span><span class="p">,</span> <span class="n">frontCanvas</span>
+<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">LysSubWindow</span>
+<span class="kn">from</span> <span class="nn">.MultiCutGUIs</span> <span class="kn">import</span> <span class="n">CutTab</span><span class="p">,</span> <span class="n">AnimationTab</span><span class="p">,</span> <span class="n">PrefilterTab</span><span class="p">,</span> <span class="n">ExportDataTab</span>
+
+
+<div class="viewcode-block" id="MultipleGrid"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCutGUI.MultipleGrid">[docs]</a><span class="k">class</span> <span class="nc">MultipleGrid</span><span class="p">(</span><span class="n">LysSubWindow</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__initlayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__initlayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">()</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MultipleGrid.Append"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCutGUI.MultipleGrid.Append">[docs]</a>    <span class="k">def</span> <span class="nf">Append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">w</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">h</span><span class="p">):</span>
+                <span class="n">wid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemAtPosition</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">wid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">wid</span><span class="p">)</span>
+                    <span class="n">wid</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultipleGrid.setSize"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCutGUI.MultipleGrid.setSize">[docs]</a>    <span class="k">def</span> <span class="nf">setSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setColumnStretch</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setRowStretch</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultipleGrid.itemAtPosition"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCutGUI.MultipleGrid.itemAtPosition">[docs]</a>    <span class="k">def</span> <span class="nf">itemAtPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">itemAtPosition</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div></div>
 
 
 <div class="viewcode-block" id="GridAttachedWindow"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCutGUI.GridAttachedWindow">[docs]</a><span class="k">class</span> <span class="nc">GridAttachedWindow</span><span class="p">(</span><span class="n">LysSubWindow</span><span class="p">):</span>
@@ -110,15 +147,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MultiCut.keyPress"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCutGUI.MultiCut.keyPress">[docs]</a>    <span class="k">def</span> <span class="nf">keyPress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_M</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_M</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">__exportTab</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ani</span> <span class="o">=</span> <span class="n">AnimationTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cut</span><span class="o">.</span><span class="n">getExecutorList</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">ExportDataTab</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ani</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cut</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
-        <span class="n">lay</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">lay</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
         <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ani</span><span class="p">)</span>
         <span class="n">lay</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
@@ -126,29 +163,29 @@
         <span class="k">return</span> <span class="n">w</span>
 
     <span class="k">def</span> <span class="nf">__initlayout__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_pre</span> <span class="o">=</span> <span class="n">PrefilterTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loadRegion</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pre</span> <span class="o">=</span> <span class="n">PrefilterTab</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pre</span><span class="o">.</span><span class="n">filterApplied</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filterApplied</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cut</span> <span class="o">=</span> <span class="n">CutTab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
-        <span class="n">tab</span> <span class="o">=</span> <span class="n">QTabWidget</span><span class="p">()</span>
+        <span class="n">tab</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTabWidget</span><span class="p">()</span>
         <span class="n">tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pre</span><span class="p">,</span> <span class="s2">&quot;Prefilter&quot;</span><span class="p">)</span>
         <span class="n">tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cut</span><span class="p">,</span> <span class="s2">&quot;Cut&quot;</span><span class="p">)</span>
         <span class="n">tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__exportTab</span><span class="p">(),</span> <span class="s2">&quot;Export&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
-        <span class="n">btn</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Load&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__useDask</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Dask&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="n">btn</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Load&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__useDask</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Dask&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__useDask</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">h1</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">h1</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">btn</span><span class="p">)</span>
         <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__file</span><span class="p">)</span>
         <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__useDask</span><span class="p">)</span>
 
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
 
-        <span class="n">wid</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">wid</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
         <span class="n">wid</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">wid</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">adjustSize</span><span class="p">()</span>
@@ -166,7 +203,7 @@
 
 <div class="viewcode-block" id="MultiCut.load"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCutGUI.MultiCut.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">fname</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Select data file&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Select data file&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">fname</span> <span class="o">=</span> <span class="n">file</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -183,16 +220,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_pre</span><span class="o">.</span><span class="n">setWave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wave</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">fname</span><span class="p">))</span></div>
-
-    <span class="k">def</span> <span class="nf">_loadRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="o">.</span><span class="n">active</span><span class="p">()</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">canvas</span>
-        <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">selectedRange</span><span class="p">()</span>
-            <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cut</span><span class="o">.</span><span class="n">findAxisFromCanvas</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">p1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">p2</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">p1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">p2</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
 
 <div class="viewcode-block" id="MultiCut.useDask"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCutGUI.MultiCut.useDask">[docs]</a>    <span class="k">def</span> <span class="nf">useDask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__useDask</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span></div></div>

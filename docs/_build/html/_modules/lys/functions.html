@@ -13,7 +13,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -55,9 +57,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>lys.functions</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.functions</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -88,7 +90,7 @@
 
 
 <div class="viewcode-block" id="home"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.home">[docs]</a><span class="k">def</span> <span class="nf">home</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return home directory of lys.</span>
 
 <span class="sd">    All settings related to lys will be saved in .lys directory.</span>
@@ -100,7 +102,7 @@
 
 
 <div class="viewcode-block" id="load"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load various files.</span>
 
 <span class="sd">    Loadable file extensions are given by :func:`loadableFiles`</span>
@@ -136,7 +138,7 @@
 
 
 <div class="viewcode-block" id="loadableFiles"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.loadableFiles">[docs]</a><span class="k">def</span> <span class="nf">loadableFiles</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns list of extensions loadable by :func:`load`.</span>
 
 <span class="sd">    Return:</span>
@@ -151,7 +153,7 @@
 
 
 <div class="viewcode-block" id="registerFileLoader"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.registerFileLoader">[docs]</a><span class="k">def</span> <span class="nf">registerFileLoader</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Register file loader.</span>
 
 <span class="sd">    This function extend :func:`load` function and enables lys to load various file types.</span>
@@ -179,8 +181,83 @@
     <span class="n">_dic</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span></div>
 
 
+<div class="viewcode-block" id="registerFittingFunction"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.registerFittingFunction">[docs]</a><span class="k">def</span> <span class="nf">registerFittingFunction</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Register fitting function for lys fitting module.</span>
+
+<span class="sd">    The fitting can be done when Ctrl+F is pressed on the graphs with 1D data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        func(callable): The function. The information of the function should be obtained from inspect.signature.</span>
+<span class="sd">        name(str): The name of the function. If it is None, then func.__name__ is used.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.fitting</span> <span class="kn">import</span> <span class="n">addFittingFunction</span>
+    <span class="n">addFittingFunction</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="edit"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.edit">[docs]</a><span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
     <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="multicut"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.multicut">[docs]</a><span class="k">def</span> <span class="nf">multicut</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">.Analysis</span> <span class="kn">import</span> <span class="n">MultiCut</span>
+    <span class="n">MultiCut</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="frontCanvas"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.frontCanvas">[docs]</a><span class="k">def</span> <span class="nf">frontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the front canvas.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        exclude(list of canvas): If the front canvas is in exclude, the it will be ignored.</span>
+
+<span class="sd">    Return:</span>
+<span class="sd">        canvas: The front canvas</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.widgets</span> <span class="kn">import</span> <span class="n">getFrontCanvas</span>
+    <span class="k">return</span> <span class="n">getFrontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="display"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.display">[docs]</a><span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Display Waves as graph.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args: The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</span>
+<span class="sd">        lib (&#39;matplotlib&#39; or &#39;pyqtgraph&#39;): The library used to create canvas. </span>
+<span class="sd">        kwargs: The keywords arguments that is passed to Append method of canvas.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Graph: The graph that contains the waves.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.widgets</span> <span class="kn">import</span> <span class="n">Graph</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">lib</span><span class="o">=</span><span class="n">lib</span><span class="p">)</span>
+    <span class="n">append</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">g</span></div>
+
+
+<div class="viewcode-block" id="append"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.append">[docs]</a><span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Append waves to the front canvas. </span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args: The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</span>
+<span class="sd">        canvas (CanvasBase): The canvas to which the wave are appended. If canvas is None, then front canvas is used.</span>
+<span class="sd">        exclude (list of canvas): If the front canvas is in *exclude*, then it is ignored and next canvas is used.</span>
+<span class="sd">        kwargs: The keywords arguments that is passed to Append method of canvas.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">Wave</span>
+    <span class="k">if</span> <span class="n">canvas</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">frontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">canvas</span>
+    <span class="k">for</span> <span class="n">wave</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">Wave</span><span class="p">):</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">wave</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">c</span></div>
 </pre></div>
 
            </div>

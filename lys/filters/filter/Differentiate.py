@@ -11,21 +11,19 @@ class GradientFilter(FilterInterface):
     """
     Differentiate wave along *axes* (implementation of np.gradient in lys)
 
-    See :class:`.FilterInterface.FilterInterface` for general description of Filters.
-
     Args:
         axes(list of int): axes to be differentiated
 
-    Example:
+    Example::
 
-        Apply GradientFilter::
+        from lys import Wave, filters
 
-            from lys import Wave, filters
-            w = Wave([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
-            f = filters.GradientFilter(axes=[0])
-            result = f.execute(w)
-            result.data
-            # [1,1,1,1,1]
+        w = Wave([1, 2, 3, 4, 5], [1, 2, 3, 4, 5])
+
+        f = filters.GradientFilter(axes=[0])
+        result = f.execute(w)
+        print(result.data) # [1,1,1,1,1]
+
     """
 
     def __init__(self, axes):
@@ -48,24 +46,18 @@ class NablaFilter(FilterInterface):
     """
     Apply nabla vector
 
-    See :class:`.FilterInterface.FilterInterface` for general description of Filters.
+    Example::
 
-    Example:
+        import numpy as np
+        from lys import Wave, filters
 
-        Apply NablaFilter::
+        ar = np.array([1, 2, 3])
+        w = Wave([ar + i for i in range(3)], ar, ar, name="wave")
 
-            import numpy as np
-            from lys import Wave, filters
-            ar = np.array([1, 2, 3])
-            w = Wave([ar + i for i in range(3)], ar, ar, name="wave")
-            f = filters.NablaFilter()
-            result = f.execute(w)
-            print(result.data)
-            # [[1,1,1], [1,1,1], [1,1,1]]
+        f = filters.NablaFilter()
+        result = f.execute(w)
+        print(result.data) # [[1,1,1], [1,1,1], [1,1,1]]
     """
-
-    def __init__(self):
-        pass
 
     def _execute(self, wave, *axes, **kwargs):
         def f(d, x):
@@ -88,18 +80,17 @@ class LaplacianFilter(FilterInterface):
 
     See :class:`.FilterInterface.FilterInterface` for general description of Filters.
 
-    Example:
+    Example::
 
-        Apply LaplacianFilter::
+        import numpy as np
+        from lys import Wave, filters
 
-            import numpy as np
-            from lys import Wave, filters
-            x = np.linspace(0,100,100)
-            w = Wave(x**2, x)
-            f = filters.LaplacianFilter()
-            result = f.execute(w)
-            result.data
-            # [1, 1.5, 2, 2, 2, ...]
+        x = np.linspace(0,100,100)
+        w = Wave(x**2, x)
+
+        f = filters.LaplacianFilter()
+        result = f.execute(w)
+        print(result.data) # [1, 1.5, 2, 2, 2, ...]
     """
 
     def __init__(self):

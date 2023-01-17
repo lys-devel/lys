@@ -14,11 +14,13 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="lys.filters package" href="lys.filters.html" />
+    <link rel="next" title="lys.filters" href="lys.filters.html" />
     <link rel="prev" title="lys.BasicWidgets package" href="lys.BasicWidgets.html" /> 
 </head>
 
@@ -42,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Python API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="lys.html">lys package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
@@ -52,12 +55,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="lys.BasicWidgets.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lys.BasicWidgets.html#module-lys.BasicWidgets.FittingWindow">lys.BasicWidgets.FittingWindow module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="lys.BasicWidgets.html#module-lys.BasicWidgets.GraphWindow">lys.BasicWidgets.GraphWindow module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys.BasicWidgets.html#lys-basicwidgets-fittingwindow-module">lys.BasicWidgets.FittingWindow module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys.BasicWidgets.html#lys-basicwidgets-graphwindow-module">lys.BasicWidgets.GraphWindow module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lys.BasicWidgets.html#module-lys.BasicWidgets">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -75,10 +78,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="api.html">Python API</a> &raquo;</li>
-          <li><a href="lys.BasicWidgets.html">lys.BasicWidgets package</a> &raquo;</li>
-      <li>lys.BasicWidgets.Fitting package</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+      <li class="breadcrumb-item active">lys.BasicWidgets.Fitting package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/lys.BasicWidgets.Fitting.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -89,373 +92,24 @@
            <div itemprop="articleBody">
              
   <section id="lys-basicwidgets-fitting-package">
-<h1>lys.BasicWidgets.Fitting package<a class="headerlink" href="#lys-basicwidgets-fitting-package" title="Permalink to this headline"></a></h1>
+<h1>lys.BasicWidgets.Fitting package<a class="headerlink" href="#lys-basicwidgets-fitting-package" title="Permalink to this heading"></a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-lys.BasicWidgets.Fitting.Fitting">
-<span id="lys-basicwidgets-fitting-fitting-module"></span><h2>lys.BasicWidgets.Fitting.Fitting module<a class="headerlink" href="#module-lys.BasicWidgets.Fitting.Fitting" title="Permalink to this headline"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Fitting.Fitting">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Fitting.</span></span><span class="sig-name descname"><span class="pre">Fitting</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Fitting.html#Fitting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Fitting.Fitting" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Fitting.Fitting.addFunction">
-<span class="sig-name descname"><span class="pre">addFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Fitting.html#Fitting.addFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Fitting.Fitting.addFunction" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Fitting.Fitting.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Fitting.html#Fitting.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Fitting.Fitting.fit" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Fitting.Fitting.funcFix">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">funcFix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Fitting.html#Fitting.funcFix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Fitting.Fitting.funcFix" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Fitting.Fitting.funcFix.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Fitting.html#Fitting.funcFix.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Fitting.Fitting.funcFix.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Fitting.Fitting.funcFix.nparam">
-<span class="sig-name descname"><span class="pre">nparam</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Fitting.html#Fitting.funcFix.nparam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Fitting.Fitting.funcFix.nparam" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Fitting.Fitting.funcSum">
-<em class="property"><span class="pre">class</span> </em><span class="sig-name descname"><span class="pre">funcSum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Fitting.html#Fitting.funcSum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Fitting.Fitting.funcSum" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Fitting.Fitting.funcSum.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Fitting.html#Fitting.funcSum.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Fitting.Fitting.funcSum.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Fitting.Fitting.funcSum.nparam">
-<span class="sig-name descname"><span class="pre">nparam</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Fitting.html#Fitting.funcSum.nparam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Fitting.Fitting.funcSum.nparam" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</dd></dl>
-
+<section id="lys-basicwidgets-fitting-fitting-module">
+<h2>lys.BasicWidgets.Fitting.Fitting module<a class="headerlink" href="#lys-basicwidgets-fitting-fitting-module" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-lys.BasicWidgets.Fitting.FittingWidget">
-<span id="lys-basicwidgets-fitting-fittingwidget-module"></span><h2>lys.BasicWidgets.Fitting.FittingWidget module<a class="headerlink" href="#module-lys.BasicWidgets.Fitting.FittingWidget" title="Permalink to this headline"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.FittingWidget.</span></span><span class="sig-name descname"><span class="pre">FittingTree</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QTreeView</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.addFunction">
-<span class="sig-name descname"><span class="pre">addFunction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree.addFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.addFunction" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.buildContextMenu">
-<span class="sig-name descname"><span class="pre">buildContextMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qPoint</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree.buildContextMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.buildContextMenu" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.clear" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.getParams">
-<span class="sig-name descname"><span class="pre">getParams</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree.getParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.getParams" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.loadResult">
-<span class="sig-name descname"><span class="pre">loadResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree.loadResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.loadResult" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.peakAdded">
-<span class="sig-name descname"><span class="pre">peakAdded</span></span><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.peakAdded" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.peakRemoved">
-<span class="sig-name descname"><span class="pre">peakRemoved</span></span><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.peakRemoved" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.removeFunction">
-<span class="sig-name descname"><span class="pre">removeFunction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree.removeFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.removeFunction" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.saveResult">
-<span class="sig-name descname"><span class="pre">saveResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree.saveResult"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.saveResult" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.setParams">
-<span class="sig-name descname"><span class="pre">setParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree.setParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.setParams" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingTree.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.update" title="Permalink to this definition"></a></dt>
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QModelIndex</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingTree.updated">
-<span class="sig-name descname"><span class="pre">updated</span></span><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingTree.updated" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingWidget">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.FittingWidget.</span></span><span class="sig-name descname"><span class="pre">FittingWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingWidget.OnPeakAdded">
-<span class="sig-name descname"><span class="pre">OnPeakAdded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingWidget.OnPeakAdded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingWidget.OnPeakAdded" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingWidget.OnPeakRemoved">
-<span class="sig-name descname"><span class="pre">OnPeakRemoved</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingWidget.OnPeakRemoved"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingWidget.OnPeakRemoved" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FittingWidget.update">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FittingWidget.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FittingWidget.update" title="Permalink to this definition"></a></dt>
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QRect</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QRegion</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span></dt>
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">FittingWidget.update(self,</span> <span class="pre">int,</span> <span class="pre">int,</span> <span class="pre">int,</span> <span class="pre">int)</span> <span class="pre">-&gt;</span> <span class="pre">None</span></span></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.FittingWidget.FuncSelectDialog">
-<span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.FittingWidget.</span></span><span class="sig-name descname"><span class="pre">FuncSelectDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">QDialog</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/FittingWidget.html#FuncSelectDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.FittingWidget.FuncSelectDialog" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
+<section id="lys-basicwidgets-fitting-fittingwidget-module">
+<h2>lys.BasicWidgets.Fitting.FittingWidget module<a class="headerlink" href="#lys-basicwidgets-fitting-fittingwidget-module" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-lys.BasicWidgets.Fitting.Functions">
-<span id="lys-basicwidgets-fitting-functions-module"></span><h2>lys.BasicWidgets.Fitting.Functions module<a class="headerlink" href="#module-lys.BasicWidgets.Fitting.Functions" title="Permalink to this headline"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.Error">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">Error</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#Error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.Error" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.Error.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#Error.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.Error.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.Gauss">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">Gauss</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#Gauss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.Gauss" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.Gauss.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#Gauss.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.Gauss.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.GaussConvolved">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">GaussConvolved</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#GaussConvolved"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.GaussConvolved" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.GaussConvolved.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#GaussConvolved.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.GaussConvolved.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.GaussConvolved.nparam">
-<span class="sig-name descname"><span class="pre">nparam</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#GaussConvolved.nparam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.GaussConvolved.nparam" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.GaussConvolved.params">
-<span class="sig-name descname"><span class="pre">params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#GaussConvolved.params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.GaussConvolved.params" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.Lorentzian">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">Lorentzian</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#Lorentzian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.Lorentzian" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.Lorentzian.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#Lorentzian.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.Lorentzian.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.StepExp">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">StepExp</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#StepExp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.StepExp" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.StepExp.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#StepExp.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.StepExp.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.addFunction">
-<span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">addFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcObj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#addFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.addFunction" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.const">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">const</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#const"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.const" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.const.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#const.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.const.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.cos">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">cos</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#cos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.cos" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.cos.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#cos.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.cos.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.doubleExp">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">doubleExp</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#doubleExp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.doubleExp" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.doubleExp.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#doubleExp.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.doubleExp.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.exp">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">exp</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.exp" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.exp.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#exp.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.exp.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.findFuncByInstance">
-<span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">findFuncByInstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#findFuncByInstance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.findFuncByInstance" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.function">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">function</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.function" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.function.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#function.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.function.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.function.nparam">
-<span class="sig-name descname"><span class="pre">nparam</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#function.nparam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.function.nparam" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.function.params">
-<span class="sig-name descname"><span class="pre">params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#function.params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.function.params" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.linear">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">linear</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.linear" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.linear.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#linear.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.linear.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.none">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">none</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#none"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.none" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.none.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#none.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.none.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.quadratic">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">quadratic</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#quadratic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.quadratic" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.quadratic.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#quadratic.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.quadratic.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.relaxOscillation">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">relaxOscillation</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#relaxOscillation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.relaxOscillation" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.relaxOscillation.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#relaxOscillation.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.relaxOscillation.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.step">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">step</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.step" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.Fitting.Functions.function</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.Functions.step.func">
-<span class="sig-name descname"><span class="pre">func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/Functions.html#step.func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.Functions.step.func" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<section id="lys-basicwidgets-fitting-functions-module">
+<h2>lys.BasicWidgets.Fitting.Functions module<a class="headerlink" href="#lys-basicwidgets-fitting-functions-module" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-lys.BasicWidgets.Fitting.LineProfile">
-<span id="lys-basicwidgets-fitting-lineprofile-module"></span><h2>lys.BasicWidgets.Fitting.LineProfile module<a class="headerlink" href="#module-lys.BasicWidgets.Fitting.LineProfile" title="Permalink to this headline"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.Fitting.LineProfile.LineProfileWidget">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.Fitting.LineProfile.</span></span><span class="sig-name descname"><span class="pre">LineProfileWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wavelist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/Fitting/LineProfile.html#LineProfileWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.Fitting.LineProfile.LineProfileWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
-</dd></dl>
-
+<section id="lys-basicwidgets-fitting-lineprofile-module">
+<h2>lys.BasicWidgets.Fitting.LineProfile module<a class="headerlink" href="#lys-basicwidgets-fitting-lineprofile-module" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-lys.BasicWidgets.Fitting">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lys.BasicWidgets.Fitting" title="Permalink to this headline"></a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lys.BasicWidgets.Fitting" title="Permalink to this heading"></a></h2>
 </section>
 </section>
 
@@ -464,7 +118,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="lys.BasicWidgets.html" class="btn btn-neutral float-left" title="lys.BasicWidgets package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="lys.filters.html" class="btn btn-neutral float-right" title="lys.filters package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="lys.filters.html" class="btn btn-neutral float-right" title="lys.filters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

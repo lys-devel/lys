@@ -14,7 +14,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -42,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Python API</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">lys package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="lys_/core.html">core module</a></li>
@@ -56,7 +59,7 @@
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html">lys.Analysis package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -74,9 +77,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="api.html">Python API</a> &raquo;</li>
-      <li>lys package</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">Python API</a></li>
+      <li class="breadcrumb-item active">lys package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/lys.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -87,12 +90,77 @@
            <div itemprop="articleBody">
              
   <section id="lys-package">
-<h1>lys package<a class="headerlink" href="#lys-package" title="Permalink to this headline"></a></h1>
+<h1>lys package<a class="headerlink" href="#lys-package" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="lys_/core.html">core module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lys_/functions.html">functions module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lys_/glb.html">glb module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lys_/core.html">core module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave"><code class="docutils literal notranslate"><span class="pre">DaskWave</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.axes"><code class="docutils literal notranslate"><span class="pre">DaskWave.axes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.compute"><code class="docutils literal notranslate"><span class="pre">DaskWave.compute()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.data"><code class="docutils literal notranslate"><span class="pre">DaskWave.data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.duplicate"><code class="docutils literal notranslate"><span class="pre">DaskWave.duplicate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.initWorkers"><code class="docutils literal notranslate"><span class="pre">DaskWave.initWorkers()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.note"><code class="docutils literal notranslate"><span class="pre">DaskWave.note</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.persist"><code class="docutils literal notranslate"><span class="pre">DaskWave.persist()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/core.html#lys.core.SettingDict"><code class="docutils literal notranslate"><span class="pre">SettingDict</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.SettingDict.Save"><code class="docutils literal notranslate"><span class="pre">SettingDict.Save()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/core.html#lys.core.Wave"><code class="docutils literal notranslate"><span class="pre">Wave</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.Name"><code class="docutils literal notranslate"><span class="pre">Wave.Name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.Save"><code class="docutils literal notranslate"><span class="pre">Wave.Save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.SupportedFormats"><code class="docutils literal notranslate"><span class="pre">Wave.SupportedFormats()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.axes"><code class="docutils literal notranslate"><span class="pre">Wave.axes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.data"><code class="docutils literal notranslate"><span class="pre">Wave.data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.duplicate"><code class="docutils literal notranslate"><span class="pre">Wave.duplicate()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.export"><code class="docutils literal notranslate"><span class="pre">Wave.export()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.importFrom"><code class="docutils literal notranslate"><span class="pre">Wave.importFrom()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.modified"><code class="docutils literal notranslate"><span class="pre">Wave.modified</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.note"><code class="docutils literal notranslate"><span class="pre">Wave.note</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave.update"><code class="docutils literal notranslate"><span class="pre">Wave.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes"><code class="docutils literal notranslate"><span class="pre">WaveAxes</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes.axisIsValid"><code class="docutils literal notranslate"><span class="pre">WaveAxes.axisIsValid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes.getAxis"><code class="docutils literal notranslate"><span class="pre">WaveAxes.getAxis()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes.pointToPos"><code class="docutils literal notranslate"><span class="pre">WaveAxes.pointToPos()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes.posToPoint"><code class="docutils literal notranslate"><span class="pre">WaveAxes.posToPoint()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/core.html#lys.core.WaveBase"><code class="docutils literal notranslate"><span class="pre">WaveBase</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveBase.x"><code class="docutils literal notranslate"><span class="pre">WaveBase.x</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveBase.y"><code class="docutils literal notranslate"><span class="pre">WaveBase.y</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveBase.z"><code class="docutils literal notranslate"><span class="pre">WaveBase.z</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/core.html#lys.core.WaveNote"><code class="docutils literal notranslate"><span class="pre">WaveNote</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveNote.name"><code class="docutils literal notranslate"><span class="pre">WaveNote.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lys_/functions.html">functions module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.append"><code class="docutils literal notranslate"><span class="pre">append()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.display"><code class="docutils literal notranslate"><span class="pre">display()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.edit"><code class="docutils literal notranslate"><span class="pre">edit()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.frontCanvas"><code class="docutils literal notranslate"><span class="pre">frontCanvas()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.home"><code class="docutils literal notranslate"><span class="pre">home()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.loadableFiles"><code class="docutils literal notranslate"><span class="pre">loadableFiles()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.multicut"><code class="docutils literal notranslate"><span class="pre">multicut()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.registerFileLoader"><code class="docutils literal notranslate"><span class="pre">registerFileLoader()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html#lys.functions.registerFittingFunction"><code class="docutils literal notranslate"><span class="pre">registerFittingFunction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lys_/glb.html">glb module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lys_/glb.html#lys.glb.createMainWindow"><code class="docutils literal notranslate"><span class="pre">createMainWindow()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/glb.html#lys.glb.mainWindow"><code class="docutils literal notranslate"><span class="pre">mainWindow()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/glb.html#lys.glb.restoreWorkspaces"><code class="docutils literal notranslate"><span class="pre">restoreWorkspaces()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/glb.html#lys.glb.shell"><code class="docutils literal notranslate"><span class="pre">shell()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="lys_/MainWindow.html">MainWindow module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lys_/shell.html">shell module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lys_/FileView.html">FileView module</a></li>

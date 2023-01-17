@@ -42,18 +42,17 @@ class _ConvolutionFilter(FilterInterface):
 
 class PrewittFilter(_ConvolutionFilter):
     """
-    Apply prewitt filter.
+    Apply prewitt filter. See scipy.ndimage.filters.prewitt for detail.
 
     Args:
         axes(tuple of int): axes of wave along which to apply.
 
-    Example:
+    Example::
 
-        >>> w = Wave([1, 2, 3, 4, 5])
-        >>> f = filters.PrewittFilter(axes=[0])
-        >>> result = f.execute(w)
-        >>> result.data
-        >>> # [1,2,2,2,1]
+        from lys import filters
+        f = filters.PrewittFilter(axes=[0])
+        result = f.execute([1, 2, 3, 4, 5])
+        print(result) # [1,2,2,2,1]
 
     """
 
@@ -63,18 +62,17 @@ class PrewittFilter(_ConvolutionFilter):
 
 class SobelFilter(_ConvolutionFilter):
     """
-    Apply prewitt filter.
+    Apply prewitt filter. See scipy.ndimage.filters.sobel for detail.
 
     Args:
         axes(tuple of int): axes of wave along which to apply.
 
-    Example:
+    Example::
 
-        >>> w = Wave([1, 2, 3, 4, 5])
-        >>> f = filters.SobelFilter(axes=[0])
-        >>> result = f.execute(w)
-        >>> result.data
-        >>> # [1,2,2,2,1]
+        from lys import filters
+        f = filters.SobelFilter(axes=[0])
+        result = f.execute([1, 2, 3, 4, 5])
+        print(result) # [1,2,2,2,1]
 
     """
 
@@ -89,13 +87,12 @@ class LaplacianConvFilter(_ConvolutionFilter):
     Args:
         axes(tuple of int): axes of wave along which to apply.
 
-    Example:
+    Example::
 
-        >>> w = Wave([1, 2, 3, 4, 5])
-        >>> f = filters.LaplacianConvFilter(axes=[0])
-        >>> result = f.execute(w)
-        >>> result.data
-        >>> # [1,0,0,0,-1]
+        from lys import filters
+        f = filters.LaplacianConvFilter(axes=[0])
+        result = f.execute([1, 2, 3, 4, 5])
+        print(result) # [1,0,0,0,-1]
 
     """
 

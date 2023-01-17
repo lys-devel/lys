@@ -130,17 +130,18 @@ class FourierFilter(FilterInterface):
         process('absolute' or 'real' or 'imag' or 'complex' or 'phase' or 'complex'): see description above.
         window('Rect' or 'Hann' or 'Hamming' or 'Blackman'): a window function used for FFT
 
-    Examle:
+    Examle::
 
-        Apply FFT::
+        from lys import Wave, filters
 
-            w = Wave(np.ones([3, 3]))
-            f = filters.FourierFilter(axes=[0, 1])
-            result = f.execute(w)
-            print(result.data)
-            # [0,0,0], [0,9,0], [0,0,0]
-            print(result.x)
-            # [-0.75, 0, 0.75]
+        # prepare data and filter
+        w = Wave(np.ones([3, 3]))
+        f = filters.FourierFilter(axes=[0, 1])
+        result = f.execute(w)
+
+        # FFT changes x axis as well as data
+        print(result.data) # [0,0,0], [0,9,0], [0,0,0]
+        print(result.x)    # [-0.75, 0, 0.75]
 
     """
 

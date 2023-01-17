@@ -14,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../lys.html">lys package</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a><ul class="current">
@@ -57,13 +60,11 @@
 <li class="toctree-l4"><a class="reference internal" href="RectAnnot.html">RectAnnotation module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#lys-basicwidgets-canvasinterface-annotguicanvas-module">lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -81,10 +82,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api.html">Python API</a> &raquo;</li>
-          <li><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a> &raquo;</li>
-      <li>LineAnnotation module</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+      <li class="breadcrumb-item active">LineAnnotation module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/graph/LineAnnot.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,123 +95,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-lys.BasicWidgets.CanvasInterface.LineAnnotation">
-<span id="lineannotation-module"></span><h1>LineAnnotation module<a class="headerlink" href="#module-lys.BasicWidgets.CanvasInterface.LineAnnotation" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.LineAnnotation.</span></span><span class="sig-name descname"><span class="pre">InfiniteLineAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/LineAnnotation.html#InfiniteLineAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine</span></code></a></p>
-<p>Interface to access infinite line annotations in canvas.</p>
-<p><em>InfiniteLineAnnotation</em> is usually generated by addInfiniteLineAnnotation method in canvas.</p>
-<p>Several methods related to the appearance of line is inherited from <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnotationData.AnnotationWithLine</span></code></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>canvas</strong> (<em>Canvas</em>) – canvas to which the line annotation is added.</p></li>
-<li><p><strong>pos</strong> (<em>float</em>) – The position of the line annotation.</p></li>
-<li><p><strong>type</strong> (<em>'vertical'</em><em> or </em><em>'horizontal'</em>) – The direction of the infinite line.</p></li>
-<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the line annotation is added.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">()</span>
-<span class="n">line</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">addInfiniteLineAnnotation</span><span class="p">()</span>
-<span class="n">line</span><span class="o">.</span><span class="n">setLineColor</span><span class="p">(</span><span class="s2">&quot;#ff0000&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation.getOrientation">
-<span class="sig-name descname"><span class="pre">getOrientation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/LineAnnotation.html#InfiniteLineAnnotation.getOrientation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation.getOrientation" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation.getPosition">
-<span class="sig-name descname"><span class="pre">getPosition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/LineAnnotation.html#InfiniteLineAnnotation.getPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation.getPosition" title="Permalink to this definition"></a></dt>
-<dd><p>Get the position of the line.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>float</strong> – The position of the line.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation.positionChanged">
-<span class="sig-name descname"><span class="pre">positionChanged</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation.positionChanged" title="Permalink to this definition"></a></dt>
-<dd><p>PyqtSignal that is emitted when the position of the line is changed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation.setPosition">
-<span class="sig-name descname"><span class="pre">setPosition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/LineAnnotation.html#InfiniteLineAnnotation.setPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.LineAnnotation.InfiniteLineAnnotation.setPosition" title="Permalink to this definition"></a></dt>
-<dd><p>Set the position of the line.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pos</strong> (<em>float</em>) – The position of the line.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.LineAnnotation.LineAnnotation">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.LineAnnotation.</span></span><span class="sig-name descname"><span class="pre">LineAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/LineAnnotation.html#LineAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.LineAnnotation.LineAnnotation" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine</span></code></a></p>
-<p>Interface to access line annotations in canvas.</p>
-<p><em>LineAnnotation</em> is usually generated by addLineAnnotation method in canvas.</p>
-<p>Several methods related to the appearance of line is inherited from <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnotationData.AnnotationWithLine</span></code></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>canvas</strong> (<em>Canvas</em>) – canvas to which the line annotation is added.</p></li>
-<li><p><strong>pos</strong> (<em>2 * 2 sequence</em>) – The position of the line annotation.</p></li>
-<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the line annotation is added.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">()</span>
-<span class="n">line</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">addLineAnnotation</span><span class="p">()</span>
-<span class="n">line</span><span class="o">.</span><span class="n">setLineColor</span><span class="p">(</span><span class="s2">&quot;#ff0000&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.LineAnnotation.LineAnnotation.getPosition">
-<span class="sig-name descname"><span class="pre">getPosition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/LineAnnotation.html#LineAnnotation.getPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.LineAnnotation.LineAnnotation.getPosition" title="Permalink to this definition"></a></dt>
-<dd><p>Get the position of the line.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The position of the line in the form of [(x0,y0),(x1,y1)].</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>2*2 sequence</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.LineAnnotation.LineAnnotation.positionChanged">
-<span class="sig-name descname"><span class="pre">positionChanged</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.LineAnnotation.LineAnnotation.positionChanged" title="Permalink to this definition"></a></dt>
-<dd><p>PyqtSignal that is emitted when the position of the line is changed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.LineAnnotation.LineAnnotation.setPosition">
-<span class="sig-name descname"><span class="pre">setPosition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/LineAnnotation.html#LineAnnotation.setPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.LineAnnotation.LineAnnotation.setPosition" title="Permalink to this definition"></a></dt>
-<dd><p>Set the position of the line.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pos</strong> (<em>2*2 sequence</em>) – The position of the line in the form of [(x0,y0),(x1,y1)].</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="lineannotation-module">
+<h1>LineAnnotation module<a class="headerlink" href="#lineannotation-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

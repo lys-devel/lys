@@ -13,7 +13,9 @@
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -39,6 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
 </ul>
 
@@ -55,9 +58,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>lys.filters.filter.Region</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.filters.filter.Region</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -73,14 +76,14 @@
 <span class="kn">from</span> <span class="nn">scipy.ndimage</span> <span class="kn">import</span> <span class="n">map_coordinates</span>
 
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">DaskWave</span>
-<span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
 
-<span class="kn">from</span> <span class="nn">.FilterInterface</span> <span class="kn">import</span> <span class="n">FilterInterface</span>
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">RegionSelectWidget</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QLineEdit</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span><span class="p">,</span> <span class="n">QFileDialog</span><span class="p">,</span> <span class="n">QSpinBox</span>
+<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">RegionSelectWidget</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span>
 
 
 <div class="viewcode-block" id="NormalizeFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Region.NormalizeFilter">[docs]</a><span class="k">class</span> <span class="nc">NormalizeFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Normalize data specified by *range*.</span>
 
 <span class="sd">    Data is integrated along the axes specified by *axis* and then used for normalization.</span>
@@ -130,7 +133,7 @@
 
 
 <div class="viewcode-block" id="ReferenceNormalizeFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Region.ReferenceNormalizeFilter">[docs]</a><span class="k">class</span> <span class="nc">ReferenceNormalizeFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Normalize data by reference specified by refIndex.</span>
 
 <span class="sd">    When data.ndim=2 and *axis* = 1, type=&#39;Divide&#39;, refIndex=5, data is normalized as</span>
@@ -168,7 +171,7 @@
 
 
 <div class="viewcode-block" id="SelectRegionFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Region.SelectRegionFilter">[docs]</a><span class="k">class</span> <span class="nc">SelectRegionFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cut data by range specified by *region*</span>
 
 <span class="sd">    *range* should be [(x1,x2),(y1,y2),...], where x1 and y2 specifies selected region in *axes* units.</span>
@@ -178,19 +181,18 @@
 <span class="sd">    Args:</span>
 <span class="sd">        range(sequence of length-2 tuple or None): see above description.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example::</span>
 
-<span class="sd">        Select region of 5\*5 data::</span>
+<span class="sd">        from lys import Wave, filters</span>
+<span class="sd">        import numpy as np</span>
 
-<span class="sd">            w = Wave(np.ones([5, 5]), [1, 2, 3, 4, 5], [11, 12, 13, 14, 15])</span>
-<span class="sd">            f = filters.SelectRegionFilter(range=[(2, 4), (11, 14)]) # range is given in axes unit</span>
-<span class="sd">            result = f.execute(w)</span>
-<span class="sd">            print(result.data.shape)</span>
-<span class="sd">            # (2, 3)</span>
-<span class="sd">            print(result.x)</span>
-<span class="sd">            # [2, 3]</span>
-<span class="sd">            print(result.y)</span>
-<span class="sd">            # [11, 12, 13]</span>
+<span class="sd">        w = Wave(np.ones([5, 5]), [1, 2, 3, 4, 5], [11, 12, 13, 14, 15])</span>
+<span class="sd">        f = filters.SelectRegionFilter(range=[(2, 4), (11, 14)]) # range is given in axes unit</span>
+<span class="sd">        result = f.execute(w)</span>
+
+<span class="sd">        print(result.data.shape)  # (2, 3)</span>
+<span class="sd">        print(result.x)           # [2, 3]</span>
+<span class="sd">        print(result.y)           # [11, 12, 13]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
@@ -319,11 +321,11 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__axis</span> <span class="o">=</span> <span class="n">AxisSelectionLayout</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__type</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__type</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__type</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;Diff&quot;</span><span class="p">,</span> <span class="s2">&quot;Divide&quot;</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__ref</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__ref</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__ref</span><span class="o">.</span><span class="n">addItems</span><span class="p">([</span><span class="s2">&quot;First&quot;</span><span class="p">,</span> <span class="s2">&quot;Last&quot;</span><span class="p">])</span>
-        <span class="n">hbox</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">hbox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">hbox</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__axis</span><span class="p">)</span>
         <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__type</span><span class="p">)</span>
         <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__ref</span><span class="p">)</span>
@@ -368,15 +370,15 @@
 <span class="k">class</span> <span class="nc">_MaskSetting</span><span class="p">(</span><span class="n">FilterSettingBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__filename</span> <span class="o">=</span> <span class="n">QLineEdit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__filename</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">()</span>
 
-        <span class="n">hbox</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">hbox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__filename</span><span class="p">)</span>
-        <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Load&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_LoadMask</span><span class="p">))</span>
+        <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Load&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_LoadMask</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">hbox</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_LoadMask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">file</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Open file&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;npz(*.npz)&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Open file&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;npz(*.npz)&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="mi">0</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__filename</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
@@ -392,20 +394,20 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">RegionSelectWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">combo</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">combo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_order</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
 
-        <span class="n">hbox</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
-        <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span><span class="p">))</span>
+        <span class="n">hbox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span><span class="p">))</span>
         <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">combo</span><span class="p">)</span>
-        <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Order&quot;</span><span class="p">))</span>
+        <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Order&quot;</span><span class="p">))</span>
         <span class="n">hbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">)</span>
 
-        <span class="n">vbox</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">vbox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">vbox</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hbox</span><span class="p">)</span>
         <span class="n">vbox</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">vbox</span><span class="p">)</span>

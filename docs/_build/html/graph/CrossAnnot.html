@@ -14,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../lys.html">lys package</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a><ul class="current">
@@ -57,13 +60,11 @@
 <li class="toctree-l4"><a class="reference internal" href="RectAnnot.html">RectAnnotation module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#lys-basicwidgets-canvasinterface-annotguicanvas-module">lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -81,10 +82,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api.html">Python API</a> &raquo;</li>
-          <li><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a> &raquo;</li>
-      <li>CrossAnnotation module</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+      <li class="breadcrumb-item active">CrossAnnotation module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/graph/CrossAnnot.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,64 +95,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-lys.BasicWidgets.CanvasInterface.CrossAnnotation">
-<span id="crossannotation-module"></span><h1>CrossAnnotation module<a class="headerlink" href="#module-lys.BasicWidgets.CanvasInterface.CrossAnnotation" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CrossAnnotation.CrossAnnotation">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.CrossAnnotation.</span></span><span class="sig-name descname"><span class="pre">CrossAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CrossAnnotation.html#CrossAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CrossAnnotation.CrossAnnotation" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine</span></code></a></p>
-<p>Interface to access cross annotations in canvas.</p>
-<p><em>CrossAnnotation</em> is usually generated by addCrossAnnotation method in canvas.</p>
-<p>Several methods related to the appearance of line is inherited from <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnotationData.AnnotationWithLine</span></code></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>canvas</strong> (<em>Canvas</em>) – canvas to which the line annotation is added.</p></li>
-<li><p><strong>pos</strong> (<em>length 2 sequence</em>) – The position of the annotation in the form of (x, y).</p></li>
-<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the annotation is added.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">()</span>
-<span class="n">rect</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">addCrossAnnotation</span><span class="p">()</span>
-<span class="n">rect</span><span class="o">.</span><span class="n">setLineColor</span><span class="p">(</span><span class="s2">&quot;#ff0000&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CrossAnnotation.CrossAnnotation.getPosition">
-<span class="sig-name descname"><span class="pre">getPosition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CrossAnnotation.html#CrossAnnotation.getPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CrossAnnotation.CrossAnnotation.getPosition" title="Permalink to this definition"></a></dt>
-<dd><p>Get the position of the annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The position of annotation in the form of (x, y)</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>length 2 sequence</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CrossAnnotation.CrossAnnotation.positionChanged">
-<span class="sig-name descname"><span class="pre">positionChanged</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CrossAnnotation.CrossAnnotation.positionChanged" title="Permalink to this definition"></a></dt>
-<dd><p>PyqtSignal that is emitted when the region is changed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.CrossAnnotation.CrossAnnotation.setPosition">
-<span class="sig-name descname"><span class="pre">setPosition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/CrossAnnotation.html#CrossAnnotation.setPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.CrossAnnotation.CrossAnnotation.setPosition" title="Permalink to this definition"></a></dt>
-<dd><p>Set position of the annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pos</strong> (<em>length 2 sequence</em>) – Theposition of cross in the form of (x, y)</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="crossannotation-module">
+<h1>CrossAnnotation module<a class="headerlink" href="#crossannotation-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

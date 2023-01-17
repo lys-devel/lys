@@ -10,5 +10,6 @@ lys documentation
    :maxdepth: 4
    :caption: Contents:
 
+   tutorials/tutorial
    api
 

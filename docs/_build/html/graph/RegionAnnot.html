@@ -14,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../lys.html">lys package</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a><ul class="current">
@@ -57,13 +60,11 @@
 <li class="toctree-l4"><a class="reference internal" href="RectAnnot.html">RectAnnotation module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#lys-basicwidgets-canvasinterface-annotguicanvas-module">lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -81,10 +82,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api.html">Python API</a> &raquo;</li>
-          <li><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a> &raquo;</li>
-      <li>RegionAnnotation module</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+      <li class="breadcrumb-item active">RegionAnnotation module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/graph/RegionAnnot.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,166 +95,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-lys.BasicWidgets.CanvasInterface.RegionAnnotation">
-<span id="regionannotation-module"></span><h1>RegionAnnotation module<a class="headerlink" href="#module-lys.BasicWidgets.CanvasInterface.RegionAnnotation" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.RegionAnnotation.</span></span><span class="sig-name descname"><span class="pre">FreeRegionAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/RegionAnnotation.html#FreeRegionAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine</span></code></a></p>
-<p>Interface to access free region annotations in canvas.</p>
-<p><em>FreeRegionAnnotation</em> is usually generated by addFreeRegionAnnotation method in canvas.</p>
-<p>Several methods related to the appearance of line is inherited from <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnotationData.AnnotationWithLine</span></code></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>canvas</strong> (<em>Canvas</em>) – canvas to which the line annotation is added.</p></li>
-<li><p><strong>region</strong> (<em>2*2 sequence</em>) – The position of the region in the form of [(x0, y0), (x1 ,y1)]</p></li>
-<li><p><strong>width</strong> (<em>float</em>) – The width of the region.</p></li>
-<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the annotation is added.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">()</span>
-<span class="n">rect</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">addFreeRegionAnnotation</span><span class="p">()</span>
-<span class="n">rect</span><span class="o">.</span><span class="n">setLineColor</span><span class="p">(</span><span class="s2">&quot;#ff0000&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.getRegion">
-<span class="sig-name descname"><span class="pre">getRegion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/RegionAnnotation.html#FreeRegionAnnotation.getRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.getRegion" title="Permalink to this definition"></a></dt>
-<dd><p>Get the region of the annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The position of the region in the form of [(x0, y0), (x1 ,y1)]</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>2*2 sequence</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.getWidth">
-<span class="sig-name descname"><span class="pre">getWidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/RegionAnnotation.html#FreeRegionAnnotation.getWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.getWidth" title="Permalink to this definition"></a></dt>
-<dd><p>Get the width of the annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The width of annotation.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.regionChanged">
-<span class="sig-name descname"><span class="pre">regionChanged</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.regionChanged" title="Permalink to this definition"></a></dt>
-<dd><p>PyqtSignal that is emitted when the region is changed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.setRegion">
-<span class="sig-name descname"><span class="pre">setRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/RegionAnnotation.html#FreeRegionAnnotation.setRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.setRegion" title="Permalink to this definition"></a></dt>
-<dd><p>Set region of the annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>region</strong> (<em>2*2 sequence</em>) – The position of the region in the form of [(x0, y0), (x1 ,y1)]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.setWidth">
-<span class="sig-name descname"><span class="pre">setWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/RegionAnnotation.html#FreeRegionAnnotation.setWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.setWidth" title="Permalink to this definition"></a></dt>
-<dd><p>Set width of the annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>width</strong> (<em>float</em>) – The width of annotation.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.widthChanged">
-<span class="sig-name descname"><span class="pre">widthChanged</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.FreeRegionAnnotation.widthChanged" title="Permalink to this definition"></a></dt>
-<dd><p>PyqtSignal that is emitted when the region width is changed.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.RegionAnnotation.</span></span><span class="sig-name descname"><span class="pre">RegionAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/RegionAnnotation.html#RegionAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine</span></code></a></p>
-<p>Interface to access region annotations in canvas.</p>
-<p><em>RegionAnnotation</em> is usually generated by addRegionAnnotation method in canvas.</p>
-<p>Several methods related to the appearance of line is inherited from <a class="reference internal" href="AnnotationData.html#lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine" title="lys.BasicWidgets.CanvasInterface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnotationData.AnnotationWithLine</span></code></a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>canvas</strong> (<em>Canvas</em>) – canvas to which the line annotation is added.</p></li>
-<li><p><strong>region</strong> (<em>length 2 sequence</em>) – The region of the annotation in the form of (x1, x2).</p></li>
-<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the line annotation is added.</p></li>
-</ul>
-</dd>
-</dl>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
-<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">()</span>
-<span class="n">rect</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">addRegionAnnotation</span><span class="p">()</span>
-<span class="n">rect</span><span class="o">.</span><span class="n">setLineColor</span><span class="p">(</span><span class="s2">&quot;#ff0000&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation.getOrientation">
-<span class="sig-name descname"><span class="pre">getOrientation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/RegionAnnotation.html#RegionAnnotation.getOrientation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation.getOrientation" title="Permalink to this definition"></a></dt>
-<dd><p>Get the orientation of the annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The orientation of annotation (‘vertical’ or ‘horizontal’)</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation.getRegion">
-<span class="sig-name descname"><span class="pre">getRegion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/RegionAnnotation.html#RegionAnnotation.getRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation.getRegion" title="Permalink to this definition"></a></dt>
-<dd><p>Get the region of the annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The region of annotation in the form of (x1, x2)</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>length 2 sequence</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation.regionChanged">
-<span class="sig-name descname"><span class="pre">regionChanged</span></span><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation.regionChanged" title="Permalink to this definition"></a></dt>
-<dd><p>PyqtSignal that is emitted when the region is changed.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation.setRegion">
-<span class="sig-name descname"><span class="pre">setRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/RegionAnnotation.html#RegionAnnotation.setRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.RegionAnnotation.RegionAnnotation.setRegion" title="Permalink to this definition"></a></dt>
-<dd><p>Set region of the annotation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>region</strong> (<em>length 2 sequence</em>) – The region of rectangle in the form of (x1, x2)</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="regionannotation-module">
+<h1>RegionAnnotation module<a class="headerlink" href="#regionannotation-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

@@ -13,7 +13,9 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -39,6 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python API</a></li>
 </ul>
 
@@ -55,9 +58,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>lys.filters.filtersGUI</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.filters.filtersGUI</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -69,444 +72,277 @@
   <h1>Source code for lys.filters.filtersGUI</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">LysQt.QtCore</span> <span class="kn">import</span> <span class="n">Qt</span><span class="p">,</span> <span class="n">pyqtSignal</span>
-<span class="kn">from</span> <span class="nn">LysQt.QtWidgets</span> <span class="kn">import</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QScrollArea</span><span class="p">,</span> <span class="n">QHBoxLayout</span><span class="p">,</span> <span class="n">QMenu</span><span class="p">,</span> <span class="n">QAction</span><span class="p">,</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QPushButton</span><span class="p">,</span> <span class="n">QInputDialog</span>
-
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">filters</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
 <span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">LysSubWindow</span>
 
-<span class="kn">from</span> <span class="nn">.FilterIOGUI</span> <span class="kn">import</span> <span class="n">FilterExportDialog</span><span class="p">,</span> <span class="n">FilterImportDialog</span>
+<span class="kn">from</span> <span class="nn">.function</span> <span class="kn">import</span> <span class="n">_filterGroups</span><span class="p">,</span> <span class="n">_getFilterGuiName</span><span class="p">,</span> <span class="n">_getFilterGui</span>
 
 
-<div class="viewcode-block" id="filterGUI"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.filterGUI">[docs]</a><span class="k">def</span> <span class="nf">filterGUI</span><span class="p">(</span><span class="n">filterClass</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">_filterGUI</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-        <span class="bp">cls</span><span class="o">.</span><span class="n">_filClass</span> <span class="o">=</span> <span class="n">filterClass</span>
-        <span class="k">return</span> <span class="bp">cls</span>
-    <span class="k">return</span> <span class="n">_filterGUI</span></div>
+<div class="viewcode-block" id="FiltersGUI"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI">[docs]</a><span class="k">class</span> <span class="nc">FiltersGUI</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The GUI by which users can make list of filters.</span>
 
+<span class="sd">    This widget can be embedded in any Qt layout.</span>
 
-<div class="viewcode-block" id="FilterSettingBase"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FilterSettingBase">[docs]</a><span class="k">class</span> <span class="nc">FilterSettingBase</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+<span class="sd">    Args:</span>
+<span class="sd">        dimension(int): The dimension of the input data.</span>
+<span class="sd">        parent(QWidget): The parent widget</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CustomContextMenu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customContextMenuRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setHeaderLabel</span><span class="p">(</span><span class="s2">&quot;Filters: Right click to edit&quot;</span><span class="p">)</span>
 
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_havingFilter</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;_filClass&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;FilterGUI should decorated by @filterGUI.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_filClass</span><span class="p">):</span>
-            <span class="k">return</span> <span class="kc">True</span>
+<div class="viewcode-block" id="FiltersGUI.setDimension"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.setDimension">[docs]</a>    <span class="k">def</span> <span class="nf">setDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the dimension of the input data.</span>
 
-<div class="viewcode-block" id="FilterSettingBase.GetFilter"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FilterSettingBase.GetFilter">[docs]</a>    <span class="k">def</span> <span class="nf">GetFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filClass</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span></div>
-
-<div class="viewcode-block" id="FilterSettingBase.parseFromFilter"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FilterSettingBase.parseFromFilter">[docs]</a>    <span class="k">def</span> <span class="nf">parseFromFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="n">gui</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
-        <span class="n">gui</span><span class="o">.</span><span class="n">setParameters</span><span class="p">(</span><span class="o">**</span><span class="n">f</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
-        <span class="k">return</span> <span class="n">gui</span></div>
-
-<div class="viewcode-block" id="FilterSettingBase.setParameters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FilterSettingBase.setParameters">[docs]</a>    <span class="k">def</span> <span class="nf">setParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Method setParameters should be implemented.&quot;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="FilterSettingBase.getParameters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FilterSettingBase.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Method getParameters should be implemented.&quot;</span><span class="p">)</span></div></div>
-
-
-<span class="c1"># interface for setting group GUI</span>
-
-
-<div class="viewcode-block" id="FilterGroupSetting"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FilterGroupSetting">[docs]</a><span class="k">class</span> <span class="nc">FilterGroupSetting</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-    <span class="n">filterChanged</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">QWidget</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filterDict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">.FilterManager</span> <span class="kn">import</span> <span class="n">_filterGroups</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+<span class="sd">        Args:</span>
+<span class="sd">            dimension(int): The dimension of the input data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span>
-        <span class="k">if</span> <span class="n">filterDict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="n">_filterGroups</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="n">filterDict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_combo</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_combo</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_combo</span><span class="o">.</span><span class="n">currentTextChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">)</span>
-        <span class="n">vlayout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
-        <span class="n">vlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Type&#39;</span><span class="p">))</span>
-        <span class="n">vlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_combo</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">vlayout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span> <span class="o">=</span> <span class="n">layout</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_childGroup</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">())</span>
+    <span class="k">def</span> <span class="nf">_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="n">menu</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">menus</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Add a filter&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__add</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__currentIndex</span><span class="p">()</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Insert a filter above&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__currentIndex</span><span class="p">())))</span>
+            <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Insert a filter below&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__currentIndex</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span>
+            <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;sep&quot;</span><span class="p">)</span>
+            <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Move up&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__currentIndex</span><span class="p">(),</span> <span class="s2">&quot;up&quot;</span><span class="p">)))</span>
+            <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Move down&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__move</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__currentIndex</span><span class="p">(),</span> <span class="s2">&quot;down&quot;</span><span class="p">)))</span>
+        <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;sep&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">topLevelItemCount</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Copy filters&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__copy</span><span class="p">))</span>
+        <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Paste filters&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__paste</span><span class="p">))</span>
+        <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;sep&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">topLevelItemCount</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Export to file&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__export</span><span class="p">))</span>
+        <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Import from file&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__import</span><span class="p">))</span>
+        <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;sep&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__currentIndex</span><span class="p">()</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Delete&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__delete</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">topLevelItemCount</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">menus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Clear&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_initControlLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_combo</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">text</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_removeChildGroup</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">[</span><span class="n">text</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="n">FilterGroupSetting</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="p">,</span> <span class="n">filterDict</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">[</span><span class="n">text</span><span class="p">])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_addGroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">)</span>
+        <span class="c1"># add actions and separators</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">menus</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s2">&quot;sep&quot;</span><span class="p">:</span>
+                <span class="n">menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">[</span><span class="n">text</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">filterChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_addGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_childGroup</span> <span class="o">=</span> <span class="n">g</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">filterChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filterChanged</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_removeChildGroup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_childGroup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_childGroup</span><span class="o">.</span><span class="n">_removeChildGroup</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_childGroup</span><span class="o">.</span><span class="n">filterChanged</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filterChanged</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_childGroup</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_childGroup</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_childGroup</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">_havingFilter</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_havingFilter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">dic</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">key</span>
-            <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">_havingFilter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">key</span>
-
-<div class="viewcode-block" id="FilterGroupSetting.parseFromFilter"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FilterGroupSetting.parseFromFilter">[docs]</a>    <span class="k">def</span> <span class="nf">parseFromFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_havingFilter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_combo</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_combo</span><span class="o">.</span><span class="n">findData</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="o">.</span><span class="n">parseFromFilter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="FilterGroupSetting.setDimension"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FilterGroupSetting.setDimension">[docs]</a>    <span class="k">def</span> <span class="nf">setDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span></div></div>
-
-
-<span class="k">class</span> <span class="nc">_PreFilterSetting</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-    <span class="n">filterAdded</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">QWidget</span><span class="p">)</span>
-    <span class="n">filterDeleted</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">QWidget</span><span class="p">)</span>
-    <span class="n">filterMoved</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">QWidget</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-    <span class="n">filterInserted</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="n">QWidget</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">loader</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="n">h1</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">=</span> <span class="n">_RootSetting</span><span class="p">(</span><span class="n">dimension</span><span class="p">,</span> <span class="n">h1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">filterChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filt</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">CustomContextMenu</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">customContextMenuRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_contextMenu</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_child</span> <span class="o">=</span> <span class="kc">None</span>
-
-    <span class="k">def</span> <span class="nf">_filt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_child</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_child</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_child</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_child</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">widget</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_child</span> <span class="o">=</span> <span class="n">widget</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filterAdded</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">GetFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_child</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_child</span><span class="o">.</span><span class="n">GetFilter</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">SetFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
-        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">parseFromFilter</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_filt</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">_combo</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">setDimension</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_contextMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-        <span class="n">menu</span> <span class="o">=</span> <span class="n">QMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">delete</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Delete&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">filterDeleted</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="n">up</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Move to up&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">filterMoved</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;up&quot;</span><span class="p">))</span>
-        <span class="n">down</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Move to down&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">filterMoved</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span><span class="p">))</span>
-        <span class="n">insup</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Insert filter (up)&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">filterInserted</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;up&quot;</span><span class="p">))</span>
-        <span class="n">insdown</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Insert filter (down)&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">filterInserted</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;down&quot;</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">up</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">insup</span><span class="p">,</span> <span class="n">insdown</span><span class="p">,</span> <span class="n">delete</span><span class="p">]:</span>
-            <span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="n">menu</span><span class="o">.</span><span class="n">exec_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapToGlobal</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
 
+    <span class="k">def</span> <span class="nf">__currentIndex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexOfTopLevelItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">_RootSetting</span><span class="p">(</span><span class="n">FilterGroupSetting</span><span class="p">):</span>
-    <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">__add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">_FilterSelectionDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__addItem</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">getFilterClass</span><span class="p">(),</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
 
+    <span class="k">def</span> <span class="nf">__addItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">_getFilterGui</span><span class="p">(</span><span class="nb">filter</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">__getDimension</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">setParameters</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">dimensionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">)</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">([</span><span class="n">_getFilterGuiName</span><span class="p">(</span><span class="nb">filter</span><span class="p">)])</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">])</span>
+        <span class="n">item</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addTopLevelItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">insertTopLevelItem</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FiltersGUI"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI">[docs]</a><span class="k">class</span> <span class="nc">FiltersGUI</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">regionLoader</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loader</span> <span class="o">=</span> <span class="n">regionLoader</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__initLayout</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">__getDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">dims</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">getRelativeDimension</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetFilters</span><span class="p">()</span><span class="o">.</span><span class="n">getFilters</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dims</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dims</span><span class="p">[:</span><span class="n">index</span><span class="p">]))</span>
+
+    <span class="k">def</span> <span class="nf">__delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectedItems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">takeTopLevelItem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indexOfTopLevelItem</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;up&quot;</span><span class="p">):</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">wid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemWidget</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">takeTopLevelItem</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__addItem</span><span class="p">(</span><span class="n">wid</span><span class="o">.</span><span class="n">_filClass</span><span class="p">,</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wid</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__addItem</span><span class="p">(</span><span class="n">wid</span><span class="o">.</span><span class="n">_filClass</span><span class="p">,</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wid</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
+
+<div class="viewcode-block" id="FiltersGUI.clear"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear all filters in GUI.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">topLevelItemCount</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">takeTopLevelItem</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topLevelItemCount</span><span class="p">()):</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dim</span> <span class="o">!=</span> <span class="n">w</span><span class="o">.</span><span class="n">getDimension</span><span class="p">():</span>
+                <span class="n">wid</span> <span class="o">=</span> <span class="n">_getFilterGui</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">))(</span><span class="n">dim</span><span class="p">)</span>
+                <span class="n">wid</span><span class="o">.</span><span class="n">setParameters</span><span class="p">(</span><span class="o">**</span><span class="n">w</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">removeItemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wid</span><span class="p">)</span>
+                <span class="n">wid</span><span class="o">.</span><span class="n">dimensionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">)</span>
+            <span class="n">dim</span> <span class="o">+=</span> <span class="n">w</span><span class="o">.</span><span class="n">GetFilter</span><span class="p">()</span><span class="o">.</span><span class="n">getRelativeDimension</span><span class="p">()</span>
 
 <div class="viewcode-block" id="FiltersGUI.GetFilters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.GetFilters">[docs]</a>    <span class="k">def</span> <span class="nf">GetFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get filters based on the current state of the GUI.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Filters: The filters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">:</span>
-            <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">GetFilters</span><span class="p">()</span><span class="o">.</span><span class="n">getFilters</span><span class="p">())</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topLevelItemCount</span><span class="p">()):</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topLevelItem</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">GetFilter</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">filters</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__initLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span> <span class="o">=</span> <span class="n">QTabWidget</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span> <span class="o">=</span> <span class="p">[</span><span class="n">_SubFiltersGUI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loader</span><span class="p">)]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;d = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">QWidget</span><span class="p">(),</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__addTab</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">tabBar</span><span class="p">()</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">CustomContextMenu</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">tabBar</span><span class="p">()</span><span class="o">.</span><span class="n">customContextMenuRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tabContext</span><span class="p">)</span>
+<div class="viewcode-block" id="FiltersGUI.setFilters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.setFilters">[docs]</a>    <span class="k">def</span> <span class="nf">setFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set filters to the GUI.</span>
 
-        <span class="n">save</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Save&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">)</span>
-        <span class="n">load</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Load&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">)</span>
-        <span class="n">clear</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Clear&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">)</span>
-        <span class="n">exp</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Export&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_export</span><span class="p">)</span>
-        <span class="n">imp</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Import&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_import</span><span class="p">)</span>
-        <span class="n">hbox2</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
-        <span class="n">hbox2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">save</span><span class="p">)</span>
-        <span class="n">hbox2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">load</span><span class="p">)</span>
-        <span class="n">hbox2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
-        <span class="n">hbox2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">imp</span><span class="p">)</span>
-        <span class="n">hbox2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">clear</span><span class="p">)</span>
-
-        <span class="n">vbox</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
-        <span class="n">vbox</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="p">)</span>
-        <span class="n">vbox</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">hbox2</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">vbox</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__addTab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span> <span class="o">=</span> <span class="n">index</span>
-            <span class="k">return</span>
-        <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">+</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">getRelativeDimension</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetFilters</span><span class="p">()</span><span class="o">.</span><span class="n">getFilters</span><span class="p">()]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__insertNewTab</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span> <span class="o">=</span> <span class="n">index</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__insertNewTab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">_SubFiltersGUI</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loader</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">insertTab</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="s2">&quot;d = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dim</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_tabContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
-        <span class="n">menu</span> <span class="o">=</span> <span class="n">QMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">delete</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Delete tab&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">)</span>
-        <span class="n">clear</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Clear tab&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span><span class="p">))</span>
-        <span class="n">change</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Change dimension of tab&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_setDim</span><span class="p">)</span>
-        <span class="n">exp</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Export filter in tab&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_export</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span><span class="p">))</span>
-        <span class="n">imp</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Import filter to tab&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_import</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span><span class="p">))</span>
-        <span class="n">save</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Save filter in tab&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span><span class="p">))</span>
-        <span class="n">load</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Load filter to tab&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="n">save</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">exp</span><span class="p">,</span> <span class="n">imp</span><span class="p">,</span> <span class="n">change</span><span class="p">,</span> <span class="n">clear</span><span class="p">,</span> <span class="n">delete</span><span class="p">]:</span>
-            <span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="n">menu</span><span class="o">.</span><span class="n">exec_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapToGlobal</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_setDim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">dim</span><span class="p">,</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">QInputDialog</span><span class="p">()</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Enter New dimension&quot;</span><span class="p">,</span> <span class="s2">&quot;Dimension:&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">setDimension</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span><span class="p">)</span>
-
-<div class="viewcode-block" id="FiltersGUI.setDimension"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.setDimension">[docs]</a>    <span class="k">def</span> <span class="nf">setDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">setDimension</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">setTabText</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="s2">&quot;d = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dimension</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span></div>
-
-<div class="viewcode-block" id="FiltersGUI.clear"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span> <span class="o">=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
-
-    <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span>
-        <span class="k">if</span> <span class="n">tab</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">removeTab</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">tab</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__preIndex</span> <span class="o">=</span> <span class="n">tab</span> <span class="o">-</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">tab</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">saveAs</span><span class="p">(</span><span class="s2">&quot;.lys/quickFilter.fil&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loadFrom</span><span class="p">(</span><span class="s2">&quot;.lys/quickFilter.fil&quot;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">FilterExportDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ok</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">getExportPath</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">saveAs</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_import</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">d</span> <span class="o">=</span> <span class="n">FilterImportDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">ok</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
-            <span class="n">path</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">getImportPath</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">loadFrom</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
-
-<div class="viewcode-block" id="FiltersGUI.saveAs"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.saveAs">[docs]</a>    <span class="k">def</span> <span class="nf">saveAs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetFilters</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">GetFilters</span><span class="p">()</span>
-        <span class="n">filt</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
-        <span class="n">filt</span><span class="o">.</span><span class="n">saveAsFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Filter is saved to&quot;</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="FiltersGUI.loadFrom"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.loadFrom">[docs]</a>    <span class="k">def</span> <span class="nf">loadFrom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loadFromString</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="FiltersGUI.loadFromString"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.loadFromString">[docs]</a>    <span class="k">def</span> <span class="nf">loadFromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loadFilters</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">Filters</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="nb">str</span><span class="p">),</span> <span class="n">index</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="FiltersGUI.loadFilters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.loadFilters">[docs]</a>    <span class="k">def</span> <span class="nf">loadFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="n">fs</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">getFilters</span><span class="p">()</span>
-            <span class="n">res</span><span class="p">,</span> <span class="n">tmp</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
-            <span class="n">dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fs</span><span class="p">:</span>
-                <span class="n">tmp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">getRelativeDimension</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">!=</span> <span class="n">fs</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">fs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
-                    <span class="n">dim</span> <span class="o">+=</span> <span class="n">f</span><span class="o">.</span><span class="n">getRelativeDimension</span><span class="p">()</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">__insertNewTab</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
-                    <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-                    <span class="n">tmp</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">tab</span><span class="p">,</span> <span class="n">fil</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
-                <span class="n">tab</span><span class="o">.</span><span class="n">SetFilters</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">fil</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__tabs</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">SetFilters</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span></div></div>
-
-
-<span class="k">class</span> <span class="nc">_SubFiltersGUI</span><span class="p">(</span><span class="n">QScrollArea</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">regionLoader</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loader</span> <span class="o">=</span> <span class="n">regionLoader</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__initLayout</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">setDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">!=</span> <span class="n">dimension</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">while</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">dimension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">GetFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">:</span>
-            <span class="n">filt</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">GetFilter</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">filt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">filters</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">SetFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
+<span class="sd">        Args:</span>
+<span class="sd">            filt(Filters): The filters set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">filters</span><span class="o">.</span><span class="n">Filters</span><span class="p">):</span>
+            <span class="n">filt</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filt</span><span class="o">.</span><span class="n">getFilters</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">SetFilter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__addItem</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">__initLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">addStretch</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_addFirst</span><span class="p">()</span>
-        <span class="n">inner</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
-        <span class="n">inner</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWidgetResizable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">inner</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetFilters</span><span class="p">()</span>
+        <span class="n">filt</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
+        <span class="n">filt</span><span class="o">.</span><span class="n">saveAsFile</span><span class="p">(</span><span class="s2">&quot;.lys/quickFilter.fil&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__makeNewItem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">item</span> <span class="o">=</span> <span class="n">_PreFilterSetting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">loader</span><span class="p">)</span>
-        <span class="n">item</span><span class="o">.</span><span class="n">filterAdded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_add</span><span class="p">)</span>
-        <span class="n">item</span><span class="o">.</span><span class="n">filterDeleted</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delete</span><span class="p">)</span>
-        <span class="n">item</span><span class="o">.</span><span class="n">filterMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_move</span><span class="p">)</span>
-        <span class="n">item</span><span class="o">.</span><span class="n">filterInserted</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_insert</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">item</span>
+    <span class="k">def</span> <span class="nf">__paste</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filt</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">fromFile</span><span class="p">(</span><span class="s2">&quot;.lys/quickFilter.fil&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFilters</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_addFirst</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__makeNewItem</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">insertWidget</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">first</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">path</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Save Filters&quot;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Filter (*.fil);;All files (*.*)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.fil&quot;</span><span class="p">):</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;.fil&quot;</span>
+            <span class="n">filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetFilters</span><span class="p">()</span>
+            <span class="n">filt</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span>
+            <span class="n">filt</span><span class="o">.</span><span class="n">saveAsFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">item</span><span class="p">:</span>
-            <span class="n">newitem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__makeNewItem</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">insertWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">newitem</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newitem</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__import</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Load Filters&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Filter (*.fil);;All files (*.*)&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">filt</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">fromFile</span><span class="p">(</span><span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setFilters</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">indexOf</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-            <span class="n">item</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">indexOf</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">direction</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">direction</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="k">class</span> <span class="nc">_FilterSelectionDialog</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDialog</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Select filter&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__initlayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__initlayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">_FilterSelectionWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">h1</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;O K&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__ok</span><span class="p">))</span>
+        <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;CANCEL&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reject</span><span class="p">))</span>
+
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">v1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">)</span>
+        <span class="n">v1</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__ok</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">getFilterClass</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msgBox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">msgBox</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Please select filter.&quot;</span><span class="p">)</span>
+            <span class="n">msgBox</span><span class="o">.</span><span class="n">addButton</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span><span class="p">)</span>
+            <span class="n">msgBox</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">insertWidget</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
-        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">indexOf</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">direction</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="n">index</span>
+    <span class="k">def</span> <span class="nf">getFilterClass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span>
+
+
+<span class="k">class</span> <span class="nc">_FilterSelectionWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidget</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__initItems</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setHeaderLabel</span><span class="p">(</span><span class="s2">&quot;List of Filters&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__initItems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_filterGroups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">item</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">([</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">key2</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">item2</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidgetItem</span><span class="p">([</span><span class="n">key2</span><span class="p">])</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">addChild</span><span class="p">(</span><span class="n">item2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addTopLevelItem</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getFilterClass</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">currentItem</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">childCount</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_filterGroups</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">)][</span><span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span><span class="o">.</span><span class="n">_filClass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">pos</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">newitem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__makeNewItem</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">insertWidget</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">newitem</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_flist</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">newitem</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_filterGroups</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span><span class="o">.</span><span class="n">_filClass</span>
 
 
 <div class="viewcode-block" id="FiltersDialog"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersDialog">[docs]</a><span class="k">class</span> <span class="nc">FiltersDialog</span><span class="p">(</span><span class="n">LysSubWindow</span><span class="p">):</span>
-    <span class="n">applied</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+    <span class="n">applied</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">FiltersGUI</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">FiltersGUI</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ok</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;O K&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cancel</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;CANCEL&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">apply</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Apply&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">)</span>
-        <span class="n">h1</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ok</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;O K&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ok</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;CANCEL&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cancel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Apply&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_apply</span><span class="p">)</span>
+        <span class="n">h1</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ok</span><span class="p">)</span>
         <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel</span><span class="p">)</span>
         <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">)</span>
 
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
         <span class="n">w</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">500</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
@@ -524,7 +360,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">applied</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">GetFilters</span><span class="p">())</span>
 
 <div class="viewcode-block" id="FiltersDialog.setFilter"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersDialog.setFilter">[docs]</a>    <span class="k">def</span> <span class="nf">setFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">loadFilters</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">setFilters</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

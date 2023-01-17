@@ -4,10 +4,20 @@ from lys import filters
 from lys.Qt import QtCore, QtWidgets
 from lys.widgets import LysSubWindow
 
-from .function import _filterGroups
+from .function import _filterGroups, _getFilterGuiName, _getFilterGui
 
 
 class FiltersGUI(QtWidgets.QTreeWidget):
+    """
+    The GUI by which users can make list of filters.
+
+    This widget can be embedded in any Qt layout.
+
+    Args:
+        dimension(int): The dimension of the input data.
+        parent(QWidget): The parent widget
+    """
+
     def __init__(self, dimension=2, parent=None):
         super().__init__(parent=parent)
         self.dim = dimension
@@ -16,6 +26,12 @@ class FiltersGUI(QtWidgets.QTreeWidget):
         self.setHeaderLabel("Filters: Right click to edit")
 
     def setDimension(self, dimension):
+        """
+        Set the dimension of the input data.
+
+        Args:
+            dimension(int): The dimension of the input data.
+        """
         self.dim = dimension
         self._update()
 
@@ -67,11 +83,11 @@ class FiltersGUI(QtWidgets.QTreeWidget):
             self._update()
 
     def __addItem(self, filter, index=-1, params=None):
-        w = filters.getFilterGui(filter)(self.__getDimension(index))
+        w = _getFilterGui(filter)(self.__getDimension(index))
         if params is not None:
             w.setParameters(**params)
         w.dimensionChanged.connect(self._update)
-        item = QtWidgets.QTreeWidgetItem([filters.getFilterGuiName(filter)])
+        item = QtWidgets.QTreeWidgetItem([_getFilterGuiName(filter)])
         child = QtWidgets.QTreeWidgetItem([""])
         item.addChild(child)
         self.setItemWidget(child, 0, w)
@@ -104,6 +120,9 @@ class FiltersGUI(QtWidgets.QTreeWidget):
             self.__addItem(wid._filClass, index - 1, wid.getParameters())
 
     def clear(self):
+        """
+        Clear all filters in GUI.
+        """
         while self.topLevelItemCount() != 0:
             self.takeTopLevelItem(0)
 
@@ -114,7 +133,7 @@ class FiltersGUI(QtWidgets.QTreeWidget):
             child = parent.child(0)
             w = self.itemWidget(child, 0)
             if dim != w.getDimension():
-                wid = filters.getFilterGui(parent.text(0))(dim)
+                wid = _getFilterGui(parent.text(0))(dim)
                 wid.setParameters(**w.getParameters())
                 self.removeItemWidget(child, 0)
                 self.setItemWidget(child, 0, wid)
@@ -122,6 +141,12 @@ class FiltersGUI(QtWidgets.QTreeWidget):
             dim += w.GetFilter().getRelativeDimension()
 
     def GetFilters(self):
+        """
+        Get filters based on the current state of the GUI.
+
+        Returns:
+            Filters: The filters.
+        """
         res = []
         for i in range(self.topLevelItemCount()):
             w = self.itemWidget(self.topLevelItem(i).child(0), 0)
@@ -129,7 +154,15 @@ class FiltersGUI(QtWidgets.QTreeWidget):
         return filters.Filters(res)
 
     def setFilters(self, filt):
+        """
+        Set filters to the GUI.
+
+        Args:
+            filt(Filters): The filters set.
+        """
         self.clear()
+        if not isinstance(filt, filters.Filters):
+            filt = filters.Filters(filt)
         for f in filt.getFilters():
             self.__addItem(f, params=f.getParameters())
         self._update()

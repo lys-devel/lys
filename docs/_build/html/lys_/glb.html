@@ -14,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -46,7 +48,13 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../lys.html">lys package</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="core.html">core module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="functions.html">functions module</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">glb module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">glb module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lys.glb.createMainWindow"><code class="docutils literal notranslate"><span class="pre">createMainWindow()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.glb.mainWindow"><code class="docutils literal notranslate"><span class="pre">mainWindow()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.glb.restoreWorkspaces"><code class="docutils literal notranslate"><span class="pre">restoreWorkspaces()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.glb.shell"><code class="docutils literal notranslate"><span class="pre">shell()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="MainWindow.html">MainWindow module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="shell.html">shell module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="FileView.html">FileView module</a></li>
@@ -74,10 +82,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api.html">Python API</a> &raquo;</li>
-          <li><a href="../lys.html">lys package</a> &raquo;</li>
-      <li>glb module</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../lys.html">lys package</a></li>
+      <li class="breadcrumb-item active">glb module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/lys_/glb.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -88,7 +96,7 @@
            <div itemprop="articleBody">
              
   <section id="module-lys.glb">
-<span id="glb-module"></span><h1>glb module<a class="headerlink" href="#module-lys.glb" title="Permalink to this headline"></a></h1>
+<span id="glb-module"></span><h1>glb module<a class="headerlink" href="#module-lys.glb" title="Permalink to this heading"></a></h1>
 <p><em>glb</em> module gives global variables such as a instance of main window.</p>
 <p>Functions used by general users are given in <a class="reference internal" href="functions.html#module-lys.functions" title="lys.functions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">functions</span></code></a> module.</p>
 <p>All global variables can NOT be directly imported from lys because these are used only by developers.</p>
@@ -110,9 +118,9 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.glb.mainWindow">
 <span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">mainWindow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#mainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.mainWindow" title="Permalink to this definition"></a></dt>
-<dd><p>Return <a class="reference internal" href="MainWindow.html#lys.MainWindow.MainWindow" title="lys.MainWindow.MainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">MainWindow.MainWindow</span></code></a> object.</p>
+<dd><p>Return <code class="xref py py-class docutils literal notranslate"><span class="pre">MainWindow.MainWindow</span></code> object.</p>
 <p><em>MainWindow</em> is used to realize new GUI functionalities in lys.
-See <a class="reference internal" href="MainWindow.html#lys.MainWindow.MainWindow" title="lys.MainWindow.MainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">MainWindow.MainWindow</span></code></a> for detailed description.</p>
+See <code class="xref py py-class docutils literal notranslate"><span class="pre">MainWindow.MainWindow</span></code> for detailed description.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -126,9 +134,9 @@ See <a class="reference internal" href="MainWindow.html#lys.MainWindow.MainWindo
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.glb.shell">
 <span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">shell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#shell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.shell" title="Permalink to this definition"></a></dt>
-<dd><p>Return <a class="reference internal" href="shell.html#lys.shell.ExtendShell" title="lys.shell.ExtendShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">shell.ExtendShell</span></code></a> object.</p>
+<dd><p>Return <code class="xref py py-class docutils literal notranslate"><span class="pre">shell.ExtendShell</span></code> object.</p>
 <p>ExtendShell object is used to realize new functionalities in lys Python Interface.
-See <a class="reference internal" href="shell.html#lys.shell.ExtendShell" title="lys.shell.ExtendShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">shell.ExtendShell</span></code></a> for detailed description.</p>
+See <code class="xref py py-class docutils literal notranslate"><span class="pre">shell.ExtendShell</span></code> for detailed description.</p>
 </dd></dl>
 
 </section>

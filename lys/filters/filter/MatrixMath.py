@@ -46,15 +46,15 @@ class SliceFilter(FilterInterface):
     Args:
         slices(sequence of slice object): slices to be applied.
 
-    Example:
+    Example::
 
-        Apply slice::
+        from lys import Wave, filters
 
-            w = Wave([[1, 2, 3], [4, 5, 6]], [7, 8], [9, 10, 11], name="wave")
-            f = filters.SliceFilter([slice(None), slice(1, 3)])
-            result = f.execute(w)
-            print(result.data, result.x, result.y)
-            # [[2, 3], [5, 6]], [7, 8], [10, 11]
+        w = Wave([[1, 2, 3], [4, 5, 6]], [7, 8], [9, 10, 11], name="wave")
+        f = filters.SliceFilter([slice(None), slice(1, 3)])
+
+        result = f.execute(w)
+        print(result.data, result.x, result.y) # [[2, 3], [5, 6]], [7, 8], [10, 11]
 
     """
 
@@ -148,14 +148,15 @@ class TransposeFilter(FilterInterface):
     Args:
         axes(sequence of int): order of axes.
 
-    Example:
+    Example::
 
-        Tranpose data:
-            w = Wave([[1, 2, 3], [4, 5, 6]])
-            f = filters.TransposeFilter(axes=[1, 0])
-            result = f.execute(w)
-            print(result.data)
-            # [[1, 4], [2, 5], [3, 6]]
+        from lys import Wave, filters
+
+        w = Wave([[1, 2, 3], [4, 5, 6]])
+        f = filters.TransposeFilter(axes=[1, 0])
+
+        result = f.execute(w)
+        print(result.data)  # [[1, 4], [2, 5], [3, 6]]
     """
 
     def __init__(self, axes):

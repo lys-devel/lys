@@ -31,16 +31,17 @@ class IntegralAllFilter(FilterInterface):
         axes(list of int): axes to be integrated
         sumtype('Sum', 'Mean', 'Max', 'Min', or 'Median')
 
-    Example:
+    Example::
 
-        >>> from lys import Wave, filters
-        >>> w = Wave(np.ones(3,4), [2,3,4], [5,6,7,8])
-        >>> f = filters.IntegralAllFilter(axes=[0], sumtype="Sum")
-        >>> result = f.execute(w)
-        >>> result.data
-        >>> # [3,3,3,3]
-        >>> result.x
-        >>> # [5,6,7,8]
+        from lys import Wave, filters
+        import numpy as np
+
+        w = Wave(np.ones(3,4), [2,3,4], [5,6,7,8])
+        f = filters.IntegralAllFilter(axes=[0], sumtype="Sum")
+        result = f.execute(w)
+
+        print(result.data) # [3,3,3,3]
+        print(result.x)    # [5,6,7,8]
 
     See also:
         :class:`IntegralFilter`
@@ -79,15 +80,17 @@ class IntegralFilter(FilterInterface):
         range(list of tuple of size 2): region to be integrated
         sumtype('Sum', 'Mean', 'Max', 'Min', or 'Median')
 
-    Example:
+    Example::
 
-        >>> w = Wave(np.ones([5, 5, 5]), [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6])
-        >>> f = filters.IntegralFilter([(1, 4), (2, 4), (0, 0)], sumtype="Sum")
-        >>> result = f.execute(w)
-        >>> # print(result.data)
-        >>> [6, 6, 6, 6, 6]
-        >>> print(result.x)
-        >>> # [2, 3, 4, 5, 6]
+        from lys import Wave, filters
+        import numpy as np
+
+        w = Wave(np.ones([5, 5, 5]), [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6])
+        f = filters.IntegralFilter([(1, 4), (2, 4), (0, 0)], sumtype="Sum")
+        result = f.execute(w)
+
+        print(result.data)  # [6, 6, 6, 6, 6]
+        print(result.x)     # [2, 3, 4, 5, 6]
 
 
     See also:

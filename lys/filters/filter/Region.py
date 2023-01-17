@@ -109,19 +109,18 @@ class SelectRegionFilter(FilterInterface):
     Args:
         range(sequence of length-2 tuple or None): see above description.
 
-    Example:
+    Example::
 
-        Select region of 5\*5 data::
+        from lys import Wave, filters
+        import numpy as np
 
-            w = Wave(np.ones([5, 5]), [1, 2, 3, 4, 5], [11, 12, 13, 14, 15])
-            f = filters.SelectRegionFilter(range=[(2, 4), (11, 14)]) # range is given in axes unit
-            result = f.execute(w)
-            print(result.data.shape)
-            # (2, 3)
-            print(result.x)
-            # [2, 3]
-            print(result.y)
-            # [11, 12, 13]
+        w = Wave(np.ones([5, 5]), [1, 2, 3, 4, 5], [11, 12, 13, 14, 15])
+        f = filters.SelectRegionFilter(range=[(2, 4), (11, 14)]) # range is given in axes unit
+        result = f.execute(w)
+
+        print(result.data.shape)  # (2, 3)
+        print(result.x)           # [2, 3]
+        print(result.y)           # [11, 12, 13]
     """
 
     def __init__(self, range):

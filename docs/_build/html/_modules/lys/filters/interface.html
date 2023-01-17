@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lys.filters.interface &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.filters.interface</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lys.filters.interface</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">_pickle</span> <span class="k">as</span> <span class="nn">cPickle</span>
+<span class="kn">import</span> <span class="nn">dask.array</span> <span class="k">as</span> <span class="nn">da</span>
+
+<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">DaskWave</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">getFilter</span>
+
+
+<div class="viewcode-block" id="FilterInterface"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterInterface">[docs]</a><span class="k">class</span> <span class="nc">FilterInterface</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    FilterInterface is a base class of all filters in lys.</span>
+
+<span class="sd">    See :doc:`tutorials/newFilter` for detail</span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        from lys import filters</span>
+
+<span class="sd">        # make filter that integrate data along the 0th axis</span>
+<span class="sd">        f = filters.IntegralAllFilter(axes=[0], sumtype=&quot;Sum&quot;)</span>
+
+<span class="sd">        # apply the filter to data</span>
+<span class="sd">        result = f.execute(np.ones(3,4))</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="FilterInterface.execute"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterInterface.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute filter to *wave*</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            wave(Wave or DaskWave): Wave that the filter is applied</span>
+<span class="sd">            *args(any): additional parameters</span>
+<span class="sd">            *kwargs(any): additional keyward parameters</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">DaskWave</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">Wave</span><span class="p">):</span>
+            <span class="n">dw</span> <span class="o">=</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">wave</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">data</span></div>
+
+    <span class="k">def</span> <span class="nf">_applyFunc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">complex</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">func</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_generalizedFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">signature</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">output_dtypes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_sizes</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="k">if</span> <span class="n">output_dtypes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output_dtypes</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="k">return</span> <span class="n">da</span><span class="o">.</span><span class="n">gufunc</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="n">signature</span><span class="p">,</span> <span class="n">output_dtypes</span><span class="o">=</span><span class="n">output_dtypes</span><span class="p">,</span> <span class="n">vectorize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">allow_rechunk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">output_sizes</span><span class="o">=</span><span class="n">output_sizes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+<div class="viewcode-block" id="FilterInterface.getParameters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterInterface.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns parameters used for this filter as dict&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="FilterInterface.getRelativeDimension"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterInterface.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns change of dimension for this filter&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Filters</span><span class="p">):</span>
+            <span class="n">f1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFilters</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f1</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filt</span><span class="p">,</span> <span class="n">Filters</span><span class="p">):</span>
+            <span class="n">f2</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">getFilters</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f2</span> <span class="o">=</span> <span class="p">[</span><span class="n">filt</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">Filters</span><span class="p">([</span><span class="o">*</span><span class="n">f1</span><span class="p">,</span> <span class="o">*</span><span class="n">f2</span><span class="p">])</span>
+
+<div class="viewcode-block" id="FilterInterface.saveAsFile"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterInterface.saveAsFile">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save filter as file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file(str): filename</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            from lys import filters</span>
+<span class="sd">            f = filters.IntegralAllFilter(axes=[0], sumtype=&quot;Sum&quot;)</span>
+<span class="sd">            f.saveAsFile(&quot;filter.fil&quot;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">Filters</span><span class="p">([</span><span class="bp">self</span><span class="p">])</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">saveAsFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="filterGUI"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.filterGUI">[docs]</a><span class="k">def</span> <span class="nf">filterGUI</span><span class="p">(</span><span class="n">filterClass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator for filter GUI class.</span>
+
+<span class="sd">    See :doc:`tutorials/newFilter` for detail</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_filterGUI</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_filClass</span> <span class="o">=</span> <span class="n">filterClass</span>
+        <span class="k">return</span> <span class="bp">cls</span>
+    <span class="k">return</span> <span class="n">_filterGUI</span></div>
+
+
+<div class="viewcode-block" id="FilterSettingBase"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterSettingBase">[docs]</a><span class="k">class</span> <span class="nc">FilterSettingBase</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for setting widgets of filters.</span>
+
+<span class="sd">    See :doc:`tutorials/newFilter` for detail</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dimensionChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Emitted when the dimension of the filter is changed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dimension</span>
+
+<div class="viewcode-block" id="FilterSettingBase.GetFilter"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterSettingBase.GetFilter">[docs]</a>    <span class="k">def</span> <span class="nf">GetFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a filter instance based on the present state of the widget.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            filter: A filter instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filClass</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="FilterSettingBase.getFilterClass"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterSettingBase.getFilterClass">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">getFilterClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the filter class.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            filterClass: The filter class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;_filClass&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_filClass</span></div>
+
+<div class="viewcode-block" id="FilterSettingBase.getDimension"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterSettingBase.getDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the dimension of the input data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dimension(int): The dimension of the input data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span></div>
+
+<div class="viewcode-block" id="FilterSettingBase.setParameters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterSettingBase.setParameters">[docs]</a>    <span class="k">def</span> <span class="nf">setParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the state of the widget based on the keyword arguments.</span>
+<span class="sd">        Developers should implement this method to make new filter.</span>
+
+
+<span class="sd">        See :doc:`tutorials/newFilter` for detail</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Method setParameters should be implemented.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FilterSettingBase.getParameters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.FilterSettingBase.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the parameters of the filter based on the current state of the widget.</span>
+
+<span class="sd">        See :doc:`tutorials/newFilter` for detail</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Method getParameters should be implemented.&quot;</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Filters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters">[docs]</a><span class="k">class</span> <span class="nc">Filters</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The list of filters that can be successively applied.</span>
+
+<span class="sd">    filters(list of filter): The filters to be applied.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filters</span><span class="p">,</span> <span class="n">Filters</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">_filters</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">Filters</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_filters</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">:</span>
+            <span class="n">wave</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wave</span>
+
+<div class="viewcode-block" id="Filters.getParameters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;filters&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Filters.getRelativeDimension"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">getRelativeDimension</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getParameters</span><span class="p">()</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;filterName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Filters.insert"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Insert a filter before the given index.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index(int): Index before which *obj* is inserted.</span>
+<span class="sd">            obj(filter): The filter instance to insert.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Filters.append"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append the filter to the end. </span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            obj(filter): The filter instance to append.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Filters.getFilters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters.getFilters">[docs]</a>    <span class="k">def</span> <span class="nf">getFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get filters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of filters: The list of filters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span></div>
+
+<div class="viewcode-block" id="Filters.toString"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters.toString">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">toString</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do not use this method. Use :func:`lys.filters.function.toString`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">Filters</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">filter</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">Filters</span><span class="p">([</span><span class="nb">filter</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="Filters.fromString"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters.fromString">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do not use this method. Use :func:`lys.filters.function.fromString`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">Filters</span><span class="o">.</span><span class="n">_restoreFilter</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># backward compability</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;ExtendAnalysis.Analysis.filters&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;lys.filters&quot;</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;ExtendAnalysis.Analysis.filter&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;lys.filters.filter&quot;</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_restoreFilter</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="c1"># parse from list of parameter dictionary</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;filterName&quot;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;filterName&quot;</span><span class="p">]</span>
+            <span class="n">filt</span> <span class="o">=</span> <span class="n">getFilter</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">filt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filt</span><span class="p">(</span><span class="o">**</span><span class="n">f</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not load &quot;</span> <span class="o">+</span> <span class="n">fname</span> <span class="o">+</span> <span class="s2">&quot;. The filter class may be deleted or not loaded. Check plugins and their version.&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">Filters</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Filters.fromFile"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters.fromFile">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">fromFile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Do not use this method. Use :func:`lys.filters.function.fromFile`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Filters.saveAsFile"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.interface.Filters.saveAsFile">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.fil&quot;</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">+</span> <span class="s2">&quot;.fil&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -14,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -45,7 +47,19 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../lys.html">lys package</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="core.html">core module</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">functions module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">functions module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.append"><code class="docutils literal notranslate"><span class="pre">append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.display"><code class="docutils literal notranslate"><span class="pre">display()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.edit"><code class="docutils literal notranslate"><span class="pre">edit()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.frontCanvas"><code class="docutils literal notranslate"><span class="pre">frontCanvas()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.home"><code class="docutils literal notranslate"><span class="pre">home()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.loadableFiles"><code class="docutils literal notranslate"><span class="pre">loadableFiles()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.multicut"><code class="docutils literal notranslate"><span class="pre">multicut()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.registerFileLoader"><code class="docutils literal notranslate"><span class="pre">registerFileLoader()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.functions.registerFittingFunction"><code class="docutils literal notranslate"><span class="pre">registerFittingFunction()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="glb.html">glb module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="MainWindow.html">MainWindow module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="shell.html">shell module</a></li>
@@ -74,10 +88,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api.html">Python API</a> &raquo;</li>
-          <li><a href="../lys.html">lys package</a> &raquo;</li>
-      <li>functions module</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../lys.html">lys package</a></li>
+      <li class="breadcrumb-item active">functions module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/lys_/functions.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -88,7 +102,7 @@
            <div itemprop="articleBody">
              
   <section id="module-lys.functions">
-<span id="functions-module"></span><h1>functions module<a class="headerlink" href="#module-lys.functions" title="Permalink to this headline"></a></h1>
+<span id="functions-module"></span><h1>functions module<a class="headerlink" href="#module-lys.functions" title="Permalink to this heading"></a></h1>
 <p><em>functions</em> module gives general functions for users and developers.</p>
 <p>Functions related to global variables, such as main window, are given in <a class="reference internal" href="glb.html#module-lys.glb" title="lys.glb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">glb</span></code></a> module.</p>
 <p>Most of functions can be directly imported from lys Package:</p>
@@ -96,9 +110,63 @@
 </pre></div>
 </div>
 <dl class="py function">
+<dt class="sig sig-object py" id="lys.functions.append">
+<span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.append" title="Permalink to this definition"></a></dt>
+<dd><p>Append waves to the front canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</p></li>
+<li><p><strong>canvas</strong> (<em>CanvasBase</em>) – The canvas to which the wave are appended. If canvas is None, then front canvas is used.</p></li>
+<li><p><strong>exclude</strong> (<em>list</em><em> of </em><em>canvas</em>) – If the front canvas is in <em>exclude</em>, then it is ignored and next canvas is used.</p></li>
+<li><p><strong>kwargs</strong> – The keywords arguments that is passed to Append method of canvas.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.functions.display">
+<span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.display" title="Permalink to this definition"></a></dt>
+<dd><p>Display Waves as graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</p></li>
+<li><p><strong>lib</strong> (<em>'matplotlib'</em><em> or </em><em>'pyqtgraph'</em>) – The library used to create canvas.</p></li>
+<li><p><strong>kwargs</strong> – The keywords arguments that is passed to Append method of canvas.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The graph that contains the waves.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Graph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="lys.functions.edit">
 <span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.edit" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.functions.frontCanvas">
+<span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">frontCanvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#frontCanvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.frontCanvas" title="Permalink to this definition"></a></dt>
+<dd><p>Get the front canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exclude</strong> (<em>list</em><em> of </em><em>canvas</em>) – If the front canvas is in exclude, the it will be ignored.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The front canvas</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>canvas</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.functions.home">
@@ -170,6 +238,11 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="lys.functions.multicut">
+<span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">multicut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#multicut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.multicut" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="lys.functions.registerFileLoader">
 <span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">registerFileLoader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#registerFileLoader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.registerFileLoader" title="Permalink to this definition"></a></dt>
 <dd><p>Register file loader.</p>
@@ -179,7 +252,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>type</strong> (<em>str</em>) – file extention, such as “.txt”</p></li>
-<li><p><strong>func</strong> (<a class="reference internal" href="../lys.BasicWidgets.Fitting.html#lys.BasicWidgets.Fitting.Functions.function" title="lys.BasicWidgets.Fitting.Functions.function"><em>function</em></a>) – function to load file.</p></li>
+<li><p><strong>func</strong> (<em>function</em>) – function to load file.</p></li>
 </ul>
 </dd>
 </dl>
@@ -197,6 +270,21 @@
 <span class="go">numpy.ndarray</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.functions.registerFittingFunction">
+<span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">registerFittingFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#registerFittingFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.registerFittingFunction" title="Permalink to this definition"></a></dt>
+<dd><p>Register fitting function for lys fitting module.</p>
+<p>The fitting can be done when Ctrl+F is pressed on the graphs with 1D data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>callable</em>) – The function. The information of the function should be obtained from inspect.signature.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the function. If it is None, then func.__name__ is used.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

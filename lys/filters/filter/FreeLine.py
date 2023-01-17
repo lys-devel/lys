@@ -24,15 +24,17 @@ class FreeLineFilter(FilterInterface):
         range(2*2 sequence): see description above.
         width(int): width of integration around the line in pixel unit.
 
-    Example:
+    Example::
 
-        Cut along line::
+        from lys import Wave, filters
 
-            w = Wave([[1, 2, 3], [2, 3, 4], [3, 4, 5]], [1, 2, 3], [1, 2, 3], name="wave")
-            f = filters.FreeLineFilter(axes=[0, 1], range=[(1, 1), (3, 3)], width=1)
-            result = f.execute(w)
-            print(result.data)
-            # [1, 3, 5]
+        # prepare data
+        w = Wave([[1, 2, 3], [2, 3, 4], [3, 4, 5]], [1, 2, 3], [1, 2, 3], name="wave")
+
+        # apply FreeLineFilter
+        f = filters.FreeLineFilter(axes=[0, 1], range=[(1, 1), (3, 3)], width=1)
+        result = f.execute(w)
+        print(result.data) # [1, 3, 5]
     """
 
     def __init__(self, axes, range, width):
@@ -55,7 +57,7 @@ class FreeLineFilter(FilterInterface):
         for j in range(1 - width, width, 2):
             x, y, size = self.__makeCoordinates(wave, axes, j)
             coord.append(np.array([x, y]))
-        gumap = da.gufunc(map, signature="(i,j),(p,q,r)->(m)", output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(axes), (0, 1, 2), (min(axes),)], allow_rechunk=True, output_sizes={"m": size})
+        gumap = da.gufunc(_map, signature="(i,j),(p,q,r)->(m)", output_dtypes=wave.data.dtype, vectorize=True, axes=[tuple(axes), (0, 1, 2), (min(axes),)], allow_rechunk=True, output_sizes={"m": size})
         res = gumap(wave.data, da.from_array(coord))
         return self.__setAxesAndData(wave, axes, size, res)
 
@@ -90,7 +92,7 @@ class FreeLineFilter(FilterInterface):
         return -1
 
 
-def map(x, coords):
+def _map(x, coords):
     if x.dtype == complex:
         real = np.sum([ndimage.map_coordinates(np.real(x), c, order=1) for c in coords], axis=0)
         imag = np.sum([ndimage.map_coordinates(np.imag(x), c, order=1) for c in coords], axis=0)

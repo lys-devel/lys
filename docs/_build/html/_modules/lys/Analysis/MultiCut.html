@@ -13,7 +13,9 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -55,9 +57,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>lys.Analysis.MultiCut</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.Analysis.MultiCut</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -69,17 +71,16 @@
   <h1>Source code for lys.Analysis.MultiCut</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">LysQt.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">pyqtSignal</span>
-
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
 <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">Filters</span><span class="p">,</span> <span class="n">SliceFilter</span><span class="p">,</span> <span class="n">EmptyFilter</span><span class="p">,</span> <span class="n">IntegralAllFilter</span><span class="p">,</span> <span class="n">TransposeFilter</span>
 
 <span class="kn">from</span> <span class="nn">.MultiCutExecutors</span> <span class="kn">import</span> <span class="n">FreeLineExecutor</span><span class="p">,</span> <span class="n">DefaultExecutor</span>
 
 
-<div class="viewcode-block" id="controlledObjects"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects">[docs]</a><span class="k">class</span> <span class="nc">controlledObjects</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="n">appended</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
-    <span class="n">removed</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<div class="viewcode-block" id="controlledObjects"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects">[docs]</a><span class="k">class</span> <span class="nc">controlledObjects</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="n">appended</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+    <span class="n">removed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -159,7 +160,7 @@
 
 
 <div class="viewcode-block" id="ExecutorList"><a class="viewcode-back" href="../../../lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList">[docs]</a><span class="k">class</span> <span class="nc">ExecutorList</span><span class="p">(</span><span class="n">controlledObjects</span><span class="p">):</span>
-    <span class="n">updated</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
+    <span class="n">updated</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>

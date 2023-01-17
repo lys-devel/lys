@@ -20,17 +20,17 @@ class ReduceSizeFilter(FilterInterface):
     Args:
         kernel(sequence of int): see above description.
 
-    Example:
+    Example::
 
-        Sum 2*2 data::
+        from lys import Wave, filters
+        import numpy as np
 
-            w = Wave(np.ones([6, 6]), [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5])
-            f = filters.ReduceSizeFilter(kernel=(2, 2))
-            result = f.execute(w)
-            print(result.shape)
-            # (3, 3)
-            print(result.x)
-            # [0, 2, 4]
+        w = Wave(np.ones([6, 6]), [0, 1, 2, 3, 4, 5], [0, 1, 2, 3, 4, 5])
+        f = filters.ReduceSizeFilter(kernel=(2, 2))
+        result = f.execute(w)
+
+        print(result.shape)  # (3, 3)
+        print(result.x)      # [0, 2, 4]
     """
 
     def __init__(self, kernel):
@@ -66,17 +66,16 @@ class PaddingFilter(FilterInterface):
         size(int): size of padding.
         position('first' or 'last' or 'both'): position of padding.
 
-    Example:
+    Example::
 
-        Add zero at the left edge of data::
+        from lys import Wave, filters
 
-            w = Wave([1, 2, 3], [0, 1, 2])
-            f = filters.PaddingFilter(axes=[0], value=0, size=2, position="first")
-            result = f.execute(w)
-            print(result.data)
-            # [0, 0, 1, 2, 3]
-            print(result.x)
-            # [-2, -1, 0, 1, 2]
+        w = Wave([1, 2, 3], [0, 1, 2])
+        f = filters.PaddingFilter(axes=[0], value=0, size=2, position="first")
+        result = f.execute(w)
+
+        print(result.data)  # [0, 0, 1, 2, 3]
+        print(result.x)     # [-2, -1, 0, 1, 2]
     """
 
     def __init__(self, axes, value=0, size=100, position="first"):

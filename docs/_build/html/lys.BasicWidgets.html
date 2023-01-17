@@ -14,7 +14,9 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -42,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Python API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="lys.html">lys package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
@@ -52,12 +55,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-lys.BasicWidgets.FittingWindow">lys.BasicWidgets.FittingWindow module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-lys.BasicWidgets.GraphWindow">lys.BasicWidgets.GraphWindow module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lys-basicwidgets-fittingwindow-module">lys.BasicWidgets.FittingWindow module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lys-basicwidgets-graphwindow-module">lys.BasicWidgets.GraphWindow module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-lys.BasicWidgets">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -75,9 +78,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="api.html">Python API</a> &raquo;</li>
-      <li>lys.BasicWidgets package</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="api.html">Python API</a></li>
+      <li class="breadcrumb-item active">lys.BasicWidgets package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/lys.BasicWidgets.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -88,17 +91,17 @@
            <div itemprop="articleBody">
              
   <section id="lys-basicwidgets-package">
-<h1>lys.BasicWidgets package<a class="headerlink" href="#lys-basicwidgets-package" title="Permalink to this headline"></a></h1>
+<h1>lys.BasicWidgets package<a class="headerlink" href="#lys-basicwidgets-package" title="Permalink to this heading"></a></h1>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline"></a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lys.BasicWidgets.Fitting.html">lys.BasicWidgets.Fitting package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting.Fitting">lys.BasicWidgets.Fitting.Fitting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting.FittingWidget">lys.BasicWidgets.Fitting.FittingWidget module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting.Functions">lys.BasicWidgets.Fitting.Functions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting.LineProfile">lys.BasicWidgets.Fitting.LineProfile module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#lys-basicwidgets-fitting-fitting-module">lys.BasicWidgets.Fitting.Fitting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#lys-basicwidgets-fitting-fittingwidget-module">lys.BasicWidgets.Fitting.FittingWidget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#lys-basicwidgets-fitting-functions-module">lys.BasicWidgets.Fitting.Functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#lys-basicwidgets-fitting-lineprofile-module">lys.BasicWidgets.Fitting.LineProfile module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting">Module contents</a></li>
 </ul>
 </li>
@@ -106,122 +109,16 @@
 </div>
 </section>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline"></a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-lys.BasicWidgets.FittingWindow">
-<span id="lys-basicwidgets-fittingwindow-module"></span><h2>lys.BasicWidgets.FittingWindow module<a class="headerlink" href="#module-lys.BasicWidgets.FittingWindow" title="Permalink to this headline"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.FittingWindow.FittingWindow">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.FittingWindow.</span></span><span class="sig-name descname"><span class="pre">FittingWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/FittingWindow.html#FittingWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.FittingWindow.FittingWindow" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="lys_/widgets.html#lys.widgets.LysSubWindow" title="lys.widgets.LysSubWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.LysSubWindow</span></code></a></p>
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.FittingWindow.LineProfileWindow">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.FittingWindow.</span></span><span class="sig-name descname"><span class="pre">LineProfileWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/FittingWindow.html#LineProfileWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.FittingWindow.LineProfileWindow" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="lys_/widgets.html#lys.widgets.LysSubWindow" title="lys.widgets.LysSubWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.LysSubWindow</span></code></a></p>
-</dd></dl>
-
+<section id="lys-basicwidgets-fittingwindow-module">
+<h2>lys.BasicWidgets.FittingWindow module<a class="headerlink" href="#lys-basicwidgets-fittingwindow-module" title="Permalink to this heading"></a></h2>
 </section>
-<section id="module-lys.BasicWidgets.GraphWindow">
-<span id="lys-basicwidgets-graphwindow-module"></span><h2>lys.BasicWidgets.GraphWindow module<a class="headerlink" href="#module-lys.BasicWidgets.GraphWindow" title="Permalink to this headline"></a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Graph">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.GraphWindow.</span></span><span class="sig-name descname"><span class="pre">Graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Graph" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.GraphWindow._SizeAdjustableWindow</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Graph.Append">
-<span class="sig-name descname"><span class="pre">Append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BottomLeft'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Graph.Append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Graph.Append" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Graph.Duplicate">
-<span class="sig-name descname"><span class="pre">Duplicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Graph.Duplicate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Graph.Duplicate" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Graph.active">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">active</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Graph.active"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Graph.active" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Graph.closeAllGraphs">
-<em class="property"><span class="pre">classmethod</span> </em><span class="sig-name descname"><span class="pre">closeAllGraphs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Graph.closeAllGraphs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Graph.closeAllGraphs" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Graph.closeEvent">
-<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Graph.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Graph.closeEvent" title="Permalink to this definition"></a></dt>
-<dd><p>Reimplementation of closeEvent in QMdiSubWindow</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Graph.graphLibrary">
-<span class="sig-name descname"><span class="pre">graphLibrary</span></span><em class="property"> <span class="pre">=</span> <span class="pre">'matplotlib'</span></em><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Graph.graphLibrary" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Graph.keyPress">
-<span class="sig-name descname"><span class="pre">keyPress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Graph.keyPress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Graph.keyPress" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.MultipleGrid">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.GraphWindow.</span></span><span class="sig-name descname"><span class="pre">MultipleGrid</span></span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#MultipleGrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.MultipleGrid" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="lys_/widgets.html#lys.widgets.LysSubWindow" title="lys.widgets.LysSubWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.LysSubWindow</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.MultipleGrid.Append">
-<span class="sig-name descname"><span class="pre">Append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#MultipleGrid.Append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.MultipleGrid.Append" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.MultipleGrid.itemAtPosition">
-<span class="sig-name descname"><span class="pre">itemAtPosition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#MultipleGrid.itemAtPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.MultipleGrid.itemAtPosition" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.MultipleGrid.setSize">
-<span class="sig-name descname"><span class="pre">setSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#MultipleGrid.setSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.MultipleGrid.setSize" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Table">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.GraphWindow.</span></span><span class="sig-name descname"><span class="pre">Table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Table" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="lys_/widgets.html#lys.widgets.LysSubWindow" title="lys.widgets.LysSubWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.LysSubWindow</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Table.Append">
-<span class="sig-name descname"><span class="pre">Append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Table.Append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Table.Append" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Table.SetSize">
-<span class="sig-name descname"><span class="pre">SetSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Table.SetSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Table.SetSize" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.Table.checkState">
-<span class="sig-name descname"><span class="pre">checkState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#Table.checkState"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.Table.checkState" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.append">
-<span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.GraphWindow.</span></span><span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.append" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.BasicWidgets.GraphWindow.display">
-<span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.GraphWindow.</span></span><span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lib</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/BasicWidgets/GraphWindow.html#display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.GraphWindow.display" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
+<section id="lys-basicwidgets-graphwindow-module">
+<h2>lys.BasicWidgets.GraphWindow module<a class="headerlink" href="#lys-basicwidgets-graphwindow-module" title="Permalink to this heading"></a></h2>
 </section>
 <section id="module-lys.BasicWidgets">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lys.BasicWidgets" title="Permalink to this headline"></a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lys.BasicWidgets" title="Permalink to this heading"></a></h2>
 </section>
 </section>
 

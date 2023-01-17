@@ -13,7 +13,9 @@
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -39,6 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
 </ul>
 
@@ -55,9 +58,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>lys.filters.filter.Integral</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.filters.filter.Integral</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -70,11 +73,11 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">dask.array</span> <span class="k">as</span> <span class="nn">da</span>
 
-<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span>
-<span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
+<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span><span class="p">,</span> <span class="n">frontCanvas</span>
+<span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
 
-<span class="kn">from</span> <span class="nn">.FilterInterface</span> <span class="kn">import</span> <span class="n">FilterInterface</span>
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">QComboBox</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> <span class="n">AxisCheckLayout</span><span class="p">,</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">ScientificSpinBox</span><span class="p">,</span> <span class="n">RegionSelectWidget</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span><span class="p">,</span> <span class="n">QGridLayout</span><span class="p">,</span> <span class="n">QPushButton</span>
+<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">AxisCheckLayout</span><span class="p">,</span> <span class="n">ScientificSpinBox</span><span class="p">,</span> <span class="n">RegionSelectWidget</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span>
 
 
 <span class="k">def</span> <span class="nf">_getSumFunction</span><span class="p">(</span><span class="n">sumtype</span><span class="p">):</span>
@@ -91,7 +94,7 @@
 
 
 <div class="viewcode-block" id="IntegralAllFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralAllFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralAllFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Integrate wave along *axes* (implementation of np.sum, mean, max, min, and median in lys)</span>
 
 <span class="sd">    See :class:`.FilterInterface.FilterInterface` for general description of Filters.</span>
@@ -100,16 +103,17 @@
 <span class="sd">        axes(list of int): axes to be integrated</span>
 <span class="sd">        sumtype(&#39;Sum&#39;, &#39;Mean&#39;, &#39;Max&#39;, &#39;Min&#39;, or &#39;Median&#39;)</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example::</span>
 
-<span class="sd">        &gt;&gt;&gt; from lys import Wave, filters</span>
-<span class="sd">        &gt;&gt;&gt; w = Wave(np.ones(3,4), [2,3,4], [5,6,7,8])</span>
-<span class="sd">        &gt;&gt;&gt; f = filters.IntegralAllFilter(axes=[0], sumtype=&quot;Sum&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; result = f.execute(w)</span>
-<span class="sd">        &gt;&gt;&gt; result.data</span>
-<span class="sd">        &gt;&gt;&gt; # [3,3,3,3]</span>
-<span class="sd">        &gt;&gt;&gt; result.x</span>
-<span class="sd">        &gt;&gt;&gt; # [5,6,7,8]</span>
+<span class="sd">        from lys import Wave, filters</span>
+<span class="sd">        import numpy as np</span>
+
+<span class="sd">        w = Wave(np.ones(3,4), [2,3,4], [5,6,7,8])</span>
+<span class="sd">        f = filters.IntegralAllFilter(axes=[0], sumtype=&quot;Sum&quot;)</span>
+<span class="sd">        result = f.execute(w)</span>
+
+<span class="sd">        print(result.data) # [3,3,3,3]</span>
+<span class="sd">        print(result.x)    # [5,6,7,8]</span>
 
 <span class="sd">    See also:</span>
 <span class="sd">        :class:`IntegralFilter`</span>
@@ -134,7 +138,7 @@
 
 
 <div class="viewcode-block" id="IntegralFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Integrate wave.</span>
 
 <span class="sd">    Range of integration is specified by *range*.</span>
@@ -148,15 +152,17 @@
 <span class="sd">        range(list of tuple of size 2): region to be integrated</span>
 <span class="sd">        sumtype(&#39;Sum&#39;, &#39;Mean&#39;, &#39;Max&#39;, &#39;Min&#39;, or &#39;Median&#39;)</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example::</span>
 
-<span class="sd">        &gt;&gt;&gt; w = Wave(np.ones([5, 5, 5]), [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6])</span>
-<span class="sd">        &gt;&gt;&gt; f = filters.IntegralFilter([(1, 4), (2, 4), (0, 0)], sumtype=&quot;Sum&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; result = f.execute(w)</span>
-<span class="sd">        &gt;&gt;&gt; # print(result.data)</span>
-<span class="sd">        &gt;&gt;&gt; [6, 6, 6, 6, 6]</span>
-<span class="sd">        &gt;&gt;&gt; print(result.x)</span>
-<span class="sd">        &gt;&gt;&gt; # [2, 3, 4, 5, 6]</span>
+<span class="sd">        from lys import Wave, filters</span>
+<span class="sd">        import numpy as np</span>
+
+<span class="sd">        w = Wave(np.ones([5, 5, 5]), [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6])</span>
+<span class="sd">        f = filters.IntegralFilter([(1, 4), (2, 4), (0, 0)], sumtype=&quot;Sum&quot;)</span>
+<span class="sd">        result = f.execute(w)</span>
+
+<span class="sd">        print(result.data)  # [6, 6, 6, 6, 6]</span>
+<span class="sd">        print(result.x)     # [2, 3, 4, 5, 6]</span>
 
 
 <span class="sd">    See also:</span>
@@ -203,12 +209,12 @@
 
 
 <div class="viewcode-block" id="IntegralCircleFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralCircleFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralCircleFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Circular integration of wave.</span>
 
 <span class="sd">    Circularly integrate *f*(*x*,*y*) and returns *f*(*r*).</span>
 
-<span class="sd">    This filter is under development. </span>
+<span class="sd">    This filter is under development.</span>
 
 <span class="sd">    See :class:`.FilterInterface.FilterInterface` for general description of Filters.</span>
 
@@ -216,8 +222,6 @@
 <span class="sd">        center(tuple of size 2): position where *r* = 0</span>
 <span class="sd">        radiuses(tuple of size 2):</span>
 <span class="sd">        axes(tuple of size 2): axes to be integrated, i.e. (x,y)</span>
-
-
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -350,10 +354,11 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sumtypes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">AxisCheckLayout</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
-        <span class="n">lv</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensionChanged</span><span class="p">)</span>
+        <span class="n">lv</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">lv</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
         <span class="n">lv</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">lv</span><span class="p">)</span>
@@ -372,21 +377,31 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sumtypes</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">RegionSelectWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
-        <span class="n">lv</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="n">RegionSelectWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensionChanged</span><span class="p">)</span>
+        <span class="n">lv</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">lv</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
         <span class="n">lv</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">lv</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">getRegion</span><span class="p">(),</span> <span class="s2">&quot;sumtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">currentText</span><span class="p">()}</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">getRegion</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">getChecked</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="n">res</span><span class="p">,</span> <span class="s2">&quot;sumtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">currentText</span><span class="p">()}</span>
 
     <span class="k">def</span> <span class="nf">setParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="n">sumtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sumtypes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">sumtype</span><span class="p">))</span>
+        <span class="n">checked</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+            <span class="n">checked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">checked</span><span class="p">)</span>
 
 
 <span class="nd">@filterGUI</span><span class="p">(</span><span class="n">IntegralCircleFilter</span><span class="p">)</span>
@@ -396,17 +411,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AxisSelectionLayout</span><span class="p">(</span><span class="s2">&quot;Axis1&quot;</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">AxisSelectionLayout</span><span class="p">(</span><span class="s2">&quot;Axis2&quot;</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">ScientificSpinBox</span><span class="p">(),</span> <span class="n">ScientificSpinBox</span><span class="p">()]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">radiuses</span> <span class="o">=</span> <span class="p">[</span><span class="n">ScientificSpinBox</span><span class="p">(),</span> <span class="n">ScientificSpinBox</span><span class="p">()]</span>
-        <span class="n">l0</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
-        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Center1&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">l0</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">()</span>
+        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Center1&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Center2&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Center2&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radiuses</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;dr&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;dr&quot;</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
         <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">radiuses</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
-        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Load from freeline&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_LoadFromFreeLine</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-        <span class="n">lh</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">l0</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Load from freeline&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_LoadFromFreeLine</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">lh</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">lh</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">lh</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">lh</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">l0</span><span class="p">)</span>
@@ -424,10 +439,12 @@
             <span class="n">c</span><span class="o">.</span><span class="n">setAxis</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_LoadFromFreeLine</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Graph</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">Graph</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">canvas</span>
-        <span class="n">line</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getAnnotations</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">getAnnotLinePosition</span><span class="p">(</span><span class="n">line</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">frontCanvas</span><span class="p">()</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">getLineAnnotations</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">getPosition</span><span class="p">())</span>
         <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="n">c</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>

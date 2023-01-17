@@ -14,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../lys.html">lys package</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="core.html">core module</a></li>
@@ -56,7 +59,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -74,10 +77,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api.html">Python API</a> &raquo;</li>
-          <li><a href="../lys.html">lys package</a> &raquo;</li>
-      <li>MainWindow module</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../lys.html">lys package</a></li>
+      <li class="breadcrumb-item active">MainWindow module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/lys_/MainWindow.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -87,79 +90,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-lys.MainWindow">
-<span id="mainwindow-module"></span><h1>MainWindow module<a class="headerlink" href="#module-lys.MainWindow" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.MainWindow.MainWindow">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.MainWindow.</span></span><span class="sig-name descname"><span class="pre">MainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/MainWindow.html#MainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.MainWindow.MainWindow" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
-<p><em>Main window</em> class gives several methods to customize lys GUI.</p>
-<p>New tabs in side bar can be added by <a class="reference internal" href="#lys.MainWindow.MainWindow.addTab" title="lys.MainWindow.MainWindow.addTab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addTab()</span></code></a> method.</p>
-<p>Developers can access <a class="reference internal" href="FileView.html#lys.FileView.FileSystemView" title="lys.FileView.FileSystemView"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileView.FileSystemView</span></code></a> by <a class="reference internal" href="#lys.MainWindow.MainWindow.fileView" title="lys.MainWindow.MainWindow.fileView"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fileView</span></code></a> property.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.MainWindow.MainWindow.addTab">
-<span class="sig-name descname"><span class="pre">addTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/MainWindow.html#MainWindow.addTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.MainWindow.MainWindow.addTab" title="Permalink to this definition"></a></dt>
-<dd><p>This method adds tab in the side bar.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>widget</strong> (<em>QWidget</em>) – widget to be added.</p></li>
-<li><p><strong>name</strong> (<em>str</em>) – Name of a tab.</p></li>
-<li><p><strong>position</strong> (<em>'up'</em><em> or </em><em>'down'</em>) – TabWidget to be added to.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">QWidget</span><span class="p">(),</span> <span class="s2">&quot;TestTab&quot;</span><span class="p">,</span> <span class="s2">&quot;up&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.MainWindow.MainWindow.beforeClosed">
-<span class="sig-name descname"><span class="pre">beforeClosed</span></span><a class="headerlink" href="#lys.MainWindow.MainWindow.beforeClosed" title="Permalink to this definition"></a></dt>
-<dd><p>beforeClosed(event) signal is submitted when close button of lys is clicked.</p>
-<p>Developers can connect any functions/methods to this signal.</p>
-<p>If the main window should not be closed, call event.ignore() in the connected functions/methods.</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="o">.</span><span class="n">beforeClosed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Main window closed.&quot;</span><span class="p">))</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.MainWindow.MainWindow.closeEvent">
-<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/MainWindow.html#MainWindow.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.MainWindow.MainWindow.closeEvent" title="Permalink to this definition"></a></dt>
-<dd><p>Reimplementation of closeEvent in QMainWindow.closeEvent for realization of beforeClosed and closed signals.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="lys.MainWindow.MainWindow.closed">
-<span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#lys.MainWindow.MainWindow.closed" title="Permalink to this definition"></a></dt>
-<dd><p>beforeClosed(event) signal is submitted when main window of lys is closed.</p>
-<p>Developers can connect any functions/methods to this signal for finalization.</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Main window closed.&quot;</span><span class="p">))</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="lys.MainWindow.MainWindow.fileView">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">fileView</span></span><a class="headerlink" href="#lys.MainWindow.MainWindow.fileView" title="Permalink to this definition"></a></dt>
-<dd><p>Returns <a class="reference internal" href="FileView.html#lys.FileView.FileSystemView" title="lys.FileView.FileSystemView"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileView.FileSystemView</span></code></a> object in main window.</p>
-<p>Developers can get selected paths and add new context menu in FileSystemView.</p>
-<p>See <a class="reference internal" href="FileView.html#lys.FileView.FileSystemView" title="lys.FileView.FileSystemView"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileView.FileSystemView</span></code></a> for detail.</p>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="mainwindow-module">
+<h1>MainWindow module<a class="headerlink" href="#mainwindow-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

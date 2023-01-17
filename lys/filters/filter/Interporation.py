@@ -13,18 +13,17 @@ class InterpFilter(FilterInterface):
     Args:
         size(tuple of int): new shape
 
-    Example:
+    Example::
 
-        Interpolate quadrutic function::
+        import numpy as np
+        from lys import Wave, filters
 
-            import numpy as np
-            from lys import Wave, filters
-            x = np.linspace(0, 100, 100)
-            w = Wave(x**2, x)
-            f = filters.InterpFilter(size=(200,))
-            result = f.execute(w)
-            print(w.shape, result.shape)
-            # (100,), (200,)
+        x = np.linspace(0, 100, 100)
+        w = Wave(x**2, x)
+        f = filters.InterpFilter(size=(200,))
+        result = f.execute(w)
+
+        print(w.shape, result.shape) # (100,), (200,)
 
     """
 

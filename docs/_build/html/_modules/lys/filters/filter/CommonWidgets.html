@@ -13,7 +13,9 @@
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -55,9 +57,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>lys.filters.filter.CommonWidgets</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.filters.filter.CommonWidgets</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -67,20 +69,19 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.filters.filter.CommonWidgets</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">LysQt.QtGui</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">LysQt.QtCore</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">LysQt.QtWidgets</span> <span class="kn">import</span> <span class="o">*</span>
+<span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">frontCanvas</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
 <span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">ScientificSpinBox</span>
 
 
-<div class="viewcode-block" id="SpinBoxOverOne"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.SpinBoxOverOne">[docs]</a><span class="k">class</span> <span class="nc">SpinBoxOverOne</span><span class="p">(</span><span class="n">QSpinBox</span><span class="p">):</span>
+<div class="viewcode-block" id="SpinBoxOverOne"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.SpinBoxOverOne">[docs]</a><span class="k">class</span> <span class="nc">SpinBoxOverOne</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="OddSpinBox"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.OddSpinBox">[docs]</a><span class="k">class</span> <span class="nc">OddSpinBox</span><span class="p">(</span><span class="n">QSpinBox</span><span class="p">):</span>
+<div class="viewcode-block" id="OddSpinBox"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.OddSpinBox">[docs]</a><span class="k">class</span> <span class="nc">OddSpinBox</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -93,17 +94,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">val</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="kernelSizeLayout"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.kernelSizeLayout">[docs]</a><span class="k">class</span> <span class="nc">kernelSizeLayout</span><span class="p">(</span><span class="n">QGridLayout</span><span class="p">):</span>
+<div class="viewcode-block" id="kernelSizeLayout"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.kernelSizeLayout">[docs]</a><span class="k">class</span> <span class="nc">kernelSizeLayout</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">odd</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Kernel Size&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Kernel Size&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">odd</span><span class="p">:</span>
             <span class="n">spin</span> <span class="o">=</span> <span class="n">OddSpinBox</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">spin</span> <span class="o">=</span> <span class="n">SpinBoxOverOne</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kernels</span> <span class="o">=</span> <span class="p">[</span><span class="n">spin</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernels</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Axis&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Axis&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
 <div class="viewcode-block" id="kernelSizeLayout.getKernelSize"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.kernelSizeLayout.getKernelSize">[docs]</a>    <span class="k">def</span> <span class="nf">getKernelSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -114,14 +115,14 @@
             <span class="n">k</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="kernelSigmaLayout"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.kernelSigmaLayout">[docs]</a><span class="k">class</span> <span class="nc">kernelSigmaLayout</span><span class="p">(</span><span class="n">QGridLayout</span><span class="p">):</span>
+<div class="viewcode-block" id="kernelSigmaLayout"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.kernelSigmaLayout">[docs]</a><span class="k">class</span> <span class="nc">kernelSigmaLayout</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Sigma&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Sigma&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kernels</span> <span class="o">=</span> <span class="p">[</span><span class="n">ScientificSpinBox</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dimension</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernels</span><span class="p">):</span>
             <span class="n">k</span><span class="o">.</span><span class="n">setMinimum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Axis&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s1">&#39;Axis&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
 <div class="viewcode-block" id="kernelSigmaLayout.getKernelSigma"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.kernelSigmaLayout.getKernelSigma">[docs]</a>    <span class="k">def</span> <span class="nf">getKernelSigma</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -132,11 +133,14 @@
             <span class="n">k</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="AxisCheckLayout"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.AxisCheckLayout">[docs]</a><span class="k">class</span> <span class="nc">AxisCheckLayout</span><span class="p">(</span><span class="n">QHBoxLayout</span><span class="p">):</span>
+<div class="viewcode-block" id="AxisCheckLayout"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.AxisCheckLayout">[docs]</a><span class="k">class</span> <span class="nc">AxisCheckLayout</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">):</span>
+    <span class="n">stateChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">:</span>
+            <span class="n">a</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stateChanged</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
 <div class="viewcode-block" id="AxisCheckLayout.GetChecked"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.AxisCheckLayout.GetChecked">[docs]</a>    <span class="k">def</span> <span class="nf">GetChecked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -154,13 +158,13 @@
                 <span class="n">a</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="AxisSelectionLayout"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.AxisSelectionLayout">[docs]</a><span class="k">class</span> <span class="nc">AxisSelectionLayout</span><span class="p">(</span><span class="n">QHBoxLayout</span><span class="p">):</span>
+<div class="viewcode-block" id="AxisSelectionLayout"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.AxisSelectionLayout">[docs]</a><span class="k">class</span> <span class="nc">AxisSelectionLayout</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="n">QButtonGroup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QButtonGroup</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">childs</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setDimension</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">init</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">childs</span><span class="p">):</span>
             <span class="n">init</span> <span class="o">=</span> <span class="mi">0</span>
@@ -171,7 +175,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">removeButton</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
             <span class="n">c</span><span class="o">.</span><span class="n">deleteLater</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">childs</span> <span class="o">=</span> <span class="p">[</span><span class="n">QRadioButton</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">childs</span> <span class="o">=</span> <span class="p">[</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QRadioButton</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">)]</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">childs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">addButton</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
@@ -195,7 +199,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">setExclusive</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="AxesSelectionDialog"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.AxesSelectionDialog">[docs]</a><span class="k">class</span> <span class="nc">AxesSelectionDialog</span><span class="p">(</span><span class="n">QDialog</span><span class="p">):</span>
+<div class="viewcode-block" id="AxesSelectionDialog"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.AxesSelectionDialog">[docs]</a><span class="k">class</span> <span class="nc">AxesSelectionDialog</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDialog</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dim</span>
@@ -205,12 +209,12 @@
     <span class="k">def</span> <span class="nf">__initlayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis1</span> <span class="o">=</span> <span class="n">AxisSelectionLayout</span><span class="p">(</span><span class="s2">&quot;Axis 1&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis2</span> <span class="o">=</span> <span class="n">AxisSelectionLayout</span><span class="p">(</span><span class="s2">&quot;Axis 2&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">ok</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;O K&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
-        <span class="n">cancel</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;CALCEL&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
-        <span class="n">h1</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">ok</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;O K&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+        <span class="n">cancel</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;CALCEL&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+        <span class="n">h1</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span>
         <span class="n">h1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">cancel</span><span class="p">)</span>
-        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis1</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis2</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
@@ -224,8 +228,9 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis1</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">axis2</span><span class="o">.</span><span class="n">getAxis</span><span class="p">())</span></div></div>
 
 
-<div class="viewcode-block" id="RegionSelectWidget"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.RegionSelectWidget">[docs]</a><span class="k">class</span> <span class="nc">RegionSelectWidget</span><span class="p">(</span><span class="n">QGridLayout</span><span class="p">):</span>
-    <span class="n">loadClicked</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<div class="viewcode-block" id="RegionSelectWidget"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.CommonWidgets.RegionSelectWidget">[docs]</a><span class="k">class</span> <span class="nc">RegionSelectWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">):</span>
+    <span class="n">loadClicked</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+    <span class="n">stateChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">loader</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -235,24 +240,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__initLayout</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">loader</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__initLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">loader</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__loadPrev</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Load from Graph&#39;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadFromPrev</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__loadPrev</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s1">&#39;Load from Graph&#39;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadFromPrev</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">loader</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loadClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__load</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">loadClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadPrev</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;from&quot;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;from&quot;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;to&quot;</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="p">[</span><span class="n">ScientificSpinBox</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="p">[</span><span class="n">ScientificSpinBox</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_checkWidgets</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check</span><span class="p">:</span>
-                <span class="n">check</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                <span class="n">check</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                <span class="n">check</span><span class="o">.</span><span class="n">stateChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stateChanged</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">check</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                <span class="n">check</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_checkWidgets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">check</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
@@ -263,8 +269,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">loadClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Graph</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">Graph</span><span class="o">.</span><span class="n">active</span><span class="p">()</span><span class="o">.</span><span class="n">canvas</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">frontCanvas</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">selectedRange</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>

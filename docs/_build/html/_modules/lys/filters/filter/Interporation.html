@@ -13,7 +13,9 @@
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -39,6 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
 </ul>
 
@@ -55,9 +58,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>lys.filters.filter.Interporation</li>
+      <li><a href="../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.filters.filter.Interporation</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -71,31 +74,28 @@
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interpn</span><span class="p">,</span> <span class="n">interp2d</span><span class="p">,</span> <span class="n">interp1d</span>
 
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span>
-<span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
-
-<span class="kn">from</span> <span class="nn">.FilterInterface</span> <span class="kn">import</span> <span class="n">FilterInterface</span>
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">QLabel</span><span class="p">,</span> <span class="n">QSpinBox</span><span class="p">,</span> <span class="n">QGridLayout</span>
+<span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
 
 
 <div class="viewcode-block" id="InterpFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Interporation.InterpFilter">[docs]</a><span class="k">class</span> <span class="nc">InterpFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interpolate data by scipy.interpolate</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        size(tuple of int): new shape</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example::</span>
 
-<span class="sd">        Interpolate quadrutic function::</span>
+<span class="sd">        import numpy as np</span>
+<span class="sd">        from lys import Wave, filters</span>
 
-<span class="sd">            import numpy as np</span>
-<span class="sd">            from lys import Wave, filters</span>
-<span class="sd">            x = np.linspace(0, 100, 100)</span>
-<span class="sd">            w = Wave(x**2, x)</span>
-<span class="sd">            f = filters.InterpFilter(size=(200,))</span>
-<span class="sd">            result = f.execute(w)</span>
-<span class="sd">            print(w.shape, result.shape)</span>
-<span class="sd">            # (100,), (200,)</span>
+<span class="sd">        x = np.linspace(0, 100, 100)</span>
+<span class="sd">        w = Wave(x**2, x)</span>
+<span class="sd">        f = filters.InterpFilter(size=(200,))</span>
+<span class="sd">        result = f.execute(w)</span>
+
+<span class="sd">        print(w.shape, result.shape) # (100,), (200,)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -148,10 +148,10 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">QSpinBox</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLabel</span><span class="p">(</span><span class="s2">&quot;Axis&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
             <span class="n">v</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100000</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>

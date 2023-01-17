@@ -13,7 +13,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -55,9 +57,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>lys.core</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.core</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -75,13 +77,11 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">dask.array</span> <span class="k">as</span> <span class="nn">da</span>
 
-<span class="kn">from</span> <span class="nn">LysQt.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">pyqtSignal</span>
-
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">registerFileLoader</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
 
 
 <div class="viewcode-block" id="SettingDict"><a class="viewcode-back" href="../../lys_/core.html#lys.core.SettingDict">[docs]</a><span class="k">class</span> <span class="nc">SettingDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrapped dict, internally used to automatically save settings</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapped dict, internally used to automatically save settings</span>
 
 <span class="sd">    SettingDict is wrapper of dict that is is automatically saved when __setitem__ and __delitem__ are called.</span>
 
@@ -122,7 +122,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">Save</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SettingDict.Save"><a class="viewcode-back" href="../../lys_/core.html#lys.core.SettingDict.Save">[docs]</a>    <span class="k">def</span> <span class="nf">Save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Save dictionary</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save dictionary</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            file (string): The filename to be saved</span>
@@ -138,7 +138,7 @@
 
 
 <span class="k">class</span> <span class="nc">_WaveDataDescriptor</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    *data* is numpy.ndarray that represents data of :class:`Wave`</span>
 
 <span class="sd">    All public methods of *data* can also be accessed from :class:`Wave`.</span>
@@ -155,7 +155,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;set data and update axes&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;set data and update axes&quot;&quot;&quot;</span>
         <span class="n">instance</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -167,7 +167,7 @@
 
 
 <span class="k">class</span> <span class="nc">_WaveAxesDescriptor</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Axes of :class:`Wave` and :class:`DaskWave` implemented as :class:`WaveAxes` class.</span>
 
 <span class="sd">    *axes* is list of numpy arrays and is used to visualize data.</span>
@@ -235,7 +235,7 @@
 
 
 <div class="viewcode-block" id="WaveAxes"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveAxes">[docs]</a><span class="k">class</span> <span class="nc">WaveAxes</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Axes in :class:`Wave` and :class:`DaskWave` class</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Axes in :class:`Wave` and :class:`DaskWave` class</span>
 
 <span class="sd">    *WaveAxes* is a list of numpy array that defines axes of the :class:`Wave` and :class:`DaskWave`.</span>
 
@@ -259,7 +259,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
 <div class="viewcode-block" id="WaveAxes.getAxis"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveAxes.getAxis">[docs]</a>    <span class="k">def</span> <span class="nf">getAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the axis specified dimension.</span>
 
 <span class="sd">        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.</span>
@@ -297,7 +297,7 @@
                 <span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="WaveAxes.axisIsValid"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveAxes.axisIsValid">[docs]</a>    <span class="k">def</span> <span class="nf">axisIsValid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Check if the axis is valid.</span>
 
 <span class="sd">        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.</span>
@@ -321,7 +321,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="WaveAxes.posToPoint"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveAxes.posToPoint">[docs]</a>    <span class="k">def</span> <span class="nf">posToPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the specified position in axis to the nearest indice in data.</span>
 
 <span class="sd">        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.</span>
@@ -357,7 +357,7 @@
             <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">-</span> <span class="n">pos</span><span class="p">)</span><span class="o">.</span><span class="n">argmin</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="WaveAxes.pointToPos"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveAxes.pointToPos">[docs]</a>    <span class="k">def</span> <span class="nf">pointToPos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indice</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the specified indice to the position in data.</span>
 
 <span class="sd">        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.</span>
@@ -401,7 +401,7 @@
 
 
 <span class="k">class</span> <span class="nc">_WaveNoteDescriptor</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Metadata of :class:`Wave` and :class:`DaskWave` implemented as :class:`WaveNote` class.</span>
 <span class="sd">    All public methods can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.</span>
 
@@ -428,7 +428,7 @@
 
 
 <div class="viewcode-block" id="WaveNote"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveNote">[docs]</a><span class="k">class</span> <span class="nc">WaveNote</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Note in :class:`Wave` and :class:`DaskWave` class</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Note in :class:`Wave` and :class:`DaskWave` class</span>
 
 <span class="sd">    WaveNote is a dictionary to save metadata in :class:`Wave` and :class:`DaskWave` class.</span>
 <span class="sd">    All public methods can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.</span>
@@ -443,7 +443,7 @@
 
     <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shortcut to note[&quot;name&quot;], which is frequently used as a name of :class:`Wave` and :class:`DaskWave`.</span>
 
 <span class="sd">        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.</span>
@@ -473,8 +473,8 @@
     <span class="k">return</span> <span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">note</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="WaveBase"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveBase">[docs]</a><span class="k">class</span> <span class="nc">WaveBase</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="WaveBase"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveBase">[docs]</a><span class="k">class</span> <span class="nc">WaveBase</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class of :class:`Wave` and :class:`DaskWave`.</span>
 
 <span class="sd">    This class implement some useful shortcuts to functionarities of :class:`Wave` and :class:`DaskWave`.</span>
@@ -483,7 +483,7 @@
 
     <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shortcut to axes[0]</span>
 
 <span class="sd">        Example::</span>
@@ -504,7 +504,7 @@
 
     <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shortcut to axes[1]. See :attr:`x`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -515,7 +515,7 @@
 
     <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        Shortcut to axes[2]. See :attr:`x`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -526,7 +526,7 @@
 
 
 <div class="viewcode-block" id="Wave"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave">[docs]</a><span class="k">class</span> <span class="nc">Wave</span><span class="p">(</span><span class="n">WaveBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wave class is a central data class in lys, which is composed of :attr:`data`, :attr:`axes`, and :attr:`note`.</span>
 
 <span class="sd">    :attr:`data` is a numpy array of any dimension and :attr:`axes` is a list of numpy arrays with size = data.ndim.</span>
@@ -593,8 +593,8 @@
 <span class="sd">    See also:</span>
 <span class="sd">        :attr:`data`, :attr:`axes`, :attr:`note`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">modified</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+    <span class="n">modified</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    *modified* is a pyqtSignal, which is emitted when *Wave* is changed.</span>
 
 <span class="sd">    Example:</span>
@@ -615,7 +615,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">note</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__loadData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load data from file&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load data from file&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">):</span>
@@ -624,7 +624,9 @@
         <span class="k">if</span> <span class="s1">&#39;axes&#39;</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
             <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;axes&#39;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">axis</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">axis</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">axis</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
@@ -635,7 +637,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">note</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="s1">&#39;note&#39;</span><span class="p">][()]</span>
 
     <span class="k">def</span> <span class="nf">__setData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">note</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Set data from *data*, *axes*, and *note*&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set data from *data*, *axes*, and *note*&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Wave</span><span class="p">):</span>
@@ -671,11 +673,11 @@
 
 <div class="viewcode-block" id="Wave.SupportedFormats"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.SupportedFormats">[docs]</a>    <span class="o">@</span> <span class="nb">staticmethod</span>
     <span class="k">def</span> <span class="nf">SupportedFormats</span><span class="p">():</span>
-        <span class="sd">&quot;&quot;&quot;List of supported file formats to export. see :meth:`export`&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of supported file formats to export. see :meth:`export`&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;Numpy npz (*.npz)&quot;</span><span class="p">,</span> <span class="s2">&quot;Comma-Separated Values (*.csv)&quot;</span><span class="p">,</span> <span class="s2">&quot;Text file (*.txt)&quot;</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Wave.export"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;npz&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Export *Wave* to file.</span>
 
 <span class="sd">        Args:</span>
@@ -712,7 +714,7 @@
 
 <div class="viewcode-block" id="Wave.importFrom"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.importFrom">[docs]</a>    <span class="o">@</span> <span class="nb">staticmethod</span>
     <span class="k">def</span> <span class="nf">importFrom</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Import *Wave* from file.</span>
 
 <span class="sd">        It is recommended to use :func:`functions.loadWave` to load Wave from various types of files.</span>
@@ -740,7 +742,7 @@
             <span class="k">return</span> <span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Wave.duplicate"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.duplicate">[docs]</a>    <span class="k">def</span> <span class="nf">duplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create duplicated *Wave*</span>
 
 <span class="sd">        Return:</span>
@@ -755,7 +757,7 @@
         <span class="k">return</span> <span class="n">Wave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Wave.update"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Emit *modified* signal</span>
 
 <span class="sd">        When *data* is directly changed by indexing, *modified* signal is not emitted.</span>
@@ -777,7 +779,7 @@
 
     <span class="c1"># deprecated methods</span>
 <div class="viewcode-block" id="Wave.Name"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.Name">[docs]</a>    <span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;deprecated method&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;deprecated method&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">inspect</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wave.Name is deprecated. use Wave.name instead&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -785,7 +787,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
 <div class="viewcode-block" id="Wave.Save"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.Save">[docs]</a>    <span class="k">def</span> <span class="nf">Save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;deprecated method&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;deprecated method&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">inspect</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wave.Save is deprecated. use Wave.export instead&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
@@ -820,7 +822,7 @@
 
 
 <span class="k">class</span> <span class="nc">_DaskWaveDataDescriptor</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    *data* is dask array that represents data of :class:`DaskWave`</span>
 
 <span class="sd">    All public methods of *data* can be accessed from :class:`DaskWave` via __getattr__.</span>
@@ -837,7 +839,7 @@
 
 
 <div class="viewcode-block" id="DaskWave"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave">[docs]</a><span class="k">class</span> <span class="nc">DaskWave</span><span class="p">(</span><span class="n">WaveBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    *DaskWave* class is a central data class in lys, which is used for easy parallel computing via dask.</span>
 
 <span class="sd">    This class is mainly used for parallel computing of data *with axes and notes*, which enables us to consistent calculation of data and axes.</span>
@@ -893,7 +895,7 @@
 
 <div class="viewcode-block" id="DaskWave.initWorkers"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave.initWorkers">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">initWorkers</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializa local cluster. </span>
 <span class="sd">        This method is automatically called when lys is launched with parallel computing option.</span>
 <span class="sd">        DO NOT call this method within lys.</span>
@@ -913,7 +915,7 @@
             <span class="bp">cls</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
             <span class="n">atexit</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">closeClient</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[DaskWave] Local cluster launched:&quot;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">client</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[DaskWave] failed to initialize local cluster for parallel computing.&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">note</span><span class="p">):</span>
@@ -931,13 +933,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__fromWave</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">note</span><span class="p">),</span> <span class="n">chunks</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__fromWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">chunks</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load from Wave&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load from Wave&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="n">chunks</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">axes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">note</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">note</span>
 
     <span class="k">def</span> <span class="nf">__fromda</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">chunks</span><span class="p">,</span> <span class="n">note</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Load from da.core.Array&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load from da.core.Array&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">chunks</span> <span class="o">==</span> <span class="s2">&quot;NoRechunk&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">wave</span>
         <span class="k">else</span><span class="p">:</span>
@@ -967,7 +969,7 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DaskWave.compute"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return calculated Wave</span>
 <span class="sd">        Wave.data.compute() is called when this method is called.</span>
 <span class="sd">        After lazy evaluation is finished, this method returns calculated *Wave*.</span>
@@ -978,11 +980,11 @@
         <span class="k">return</span> <span class="n">Wave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">compute</span><span class="p">(),</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="DaskWave.persist"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave.persist">[docs]</a>    <span class="k">def</span> <span class="nf">persist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Call data.persist&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call data.persist&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">persist</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="DaskWave.duplicate"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave.duplicate">[docs]</a>    <span class="k">def</span> <span class="nf">duplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create duplicated *DaskWave*</span>
 
 <span class="sd">        Return:</span>
@@ -1014,11 +1016,6 @@
             <span class="k">return</span> <span class="n">d</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
-
-
-<span class="c1"># register file loaders</span>
-<span class="n">registerFileLoader</span><span class="p">(</span><span class="s2">&quot;.npz&quot;</span><span class="p">,</span> <span class="n">Wave</span><span class="p">)</span>
-<span class="n">registerFileLoader</span><span class="p">(</span><span class="s2">&quot;.dic&quot;</span><span class="p">,</span> <span class="n">SettingDict</span><span class="p">)</span>
 </pre></div>
 
            </div>

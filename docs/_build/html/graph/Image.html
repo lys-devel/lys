@@ -14,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -42,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../lys.html">lys package</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a><ul class="current">
@@ -57,13 +60,11 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#interface-to-annotations">Interface to annotations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../lys.BasicWidgets.CanvasInterface.html#lys-basicwidgets-canvasinterface-annotguicanvas-module">lys.BasicWidgets.CanvasInterface.AnnotGUICanvas module</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -81,10 +82,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../api.html">Python API</a> &raquo;</li>
-          <li><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a> &raquo;</li>
-      <li>Image module</li>
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="../lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+      <li class="breadcrumb-item active">Image module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/graph/Image.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -94,164 +95,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="module-lys.BasicWidgets.CanvasInterface.Image">
-<span id="image-module"></span><h1>Image module<a class="headerlink" href="#module-lys.BasicWidgets.CanvasInterface.Image" title="Permalink to this headline"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">lys.BasicWidgets.CanvasInterface.Image.</span></span><span class="sig-name descname"><span class="pre">ImageData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="WaveData.html#lys.BasicWidgets.CanvasInterface.WaveData.WaveData" title="lys.BasicWidgets.CanvasInterface.WaveData.WaveData"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.BasicWidgets.CanvasInterface.WaveData.WaveData</span></code></a></p>
-<p>Interface to access image data in the canvas.</p>
-<p>Instance of ImageData is automatically generated by display or append methods.</p>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
-<span class="n">im</span> <span class="o">=</span> <span class="n">display</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]])</span>
-<span class="n">im</span><span class="o">.</span><span class="n">setColormap</span><span class="p">(</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.getAutoColorRange">
-<span class="sig-name descname"><span class="pre">getAutoColorRange</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.getAutoColorRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.getAutoColorRange" title="Permalink to this definition"></a></dt>
-<dd><p>Get the automarically-calculated color range of the image, which is used by <a class="reference internal" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.setColorRange" title="lys.BasicWidgets.CanvasInterface.Image.ImageData.setColorRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setColorRange()</span></code></a> method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>minimum and maximum value of the range.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple of length 2</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.getColorRange">
-<span class="sig-name descname"><span class="pre">getColorRange</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.getColorRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.getColorRange" title="Permalink to this definition"></a></dt>
-<dd><p>Get the color range of the image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>minimum and maximum value of the range.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tuple of length 2</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.getColormap">
-<span class="sig-name descname"><span class="pre">getColormap</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.getColormap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.getColormap" title="Permalink to this definition"></a></dt>
-<dd><p>Get colormap of the image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>colormap string such as ‘gray’</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.getGamma">
-<span class="sig-name descname"><span class="pre">getGamma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.getGamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.getGamma" title="Permalink to this definition"></a></dt>
-<dd><p>Get the gamma value of the image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The gamma value.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.getOpacity">
-<span class="sig-name descname"><span class="pre">getOpacity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.getOpacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.getOpacity" title="Permalink to this definition"></a></dt>
-<dd><p>Get the opacity of the image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The opacity.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.isLog">
-<span class="sig-name descname"><span class="pre">isLog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.isLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.isLog" title="Permalink to this definition"></a></dt>
-<dd><p>Return true if the color scale is logarithmic.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>If True, logarithmic scale is enabled.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.setColorRange">
-<span class="sig-name descname"><span class="pre">setColorRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.setColorRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.setColorRange" title="Permalink to this definition"></a></dt>
-<dd><p>Set the color range of the image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>min</strong> (<em>float</em><em> or </em><em>'auto'</em>) – The minimum value of the range.</p></li>
-<li><p><strong>max</strong> (<em>float</em><em> or </em><em>'auto'</em>) – The maximum value of the range.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.setColormap">
-<span class="sig-name descname"><span class="pre">setColormap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmap</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.setColormap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.setColormap" title="Permalink to this definition"></a></dt>
-<dd><p>Set colormap of the image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>colormap</strong> (<em>str</em>) – colormap string such as ‘gray’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.setGamma">
-<span class="sig-name descname"><span class="pre">setGamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gamma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.setGamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.setGamma" title="Permalink to this definition"></a></dt>
-<dd><p>Set gamma value of the image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>gamma</strong> (<em>float</em>) – The gamma value.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.setLog">
-<span class="sig-name descname"><span class="pre">setLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.setLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.setLog" title="Permalink to this definition"></a></dt>
-<dd><p>Set the color scale to be logarithmic.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>log</strong> (<em>bool</em>) – If <em>log</em> is True, logarithmic scale is enabled.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.BasicWidgets.CanvasInterface.Image.ImageData.setOpacity">
-<span class="sig-name descname"><span class="pre">setOpacity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opacity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/BasicWidgets/CanvasInterface/Image.html#ImageData.setOpacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.BasicWidgets.CanvasInterface.Image.ImageData.setOpacity" title="Permalink to this definition"></a></dt>
-<dd><p>Set the opacity of the image.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>opacity</strong> (<em>float</em>) – The opacity.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
+  <section id="image-module">
+<h1>Image module<a class="headerlink" href="#image-module" title="Permalink to this heading"></a></h1>
 </section>
 
 

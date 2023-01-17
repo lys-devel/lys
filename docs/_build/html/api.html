@@ -14,12 +14,14 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="lys package" href="lys.html" />
-    <link rel="prev" title="lys documentation" href="index.html" /> 
+    <link rel="prev" title="Tutorial: Adding a new filter" href="tutorials/newFilter.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -42,12 +44,13 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Python API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="lys.html">lys package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html">lys.Analysis package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html">lys.filters package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.html">lys.filters</a></li>
 </ul>
 </li>
 </ul>
@@ -65,8 +68,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Python API</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Python API</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -77,13 +80,78 @@
            <div itemprop="articleBody">
              
   <section id="python-api">
-<h1>Python API<a class="headerlink" href="#python-api" title="Permalink to this headline"></a></h1>
+<h1>Python API<a class="headerlink" href="#python-api" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lys.html">lys package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="lys_/core.html">core module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html">functions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys_/glb.html">glb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/core.html">core module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave"><code class="docutils literal notranslate"><span class="pre">DaskWave</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.axes"><code class="docutils literal notranslate"><span class="pre">DaskWave.axes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.compute"><code class="docutils literal notranslate"><span class="pre">DaskWave.compute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.data"><code class="docutils literal notranslate"><span class="pre">DaskWave.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.duplicate"><code class="docutils literal notranslate"><span class="pre">DaskWave.duplicate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.initWorkers"><code class="docutils literal notranslate"><span class="pre">DaskWave.initWorkers()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.note"><code class="docutils literal notranslate"><span class="pre">DaskWave.note</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.DaskWave.persist"><code class="docutils literal notranslate"><span class="pre">DaskWave.persist()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.SettingDict"><code class="docutils literal notranslate"><span class="pre">SettingDict</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.SettingDict.Save"><code class="docutils literal notranslate"><span class="pre">SettingDict.Save()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.Wave"><code class="docutils literal notranslate"><span class="pre">Wave</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.Name"><code class="docutils literal notranslate"><span class="pre">Wave.Name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.Save"><code class="docutils literal notranslate"><span class="pre">Wave.Save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.SupportedFormats"><code class="docutils literal notranslate"><span class="pre">Wave.SupportedFormats()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.axes"><code class="docutils literal notranslate"><span class="pre">Wave.axes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.data"><code class="docutils literal notranslate"><span class="pre">Wave.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.duplicate"><code class="docutils literal notranslate"><span class="pre">Wave.duplicate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.export"><code class="docutils literal notranslate"><span class="pre">Wave.export()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.importFrom"><code class="docutils literal notranslate"><span class="pre">Wave.importFrom()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.modified"><code class="docutils literal notranslate"><span class="pre">Wave.modified</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.note"><code class="docutils literal notranslate"><span class="pre">Wave.note</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.Wave.update"><code class="docutils literal notranslate"><span class="pre">Wave.update()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes"><code class="docutils literal notranslate"><span class="pre">WaveAxes</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes.axisIsValid"><code class="docutils literal notranslate"><span class="pre">WaveAxes.axisIsValid()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes.getAxis"><code class="docutils literal notranslate"><span class="pre">WaveAxes.getAxis()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes.pointToPos"><code class="docutils literal notranslate"><span class="pre">WaveAxes.pointToPos()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.WaveAxes.posToPoint"><code class="docutils literal notranslate"><span class="pre">WaveAxes.posToPoint()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveBase"><code class="docutils literal notranslate"><span class="pre">WaveBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.WaveBase.x"><code class="docutils literal notranslate"><span class="pre">WaveBase.x</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.WaveBase.y"><code class="docutils literal notranslate"><span class="pre">WaveBase.y</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.WaveBase.z"><code class="docutils literal notranslate"><span class="pre">WaveBase.z</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/core.html#lys.core.WaveNote"><code class="docutils literal notranslate"><span class="pre">WaveNote</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys_/core.html#lys.core.WaveNote.name"><code class="docutils literal notranslate"><span class="pre">WaveNote.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/functions.html">functions module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.append"><code class="docutils literal notranslate"><span class="pre">append()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.display"><code class="docutils literal notranslate"><span class="pre">display()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.edit"><code class="docutils literal notranslate"><span class="pre">edit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.frontCanvas"><code class="docutils literal notranslate"><span class="pre">frontCanvas()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.home"><code class="docutils literal notranslate"><span class="pre">home()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.loadableFiles"><code class="docutils literal notranslate"><span class="pre">loadableFiles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.multicut"><code class="docutils literal notranslate"><span class="pre">multicut()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.registerFileLoader"><code class="docutils literal notranslate"><span class="pre">registerFileLoader()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/functions.html#lys.functions.registerFittingFunction"><code class="docutils literal notranslate"><span class="pre">registerFittingFunction()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys_/glb.html">glb module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys_/glb.html#lys.glb.createMainWindow"><code class="docutils literal notranslate"><span class="pre">createMainWindow()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/glb.html#lys.glb.mainWindow"><code class="docutils literal notranslate"><span class="pre">mainWindow()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/glb.html#lys.glb.restoreWorkspaces"><code class="docutils literal notranslate"><span class="pre">restoreWorkspaces()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys_/glb.html#lys.glb.shell"><code class="docutils literal notranslate"><span class="pre">shell()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="lys_/MainWindow.html">MainWindow module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys_/shell.html">shell module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys_/FileView.html">FileView module</a></li>
@@ -138,9 +206,143 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html#module-lys.Analysis.MultiCut">lys.Analysis.MultiCut module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html#module-lys.Analysis.MultiCutExecutors">lys.Analysis.MultiCutExecutors module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html#module-lys.Analysis.MultiCutGUI">lys.Analysis.MultiCutGUI module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html#module-lys.Analysis.MultiCut">lys.Analysis.MultiCut module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList"><code class="docutils literal notranslate"><span class="pre">ExecutorList</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.append"><code class="docutils literal notranslate"><span class="pre">ExecutorList.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.disable"><code class="docutils literal notranslate"><span class="pre">ExecutorList.disable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.disableAt"><code class="docutils literal notranslate"><span class="pre">ExecutorList.disableAt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.enable"><code class="docutils literal notranslate"><span class="pre">ExecutorList.enable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.enableAt"><code class="docutils literal notranslate"><span class="pre">ExecutorList.enableAt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.getFreeLines"><code class="docutils literal notranslate"><span class="pre">ExecutorList.getFreeLines()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.graphRemoved"><code class="docutils literal notranslate"><span class="pre">ExecutorList.graphRemoved()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.isEnabled"><code class="docutils literal notranslate"><span class="pre">ExecutorList.isEnabled()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.makeWave"><code class="docutils literal notranslate"><span class="pre">ExecutorList.makeWave()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.remove"><code class="docutils literal notranslate"><span class="pre">ExecutorList.remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.restoreEnabledState"><code class="docutils literal notranslate"><span class="pre">ExecutorList.restoreEnabledState()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.saveEnabledState"><code class="docutils literal notranslate"><span class="pre">ExecutorList.saveEnabledState()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.setSumType"><code class="docutils literal notranslate"><span class="pre">ExecutorList.setSumType()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.setting"><code class="docutils literal notranslate"><span class="pre">ExecutorList.setting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.ExecutorList.updated"><code class="docutils literal notranslate"><span class="pre">ExecutorList.updated</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.SwitchableObjects"><code class="docutils literal notranslate"><span class="pre">SwitchableObjects</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.SwitchableObjects.append"><code class="docutils literal notranslate"><span class="pre">SwitchableObjects.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.SwitchableObjects.disable"><code class="docutils literal notranslate"><span class="pre">SwitchableObjects.disable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.SwitchableObjects.disableAt"><code class="docutils literal notranslate"><span class="pre">SwitchableObjects.disableAt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.SwitchableObjects.enable"><code class="docutils literal notranslate"><span class="pre">SwitchableObjects.enable()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.SwitchableObjects.enableAt"><code class="docutils literal notranslate"><span class="pre">SwitchableObjects.enableAt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.SwitchableObjects.isEnabled"><code class="docutils literal notranslate"><span class="pre">SwitchableObjects.isEnabled()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.SwitchableObjects.remove"><code class="docutils literal notranslate"><span class="pre">SwitchableObjects.remove()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects"><code class="docutils literal notranslate"><span class="pre">controlledObjects</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects.append"><code class="docutils literal notranslate"><span class="pre">controlledObjects.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects.appended"><code class="docutils literal notranslate"><span class="pre">controlledObjects.appended</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects.clear"><code class="docutils literal notranslate"><span class="pre">controlledObjects.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects.getAxes"><code class="docutils literal notranslate"><span class="pre">controlledObjects.getAxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects.getObjectsAndAxes"><code class="docutils literal notranslate"><span class="pre">controlledObjects.getObjectsAndAxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects.remove"><code class="docutils literal notranslate"><span class="pre">controlledObjects.remove()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects.removeAt"><code class="docutils literal notranslate"><span class="pre">controlledObjects.removeAt()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCut.controlledObjects.removed"><code class="docutils literal notranslate"><span class="pre">controlledObjects.removed</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html#module-lys.Analysis.MultiCutExecutors">lys.Analysis.MultiCutExecutors module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.AllExecutor"><code class="docutils literal notranslate"><span class="pre">AllExecutor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.AllExecutor.getAxes"><code class="docutils literal notranslate"><span class="pre">AllExecutor.getAxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.AllExecutor.set"><code class="docutils literal notranslate"><span class="pre">AllExecutor.set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.AllExecutor.updated"><code class="docutils literal notranslate"><span class="pre">AllExecutor.updated</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.DefaultExecutor"><code class="docutils literal notranslate"><span class="pre">DefaultExecutor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.DefaultExecutor.getAxes"><code class="docutils literal notranslate"><span class="pre">DefaultExecutor.getAxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.DefaultExecutor.set"><code class="docutils literal notranslate"><span class="pre">DefaultExecutor.set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.DefaultExecutor.updated"><code class="docutils literal notranslate"><span class="pre">DefaultExecutor.updated</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.ID"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.ID()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.Name"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.Name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.getAxes"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.getAxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.getFilter"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.getFilter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.getPosition"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.getPosition()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.getWidth"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.getWidth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.setPosition"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.setPosition()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.setWidth"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.setWidth()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.setting"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.setting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutor.updated"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutor.updated</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutorDialog"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutorDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutorDialog.accept"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutorDialog.accept()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutorDialog.accepted"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutorDialog.accepted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutorDialog.copy"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutorDialog.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutorDialog.paste"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutorDialog.paste()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutorDialog.reject"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutorDialog.reject()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.FreeLineExecutorDialog.rejected"><code class="docutils literal notranslate"><span class="pre">FreeLineExecutorDialog.rejected</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutor"><code class="docutils literal notranslate"><span class="pre">PointExecutor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutor.Name"><code class="docutils literal notranslate"><span class="pre">PointExecutor.Name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutor.getAxes"><code class="docutils literal notranslate"><span class="pre">PointExecutor.getAxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutor.getPosition"><code class="docutils literal notranslate"><span class="pre">PointExecutor.getPosition()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutor.set"><code class="docutils literal notranslate"><span class="pre">PointExecutor.set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutor.setPosition"><code class="docutils literal notranslate"><span class="pre">PointExecutor.setPosition()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutor.setting"><code class="docutils literal notranslate"><span class="pre">PointExecutor.setting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutor.updated"><code class="docutils literal notranslate"><span class="pre">PointExecutor.updated</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutorDialog"><code class="docutils literal notranslate"><span class="pre">PointExecutorDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutorDialog.accept"><code class="docutils literal notranslate"><span class="pre">PointExecutorDialog.accept()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutorDialog.accepted"><code class="docutils literal notranslate"><span class="pre">PointExecutorDialog.accepted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutorDialog.copy"><code class="docutils literal notranslate"><span class="pre">PointExecutorDialog.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutorDialog.paste"><code class="docutils literal notranslate"><span class="pre">PointExecutorDialog.paste()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutorDialog.reject"><code class="docutils literal notranslate"><span class="pre">PointExecutorDialog.reject()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.PointExecutorDialog.rejected"><code class="docutils literal notranslate"><span class="pre">PointExecutorDialog.rejected</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutor"><code class="docutils literal notranslate"><span class="pre">RegionExecutor</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutor.Name"><code class="docutils literal notranslate"><span class="pre">RegionExecutor.Name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutor.getAxes"><code class="docutils literal notranslate"><span class="pre">RegionExecutor.getAxes()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutor.getRange"><code class="docutils literal notranslate"><span class="pre">RegionExecutor.getRange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutor.set"><code class="docutils literal notranslate"><span class="pre">RegionExecutor.set()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutor.setRange"><code class="docutils literal notranslate"><span class="pre">RegionExecutor.setRange()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutor.setting"><code class="docutils literal notranslate"><span class="pre">RegionExecutor.setting()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutor.updated"><code class="docutils literal notranslate"><span class="pre">RegionExecutor.updated</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutorDialog"><code class="docutils literal notranslate"><span class="pre">RegionExecutorDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutorDialog.accept"><code class="docutils literal notranslate"><span class="pre">RegionExecutorDialog.accept()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutorDialog.accepted"><code class="docutils literal notranslate"><span class="pre">RegionExecutorDialog.accepted</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutorDialog.copy"><code class="docutils literal notranslate"><span class="pre">RegionExecutorDialog.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutorDialog.paste"><code class="docutils literal notranslate"><span class="pre">RegionExecutorDialog.paste()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutorDialog.reject"><code class="docutils literal notranslate"><span class="pre">RegionExecutorDialog.reject()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutExecutors.RegionExecutorDialog.rejected"><code class="docutils literal notranslate"><span class="pre">RegionExecutorDialog.rejected</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html#module-lys.Analysis.MultiCutGUI">lys.Analysis.MultiCutGUI module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.GridAttachedWindow"><code class="docutils literal notranslate"><span class="pre">GridAttachedWindow</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.GridAttachedWindow.closeEvent"><code class="docutils literal notranslate"><span class="pre">GridAttachedWindow.closeEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.GridAttachedWindow.forceclose"><code class="docutils literal notranslate"><span class="pre">GridAttachedWindow.forceclose()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.MultiCut"><code class="docutils literal notranslate"><span class="pre">MultiCut</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.MultiCut.keyPress"><code class="docutils literal notranslate"><span class="pre">MultiCut.keyPress()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.MultiCut.load"><code class="docutils literal notranslate"><span class="pre">MultiCut.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.MultiCut.useDask"><code class="docutils literal notranslate"><span class="pre">MultiCut.useDask()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.MultipleGrid"><code class="docutils literal notranslate"><span class="pre">MultipleGrid</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.MultipleGrid.Append"><code class="docutils literal notranslate"><span class="pre">MultipleGrid.Append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.MultipleGrid.itemAtPosition"><code class="docutils literal notranslate"><span class="pre">MultipleGrid.itemAtPosition()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.Analysis.html#lys.Analysis.MultiCutGUI.MultipleGrid.setSize"><code class="docutils literal notranslate"><span class="pre">MultipleGrid.setSize()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html#module-lys.Analysis">Module contents</a></li>
 </ul>
 </li>
@@ -148,54 +350,133 @@
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="lys.BasicWidgets.Fitting.html">lys.BasicWidgets.Fitting package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting.Fitting">lys.BasicWidgets.Fitting.Fitting module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting.FittingWidget">lys.BasicWidgets.Fitting.FittingWidget module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting.Functions">lys.BasicWidgets.Fitting.Functions module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting.LineProfile">lys.BasicWidgets.Fitting.LineProfile module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#lys-basicwidgets-fitting-fitting-module">lys.BasicWidgets.Fitting.Fitting module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#lys-basicwidgets-fitting-fittingwidget-module">lys.BasicWidgets.Fitting.FittingWidget module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#lys-basicwidgets-fitting-functions-module">lys.BasicWidgets.Fitting.Functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#lys-basicwidgets-fitting-lineprofile-module">lys.BasicWidgets.Fitting.LineProfile module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="lys.BasicWidgets.Fitting.html#module-lys.BasicWidgets.Fitting">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html#module-lys.BasicWidgets.FittingWindow">lys.BasicWidgets.FittingWindow module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html#module-lys.BasicWidgets.GraphWindow">lys.BasicWidgets.GraphWindow module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html#lys-basicwidgets-fittingwindow-module">lys.BasicWidgets.FittingWindow module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html#lys-basicwidgets-graphwindow-module">lys.BasicWidgets.GraphWindow module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html#module-lys.BasicWidgets">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="lys.filters.html">lys.filters package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="lys.filters.filter.html">lys.filters.filter package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.CommonWidgets">lys.filters.filter.CommonWidgets module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Convolution">lys.filters.filter.Convolution module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Dask">lys.filters.filter.Dask module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Differentiate">lys.filters.filter.Differentiate module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.FilterInterface">lys.filters.filter.FilterInterface module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.FindPeak">lys.filters.filter.FindPeak module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.FreeLine">lys.filters.filter.FreeLine module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Frequency">lys.filters.filter.Frequency module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Integral">lys.filters.filter.Integral module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Interporation">lys.filters.filter.Interporation module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.MatrixMath">lys.filters.filter.MatrixMath module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Region">lys.filters.filter.Region module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Resize">lys.filters.filter.Resize module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Segmentation">lys.filters.filter.Segmentation module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Shift">lys.filters.filter.Shift module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.SimpleMath">lys.filters.filter.SimpleMath module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Smooth">lys.filters.filter.Smooth module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.Transform">lys.filters.filter.Transform module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter.filters">lys.filters.filter.filters module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#module-lys.filters.filter">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lys.filters.html">lys.filters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#list-of-pre-defined-filters">List of pre-defined filters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.filter.html">Filters in lys.filters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Convolution.LaplacianConvFilter"><code class="docutils literal notranslate"><span class="pre">LaplacianConvFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Convolution.PrewittFilter"><code class="docutils literal notranslate"><span class="pre">PrewittFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Convolution.SobelFilter"><code class="docutils literal notranslate"><span class="pre">SobelFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Dask.RechunkFilter"><code class="docutils literal notranslate"><span class="pre">RechunkFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Differentiate.GradientFilter"><code class="docutils literal notranslate"><span class="pre">GradientFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Differentiate.LaplacianFilter"><code class="docutils literal notranslate"><span class="pre">LaplacianFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Differentiate.NablaFilter"><code class="docutils literal notranslate"><span class="pre">NablaFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.FreeLine.FreeLineFilter"><code class="docutils literal notranslate"><span class="pre">FreeLineFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Frequency.BandPassFilter"><code class="docutils literal notranslate"><span class="pre">BandPassFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Frequency.BandStopFilter"><code class="docutils literal notranslate"><span class="pre">BandStopFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Frequency.FourierFilter"><code class="docutils literal notranslate"><span class="pre">FourierFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Frequency.HighPassFilter"><code class="docutils literal notranslate"><span class="pre">HighPassFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Frequency.LowPassFilter"><code class="docutils literal notranslate"><span class="pre">LowPassFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Integral.IntegralAllFilter"><code class="docutils literal notranslate"><span class="pre">IntegralAllFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Integral.IntegralCircleFilter"><code class="docutils literal notranslate"><span class="pre">IntegralCircleFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Integral.IntegralFilter"><code class="docutils literal notranslate"><span class="pre">IntegralFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Interporation.InterpFilter"><code class="docutils literal notranslate"><span class="pre">InterpFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.MatrixMath.IndexMathFilter"><code class="docutils literal notranslate"><span class="pre">IndexMathFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.MatrixMath.SelectIndexFilter"><code class="docutils literal notranslate"><span class="pre">SelectIndexFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.MatrixMath.SliceFilter"><code class="docutils literal notranslate"><span class="pre">SliceFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.MatrixMath.TransposeFilter"><code class="docutils literal notranslate"><span class="pre">TransposeFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Region.MaskFilter"><code class="docutils literal notranslate"><span class="pre">MaskFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Region.NormalizeFilter"><code class="docutils literal notranslate"><span class="pre">NormalizeFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Region.ReferenceNormalizeFilter"><code class="docutils literal notranslate"><span class="pre">ReferenceNormalizeFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Region.ReferenceShiftFilter"><code class="docutils literal notranslate"><span class="pre">ReferenceShiftFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Region.SelectRegionFilter"><code class="docutils literal notranslate"><span class="pre">SelectRegionFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Resize.PaddingFilter"><code class="docutils literal notranslate"><span class="pre">PaddingFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Resize.ReduceSizeFilter"><code class="docutils literal notranslate"><span class="pre">ReduceSizeFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Segmentation.AdaptiveThresholdFilter"><code class="docutils literal notranslate"><span class="pre">AdaptiveThresholdFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Segmentation.ThresholdFilter"><code class="docutils literal notranslate"><span class="pre">ThresholdFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Shift.ReflectFilter"><code class="docutils literal notranslate"><span class="pre">ReflectFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Shift.ReverseFilter"><code class="docutils literal notranslate"><span class="pre">ReverseFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Shift.RollFilter"><code class="docutils literal notranslate"><span class="pre">RollFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Shift.ShiftFilter"><code class="docutils literal notranslate"><span class="pre">ShiftFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.SimpleMath.ComplexFilter"><code class="docutils literal notranslate"><span class="pre">ComplexFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.SimpleMath.NanToNumFilter"><code class="docutils literal notranslate"><span class="pre">NanToNumFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.SimpleMath.PhaseFilter"><code class="docutils literal notranslate"><span class="pre">PhaseFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.SimpleMath.SimpleMathFilter"><code class="docutils literal notranslate"><span class="pre">SimpleMathFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Smooth.AverageFilter"><code class="docutils literal notranslate"><span class="pre">AverageFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Smooth.GaussianFilter"><code class="docutils literal notranslate"><span class="pre">GaussianFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Smooth.MedianFilter"><code class="docutils literal notranslate"><span class="pre">MedianFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Smooth.RemoveImpulsiveNoise"><code class="docutils literal notranslate"><span class="pre">RemoveImpulsiveNoise</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Transform.AxisShiftFilter"><code class="docutils literal notranslate"><span class="pre">AxisShiftFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Transform.MagnificationFilter"><code class="docutils literal notranslate"><span class="pre">MagnificationFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Transform.MirrorFilter"><code class="docutils literal notranslate"><span class="pre">MirrorFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Transform.OffsetFilter"><code class="docutils literal notranslate"><span class="pre">OffsetFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Transform.Rotation2DFilter"><code class="docutils literal notranslate"><span class="pre">Rotation2DFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Transform.SetAxisFilter"><code class="docutils literal notranslate"><span class="pre">SetAxisFilter</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.filter.html#lys.filters.filter.Transform.SymmetrizeFilter"><code class="docutils literal notranslate"><span class="pre">SymmetrizeFilter</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#module-lys.filters.FilterIOGUI">lys.filters.FilterIOGUI module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#module-lys.filters.FilterManager">lys.filters.FilterManager module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#module-lys.filters.filtersGUI">lys.filters.filtersGUI module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#module-lys.filters">Module contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#module-lys.filters.function">Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.function.addFilter"><code class="docutils literal notranslate"><span class="pre">addFilter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.function.fromFile"><code class="docutils literal notranslate"><span class="pre">fromFile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.function.fromString"><code class="docutils literal notranslate"><span class="pre">fromString()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.function.getFilter"><code class="docutils literal notranslate"><span class="pre">getFilter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.function.toFile"><code class="docutils literal notranslate"><span class="pre">toFile()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.function.toString"><code class="docutils literal notranslate"><span class="pre">toString()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#module-lys.filters.interface">Interfaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterInterface"><code class="docutils literal notranslate"><span class="pre">FilterInterface</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterInterface.execute"><code class="docutils literal notranslate"><span class="pre">FilterInterface.execute()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterInterface.getParameters"><code class="docutils literal notranslate"><span class="pre">FilterInterface.getParameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterInterface.getRelativeDimension"><code class="docutils literal notranslate"><span class="pre">FilterInterface.getRelativeDimension()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterInterface.saveAsFile"><code class="docutils literal notranslate"><span class="pre">FilterInterface.saveAsFile()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterSettingBase"><code class="docutils literal notranslate"><span class="pre">FilterSettingBase</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterSettingBase.GetFilter"><code class="docutils literal notranslate"><span class="pre">FilterSettingBase.GetFilter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterSettingBase.dimensionChanged"><code class="docutils literal notranslate"><span class="pre">FilterSettingBase.dimensionChanged</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterSettingBase.getDimension"><code class="docutils literal notranslate"><span class="pre">FilterSettingBase.getDimension()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterSettingBase.getFilterClass"><code class="docutils literal notranslate"><span class="pre">FilterSettingBase.getFilterClass()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterSettingBase.getParameters"><code class="docutils literal notranslate"><span class="pre">FilterSettingBase.getParameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterSettingBase.setParameters"><code class="docutils literal notranslate"><span class="pre">FilterSettingBase.setParameters()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters"><code class="docutils literal notranslate"><span class="pre">Filters</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters.append"><code class="docutils literal notranslate"><span class="pre">Filters.append()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters.fromFile"><code class="docutils literal notranslate"><span class="pre">Filters.fromFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters.fromString"><code class="docutils literal notranslate"><span class="pre">Filters.fromString()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters.getFilters"><code class="docutils literal notranslate"><span class="pre">Filters.getFilters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters.getParameters"><code class="docutils literal notranslate"><span class="pre">Filters.getParameters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters.getRelativeDimension"><code class="docutils literal notranslate"><span class="pre">Filters.getRelativeDimension()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters.insert"><code class="docutils literal notranslate"><span class="pre">Filters.insert()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters.saveAsFile"><code class="docutils literal notranslate"><span class="pre">Filters.saveAsFile()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.interface.Filters.toString"><code class="docutils literal notranslate"><span class="pre">Filters.toString()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.interface.filterGUI"><code class="docutils literal notranslate"><span class="pre">filterGUI()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lys.filters.html#module-lys.filters.filtersGUI">GUI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.filtersGUI.FiltersDialog"><code class="docutils literal notranslate"><span class="pre">FiltersDialog</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.filtersGUI.FiltersDialog.applied"><code class="docutils literal notranslate"><span class="pre">FiltersDialog.applied</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.filtersGUI.FiltersDialog.setFilter"><code class="docutils literal notranslate"><span class="pre">FiltersDialog.setFilter()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#lys.filters.filtersGUI.FiltersGUI"><code class="docutils literal notranslate"><span class="pre">FiltersGUI</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.filtersGUI.FiltersGUI.GetFilters"><code class="docutils literal notranslate"><span class="pre">FiltersGUI.GetFilters()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.filtersGUI.FiltersGUI.clear"><code class="docutils literal notranslate"><span class="pre">FiltersGUI.clear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.filtersGUI.FiltersGUI.setDimension"><code class="docutils literal notranslate"><span class="pre">FiltersGUI.setDimension()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="lys.filters.html#lys.filters.filtersGUI.FiltersGUI.setFilters"><code class="docutils literal notranslate"><span class="pre">FiltersGUI.setFilters()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -206,7 +487,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="lys documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials/newFilter.html" class="btn btn-neutral float-left" title="Tutorial: Adding a new filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="lys.html" class="btn btn-neutral float-right" title="lys package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

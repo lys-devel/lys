@@ -1,34 +1,31 @@
-lys.filters package
-===================
+lys.filters
+===========
 
-Subpackages
------------
+List of pre-defined filters
+--------------------------------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    lys.filters.filter
 
-Submodules
-----------
+Functions
+---------
 
-lys.filters.FilterIOGUI module
-------------------------------
-
-.. automodule:: lys.filters.FilterIOGUI
+.. automodule:: lys.filters.function
    :members:
    :undoc-members:
    :show-inheritance:
 
-lys.filters.FilterManager module
+Interfaces
 --------------------------------
 
-.. automodule:: lys.filters.FilterManager
+.. automodule:: lys.filters.interface
    :members:
    :undoc-members:
    :show-inheritance:
 
-lys.filters.filtersGUI module
+GUI
 -----------------------------
 
 .. automodule:: lys.filters.filtersGUI
@@ -36,10 +33,3 @@ lys.filters.filtersGUI module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: lys.filters
-   :members:
-   :undoc-members:
-   :show-inheritance:
