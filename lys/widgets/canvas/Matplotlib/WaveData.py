@@ -151,8 +151,10 @@ class _MatplotlibImage(ImageData):
         self._obj.remove()
 
     def _updateData(self):
-        self._obj.set_data(self.getFilteredWave().data.swapaxes(0, 1))
+        data = self.getFilteredWave().data.swapaxes(0, 1)
+        self._obj.set_data(data)
         self._obj.set_extent(_calcExtent2D(self.getFilteredWave()))
+        self._obj.set_alpha(np.where(np.isnan(data), 0, 1).astype(float) * self.getOpacity())
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
@@ -161,13 +163,13 @@ class _MatplotlibImage(ImageData):
         _setZ(self._obj, z)
 
     def _setColormap(self, cmap):
-        colormap = copy.deepcopy(cm.get_cmap(cmap))
+        colormap = copy.copy(cm.get_cmap(cmap))
         if hasattr(colormap, "set_gamma"):
             colormap.set_gamma(self.getGamma())
         self._obj.set_cmap(colormap)
 
     def _setGamma(self, gam):
-        colormap = cm.get_cmap(self.getColormap())
+        colormap = copy.copy(cm.get_cmap(self.getColormap()))
         if hasattr(colormap, "set_gamma"):
             colormap.set_gamma(gam)
         self._obj.set_cmap(colormap)
@@ -188,7 +190,8 @@ class _MatplotlibImage(ImageData):
         self._obj.set_norm(norm)
 
     def _setOpacity(self, value):
-        self._obj.set_alpha(value)
+        data = self.getFilteredWave().data.swapaxes(0, 1)
+        self._obj.set_alpha(np.where(np.isnan(data), 0, 1).astype(float) * value)
 
     def __showColorbar(self, visible, direction='vertical'):
         fig = self.canvas().getFigure()

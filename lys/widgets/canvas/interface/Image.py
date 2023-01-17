@@ -84,7 +84,7 @@ class ImageData(WaveData):
         Return:
             float: The opacity.
         """
-        return self.__getAppearance('Opacity')
+        return self.__getAppearance('Opacity', 1)
 
     @saveCanvas
     def setColorRange(self, min='auto', max='auto'):
