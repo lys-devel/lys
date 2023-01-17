@@ -206,7 +206,7 @@ class Filters_test(unittest.TestCase):
         ans = np.zeros([3, 3])
         ans[1, 1] = 9
         assert_array_equal(result.data, ans)
-        assert_array_equal(result.x, [-0.75, 0, 0.75])
+        assert_array_almost_equal(result.x, [-1 / 3, 0, 1 / 3])
         self.assertEqual(result.name, "wave")
 
     def test_integral(self):

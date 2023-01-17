@@ -141,7 +141,7 @@ class FourierFilter(FilterInterface):
 
         # FFT changes x axis as well as data
         print(result.data) # [0,0,0], [0,9,0], [0,0,0]
-        print(result.x)    # [-0.75, 0, 0.75]
+        print(result.x)    # [-0.3333333, 0, 0.33333333]
 
     """
 
@@ -187,9 +187,9 @@ class FourierFilter(FilterInterface):
         for ax in range(wave.data.ndim):
             if ax in self.axes:
                 a = wave.getAxis(ax)
-                axis = np.linspace(0, len(a) / (np.max(a) - np.min(a)), len(a))
+                axis = np.fft.fftfreq(len(a), d=(np.max(a) - np.min(a)) / (len(a) - 1))
                 if self.roll:
-                    axis = axis - axis[len(a) // 2]
+                    axis = np.roll(axis, len(a) // 2)
                 axes.append(axis)
             else:
                 axes.append(wave.axes[ax])
