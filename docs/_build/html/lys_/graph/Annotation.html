@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Annotation module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Python API for lys</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Annotation module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/lys_/graph/Annotation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.widgets.canvas.interface.Annotation">
+<span id="annotation-module"></span><h1>Annotation module<a class="headerlink" href="#module-lys.widgets.canvas.interface.Annotation" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Annotation.</span></span><span class="sig-name descname"><span class="pre">CanvasAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart" title="lys.widgets.canvas.interface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a></p>
+<p>Interface to add, remove, and get annotations in canvas.</p>
+<p>All public methods in this class can be accessed from <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase" title="lys.widgets.canvas.interface.CanvasBase.CanvasBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasBase.CanvasBase</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>canvas</strong> (<em>.CanvasBase.CanvasBase</em>) – The parent canvas.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addCrossAnnotation">
+<span class="sig-name descname"><span class="pre">addCrossAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BottomLeft'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">appearance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.addCrossAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addCrossAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Add cross annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> (<em>length 2 sequence</em>) – The position in the form of (x, y).</p></li>
+<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the annotation is added.</p></li>
+<li><p><strong>appearance</strong> (<em>dict</em>) – Appearance dictionary, which is generated by <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance" title="lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnnotationData.saveAppearance()</span></code></a> method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The annotation added.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="CrossAnnot.html#lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation" title="lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation">CrossAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addFreeRegionAnnotation">
+<span class="sig-name descname"><span class="pre">addFreeRegionAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BottomLeft'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">appearance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.addFreeRegionAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addFreeRegionAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Add free region annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>region</strong> (<em>2*2 sequence</em>) – The position of the region in the form of [(x0, y0), (x1 ,y1)]</p></li>
+<li><p><strong>width</strong> (<em>float</em>) – The width of the region.</p></li>
+<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the annotation is added.</p></li>
+<li><p><strong>appearance</strong> (<em>dict</em>) – Appearance dictionary, which is generated by <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance" title="lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnnotationData.saveAppearance()</span></code></a> method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The annotation added.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation" title="lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation">FreeRegionAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addInfiniteLineAnnotation">
+<span class="sig-name descname"><span class="pre">addInfiniteLineAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BottomLeft'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">appearance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.addInfiniteLineAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addInfiniteLineAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Add infinite line annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> (<em>float</em>) – The position of the line.</p></li>
+<li><p><strong>orientation</strong> (<em>'vertical'</em><em> or </em><em>'horizontal'</em>) – The orientation of the line.</p></li>
+<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the annotation is added.</p></li>
+<li><p><strong>appearance</strong> (<em>dict</em>) – Appearance dictionary, which is generated by <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance" title="lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnnotationData.saveAppearance()</span></code></a> method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The annotation added.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="LineAnnot.html#lys.widgets.canvas.interface.LineAnnotation.InfiniteLineAnnotation" title="lys.widgets.canvas.interface.LineAnnotation.InfiniteLineAnnotation">InfiniteLineAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addLineAnnotation">
+<span class="sig-name descname"><span class="pre">addLineAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BottomLeft'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">appearance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.addLineAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addLineAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Add line annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> (<em>2*2 sequence</em>) – The position of the line in the form of [(x0, y0), (x1 ,y1)]</p></li>
+<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the line annotation is added.</p></li>
+<li><p><strong>appearance</strong> (<em>dict</em>) – Appearance dictionary, which is generated by <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance" title="lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnnotationData.saveAppearance()</span></code></a> method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The annotation added.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="LineAnnot.html#lys.widgets.canvas.interface.LineAnnotation.LineAnnotation" title="lys.widgets.canvas.interface.LineAnnotation.LineAnnotation">LineAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRectAnnotation">
+<span class="sig-name descname"><span class="pre">addRectAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BottomLeft'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">appearance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.addRectAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRectAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Add rectangle annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> (<em>length 2 sequence</em>) – The position of the rectangle edge in the form of (x, y).</p></li>
+<li><p><strong>size</strong> (<em>length 2 sequence</em>) – The size of the rectangle in the form of (width, height).</p></li>
+<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the annotation is added.</p></li>
+<li><p><strong>appearance</strong> (<em>dict</em>) – Appearance dictionary, which is generated by <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance" title="lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnnotationData.saveAppearance()</span></code></a> method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The annotation added.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="RectAnnot.html#lys.widgets.canvas.interface.RectAnnotation.RectAnnotation" title="lys.widgets.canvas.interface.RectAnnotation.RectAnnotation">RectAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRegionAnnotation">
+<span class="sig-name descname"><span class="pre">addRegionAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BottomLeft'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">appearance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.addRegionAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRegionAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Add region annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>region</strong> (<em>length 2 sequence</em>) – The region in the form of (x1, x2).</p></li>
+<li><p><strong>orientation</strong> (<em>'vertical'</em><em> or </em><em>'horizontal'</em>) – The orientation of the annotation.</p></li>
+<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the annotation is added.</p></li>
+<li><p><strong>appearance</strong> (<em>dict</em>) – Appearance dictionary, which is generated by <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance" title="lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnnotationData.saveAppearance()</span></code></a> method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The annotation added.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation" title="lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation">RegionAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addText">
+<span class="sig-name descname"><span class="pre">addText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BottomLeft'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">appearance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.addText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addText" title="Permalink to this definition"></a></dt>
+<dd><p>Add text annotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<em>str</em>) – The text to be shown.</p></li>
+<li><p><strong>pos</strong> (<em>length 2 sequence</em>) – The position in the form of (x, y).</p></li>
+<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the annotation is added.</p></li>
+<li><p><strong>appearance</strong> (<em>dict</em>) – Appearance dictionary, which is generated by <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance" title="lys.widgets.canvas.interface.AnnotationData.AnnotationData.saveAppearance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AnnotationData.saveAppearance()</span></code></a> method.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The annotation added.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation" title="lys.widgets.canvas.interface.TextAnnotation.TextAnnotation">TextAnnotation</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.annotationChanged">
+<span class="sig-name descname"><span class="pre">annotationChanged</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.annotationChanged" title="Permalink to this definition"></a></dt>
+<dd><p>pyqtSignal that is emitted when annotations are added or removed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getAnnotations">
+<span class="sig-name descname"><span class="pre">getAnnotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.getAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of all annotations in canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type</strong> (<em>str</em>) – The type of annotations (‘all’, ‘text’, ‘line’, ‘infiniteLine’, ‘rect’, ‘region’, ‘freeRegion’, or ‘cross’)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationData" title="lys.widgets.canvas.interface.AnnotationData.AnnotationData"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnotationData.AnnotationData</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getCrossAnnotations">
+<span class="sig-name descname"><span class="pre">getCrossAnnotations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.getCrossAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getCrossAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of all cross annotations in canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of <a class="reference internal" href="CrossAnnot.html#lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation" title="lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrossAnnotation.CrossAnnotation</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getFreeRegionAnnotations">
+<span class="sig-name descname"><span class="pre">getFreeRegionAnnotations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.getFreeRegionAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getFreeRegionAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of all free region annotations in canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of <a class="reference internal" href="RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation" title="lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionAnnotation.FreeRegionAnnotation</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getInfiniteLineAnnotations">
+<span class="sig-name descname"><span class="pre">getInfiniteLineAnnotations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.getInfiniteLineAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getInfiniteLineAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of all infinite line annotations in canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of <a class="reference internal" href="LineAnnot.html#lys.widgets.canvas.interface.LineAnnotation.InfiniteLineAnnotation" title="lys.widgets.canvas.interface.LineAnnotation.InfiniteLineAnnotation"><code class="xref py py-class docutils literal notranslate"><span class="pre">LineAnnotation.InfiniteLineAnnotation</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getLineAnnotations">
+<span class="sig-name descname"><span class="pre">getLineAnnotations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.getLineAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getLineAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of all line annotations in canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of <a class="reference internal" href="LineAnnot.html#lys.widgets.canvas.interface.LineAnnotation.LineAnnotation" title="lys.widgets.canvas.interface.LineAnnotation.LineAnnotation"><code class="xref py py-class docutils literal notranslate"><span class="pre">LineAnnotation.LineAnnotation</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRectAnnotations">
+<span class="sig-name descname"><span class="pre">getRectAnnotations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.getRectAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRectAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of all rectangle annotations in canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of <a class="reference internal" href="RectAnnot.html#lys.widgets.canvas.interface.RectAnnotation.RectAnnotation" title="lys.widgets.canvas.interface.RectAnnotation.RectAnnotation"><code class="xref py py-class docutils literal notranslate"><span class="pre">RectAnnotation.RectAnnotation</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRegionAnnotations">
+<span class="sig-name descname"><span class="pre">getRegionAnnotations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.getRegionAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRegionAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of all region annotations in canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of <a class="reference internal" href="RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation" title="lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation"><code class="xref py py-class docutils literal notranslate"><span class="pre">RegionAnnotation.RegionAnnotation</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getTextAnnotations">
+<span class="sig-name descname"><span class="pre">getTextAnnotations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.getTextAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getTextAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of all text annotations in canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of <a class="reference internal" href="TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation" title="lys.widgets.canvas.interface.TextAnnotation.TextAnnotation"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextAnnotation.TextAnnotation</span></code></a>.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Annotation.CanvasAnnotation.removeAnnotation">
+<span class="sig-name descname"><span class="pre">removeAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">annot</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Annotation.html#CanvasAnnotation.removeAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.removeAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Remove annotation from the canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>annot</strong> (<a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationData" title="lys.widgets.canvas.interface.AnnotationData.AnnotationData"><em>AnnotationData</em></a>) – The annotation removed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

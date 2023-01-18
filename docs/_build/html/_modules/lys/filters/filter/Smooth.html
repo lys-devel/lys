@@ -41,6 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
 </ul>
 
@@ -143,6 +144,20 @@
 
 
 <div class="viewcode-block" id="RemoveImpulsiveNoise"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Smooth.RemoveImpulsiveNoise">[docs]</a><span class="k">class</span> <span class="nc">RemoveImpulsiveNoise</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Remove impulsive noise.</span>
+
+<span class="sd">    This filter removes impulsive noise by the code below::</span>
+
+<span class="sd">        median = scipy.ndfilters.median_filter(data, size=kernel)</span>
+<span class="sd">        new_data = np.where(abs(data - median) &gt; threshold, median, data)</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        kernel(int or tuple of int): The kernel that is pssed to median filter.</span>
+<span class="sd">        threshold(float): The threshold value. See description.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span> <span class="o">=</span> <span class="n">kernel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_threshold</span> <span class="o">=</span> <span class="n">threshold</span>

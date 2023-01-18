@@ -31,6 +31,24 @@ class _SizeAdjustableWindow(_AutoSavedWindow):
 
 @suppressLysWarnings
 def lysCanvas(lib="matplotlib"):
+    """
+    Return canvas widget.
+
+    Args:
+        lib('matplotlib' or 'pyqtgraph'): The library used to generate the widget.
+
+    Example::
+
+        from lys import Wave, append, widgets
+
+        # you can use lysCanvas as usual Qt wiget
+        c = widgets.lysCanvas()
+        c.Append(Wave([1,2,3]))
+
+        # you can use 'append' function for lysCanvas
+        append([2,3,4])
+        c.show()
+    """
     if lib == "matplotlib":
         return ExtendCanvas()
     elif lib == "pyqtgraph":

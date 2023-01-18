@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legend module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Python API for lys</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Legend module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/lys_/graph/Legend.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.widgets.canvas.interface.Legend">
+<span id="legend-module"></span><h1>Legend module<a class="headerlink" href="#module-lys.widgets.canvas.interface.Legend" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Legend.CanvasLegend">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Legend.</span></span><span class="sig-name descname"><span class="pre">CanvasLegend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Legend.html#CanvasLegend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Legend.CanvasLegend" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart" title="lys.widgets.canvas.interface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a></p>
+<p>Abstract base class for Legend.
+All methods in this interface can be accessed from <code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasBase</span></code> instance.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendFont">
+<span class="sig-name descname"><span class="pre">getLegendFont</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Legend.html#CanvasLegend.getLegendFont"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendFont" title="Permalink to this definition"></a></dt>
+<dd><p>Get the font of the legend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The information of font. See <a class="reference internal" href="#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFont" title="lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFont"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setLegendFont()</span></code></a></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendFrameVisible">
+<span class="sig-name descname"><span class="pre">getLegendFrameVisible</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Legend.html#CanvasLegend.getLegendFrameVisible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendFrameVisible" title="Permalink to this definition"></a></dt>
+<dd><p>Get the visibility of the frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The visibility of the frame.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendPosition">
+<span class="sig-name descname"><span class="pre">getLegendPosition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Legend.html#CanvasLegend.getLegendPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendPosition" title="Permalink to this definition"></a></dt>
+<dd><p>Get the font of the legend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The position of the legend.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Legend.CanvasLegend.legendPositionChanged">
+<span class="sig-name descname"><span class="pre">legendPositionChanged</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Legend.CanvasLegend.legendPositionChanged" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFont">
+<span class="sig-name descname"><span class="pre">setLegendFont</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">family</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'black'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Legend.html#CanvasLegend.setLegendFont"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFont" title="Permalink to this definition"></a></dt>
+<dd><p>Set the font of the legend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>family</strong> (<em>str</em>) – The name of the font.</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – The size of the font.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – The color of the font such as #111111.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFrameVisible">
+<span class="sig-name descname"><span class="pre">setLegendFrameVisible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">visible</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Legend.html#CanvasLegend.setLegendFrameVisible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFrameVisible" title="Permalink to this definition"></a></dt>
+<dd><p>Show/hide the frame of the legend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>visible</strong> (<em>bool</em>) – The visibility of the frame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendPosition">
+<span class="sig-name descname"><span class="pre">setLegendPosition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Legend.html#CanvasLegend.setLegendPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendPosition" title="Permalink to this definition"></a></dt>
+<dd><p>Set the position of the legend.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>position</strong> (<em>tuple</em>) – The position of the legend in the form of (x,y)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

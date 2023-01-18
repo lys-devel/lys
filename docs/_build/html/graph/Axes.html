@@ -94,8 +94,611 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="axes-module">
-<h1>Axes module<a class="headerlink" href="#axes-module" title="Permalink to this heading"></a></h1>
+  <section id="module-lys.widgets.canvas.interface.Axes">
+<span id="axes-module"></span><h1>Axes module<a class="headerlink" href="#module-lys.widgets.canvas.interface.Axes" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Axes.</span></span><span class="sig-name descname"><span class="pre">CanvasAxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart" title="lys.widgets.canvas.interface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a></p>
+<p>Interface to access axes of canvas.
+All methods in this interface can be accessed from <code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasBase</span></code> instance.
+Developers should implement a abstract methods.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.addAxis">
+<span class="sig-name descname"><span class="pre">addAxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.addAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.addAxis" title="Permalink to this definition"></a></dt>
+<dd><p>Add top/right axis to the canvas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Top'</em><em> or </em><em>'Right'</em>) – The axis to be added.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.axisChanged">
+<span class="sig-name descname"><span class="pre">axisChanged</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.axisChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the right or top axis is added.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.axisIsValid">
+<span class="sig-name descname"><span class="pre">axisIsValid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.axisIsValid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.axisIsValid" title="Permalink to this definition"></a></dt>
+<dd><p>Return if the specified <em>axis</em> is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The name of axis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The axis is valid or not.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">)</span>
+<span class="c1"># True</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">)</span>
+<span class="c1"># False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.axisList">
+<span class="sig-name descname"><span class="pre">axisList</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.axisList"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.axisList" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of valid axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The list of valid axes.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of axis name</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axisList</span><span class="p">()</span>
+<span class="c1"># [&#39;Left&#39;, &#39;Bottom&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.axisRangeChanged">
+<span class="sig-name descname"><span class="pre">axisRangeChanged</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.axisRangeChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the range of axes is changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.clearSelectedRange">
+<span class="sig-name descname"><span class="pre">clearSelectedRange</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.clearSelectedRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.clearSelectedRange" title="Permalink to this definition"></a></dt>
+<dd><p>Clear the selected range.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisColor">
+<span class="sig-name descname"><span class="pre">getAxisColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.getAxisColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisColor" title="Permalink to this definition"></a></dt>
+<dd><p>Get color of axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose thick is changed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The color code of the axis, such as ‘#123456’.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisColor" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisColor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAxisColor()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisMode">
+<span class="sig-name descname"><span class="pre">getAxisMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.getAxisMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisMode" title="Permalink to this definition"></a></dt>
+<dd><p>Get axis mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose mode is changed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The scale mode of the axis.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>‘linear’ or ‘log’</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisMode" title="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisMode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAxisMode()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange">
+<span class="sig-name descname"><span class="pre">getAxisRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.getAxisRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange" title="Permalink to this definition"></a></dt>
+<dd><p>Get the axis view limits.</p>
+<p>If the axis is in ‘BottomLeft’, ‘BottomRight’, ‘TopLeft’, or ‘TopRight’, both horizontal and vertical range is returned in the form of [(x1, x2), (y1, y2)].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Left'</em><em>, </em><em>'Right'</em><em>, </em><em>'Bottom'</em><em>, </em><em>'Top'</em><em>, </em><em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The axis range in the form of (x1, x2).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>length 2 sequence</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAxisRange()</span></code></a>, <a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAutoScaleAxis()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisThick">
+<span class="sig-name descname"><span class="pre">getAxisThick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.getAxisThick"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisThick" title="Permalink to this definition"></a></dt>
+<dd><p>Get thick of axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose thick is obtained.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The thickness of the axis.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisThick" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisThick"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAxisThick()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.getMirrorAxis">
+<span class="sig-name descname"><span class="pre">getMirrorAxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.getMirrorAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getMirrorAxis" title="Permalink to this definition"></a></dt>
+<dd><p>Get the state of mirror axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose mirror axis state is checked.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>If <em>value</em> is True (False), the mirror axis is shown (hidden).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setMirrorAxis" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setMirrorAxis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setMirrorAxis()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.isAutoScaled">
+<span class="sig-name descname"><span class="pre">isAutoScaled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.isAutoScaled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.isAutoScaled" title="Permalink to this definition"></a></dt>
+<dd><p>Return if the specified <em>axis</em> is auto-scaled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The name of axis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The axis is auto-scaled or not.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">isAutoScaled</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
+<span class="c1"># True</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">isAutoScaled</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">)</span>
+<span class="c1"># False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAxisRange()</span></code></a>, <a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange" title="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAxisRange()</span></code></a>, <a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAutoScaleAxis()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.isRangeSelected">
+<span class="sig-name descname"><span class="pre">isRangeSelected</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.isRangeSelected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.isRangeSelected" title="Permalink to this definition"></a></dt>
+<dd><p>Return True if the selected range is not empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The result.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.selectedRange">
+<span class="sig-name descname"><span class="pre">selectedRange</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.selectedRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.selectedRange" title="Permalink to this definition"></a></dt>
+<dd><p>Return the selected range that is set by <a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setSelectedRange" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setSelectedRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setSelectedRange()</span></code></a> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The selected range in the form of [(x1, y1), (x2, y2)]</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>2*2 sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.selectedRangeChanged">
+<span class="sig-name descname"><span class="pre">selectedRangeChanged</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.selectedRangeChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the selected range of axes is changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis">
+<span class="sig-name descname"><span class="pre">setAutoScaleAxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.setAutoScaleAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis" title="Permalink to this definition"></a></dt>
+<dd><p>Autoscale the axis view to the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose range is changed.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setAutoScaleAxis</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
+<span class="c1"># [-0.1, 2,1]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAxisRange()</span></code></a>, <a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange" title="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAxisRange()</span></code></a>, <a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.isAutoScaled" title="lys.widgets.canvas.interface.Axes.CanvasAxes.isAutoScaled"><code class="xref py py-meth docutils literal notranslate"><span class="pre">isAutoScaled()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisColor">
+<span class="sig-name descname"><span class="pre">setAxisColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.setAxisColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisColor" title="Permalink to this definition"></a></dt>
+<dd><p>Set color of axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose thick is changed.</p></li>
+<li><p><strong>color</strong> (<em>str</em>) – The color code of the axis, such as ‘#123456’.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisColor" title="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisColor"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAxisColor()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisMode">
+<span class="sig-name descname"><span class="pre">setAxisMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.setAxisMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisMode" title="Permalink to this definition"></a></dt>
+<dd><p>Set axis mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose mirror axis is enabled/disabled.</p></li>
+<li><p><strong>mode</strong> (<em>'linear'</em><em> or </em><em>'log'</em>) – The scale of the axis is set to <em>mode</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisMode" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisMode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAxisMode()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange">
+<span class="sig-name descname"><span class="pre">setAxisRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.setAxisRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange" title="Permalink to this definition"></a></dt>
+<dd><p>Set the axis view limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose range is changed.</p></li>
+<li><p><strong>range</strong> (<em>length 2 sequence</em>) – minimum and maximum range of view.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
+<span class="c1"># [0, 5]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange" title="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAxisRange()</span></code></a>, <a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis" title="lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAutoScaleAxis()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisThick">
+<span class="sig-name descname"><span class="pre">setAxisThick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thick</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.setAxisThick"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisThick" title="Permalink to this definition"></a></dt>
+<dd><p>Set thick of axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose thick is changed.</p></li>
+<li><p><strong>thick</strong> (<em>float</em>) – The thickness of the axis.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisThick" title="lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisThick"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getAxisThick()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.setMirrorAxis">
+<span class="sig-name descname"><span class="pre">setMirrorAxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.setMirrorAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setMirrorAxis" title="Permalink to this definition"></a></dt>
+<dd><p>Enable/disable mirror axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose mirror axis is enabled/disabled.</p></li>
+<li><p><strong>value</strong> (<em>bool</em>) – If <em>value</em> is True (False), the mirror axis is shown (hidden).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.getMirrorAxis" title="lys.widgets.canvas.interface.Axes.CanvasAxes.getMirrorAxis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getMirrorAxis()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasAxes.setSelectedRange">
+<span class="sig-name descname"><span class="pre">setSelectedRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasAxes.setSelectedRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.setSelectedRange" title="Permalink to this definition"></a></dt>
+<dd><p>Set the selected range of the graph.</p>
+<p>The selected range can be obtained by <a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasAxes.selectedRange" title="lys.widgets.canvas.interface.Axes.CanvasAxes.selectedRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">selectedRange()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>region</strong> – The region to be selected in the form of [(x1, y1), (x2, y2)].</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Axes.</span></span><span class="sig-name descname"><span class="pre">CanvasTicks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart" title="lys.widgets.canvas.interface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a></p>
+<p>Interface to access ticks of canvas.
+All methods in this interface can be accessed from <code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasBase</span></code> instance.
+Developers should implement a abstract methods.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickDirection">
+<span class="sig-name descname"><span class="pre">getTickDirection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.getTickDirection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickDirection" title="Permalink to this definition"></a></dt>
+<dd><p>Get direction of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>This method returns whether the ticks are shown in the box.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>‘in’ or ‘out’</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickDirection" title="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickDirection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setTickDirection()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickInterval">
+<span class="sig-name descname"><span class="pre">getTickInterval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'major'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.getTickInterval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickInterval" title="Permalink to this definition"></a></dt>
+<dd><p>Get interval of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p></li>
+<li><p><strong>which</strong> (<em>'major'</em><em> or </em><em>'minor'</em>) – Return major (minor) tick interval depending on <em>which</em>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The interval of the ticks.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickInterval" title="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickInterval"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setTickInterval()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickLength">
+<span class="sig-name descname"><span class="pre">getTickLength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'major'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.getTickLength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickLength" title="Permalink to this definition"></a></dt>
+<dd><p>Get length of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p></li>
+<li><p><strong>which</strong> (<em>'major'</em><em> or </em><em>'minor'</em><em> or </em><em>'both'</em>) – Return major (minor) tick length depending on <em>which</em>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The length of the ticks.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickLength" title="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickLength"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setTickLength()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickVisible">
+<span class="sig-name descname"><span class="pre">getTickVisible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mirror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'major'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.getTickVisible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickVisible" title="Permalink to this definition"></a></dt>
+<dd><p>Get visibility of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p></li>
+<li><p><strong>which</strong> (<em>'major'</em><em> or </em><em>'minor'</em>) – This method returns major (minor) tick visibility depending on <em>which</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickVisible" title="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickVisible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setTickVisible()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickWidth">
+<span class="sig-name descname"><span class="pre">getTickWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'major'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.getTickWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickWidth" title="Permalink to this definition"></a></dt>
+<dd><p>Get thick of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p></li>
+<li><p><strong>which</strong> (<em>'major'</em><em> or </em><em>'minor'</em>) – Return major (minor) tick width depending on <em>which</em>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The width of the ticks.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickWidth" title="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickWidth"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setTickWidth()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickDirection">
+<span class="sig-name descname"><span class="pre">setTickDirection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.setTickDirection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickDirection" title="Permalink to this definition"></a></dt>
+<dd><p>Set direction of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p></li>
+<li><p><strong>value</strong> (<em>'in'</em><em> or </em><em>'out'</em>) – Whether the ticks are shown in the box.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickDirection" title="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickDirection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getTickDirection()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickInterval">
+<span class="sig-name descname"><span class="pre">setTickInterval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'major'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.setTickInterval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickInterval" title="Permalink to this definition"></a></dt>
+<dd><p>Set interval of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – The length of the axis. Zero means automatic interval.</p></li>
+<li><p><strong>which</strong> (<em>'major'</em><em> or </em><em>'minor'</em><em> or </em><em>'both'</em>) – Change major (minor) tick length depending on <em>which</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickInterval" title="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickInterval"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getTickInterval()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickLength">
+<span class="sig-name descname"><span class="pre">setTickLength</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'major'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.setTickLength"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickLength" title="Permalink to this definition"></a></dt>
+<dd><p>Set length of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – The length of the axis.</p></li>
+<li><p><strong>which</strong> (<em>'major'</em><em> or </em><em>'minor'</em><em> or </em><em>'both'</em>) – Change major (minor) tick length depending on <em>which</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickLength" title="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickLength"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getTickLength()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickVisible">
+<span class="sig-name descname"><span class="pre">setTickVisible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mirror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'both'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.setTickVisible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickVisible" title="Permalink to this definition"></a></dt>
+<dd><p>Set visibility of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p></li>
+<li><p><strong>value</strong> (<em>bool</em>) – If it is True (False), the ticks are shown (hidden).</p></li>
+<li><p><strong>which</strong> (<em>'major'</em><em> or </em><em>'minor'</em><em> or </em><em>'both'</em>) – Change major (minor) tick length depending on <em>which</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickVisible" title="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickVisible"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getTickVisible()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Axes.CanvasTicks.setTickWidth">
+<span class="sig-name descname"><span class="pre">setTickWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">which</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'major'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Axes.html#CanvasTicks.setTickWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickWidth" title="Permalink to this definition"></a></dt>
+<dd><p>Set thick of ticks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Bottom'</em><em> or </em><em>'Top'</em>) – The axis whose ticks are changed.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – The width of the axis.</p></li>
+<li><p><strong>which</strong> (<em>'major'</em><em> or </em><em>'minor'</em><em> or </em><em>'both'</em>) – Change major (minor) tick width depending on <em>which</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickWidth" title="lys.widgets.canvas.interface.Axes.CanvasTicks.getTickWidth"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getTickWidth()</span></code></a></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

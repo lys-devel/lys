@@ -16,7 +16,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     New tabs in side bar can be added by :meth:`addTab` method.
 
-    Developers can access :class:`.FileView.FileSystemView` by :attr:`fileView` property.
+    Developers can access :class:`lys.widgets.fileView.FileSystemView` by :attr:`fileView` property.
     """
     beforeClosed = QtCore.pyqtSignal(QtCore.QEvent)
     """
@@ -196,11 +196,11 @@ class MainWindow(QtWidgets.QMainWindow):
     @property
     def fileView(self):
         """
-        Returns :class:`.FileView.FileSystemView` object in main window.
+        Returns :class:`lys.widgets.fileView.FileSystemView` object in main window.
 
         Developers can get selected paths and add new context menu in FileSystemView.
 
-        See :class:`.FileView.FileSystemView` for detail.
+        See :class:`lys.widgets.fileView.FileSystemView` for detail.
         """
         return self._fileView
 

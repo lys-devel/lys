@@ -95,8 +95,114 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="contour-module">
-<h1>Contour module<a class="headerlink" href="#contour-module" title="Permalink to this heading"></a></h1>
+  <section id="module-lys.widgets.canvas.interface.Contour">
+<span id="contour-module"></span><h1>Contour module<a class="headerlink" href="#module-lys.widgets.canvas.interface.Contour" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Contour.ContourData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Contour.</span></span><span class="sig-name descname"><span class="pre">ContourData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Contour.html#ContourData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Contour.ContourData" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData" title="lys.widgets.canvas.interface.WaveData.WaveData"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaveData</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Contour.ContourData.getColor">
+<span class="sig-name descname"><span class="pre">getColor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Contour.html#ContourData.getColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Contour.ContourData.getColor" title="Permalink to this definition"></a></dt>
+<dd><p>Get color of the contour line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>color string such as #ff0000</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Contour.ContourData.getLevel">
+<span class="sig-name descname"><span class="pre">getLevel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Contour.html#ContourData.getLevel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Contour.ContourData.getLevel" title="Permalink to this definition"></a></dt>
+<dd><p>Get level of the contour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The level</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Contour.ContourData.getStyle">
+<span class="sig-name descname"><span class="pre">getStyle</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Contour.html#ContourData.getStyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Contour.ContourData.getStyle" title="Permalink to this definition"></a></dt>
+<dd><p>Get the style of the line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Style string.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Contour.ContourData.getWidth">
+<span class="sig-name descname"><span class="pre">getWidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Contour.html#ContourData.getWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Contour.ContourData.getWidth" title="Permalink to this definition"></a></dt>
+<dd><p>Get the width of the line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The width of the line.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Contour.ContourData.setColor">
+<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Contour.html#ContourData.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Contour.ContourData.setColor" title="Permalink to this definition"></a></dt>
+<dd><p>Set color of the contour line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>color</strong> (<em>str</em>) – rgb color string such as #ff0000.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Contour.ContourData.setLevel">
+<span class="sig-name descname"><span class="pre">setLevel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Contour.html#ContourData.setLevel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Contour.ContourData.setLevel" title="Permalink to this definition"></a></dt>
+<dd><p>Set level of the contour.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>level</strong> (<em>float</em>) – The level.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Contour.ContourData.setStyle">
+<span class="sig-name descname"><span class="pre">setStyle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">style</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Contour.html#ContourData.setStyle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Contour.ContourData.setStyle" title="Permalink to this definition"></a></dt>
+<dd><p>Set the style of the line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>style</strong> (<em>'solid'</em><em>, </em><em>'dashed'</em><em>, </em><em>'dashdot'</em><em>, </em><em>'dotted'</em><em>, </em><em>'None'</em>) – Style string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Contour.ContourData.setWidth">
+<span class="sig-name descname"><span class="pre">setWidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Contour.html#ContourData.setWidth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Contour.ContourData.setWidth" title="Permalink to this definition"></a></dt>
+<dd><p>Set the width of the line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>width</strong> (<em>float</em>) – The width of the line.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 

@@ -46,7 +46,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="api.html">Python API</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="lys.html">lys package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.CanvasInterface.html">CanvasInterface package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lys.widgets.canvas.html">lys.widgets.canvas package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.Analysis.html">lys.Analysis package</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="lys.filters.html">lys.filters</a><ul class="current">
@@ -57,6 +57,7 @@
 <li class="toctree-l3"><a class="reference internal" href="lys.filters.html#module-lys.filters.function">Functions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lys.filters.html#module-lys.filters.interface">Interfaces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="lys.filters.html#module-lys.filters.filtersGUI">GUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lys.filters.html#use-canvas-as-widget">Use canvas as widget</a></li>
 </ul>
 </li>
 </ul>
@@ -372,7 +373,7 @@ Uses should rechunk before applying this filter by <code class="xref py py-class
 
 <span class="c1"># FFT changes x axis as well as data</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># [0,0,0], [0,9,0], [0,0,0]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>    <span class="c1"># [-0.75, 0, 0.75]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>    <span class="c1"># [-0.3333333, 0, 0.33333333]</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -1132,6 +1133,20 @@ axes(tuple of int): specifies axes reflected.</p>
 <dt class="sig sig-object py" id="lys.filters.filter.Smooth.RemoveImpulsiveNoise">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Smooth.</span></span><span class="sig-name descname"><span class="pre">RemoveImpulsiveNoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filter/Smooth.html#RemoveImpulsiveNoise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.RemoveImpulsiveNoise" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="lys.filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Remove impulsive noise.</p>
+<p>This filter removes impulsive noise by the code below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">median</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndfilters</span><span class="o">.</span><span class="n">median_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">kernel</span><span class="p">)</span>
+<span class="n">new_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">median</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kernel</strong> (<em>int</em><em> or </em><em>tuple</em><em> of </em><em>int</em>) – The kernel that is pssed to median filter.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – The threshold value. See description.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.filters.filter.Smooth.RemoveImpulsiveNoise.getParameters">
 <span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lys/filters/filter/Smooth.html#RemoveImpulsiveNoise.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.RemoveImpulsiveNoise.getParameters" title="Permalink to this definition"></a></dt>

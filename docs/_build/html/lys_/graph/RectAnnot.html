@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RectAnnotation module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">Python API for lys</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">RectAnnotation module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/lys_/graph/RectAnnot.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.widgets.canvas.interface.RectAnnotation">
+<span id="rectannotation-module"></span><h1>RectAnnotation module<a class="headerlink" href="#module-lys.widgets.canvas.interface.RectAnnotation" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.RectAnnotation.RectAnnotation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.RectAnnotation.</span></span><span class="sig-name descname"><span class="pre">RectAnnotation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/RectAnnotation.html#RectAnnotation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.RectAnnotation.RectAnnotation" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationWithLine" title="lys.widgets.canvas.interface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnotationWithLine</span></code></a></p>
+<p>Interface to access rectangle annotations in canvas.</p>
+<p><em>RectAnnotation</em> is usually generated by addRectAnnotation method in canvas.</p>
+<p>Several methods related to the appearance of line is inherited from <a class="reference internal" href="AnnotationData.html#lys.widgets.canvas.interface.AnnotationData.AnnotationWithLine" title="lys.widgets.canvas.interface.AnnotationData.AnnotationWithLine"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnotationData.AnnotationWithLine</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>canvas</strong> (<em>Canvas</em>) – canvas to which the line annotation is added.</p></li>
+<li><p><strong>pos</strong> (<em>length 2 sequence</em>) – The position of the rect annotation in the form of (x, y).</p></li>
+<li><p><strong>size</strong> (<em>length 2 sequence</em>) – The size of the rect annotation in the form of (width, height).</p></li>
+<li><p><strong>axis</strong> (<em>'BottomLeft'</em><em>, </em><em>'BottomRight'</em><em>, </em><em>'TopLeft'</em><em>, or </em><em>'TopRight'</em>) – The axis to which the line annotation is added.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">()</span>
+<span class="n">rect</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">addRectAnnotation</span><span class="p">()</span>
+<span class="n">rect</span><span class="o">.</span><span class="n">setLineColor</span><span class="p">(</span><span class="s2">&quot;#ff0000&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.getPosition">
+<span class="sig-name descname"><span class="pre">getPosition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/RectAnnotation.html#RectAnnotation.getPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.getPosition" title="Permalink to this definition"></a></dt>
+<dd><p>Get position of the rectangle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The position of rectangle in the form of (x, y)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>length 2 sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.getRegion">
+<span class="sig-name descname"><span class="pre">getRegion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/RectAnnotation.html#RectAnnotation.getRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.getRegion" title="Permalink to this definition"></a></dt>
+<dd><p>Get region of the rectangle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The region of rectangle in the form of [(x1, x2), (y1, y2)]</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>2*2 sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.getSize">
+<span class="sig-name descname"><span class="pre">getSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/RectAnnotation.html#RectAnnotation.getSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.getSize" title="Permalink to this definition"></a></dt>
+<dd><p>Get size of the rectangle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The size of rectangle in the form of (width, height)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>length 2 sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.regionChanged">
+<span class="sig-name descname"><span class="pre">regionChanged</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.regionChanged" title="Permalink to this definition"></a></dt>
+<dd><p>PyqtSignal that is emitted when the rectangle is changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.setRegion">
+<span class="sig-name descname"><span class="pre">setRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">region</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/RectAnnotation.html#RectAnnotation.setRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.RectAnnotation.RectAnnotation.setRegion" title="Permalink to this definition"></a></dt>
+<dd><p>Set region of the rectangle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>region</strong> (<em>2*2 sequence</em>) – The region of rectangle in the form of [(x1, x2), (y1, y2)]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -20,13 +20,6 @@ lys.BasicWidgets.FittingWindow module
    :undoc-members:
    :show-inheritance:
 
-lys.BasicWidgets.GraphWindow module
------------------------------------
-
-.. automodule:: lys.BasicWidgets.GraphWindow
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 Module contents
 ---------------

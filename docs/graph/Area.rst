@@ -1,7 +1,0 @@
-Area module
-----------------------------------------------
-
-.. automodule:: lys.BasicWidgets.CanvasInterface.Area
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -91,8 +91,89 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="events-module">
-<h1>Events module<a class="headerlink" href="#events-module" title="Permalink to this heading"></a></h1>
+  <section id="module-lys.widgets.canvas.interface.Events">
+<span id="events-module"></span><h1>Events module<a class="headerlink" href="#module-lys.widgets.canvas.interface.Events" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasFocusEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Events.</span></span><span class="sig-name descname"><span class="pre">CanvasFocusEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Events.html#CanvasFocusEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasFocusEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart" title="lys.widgets.canvas.interface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasFocusEvent.focused">
+<span class="sig-name descname"><span class="pre">focused</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasFocusEvent.focused" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the canvas is focused</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasKeyboardEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Events.</span></span><span class="sig-name descname"><span class="pre">CanvasKeyboardEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Events.html#CanvasKeyboardEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasKeyboardEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart" title="lys.widgets.canvas.interface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a></p>
+<p>Basic keyborad event class of Canvas.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasKeyboardEvent.keyPressed">
+<span class="sig-name descname"><span class="pre">keyPressed</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasKeyboardEvent.keyPressed" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when a key is pressed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasMouseEvent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Events.</span></span><span class="sig-name descname"><span class="pre">CanvasMouseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Events.html#CanvasMouseEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasMouseEvent" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart" title="lys.widgets.canvas.interface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a></p>
+<p>Basic keyborad event class of Canvas.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasMouseEvent.clicked">
+<span class="sig-name descname"><span class="pre">clicked</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasMouseEvent.clicked" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when a mouse is clicked.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasMouseEvent.doubleClicked">
+<span class="sig-name descname"><span class="pre">doubleClicked</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasMouseEvent.doubleClicked" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when a mouse is double-clicked.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasMouseEvent.mapPosition">
+<span class="sig-name descname"><span class="pre">mapPosition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Events.html#CanvasMouseEvent.mapPosition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasMouseEvent.mapPosition" title="Permalink to this definition"></a></dt>
+<dd><p>Translate the clicked position to the data-coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>event</strong> (<em>QEvent</em>) – The event that is given as an argument of mouse events such as mousePressed.</p></li>
+<li><p><strong>axis</strong> (<em>'Left'</em><em> or </em><em>'Right'</em><em> or </em><em>'Top'</em><em> or </em><em>'Bottom'</em>) – The axis by which the position is translated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasMouseEvent.mouseMoved">
+<span class="sig-name descname"><span class="pre">mouseMoved</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasMouseEvent.mouseMoved" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when a mouse is moved.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasMouseEvent.mousePressed">
+<span class="sig-name descname"><span class="pre">mousePressed</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasMouseEvent.mousePressed" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when a mouse is pressed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.CanvasMouseEvent.mouseReleased">
+<span class="sig-name descname"><span class="pre">mouseReleased</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Events.CanvasMouseEvent.mouseReleased" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when a mouse is released.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.Events.getFrontCanvas">
+<span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Events.</span></span><span class="sig-name descname"><span class="pre">getFrontCanvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/canvas/interface/Events.html#getFrontCanvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Events.getFrontCanvas" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 

@@ -28,13 +28,6 @@ lys.BasicWidgets.Fitting.Functions module
    :undoc-members:
    :show-inheritance:
 
-lys.BasicWidgets.Fitting.LineProfile module
--------------------------------------------
-
-.. automodule:: lys.BasicWidgets.Fitting.LineProfile
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 Module contents
 ---------------

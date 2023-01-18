@@ -4,7 +4,7 @@ CanvasInterface package
 Base class of canvas
 ------------------------------------------------------
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    graph/CanvasBase
    graph/Events
@@ -12,18 +12,19 @@ Base class of canvas
 Components of canvas
 ------------------------------------------------------
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    graph/Area
    graph/Axes
    graph/AxisLabels
    graph/Data
    graph/Annotation
+   graph/Legend
 
 Interface to data
 ------------------------------------------------------
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    graph/WaveData
    graph/Line
@@ -35,7 +36,7 @@ Interface to data
 Interface to annotations
 ------------------------------------------------------
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
    graph/AnnotationData
    graph/TextAnnot

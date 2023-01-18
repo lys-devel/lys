@@ -1,8 +1,24 @@
 
 glb module
---------------
+==========
 
+Functions
+-----------------------
 .. automodule:: lys.glb
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Shell
+-----------------------
+.. automodule:: lys.glb.shell
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Main Window
+-----------------------
+.. automodule:: lys.glb.MainWindow
    :members:
    :undoc-members:
    :show-inheritance:

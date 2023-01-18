@@ -72,6 +72,20 @@ class GaussianFilter(FilterInterface):
 
 
 class RemoveImpulsiveNoise(FilterInterface):
+    """
+    Remove impulsive noise.
+
+    This filter removes impulsive noise by the code below::
+
+        median = scipy.ndfilters.median_filter(data, size=kernel)
+        new_data = np.where(abs(data - median) > threshold, median, data)
+
+    Args:
+        kernel(int or tuple of int): The kernel that is pssed to median filter.
+        threshold(float): The threshold value. See description.
+
+    """
+
     def __init__(self, kernel, threshold):
         self._kernel = kernel
         self._threshold = threshold
