@@ -5,8 +5,7 @@ import itertools
 from lys import DaskWave
 from lys.Qt import QtWidgets
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
-
-from .CommonWidgets import kernelSizeLayout, AxisCheckLayout, ScientificSpinBox
+from lys.widgets import kernelSizeLayout, AxisCheckLayout, ScientificSpinBox
 
 
 class ReduceSizeFilter(FilterInterface):

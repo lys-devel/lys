@@ -3,8 +3,7 @@ import dask.array as da
 
 from lys import DaskWave
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
-
-from .CommonWidgets import AxisCheckLayout
+from lys.widgets import AxisCheckLayout
 
 
 class GradientFilter(FilterInterface):

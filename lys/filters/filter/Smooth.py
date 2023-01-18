@@ -5,9 +5,7 @@ from dask_image import ndfilters
 from lys import DaskWave
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 from lys.Qt import QtWidgets
-from lys.widgets import ScientificSpinBox
-
-from .CommonWidgets import kernelSizeLayout, kernelSigmaLayout
+from lys.widgets import ScientificSpinBox, kernelSizeLayout, kernelSigmaLayout
 
 
 class MedianFilter(FilterInterface):

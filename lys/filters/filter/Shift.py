@@ -5,9 +5,7 @@ import dask.array as da
 from lys import DaskWave
 from lys.Qt import QtWidgets
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
-from lys.widgets import ScientificSpinBox
-
-from .CommonWidgets import AxisCheckLayout
+from lys.widgets import ScientificSpinBox, AxisCheckLayout
 
 
 class ShiftFilter(FilterInterface):

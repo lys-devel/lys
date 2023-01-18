@@ -7,9 +7,7 @@ from lys import DaskWave, frontCanvas
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 
 from lys.Qt import QtWidgets
-from lys.widgets import ScientificSpinBox
-
-from .CommonWidgets import AxisSelectionLayout, AxesSelectionDialog
+from lys.widgets import ScientificSpinBox, AxisSelectionLayout, AxesSelectionDialog
 
 
 class FreeLineFilter(FilterInterface):

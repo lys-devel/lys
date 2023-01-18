@@ -3,8 +3,7 @@ import numpy as np
 from lys import DaskWave
 from lys.Qt import QtWidgets
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
-
-from .CommonWidgets import AxisSelectionLayout
+from lys.widgets import AxisSelectionLayout
 
 
 class SelectIndexFilter(FilterInterface):

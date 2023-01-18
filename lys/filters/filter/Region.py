@@ -6,8 +6,7 @@ from scipy.ndimage import map_coordinates
 from lys import Wave, DaskWave
 from lys.Qt import QtWidgets
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
-
-from .CommonWidgets import RegionSelectWidget, AxisSelectionLayout
+from lys.widgets import RegionSelectWidget, AxisSelectionLayout
 
 
 class NormalizeFilter(FilterInterface):

@@ -5,8 +5,7 @@ from scipy import ndimage
 from lys import DaskWave, frontCanvas
 from lys.Qt import QtWidgets
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
-
-from .CommonWidgets import ScientificSpinBox, AxisSelectionLayout
+from lys.widgets import ScientificSpinBox, AxisSelectionLayout
 
 
 class SetAxisFilter(FilterInterface):

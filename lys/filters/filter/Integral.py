@@ -4,8 +4,7 @@ import dask.array as da
 from lys import DaskWave, frontCanvas
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 from lys.Qt import QtWidgets
-
-from .CommonWidgets import AxisCheckLayout, ScientificSpinBox, RegionSelectWidget, AxisSelectionLayout
+from lys.widgets import AxisCheckLayout, ScientificSpinBox, RegionSelectWidget, AxisSelectionLayout
 
 
 def _getSumFunction(sumtype):

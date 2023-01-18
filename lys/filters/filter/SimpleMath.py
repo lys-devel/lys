@@ -4,8 +4,7 @@ import dask.array as da
 from lys import DaskWave
 from lys.Qt import QtWidgets
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
-
-from .CommonWidgets import ScientificSpinBox
+from lys.widgets import ScientificSpinBox
 
 
 class SimpleMathFilter(FilterInterface):

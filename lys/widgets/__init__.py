@@ -1,7 +1,7 @@
 
 from lys import registerFileLoader
 
-from .general import ScientificSpinBox, ColorSelection, ColormapSelection
+from .general import *
 from .fileView import FileSystemView
 
 from .mdi import LysSubWindow, _ExtendMdiArea

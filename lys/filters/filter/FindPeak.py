@@ -5,8 +5,7 @@ from scipy.ndimage import median_filter
 from lys import DaskWave
 from lys.Qt import QtWidgets
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
-
-from .CommonWidgets import AxisSelectionLayout
+from lys.widgets import AxisSelectionLayout
 
 
 class PeakFilter(FilterInterface):

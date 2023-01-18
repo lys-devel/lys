@@ -7,8 +7,7 @@ from scipy.ndimage import gaussian_filter
 from lys import DaskWave
 from lys.Qt import QtWidgets, QtCore
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
-
-from .CommonWidgets import ScientificSpinBox, AxisSelectionLayout
+from lys.widgets import ScientificSpinBox, AxisSelectionLayout
 
 
 class ThresholdFilter(FilterInterface):
