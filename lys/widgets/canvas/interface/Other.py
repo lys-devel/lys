@@ -14,16 +14,22 @@ class CanvasUtilities(CanvasPart):
     def openModifyWindow(self):
         from lys.widgets import Graph
         from ..ModifyWindow import ModifyWindow
-        parent = self._getParent()
+        parent = self.getParent()
         mod = ModifyWindow(self.canvas(), parent, showArea=isinstance(parent, Graph))
         return mod
 
     def openFittingWindow(self):
         from lys.fitting import FittingWindow
-        fit = FittingWindow(self._getParent(), self.canvas())
+        fit = FittingWindow(self.getParent(), self.canvas())
         return fit
 
-    def _getParent(self):
+    def getParent(self):
+        """
+        Get Parent LysSubWindow if it exists.
+
+        Returns:
+            LysSubWindow: The parent LysSubWindow. If the canvas is not embedded in LysSubWindow, None is returned.
+        """
         parent = self.canvas().parentWidget()
         while(parent is not None):
             if isinstance(parent, LysSubWindow):

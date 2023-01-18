@@ -176,11 +176,17 @@ class DataSelectionBox(_DataSelectionBoxBase):
 
     def __process(self):
         data = self._selectedData()
-        dlg = FiltersDialog(data[0].getWave().data.ndim)
+        if len(data) == 1:
+            title = "Process for " + data[0].getName()
+        else:
+            title = "Process for " + str(len(data)) + " waves"
+        dlg = FiltersDialog(data[0].getWave().data.ndim, title)
         for d in data:
             dlg.applied.connect(d.setFilter)
         if data[0].getFilter() is not None:
             dlg.setFilter(data[0].getFilter())
+        dlg.attach(self.canvas.getParent())
+        dlg.attachTo()
         dlg.show()
 
     def __export(self, waveType):
@@ -230,8 +236,10 @@ class DataSelectionBox(_DataSelectionBoxBase):
 class FiltersDialog(LysSubWindow):
     applied = QtCore.pyqtSignal(object)
 
-    def __init__(self, dim):
+    def __init__(self, dim, title=None):
         super().__init__()
+        if title is not None:
+            self.setWindowTitle(title)
         self.filters = FiltersGUI(dim, parent=self)
 
         self.ok = QtWidgets.QPushButton("O K", clicked=self._ok)
@@ -251,16 +259,24 @@ class FiltersDialog(LysSubWindow):
         self.resize(500, 500)
 
     def _ok(self):
-        self.ok = True
-        self.applied.emit(self.filters.GetFilters())
-        self.close()
+        filt = self.filters.GetFilters()
+        if filt.getRelativeDimension() != 0:
+            QtWidgets.QMessageBox.information(self, "Information", "You cannot aplly filters that changes dimension of data in Graph process. Use MultiCut instead.", QtWidgets.QMessageBox.Yes)
+        else:
+            self.ok = True
+            self.applied.emit(filt)
+            self.close()
 
     def _cancel(self):
         self.ok = False
         self.close()
 
     def _apply(self):
-        self.applied.emit(self.filters.GetFilters())
+        filt = self.filters.GetFilters()
+        if filt.getRelativeDimension() != 0:
+            QtWidgets.QMessageBox.information(self, "Information", "You cannot aplly filters that changes dimension of data in Graph process. Use MultiCut instead.", QtWidgets.QMessageBox.Yes)
+        else:
+            self.applied.emit(filt)
 
     def setFilter(self, filt):
         self.filters.setFilters(filt)

@@ -6,6 +6,7 @@ from pathlib import Path
 
 from lys import home, load
 from lys.Qt import QtCore, QtWidgets
+from lys.decorators import avoidCircularReference
 
 
 class _ExtendMdiArea(QtWidgets.QMdiArea):
@@ -156,6 +157,10 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
     """
     *moveFinished* signal is emitted when the move of the window is finished.
     """
+    focused = QtCore.pyqtSignal()
+    """
+    *focused* signal is emitted when the window is focused.
+    """
     closed = QtCore.pyqtSignal(object)
     """
     *closed* signal is emitted when the window is closed.
@@ -176,6 +181,7 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
         super().__init__()
         self._parent = None
         self._floating = floating
+        self.installEventFilter(self)
         self._resizeTimer = QtCore.QTimer(self)
         self._resizeTimer.timeout.connect(self.resizeFinished)
         self._resizeTimer.setSingleShot(True)
@@ -190,6 +196,11 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.updateGeometry()
         self.show()
+
+    def eventFilter(self, object, event):
+        if event.type() == QtCore.QEvent.FocusIn:
+            self.focused.emit()
+        return super().eventFilter(object, event)
 
     def resizeEvent(self, event):
         """Reimplementation of resizeEvent in QMdiSubWindow"""
@@ -210,6 +221,7 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
     def closeEvent(self, event):
         """Reimplementation of closeEvent in QMdiSubWindow"""
         if self._parent is not None:
+            self._parent.focused.disconnect(self._setFocus)
             self._parent.moved.disconnect(self.attachTo)
             self._parent.resized.disconnect(self.attachTo)
             self._parent.closed.disconnect(self.close)
@@ -226,9 +238,16 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
         """
         self._parent = parent
         if isinstance(parent, LysSubWindow):
+            self.focused.connect(self._setFocus)
+            self._parent.focused.connect(self._setFocus)
             self._parent.moved.connect(self.attachTo)
             self._parent.resized.connect(self.attachTo)
             self._parent.closed.connect(self.close)
+
+    @avoidCircularReference
+    def _setFocus(self):
+        _ExtendMdiArea.current().setActiveSubWindow(self)
+        _ExtendMdiArea.current().setActiveSubWindow(self._parent)
 
     def attachTo(self):
         """
