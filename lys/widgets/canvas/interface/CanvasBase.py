@@ -2,7 +2,7 @@ import functools
 import weakref
 
 from lys.Qt import QtCore
-from lys.decorators import suppressLysWarnings
+from lys.errors import suppressLysWarnings
 
 
 def saveCanvas(func):

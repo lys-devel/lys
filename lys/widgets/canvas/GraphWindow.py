@@ -1,5 +1,5 @@
 from lys.Qt import QtCore, QtWidgets
-from lys.decorators import suppressLysWarnings
+from lys.errors import suppressLysWarnings
 from ..mdi import _AutoSavedWindow
 from .Matplotlib import ExtendCanvas
 from .pyqtGraph import pyqtCanvas
