@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -78,7 +78,7 @@
 <span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span>
 
 
-<div class="viewcode-block" id="WaveData"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData">[docs]</a><span class="k">class</span> <span class="nc">WaveData</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData">[docs]</a><span class="k">class</span> <span class="nc">WaveData</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access wave data in the canvas.</span>
 
@@ -120,7 +120,7 @@
             <span class="n">w</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">ComplexFilter</span><span class="p">(</span><span class="s2">&quot;absolute&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">w</span>
 
-<div class="viewcode-block" id="WaveData.getWave"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getWave">[docs]</a>    <span class="k">def</span> <span class="nf">getWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.getWave"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getWave">[docs]</a>    <span class="k">def</span> <span class="nf">getWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the wave.</span>
 
@@ -129,7 +129,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span></div>
 
-<div class="viewcode-block" id="WaveData.getFilteredWave"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getFilteredWave">[docs]</a>    <span class="k">def</span> <span class="nf">getFilteredWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.getFilteredWave"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getFilteredWave">[docs]</a>    <span class="k">def</span> <span class="nf">getFilteredWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the wave to which offset and filter have been applied.</span>
 
@@ -138,7 +138,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filteredWave</span></div>
 
-<div class="viewcode-block" id="WaveData.getName"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getName">[docs]</a>    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.getName"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getName">[docs]</a>    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the name of the wave data.</span>
 
@@ -147,7 +147,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DataName&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWave</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WaveData.setName"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setName">[docs]</a>    <span class="k">def</span> <span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.setName"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setName">[docs]</a>    <span class="k">def</span> <span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the name of the data.</span>
 
@@ -156,7 +156,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;DataName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span></div>
 
-<div class="viewcode-block" id="WaveData.getAxis"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getAxis">[docs]</a>    <span class="k">def</span> <span class="nf">getAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.getAxis"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getAxis">[docs]</a>    <span class="k">def</span> <span class="nf">getAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the axis to which the data was added.</span>
 
@@ -165,7 +165,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span></div>
 
-<div class="viewcode-block" id="WaveData.setVisible"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setVisible">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="WaveData.setVisible"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setVisible">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">visible</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the visibility of the data.</span>
@@ -176,7 +176,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;Visible&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">visible</span></div>
 
-<div class="viewcode-block" id="WaveData.getVisible"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getVisible">[docs]</a>    <span class="k">def</span> <span class="nf">getVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.getVisible"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getVisible">[docs]</a>    <span class="k">def</span> <span class="nf">getVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the visibility of the data.</span>
 
@@ -185,7 +185,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Visible&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WaveData.setOffset"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setOffset">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="WaveData.setOffset"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setOffset">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setOffset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the offset to the data.</span>
@@ -199,7 +199,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="n">offset</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="WaveData.getOffset"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getOffset">[docs]</a>    <span class="k">def</span> <span class="nf">getOffset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.getOffset"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getOffset">[docs]</a>    <span class="k">def</span> <span class="nf">getOffset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the offset to the data.</span>
 
@@ -210,7 +210,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WaveData.setFilter"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setFilter">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="WaveData.setFilter"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setFilter">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply filter to the data.</span>
@@ -222,10 +222,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="o">=</span> <span class="nb">filter</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="WaveData.getFilter"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getFilter">[docs]</a>    <span class="k">def</span> <span class="nf">getFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.getFilter"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getFilter">[docs]</a>    <span class="k">def</span> <span class="nf">getFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span></div>
 
-<div class="viewcode-block" id="WaveData.setZOrder"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setZOrder">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="WaveData.setZOrder"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.setZOrder">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setZOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the z order of the data.</span>
@@ -236,7 +236,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setZ</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="n">z</span></div>
 
-<div class="viewcode-block" id="WaveData.getZOrder"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getZOrder">[docs]</a>    <span class="k">def</span> <span class="nf">getZOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.getZOrder"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.getZOrder">[docs]</a>    <span class="k">def</span> <span class="nf">getZOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the z order of the data.</span>
 
@@ -245,7 +245,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span></div>
 
-<div class="viewcode-block" id="WaveData.saveAppearance"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.saveAppearance">[docs]</a>    <span class="k">def</span> <span class="nf">saveAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="WaveData.saveAppearance"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.saveAppearance">[docs]</a>    <span class="k">def</span> <span class="nf">saveAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save appearance from dictionary.</span>
 
@@ -256,7 +256,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="WaveData.loadAppearance"><a class="viewcode-back" href="../../../../../graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.loadAppearance">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="WaveData.loadAppearance"><a class="viewcode-back" href="../../../../../lys_/graph/WaveData.html#lys.widgets.canvas.interface.WaveData.WaveData.loadAppearance">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">loadAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">appearance</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load appearance from dictionary.</span>

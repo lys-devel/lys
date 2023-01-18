@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -79,7 +79,7 @@
 <span class="kn">from</span> <span class="nn">.Font</span> <span class="kn">import</span> <span class="n">FontInfo</span>
 
 
-<div class="viewcode-block" id="CanvasLegend"><a class="viewcode-back" href="../../../../../graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend">[docs]</a><span class="k">class</span> <span class="nc">CanvasLegend</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasLegend"><a class="viewcode-back" href="../../../../../lys_/graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend">[docs]</a><span class="k">class</span> <span class="nc">CanvasLegend</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract base class for Legend.</span>
 <span class="sd">    All methods in this interface can be accessed from :class:`CanvasBase` instance.</span>
@@ -99,7 +99,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setLegendPosition</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLegendFrameVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CanvasLegend.setLegendFont"><a class="viewcode-back" href="../../../../../graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFont">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasLegend.setLegendFont"><a class="viewcode-back" href="../../../../../lys_/graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFont">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setLegendFont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the font of the legend.</span>
@@ -115,7 +115,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setLegendFont</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_font</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;family&quot;</span><span class="p">:</span> <span class="n">family</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="CanvasLegend.getLegendFont"><a class="viewcode-back" href="../../../../../graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendFont">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendFont</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasLegend.getLegendFont"><a class="viewcode-back" href="../../../../../lys_/graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendFont">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendFont</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the font of the legend.</span>
 
@@ -124,7 +124,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_font</span></div>
 
-<div class="viewcode-block" id="CanvasLegend.setLegendPosition"><a class="viewcode-back" href="../../../../../graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendPosition">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasLegend.setLegendPosition"><a class="viewcode-back" href="../../../../../lys_/graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendPosition">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setLegendPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the position of the legend.</span>
@@ -137,7 +137,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="n">position</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">legendPositionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_position</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasLegend.getLegendPosition"><a class="viewcode-back" href="../../../../../graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendPosition">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasLegend.getLegendPosition"><a class="viewcode-back" href="../../../../../lys_/graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendPosition">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the font of the legend.</span>
 
@@ -146,7 +146,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position</span></div>
 
-<div class="viewcode-block" id="CanvasLegend.setLegendFrameVisible"><a class="viewcode-back" href="../../../../../graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFrameVisible">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasLegend.setLegendFrameVisible"><a class="viewcode-back" href="../../../../../lys_/graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFrameVisible">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setLegendFrameVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">visible</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Show/hide the frame of the legend.</span>
@@ -157,7 +157,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setLegendFrameVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frameon</span> <span class="o">=</span> <span class="n">visible</span></div>
 
-<div class="viewcode-block" id="CanvasLegend.getLegendFrameVisible"><a class="viewcode-back" href="../../../../../graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendFrameVisible">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendFrameVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasLegend.getLegendFrameVisible"><a class="viewcode-back" href="../../../../../lys_/graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendFrameVisible">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendFrameVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the visibility of the frame</span>
 

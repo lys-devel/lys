@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -79,7 +79,7 @@
 <span class="kn">from</span> <span class="nn">.function</span> <span class="kn">import</span> <span class="n">_filterGroups</span><span class="p">,</span> <span class="n">_getFilterGuiName</span><span class="p">,</span> <span class="n">_getFilterGui</span>
 
 
-<div class="viewcode-block" id="FiltersGUI"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI">[docs]</a><span class="k">class</span> <span class="nc">FiltersGUI</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="FiltersGUI"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.filtersGUI.FiltersGUI">[docs]</a><span class="k">class</span> <span class="nc">FiltersGUI</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTreeWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The GUI by which users can make list of filters.</span>
 
@@ -97,7 +97,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">customContextMenuRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_context</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setHeaderLabel</span><span class="p">(</span><span class="s2">&quot;Filters: Right click to edit&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FiltersGUI.setDimension"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.setDimension">[docs]</a>    <span class="k">def</span> <span class="nf">setDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
+<div class="viewcode-block" id="FiltersGUI.setDimension"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.filtersGUI.FiltersGUI.setDimension">[docs]</a>    <span class="k">def</span> <span class="nf">setDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the dimension of the input data.</span>
 
@@ -191,7 +191,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__addItem</span><span class="p">(</span><span class="n">wid</span><span class="o">.</span><span class="n">_filClass</span><span class="p">,</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wid</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
 
-<div class="viewcode-block" id="FiltersGUI.clear"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FiltersGUI.clear"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.filtersGUI.FiltersGUI.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear all filters in GUI.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -212,7 +212,7 @@
                 <span class="n">wid</span><span class="o">.</span><span class="n">dimensionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">)</span>
             <span class="n">dim</span> <span class="o">+=</span> <span class="n">w</span><span class="o">.</span><span class="n">GetFilter</span><span class="p">()</span><span class="o">.</span><span class="n">getRelativeDimension</span><span class="p">()</span>
 
-<div class="viewcode-block" id="FiltersGUI.GetFilters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.GetFilters">[docs]</a>    <span class="k">def</span> <span class="nf">GetFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FiltersGUI.GetFilters"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.filtersGUI.FiltersGUI.GetFilters">[docs]</a>    <span class="k">def</span> <span class="nf">GetFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get filters based on the current state of the GUI.</span>
 
@@ -225,7 +225,7 @@
             <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">GetFilter</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">filters</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FiltersGUI.setFilters"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersGUI.setFilters">[docs]</a>    <span class="k">def</span> <span class="nf">setFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
+<div class="viewcode-block" id="FiltersGUI.setFilters"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.filtersGUI.FiltersGUI.setFilters">[docs]</a>    <span class="k">def</span> <span class="nf">setFilters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set filters to the GUI.</span>
 
@@ -324,7 +324,7 @@
             <span class="k">return</span> <span class="n">_filterGroups</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">)]</span><span class="o">.</span><span class="n">_filClass</span>
 
 
-<div class="viewcode-block" id="FiltersDialog"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersDialog">[docs]</a><span class="k">class</span> <span class="nc">FiltersDialog</span><span class="p">(</span><span class="n">LysSubWindow</span><span class="p">):</span>
+<div class="viewcode-block" id="FiltersDialog"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.filtersGUI.FiltersDialog">[docs]</a><span class="k">class</span> <span class="nc">FiltersDialog</span><span class="p">(</span><span class="n">LysSubWindow</span><span class="p">):</span>
     <span class="n">applied</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
@@ -359,7 +359,7 @@
     <span class="k">def</span> <span class="nf">_apply</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">applied</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">GetFilters</span><span class="p">())</span>
 
-<div class="viewcode-block" id="FiltersDialog.setFilter"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.filtersGUI.FiltersDialog.setFilter">[docs]</a>    <span class="k">def</span> <span class="nf">setFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
+<div class="viewcode-block" id="FiltersDialog.setFilter"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.filtersGUI.FiltersDialog.setFilter">[docs]</a>    <span class="k">def</span> <span class="nf">setFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">setFilters</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span></div></div>
 </pre></div>
 

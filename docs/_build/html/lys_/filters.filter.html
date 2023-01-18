@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="lys.Analysis package" href="../lys.Analysis.html" />
+    <link rel="next" title="fitting module" href="fitting.html" />
     <link rel="prev" title="filters module" href="filters.html" /> 
 </head>
 
@@ -60,8 +60,7 @@
 <li class="toctree-l3"><a class="reference internal" href="filters.html#module-lys.filters.filtersGUI">GUI</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.BasicWidgets.html">lys.BasicWidgets package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fitting.html">fitting module</a></li>
 </ul>
 </li>
 </ul>
@@ -703,18 +702,6 @@ If axes is not specified, <em>range</em> should be specified by indice.</p>
 </dd></dl>
 
 <span class="target" id="module-lys.filters.filter.Region"></span><dl class="py class">
-<dt class="sig sig-object py" id="lys.filters.filter.Region.MaskFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Region.</span></span><span class="sig-name descname"><span class="pre">MaskFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#MaskFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.MaskFilter" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.filters.filter.Region.MaskFilter.getParameters">
-<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#MaskFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.MaskFilter.getParameters" title="Permalink to this definition"></a></dt>
-<dd><p>Returns parameters used for this filter as dict</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="lys.filters.filter.Region.NormalizeFilter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Region.</span></span><span class="sig-name descname"><span class="pre">NormalizeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#NormalizeFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.NormalizeFilter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
@@ -758,18 +745,6 @@ data[:,0] = data[:,0]/data[:,5], data[:,1]=data[:,1]/dsata[:,5], …</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.filters.filter.Region.ReferenceNormalizeFilter.getParameters">
 <span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#ReferenceNormalizeFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.ReferenceNormalizeFilter.getParameters" title="Permalink to this definition"></a></dt>
-<dd><p>Returns parameters used for this filter as dict</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.filters.filter.Region.ReferenceShiftFilter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Region.</span></span><span class="sig-name descname"><span class="pre">ReferenceShiftFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">region</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#ReferenceShiftFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.ReferenceShiftFilter" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.filters.filter.Region.ReferenceShiftFilter.getParameters">
-<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#ReferenceShiftFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.ReferenceShiftFilter.getParameters" title="Permalink to this definition"></a></dt>
 <dd><p>Returns parameters used for this filter as dict</p>
 </dd></dl>
 
@@ -1314,7 +1289,7 @@ When type=’stop’, then the new axis is val1, …, val2.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="filters.html" class="btn btn-neutral float-left" title="filters module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../lys.Analysis.html" class="btn btn-neutral float-right" title="lys.Analysis package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="fitting.html" class="btn btn-neutral float-right" title="fitting module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

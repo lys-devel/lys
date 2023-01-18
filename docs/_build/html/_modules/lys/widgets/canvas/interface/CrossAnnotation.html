@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -79,7 +79,7 @@
 <span class="kn">from</span> <span class="nn">.AnnotationData</span> <span class="kn">import</span> <span class="n">AnnotationWithLine</span>
 
 
-<div class="viewcode-block" id="CrossAnnotation"><a class="viewcode-back" href="../../../../../graph/CrossAnnot.html#lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation">[docs]</a><span class="k">class</span> <span class="nc">CrossAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
+<div class="viewcode-block" id="CrossAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/CrossAnnot.html#lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation">[docs]</a><span class="k">class</span> <span class="nc">CrossAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access cross annotations in canvas.</span>
 
@@ -107,7 +107,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">pos</span>
 
-<div class="viewcode-block" id="CrossAnnotation.setPosition"><a class="viewcode-back" href="../../../../../graph/CrossAnnot.html#lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation.setPosition">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CrossAnnotation.setPosition"><a class="viewcode-back" href="../../../../../lys_/graph/CrossAnnot.html#lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation.setPosition">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set position of the annotation.</span>
@@ -120,7 +120,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setPosition</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">positionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CrossAnnotation.getPosition"><a class="viewcode-back" href="../../../../../graph/CrossAnnot.html#lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation.getPosition">[docs]</a>    <span class="k">def</span> <span class="nf">getPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CrossAnnotation.getPosition"><a class="viewcode-back" href="../../../../../lys_/graph/CrossAnnot.html#lys.widgets.canvas.interface.CrossAnnotation.CrossAnnotation.getPosition">[docs]</a>    <span class="k">def</span> <span class="nf">getPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the position of the annotation.</span>
 

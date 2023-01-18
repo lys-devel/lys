@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -79,7 +79,7 @@
 <span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span>
 
 
-<div class="viewcode-block" id="CanvasAxes"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes">[docs]</a><span class="k">class</span> <span class="nc">CanvasAxes</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes">[docs]</a><span class="k">class</span> <span class="nc">CanvasAxes</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access axes of canvas.</span>
 <span class="sd">    All methods in this interface can be accessed from :class:`CanvasBase` instance.</span>
@@ -127,7 +127,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isAutoScaled</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">setAutoScaleAxis</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CanvasAxes.addAxis"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.addAxis">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasAxes.addAxis"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.addAxis">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">addAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add top/right axis to the canvas.</span>
@@ -140,7 +140,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_addAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axisChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.axisIsValid"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.axisIsValid">[docs]</a>    <span class="k">def</span> <span class="nf">axisIsValid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.axisIsValid"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.axisIsValid">[docs]</a>    <span class="k">def</span> <span class="nf">axisIsValid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return if the specified *axis* is valid.</span>
 
@@ -163,7 +163,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__axisList</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.axisList"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.axisList">[docs]</a>    <span class="k">def</span> <span class="nf">axisList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.axisList"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.axisList">[docs]</a>    <span class="k">def</span> <span class="nf">axisList</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of valid axes.</span>
 
@@ -180,7 +180,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__axisList</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.setAxisRange"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasAxes.setAxisRange"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisRange">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the axis view limits.</span>
@@ -211,7 +211,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__range</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">range</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axisRangeChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.getAxisRange"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.getAxisRange"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisRange">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the axis view limits.</span>
 
@@ -240,7 +240,7 @@
                 <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Right&#39;</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.setAutoScaleAxis"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasAxes.setAutoScaleAxis"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAutoScaleAxis">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setAutoScaleAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Autoscale the axis view to the data.</span>
@@ -294,7 +294,7 @@
             <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">res</span>
 
-<div class="viewcode-block" id="CanvasAxes.isAutoScaled"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.isAutoScaled">[docs]</a>    <span class="k">def</span> <span class="nf">isAutoScaled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.isAutoScaled"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.isAutoScaled">[docs]</a>    <span class="k">def</span> <span class="nf">isAutoScaled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return if the specified *axis* is auto-scaled.</span>
 
@@ -323,7 +323,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__auto</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.setAxisThick"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisThick">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasAxes.setAxisThick"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisThick">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setAxisThick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">thick</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set thick of axis.</span>
@@ -339,7 +339,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setAxisThick</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">thick</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__thick</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">thick</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.getAxisThick"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisThick">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisThick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.getAxisThick"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisThick">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisThick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get thick of axis.</span>
 
@@ -355,7 +355,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__thick</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.setAxisColor"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisColor">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasAxes.setAxisColor"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisColor">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setAxisColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set color of axis.</span>
@@ -371,7 +371,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setAxisColor</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__color</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">color</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.getAxisColor"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisColor">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.getAxisColor"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisColor">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get color of axis.</span>
 
@@ -387,7 +387,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__color</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.setMirrorAxis"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setMirrorAxis">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasAxes.setMirrorAxis"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setMirrorAxis">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setMirrorAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Enable/disable mirror axis.</span>
@@ -403,7 +403,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setMirrorAxis</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__mirror</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.getMirrorAxis"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getMirrorAxis">[docs]</a>    <span class="k">def</span> <span class="nf">getMirrorAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.getMirrorAxis"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getMirrorAxis">[docs]</a>    <span class="k">def</span> <span class="nf">getMirrorAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the state of mirror axis.</span>
 
@@ -419,7 +419,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mirror</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.setAxisMode"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisMode">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasAxes.setAxisMode"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setAxisMode">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setAxisMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set axis mode.</span>
@@ -436,7 +436,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__mode</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">mode</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="n">axis</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.getAxisMode"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisMode">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.getAxisMode"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.getAxisMode">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisMode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get axis mode.</span>
 
@@ -452,7 +452,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="n">axis</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mode</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.setSelectedRange"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setSelectedRange">[docs]</a>    <span class="k">def</span> <span class="nf">setSelectedRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.setSelectedRange"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.setSelectedRange">[docs]</a>    <span class="k">def</span> <span class="nf">setSelectedRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the selected range of the graph.</span>
 
@@ -465,7 +465,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__rect_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rect_end</span> <span class="o">=</span> <span class="n">region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectedRangeChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectedRange</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.isRangeSelected"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.isRangeSelected">[docs]</a>    <span class="k">def</span> <span class="nf">isRangeSelected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.isRangeSelected"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.isRangeSelected">[docs]</a>    <span class="k">def</span> <span class="nf">isRangeSelected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return True if the selected range is not empty.</span>
 
@@ -474,7 +474,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rect_start</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rect_end</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.selectedRange"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.selectedRange">[docs]</a>    <span class="k">def</span> <span class="nf">selectedRange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.selectedRange"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.selectedRange">[docs]</a>    <span class="k">def</span> <span class="nf">selectedRange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the selected range that is set by :meth:`setSelectedRange` method.</span>
 
@@ -484,7 +484,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isRangeSelected</span><span class="p">():</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__rect_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rect_end</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasAxes.clearSelectedRange"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.clearSelectedRange">[docs]</a>    <span class="k">def</span> <span class="nf">clearSelectedRange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAxes.clearSelectedRange"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasAxes.clearSelectedRange">[docs]</a>    <span class="k">def</span> <span class="nf">clearSelectedRange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear the selected range.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -561,7 +561,7 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setAxisMode(axis, mode) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="CanvasTicks"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks">[docs]</a><span class="k">class</span> <span class="nc">CanvasTicks</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasTicks"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks">[docs]</a><span class="k">class</span> <span class="nc">CanvasTicks</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access ticks of canvas.</span>
 <span class="sd">    All methods in this interface can be accessed from :class:`CanvasBase` instance.</span>
@@ -612,7 +612,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">setTickVisible</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setTickDirection</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CanvasTicks.setTickWidth"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickWidth">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasTicks.setTickWidth"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickWidth">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setTickWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set thick of ticks.</span>
@@ -634,7 +634,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setTickWidth</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">which</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__width</span><span class="p">[</span><span class="n">which</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="CanvasTicks.getTickWidth"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickWidth">[docs]</a>    <span class="k">def</span> <span class="nf">getTickWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasTicks.getTickWidth"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickWidth">[docs]</a>    <span class="k">def</span> <span class="nf">getTickWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get thick of ticks.</span>
 
@@ -652,7 +652,7 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__width</span><span class="p">[</span><span class="n">which</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasTicks.setTickLength"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickLength">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasTicks.setTickLength"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickLength">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setTickLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set length of ticks.</span>
@@ -674,7 +674,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setTickLength</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">which</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__length</span><span class="p">[</span><span class="n">which</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="CanvasTicks.getTickLength"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickLength">[docs]</a>    <span class="k">def</span> <span class="nf">getTickLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasTicks.getTickLength"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickLength">[docs]</a>    <span class="k">def</span> <span class="nf">getTickLength</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get length of ticks.</span>
 
@@ -692,7 +692,7 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__length</span><span class="p">[</span><span class="n">which</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasTicks.setTickInterval"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickInterval">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasTicks.setTickInterval"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickInterval">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setTickInterval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set interval of ticks.</span>
@@ -714,7 +714,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setTickInterval</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getInterval</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">which</span><span class="p">),</span> <span class="n">which</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__interval</span><span class="p">[</span><span class="n">which</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="CanvasTicks.getTickInterval"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickInterval">[docs]</a>    <span class="k">def</span> <span class="nf">getTickInterval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasTicks.getTickInterval"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickInterval">[docs]</a>    <span class="k">def</span> <span class="nf">getTickInterval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get interval of ticks.</span>
 
@@ -771,7 +771,7 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">getAxisMode</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;log&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="CanvasTicks.setTickVisible"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickVisible">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasTicks.setTickVisible"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickVisible">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setTickVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set visibility of ticks.</span>
@@ -796,7 +796,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__visible</span><span class="p">[</span><span class="n">which</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="CanvasTicks.getTickVisible"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickVisible">[docs]</a>    <span class="k">def</span> <span class="nf">getTickVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasTicks.getTickVisible"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickVisible">[docs]</a>    <span class="k">def</span> <span class="nf">getTickVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">mirror</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;major&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get visibility of ticks.</span>
 
@@ -814,7 +814,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__visible</span><span class="p">[</span><span class="n">which</span><span class="p">][</span><span class="n">axis</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasTicks.setTickDirection"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickDirection">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasTicks.setTickDirection"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.setTickDirection">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">setTickDirection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set direction of ticks.</span>
@@ -835,7 +835,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setTickDirection</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__direction</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">direction</span></div>
 
-<div class="viewcode-block" id="CanvasTicks.getTickDirection"><a class="viewcode-back" href="../../../../../graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickDirection">[docs]</a>    <span class="k">def</span> <span class="nf">getTickDirection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasTicks.getTickDirection"><a class="viewcode-back" href="../../../../../lys_/graph/Axes.html#lys.widgets.canvas.interface.Axes.CanvasTicks.getTickDirection">[docs]</a>    <span class="k">def</span> <span class="nf">getTickDirection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get direction of ticks.</span>
 

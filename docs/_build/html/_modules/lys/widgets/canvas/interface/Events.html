@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -79,7 +79,7 @@
 <span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span>
 
 
-<div class="viewcode-block" id="CanvasKeyboardEvent"><a class="viewcode-back" href="../../../../../graph/Events.html#lys.widgets.canvas.interface.Events.CanvasKeyboardEvent">[docs]</a><span class="k">class</span> <span class="nc">CanvasKeyboardEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasKeyboardEvent"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasKeyboardEvent">[docs]</a><span class="k">class</span> <span class="nc">CanvasKeyboardEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic keyborad event class of Canvas.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -110,7 +110,7 @@
 <span class="n">_front</span> <span class="o">=</span> <span class="p">[]</span>
 
 
-<div class="viewcode-block" id="getFrontCanvas"><a class="viewcode-back" href="../../../../../graph/Events.html#lys.widgets.canvas.interface.Events.getFrontCanvas">[docs]</a><span class="k">def</span> <span class="nf">getFrontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="getFrontCanvas"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.getFrontCanvas">[docs]</a><span class="k">def</span> <span class="nf">getFrontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">exclude</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
         <span class="n">exclude</span> <span class="o">=</span> <span class="p">[</span><span class="n">exclude</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">canvas</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">_front</span><span class="p">):</span>
@@ -119,7 +119,7 @@
             <span class="k">return</span> <span class="n">c</span></div>
 
 
-<div class="viewcode-block" id="CanvasFocusEvent"><a class="viewcode-back" href="../../../../../graph/Events.html#lys.widgets.canvas.interface.Events.CanvasFocusEvent">[docs]</a><span class="k">class</span> <span class="nc">CanvasFocusEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasFocusEvent"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasFocusEvent">[docs]</a><span class="k">class</span> <span class="nc">CanvasFocusEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
     <span class="n">focused</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when the canvas is focused</span>
@@ -136,7 +136,7 @@
             <span class="n">_front</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="CanvasMouseEvent"><a class="viewcode-back" href="../../../../../graph/Events.html#lys.widgets.canvas.interface.Events.CanvasMouseEvent">[docs]</a><span class="k">class</span> <span class="nc">CanvasMouseEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasMouseEvent"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasMouseEvent">[docs]</a><span class="k">class</span> <span class="nc">CanvasMouseEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic keyborad event class of Canvas.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -181,7 +181,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">doubleClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clicktime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-<div class="viewcode-block" id="CanvasMouseEvent.mapPosition"><a class="viewcode-back" href="../../../../../graph/Events.html#lys.widgets.canvas.interface.Events.CanvasMouseEvent.mapPosition">[docs]</a>    <span class="k">def</span> <span class="nf">mapPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasMouseEvent.mapPosition"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasMouseEvent.mapPosition">[docs]</a>    <span class="k">def</span> <span class="nf">mapPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the clicked position to the data-coordinates.</span>
 

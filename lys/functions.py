@@ -114,7 +114,7 @@ def registerFittingFunction(func, name=None):
     """
     Register fitting function for lys fitting module.
 
-    The fitting can be done when Ctrl+F is pressed on the graphs with 1D data.
+    The fitting can be started when Ctrl+F is pressed on the graphs with 1D data.
 
     Args:
         func(callable): The function. The information of the function should be obtained from inspect.signature.

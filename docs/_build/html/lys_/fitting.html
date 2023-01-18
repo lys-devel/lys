@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>fitting module &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Filters in lys.filters" href="filters.filter.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API for lys</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="core.html">core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions.html">functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glb.html">glb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html">filters module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">fitting module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-lys.fitting.Functions">List of pre-defined fitting functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.addFittingFunction"><code class="docutils literal notranslate"><span class="pre">addFittingFunction()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.const"><code class="docutils literal notranslate"><span class="pre">const()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.cos"><code class="docutils literal notranslate"><span class="pre">cos()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.doubleExp"><code class="docutils literal notranslate"><span class="pre">doubleExp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.error"><code class="docutils literal notranslate"><span class="pre">error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.exp"><code class="docutils literal notranslate"><span class="pre">exp()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.gauss"><code class="docutils literal notranslate"><span class="pre">gauss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.linear"><code class="docutils literal notranslate"><span class="pre">linear()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.lorentz"><code class="docutils literal notranslate"><span class="pre">lorentz()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.quadratic"><code class="docutils literal notranslate"><span class="pre">quadratic()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.relaxOsci"><code class="docutils literal notranslate"><span class="pre">relaxOsci()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.step"><code class="docutils literal notranslate"><span class="pre">step()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.stepExp"><code class="docutils literal notranslate"><span class="pre">stepExp()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API for lys</a></li>
+      <li class="breadcrumb-item active">fitting module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lys_/fitting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.fitting">
+<span id="fitting-module"></span><h1>fitting module<a class="headerlink" href="#module-lys.fitting" title="Permalink to this heading"></a></h1>
+<section id="module-lys.fitting.Functions">
+<span id="list-of-pre-defined-fitting-functions"></span><h2>List of pre-defined fitting functions<a class="headerlink" href="#module-lys.fitting.Functions" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.addFittingFunction">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">addFittingFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#addFittingFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.addFittingFunction" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.const">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">const</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#const"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.const" title="Permalink to this definition"></a></dt>
+<dd><p>Function for fitting.</p>
+<p><img class="math" src="_images/math/e2d17af00a69f53ede6ea44b3f189b66dd22507c.png" alt="y = C"/></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.cos">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">cos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#cos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.cos" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.doubleExp">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">doubleExp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#doubleExp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.doubleExp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.error">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.error" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.exp">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.exp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.gauss">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">gauss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#gauss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.gauss" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.linear">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.linear" title="Permalink to this definition"></a></dt>
+<dd><p>Function for fitting.</p>
+<p><img class="math" src="_images/math/4b73dd4430869b9fd6bcb231d4cc119b153f5d10.png" alt="y = ax + b"/></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.lorentz">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.lorentz" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.quadratic">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">quadratic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#quadratic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.quadratic" title="Permalink to this definition"></a></dt>
+<dd><p>Function for fitting.</p>
+<p><img class="math" src="_images/math/b7c94b5dfae42a6ca18dc531503fda9a976f20d1.png" alt="y = ax^2 + bx + c"/></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.relaxOsci">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">relaxOsci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#relaxOsci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.relaxOsci" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.step">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.step" title="Permalink to this definition"></a></dt>
+<dd><p>Heaviside step function for fitting.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.Functions.stepExp">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">stepExp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#stepExp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.stepExp" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="filters.filter.html" class="btn btn-neutral float-left" title="Filters in lys.filters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -74,10 +74,10 @@
 <span class="kn">import</span> <span class="nn">weakref</span>
 
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
-<span class="kn">from</span> <span class="nn">lys.decorators</span> <span class="kn">import</span> <span class="n">suppressLysWarnings</span>
+<span class="kn">from</span> <span class="nn">lys.errors</span> <span class="kn">import</span> <span class="n">suppressLysWarnings</span>
 
 
-<div class="viewcode-block" id="saveCanvas"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.saveCanvas">[docs]</a><span class="k">def</span> <span class="nf">saveCanvas</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<div class="viewcode-block" id="saveCanvas"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.saveCanvas">[docs]</a><span class="k">def</span> <span class="nf">saveCanvas</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    When methods of :class:`CanvasBase` or :class:&#39;CanvasPart&#39; that is decorated by *saveCanvas* is called, then *updated* signal of the canvas is emitted. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -98,7 +98,7 @@
     <span class="k">return</span> <span class="n">wrapper</span></div>
 
 
-<div class="viewcode-block" id="disableSaveCanvas"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.disableSaveCanvas">[docs]</a><span class="k">def</span> <span class="nf">disableSaveCanvas</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<div class="viewcode-block" id="disableSaveCanvas"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.disableSaveCanvas">[docs]</a><span class="k">def</span> <span class="nf">disableSaveCanvas</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    When methods of :class:`CanvasBase` or :class:&#39;CanvasPart&#39; that is decorated by *disableSaveCanvas* is called, then *updated* signal of the canvas is *not* emitted in that method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -121,7 +121,7 @@
 <span class="n">_saveCanvasDummy</span> <span class="o">=</span> <span class="n">saveCanvas</span>
 
 
-<div class="viewcode-block" id="CanvasBase"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase">[docs]</a><span class="k">class</span> <span class="nc">CanvasBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasBase"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase">[docs]</a><span class="k">class</span> <span class="nc">CanvasBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for canvas.</span>
 
@@ -145,7 +145,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_saveflg</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__parts</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="CanvasBase.addCanvasPart"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.addCanvasPart">[docs]</a>    <span class="k">def</span> <span class="nf">addCanvasPart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasBase.addCanvasPart"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.addCanvasPart">[docs]</a>    <span class="k">def</span> <span class="nf">addCanvasPart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add :class:`CanvasPart` as a part of the canvas.</span>
 
@@ -160,7 +160,7 @@
                 <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CanvasBase.SaveAsDictionary"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.SaveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">SaveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasBase.SaveAsDictionary"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.SaveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">SaveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the content of the canvas as dictionary.</span>
 
@@ -175,7 +175,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dictionary</span></div>
 
-<div class="viewcode-block" id="CanvasBase.LoadFromDictionary"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.LoadFromDictionary">[docs]</a>    <span class="nd">@suppressLysWarnings</span>
+<div class="viewcode-block" id="CanvasBase.LoadFromDictionary"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.LoadFromDictionary">[docs]</a>    <span class="nd">@suppressLysWarnings</span>
     <span class="nd">@_saveCanvasDummy</span>
     <span class="k">def</span> <span class="nf">LoadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -186,7 +186,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasBase.finalize"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasBase.finalize"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.finalize">[docs]</a>    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Finalize the canvas.</span>
 
@@ -196,7 +196,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="CanvasBase.delayUpdate"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.delayUpdate">[docs]</a>    <span class="k">def</span> <span class="nf">delayUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasBase.delayUpdate"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.delayUpdate">[docs]</a>    <span class="k">def</span> <span class="nf">delayUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method should be used (as [*with*] block) when the canvas is heavily modified to avoid drawing repeatedly.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -215,7 +215,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="CanvasPart"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart">[docs]</a><span class="k">class</span> <span class="nc">CanvasPart</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasPart"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart">[docs]</a><span class="k">class</span> <span class="nc">CanvasPart</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The canvas that inherit :class:`CanvasBase` class is composed of multiple *CanvasPart*.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -224,7 +224,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CanvasPart.canvas"><a class="viewcode-back" href="../../../../../graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart.canvas">[docs]</a>    <span class="k">def</span> <span class="nf">canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasPart.canvas"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart.canvas">[docs]</a>    <span class="k">def</span> <span class="nf">canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the canvas that contains the CanvasPart.</span>
 

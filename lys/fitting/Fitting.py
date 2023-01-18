@@ -52,7 +52,20 @@ def _sumFunc(f1, f2):
     def func(x, *p):
         n = _nparam(f1)
         return f1(x, *p[:n]) + f2(x, *p[n:])
-    func.__signature__ = inspect.Signature(list(inspect.signature(f1).parameters.values()) + list(inspect.signature(f2).parameters.values())[1:])
+    names = []
+    params = []
+    for p in inspect.signature(f1).parameters.values():
+        params.append(inspect.Parameter(p.name, inspect.Parameter.POSITIONAL_OR_KEYWORD))
+        names.append(p.name)
+    for p in list(inspect.signature(f2).parameters.values())[1:]:
+        # avoid identical name
+        name = p.name
+        i = 0
+        while name in names:
+            i += 1
+            name = p.name + str(i)
+        params.append(inspect.Parameter(name, inspect.Parameter.POSITIONAL_OR_KEYWORD))
+    func.__signature__ = inspect.Signature(params)
     return func
 
 

@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -89,7 +89,7 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__ncolor</span> <span class="o">%</span> <span class="mi">9</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="LineData"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData">[docs]</a><span class="k">class</span> <span class="nc">LineData</span><span class="p">(</span><span class="n">WaveData</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData">[docs]</a><span class="k">class</span> <span class="nc">LineData</span><span class="p">(</span><span class="n">WaveData</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access line data in the canvas.</span>
 
@@ -108,7 +108,7 @@
     <span class="k">def</span> <span class="nf">__getAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
 
-<div class="viewcode-block" id="LineData.setColor"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setColor">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setColor"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setColor">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set color of the line.</span>
@@ -119,7 +119,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setColor</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s1">&#39;LineColor&#39;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getColor"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getColor">[docs]</a>    <span class="k">def</span> <span class="nf">getColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getColor"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getColor">[docs]</a>    <span class="k">def</span> <span class="nf">getColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get color of the line.</span>
 
@@ -128,7 +128,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s1">&#39;LineColor&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.setStyle"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setStyle">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setStyle"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setStyle">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the style of the line.</span>
@@ -139,7 +139,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setStyle</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s1">&#39;LineStyle&#39;</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getStyle"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getStyle">[docs]</a>    <span class="k">def</span> <span class="nf">getStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getStyle"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getStyle">[docs]</a>    <span class="k">def</span> <span class="nf">getStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the style of the line.</span>
 
@@ -148,7 +148,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s1">&#39;LineStyle&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.setWidth"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setWidth">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setWidth"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setWidth">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the width of the line.</span>
@@ -159,7 +159,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s1">&#39;LineWidth&#39;</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getWidth"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getWidth">[docs]</a>    <span class="k">def</span> <span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getWidth"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getWidth">[docs]</a>    <span class="k">def</span> <span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the width of the line.</span>
 
@@ -168,7 +168,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s1">&#39;LineWidth&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.setMarker"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setMarker">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setMarker"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setMarker">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the marker shape.</span>
@@ -179,7 +179,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setMarker</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s1">&#39;Marker&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getMarker"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getMarker">[docs]</a>    <span class="k">def</span> <span class="nf">getMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getMarker"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getMarker">[docs]</a>    <span class="k">def</span> <span class="nf">getMarker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the marker shape.</span>
 
@@ -188,7 +188,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s1">&#39;Marker&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.setMarkerSize"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setMarkerSize">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setMarkerSize"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setMarkerSize">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setMarkerSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the size of the marker.</span>
@@ -199,7 +199,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setMarkerSize</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s1">&#39;MarkerSize&#39;</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getMarkerSize"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getMarkerSize">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getMarkerSize"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getMarkerSize">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the size of the marker.</span>
 
@@ -208,7 +208,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s1">&#39;MarkerSize&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.setMarkerThick"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setMarkerThick">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setMarkerThick"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setMarkerThick">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setMarkerThick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">thick</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the thickness of the marker edge.</span>
@@ -219,7 +219,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setMarkerThick</span><span class="p">(</span><span class="n">thick</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s1">&#39;MarkerThick&#39;</span><span class="p">,</span> <span class="n">thick</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getMarkerThick"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getMarkerThick">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerThick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getMarkerThick"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getMarkerThick">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerThick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the thickness of the marker edge.</span>
 
@@ -228,7 +228,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s1">&#39;MarkerThick&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.setMarkerFilling"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setMarkerFilling">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setMarkerFilling"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setMarkerFilling">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setMarkerFilling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the filling of the marker.</span>
@@ -240,7 +240,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setMarkerFilling</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s1">&#39;MarkerFilling&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getMarkerFilling"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getMarkerFilling">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerFilling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getMarkerFilling"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getMarkerFilling">[docs]</a>    <span class="k">def</span> <span class="nf">getMarkerFilling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the filling of the marker.</span>
 
@@ -249,7 +249,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s1">&#39;MarkerFilling&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.setErrorbar"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setErrorbar">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setErrorbar"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setErrorbar">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setErrorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the errorbar.</span>
@@ -280,7 +280,7 @@
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="LineData.getErrorbar"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getErrorbar">[docs]</a>    <span class="k">def</span> <span class="nf">getErrorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getErrorbar"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getErrorbar">[docs]</a>    <span class="k">def</span> <span class="nf">getErrorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the errorbar.</span>
 
@@ -306,7 +306,7 @@
                 <span class="n">err</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">err</span>
 
-<div class="viewcode-block" id="LineData.setCapSize"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setCapSize">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setCapSize"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setCapSize">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setCapSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capsize</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the cap size of the errorbar.</span>
@@ -317,7 +317,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setCapSize</span><span class="p">(</span><span class="n">capsize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s2">&quot;capsize&quot;</span><span class="p">,</span> <span class="n">capsize</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getCapSize"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getCapSize">[docs]</a>    <span class="k">def</span> <span class="nf">getCapSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getCapSize"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getCapSize">[docs]</a>    <span class="k">def</span> <span class="nf">getCapSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the cap size of the errorbar.</span>
 
@@ -326,7 +326,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s1">&#39;capsize&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.setLegendVisible"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setLegendVisible">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setLegendVisible"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setLegendVisible">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setLegendVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">visible</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the visibility of the legend.</span>
@@ -337,7 +337,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setLegendVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s2">&quot;legendVisible&quot;</span><span class="p">,</span> <span class="n">visible</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getLegendVisible"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getLegendVisible">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getLegendVisible"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getLegendVisible">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the visibility of the legend.</span>
 
@@ -346,7 +346,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s1">&#39;legendVisible&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.setLegendLabel"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setLegendLabel">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="LineData.setLegendLabel"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.setLegendLabel">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setLegendLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the label of the legend.</span>
@@ -357,7 +357,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setLegendLabel</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s2">&quot;legendLabel&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LineData.getLegendLabel"><a class="viewcode-back" href="../../../../../graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getLegendLabel">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LineData.getLegendLabel"><a class="viewcode-back" href="../../../../../lys_/graph/Line.html#lys.widgets.canvas.interface.Line.LineData.getLegendLabel">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendLabel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the label of the legend.</span>
 

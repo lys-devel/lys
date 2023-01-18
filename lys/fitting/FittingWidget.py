@@ -488,6 +488,8 @@ class FittingWidget(QtWidgets.QWidget):
 
 
 class FittingTree(QtWidgets.QTreeView):
+    __copied = None
+    __allCopied = None
     plotRequired = QtCore.pyqtSignal(int, int)
 
     def __init__(self):
@@ -502,8 +504,6 @@ class FittingTree(QtWidgets.QTreeView):
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._buildContextMenu)
         self._funcs = []
-        self.__copied = None
-        self.__allCopied = None
 
     def set(self, obj):
         if self._obj is not None:
@@ -577,20 +577,20 @@ class FittingTree(QtWidgets.QTreeView):
 
     def __copyFunction(self, all=False):
         if all:
-            self.__allCopied = self._obj.saveAsDictionary()
+            FittingTree.__allCopied = self._obj.saveAsDictionary()
         else:
-            self.__copied = self._obj.functions[self.__currentItemIndex()].saveAsDictionary()
+            FittingTree.__copied = self._obj.functions[self.__currentItemIndex()].saveAsDictionary()
 
     def __pasteFunction(self, all=False):
         if all:
-            if self.__allCopied is None:
+            if FittingTree.__allCopied is None:
                 return None
             self.__clear()
-            self._obj.loadFromDictionary(self.__allCopied)
+            self._obj.loadFromDictionary(FittingTree.__allCopied)
         else:
-            if self.__copied is None:
+            if FittingTree.__copied is None:
                 return
-            self._obj.addFunction(self.__copied)
+            self._obj.addFunction(FittingTree.__copied)
 
     def __export(self):
         path, type = QtWidgets.QFileDialog.getSaveFileName(self, "Save fitting results", filter="Dictionary (*.dic);;All files (*.*)")

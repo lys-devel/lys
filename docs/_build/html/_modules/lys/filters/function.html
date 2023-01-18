@@ -41,7 +41,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -76,7 +77,7 @@
 <span class="n">_filterGroups</span> <span class="o">=</span> <span class="p">{}</span>
 
 
-<div class="viewcode-block" id="addFilter"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.function.addFilter">[docs]</a><span class="k">def</span> <span class="nf">addFilter</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">filterName</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gui</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guiName</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guiGroup</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="addFilter"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.addFilter">[docs]</a><span class="k">def</span> <span class="nf">addFilter</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">filterName</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gui</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guiName</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guiGroup</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add new filter to lys.</span>
 
@@ -105,7 +106,7 @@
             <span class="n">_filterGroups</span><span class="p">[</span><span class="n">guiGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">guiName</span><span class="p">:</span> <span class="n">gui</span><span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="getFilter"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.function.getFilter">[docs]</a><span class="k">def</span> <span class="nf">getFilter</span><span class="p">(</span><span class="n">filterName</span><span class="p">):</span>
+<div class="viewcode-block" id="getFilter"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.getFilter">[docs]</a><span class="k">def</span> <span class="nf">getFilter</span><span class="p">(</span><span class="n">filterName</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a filter class from name.</span>
 
@@ -144,7 +145,7 @@
                 <span class="k">return</span> <span class="n">key</span>
 
 
-<div class="viewcode-block" id="fromFile"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.function.fromFile">[docs]</a><span class="k">def</span> <span class="nf">fromFile</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+<div class="viewcode-block" id="fromFile"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromFile">[docs]</a><span class="k">def</span> <span class="nf">fromFile</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load filter from .fil file.</span>
 
@@ -174,7 +175,7 @@
     <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="toFile"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.function.toFile">[docs]</a><span class="k">def</span> <span class="nf">toFile</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+<div class="viewcode-block" id="toFile"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.toFile">[docs]</a><span class="k">def</span> <span class="nf">toFile</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save filter to .fil file.</span>
 
@@ -186,7 +187,7 @@
     <span class="nb">filter</span><span class="o">.</span><span class="n">saveAsFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="fromString"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.function.fromString">[docs]</a><span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+<div class="viewcode-block" id="fromString"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromString">[docs]</a><span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load filter from string that is generated by :func:`toString` function.</span>
 
@@ -216,7 +217,7 @@
     <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="toString"><a class="viewcode-back" href="../../../lys.filters.html#lys.filters.function.toString">[docs]</a><span class="k">def</span> <span class="nf">toString</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
+<div class="viewcode-block" id="toString"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.toString">[docs]</a><span class="k">def</span> <span class="nf">toString</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save filter as file. The filter can be loaded by :func:`fromString` function.</span>
 

@@ -2,7 +2,8 @@ import numpy as np
 
 from lys import Wave, glb, display, append
 from lys.Qt import QtCore, QtGui, QtWidgets
-from lys.widgets import ScientificSpinBox
+from lys.widgets import ScientificSpinBox, LysSubWindow
+from lys.filters import FiltersGUI
 from lys.decorators import avoidCircularReference
 
 
@@ -174,7 +175,6 @@ class DataSelectionBox(_DataSelectionBoxBase):
             print(d)
 
     def __process(self):
-        from lys.filters import FiltersDialog
         data = self._selectedData()
         dlg = FiltersDialog(data[0].getWave().data.ndim)
         for d in data:
@@ -225,6 +225,45 @@ class DataSelectionBox(_DataSelectionBoxBase):
             fr, step = d.getParams()
             for i, item in enumerate(data):
                 item.setZOrder(fr + step * i)
+
+
+class FiltersDialog(LysSubWindow):
+    applied = QtCore.pyqtSignal(object)
+
+    def __init__(self, dim):
+        super().__init__()
+        self.filters = FiltersGUI(dim, parent=self)
+
+        self.ok = QtWidgets.QPushButton("O K", clicked=self._ok)
+        self.cancel = QtWidgets.QPushButton("CANCEL", clicked=self._cancel)
+        self.apply = QtWidgets.QPushButton("Apply", clicked=self._apply)
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(self.ok)
+        h1.addWidget(self.cancel)
+        h1.addWidget(self.apply)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.filters)
+        layout.addLayout(h1)
+        w = QtWidgets.QWidget()
+        w.setLayout(layout)
+        self.setWidget(w)
+        self.resize(500, 500)
+
+    def _ok(self):
+        self.ok = True
+        self.applied.emit(self.filters.GetFilters())
+        self.close()
+
+    def _cancel(self):
+        self.ok = False
+        self.close()
+
+    def _apply(self):
+        self.applied.emit(self.filters.GetFilters())
+
+    def setFilter(self, filt):
+        self.filters.setFilters(filt)
 
 
 class _ZOrderDialog(QtWidgets.QDialog):

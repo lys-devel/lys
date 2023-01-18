@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -78,7 +78,7 @@
 <span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span><span class="p">,</span> <span class="n">disableSaveCanvas</span>
 
 
-<div class="viewcode-block" id="CanvasMargin"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin">[docs]</a><span class="k">class</span> <span class="nc">CanvasMargin</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasMargin"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin">[docs]</a><span class="k">class</span> <span class="nc">CanvasMargin</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract base class for Margin. </span>
 <span class="sd">    All methods in this interface can be accessed from :class:`CanvasBase` instance.</span>
@@ -102,7 +102,7 @@
         <span class="n">canvas</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">)</span>
         <span class="n">canvas</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CanvasMargin.setMargin"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.setMargin">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasMargin.setMargin"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.setMargin">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set margin of canvas. Zero means auto.</span>
 
@@ -141,7 +141,7 @@
             <span class="n">t</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="mf">0.05</span>
         <span class="k">return</span> <span class="n">le</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span>
 
-<div class="viewcode-block" id="CanvasMargin.getMargin"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.getMargin">[docs]</a>    <span class="k">def</span> <span class="nf">getMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasMargin.getMargin"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.getMargin">[docs]</a>    <span class="k">def</span> <span class="nf">getMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get margin of canvas.</span>
 
 <span class="sd">        Return:</span>
@@ -152,7 +152,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margins_act</span></div>
 
-<div class="viewcode-block" id="CanvasMargin.refreshMargin"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.refreshMargin">[docs]</a>    <span class="k">def</span> <span class="nf">refreshMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasMargin.refreshMargin"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.refreshMargin">[docs]</a>    <span class="k">def</span> <span class="nf">refreshMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Refresh margin based on the present setting.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -170,7 +170,7 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setMargin(left, right, top, bottom) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="CanvasSize"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize">[docs]</a><span class="k">class</span> <span class="nc">CanvasSize</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasSize"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize">[docs]</a><span class="k">class</span> <span class="nc">CanvasSize</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract base class of CanvasSize.</span>
 <span class="sd">    All methods in this interface can be accessed from :class:`CanvasBase` instance.</span>
@@ -205,7 +205,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Width&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Height&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="CanvasSize.setCanvasSize"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.setCanvasSize">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasSize.setCanvasSize"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.setCanvasSize">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the size of the canvas.</span>
@@ -259,7 +259,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setAspect</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">value</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ran1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ran1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ran2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ran2</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvasResized</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="CanvasSize.getCanvasSize"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.getCanvasSize">[docs]</a>    <span class="k">def</span> <span class="nf">getCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasSize.getCanvasSize"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.getCanvasSize">[docs]</a>    <span class="k">def</span> <span class="nf">getCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get canvas size.</span>
 
 <span class="sd">         Return:</span>
@@ -267,7 +267,7 @@
 <span class="sd">         &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSize</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CanvasSize.getSizeParams"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.getSizeParams">[docs]</a>    <span class="k">def</span> <span class="nf">getSizeParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasSize.getSizeParams"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.getSizeParams">[docs]</a>    <span class="k">def</span> <span class="nf">getSizeParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get size parameters (mode, value, axis1, axis2) as dictionary.</span>
 
@@ -278,7 +278,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasSize.parentResized"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.parentResized">[docs]</a>    <span class="nd">@disableSaveCanvas</span>
+<div class="viewcode-block" id="CanvasSize.parentResized"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.parentResized">[docs]</a>    <span class="nd">@disableSaveCanvas</span>
     <span class="k">def</span> <span class="nf">parentResized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span>
         <span class="n">hp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span>
@@ -288,7 +288,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Height&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvasResized</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="CanvasSize.refreshCanvasSize"><a class="viewcode-back" href="../../../../../graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.refreshCanvasSize">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasSize.refreshCanvasSize"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.refreshCanvasSize">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">refreshCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Width&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Height&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">])</span></div>

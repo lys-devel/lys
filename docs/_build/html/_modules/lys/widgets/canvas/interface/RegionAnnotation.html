@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -79,7 +79,7 @@
 <span class="kn">from</span> <span class="nn">.AnnotationData</span> <span class="kn">import</span> <span class="n">AnnotationWithLine</span>
 
 
-<div class="viewcode-block" id="RegionAnnotation"><a class="viewcode-back" href="../../../../../graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation">[docs]</a><span class="k">class</span> <span class="nc">RegionAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
+<div class="viewcode-block" id="RegionAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation">[docs]</a><span class="k">class</span> <span class="nc">RegionAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access region annotations in canvas.</span>
 
@@ -108,7 +108,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_region</span> <span class="o">=</span> <span class="n">region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 
-<div class="viewcode-block" id="RegionAnnotation.setRegion"><a class="viewcode-back" href="../../../../../graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.setRegion">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="RegionAnnotation.setRegion"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.setRegion">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set region of the annotation.</span>
@@ -122,7 +122,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setRegion</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">regionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getRegion</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="RegionAnnotation.getRegion"><a class="viewcode-back" href="../../../../../graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.getRegion">[docs]</a>    <span class="k">def</span> <span class="nf">getRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RegionAnnotation.getRegion"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.getRegion">[docs]</a>    <span class="k">def</span> <span class="nf">getRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the region of the annotation.</span>
 
@@ -131,7 +131,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_region</span></div>
 
-<div class="viewcode-block" id="RegionAnnotation.getOrientation"><a class="viewcode-back" href="../../../../../graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.getOrientation">[docs]</a>    <span class="k">def</span> <span class="nf">getOrientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RegionAnnotation.getOrientation"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.getOrientation">[docs]</a>    <span class="k">def</span> <span class="nf">getOrientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the orientation of the annotation.</span>
 
@@ -147,7 +147,7 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setRegion(region) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="FreeRegionAnnotation"><a class="viewcode-back" href="../../../../../graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation">[docs]</a><span class="k">class</span> <span class="nc">FreeRegionAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
+<div class="viewcode-block" id="FreeRegionAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation">[docs]</a><span class="k">class</span> <span class="nc">FreeRegionAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access free region annotations in canvas.</span>
 
@@ -179,7 +179,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_region</span> <span class="o">=</span> <span class="n">region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">width</span>
 
-<div class="viewcode-block" id="FreeRegionAnnotation.setRegion"><a class="viewcode-back" href="../../../../../graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.setRegion">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="FreeRegionAnnotation.setRegion"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.setRegion">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set region of the annotation.</span>
@@ -193,7 +193,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setRegion</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">regionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getRegion</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="FreeRegionAnnotation.getRegion"><a class="viewcode-back" href="../../../../../graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.getRegion">[docs]</a>    <span class="k">def</span> <span class="nf">getRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FreeRegionAnnotation.getRegion"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.getRegion">[docs]</a>    <span class="k">def</span> <span class="nf">getRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the region of the annotation.</span>
 
@@ -202,7 +202,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_region</span></div>
 
-<div class="viewcode-block" id="FreeRegionAnnotation.setWidth"><a class="viewcode-back" href="../../../../../graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.setWidth">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="FreeRegionAnnotation.setWidth"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.setWidth">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set width of the annotation.</span>
@@ -215,7 +215,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">widthChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getWidth</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="FreeRegionAnnotation.getWidth"><a class="viewcode-back" href="../../../../../graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.getWidth">[docs]</a>    <span class="k">def</span> <span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FreeRegionAnnotation.getWidth"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.getWidth">[docs]</a>    <span class="k">def</span> <span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the width of the annotation.</span>
 

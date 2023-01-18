@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -84,7 +84,7 @@
 <span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span>
 
 
-<div class="viewcode-block" id="CanvasAnnotation"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation">[docs]</a><span class="k">class</span> <span class="nc">CanvasAnnotation</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation">[docs]</a><span class="k">class</span> <span class="nc">CanvasAnnotation</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to add, remove, and get annotations in canvas.</span>
 
@@ -152,7 +152,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">annotationChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">obj</span>
 
-<div class="viewcode-block" id="CanvasAnnotation.addLineAnnotation"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addLineAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasAnnotation.addLineAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addLineAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">addLineAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add line annotation.</span>
@@ -176,7 +176,7 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addLineAnnotation</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasAnnotation.getLineAnnotations"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getLineAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getLineAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAnnotation.getLineAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getLineAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getLineAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of all line annotations in canvas.</span>
 
@@ -209,7 +209,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">addLineAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="CanvasAnnotation.addInfiniteLineAnnotation"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addInfiniteLineAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasAnnotation.addInfiniteLineAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addInfiniteLineAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">addInfiniteLineAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add infinite line annotation.</span>
@@ -232,7 +232,7 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addInfiniteLineAnnotation</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasAnnotation.getInfiniteLineAnnotations"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getInfiniteLineAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getInfiniteLineAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAnnotation.getInfiniteLineAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getInfiniteLineAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getInfiniteLineAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of all infinite line annotations in canvas.</span>
 
@@ -264,7 +264,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">addInfiniteLineAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="CanvasAnnotation.addRectAnnotation"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRectAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasAnnotation.addRectAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRectAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">addRectAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add rectangle annotation.</span>
@@ -287,7 +287,7 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addRectAnnotation</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasAnnotation.getRectAnnotations"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRectAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getRectAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAnnotation.getRectAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRectAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getRectAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of all rectangle annotations in canvas.</span>
 
@@ -318,7 +318,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">addRectAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="CanvasAnnotation.addRegionAnnotation"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRegionAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasAnnotation.addRegionAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRegionAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">addRegionAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add region annotation.</span>
@@ -341,7 +341,7 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addRegionAnnotation</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasAnnotation.getRegionAnnotations"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRegionAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getRegionAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAnnotation.getRegionAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRegionAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getRegionAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of all region annotations in canvas.</span>
 
@@ -372,7 +372,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">addRegionAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="CanvasAnnotation.addCrossAnnotation"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addCrossAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasAnnotation.addCrossAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addCrossAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">addCrossAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add cross annotation.</span>
@@ -392,7 +392,7 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addCrossAnnotation</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasAnnotation.getCrossAnnotations"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getCrossAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getCrossAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAnnotation.getCrossAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getCrossAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getCrossAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of all cross annotations in canvas.</span>
 
@@ -421,7 +421,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">addCrossAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="CanvasAnnotation.addFreeRegionAnnotation"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addFreeRegionAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasAnnotation.addFreeRegionAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addFreeRegionAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">addFreeRegionAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add free region annotation.</span>
@@ -448,7 +448,7 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addFreeRegionAnnotation</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasAnnotation.getFreeRegionAnnotations"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getFreeRegionAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getFreeRegionAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAnnotation.getFreeRegionAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getFreeRegionAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getFreeRegionAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of all free region annotations in canvas.</span>
 
@@ -483,7 +483,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">addFreeRegionAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="CanvasAnnotation.addText"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addText">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasAnnotation.addText"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addText">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">addText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add text annotation.</span>
@@ -502,7 +502,7 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addTextAnnotation</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasAnnotation.getTextAnnotations"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getTextAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getTextAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAnnotation.getTextAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getTextAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getTextAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of all text annotations in canvas.</span>
 
@@ -533,7 +533,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">addText</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
                 <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="CanvasAnnotation.getAnnotations"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasAnnotation.getAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of all annotations in canvas.</span>
 
@@ -560,7 +560,7 @@
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;cross&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCrossAnnotations</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CanvasAnnotation.removeAnnotation"><a class="viewcode-back" href="../../../../../graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.removeAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasAnnotation.removeAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.removeAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">removeAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annot</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove annotation from the canvas.</span>

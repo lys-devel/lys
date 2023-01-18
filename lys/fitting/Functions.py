@@ -4,19 +4,38 @@ from scipy import special
 from collections import OrderedDict
 
 
-def const(x, value):
-    return np.ones([x.shape[0]]) * value
+def const(x, C):
+    """
+    Function for fitting.
+
+    :math:`y = C`
+    """
+    return np.ones([x.shape[0]]) * C
 
 
 def linear(x, a=1, b=0):
+    """
+    Function for fitting.
+
+    :math:`y = ax + b`
+    """
     return a * x + b
 
 
 def quadratic(x, a, b, c):
+    """
+    Function for fitting.
+
+    :math:`y = ax^2 + bx + c`
+    """
     return a * x**2 + b * x + c
 
 
 def step(x, position, height):
+    """
+    Heaviside step function for fitting.
+    """
+
     return np.heaviside(x - position, 0.5) * height
 
 
