@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -78,8 +78,7 @@
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span>
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
 <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
-
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">AxisCheckLayout</span>
+<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">AxisCheckLayout</span>
 
 
 <span class="k">def</span> <span class="nf">_filt</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
@@ -89,7 +88,7 @@
     <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="LowPassFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.LowPassFilter">[docs]</a><span class="k">class</span> <span class="nc">LowPassFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="LowPassFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.LowPassFilter">[docs]</a><span class="k">class</span> <span class="nc">LowPassFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply low-pass (butterworth) filter by scipy.signal.filtfilt.</span>
 
@@ -109,11 +108,11 @@
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_filt</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span>
 
-<div class="viewcode-block" id="LowPassFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.LowPassFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LowPassFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.LowPassFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="s2">&quot;cutoff&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cutoff</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="HighPassFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.HighPassFilter">[docs]</a><span class="k">class</span> <span class="nc">HighPassFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="HighPassFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.HighPassFilter">[docs]</a><span class="k">class</span> <span class="nc">HighPassFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply high-pass (butterworth) filter by scipy.signal.filtfilt.</span>
 
@@ -133,11 +132,11 @@
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_filt</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HighPassFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.HighPassFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="HighPassFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.HighPassFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="s2">&quot;cutoff&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cutoff</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="BandPassFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.BandPassFilter">[docs]</a><span class="k">class</span> <span class="nc">BandPassFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="BandPassFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.BandPassFilter">[docs]</a><span class="k">class</span> <span class="nc">BandPassFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply band-pass (butterworth) filter by scipy.signal.filtfilt.</span>
 
@@ -157,11 +156,11 @@
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_filt</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BandPassFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.BandPassFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BandPassFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.BandPassFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="s2">&quot;cutoff&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cutoff</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="BandStopFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.BandStopFilter">[docs]</a><span class="k">class</span> <span class="nc">BandStopFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="BandStopFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.BandStopFilter">[docs]</a><span class="k">class</span> <span class="nc">BandStopFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply band-stop (butterworth) filter by scipy.signal.filtfilt.</span>
 
@@ -181,11 +180,11 @@
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_filt</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BandStopFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.BandStopFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="BandStopFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.BandStopFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;order&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order</span><span class="p">,</span> <span class="s2">&quot;cutoff&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cutoff</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="FourierFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.FourierFilter">[docs]</a><span class="k">class</span> <span class="nc">FourierFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="FourierFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.FourierFilter">[docs]</a><span class="k">class</span> <span class="nc">FourierFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply fast Fourier transformation (FFT).</span>
 
@@ -285,7 +284,7 @@
         <span class="n">window</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">fr</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">fr</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;-&gt;&quot;</span> <span class="o">+</span> <span class="n">to</span><span class="p">,</span> <span class="o">*</span><span class="n">window</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="n">window</span>
 
-<div class="viewcode-block" id="FourierFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Frequency.FourierFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FourierFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Frequency.FourierFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="s2">&quot;process&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="p">,</span> <span class="s2">&quot;window&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">,</span> <span class="s2">&quot;roll&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">roll</span><span class="p">}</span></div></div>
 
 

@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -75,11 +75,10 @@
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span>
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
 <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
+<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">AxisSelectionLayout</span>
 
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">AxisSelectionLayout</span>
 
-
-<div class="viewcode-block" id="SelectIndexFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.SelectIndexFilter">[docs]</a><span class="k">class</span> <span class="nc">SelectIndexFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectIndexFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.SelectIndexFilter">[docs]</a><span class="k">class</span> <span class="nc">SelectIndexFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Indexing of data.</span>
 
@@ -104,14 +103,14 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">sl</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SelectIndexFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.SelectIndexFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectIndexFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.SelectIndexFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">,</span> <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="SelectIndexFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.SelectIndexFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SelectIndexFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.SelectIndexFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div></div>
 
 
-<div class="viewcode-block" id="SliceFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.SliceFilter">[docs]</a><span class="k">class</span> <span class="nc">SliceFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="SliceFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.SliceFilter">[docs]</a><span class="k">class</span> <span class="nc">SliceFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Slicing waves.</span>
 
@@ -163,14 +162,14 @@
             <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-<div class="viewcode-block" id="SliceFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.SliceFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SliceFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.SliceFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;slices&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sl</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="SliceFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.SliceFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SliceFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.SliceFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sl</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">start</span> <span class="o">==</span> <span class="n">s</span><span class="o">.</span><span class="n">stop</span><span class="p">])</span></div></div>
 
 
-<div class="viewcode-block" id="IndexMathFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.IndexMathFilter">[docs]</a><span class="k">class</span> <span class="nc">IndexMathFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexMathFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.IndexMathFilter">[docs]</a><span class="k">class</span> <span class="nc">IndexMathFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate wave[*index1*] op wave[*index2*].</span>
 
@@ -206,14 +205,14 @@
         <span class="n">wave</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="IndexMathFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.IndexMathFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexMathFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.IndexMathFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">,</span> <span class="s2">&quot;index1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index1</span><span class="p">,</span> <span class="s2">&quot;index2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index2</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="IndexMathFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.IndexMathFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IndexMathFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.IndexMathFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div></div>
 
 
-<div class="viewcode-block" id="TransposeFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.TransposeFilter">[docs]</a><span class="k">class</span> <span class="nc">TransposeFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="TransposeFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.TransposeFilter">[docs]</a><span class="k">class</span> <span class="nc">TransposeFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Tranpose data by np.transpose</span>
 
@@ -239,7 +238,7 @@
         <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TransposeFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.MatrixMath.TransposeFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TransposeFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.TransposeFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 

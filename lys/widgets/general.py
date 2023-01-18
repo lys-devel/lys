@@ -21,7 +21,7 @@ class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
             self.valueChanged.connect(valueChanged)
 
     def textFromValue(self, value):
-        """textFromValue"""
+        """Reimplementation of textFromValue"""
         return "{:.6g}".format(value)
 
     def valueFromText(self, text):
@@ -38,7 +38,7 @@ class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
             return (QtGui.QValidator.Acceptable, text, pos)
 
     def stepBy(self, steps):
-        """stepBy"""
+        """Reimplementation of stepBy"""
         v = self.value()
         if v == 0:
             n = 1
@@ -71,20 +71,30 @@ class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
 
 
 class ColorSelection(QtWidgets.QPushButton):
+    """
+    A widget to select color.
+    """
     colorChanged = QtCore.pyqtSignal(object)
+    """Emitted when the selected color is changed"""
 
     def __init__(self):
         super().__init__()
-        self.clicked.connect(self.OnClicked)
+        self.clicked.connect(self._onClicked)
         self.__color = "black"
 
-    def OnClicked(self):
+    def _onClicked(self):
         res = QtWidgets.QColorDialog.getColor(QtGui.QColor(self.getColor()))
         if res.isValid():
             self.setColor(res.name())
             self.colorChanged.emit(self.getColor())
 
     def setColor(self, color):
+        """
+        Set the color.
+
+        Args:
+            color(str): The color string such as '#112233'.
+        """
         if isinstance(color, tuple) or isinstance(color, list):
             if len(color) == 4:
                 self.__color = "rgba" + str((int(color[0] * 255), int(color[1] * 255), int(color[2] * 255), int(color[3])))
@@ -95,9 +105,21 @@ class ColorSelection(QtWidgets.QPushButton):
         self.setStyleSheet("background-color:" + self.__color)
 
     def getColor(self):
+        """
+        Get the color.
+
+        Returns:
+            str: The color string such as '#112233'
+        """
         return self.__color
 
     def getColorAsArray(self):
+        """
+        Get the color as QtGui.QColor.
+
+        Returns:
+            QColor: The color selected by user.
+        """
         return QtGui.QColor(self.getColor())
 
 
@@ -150,7 +172,17 @@ _loadCmaps()
 
 
 class ColormapSelection(QtWidgets.QWidget):
+    """
+    A widget to select colormap.
+
+    Args:
+        opacity(bool): If True, the opacity setting is enabled.
+        log(bool): If True, 'log' checkbox is enabled.
+        reverse(bool): If True, 'reverse' checkbox is enabled.
+        gamma(bool): If True, gamma value can be set.
+    """
     colorChanged = QtCore.pyqtSignal()
+    """Emitted when the color map is changed"""
 
     class _ColorCombo(QtWidgets.QComboBox):
         def __init__(self):
@@ -205,46 +237,106 @@ class ColormapSelection(QtWidgets.QWidget):
         layout.addWidget(self.__combo)
         self.setLayout(layout)
 
-    def setEnabled(self, b):
-        self.__combo.setEnabled(b)
-        self.__opacity.setEnabled(b)
-        self.__gamma.setEnabled(b)
-        self.__check.setEnabled(b)
-        self.__log.setEnabled(b)
+    def setEnabled(self, enable):
+        """
+        Enable the widget.
+
+        Args:
+            enable(bool): The boolean to specify whether enabling or disabling the widget
+        """
+        self.__combo.setEnabled(enable)
+        self.__opacity.setEnabled(enable)
+        self.__gamma.setEnabled(enable)
+        self.__check.setEnabled(enable)
+        self.__log.setEnabled(enable)
 
     def __changed(self):
         self.colorChanged.emit()
 
     def setColormap(self, cmap):
+        """
+        Set the colormap.
+
+        Args:
+            cmap(str): The name of matplotlib colormaps. Use matplotlib.pyplot.colormaps to view all colormap names.
+        """
         tmp = cmap.split('_')
         self.__combo.setColormap(tmp[0])
         self.__check.setChecked(not len(tmp) == 1)
 
     def currentColor(self):
+        """
+        Get the name of the selected colormap.
+
+        Returns:
+            str: The name of the selected colormap.
+        """
         if self.__check.isChecked():
             return self.__combo.currentText() + "_r"
         else:
             return self.__combo.currentText()
 
     def currentColorMaps(self):
+        """
+        Get the QtGui.QPixmap of the selected colormap.
+
+        Returns:
+            QPixmap: The selected colormap.
+        """
         return _cmapdic[self.currentColor()]
 
     def isLog(self):
+        """
+        Check if the 'log' checkbox is checked.
+
+        Returns:
+            bool: Whether the 'log' checkbox is checked.
+        """
         return self.__log.isChecked()
 
     def setLog(self, value):
+        """
+        Set the state of the 'log' checkbox.
+
+        Args:
+            value(bool): True to check 'log' checkbox.
+        """
         self.__log.setChecked(value)
 
     def setOpacity(self, value):
+        """
+        Set the opacity of the colormap.
+
+        Args:
+            value(float): The opacity between 0 to 1.
+        """
         self.__opacity.setValue(value)
 
     def opacity(self):
+        """
+        Get the opacity.
+
+        Returns:
+            float: The value of opacity.
+        """
         return self.__opacity.value()
 
     def setGamma(self, value):
+        """
+        Set the gamma of the colormap.
+
+        Args:
+            value(float): The gamma value.
+        """
         self.__gamma.setValue(value)
 
     def gamma(self):
+        """
+        Get the gamma.
+
+        Returns:
+            float: The value of gamma.
+        """
         return self.__gamma.value()
 
 
@@ -269,6 +361,14 @@ class _OddSpinBox(QtWidgets.QSpinBox):
 
 
 class kernelSizeLayout(QtWidgets.QGridLayout):
+    """
+    A layout that specifies the kernel size of convolution filter (such as median filter).
+
+    Args:
+        dimension(int): The dimension of the kernel.
+        odd(bool): If True, only odd values can be set.
+    """
+
     def __init__(self, dimension=2, odd=True):
         super().__init__()
         self.addWidget(QtWidgets.QLabel('Kernel Size'), 1, 0)
@@ -282,14 +382,33 @@ class kernelSizeLayout(QtWidgets.QGridLayout):
             self.addWidget(k, 1, i + 1)
 
     def getKernelSize(self):
+        """
+        Get kernel size as array.
+
+        Returns:
+            list: The kernel size.
+        """
         return [k.value() for k in self._kernels]
 
     def setKernelSize(self, val):
+        """
+        Set kernel size.
+
+        Args:
+            val(list of integers): The kernel size.
+        """
         for k, v in zip(self._kernels, val):
             k.setValue(v)
 
 
 class kernelSigmaLayout(QtWidgets.QGridLayout):
+    """
+    A layout that specifies the kernel of gaussian convolution filter.
+
+    Args:
+        dimension(int): The dimension of the kernel.
+    """
+
     def __init__(self, dimension=2):
         super().__init__()
         self.addWidget(QtWidgets.QLabel('Sigma'), 1, 0)
@@ -300,15 +419,36 @@ class kernelSigmaLayout(QtWidgets.QGridLayout):
             self.addWidget(k, 1, i + 1)
 
     def getKernelSigma(self):
+        """
+        Get kernel sigma as array.
+
+        Returns:
+            list: The kernel sigma.
+        """
         return [k.value() for k in self._kernels]
 
     def setKernelSigma(self, val):
+        """
+        Set kernel sigma.
+
+        Args:
+            val(list of float): The kernel sigma.
+        """
         for k, v in zip(self._kernels, val):
             k.setValue(v)
 
 
 class AxisCheckLayout(QtWidgets.QHBoxLayout):
+    """
+    A layout that specifies axes.
+
+    Args:
+        dim(int): The dimension of data.
+    """
     stateChanged = QtCore.pyqtSignal()
+    """
+    Emitted when the state of the layout is changed.
+    """
 
     def __init__(self, dim):
         super().__init__()
@@ -318,6 +458,12 @@ class AxisCheckLayout(QtWidgets.QHBoxLayout):
             self.addWidget(a)
 
     def GetChecked(self):
+        """
+        Return checked axes as array.
+
+        Returns:
+            list of integers: The selected axes
+        """
         axes = []
         for i, a in enumerate(self._axes):
             if a.isChecked():
@@ -325,6 +471,12 @@ class AxisCheckLayout(QtWidgets.QHBoxLayout):
         return axes
 
     def SetChecked(self, axes):
+        """
+        Set the state of the layout.
+
+        Args:
+            axes(list of integers): The list of axes to be checked.
+        """
         for i, a in enumerate(self._axes):
             if i in axes:
                 a.setChecked(True)
@@ -333,6 +485,15 @@ class AxisCheckLayout(QtWidgets.QHBoxLayout):
 
 
 class AxisSelectionLayout(QtWidgets.QHBoxLayout):
+    """
+    A layout to specify an axis.
+
+    Args:
+        label(str): The label of the layout.
+        dim(int): The dimension of data.
+        init(int): The axis initially selected.
+    """
+
     def __init__(self, label, dim=2, init=0):
         super().__init__()
         self.dimension = 0
@@ -354,18 +515,36 @@ class AxisSelectionLayout(QtWidgets.QHBoxLayout):
             self.addWidget(c)
             self.group.addButton(c)
 
-    def setDimension(self, n):
-        if n == self.dimension:
+    def setDimension(self, d):
+        """
+        Change the dimension of the layout.
+
+        Args:
+            d(int): The new dimension
+        """
+        if d == self.dimension:
             return
-        self.dimension = n
+        self.dimension = d
         self.__update()
 
     def getAxis(self):
+        """
+        Get the selected axis.
+
+        Returns:
+            int: The selected axis.
+        """
         for i, b in enumerate(self.childs):
             if b.isChecked():
                 return i
 
     def setAxis(self, axis):
+        """
+        Set the selected axis.
+
+        Args:
+            axis(int): The axis to select.
+        """
         self.group.setExclusive(False)
         for c in self.childs:
             c.setChecked(False)
@@ -374,6 +553,13 @@ class AxisSelectionLayout(QtWidgets.QHBoxLayout):
 
 
 class AxesSelectionDialog(QtWidgets.QDialog):
+    """
+    A dialog to select two axes.
+
+    Args:
+        dim(int): The dimension of the data.
+    """
+
     def __init__(self, dim=2):
         super().__init__()
         self.dim = dim
@@ -395,30 +581,46 @@ class AxesSelectionDialog(QtWidgets.QDialog):
         self.setLayout(layout)
 
     def setDimension(self, n):
+        """
+        Change the dimension.
+
+        Args:
+            d(int): The new dimension
+        """
         self.axis1.setDimension(n)
         self.axis2.setDimension(n)
 
     def getAxes(self):
+        """
+        Get axes selected.
+
+        Returns:
+            tuple of length 2: The selected axes
+        """
         return (self.axis1.getAxis(), self.axis2.getAxis())
 
 
 class RegionSelectWidget(QtWidgets.QGridLayout):
-    loadClicked = QtCore.pyqtSignal(object)
+    """
+    A widget to select region of multi-dimensional data.
+    Args:
+        parent: The parent widget.
+        dim: The dimension of the data.
+        check: If True, user can select the axes.
+    """
     stateChanged = QtCore.pyqtSignal()
+    """
+    Emitted when the state of the checkbox is changed.
+    """
 
-    def __init__(self, parent, dim, loader=None, check=False):
+    def __init__(self, parent, dim, check=False):
         super().__init__()
         self.dim = dim
-        self.loader = loader
         self._check = check
-        self.__initLayout(dim, loader)
+        self.__initLayout(dim)
 
-    def __initLayout(self, dim, loader):
-        self.__loadPrev = QtWidgets.QPushButton('Load from Graph', clicked=self.__loadFromPrev)
-        if loader is None:
-            self.loadClicked.connect(self.__load)
-        else:
-            self.loadClicked.connect(loader)
+    def __initLayout(self, dim):
+        self.__loadPrev = QtWidgets.QPushButton('Load from Graph', clicked=self.__load)
         self.addWidget(self.__loadPrev, 0, 0)
 
         self.addWidget(QtWidgets.QLabel("from"), 1, 0)
@@ -439,9 +641,6 @@ class RegionSelectWidget(QtWidgets.QGridLayout):
             self.addWidget(e, 2, i)
             i += 1
 
-    def __loadFromPrev(self, arg):
-        self.loadClicked.emit(self)
-
     def __load(self, obj):
         c = frontCanvas()
         if c is not None:
@@ -458,16 +657,41 @@ class RegionSelectWidget(QtWidgets.QGridLayout):
                     self.setRegion(ax[1], (r[0][1], r[1][1]))
 
     def setRegion(self, axis, range):
+        """
+        Set the region.
+
+        Args:
+            axis(int): The axis to be changed.
+            range(length 2 sequency): The range to be set.
+        """
         if axis < len(self.start):
             self.start[axis].setValue(min(range[0], range[1]))
             self.end[axis].setValue(max(range[0], range[1]))
 
     def getRegion(self):
+        """
+        Get the specified region.
+
+        Returns:
+            list of length 2 sequence: The specified region.
+        """
         return [[s.value(), e.value()] for s, e in zip(self.start, self.end)]
 
     def setChecked(self, checked):
+        """
+        Set the state of the checkboxes.
+
+        Args:
+            checked(list of boolean): The state to be set.
+        """
         for wid, c in zip(self._checkWidgets, checked):
             wid.setChecked(c)
 
     def getChecked(self):
+        """
+        Get the state of the checkboxes.
+
+        Reutrns:
+            list of boolean: The state of the checkboxes.
+        """
         return [s.isChecked() for s in self._checkWidgets]

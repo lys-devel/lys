@@ -41,7 +41,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -76,11 +77,10 @@
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span><span class="p">,</span> <span class="n">frontCanvas</span>
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
 <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
+<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">ScientificSpinBox</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span>
 
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">ScientificSpinBox</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span>
 
-
-<div class="viewcode-block" id="SetAxisFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.SetAxisFilter">[docs]</a><span class="k">class</span> <span class="nc">SetAxisFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="SetAxisFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.SetAxisFilter">[docs]</a><span class="k">class</span> <span class="nc">SetAxisFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Set axis value.</span>
 
@@ -110,11 +110,11 @@
         <span class="n">axes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SetAxisFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.SetAxisFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SetAxisFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.SetAxisFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axis&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">,</span> <span class="s2">&quot;val1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val1</span><span class="p">,</span> <span class="s2">&quot;val2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val2</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="AxisShiftFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.AxisShiftFilter">[docs]</a><span class="k">class</span> <span class="nc">AxisShiftFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="AxisShiftFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.AxisShiftFilter">[docs]</a><span class="k">class</span> <span class="nc">AxisShiftFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Shit axes by *shift*</span>
 
@@ -133,11 +133,11 @@
             <span class="n">axes</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span> <span class="o">+</span> <span class="n">s</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AxisShiftFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.AxisShiftFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AxisShiftFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.AxisShiftFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;shift&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="MagnificationFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.MagnificationFilter">[docs]</a><span class="k">class</span> <span class="nc">MagnificationFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="MagnificationFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.MagnificationFilter">[docs]</a><span class="k">class</span> <span class="nc">MagnificationFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Magnify axes by *mag*</span>
 
@@ -161,11 +161,11 @@
             <span class="n">axes</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MagnificationFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.MagnificationFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MagnificationFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.MagnificationFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;mag&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shift</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="Rotation2DFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.Rotation2DFilter">[docs]</a><span class="k">class</span> <span class="nc">Rotation2DFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="Rotation2DFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.Rotation2DFilter">[docs]</a><span class="k">class</span> <span class="nc">Rotation2DFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The array is rotated in the plane defined by the two axes given by the axes parameter using spline interpolation.</span>
 
@@ -186,13 +186,13 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">gumap</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Rotation2DFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.Rotation2DFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Rotation2DFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.Rotation2DFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_axes&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="SymmetrizeFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.SymmetrizeFilter">[docs]</a><span class="k">class</span> <span class="nc">SymmetrizeFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="SymmetrizeFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.SymmetrizeFilter">[docs]</a><span class="k">class</span> <span class="nc">SymmetrizeFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Symmetrize 2D data.</span>
 
@@ -217,7 +217,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">gumap</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rotation</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">center</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SymmetrizeFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.SymmetrizeFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SymmetrizeFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.SymmetrizeFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;rotation&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rotation</span><span class="p">),</span> <span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 
@@ -240,7 +240,7 @@
     <span class="k">return</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="nb">sum</span> <span class="o">/</span> <span class="n">m_sum</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="n">dx</span><span class="p">,</span> <span class="o">-</span><span class="n">dy</span><span class="p">],</span> <span class="n">cval</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">NaN</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="OffsetFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.OffsetFilter">[docs]</a><span class="k">class</span> <span class="nc">OffsetFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="OffsetFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.OffsetFilter">[docs]</a><span class="k">class</span> <span class="nc">OffsetFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add offset to data.</span>
 
@@ -273,11 +273,11 @@
             <span class="n">ydata</span> <span class="o">=</span> <span class="n">ydata</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="OffsetFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.OffsetFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="OffsetFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.OffsetFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="MirrorFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.MirrorFilter">[docs]</a><span class="k">class</span> <span class="nc">MirrorFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="MirrorFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.MirrorFilter">[docs]</a><span class="k">class</span> <span class="nc">MirrorFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reflect 2D data with respect to a line.</span>
 
@@ -326,7 +326,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">gumap</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MirrorFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Transform.MirrorFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MirrorFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Transform.MirrorFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;positions&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum</span><span class="p">}</span></div></div>
 
 

@@ -12,7 +12,7 @@ class FilterInterface:
     """
     FilterInterface is a base class of all filters in lys.
 
-    See :doc:`tutorials/newFilter` for detail
+    See :doc:`../tutorials/newFilter` for detail
 
     Example::
 
@@ -89,7 +89,8 @@ class FilterInterface:
         Args:
             file(str): filename
 
-        Example:
+        Example::
+
             from lys import filters
             f = filters.IntegralAllFilter(axes=[0], sumtype="Sum")
             f.saveAsFile("filter.fil")
@@ -103,7 +104,7 @@ def filterGUI(filterClass):
     """
     Decorator for filter GUI class.
 
-    See :doc:`tutorials/newFilter` for detail
+    See :doc:`../tutorials/newFilter` for detail
     """
     def _filterGUI(cls):
         cls._filClass = filterClass
@@ -115,7 +116,7 @@ class FilterSettingBase(QtWidgets.QWidget):
     """
     Base class for setting widgets of filters.
 
-    See :doc:`tutorials/newFilter` for detail
+    See :doc:`../tutorials/newFilter` for detail
 
     """
     dimensionChanged = QtCore.pyqtSignal()
@@ -162,7 +163,7 @@ class FilterSettingBase(QtWidgets.QWidget):
         Developers should implement this method to make new filter.
 
 
-        See :doc:`tutorials/newFilter` for detail
+        See :doc:`../tutorials/newFilter` for detail
 
         """
         raise NotImplementedError("Method setParameters should be implemented.")
@@ -171,7 +172,7 @@ class FilterSettingBase(QtWidgets.QWidget):
         """
         Get the parameters of the filter based on the current state of the widget.
 
-        See :doc:`tutorials/newFilter` for detail
+        See :doc:`../tutorials/newFilter` for detail
         """
         raise NotImplementedError("Method getParameters should be implemented.")
 

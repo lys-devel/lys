@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -79,11 +79,10 @@
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span>
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span>
 <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
+<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">ScientificSpinBox</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span>
 
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">ScientificSpinBox</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span>
 
-
-<div class="viewcode-block" id="ThresholdFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Segmentation.ThresholdFilter">[docs]</a><span class="k">class</span> <span class="nc">ThresholdFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="ThresholdFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Segmentation.ThresholdFilter">[docs]</a><span class="k">class</span> <span class="nc">ThresholdFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Segmentation by thresholding.</span>
 
@@ -116,11 +115,11 @@
             <span class="n">result</span> <span class="o">=</span> <span class="n">mask</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ThresholdFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Segmentation.ThresholdFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ThresholdFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Segmentation.ThresholdFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;threshold&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_threshold</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="AdaptiveThresholdFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Segmentation.AdaptiveThresholdFilter">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveThresholdFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="AdaptiveThresholdFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Segmentation.AdaptiveThresholdFilter">[docs]</a><span class="k">class</span> <span class="nc">AdaptiveThresholdFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Segmentation by adaptive thresholding.</span>
 
@@ -157,7 +156,7 @@
         <span class="n">gumap</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">gufunc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="n">sig</span> <span class="o">+</span> <span class="s2">&quot;-&gt;&quot;</span> <span class="o">+</span> <span class="n">sig</span><span class="p">,</span> <span class="n">output_dtypes</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">vectorize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">)],</span> <span class="n">allow_rechunk</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">gumap</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AdaptiveThresholdFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Segmentation.AdaptiveThresholdFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="AdaptiveThresholdFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Segmentation.AdaptiveThresholdFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c</span><span class="p">,</span> <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_method</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 

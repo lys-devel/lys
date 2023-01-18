@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -76,8 +76,7 @@
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span><span class="p">,</span> <span class="n">frontCanvas</span>
 <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
-
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">AxisCheckLayout</span><span class="p">,</span> <span class="n">ScientificSpinBox</span><span class="p">,</span> <span class="n">RegionSelectWidget</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span>
+<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">AxisCheckLayout</span><span class="p">,</span> <span class="n">ScientificSpinBox</span><span class="p">,</span> <span class="n">RegionSelectWidget</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span>
 
 
 <span class="k">def</span> <span class="nf">_getSumFunction</span><span class="p">(</span><span class="n">sumtype</span><span class="p">):</span>
@@ -93,7 +92,7 @@
         <span class="k">return</span> <span class="n">da</span><span class="o">.</span><span class="n">median</span>
 
 
-<div class="viewcode-block" id="IntegralAllFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralAllFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralAllFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="IntegralAllFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralAllFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralAllFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Integrate wave along *axes* (implementation of np.sum, mean, max, min, and median in lys)</span>
 
@@ -130,14 +129,14 @@
         <span class="n">ax</span> <span class="o">=</span> <span class="p">[</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">ax</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="IntegralAllFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralAllFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IntegralAllFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralAllFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="s2">&quot;sumtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sumtype</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="IntegralAllFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralAllFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IntegralAllFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralAllFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="IntegralFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="IntegralFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Integrate wave.</span>
 
@@ -201,14 +200,14 @@
         <span class="n">key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">sumaxes</span><span class="p">)</span>
 
-<div class="viewcode-block" id="IntegralFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IntegralFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">,</span> <span class="s2">&quot;sumtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sumtype</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="IntegralFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IntegralFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="o">-</span><span class="nb">len</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span></div></div>
 
 
-<div class="viewcode-block" id="IntegralCircleFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralCircleFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralCircleFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="IntegralCircleFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralCircleFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralCircleFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Circular integration of wave.</span>
 
@@ -245,10 +244,10 @@
         <span class="n">result</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="o">*</span><span class="n">axes</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="n">dr</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">result</span>
 
-<div class="viewcode-block" id="IntegralCircleFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralCircleFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IntegralCircleFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralCircleFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;center&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center</span><span class="p">,</span> <span class="s2">&quot;radiuses&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_radiuses</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="IntegralCircleFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Integral.IntegralCircleFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="IntegralCircleFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralCircleFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div></div>
 
 

@@ -6,7 +6,7 @@ widgets module
    :undoc-members:
    :show-inheritance:
 
-List of widgets
+Special widgets
 -----------------
 .. toctree::
    :maxdepth: 1
@@ -14,3 +14,10 @@ List of widgets
    widgets/mdi
    widgets/fileview
    canvas
+
+General widgets
+-----------------
+.. automodule:: lys.widgets.general
+   :members:
+   :undoc-members:
+   :show-inheritance:

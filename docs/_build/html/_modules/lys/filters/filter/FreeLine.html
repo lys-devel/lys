@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -79,12 +79,10 @@
 <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
 
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
-<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">ScientificSpinBox</span>
-
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">AxisSelectionLayout</span><span class="p">,</span> <span class="n">AxesSelectionDialog</span>
+<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">ScientificSpinBox</span><span class="p">,</span> <span class="n">AxisSelectionLayout</span><span class="p">,</span> <span class="n">AxesSelectionDialog</span>
 
 
-<div class="viewcode-block" id="FreeLineFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.FreeLine.FreeLineFilter">[docs]</a><span class="k">class</span> <span class="nc">FreeLineFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="FreeLineFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.FreeLine.FreeLineFilter">[docs]</a><span class="k">class</span> <span class="nc">FreeLineFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Cut 2-dimensional data along arbitrary line with finite width.</span>
 
@@ -157,10 +155,10 @@
         <span class="n">newAxes</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="o">*</span><span class="n">axes</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="o">*</span><span class="n">newAxes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FreeLineFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.FreeLine.FreeLineFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FreeLineFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.FreeLine.FreeLineFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">,</span> <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="FreeLineFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.FreeLine.FreeLineFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FreeLineFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.FreeLine.FreeLineFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div></div>
 
 

@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -75,11 +75,10 @@
 
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span>
 <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span><span class="p">,</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span>
+<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">AxisCheckLayout</span>
 
-<span class="kn">from</span> <span class="nn">.CommonWidgets</span> <span class="kn">import</span> <span class="n">AxisCheckLayout</span>
 
-
-<div class="viewcode-block" id="GradientFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Differentiate.GradientFilter">[docs]</a><span class="k">class</span> <span class="nc">GradientFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="GradientFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Differentiate.GradientFilter">[docs]</a><span class="k">class</span> <span class="nc">GradientFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Differentiate wave along *axes* (implementation of np.gradient in lys)</span>
 
@@ -110,11 +109,11 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">wave</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="n">ax</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GradientFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Differentiate.GradientFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="GradientFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Differentiate.GradientFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
 
 
-<div class="viewcode-block" id="NablaFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Differentiate.NablaFilter">[docs]</a><span class="k">class</span> <span class="nc">NablaFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="NablaFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Differentiate.NablaFilter">[docs]</a><span class="k">class</span> <span class="nc">NablaFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply nabla vector</span>
 
@@ -139,14 +138,14 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">da</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">wave</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="n">ax</span><span class="p">))</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndim</span><span class="p">)])</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NablaFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Differentiate.NablaFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NablaFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Differentiate.NablaFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{}</span></div>
 
-<div class="viewcode-block" id="NablaFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Differentiate.NablaFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NablaFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Differentiate.NablaFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="mi">1</span></div></div>
 
 
-<div class="viewcode-block" id="LaplacianFilter"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Differentiate.LaplacianFilter">[docs]</a><span class="k">class</span> <span class="nc">LaplacianFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<div class="viewcode-block" id="LaplacianFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Differentiate.LaplacianFilter">[docs]</a><span class="k">class</span> <span class="nc">LaplacianFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Apply Laplacian</span>
 
@@ -176,7 +175,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">da</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">wave</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="n">ax</span><span class="p">))</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndim</span><span class="p">)])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-<div class="viewcode-block" id="LaplacianFilter.getParameters"><a class="viewcode-back" href="../../../../lys.filters.filter.html#lys.filters.filter.Differentiate.LaplacianFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="LaplacianFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Differentiate.LaplacianFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{}</span></div></div>
 
 
