@@ -3,7 +3,7 @@ from matplotlib import animation
 
 from lys import glb, frontCanvas
 from lys.Qt import QtWidgets, QtCore
-from lys.widgets import lysCanvas
+from lys.widgets import lysCanvas, AxisSelectionLayout
 
 from ..MultiCutExecutors import PointExecutor
 
@@ -12,46 +12,26 @@ class AnimationTab(QtWidgets.QGroupBox):
     updated = QtCore.pyqtSignal(int)
     _type = [".mp4 (ffmpeg required)", ".gif"]
 
-    class _axisWidget(QtWidgets.QWidget):
-        def __init__(self, dim):
-            super().__init__()
-            self.__initlayout(dim)
-
-        def __initlayout(self, dim):
-            self.grp1 = QtWidgets.QButtonGroup(self)
-            self._btn1 = [QtWidgets.QRadioButton(str(d)) for d in range(dim)]
-            layout = QtWidgets.QHBoxLayout()
-            layout.addWidget(QtWidgets.QLabel("Axis"))
-            for i, b in enumerate(self._btn1):
-                self.grp1.addButton(b)
-            for i, b in enumerate(self._btn1):
-                layout.addWidget(b)
-            layout.addStretch()
-            self.setLayout(layout)
-
-        def getAxis(self):
-            return self._btn1.index(self.grp1.checkedButton())
-
     def __init__(self, executor):
         super().__init__("Animation")
         self.__initlayout()
         self.__exe = executor
 
     def __initlayout(self):
-        self.layout = QtWidgets.QVBoxLayout()
-
-        self.__axis = self._axisWidget(2)
-
+        self.__axis = AxisSelectionLayout("Frame axis", 2)
         btn = QtWidgets.QPushButton("Create animation", clicked=self.__animation)
         self.__filename = QtWidgets.QLineEdit()
         self.__types = QtWidgets.QComboBox()
         self.__types.addItems(self._type)
+
         g = QtWidgets.QGridLayout()
         g.addWidget(QtWidgets.QLabel("Filename"), 0, 0)
         g.addWidget(self.__filename, 0, 1)
         g.addWidget(QtWidgets.QLabel("Type"), 1, 0)
         g.addWidget(self.__types, 1, 1)
-        self.layout.addWidget(self.__axis)
+
+        self.layout = QtWidgets.QVBoxLayout()
+        self.layout.addLayout(self.__axis)
         self.layout.addLayout(g)
         self.layout.addLayout(self.__makeTimeOptionLayout())
         self.layout.addLayout(self.__makeGeneralFuncLayout())
@@ -63,6 +43,7 @@ class AnimationTab(QtWidgets.QGroupBox):
         self.__timeoffset = QtWidgets.QDoubleSpinBox()
         self.__timeoffset.setRange(float('-inf'), float('inf'))
         self.__timeunit = QtWidgets.QLineEdit()
+
         hbox1 = QtWidgets.QHBoxLayout()
         hbox1.addWidget(self.__useTime)
         hbox1.addWidget(self.__timeoffset)
@@ -72,6 +53,7 @@ class AnimationTab(QtWidgets.QGroupBox):
     def __makeGeneralFuncLayout(self):
         self.__useFunc = QtWidgets.QCheckBox("Use general func f(canv, i, axis)")
         self.__funcName = QtWidgets.QLineEdit()
+
         h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(self.__useFunc)
         h1.addWidget(self.__funcName)
@@ -79,10 +61,7 @@ class AnimationTab(QtWidgets.QGroupBox):
 
     def _setWave(self, wave):
         self.wave = wave
-        self.layout.removeWidget(self.__axis)
-        self.__axis.deleteLater()
-        self.__axis = self._axisWidget(wave.data.ndim)
-        self.layout.insertWidget(0, self.__axis)
+        self.__axis.setDimension(wave.data.ndim)
 
     def __loadCanvasSettings(self):
         c = frontCanvas()

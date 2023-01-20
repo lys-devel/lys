@@ -1,4 +1,4 @@
-from lys import Wave, glb
+from lys import Wave, glb, multicut
 from lys.Qt import QtWidgets
 
 
@@ -21,8 +21,7 @@ class ExportDataTab(QtWidgets.QGroupBox):
         self.wave = wave
 
     def __mcut(self):
-        from .. import MultiCut
-        MultiCut(self.wave)
+        multicut(self.wave)
 
     def __export(self):
         filt = ""
@@ -34,8 +33,8 @@ class ExportDataTab(QtWidgets.QGroupBox):
             self.wave.compute().export(path, type=type)
 
     def __send(self):
-        w = self.wave.compute()
-        text, ok = QtWidgets.QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
+        text, ok = QtWidgets.QInputDialog.getText(None, "Send to shell", "Enter wave name", text=self.wave.name)
         if ok:
+            w = self.wave.compute()
             w.name = text
             glb.shell().addObject(w)
