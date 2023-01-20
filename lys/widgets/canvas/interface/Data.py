@@ -5,7 +5,7 @@ import _pickle as cPickle
 
 from lys import Wave, filters, load
 from lys.Qt import QtCore
-from lys.errors import NotImplementedWarning
+from lys.errors import NotImplementedWarning, suppressLysWarnings
 
 from .CanvasBase import CanvasPart, saveCanvas
 from .WaveData import WaveData
@@ -26,6 +26,7 @@ class CanvasData(CanvasPart):
         canvas.saveCanvas.connect(self._save)
         canvas.loadCanvas.connect(self._load)
 
+    @suppressLysWarnings
     @saveCanvas
     def Append(self, wave, axis="BottomLeft", appearance={}, offset=(0, 0, 0, 0), filter=None, contour=False, vector=False):
         """
