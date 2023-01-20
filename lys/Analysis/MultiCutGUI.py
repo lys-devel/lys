@@ -1,6 +1,6 @@
 from lys.Qt import QtWidgets, QtCore
 
-from lys import Wave, DaskWave, frontCanvas
+from lys import Wave, DaskWave
 from lys.widgets import LysSubWindow
 from .MultiCutGUIs import CutTab, AnimationTab, PrefilterTab, ExportDataTab
 
@@ -39,7 +39,7 @@ class MultipleGrid(LysSubWindow):
             return None
 
 
-class GridAttachedWindow(LysSubWindow):
+class _GridAttachedWindow(LysSubWindow):
     def __init__(self, title):
         super().__init__()
         self.setWindowTitle(title)
@@ -65,15 +65,15 @@ class GridAttachedWindow(LysSubWindow):
             return
 
 
-class MultiCut(GridAttachedWindow):
+class MultiCut(_GridAttachedWindow):
     def __init__(self, wave=None):
-        super().__init__("Multi-dimensional analysis")
+        super().__init__("Multi-dimensional data analysis")
         self.__initlayout__()
         self.wave = None
         self.axes = []
         self.ranges = []
         if wave is not None:
-            self.load(wave)
+            self._load(wave)
 
     def keyPress(self, e):
         if e.key() == QtCore.Qt.Key_M:
@@ -100,14 +100,10 @@ class MultiCut(GridAttachedWindow):
         tab.addTab(self._cut, "Cut")
         tab.addTab(self.__exportTab(), "Export")
 
-        self.__file = QtWidgets.QLineEdit()
-        btn = QtWidgets.QPushButton("Load", clicked=self.load)
         self.__useDask = QtWidgets.QCheckBox("Dask")
         self.__useDask.setChecked(True)
 
         h1 = QtWidgets.QHBoxLayout()
-        h1.addWidget(btn)
-        h1.addWidget(self.__file)
         h1.addWidget(self.__useDask)
 
         layout = QtWidgets.QVBoxLayout()
@@ -130,25 +126,22 @@ class MultiCut(GridAttachedWindow):
         self._ani._setWave(w)
         self._data._setWave(w)
 
-    def load(self, file):
+    def _load(self, file):
         if file is False:
             fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Select data file')[0]
         else:
             fname = file
         if isinstance(fname, str):
             self.wave = DaskWave(Wave(fname))
-            self.__file.setText(fname)
             self._pre.setWave(self.wave)
         elif isinstance(fname, Wave):
             self.wave = DaskWave(fname)
-            self.__file.setText(fname.name)
             self._pre.setWave(self.wave)
         elif isinstance(fname, DaskWave):
             self.wave = fname
-            self.__file.setText("from memory")
             self._pre.setWave(self.wave)
         else:
-            self.load(Wave(fname))
+            self._load(Wave(fname))
 
     def useDask(self):
         return self.__useDask.isChecked()

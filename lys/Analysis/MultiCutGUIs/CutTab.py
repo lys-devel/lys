@@ -154,21 +154,14 @@ class controlledWavesGUI(QtWidgets.QTreeView):
         self.obj.removeAt(i)
 
     def _post(self):
-        class dialog(filters.FiltersDialog):
-            def __init__(self, wave):
-                super().__init__(wave.data.ndim)
-                self.wave = wave
-                self.applied.connect(self.__set)
-
-            def __set(self, f):
-                w.note['MultiCut_PostProcess'] = str(f)
         i = self.selectionModel().selectedIndexes()[0].row()
         w = self.obj[i][0]
-        self.d = d = dialog(w)
-        d.applied.connect(self.updated.emit)
+        d = _FiltersDialog(w.data.ndim, self, "Postprocess")
         if 'MultiCut_PostProcess' in w.note:
             d.setFilter(filters.fromString(w.note['MultiCut_PostProcess']))
-        d.show()
+        if d.exec_():
+            w.note['MultiCut_PostProcess'] = str(d.result)
+            self.updated.emit()
 
     def _enable(self):
         i = self.selectionModel().selectedIndexes()[0].row()
@@ -180,6 +173,34 @@ class controlledWavesGUI(QtWidgets.QTreeView):
 
     def sizeHint(self):
         return QtCore.QSize(100, 100)
+
+
+class _FiltersDialog(QtWidgets.QDialog):
+    def __init__(self, dim, parent, title=None):
+        super().__init__(parent)
+        if title is not None:
+            self.setWindowTitle(title)
+        self.filters = filters.FiltersGUI(dim, parent=self)
+
+        self.ok = QtWidgets.QPushButton("O K", clicked=self._ok)
+        self.cancel = QtWidgets.QPushButton("CANCEL", clicked=self.reject)
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(self.ok)
+        h1.addWidget(self.cancel)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.filters)
+        layout.addLayout(h1)
+
+        self.setLayout(layout)
+        self.resize(500, 500)
+
+    def _ok(self):
+        self.result = self.filters.GetFilters()
+        self.accept()
+
+    def setFilter(self, filt):
+        self.filters.setFilters(filt)
 
 
 class controlledExecutorsGUI(QtWidgets.QTreeView):
@@ -475,7 +496,7 @@ class CutTab(QtWidgets.QWidget):
         if old is None:
             self.__resetLayout()
             return
-        if old.data.shape != wave.data.shape:
+        if old.data.ndim != wave.data.ndim:
             self.__resetLayout()
             return
         self.update()

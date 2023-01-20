@@ -32,19 +32,43 @@ class RechunkFilter(FilterInterface):
 class _RechunkSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
+
         self._chunk = [QtWidgets.QSpinBox() for _ in range(dimension)]
         grid = QtWidgets.QGridLayout()
         for i in range(dimension):
             grid.addWidget(QtWidgets.QLabel("Dim " + str(i + 1)), 0, i)
             grid.addWidget(self._chunk[i], 1, i)
-        self.setLayout(grid)
+
+        self._auto = QtWidgets.QRadioButton("Auto", toggled=self._toggled)
+        self._custom = QtWidgets.QRadioButton("Custom", toggled=self._toggled)
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(self._auto)
+        h1.addWidget(self._custom)
+
+        self._auto.setChecked(True)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addLayout(h1)
+        layout.addLayout(grid)
+        self.setLayout(layout)
+
+    def _toggled(self):
+        for spin in self._chunk:
+            spin.setEnabled(not self._auto.isChecked())
 
     def getParameters(self):
-        return {"chunks": [s.value() for s in self._chunk]}
+        if self._auto.isChecked():
+            return {"chunks": "auto"}
+        else:
+            return {"chunks": [s.value() for s in self._chunk]}
 
     def setParameters(self, chunks):
-        for c, s in zip(chunks, self._chunk):
-            s.setValue(c)
+        if chunks == "auto":
+            self._auto.setChecked(True)
+        else:
+            self._custom.setChecked(True)
+            for c, s in zip(chunks, self._chunk):
+                s.setValue(c)
 
 
-addFilter(RechunkFilter, gui=_RechunkSetting, guiName="Rechunk")
+addFilter(RechunkFilter, gui=_RechunkSetting, guiName="Rechunk", guiGroup="Dask")
