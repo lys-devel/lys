@@ -187,7 +187,7 @@ def _translate_unit(wave, center, radiuses, axes):
     dr = int(dr)
     r = np.floor(r / dr) * dr
     pdr = np.abs(wave.pointToPos(dr, axis=axes[0]) - wave.pointToPos(0, axis=axes[0]))
-    pr = np.abs(wave.pointToPos(r, axis=axes[0]) - wave.pointToPos(0, axis=axes[0]))
+    pr = np.abs(wave.pointToPos(int(r), axis=axes[0]) - wave.pointToPos(0, axis=axes[0]))
     return (cx, cy, 0, r, dr), (pr, pdr)
 
 
