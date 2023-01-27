@@ -162,7 +162,7 @@ class _PyqtgraphLine(LineData):
         if leg.getLabel(self._obj) is not None:
             leg.removeItem(self._obj)
         css = '<style type="text/css"> p {font-family: '
-        css += font['family'] + '; font-size: '
+        css += font['fname'] + '; font-size: '
         css += str(font['size']) + 'pt; color: "'
         css += font['color'] + '"} </style>'
         css += "<p>" + label + "</p>"

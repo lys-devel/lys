@@ -23,7 +23,7 @@ class _PyqtgraphLegend(CanvasLegend):
 
     def _setLegendFont(self, font):
         for line in self.canvas().getLines():
-            line.setLegendText(font={"family": font.fontName, "size": font.size, "color": font.color})
+            line.setLegendText(font={"fname": font.fontName, "size": font.size, "color": font.color})
 
     def _setLegendPosition(self, position):
         h = self.canvas().fig.getAxis('left').height()

@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import transforms, patches
 
-from ..interface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, TextAnnotation, RectAnnotation, RegionAnnotation, FreeRegionAnnotation, CrossAnnotation
+from ..interface import CanvasAnnotation, LineAnnotation, InfiniteLineAnnotation, TextAnnotation, RectAnnotation, RegionAnnotation, FreeRegionAnnotation, CrossAnnotation, FontInfo
 
 
 def _setZ(obj, z):
@@ -279,7 +279,8 @@ class _MatplotlibTextAnnotation(TextAnnotation):
         self.setPosition(new)
 
     def _setFont(self, font):
-        self._obj.set_family(font.fontName)
+        prop = FontInfo.getFontProperty(font.fontName)
+        self._obj.set_fontproperties(prop)
         self._obj.set_size(font.size)
         self._obj.set_color(font.color)
 

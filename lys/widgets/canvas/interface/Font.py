@@ -4,6 +4,7 @@ import matplotlib.font_manager as fm
 
 
 class FontInfo(object):
+    default = "Arial"
     _fonts = {}
 
     def __init__(self, fname, size=10, color="black"):
@@ -42,12 +43,15 @@ class FontInfo(object):
 
     @classmethod
     def getFontProperty(cls, fname):
-        return cls._fonts[fname]
+        prop = fm.FontProperties(family=fname)
+        if prop.get_name() != fname:
+            return cls._fonts[fname]
+        return prop
 
     @classmethod
     def defaultFont(cls):
-        if "Arial" in cls.fonts():
-            return "Arial"
+        if cls.default in cls.fonts():
+            return cls.default
         return fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
 
 

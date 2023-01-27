@@ -1,4 +1,4 @@
-from ..interface import CanvasLegend
+from ..interface import CanvasLegend, FontInfo
 
 
 class _MatplotlibLegend(CanvasLegend):
@@ -20,7 +20,9 @@ class _MatplotlibLegend(CanvasLegend):
             kwargs["loc"] = "upper left"
             kwargs["bbox_to_anchor"] = (self._pos[0], 1 - self._pos[1])
         if self._family is not None:
-            kwargs["prop"] = {"family": self._family, "size": self._size}
+            prop = FontInfo.getFontProperty(self._family)
+            prop.set_size(self._size)
+            kwargs["prop"] = prop
             kwargs["labelcolor"] = self._color
         if self._vis is not None:
             kwargs["frameon"] = self._vis

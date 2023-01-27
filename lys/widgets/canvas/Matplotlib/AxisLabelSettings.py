@@ -25,12 +25,13 @@ class _MatplotlibAxisLabel(CanvasAxisLabel):
 
     def _setAxisLabelFont(self, axis, font):
         axes = self.canvas().getAxes(axis)
+        prop = font.getFontProperty(font.fontName)
         if axis in ['Left', 'Right']:
-            axes.get_yaxis().get_label().set_fontproperties(font.getFontProperty(font.fontName))
+            axes.get_yaxis().get_label().set_fontproperties(prop)
             axes.get_yaxis().get_label().set_size(font.size)
             axes.get_yaxis().get_label().set_color(font.color)
         else:
-            axes.get_xaxis().get_label().set_family(font.getFontProperty(font.fontName))
+            axes.get_xaxis().get_label().set_fontproperties(prop)
             axes.get_xaxis().get_label().set_size(font.size)
             axes.get_xaxis().get_label().set_color(font.color)
 
@@ -49,12 +50,13 @@ class _MatplotlibTickLabel(CanvasTickLabel):
 
     def _setTickLabelFont(self, axis, font):
         axes = self.canvas().getAxes(axis)
+        prop = font.getFontProperty(font.fontName)
         if axis in ['Left', 'Right']:
             for tick in axes.get_yticklabels():
-                tick.set_fontproperties(font.getFontProperty(font.fontName))
-            axis = 'x'
+                tick.set_fontproperties(prop)
+            axis = 'y'
         else:
             for tick in axes.get_xticklabels():
-                tick.set_fontproperties(font.getFontProperty(font.fontName))
-            axis = 'y'
+                tick.set_fontproperties(prop)
+            axis = 'x'
         axes.tick_params(which='major', labelsize=font.size, labelcolor=font.color, axis=axis)
