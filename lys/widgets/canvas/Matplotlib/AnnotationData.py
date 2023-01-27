@@ -278,10 +278,10 @@ class _MatplotlibTextAnnotation(TextAnnotation):
         self._obj.set_transform(t)
         self.setPosition(new)
 
-    def _setFont(self, family, size, color):
-        self._obj.set_family(family)
-        self._obj.set_size(size)
-        self._obj.set_color(color)
+    def _setFont(self, font):
+        self._obj.set_family(font.fontName)
+        self._obj.set_size(font.size)
+        self._obj.set_color(font.color)
 
     def _setBoxStyle(self, style):
         box = self._obj.get_bbox_patch()

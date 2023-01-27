@@ -3,7 +3,7 @@ import pyqtgraph as pg
 
 from lys.Qt import QtGui
 
-from ..interface import CanvasBase, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasMouseEvent, CanvasFocusEvent, CanvasUtilities
+from ..interface import CanvasBase, CanvasContextMenu, CanvasKeyboardEvent, CanvasMouseEvent, CanvasFocusEvent, CanvasUtilities
 from .AxisSettings import _pyqtGraphAxes, _pyqtGraphTicks
 from .AxisLabelSettings import _PyqtgraphAxisLabel, _PyqtgraphTickLabel
 from .AreaSettings import _PyqtGraphMargin, _PyqtGraphCanvasSize
@@ -52,7 +52,6 @@ class FigureCanvasBase(CanvasBase, pg.PlotWidget):
         self.addCanvasPart(_pyqtGraphAxes(self))
         self.addCanvasPart(_pyqtGraphTicks(self))
         self.addCanvasPart(CanvasContextMenu(self))
-        self.addCanvasPart(CanvasFont(self))
         self.addCanvasPart(_PyqtgraphAxisLabel(self))
         self.addCanvasPart(_PyqtgraphTickLabel(self))
         self.addCanvasPart(_PyqtGraphMargin(self))

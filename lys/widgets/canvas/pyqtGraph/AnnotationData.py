@@ -373,9 +373,9 @@ class _PyqtgraphTextAnnotation(TextAnnotation):
             y_new = yo
         self.setPosition((x_new, y_new))
 
-    def _setFont(self, family, size, color):
-        self._obj.setColor(QtGui.QColor(color))
-        self._obj.setFont(QtGui.QFont(family, size))
+    def _setFont(self, font):
+        self._obj.setColor(QtGui.QColor(font.color))
+        self._obj.setFont(QtGui.QFont(font.fontName, font.size))
 
     def _setBoxStyle(self, style):
         warnings.warn("pyqtGraph does not support bounding box of text.", NotSupportedWarning)

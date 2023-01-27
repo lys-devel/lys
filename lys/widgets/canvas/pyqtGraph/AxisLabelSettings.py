@@ -27,9 +27,9 @@ class _PyqtgraphAxisLabel(CanvasAxisLabel):
         else:
             ax.setStyle(tickTextHeight=int(-pos * 100), autoExpandTextSpace=False)
 
-    def _setAxisLabelFont(self, axis, family, size, color):
+    def _setAxisLabelFont(self, axis, font):
         ax = self.canvas().fig.getAxis(axis.lower())
-        css = {'font-family': family, 'font-size': str(size) + "pt", "color": color}
+        css = {'font-family': font.fontName, 'font-size': str(font.size) + "pt", "color": font.color}
         ax.setLabel(**css)
         self.setAxisLabel(axis, self.getAxisLabel(axis))
 
@@ -44,8 +44,8 @@ class _PyqtgraphTickLabel(CanvasTickLabel):
             ax = self.canvas().fig.getAxis(axis.lower())
         ax.setStyle(showValues=tf)
 
-    def _setTickLabelFont(self, axis, family, size, color):
+    def _setTickLabelFont(self, axis, font):
         ax = self.canvas().fig.getAxis(axis.lower())
-        ax.setStyle(tickFont=QtGui.QFont(family, size))
-        if color != "black" and color != "#000000":
+        ax.setStyle(tickFont=QtGui.QFont(font.fontName, font.size))
+        if font.color != "black" and font.color != "#000000":
             warnings.warn("pyqtGraph does not support changing color of tick.", NotSupportedWarning)

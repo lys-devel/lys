@@ -2,7 +2,6 @@
 import copy
 import numpy as np
 from matplotlib import lines, cm, colors
-from matplotlib.contour import QuadContourSet
 from ..interface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 
 
@@ -152,9 +151,8 @@ class _MatplotlibImage(ImageData):
 
     def _updateData(self):
         data = self.getFilteredWave().data.swapaxes(0, 1)
-        self._obj.set_data(data)
+        self._obj.set_data(np.ma.masked_invalid(data))
         self._obj.set_extent(_calcExtent2D(self.getFilteredWave()))
-        self._obj.set_alpha(np.where(np.isnan(data), 0, 1).astype(float) * self.getOpacity())
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
@@ -190,8 +188,7 @@ class _MatplotlibImage(ImageData):
         self._obj.set_norm(norm)
 
     def _setOpacity(self, value):
-        data = self.getFilteredWave().data.swapaxes(0, 1)
-        self._obj.set_alpha(np.where(np.isnan(data), 0, 1).astype(float) * value)
+        self._obj.set_alpha(value)
 
     def __showColorbar(self, visible, direction='vertical'):
         fig = self.canvas().getFigure()

@@ -104,7 +104,7 @@ class TextAnnotation(AnnotationData):
         return self._appearance['transform']
 
     @saveCanvas
-    def setFont(self, family, size=10, color="black"):
+    def setFont(self, fname, size=10, color="black"):
         """
         Set the font of the annotation.
 
@@ -113,11 +113,12 @@ class TextAnnotation(AnnotationData):
             size(int): The size of the font.
             color(str): The color of the font such as '#111111'.
         """
-        if family not in FontInfo.fonts():
-            warnings.warn("Font [" + family + "] not found. Use default font.")
-            family = FontInfo.defaultFamily()
-        self._setFont(family, size, color)
-        self._appearance['font'] = {"family": family, "size": size, "color": color}
+        if isinstance(fname, FontInfo):
+            font = fname
+        else:
+            font = FontInfo(fname, size, color)
+        self._setFont(font)
+        self._appearance['font'] = font.toDict()
 
     def getFont(self):
         """
@@ -171,8 +172,8 @@ class TextAnnotation(AnnotationData):
         pos = self.getPosition()
         self.setTransform(appearance.get('transform', 'axes'))
         self.setPosition(pos)
-        font = appearance.get('font', {"family": FontInfo.defaultFamily(), "size": 10, "color": "black"})
-        self.setFont(**font)
+        font = appearance.get('font', {"fname": FontInfo.defaultFont(), "size": 10, "color": "black"})
+        self.setFont(FontInfo.fromDict(font))
         self.setBoxStyle(appearance.get('boxStyle', 'none'))
         self.setBoxColor(appearance.get('boxFaceColor', 'white'), appearance.get('boxEdgeColor', 'black'))
 
@@ -188,8 +189,8 @@ class TextAnnotation(AnnotationData):
     def _setTransform(self, transformation):
         warnings.warn(str(type(self)) + " does not implement _setTransformation(transformation) method.", NotImplementedWarning)
 
-    def _setFont(self, family, size, color):
-        warnings.warn(str(type(self)) + " does not implement _setFont(family, size, color) method.", NotImplementedWarning)
+    def _setFont(self, font):
+        warnings.warn(str(type(self)) + " does not implement _setFont(font) method.", NotImplementedWarning)
 
     def _setBoxStyle(self, style):
         warnings.warn(str(type(self)) + " does not implement _setBoxStyle(style) method.", NotImplementedWarning)

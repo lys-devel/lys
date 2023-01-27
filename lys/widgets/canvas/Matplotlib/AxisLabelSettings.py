@@ -23,16 +23,16 @@ class _MatplotlibAxisLabel(CanvasAxisLabel):
         else:
             axes.get_xaxis().set_label_coords(0.5, pos)
 
-    def _setAxisLabelFont(self, axis, family, size, color):
+    def _setAxisLabelFont(self, axis, font):
         axes = self.canvas().getAxes(axis)
         if axis in ['Left', 'Right']:
-            axes.get_yaxis().get_label().set_family(family)
-            axes.get_yaxis().get_label().set_size(size)
-            axes.get_yaxis().get_label().set_color(color)
+            axes.get_yaxis().get_label().set_fontproperties(font.getFontProperty(font.fontName))
+            axes.get_yaxis().get_label().set_size(font.size)
+            axes.get_yaxis().get_label().set_color(font.color)
         else:
-            axes.get_xaxis().get_label().set_family(family)
-            axes.get_xaxis().get_label().set_size(size)
-            axes.get_xaxis().get_label().set_color(color)
+            axes.get_xaxis().get_label().set_family(font.getFontProperty(font.fontName))
+            axes.get_xaxis().get_label().set_size(font.size)
+            axes.get_xaxis().get_label().set_color(font.color)
 
 
 class _MatplotlibTickLabel(CanvasTickLabel):
@@ -47,14 +47,14 @@ class _MatplotlibTickLabel(CanvasTickLabel):
         if (axis == 'Bottom' and not mirror) or (axis == 'Top' and mirror):
             axes.get_xaxis().set_tick_params(labelbottom=tf)
 
-    def _setTickLabelFont(self, axis, family, size, color):
+    def _setTickLabelFont(self, axis, font):
         axes = self.canvas().getAxes(axis)
         if axis in ['Left', 'Right']:
-            for tick in axes.get_xticklabels():
-                tick.set_fontname(family)
+            for tick in axes.get_yticklabels():
+                tick.set_fontproperties(font.getFontProperty(font.fontName))
             axis = 'x'
         else:
-            for tick in axes.get_yticklabels():
-                tick.set_fontname(family)
+            for tick in axes.get_xticklabels():
+                tick.set_fontproperties(font.getFontProperty(font.fontName))
             axis = 'y'
-        axes.tick_params(which='major', labelsize=size, labelcolor=color, axis=axis)
+        axes.tick_params(which='major', labelsize=font.size, labelcolor=font.color, axis=axis)

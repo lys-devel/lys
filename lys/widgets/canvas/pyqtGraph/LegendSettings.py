@@ -21,9 +21,9 @@ class _PyqtgraphLegend(CanvasLegend):
         else:
             self._legend.setVisible(True)
 
-    def _setLegendFont(self, family, size, color):
+    def _setLegendFont(self, font):
         for line in self.canvas().getLines():
-            line.setLegendText(font={"family": family, "size": size, "color": color})
+            line.setLegendText(font={"family": font.fontName, "size": font.size, "color": font.color})
 
     def _setLegendPosition(self, position):
         h = self.canvas().fig.getAxis('left').height()

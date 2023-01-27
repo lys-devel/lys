@@ -3,7 +3,7 @@ from matplotlib.figure import Figure
 
 from lys.Qt import QtCore
 
-from ..interface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasFont, CanvasKeyboardEvent, CanvasFocusEvent, CanvasMouseEvent, CanvasUtilities
+from ..interface import CanvasBase, saveCanvas, CanvasContextMenu, CanvasKeyboardEvent, CanvasFocusEvent, CanvasMouseEvent, CanvasUtilities
 from .AxisSettings import _MatplotlibAxes, _MatplotlibTicks
 from .AxisLabelSettings import _MatplotlibAxisLabel, _MatplotlibTickLabel
 from .AreaSettings import _MatplotlibMargin, _MatplotlibCanvasSize
@@ -46,7 +46,6 @@ class ExtendCanvas(CanvasBase, FigureCanvas):
         self.addCanvasPart(_MatplotlibAxes(self))
         self.addCanvasPart(_MatplotlibTicks(self))
         self.addCanvasPart(CanvasContextMenu(self))
-        self.addCanvasPart(CanvasFont(self))
         self.addCanvasPart(_MatplotlibAxisLabel(self))
         self.addCanvasPart(_MatplotlibTickLabel(self))
         self.addCanvasPart(_MatplotlibMargin(self))

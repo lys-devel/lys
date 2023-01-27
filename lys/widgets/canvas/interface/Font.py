@@ -1,117 +1,54 @@
+import warnings
 import matplotlib as mpl
 import matplotlib.font_manager as fm
 
-from lys.Qt import QtCore
-from .CanvasBase import CanvasPart, saveCanvas
-
 
 class FontInfo(object):
-    _fonts = None
+    _fonts = {}
 
-    def __init__(self, family, size=10, color='black'):
-        self.family = str(family)
+    def __init__(self, fname, size=10, color="black"):
+        if fname not in FontInfo.fonts():
+            warnings.warn("Font [" + fname + "] not found. Use default font.")
+            fname = FontInfo.defaultFont()
+        self.fontName = fname
         self.size = size
         self.color = color
 
-    def ToDict(self):
-        dic = {}
-        dic['family'] = self.family
-        dic['size'] = self.size
-        dic['color'] = self.color
-        return dic
+    def toDict(self):
+        return {"fname": self.fontName, "size": self.size, "color": self.color}
+
+    @staticmethod
+    def fromDict(d):
+        # for backward compability
+        if "family" in d:
+            d["fname"] = d["family"]
+        return FontInfo(d["fname"], d["size"], d["color"])
 
     @classmethod
-    def FromDict(cls, dic):
-        return FontInfo(dic['family'], dic['size'], dic['color'])
-
-    @classmethod
-    def loadFonts(cls):
-        if cls._fonts is not None:
-            return
+    def _loadFonts(cls):
         fonts = fm.findSystemFonts()
-        cls._fonts = []
         for f in fonts:
             try:
-                n = fm.FontProperties(fname=f).get_name()
+                p = fm.FontProperties(fname=f)
+                n = p.get_name()
                 if n not in cls._fonts:
-                    cls._fonts.append(n)
-                cls._fonts = sorted(cls._fonts)
+                    cls._fonts[n] = p
             except Exception:
                 pass
 
     @classmethod
     def fonts(cls):
-        if cls._fonts is None:
-            fonts = fm.findSystemFonts()
-            cls._fonts = []
-            for f in fonts:
-                try:
-                    n = fm.FontProperties(fname=f).get_name()
-                    if not n in cls._fonts:
-                        cls._fonts.append(n)
-                except Exception:
-                    pass
-        cls._fonts = sorted(cls._fonts)
-        return cls._fonts
+        return sorted(cls._fonts.keys())
 
     @classmethod
-    def defaultFamily(cls):
-        return fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
+    def getFontProperty(cls, fname):
+        return cls._fonts[fname]
 
     @classmethod
     def defaultFont(cls):
-        return FontInfo(fm.FontProperties(family=mpl.rcParams['font.family']).get_name())
+        if "Arial" in cls.fonts():
+            return "Arial"
+        return fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
 
 
-class CanvasFont(CanvasPart):
-    """Font manager class for canvas."""
-    fontChanged = QtCore.pyqtSignal(str)
-    """Emitted when fonts are changed."""
-
-    def __init__(self, canvas):
-        super().__init__(canvas)
-        self.__font = {}
-        self.__def = {}
-        self.__font['Default'] = FontInfo.defaultFont()
-        self.__def['Default'] = False
-        canvas.saveCanvas.connect(self._save)
-        canvas.loadCanvas.connect(self._load)
-
-    def _save(self, dictionary):
-        dic = {}
-        dic_def = {}
-        for name in self.__font.keys():
-            dic[name] = self.__font[name].ToDict()
-            dic_def[name] = self.__def[name]
-        dictionary['Font'] = dic
-        dictionary['Font_def'] = dic_def
-
-    def _load(self, dictionary):
-        if 'Font' in dictionary:
-            dic = dictionary['Font']
-            dic_def = dictionary['Font_def']
-            for d in dic.keys():
-                self.__font[d] = FontInfo.FromDict(dic[d])
-                self.__def[d] = dic_def[d]
-
-    def getCanvasFont(self, name='Default'):
-        if name in self.__font:
-            if not self.__def[name]:
-                return self.__font[name]
-        return self.__font['Default']
-
-    @saveCanvas
-    def setCanvasFont(self, font, name='Default'):
-        self.__font[name] = font
-        self.fontChanged.emit(name)
-
-    @saveCanvas
-    def setCanvasFontDefault(self, b, name):
-        self.__def[name] = b
-        self.fontChanged.emit(name)
-
-    def getCanvasFontDefault(self, name):
-        if name in self.__font:
-            if not self.__def[name]:
-                return False
-        return True
+FontInfo._loadFonts()

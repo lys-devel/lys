@@ -23,25 +23,26 @@ class CanvasLegend(CanvasPart):
         self._position = (0, 0)
 
     def _init(self):
-        self.setLegendFont(FontInfo.defaultFamily())
+        self.setLegendFont(FontInfo.defaultFont())
         self.setLegendPosition((0.1, 0.8))
         self.setLegendFrameVisible(True)
 
     @ saveCanvas
-    def setLegendFont(self, family, size=10, color="black"):
+    def setLegendFont(self, fname, size=10, color="black"):
         """
         Set the font of the legend.
 
         Args:
-            family(str): The name of the font.
+            fname(str): The name of the font.
             size(int): The size of the font.
             color(str): The color of the font such as #111111.
         """
-        if family not in FontInfo.fonts():
-            warnings.warn("Font [" + family + "] not found. Use default font.")
-            family = FontInfo.defaultFamily()
-        self._setLegendFont(family, size, color)
-        self._font = {"family": family, "size": size, "color": color}
+        if isinstance(fname, FontInfo):
+            font = fname
+        else:
+            font = FontInfo(fname, size, color)
+        self._setLegendFont(font)
+        self._font = font.toDict()
 
     def getLegendFont(self):
         """
@@ -101,7 +102,7 @@ class CanvasLegend(CanvasPart):
         if 'Legend' in dictionary:
             d = dictionary['Legend']
             if "font" in d:
-                self.setLegendFont(**d["font"])
+                self.setLegendFont(FontInfo.fromDict(d["font"]))
             if "position" in d:
                 self.setLegendPosition(d["position"])
             if "frameon" in d:

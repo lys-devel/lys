@@ -28,13 +28,13 @@ class CanvasAxisLabel(CanvasPart):
         self.setAxisLabelVisible("Bottom", True)
         self.setAxisLabelCoords("Left", -0.2)
         self.setAxisLabelCoords("Bottom", -0.2)
-        self.setAxisLabelFont("Left", FontInfo.defaultFamily())
-        self.setAxisLabelFont("Bottom", FontInfo.defaultFamily())
+        self.setAxisLabelFont("Left", FontInfo.defaultFont())
+        self.setAxisLabelFont("Bottom", FontInfo.defaultFont())
 
     def _axisChanged(self, axis):
         self.setAxisLabelVisible(axis, True)
         self.setAxisLabelCoords(axis, -0.2)
-        self.setAxisLabelFont(axis, FontInfo.defaultFamily())
+        self.setAxisLabelFont(axis, FontInfo.defaultFont())
 
     @saveCanvas
     def setAxisLabel(self, axis, text):
@@ -121,23 +121,24 @@ class CanvasAxisLabel(CanvasPart):
         return self._coords[axis]
 
     @saveCanvas
-    def setAxisLabelFont(self, axis, family, size=10, color="black"):
+    def setAxisLabelFont(self, axis, fname, size=10, color="black"):
         """
         Set the font of the label.
 
         Args:
             axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
-            family(str): The name of the font.
+            fname(str): The name of the font.
             size(int): The size of the font.
             color(str): The color of the font such as #111111.
         """
         if not self.canvas().axisIsValid(axis):
             return
-        if family not in FontInfo.fonts():
-            warnings.warn("Font [" + family + "] not found. Use default font.")
-            family = FontInfo.defaultFamily()
-        self._setAxisLabelFont(axis, family, size, color)
-        self._font[axis] = {"family": family, "size": size, "color": color}
+        if isinstance(fname, FontInfo):
+            font = fname
+        else:
+            font = FontInfo(fname, size, color)
+        self._setAxisLabelFont(axis, font)
+        self._font[axis] = font.toDict()
 
     def getAxisLabelFont(self, axis):
         """
@@ -168,7 +169,7 @@ class CanvasAxisLabel(CanvasPart):
             for axis in self.canvas().axisList():
                 self.setAxisLabelVisible(axis, dic[axis + "_label_on"])
                 self.setAxisLabel(axis, dic[axis + '_label'])
-                self.setAxisLabelFont(axis, **dic[axis + "_font"])
+                self.setAxisLabelFont(axis, FontInfo.fromDict(dic[axis + "_font"]))
                 self.setAxisLabelCoords(axis, dic[axis + "_pos"])
 
     def _setAxisLabel(self, axis, text):
@@ -203,20 +204,20 @@ class CanvasTickLabel(CanvasPart):
         self._font = {}
         self.setTickLabelVisible("Left", True)
         self.setTickLabelVisible("Bottom", True)
-        self.setTickLabelFont("Left", FontInfo.defaultFamily())
-        self.setTickLabelFont("Bottom", FontInfo.defaultFamily())
+        self.setTickLabelFont("Left", FontInfo.defaultFont())
+        self.setTickLabelFont("Bottom", FontInfo.defaultFont())
 
     def _axisChanged(self, axis):
         if axis == "Right":
             self._setTickLabelVisible("Left", False, mirror=True)
             self._visible_mirror["Left"] = False
             self.setTickLabelVisible("Right", True)
-            self.setTickLabelFont("Right", FontInfo.defaultFamily())
+            self.setTickLabelFont("Right", FontInfo.defaultFont())
         if axis == "Top":
             self._setTickLabelVisible("Bottom", False, mirror=True)
             self._visible_mirror["Bottom"] = False
             self.setTickLabelVisible("Top", True)
-            self.setTickLabelFont("Top", FontInfo.defaultFamily())
+            self.setTickLabelFont("Top", FontInfo.defaultFont())
 
     @saveCanvas
     def setTickLabelVisible(self, axis, tf, mirror=False):
@@ -274,20 +275,24 @@ class CanvasTickLabel(CanvasPart):
             return self._visible[axis]
 
     @saveCanvas
-    def setTickLabelFont(self, axis, family, size=9, color="#000000"):
+    def setTickLabelFont(self, axis, fname, size=9, color="#000000"):
         """
         Set the font of the label.
 
         Args:
             axis('Left' or 'Right' or 'Top' or 'Bottom'): The axis.
-            family(str): The name of the font.
+            fname(str): The name of the font.
             size(int): The size of the font.
             color(str): The color of the font such as #111111.
         """
         if not self.canvas().axisIsValid(axis):
             return
-        self._setTickLabelFont(axis, family, size, color)
-        self._font[axis] = {"family": family, "size": size, "color": color}
+        if isinstance(fname, FontInfo):
+            font = fname
+        else:
+            font = FontInfo(fname, size, color)
+        self._setTickLabelFont(axis, font)
+        self._font[axis] = font.toDict()
 
     def getTickLabelFont(self, axis):
         """
@@ -315,10 +320,10 @@ class CanvasTickLabel(CanvasPart):
             dic = dictionary['TickLabelSetting']
             for axis in self.canvas().axisList():
                 self.setTickLabelVisible(axis, dic[axis + "_label_on"])
-                self.setTickLabelFont(axis, **dic[axis + "_font"])
+                self.setTickLabelFont(axis, FontInfo.fromDict(dic[axis + "_font"]))
 
     def _setTickLabelVisible(self, axis, tf, mirror=False):
         warnings.warn(str(type(self)) + " does not implement _setTickLabelVisible(axis, tf, mirror) method.", NotImplementedWarning)
 
-    def _setTickLabelFont(self, axis, family, size, color):
-        warnings.warn(str(type(self)) + " does not implement _setTickLabelFont(axis, family, size, color) method.", NotImplementedWarning)
+    def _setTickLabelFont(self, axis, name, size, color):
+        warnings.warn(str(type(self)) + " does not implement _setTickLabelFont(axis, name, size, color) method.", NotImplementedWarning)

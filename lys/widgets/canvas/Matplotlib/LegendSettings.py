@@ -28,10 +28,10 @@ class _MatplotlibLegend(CanvasLegend):
         if len(lines) == 0:
             leg.set_visible(False)
 
-    def _setLegendFont(self, family, size, color):
-        self._family = family
-        self._size = size
-        self._color = color
+    def _setLegendFont(self, font):
+        self._family = font.fontName
+        self._size = font.size
+        self._color = font.color
         self.updateLegends()
 
     def _setLegendPosition(self, position):
