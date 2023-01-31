@@ -247,6 +247,18 @@ class _PyqtgraphImage(ImageData):
     def _setOpacity(self, opacity):
         self._obj.setOpacity(opacity)
 
+    def _setColorbarVisible(self, visible):
+        warnings.warn("pyqtGraph does not support colorbar.", NotSupportedWarning)
+
+    def _setColorbarDirection(self, direction):
+        warnings.warn("pyqtGraph does not support colorbar.", NotSupportedWarning)
+
+    def _setColorbarPosition(self, pos):
+        warnings.warn("pyqtGraph does not support colorbar.", NotSupportedWarning)
+
+    def _setColorbarSize(self, size):
+        warnings.warn("pyqtGraph does not support colorbar.", NotSupportedWarning)
+
 
 class _PyqtgraphRGB(RGBData):
     """Implementation of RGBData for pyqtgraph"""

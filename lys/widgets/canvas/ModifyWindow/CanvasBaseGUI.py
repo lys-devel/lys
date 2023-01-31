@@ -4,6 +4,7 @@ from lys import Wave, glb, display, append
 from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import ScientificSpinBox, LysSubWindow
 from lys.filters import FiltersGUI
+from lys.errors import suppressLysWarnings
 from lys.decorators import avoidCircularReference
 
 
@@ -79,7 +80,11 @@ class _DataSelectionBoxBase(QtWidgets.QTreeView):
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.__model = _Model(self.canvas, self.__type)
         self.setModel(self.__model)
-        self.selectionModel().selectionChanged.connect(lambda: self.selected.emit(self._selectedData()))
+        self.selectionModel().selectionChanged.connect(self._selected)
+
+    @suppressLysWarnings
+    def _selected(self, *args, **kwargs):
+        self.selected.emit(self._selectedData())
 
     def _selectedData(self):
         list = self.canvas.getWaveData(self.__type)

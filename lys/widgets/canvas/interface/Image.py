@@ -246,6 +246,7 @@ class ImageData(WaveData):
         self.setOpacity(appearance.get('Opacity', 1.0))
         self.setColorRange(*appearance.get('Range', self.getAutoColorRange()))
         self.setLog(appearance.get('Log', False))
+        self.setColorbarDirection(appearance.get('colorbarDirection', "vertical"))
         self.setColorbarVisible(appearance.get('colorbarVisible', False))
         self.setColorbarPosition(appearance.get('colorbarPosition', (0.02, 0)))
         self.setColorbarSize(appearance.get('colorbarSize', (0.04, 1)))
@@ -274,5 +275,5 @@ class ImageData(WaveData):
     def _setColorbarPosition(self, pos):
         warnings.warn(str(type(self)) + " does not implement _setColorbarPosition(pos) method.", NotImplementedWarning)
 
-    def setColorbarSize(self, size):
+    def _setColorbarSize(self, size):
         warnings.warn(str(type(self)) + " does not implement _setColorbarSize(size) method.", NotImplementedWarning)

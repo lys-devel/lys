@@ -2,6 +2,7 @@ import os
 import weakref
 
 from lys.Qt import QtCore, QtWidgets
+from lys.errors import suppressLysWarnings
 from lys.widgets import LysSubWindow
 
 from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
@@ -36,6 +37,7 @@ class ModifyWindow(LysSubWindow):
         self.attachTo()
         ModifyWindow.instance = weakref.ref(self)
 
+    @suppressLysWarnings
     def _initlayout(self, canvas, showArea):
         self.setWindowTitle("Modify Window")
         self._tab = QtWidgets.QTabWidget()
