@@ -10,6 +10,7 @@ Most of functions can be directly imported from lys Package:
 
 import os
 import sys
+from pathlib import Path
 
 
 __home = os.getcwd()
@@ -188,3 +189,23 @@ def append(*args, canvas=None, exclude=[], **kwargs):
         else:
             c.Append(Wave(wave), **kwargs)
     return c
+
+
+def lysPath(path):
+    """
+    Return relative path to the home directory.
+
+    If the path is not in the home directory, the absolute path will be returned.
+
+    Args:
+        path(str): The path to be converted.
+
+    Returns:
+        str: The relative path to the home directory.
+    """
+    file = Path(path)
+    if Path(home()) in file.parents:
+        file = str(file.relative_to(Path(home())))
+    else:
+        file = str(file.resolve())
+    return file

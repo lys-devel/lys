@@ -135,9 +135,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def _restoreWorkspaces(self):
         for i, work in enumerate(self._workspace):
             self._mainTab.setCurrentIndex(i)
-            work.RestoreAllWindows()
+            work.restoreWorkspace()
             self._mainTab.setTabText(i, work.getName())
-            self.closed.connect(work.StoreAllWindows)
+            self.closed.connect(work.storeWorkspace)
         self._mainTab.setCurrentIndex(0)
 
     def __initMenu(self):
@@ -167,7 +167,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self._mainTab.setCurrentIndex(index)
 
     def _closeTab(self, index):
-        self._workspace[index].CloseAllWindows()
+        self._workspace[index].closeAllWindows()
         self._workspace.pop(index)
         self._mainTab.setCurrentIndex(index - 1)
         self._mainTab.removeTab(index)

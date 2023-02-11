@@ -9,11 +9,11 @@ from lys.Qt import QtCore, QtWidgets
 from lys.decorators import avoidCircularReference
 
 
-class _ExtendMdiArea(QtWidgets.QMdiArea):
-    """
-    MdiArea that manage AutoSavedWindows.
-    """
+class _MdiAreaBase(QtWidgets.QMdiArea):
+    """MDI window that handle LysSubWindow"""
     _main = None
+    updated = QtCore.pyqtSignal()
+    """Emitted when the contents of the workspace is sotred in file."""
 
     @classmethod
     def current(cls):
@@ -23,64 +23,30 @@ class _ExtendMdiArea(QtWidgets.QMdiArea):
         super().__init__()
         _ExtendMdiArea._main = parent
         self._workspace = workspace
-        self._dicFile = home() + '/.lys/workspace/' + workspace + '/winDict.dic'
-        self._windir = home() + '/.lys/workspace/' + workspace + '/wins'
         self._name = workspace
+        self._dicFile = home() + '/.lys/workspace/' + workspace + '/winDict.dic'
+        self.updated.connect(self._update)
 
     def setName(self, name):
         self._name = name
-        self.update()
+        self.updated.emit()
 
     def getName(self):
         return self._name
 
-    def update(self):
-        dic = {"Name": self._name}
-        for i, w in enumerate(self._autoWindows()):
-            if w.FileName() is None:
-                file = None
-            else:
-                file = Path(w.FileName())
-                if Path.cwd() in file.parents:
-                    file = str(file.relative_to(Path.cwd()))
-                else:
-                    file = str(file.resolve())
-            dic[i] = {"FileName": file, "TemporaryFile": str(Path(w.TemporaryFile()).relative_to(Path.cwd()))}
-        with open(self._dicFile, 'w') as f:
-            f.write(str(dic))
-
-    def _autoWindows(self):
-        return [w for w in self.subWindowList(order=QtWidgets.QMdiArea.ActivationHistoryOrder) if isinstance(w, _AutoSavedWindow)]
-
     def addSubWindow(self, window):
         super().addSubWindow(window)
         window.closed.connect(lambda: self.removeSubWindow(window))
-        if isinstance(window, _AutoSavedWindow):
-            if window.FileName() not in [w.FileName() for w in self._autoWindows() if w.FileName() is not None]:
-                window.fileChanged.connect(self.update)
-                self.update()
 
-    def removeSubWindow(self, window, store=False):
+    def removeSubWindow(self, window):
         if window in self.subWindowList():
             super().removeSubWindow(window)
-            if isinstance(window, _AutoSavedWindow) and not store:
-                if os.path.exists(window.TemporaryFile()):
-                    os.remove(window.TemporaryFile())
-                self.update()
 
-    @classmethod
-    def loadedWindow(cls, path):
-        if path is None:
-            return None
-        for work in cls._main._mdiArea("__all__"):
-            for win in work._autoWindows():
-                file = win.FileName()
-                if win.FileName() is None:
-                    continue
-                if Path(file) == Path(path).absolute():
-                    return win
+    def storeWorkspace(self):
+        self.updated.emit()
+        self.updated.disconnect(self._update)
 
-    def RestoreAllWindows(self):
+    def restoreWorkspace(self):
         # load dict to restore
         os.makedirs(self._windir, exist_ok=True)
         if os.path.exists(self._dicFile):
@@ -88,31 +54,60 @@ class _ExtendMdiArea(QtWidgets.QMdiArea):
                 dic = eval(f.read())
         else:
             dic = {}
+        self._restore(dic)
+        self.updated.emit()
+
+    def _restore(self, dic):
         self._name = dic.get("Name", self._workspace)
-        # load all windows and disconnect if it is temporary
+
+    def _update(self):
+        dic = self._saveAsDict()
+        with open(self._dicFile, 'w') as f:
+            f.write(str(dic))
+
+    def _saveAsDict(self):
+        return {"Name": self._name}
+
+
+class _MdiAreaTemp(_MdiAreaBase):
+    """MdiArea that manage AutoSavedWindows."""
+
+    def __init__(self, parent, workspace="default"):
+        super().__init__(parent, workspace)
+        self._windir = home() + '/.lys/workspace/' + workspace + '/wins'
+
+    def _autoWindows(self):
+        return [w for w in self.subWindowList(order=QtWidgets.QMdiArea.ActivationHistoryOrder) if isinstance(w, _AutoSavedWindow)]
+
+    def _saveAsDict(self):
+        dic = super()._saveAsDict()
+        for i, w in enumerate(self._autoWindows()):
+            dic[i] = self._windowDict(w)
+        return dic
+
+    def _restore(self, dic):
+        super()._restore(dic)
         i = 0
         while i in dic:
             try:
-                w = load(dic[i]["TemporaryFile"], tmpFile=dic[i]["TemporaryFile"])
-                w._changeFileName(dic[i]["FileName"])
-                w.fileChanged.connect(self.update)
+                self._restoreWindow(dic[i])
             except Exception as e:
                 print("Load is skipped because of Failure (The file is temporary saved in ./backup):", e, file=sys.stderr)
                 print(traceback.format_exc(), file=sys.stderr)
                 os.makedirs("backup", exist_ok=True)
                 shutil.copy2(dic[i]["TemporaryFile"], "backup/")
             i += 1
-        self.update()
 
-    def StoreAllWindows(self):
-        self.update()
-        for win in self._autoWindows():
-            self.removeSubWindow(win, store=True)
-            win.close(force=True)
+    def _windowDict(self, w):
+        return {"TemporaryFile": str(Path(w.TemporaryFile()).relative_to(Path.cwd()))}
 
-    def CloseAllWindows(self):
-        for win in self._autoWindows():
-            win.close(force=True)
+    def _restoreWindow(self, d):
+        return load(d["TemporaryFile"], tmpFile=d["TemporaryFile"])
+
+    def removeSubWindow(self, window):
+        super().removeSubWindow(window)
+        if isinstance(window, _AutoSavedWindow):
+            self.updated.emit()
 
     def tmpFilePath(self, prefix, suffix):
         os.makedirs(self._windir, exist_ok=True)
@@ -122,6 +117,51 @@ class _ExtendMdiArea(QtWidgets.QMdiArea):
             if path not in used:
                 return path
         print('Too many windows.', file=sys.stderr)
+
+    def closeAllWindows(self):
+        for win in self._autoWindows():
+            win.close(force=True)
+
+    def storeWorkspace(self):
+        super().storeWorkspace()
+        for win in self._autoWindows():
+            win.close(force=True, store=True)
+
+
+class _ExtendMdiArea(_MdiAreaTemp):
+    """
+    MdiArea that manage AutoSavedWindows.
+    """
+
+    def _conservableWindows(self):
+        return [w for w in self.subWindowList(order=QtWidgets.QMdiArea.ActivationHistoryOrder) if isinstance(w, _ConservableWindow)]
+
+    def addSubWindow(self, window):
+        super().addSubWindow(window)
+        if isinstance(window, _ConservableWindow):
+            if window.FileName() not in [w.FileName() for w in self._autoWindows() if w.FileName() is not None]:
+                window.fileChanged.connect(self.updated)
+                self.updated.emit()
+
+    def _windowDict(self, w):
+        d = super()._windowDict(w)
+        if isinstance(w, _ConservableWindow):
+            if w.FileName() is None:
+                file = None
+            else:
+                file = Path(w.FileName())
+                if Path.cwd() in file.parents:
+                    file = str(file.relative_to(Path.cwd()))
+                else:
+                    file = str(file.resolve())
+            d["FileName"] = file
+        return d
+
+    def _restoreWindow(self, d):
+        w = super()._restoreWindow(d)
+        if isinstance(w, _ConservableWindow):
+            w._changeFileName(d["FileName"])
+            w.fileChanged.connect(self.updated)
 
 
 class LysSubWindow(QtWidgets.QMdiSubWindow):
@@ -385,39 +425,50 @@ def _checkName(name):
         return True
 
 
-class _ConservableWindow(LysSubWindow):
+class _AutoSavedWindow(LysSubWindow):
     modified = QtCore.pyqtSignal()
     """*modified* signal is emitted when the content of the window is changed."""
+
+    def __init__(self, *args, tmpFile=None, **kwargs):
+        if tmpFile is None:
+            self.__tmpFile = _ExtendMdiArea.current().tmpFilePath(self._prefix(), self._suffix())
+        else:
+            self.__tmpFile = tmpFile
+        super().__init__(*args, **kwargs)
+        self.modified.connect(self.__save)
+        self.closed.connect(self.__delete)
+
+    def close(self, store=False, **kwargs):
+        if store:
+            self.closed.disconnect(self.__delete)
+        super().close()
+
+    def __delete(self):
+        if os.path.exists(self.TemporaryFile()):
+            os.remove(self.TemporaryFile())
+
+    def __save(self):
+        os.makedirs(os.path.dirname(self.__tmpFile), exist_ok=True)
+        self._save(self.__tmpFile)
+
+    def TemporaryFile(self):
+        """Return temporary filename that hold content of the window"""
+        return os.path.abspath(self.__tmpFile)
+
+    def Name(self):
+        """Return name of the window, which is automatically determined."""
+        return os.path.basename(self.TemporaryFile()).replace(self._suffix(), "") + " (not saved)"
+
+    def _prefix(self):
+        pass
+
+    def _suffix(self):
+        pass
+
+
+class _ConservableWindow(_AutoSavedWindow):
     fileChanged = QtCore.pyqtSignal()
     """*fileChanged* signal is emitted when it is saved."""
-
-    def __new__(cls, file=None, warn=True, **kwargs):
-        obj = _ExtendMdiArea.loadedWindow(file)
-        if obj is not None:
-            obj.raise_()
-            if obj.__mdiArea() == _ExtendMdiArea.current():
-                if warn:
-                    print(file + " has been loaded in " + obj.__mdiArea()._workspace, file=sys.stderr)
-                return None
-            elif warn:
-                msg = QtWidgets.QMessageBox(parent=_ExtendMdiArea.current())
-                msg.setIcon(QtWidgets.QMessageBox.Warning)
-                msg.setText(file + " has been loaded in " + obj.__mdiArea()._workspace + ". Do you want to move it to current workspace?")
-                msg.setWindowTitle("Caution")
-                msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-                ok = msg.exec_()
-                if ok == QtWidgets.QMessageBox.Cancel:
-                    return None
-                else:
-                    obj.close(force=True)
-                    return super().__new__(cls)
-        return super().__new__(cls)
-
-    def __mdiArea(self):
-        parent = self
-        while not isinstance(parent, _ExtendMdiArea):
-            parent = parent.parent()
-        return parent
 
     def __init__(self, file=None, *args, **kwargs):
         if file is None:
@@ -457,10 +508,10 @@ class _ConservableWindow(LysSubWindow):
         self.__modified = False
         self.setWindowTitle(self.Name())
 
-    def close(self, force=False):
+    def close(self, force=False, **kwargs):
         """Reimplementation of close in QMdiSubWindow"""
         self.__closeflg = not force
-        super().close()
+        super().close(**kwargs)
 
     def closeEvent(self, event):
         """Reimplementation of closeEvent in QMdiSubWindow"""
@@ -500,39 +551,7 @@ class _ConservableWindow(LysSubWindow):
                 name += "*"
             return name
         else:
-            return "Untitled"
+            return super().Name()
 
     def _save(self, file):
         raise NotImplementedError
-
-
-class _AutoSavedWindow(_ConservableWindow):
-    def __init__(self, *args, tmpFile=None, **kwargs):
-        if tmpFile is None:
-            self.__tmpFile = _ExtendMdiArea.current().tmpFilePath(self._prefix(), self._suffix())
-        else:
-            self.__tmpFile = tmpFile
-        super().__init__(*args, **kwargs)
-        self.modified.connect(self.__save)
-
-    def __save(self):
-        os.makedirs(os.path.dirname(self.__tmpFile), exist_ok=True)
-        self._save(self.__tmpFile)
-
-    def TemporaryFile(self):
-        """Return temporary filename that hold content of the window"""
-        return os.path.abspath(self.__tmpFile)
-
-    def Name(self):
-        """Return name of the window, which is automatically determined by filename."""
-        if self.FileName() is not None:
-            return super().Name()
-        else:
-            file = self.TemporaryFile()
-            return os.path.basename(file) + " (not saved)"
-
-    def _prefix(self):
-        pass
-
-    def _suffix(self):
-        pass

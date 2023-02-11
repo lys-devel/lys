@@ -1,6 +1,6 @@
 from . import Qt
 from . import errors
-from .functions import home, load, edit, display, append, registerFileLoader, loadableFiles, registerFittingFunction, frontCanvas, multicut
+from .functions import home, load, edit, display, append, registerFileLoader, loadableFiles, registerFittingFunction, frontCanvas, multicut, lysPath
 from .core import SettingDict, Wave, DaskWave
 
 from . import filters

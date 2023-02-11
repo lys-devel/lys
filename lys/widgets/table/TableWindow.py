@@ -1,20 +1,24 @@
 import io
-from lys import Wave, load
+from lys import Wave, load, lysPath
 from lys.Qt import QtWidgets, QtGui, QtCore
 
-from ..mdi import _AutoSavedWindow
+from ..mdi import _AutoSavedWindow, LysSubWindow
 from . TableModifyWindow import TableModifyWindow
 
 
 class Table(_AutoSavedWindow):
+
     def __init__(self, data=None, **kwargs):
         super().__init__(**kwargs)
         self.__initlayout(data)
-        self._data = data
-        self.setWindowTitle(self.__getTitle())
+        self.setWindowTitle(self.Name())
         self.resize(400, 400)
-        # self._etable.dataChanged.connect(self.modified)
-        # self.modified.emit()
+
+        self._etable.dataChanged.connect(lambda: self.setWindowTitle(self.Name() + "*"))
+        self._etable.dataChanged.connect(self.modified)
+        self._etable.dataSaved.connect(lambda: self.setWindowTitle(self.Name()))
+        self._etable.dataSaved.connect(self.modified)
+        self.modified.emit()
 
     def __initlayout(self, data):
         self._etable = lysTable(self)
@@ -22,12 +26,13 @@ class Table(_AutoSavedWindow):
             if type(data) == str:
                 if data.endswith(".tbl"):
                     self._load(data)
+                    self._data = self._etable._original
                 else:
                     self._etable.setData(data)
+                    self._data = data
             else:
                 self._etable.setData(data)
-        self._etable.dataChanged.connect(lambda: self.setWindowTitle(self.__getTitle() + "*"))
-        self._etable.dataSaved.connect(lambda: self.setWindowTitle(self.__getTitle()))
+                self._data = data
         self.setWidget(self._etable)
         self.show()
 
@@ -36,9 +41,9 @@ class Table(_AutoSavedWindow):
             return getattr(self._etable, key)
         return super().__getattr__(key)
 
-    def __getTitle(self):
+    def Name(self):
         if isinstance(self._data, str):
-            return self._data
+            return lysPath(self._data)
         elif isinstance(self._data, Wave):
             return self._data.name
 
@@ -46,10 +51,8 @@ class Table(_AutoSavedWindow):
         d = self._etable.saveAsDictionary()
         with open(file, 'w') as f:
             f.write(str(d))
-        print("save", file)
 
     def _load(self, file):
-        print("load", file)
         with open(file, 'r') as f:
             d = eval(f.read())
         self._etable.loadFromDictionary(d)
