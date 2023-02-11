@@ -4,11 +4,12 @@ import webbrowser
 import lys
 from lys import glb
 from lys.widgets import LysSubWindow
-from lys.Qt import QtCore, QtWebEngineWidgets
 
 
 class manualView(LysSubWindow):
+
     def __init__(self):
+        from lys.Qt import QtCore, QtWebEngineWidgets
         super().__init__()
         url = str(Path(lys.__file__).parent.parent) + "/docs/_build/html/index.html"
         self.browser = QtWebEngineWidgets.QWebEngineView()

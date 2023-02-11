@@ -494,6 +494,9 @@ class AxisSelectionLayout(QtWidgets.QHBoxLayout):
         init(int): The axis initially selected.
     """
 
+    axisChanged = QtCore.pyqtSignal()
+    """Emitted when the selected axis is changed."""
+
     def __init__(self, label, dim=2, init=0):
         super().__init__()
         self.dimension = 0
@@ -514,6 +517,7 @@ class AxisSelectionLayout(QtWidgets.QHBoxLayout):
         for c in self.childs:
             self.addWidget(c)
             self.group.addButton(c)
+            c.toggled.connect(self.axisChanged)
 
     def setDimension(self, d):
         """
@@ -550,6 +554,16 @@ class AxisSelectionLayout(QtWidgets.QHBoxLayout):
             c.setChecked(False)
         self.childs[axis].setChecked(True)
         self.group.setExclusive(True)
+
+    def setEnabled(self, enabled):
+        """
+        Enable the widgets in this layout.
+
+        Args:
+            enabled(bool): Whether the widgets are enabled.
+        """
+        for c in self.childs:
+            c.setEnabled(enabled)
 
 
 class AxesSelectionDialog(QtWidgets.QDialog):
@@ -695,3 +709,77 @@ class RegionSelectWidget(QtWidgets.QGridLayout):
             list of boolean: The state of the checkboxes.
         """
         return [s.isChecked() for s in self._checkWidgets]
+
+
+class IndiceSelectionLayout(QtWidgets.QGridLayout):
+    """
+    A layout to specify indice.
+
+    Args:
+        shape(tuple): The shape of data.
+    """
+
+    valueChanged = QtCore.pyqtSignal()
+    """
+    Emitted when the value is changed.
+    """
+
+    def __init__(self, shape=None):
+        super().__init__()
+        self._shape = None
+        self._childs = []
+        self.setShape(shape)
+
+    def __update(self):
+        for c in self._childs:
+            self.removeWidget(c)
+            c.deleteLater()
+        labels = [QtWidgets.QLabel("Axis" + str(i)) for i in range(len(self._shape))]
+        self._childs = [QtWidgets.QSpinBox() for i in range(len(self._shape))]
+        for i, c in enumerate(labels):
+            self.addWidget(c, 0, i)
+        for i, c in enumerate(self._childs):
+            c.setRange(0, self._shape[i] - 1)
+            c.valueChanged.connect(self.valueChanged)
+            self.addWidget(c, 1, i)
+
+    def setShape(self, shape):
+        """
+        Change the shape of the layout.
+
+        Args:
+            shape(tuple): The new shape
+        """
+        if shape == self._shape:
+            return
+        self._shape = shape
+        self.__update()
+
+    def getIndices(self):
+        """
+        Get the indices.
+
+        Returns:
+            sequence of int: The indices.
+        """
+        return tuple([c.value() for c in self._childs])
+
+    def setValues(self, indices):
+        """
+        Set the indices.
+
+        Args:
+            indices(sequence of int): The indices.
+        """
+        for c, i in zip(self._childs, indices):
+            c.setValue(i)
+
+    def setEnabled(self, enabled):
+        """
+        Enable the respective spin box.
+
+        Args:
+            enabled(sequence of boolean): Whether the spin box is enabled.
+        """
+        for c, e in zip(self._childs, enabled):
+            c.setEnabled(e)

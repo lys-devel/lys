@@ -1,4 +1,4 @@
-from lys import glb, load, display, append, edit, MultiCut
+from lys import glb, load, display, append, edit, multicut
 from lys.Qt import QtWidgets
 
 fileView = glb.mainWindow().fileView
@@ -13,7 +13,7 @@ def _multicut():
     paths = fileView.selectedPaths()
     for p in paths:
         w = load(p)
-        MultiCut(w)
+        multicut(w)
 
 
 def _append():
@@ -24,8 +24,7 @@ def _append():
 def _edit():
     paths = fileView.selectedPaths()
     for p in paths:
-        w = load(p)
-        edit(w)
+        edit(p)
 
 
 disp = QtWidgets.QAction('Display', triggered=_display)

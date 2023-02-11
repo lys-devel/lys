@@ -1,6 +1,6 @@
 import numpy as np
 
-from lys import Wave, glb, display, append
+from lys import Wave, glb, display, append, edit, multicut
 from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import ScientificSpinBox, LysSubWindow
 from lys.filters import FiltersGUI
@@ -165,15 +165,12 @@ class DataSelectionBox(_DataSelectionBoxBase):
             self.canvas.Append(d)
 
     def __multicut(self, type):
-        from lys import MultiCut
         for d in self.__getWaves(type):
-            MultiCut(d)
+            multicut(d)
 
     def __edit(self, type):
-        from lys import Table
-        t = Table()
         for d in self.__getWaves(type):
-            t.Append(d)
+            edit(d)
 
     def __print(self, type):
         for d in self.__getWaves(type):

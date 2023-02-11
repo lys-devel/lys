@@ -5,7 +5,8 @@ from .general import *
 from .fileView import FileSystemView
 
 from .mdi import LysSubWindow, _ExtendMdiArea
-from .table import Table, ExtendTable
+from .table import Table, lysTable, ExtendTable
 from .canvas import lysCanvas, Graph, CanvasBase, getFrontCanvas
 
 registerFileLoader(".grf", Graph)
+registerFileLoader(".tbl", Table)

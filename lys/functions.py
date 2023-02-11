@@ -125,7 +125,8 @@ def registerFittingFunction(func, name=None):
 
 
 def edit(data):
-    pass
+    from .widgets import Table
+    return Table(data)
 
 
 def multicut(*args, **kwargs):
