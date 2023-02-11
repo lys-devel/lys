@@ -126,13 +126,28 @@ def registerFittingFunction(func, name=None):
 
 
 def edit(data):
+    """
+    Edit the data in Table.
+
+    Args:
+        data(str or Wave or arraylike): The data to be edited. If data is str, it is interpreted as file path.
+    """
     from .widgets import Table
+    from .core import Wave
+    if not (isinstance(data, str) or isinstance(data, Wave)):
+        data = Wave(data)
     return Table(data)
 
 
-def multicut(*args, **kwargs):
+def multicut(data):
+    """
+    Analyze the data by MultiCut.
+
+    Args:
+        data(Wave or DaskWave or arraylike): The data to be analyzed.
+    """
     from .Analysis import MultiCut
-    MultiCut(*args, **kwargs)
+    MultiCut(data)
 
 
 def frontCanvas(exclude=[]):

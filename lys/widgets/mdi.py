@@ -4,7 +4,7 @@ import traceback
 import shutil
 from pathlib import Path
 
-from lys import home, load
+from lys import home, load, lysPath
 from lys.Qt import QtCore, QtWidgets
 from lys.decorators import avoidCircularReference
 
@@ -99,7 +99,7 @@ class _MdiAreaTemp(_MdiAreaBase):
             i += 1
 
     def _windowDict(self, w):
-        return {"TemporaryFile": str(Path(w.TemporaryFile()).relative_to(Path.cwd()))}
+        return {"TemporaryFile": lysPath(w.TemporaryFile())}
 
     def _restoreWindow(self, d):
         return load(d["TemporaryFile"], tmpFile=d["TemporaryFile"])
@@ -139,7 +139,7 @@ class _ExtendMdiArea(_MdiAreaTemp):
     def addSubWindow(self, window):
         super().addSubWindow(window)
         if isinstance(window, _ConservableWindow):
-            if window.FileName() not in [w.FileName() for w in self._autoWindows() if w.FileName() is not None]:
+            if window.FileName() not in [w.FileName() for w in self._conservableWindows() if w.FileName() is not None]:
                 window.fileChanged.connect(self.updated)
                 self.updated.emit()
 
@@ -149,11 +149,7 @@ class _ExtendMdiArea(_MdiAreaTemp):
             if w.FileName() is None:
                 file = None
             else:
-                file = Path(w.FileName())
-                if Path.cwd() in file.parents:
-                    file = str(file.relative_to(Path.cwd()))
-                else:
-                    file = str(file.resolve())
+                file = lysPath(w.FileName())
             d["FileName"] = file
         return d
 

@@ -11,6 +11,7 @@ class TableModifyWindow(LysSubWindow):
         self.attach(parent)
         self.attachTo()
         self.__initlayout(table)
+        self.resize(300, 300)
 
     def __initlayout(self, table):
         self.setWindowTitle("Table Modify Window")

@@ -1,3 +1,4 @@
 
-from .TableWindow import Table, lysTable
+from .lysTable import lysTable
+from .TableWindow import Table
 from .ExtendTable import ExtendTable
