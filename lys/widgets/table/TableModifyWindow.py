@@ -62,7 +62,7 @@ class _viewTab(QtWidgets.QWidget):
 
     def __updateWidgets(self):
         self.__flg = True
-        self._data = self._table._getRawData()
+        self._data = self._table.getData().data
         self._combo.clear()
         self._combo.addItem("Data")
         self._combo.addItems(["Axis" + str(i) for i in range(self._data.ndim)])
@@ -74,7 +74,7 @@ class _viewTab(QtWidgets.QWidget):
 
     def __updateStates(self):
         self.__flg = True
-        slc = self._table._getSlice()
+        slc = self._table.getSlice()
         if isinstance(slc, int) or self._data.ndim <= 2:
             self._axis1.setEnabled(False)
             self._axis2.setEnabled(False)
@@ -105,15 +105,15 @@ class _viewTab(QtWidgets.QWidget):
         if self.__flg:
             return
         if self._combo.currentText() != "Data":
-            self._table._setSlice(self._combo.currentIndex() - 1)
+            self._table.setSlice(self._combo.currentIndex() - 1)
         elif self._data.ndim == 1:
-            self._table._setSlice([slice(None)])
+            self._table.setSlice([slice(None)])
         elif self._data.ndim == 2:
-            self._table._setSlice([slice(None), slice(None)])
+            self._table.setSlice([slice(None), slice(None)])
         elif self._data.ndim > 2:
             slc = [slice(None)] * self._data.ndim
             for i in range(self._data.ndim):
                 if i not in self._selected:
                     slc[i] = self._indices.getIndices()[i]
-            self._table._setSlice(slc)
+            self._table.setSlice(slc)
         self.__updateStates()

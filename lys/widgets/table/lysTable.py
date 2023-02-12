@@ -1,12 +1,16 @@
-import io
-from lys import Wave, load, display, append, multicut
+from lys import Wave, display, append, multicut
 from lys.Qt import QtWidgets, QtGui, QtCore
 
 from ..mdi import LysSubWindow
-from . TableModifyWindow import TableModifyWindow
+from .Data import TableData
+from .TableModifyWindow import TableModifyWindow
 
 
 class lysTable(QtWidgets.QWidget):
+    dataChanged = QtCore.pyqtSignal()
+    """
+    Emitted when the data is changed.
+    """
     keyPressed = QtCore.pyqtSignal(object)
     """
     Emitted when keyPressEvent is raised.
@@ -28,7 +32,7 @@ class lysTable(QtWidgets.QWidget):
     def __initlayout(self):
         self._data = TableData(self)
         self._model = _ArrayModel(self._data)
-        self._model.dataChanged.connect(self._data.dataChanged)
+        self._model.dataChanged.connect(self.dataChanged)
         self._table = QtWidgets.QTableView()
         self._table.setModel(self._model)
         self._data.updated.connect(self._table.viewport().update)
@@ -80,135 +84,6 @@ class lysTable(QtWidgets.QWidget):
             if isinstance(parent, LysSubWindow):
                 return parent
             parent = parent.parentWidget()
-
-
-class TableData(QtCore.QObject):
-    updated = QtCore.pyqtSignal()
-    """
-    Emitted when data data is updated.
-    """
-    dataChanged = QtCore.pyqtSignal()
-    """
-    Emitted when the data is changed.
-    """
-    dataSaved = QtCore.pyqtSignal()
-    """
-    Emitted after the data is saved.
-    """
-
-    def __init__(self, table):
-        super().__init__()
-        self._original = None
-        self._data = None
-        self._axes = None
-        self._note = None
-        self._slice = None
-        table.saveTable.connect(self.__saveTable)
-        table.loadTable.connect(self.__loadTable)
-
-    def setData(self, data):
-        """
-        Set data.
-
-        Args:
-            data(str or Wave): The path to a npz file, or an instance of Wave.
-        """
-        if isinstance(data, Wave):
-            self._original = data
-            w = data.duplicate()
-        elif isinstance(data, str):
-            self._original = data
-            w = load(data)
-        self._data = w.data
-        self._axes = [w.getAxis(i).astype(float) for i in range(w.ndim)]
-        self._note = w.note
-        self._slice = self.__getDefaultSlice()
-        self.updated.emit()
-
-    def __getDefaultSlice(self):
-        if self._data.ndim == 1:
-            return [slice(None)]
-        elif self._data.ndim == 2:
-            return [slice(None), slice(None)]
-        elif self._data.ndim > 2:
-            return [slice(None), slice(None)] + ([0] * (self._data.ndim - 2))
-
-    def getData(self):
-        """
-        Returns the edited Wave.
-
-        Returns:
-            Wave: The edited Wave.
-        """
-        return Wave(self._data, *self._axes, **self._note)
-
-    def getSlicedData(self):
-        """
-        Returns the sliced data.
-
-        Returns:
-            Wave: The sliced Wave.
-        """
-        if isinstance(self._slice, int):
-            return Wave(self._axes[self._slice])
-        else:
-            data = self._data[tuple(self._slice)]
-            axes = []
-            for i, s in enumerate(self._slice):
-                if not isinstance(s, int):
-                    axes.append(self._axes[i])
-            return Wave(data, *axes, **self._note)
-
-    def _getRawData(self):
-        return self._data
-
-    def _getSlicedData(self):
-        if isinstance(self._slice, int):
-            return self._axes[self._slice]
-        else:
-            return self._data[tuple(self._slice)]
-
-    def _setSlice(self, slc):
-        self._slice = slc
-        self.updated.emit()
-
-    def _getSlice(self):
-        return self._slice
-
-    def save(self):
-        """
-        Save the contents of the table to file or Wave depending on the argument of :meth:`setData`.
-        """
-        if isinstance(self._original, Wave):
-            self._original.data = self._data
-            self._original.axes = self._axes
-        elif isinstance(self._original, str):
-            w = self.getData()
-            w.export(self._original)
-        self.dataSaved.emit()
-
-    def __saveTable(self, d):
-        if isinstance(self._original, Wave):
-            d["type"] = "Wave"
-        elif isinstance(self._original, str):
-            d["type"] = "File"
-            d["File"] = self._original
-        b = io.BytesIO()
-        self.getData().export(b)
-        d['Wave'] = b.getvalue()
-        d['Slice'] = str(self._slice)
-
-    def __loadTable(self, d):
-        w = Wave(io.BytesIO(d['Wave']))
-        if d["type"] == "Wave":
-            self._original = w.duplicate()
-        elif d["type"] == "File":
-            self._original = d["File"]
-        self._data = w.data
-        self._axes = w.axes
-        self._note = w.note
-        self._slice = eval(d["Slice"])
-        self.updated.emit()
 
 
 class _events(QtCore.QObject):
@@ -297,11 +172,19 @@ class _ArrayModel(QtGui.QStandardItemModel):
         self._parent.updated.connect(self.update)
 
     def update(self):
-        self._data = self._parent._getSlicedData()
+        self._data = self.__getSlicedData()
         if len(self._data.shape) == 1:
             self._data = [self._data]
         self.setRowCount(len(self._data[0]))
         self.setColumnCount(len(self._data))
+
+    def __getSlicedData(self):
+        slc = self._parent.getSlice()
+        wave = self._parent.getData()
+        if isinstance(slc, int):
+            return wave.axes[slc]
+        else:
+            return wave.data[tuple(slc)]
 
     def data(self, index, role=QtCore.Qt.DisplayRole):
         if role == QtCore.Qt.DisplayRole:

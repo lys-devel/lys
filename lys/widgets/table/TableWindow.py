@@ -7,6 +7,7 @@ from . import lysTable
 
 class Table(_AutoSavedWindow):
     _modified = False
+    _forceClose = False
 
     def __init__(self, data=None, **kwargs):
         super().__init__(**kwargs)
@@ -84,9 +85,14 @@ class Table(_AutoSavedWindow):
     def _suffix(self):
         return '.tbl'
 
+    def close(self, force=False, **kwargs):
+        if force:
+            self._forceClose = True
+        super().close(force=force, **kwargs)
+
     def closeEvent(self, event):
         """Reimplementation of closeEvent in QMdiSubWindow"""
-        if self._modified:
+        if self._modified and not self._forceClose:
             msg = QtWidgets.QMessageBox(parent=self)
             msg.setIcon(QtWidgets.QMessageBox.Warning)
             msg.setWindowTitle("Caution")
