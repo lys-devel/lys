@@ -7,31 +7,104 @@ from . TableModifyWindow import TableModifyWindow
 
 
 class lysTable(QtWidgets.QWidget):
+    keyPressed = QtCore.pyqtSignal(object)
+    """
+    Emitted when keyPressEvent is raised.
+    """
+    saveTable = QtCore.pyqtSignal(dict)
+    """
+    Emitted when the table is saved by saveAsDictionary method.
+    """
+    loadTable = QtCore.pyqtSignal(dict)
+    """
+    Emitted when the table is loaded by loadFromDictionary method.
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+        self.__initlayout()
+        self._event = _events(self)
+
+    def __initlayout(self):
+        self._data = TableData(self)
+        self._model = _ArrayModel(self._data)
+        self._model.dataChanged.connect(self._data.dataChanged)
+        self._table = QtWidgets.QTableView()
+        self._table.setModel(self._model)
+        self._data.updated.connect(self._table.viewport().update)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self._table)
+        self.setLayout(layout)
+
+    def __getattr__(self, key):
+        if hasattr(self._data, key):
+            return getattr(self._data, key)
+        return super().__getattr__(key)
+
+    def saveAsDictionary(self):
+        """
+        Save the contetnts of the table as dictionary.
+
+        Returns:
+            dict: The dictionary.
+        """
+        d = {}
+        self.saveTable.emit(d)
+        return d
+
+    def loadFromDictionary(self, d):
+        """
+        Load the contents of the table from dictionary.
+
+        Args:
+            d(dict): The dictionary.
+        """
+        self.loadTable.emit(d)
+
+    def keyPressEvent(self, e):
+        """Reimplementation of keyPressEvent"""
+        self.keyPressed.emit(e)
+        if not e.isAccepted():
+            return super().keyPressEvent(e)
+
+    def openModifyWindow(self):
+        """Open modify window for this table window."""
+        parent = self.__getParent()
+        mod = TableModifyWindow(parent, self)
+        return mod
+
+    def __getParent(self):
+        parent = self.parentWidget()
+        while(parent is not None):
+            if isinstance(parent, LysSubWindow):
+                return parent
+            parent = parent.parentWidget()
+
+
+class TableData(QtCore.QObject):
+    updated = QtCore.pyqtSignal()
+    """
+    Emitted when data data is updated.
+    """
     dataChanged = QtCore.pyqtSignal()
     """
     Emitted when the data is changed.
     """
     dataSaved = QtCore.pyqtSignal()
     """
-    Emitted when the data is saved.
+    Emitted after the data is saved.
     """
-    keyPressed = QtCore.pyqtSignal(object)
-    """Emitted when keyPressEvent is raised."""
 
-    def __init__(self, parent):
-        super().__init__(parent=parent)
-        self.__initlayout()
-        self._event = _events(self)
-
-    def __initlayout(self):
-        self._model = _ArrayModel(self)
-        self._model.dataChanged.connect(self.dataChanged)
-        self._table = QtWidgets.QTableView()
-        self._table.setModel(self._model)
-
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self._table)
-        self.setLayout(layout)
+    def __init__(self, table):
+        super().__init__()
+        self._original = None
+        self._data = None
+        self._axes = None
+        self._note = None
+        self._slice = None
+        table.saveTable.connect(self.__saveTable)
+        table.loadTable.connect(self.__loadTable)
 
     def setData(self, data):
         """
@@ -50,7 +123,7 @@ class lysTable(QtWidgets.QWidget):
         self._axes = [w.getAxis(i).astype(float) for i in range(w.ndim)]
         self._note = w.note
         self._slice = self.__getDefaultSlice()
-        self._model.update()
+        self.updated.emit()
 
     def __getDefaultSlice(self):
         if self._data.ndim == 1:
@@ -59,56 +132,6 @@ class lysTable(QtWidgets.QWidget):
             return [slice(None), slice(None)]
         elif self._data.ndim > 2:
             return [slice(None), slice(None)] + ([0] * (self._data.ndim - 2))
-
-    def saveAsDictionary(self):
-        """
-        Save the contetnts of the table as dictionary.
-
-        Returns:
-            dict: The dictionary.
-        """
-        d = {}
-        if isinstance(self._original, Wave):
-            d["type"] = "Wave"
-        elif isinstance(self._original, str):
-            d["type"] = "File"
-            d["File"] = self._original
-        b = io.BytesIO()
-        self.getData().export(b)
-        d['Wave'] = b.getvalue()
-        d['Slice'] = str(self._slice)
-        return d
-
-    def loadFromDictionary(self, d):
-        """
-        Load the contents of the table from dictionary.
-
-        Args:
-            d(dict): The dictionary.
-        """
-        w = Wave(io.BytesIO(d['Wave']))
-        if d["type"] == "Wave":
-            self._original = w.duplicate()
-        elif d["type"] == "File":
-            self._original = d["File"]
-        self._data = w.data
-        self._axes = w.axes
-        self._note = w.note
-        self._slice = eval(d["Slice"])
-        self._model.update()
-        self._table.viewport().update()
-
-    def save(self):
-        """
-        Save the contents of the table to file or Wave depending on the argument of :meth:`setData`.
-        """
-        if isinstance(self._original, Wave):
-            self._original.data = self._data
-            self._original.axes = self._axes
-        elif isinstance(self._original, str):
-            w = self.getData()
-            w.export(self._original)
-        self.dataSaved.emit()
 
     def getData(self):
         """
@@ -136,6 +159,9 @@ class lysTable(QtWidgets.QWidget):
                     axes.append(self._axes[i])
             return Wave(data, *axes, **self._note)
 
+    def _getRawData(self):
+        return self._data
+
     def _getSlicedData(self):
         if isinstance(self._slice, int):
             return self._axes[self._slice]
@@ -144,31 +170,45 @@ class lysTable(QtWidgets.QWidget):
 
     def _setSlice(self, slc):
         self._slice = slc
-        self._model.update()
-        self._table.viewport().update()
+        self.updated.emit()
 
     def _getSlice(self):
         return self._slice
 
-    def keyPressEvent(self, e):
-        """Reimplementation of keyPressEvent"""
-        self.keyPressed.emit(e)
-        if not e.isAccepted():
-            return super().keyPressEvent(e)
+    def save(self):
+        """
+        Save the contents of the table to file or Wave depending on the argument of :meth:`setData`.
+        """
+        if isinstance(self._original, Wave):
+            self._original.data = self._data
+            self._original.axes = self._axes
+        elif isinstance(self._original, str):
+            w = self.getData()
+            w.export(self._original)
+        self.dataSaved.emit()
 
-    def openModifyWindow(self):
-        """Open modify window for this table."""
-        parent = self.__getParent()
-        mod = TableModifyWindow(parent, self)
-        mod.setData(self._data)
-        return mod
+    def __saveTable(self, d):
+        if isinstance(self._original, Wave):
+            d["type"] = "Wave"
+        elif isinstance(self._original, str):
+            d["type"] = "File"
+            d["File"] = self._original
+        b = io.BytesIO()
+        self.getData().export(b)
+        d['Wave'] = b.getvalue()
+        d['Slice'] = str(self._slice)
 
-    def __getParent(self):
-        parent = self.parentWidget()
-        while(parent is not None):
-            if isinstance(parent, LysSubWindow):
-                return parent
-            parent = parent.parentWidget()
+    def __loadTable(self, d):
+        w = Wave(io.BytesIO(d['Wave']))
+        if d["type"] == "Wave":
+            self._original = w.duplicate()
+        elif d["type"] == "File":
+            self._original = d["File"]
+        self._data = w.data
+        self._axes = w.axes
+        self._note = w.note
+        self._slice = eval(d["Slice"])
+        self.updated.emit()
 
 
 class _events(QtCore.QObject):
@@ -254,6 +294,7 @@ class _ArrayModel(QtGui.QStandardItemModel):
     def __init__(self, parent):
         super().__init__()
         self._parent = parent
+        self._parent.updated.connect(self.update)
 
     def update(self):
         self._data = self._parent._getSlicedData()

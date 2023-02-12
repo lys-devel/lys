@@ -34,6 +34,8 @@ class _viewTab(QtWidgets.QWidget):
         self._table = table
         self.__flg = False
         self.__initlayout()
+        self.__updateWidgets()
+        self.__updateStates()
 
     def __initlayout(self):
         self._combo = QtWidgets.QComboBox()
@@ -58,18 +60,17 @@ class _viewTab(QtWidgets.QWidget):
         layout.addStretch()
         self.setLayout(layout)
 
-    def setData(self, data):
+    def __updateWidgets(self):
         self.__flg = True
-        self._data = data
+        self._data = self._table._getRawData()
         self._combo.clear()
         self._combo.addItem("Data")
-        self._combo.addItems(["Axis" + str(i) for i in range(data.ndim)])
+        self._combo.addItems(["Axis" + str(i) for i in range(self._data.ndim)])
 
-        self._axis1.setDimension(data.ndim)
-        self._axis2.setDimension(data.ndim)
-        self._indices.setShape(data.shape)
+        self._axis1.setDimension(self._data.ndim)
+        self._axis2.setDimension(self._data.ndim)
+        self._indices.setShape(self._data.shape)
         self.__flg = False
-        self.__updateStates()
 
     def __updateStates(self):
         self.__flg = True

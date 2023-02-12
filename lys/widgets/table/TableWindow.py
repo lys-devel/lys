@@ -11,22 +11,16 @@ class Table(_AutoSavedWindow):
     def __init__(self, data=None, **kwargs):
         super().__init__(**kwargs)
         self.__initlayout(data)
-        self.setWindowTitle(self.Name())
-        self.resize(400, 400)
-
-        def setMod(b):
-            self._modified = b
-
-        self._etable.dataChanged.connect(lambda: setMod(True))
-        self._etable.dataChanged.connect(lambda: self.setWindowTitle(self.Name() + "*"))
-        self._etable.dataChanged.connect(self.modified)
-        self._etable.dataSaved.connect(lambda: setMod(False))
-        self._etable.dataSaved.connect(lambda: self.setWindowTitle(self.Name()))
-        self._etable.dataSaved.connect(self.modified)
+        self.__initEvents()
+        self.resizeFinished.connect(self.modified)
+        self.moveFinished.connect(self.modified)
         self.modified.emit()
 
     def __initlayout(self, data):
+        self.resize(400, 400)
         self._etable = lysTable(self)
+        self._etable.saveTable.connect(self._savePosition)
+        self._etable.loadTable.connect(self._loadPosition)
         if data is not None:
             if type(data) == str:
                 if data.endswith(".tbl"):
@@ -40,6 +34,18 @@ class Table(_AutoSavedWindow):
                 self._data = data
         self.setWidget(self._etable)
         self.show()
+
+    def __initEvents(self):
+        def setMod(b):
+            self._modified = b
+
+        self.setWindowTitle(self.Name())
+        self._etable.dataChanged.connect(lambda: setMod(True))
+        self._etable.dataChanged.connect(lambda: self.setWindowTitle(self.Name() + "*"))
+        self._etable.dataChanged.connect(self.modified)
+        self._etable.dataSaved.connect(lambda: setMod(False))
+        self._etable.dataSaved.connect(lambda: self.setWindowTitle(self.Name()))
+        self._etable.dataSaved.connect(self.modified)
 
     def __getattr__(self, key):
         if hasattr(self._etable, key):
@@ -57,10 +63,20 @@ class Table(_AutoSavedWindow):
         with open(file, 'w') as f:
             f.write(str(d))
 
+    def _savePosition(self, d):
+        d['Table'] = {'Position': [self.pos().x(), self.pos().y()], 'Size': [self.size().width(), self.size().height()]}
+
     def _load(self, file):
         with open(file, 'r') as f:
             d = eval(f.read())
         self._etable.loadFromDictionary(d)
+
+    def _loadPosition(self, d):
+        if 'Table' in d:
+            self.move(*d['Table']['Position'])
+            self.resize(*d['Table']['Size'])
+        else:
+            self.resize(400, 400)
 
     def _prefix(self):
         return 'Table'
