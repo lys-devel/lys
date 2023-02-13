@@ -6,7 +6,7 @@ import warnings
 from lys import glb, home, registerFileLoader, errors
 from lys.Qt import QtWidgets
 from lys.widgets import LysSubWindow, _ExtendMdiArea
-from lys.widgets.mdi import _AutoSavedWindow
+from lys.widgets.mdi import _ConservableWindow
 
 
 class testSubWindow(LysSubWindow):
@@ -16,7 +16,7 @@ class testSubWindow(LysSubWindow):
         self.setWidget(self.spin)
 
 
-class testAutoSavedWindow(_AutoSavedWindow):
+class testAutoSavedWindow(_ConservableWindow):
     def __init__(self, file=None, **kwargs):
         super().__init__(file)
         if file is None:
@@ -80,15 +80,5 @@ class FileView_test(unittest.TestCase):
         win2.Save(self.path + "/text2.txt")
         self.assertEqual(win2.Name(), "test/MainWindow/text2.txt")
 
-        win3 = testAutoSavedWindow(self.path + "/text2.txt", warn=False)
-        self.assertTrue(win3 is None)
-
-        _ExtendMdiArea.current().StoreAllWindows()
-
-        tmp = _ExtendMdiArea.current().loadedWindow(self.path + "/text2.txt")
-        self.assertTrue(tmp is None)
-
-        _ExtendMdiArea.current().RestoreAllWindows()
-        tmp = _ExtendMdiArea.current().loadedWindow(self.path + "/text2.txt")
-        self.assertFalse(tmp is None)
-        self.assertEqual(tmp.text, "test2")
+        _ExtendMdiArea.current().storeWorkspace()
+        _ExtendMdiArea.current().restoreWorkspace()

@@ -234,8 +234,8 @@ class Graph_test(unittest.TestCase):
             family = fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
             c.setAxisLabelFont("Left", family, 12, "#000000")
             c.setAxisLabelFont("Bottom", family, 14, "#ffffff")
-            self.assertEqual(c.getAxisLabelFont("Left"), {"family": family, "size": 12, "color": "#000000"})
-            self.assertEqual(c.getAxisLabelFont("Bottom"), {"family": family, "size": 14, "color": "#ffffff"})
+            self.assertEqual(c.getAxisLabelFont("Left"), {"fname": family, "size": 12, "color": "#000000"})
+            self.assertEqual(c.getAxisLabelFont("Bottom"), {"fname": family, "size": 14, "color": "#ffffff"})
 
             # save and load
             c.SaveAsDictionary(d)
@@ -248,7 +248,7 @@ class Graph_test(unittest.TestCase):
             self.assertEqual(c.getAxisLabel("Left").replace(" ", ""), "left")
             self.assertTrue(c.getAxisLabelVisible("Left"))
             self.assertEqual(c.getAxisLabelCoords("Left"), -0.1)
-            self.assertEqual(c.getAxisLabelFont("Left"), {"family": family, "size": 12, "color": "#000000"})
+            self.assertEqual(c.getAxisLabelFont("Left"), {"fname": family, "size": 12, "color": "#000000"})
 
     def test_TickLabel(self):
         for g in self.graphs:
@@ -265,8 +265,8 @@ class Graph_test(unittest.TestCase):
             family = fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
             c.setTickLabelFont("Left", family, 12, "#000000")
             c.setTickLabelFont("Bottom", family, 14, "#ffffff")
-            self.assertEqual(c.getTickLabelFont("Left"), {"family": family, "size": 12, "color": "#000000"})
-            self.assertEqual(c.getTickLabelFont("Bottom"), {"family": family, "size": 14, "color": "#ffffff"})
+            self.assertEqual(c.getTickLabelFont("Left"), {"fname": family, "size": 12, "color": "#000000"})
+            self.assertEqual(c.getTickLabelFont("Bottom"), {"fname": family, "size": 14, "color": "#ffffff"})
 
             # save and load
             c.SaveAsDictionary(d)
@@ -275,7 +275,7 @@ class Graph_test(unittest.TestCase):
 
             c.LoadFromDictionary(d)
             self.assertTrue(c.getTickLabelVisible("Left"))
-            self.assertEqual(c.getTickLabelFont("Left"), {"family": family, "size": 12, "color": "#000000"})
+            self.assertEqual(c.getTickLabelFont("Left"), {"fname": family, "size": 12, "color": "#000000"})
 
     def test_Legend(self):
         for g in self.graphs:
@@ -290,7 +290,7 @@ class Graph_test(unittest.TestCase):
 
             family = fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
             c.setLegendFont(family, 12, "#ffffff")
-            self.assertEqual(c.getLegendFont(), {"family": family, "size": 12, "color": "#ffffff"})
+            self.assertEqual(c.getLegendFont(), {"fname": family, "size": 12, "color": "#ffffff"})
 
             # save and load
             c.SaveAsDictionary(d)
@@ -301,4 +301,4 @@ class Graph_test(unittest.TestCase):
             c.LoadFromDictionary(d)
             self.assertFalse(c.getLegendFrameVisible())
             self.assertEqual(c.getLegendPosition(), (0.4, 0.3))
-            self.assertEqual(c.getLegendFont(), {"family": family, "size": 12, "color": "#ffffff"})
+            self.assertEqual(c.getLegendFont(), {"fname": family, "size": 12, "color": "#ffffff"})

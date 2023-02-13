@@ -12,6 +12,10 @@ class TableData(QtCore.QObject):
     """
     Emitted after the data is saved.
     """
+    dataChanged = QtCore.pyqtSignal()
+    """
+    Emitted when the data is changed.
+    """
 
     def __init__(self, table):
         super().__init__()
@@ -20,6 +24,10 @@ class TableData(QtCore.QObject):
         self._slice = None
         table.saveTable.connect(self.__saveTable)
         table.loadTable.connect(self.__loadTable)
+        self.dataChanged.connect(self.__modified)
+
+    def __modified(self):
+        self._wave.modified.emit(self._wave)
 
     def setData(self, data):
         """

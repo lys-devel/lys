@@ -121,7 +121,7 @@ class Graph_test(unittest.TestCase):
 
             family = fm.FontProperties(family=mpl.rcParams['font.family']).get_name()
             text.setFont(family, 11, "#333333")
-            self.assertEqual(text.getFont(), {"family": family, "size": 11, "color": "#333333"})
+            self.assertEqual(text.getFont(), {"fname": family, "size": 11, "color": "#333333"})
 
             text.setBoxStyle("square")
             self.assertEqual(text.getBoxStyle(), "square")
@@ -136,7 +136,7 @@ class Graph_test(unittest.TestCase):
             self.assertEqual(text.getText(), "test1")
             self.assertTrue(text.getPosition() == (0, 0))
             self.assertEqual(text.getTransform(), "axes")
-            self.assertEqual(text.getFont(), {"family": family, "size": 11, "color": "#333333"})
+            self.assertEqual(text.getFont(), {"fname": family, "size": 11, "color": "#333333"})
             self.assertEqual(text.getBoxStyle(), "square")
             self.assertEqual(text.getBoxColor()[0], "#111111")
             self.assertEqual(text.getBoxColor()[1], "#222222")

@@ -7,10 +7,6 @@ from .TableModifyWindow import TableModifyWindow
 
 
 class lysTable(QtWidgets.QWidget):
-    dataChanged = QtCore.pyqtSignal()
-    """
-    Emitted when the data is changed.
-    """
     keyPressed = QtCore.pyqtSignal(object)
     """
     Emitted when keyPressEvent is raised.
@@ -32,7 +28,6 @@ class lysTable(QtWidgets.QWidget):
     def __initlayout(self):
         self._data = TableData(self)
         self._model = _ArrayModel(self._data)
-        self._model.dataChanged.connect(self.dataChanged)
         self._table = QtWidgets.QTableView()
         self._table.setModel(self._model)
         self._data.updated.connect(self._table.viewport().update)
@@ -170,6 +165,8 @@ class _ArrayModel(QtGui.QStandardItemModel):
         super().__init__()
         self._parent = parent
         self._parent.updated.connect(self.update)
+        self.dataChanged.connect(self._parent.dataChanged)
+
 
     def update(self):
         self._data = self.__getSlicedData()
