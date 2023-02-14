@@ -173,6 +173,22 @@ class core_test(unittest.TestCase):
         self.assertTrue((w.x == w3.x).all())
         self.assertEqual(w.name, w3.name)
 
+        # __getitem__ and __setitem__
+        w = Wave([[1, 2, 3], [4, 5, 6]], [0, 1], [2, 3, 4])
+        w[0, 1] = 0
+        assert_array_equal(w.data, [[1, 0, 3], [4, 5, 6]])
+        w2 = w[0:2, 0:2]
+        assert_array_equal(w2.data, [[1, 0], [4, 5]])
+        assert_array_equal(w2.x, [0, 1])
+        assert_array_equal(w2.y, [2, 3])
+        w2[1, 1] = 99
+        assert_array_equal(w2.data, [[1, 0], [4, 99]])
+        assert_array_equal(w.data, [[1, 0, 3], [4, 99, 6]])
+        w2 = w[0:2, 0:2]
+        w2.axes[0][1] = 2
+        assert_array_equal(w2.x, [0, 2])
+        assert_array_equal(w.x, [0, 2])
+
     def test_DaskWave(self):
         w = Wave([1, 2, 3], [4, 5, 6], name="wave1")
         # initialization

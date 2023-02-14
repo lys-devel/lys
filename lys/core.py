@@ -706,7 +706,28 @@ class Wave(WaveBase):
     def __str__(self):
         return "Wave object (name = {0}, dtype = {1}, shape = {2})".format(self.name, self.dtype, self.shape)
 
+    def __getitem__(self, key):
+        w = Wave()
+        w._data = self.data[key]
+        if type(key) != tuple:
+            if isinstance(key, slice):
+                key = (key,)
+            else:
+                key = (slice(key),)
+        while len(key) < len(w._data.shape):
+            key = tuple(list(key) + [slice(None)])
+        axes = [np.array(None) if ax is None or (ax == np.array(None)).all() else ax[sl] for ax, sl in zip(self._axes, key)]
+        w._axes = WaveAxes(w, [np.array(None)] * w.ndim)
+        for i in range(w.ndim):
+            w._axes[i] = axes[i]
+        w.note = self._note
+        return w
+
+    def __setitem__(self, key, value):
+        self._data[key] = value
+        self.modified.emit(self)
     # deprecated methods
+
     def Name(self):
         """deprecated method"""
         import inspect
@@ -722,32 +743,6 @@ class Wave(WaveBase):
         print(inspect.stack()[1].filename)
         print(inspect.stack()[1].function)
         self.export(file)
-
-    def __getitem__(self, key):
-        import inspect
-        print("Wave.__getitem__ is deprecated.")
-        print(inspect.stack()[1].filename)
-        print(inspect.stack()[1].function)
-        if isinstance(key, tuple):
-            data = self.data[key]
-            axes = []
-            for s, ax in zip(key, self.axes):
-                if ax is None or (ax == np.array(None)).all():
-                    axes.append(None)
-                else:
-                    axes.append(ax[s])
-            w = Wave(data, *axes, **self.note)
-            return w
-        else:
-            super().__getitem__(key)
-
-    def __setitem__(self, key, value):
-        import inspect
-        print("Wave.__setitem__ is deprecated.")
-        print(inspect.stack()[1].filename)
-        print(inspect.stack()[1].function)
-        self.data[key] = value
-        self.update()
 
 
 class _DaskWaveDataDescriptor:
