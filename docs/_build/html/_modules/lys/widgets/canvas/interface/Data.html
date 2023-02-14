@@ -42,7 +42,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
 </ul>
 
         </div>
@@ -77,7 +77,7 @@
 
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">load</span>
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
-<span class="kn">from</span> <span class="nn">lys.errors</span> <span class="kn">import</span> <span class="n">NotImplementedWarning</span>
+<span class="kn">from</span> <span class="nn">lys.errors</span> <span class="kn">import</span> <span class="n">NotImplementedWarning</span><span class="p">,</span> <span class="n">suppressLysWarnings</span>
 
 <span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span>
 <span class="kn">from</span> <span class="nn">.WaveData</span> <span class="kn">import</span> <span class="n">WaveData</span>
@@ -88,7 +88,7 @@
 <span class="kn">from</span> <span class="nn">.Contour</span> <span class="kn">import</span> <span class="n">ContourData</span>
 
 
-<div class="viewcode-block" id="CanvasData"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData">[docs]</a><span class="k">class</span> <span class="nc">CanvasData</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasData"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData">[docs]</a><span class="k">class</span> <span class="nc">CanvasData</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
     <span class="n">dataChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;pyqtSignal that is emittd when data is added/removed/changed.&quot;&quot;&quot;</span>
 
@@ -98,7 +98,8 @@
         <span class="n">canvas</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">)</span>
         <span class="n">canvas</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CanvasData.Append"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.Append">[docs]</a>    <span class="nd">@saveCanvas</span>
+<div class="viewcode-block" id="CanvasData.Append"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.Append">[docs]</a>    <span class="nd">@suppressLysWarnings</span>
+    <span class="nd">@saveCanvas</span>
     <span class="k">def</span> <span class="nf">Append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="n">appearance</span><span class="o">=</span><span class="p">{},</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">contour</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vector</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Append Wave to graph.</span>
@@ -182,7 +183,7 @@
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWaveData</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">d</span><span class="o">.</span><span class="n">getZOrder</span><span class="p">()</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">id_def</span><span class="p">[</span><span class="nb">type</span><span class="p">]])</span> <span class="o">+</span> <span class="mi">1</span>
 
-<div class="viewcode-block" id="CanvasData.Remove"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.Remove">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasData.Remove"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.Remove">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">Remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove data from canvas.</span>
@@ -199,7 +200,7 @@
         <span class="n">obj</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataChanged</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CanvasData.Clear"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.Clear">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
+<div class="viewcode-block" id="CanvasData.Clear"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.Clear">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
     <span class="k">def</span> <span class="nf">Clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove all data from canvas.</span>
@@ -207,7 +208,7 @@
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Datalist</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">Remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Datalist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="CanvasData.getWaveData"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getWaveData">[docs]</a>    <span class="k">def</span> <span class="nf">getWaveData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasData.getWaveData"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getWaveData">[docs]</a>    <span class="k">def</span> <span class="nf">getWaveData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of WaveData object that is specified by *type*.</span>
 
@@ -227,31 +228,31 @@
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;contour&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">data</span> <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Datalist</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ContourData</span><span class="p">)]</span></div>
 
-<div class="viewcode-block" id="CanvasData.getLines"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getLines">[docs]</a>    <span class="k">def</span> <span class="nf">getLines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasData.getLines"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getLines">[docs]</a>    <span class="k">def</span> <span class="nf">getLines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all LineData in the canvas.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWaveData</span><span class="p">(</span><span class="s2">&quot;line&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasData.getImages"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getImages">[docs]</a>    <span class="k">def</span> <span class="nf">getImages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasData.getImages"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getImages">[docs]</a>    <span class="k">def</span> <span class="nf">getImages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all ImageData in the canvas.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWaveData</span><span class="p">(</span><span class="s2">&quot;image&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasData.getContours"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getContours">[docs]</a>    <span class="k">def</span> <span class="nf">getContours</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasData.getContours"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getContours">[docs]</a>    <span class="k">def</span> <span class="nf">getContours</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all ContourData in the canvas.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWaveData</span><span class="p">(</span><span class="s2">&quot;contour&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasData.getRGBs"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getRGBs">[docs]</a>    <span class="k">def</span> <span class="nf">getRGBs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasData.getRGBs"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getRGBs">[docs]</a>    <span class="k">def</span> <span class="nf">getRGBs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all RGBData in the canvas.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWaveData</span><span class="p">(</span><span class="s2">&quot;rgb&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasData.getVectorFields"><a class="viewcode-back" href="../../../../../graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getVectorFields">[docs]</a>    <span class="k">def</span> <span class="nf">getVectorFields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasData.getVectorFields"><a class="viewcode-back" href="../../../../../lys_/graph/Data.html#lys.widgets.canvas.interface.Data.CanvasData.getVectorFields">[docs]</a>    <span class="k">def</span> <span class="nf">getVectorFields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return all VectorData in the canvas.</span>
 <span class="sd">        &quot;&quot;&quot;</span>

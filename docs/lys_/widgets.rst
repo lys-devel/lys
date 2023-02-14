@@ -14,6 +14,7 @@ Special widgets
    widgets/mdi
    widgets/fileview
    canvas
+   widgets/table
 
 General widgets
 -----------------

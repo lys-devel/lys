@@ -72,12 +72,12 @@
   <h1>Source code for lys.widgets.canvas.GraphWindow</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
 <span class="kn">from</span> <span class="nn">lys.errors</span> <span class="kn">import</span> <span class="n">suppressLysWarnings</span>
-<span class="kn">from</span> <span class="nn">..mdi</span> <span class="kn">import</span> <span class="n">_AutoSavedWindow</span>
+<span class="kn">from</span> <span class="nn">..mdi</span> <span class="kn">import</span> <span class="n">_ConservableWindow</span>
 <span class="kn">from</span> <span class="nn">.Matplotlib</span> <span class="kn">import</span> <span class="n">ExtendCanvas</span>
 <span class="kn">from</span> <span class="nn">.pyqtGraph</span> <span class="kn">import</span> <span class="n">pyqtCanvas</span>
 
 
-<span class="k">class</span> <span class="nc">_SizeAdjustableWindow</span><span class="p">(</span><span class="n">_AutoSavedWindow</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_SizeAdjustableWindow</span><span class="p">(</span><span class="n">_ConservableWindow</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>

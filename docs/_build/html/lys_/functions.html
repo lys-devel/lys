@@ -55,6 +55,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#lys.functions.home"><code class="docutils literal notranslate"><span class="pre">home()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lys.functions.load"><code class="docutils literal notranslate"><span class="pre">load()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lys.functions.loadableFiles"><code class="docutils literal notranslate"><span class="pre">loadableFiles()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lys.functions.lysPath"><code class="docutils literal notranslate"><span class="pre">lysPath()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lys.functions.multicut"><code class="docutils literal notranslate"><span class="pre">multicut()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lys.functions.registerFileLoader"><code class="docutils literal notranslate"><span class="pre">registerFileLoader()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#lys.functions.registerFittingFunction"><code class="docutils literal notranslate"><span class="pre">registerFittingFunction()</span></code></a></li>
@@ -64,7 +65,6 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filters.html">filters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fitting.html">fitting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
 </ul>
 </li>
 </ul>
@@ -142,7 +142,13 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.functions.edit">
 <span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.edit" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Edit the data in Table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>str</em><em> or </em><a class="reference internal" href="core.html#lys.core.Wave" title="lys.core.Wave"><em>Wave</em></a><em> or </em><em>arraylike</em>) – The data to be edited. If data is str, it is interpreted as file path.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.functions.frontCanvas">
@@ -231,9 +237,33 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="lys.functions.lysPath">
+<span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">lysPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#lysPath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.lysPath" title="Permalink to this definition"></a></dt>
+<dd><p>Return relative path to the home directory.</p>
+<p>If the path is not in the home directory, the absolute path will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The path to be converted.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The relative path to the home directory.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="lys.functions.multicut">
-<span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">multicut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#multicut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.multicut" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">lys.functions.</span></span><span class="sig-name descname"><span class="pre">multicut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/functions.html#multicut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.functions.multicut" title="Permalink to this definition"></a></dt>
+<dd><p>Analyze the data by MultiCut.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="core.html#lys.core.Wave" title="lys.core.Wave"><em>Wave</em></a><em> or </em><a class="reference internal" href="core.html#lys.core.DaskWave" title="lys.core.DaskWave"><em>DaskWave</em></a><em> or </em><em>arraylike</em>) – The data to be analyzed.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.functions.registerFileLoader">

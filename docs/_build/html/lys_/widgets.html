@@ -54,6 +54,7 @@
 <li class="toctree-l4"><a class="reference internal" href="widgets/mdi.html">LysSubWindow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="widgets/fileview.html">FileView</a></li>
 <li class="toctree-l4"><a class="reference internal" href="canvas.html">lysCanvas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="widgets/table.html">lysTable</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#module-lys.widgets.general">General widgets</a><ul>
@@ -62,6 +63,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.AxisSelectionLayout"><code class="docutils literal notranslate"><span class="pre">AxisSelectionLayout</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.ColorSelection"><code class="docutils literal notranslate"><span class="pre">ColorSelection</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.ColormapSelection"><code class="docutils literal notranslate"><span class="pre">ColormapSelection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.IndiceSelectionLayout"><code class="docutils literal notranslate"><span class="pre">IndiceSelectionLayout</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.RegionSelectWidget"><code class="docutils literal notranslate"><span class="pre">RegionSelectWidget</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.ScientificSpinBox"><code class="docutils literal notranslate"><span class="pre">ScientificSpinBox</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.kernelSigmaLayout"><code class="docutils literal notranslate"><span class="pre">kernelSigmaLayout</span></code></a></li>
@@ -72,7 +74,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="filters.html">filters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fitting.html">fitting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
 </ul>
 </li>
 </ul>
@@ -111,6 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="widgets/mdi.html">LysSubWindow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="widgets/fileview.html">FileView</a></li>
 <li class="toctree-l1"><a class="reference internal" href="canvas.html">lysCanvas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="widgets/table.html">lysTable</a></li>
 </ul>
 </div>
 </section>
@@ -210,6 +212,12 @@
 </ul>
 </dd>
 </dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisSelectionLayout.axisChanged">
+<span class="sig-name descname"><span class="pre">axisChanged</span></span><a class="headerlink" href="#lys.widgets.general.AxisSelectionLayout.axisChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the selected axis is changed.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.general.AxisSelectionLayout.getAxis">
 <span class="sig-name descname"><span class="pre">getAxis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisSelectionLayout.getAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisSelectionLayout.getAxis" title="Permalink to this definition"></a></dt>
@@ -242,6 +250,17 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>d</strong> (<em>int</em>) – The new dimension</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisSelectionLayout.setEnabled">
+<span class="sig-name descname"><span class="pre">setEnabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisSelectionLayout.setEnabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisSelectionLayout.setEnabled" title="Permalink to this definition"></a></dt>
+<dd><p>Enable the widgets in this layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enabled</strong> (<em>bool</em>) – Whether the widgets are enabled.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -444,6 +463,71 @@
 <dd class="field-odd"><p><strong>value</strong> (<em>float</em>) – The opacity between 0 to 1.</p>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">IndiceSelectionLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGridLayout</span></code></p>
+<p>A layout to specify indice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>shape</strong> (<em>tuple</em>) – The shape of data.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.getIndices">
+<span class="sig-name descname"><span class="pre">getIndices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout.getIndices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.getIndices" title="Permalink to this definition"></a></dt>
+<dd><p>Get the indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The indices.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>sequence of int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.setEnabled">
+<span class="sig-name descname"><span class="pre">setEnabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout.setEnabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.setEnabled" title="Permalink to this definition"></a></dt>
+<dd><p>Enable the respective spin box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enabled</strong> (<em>sequence</em><em> of </em><em>boolean</em>) – Whether the spin box is enabled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.setShape">
+<span class="sig-name descname"><span class="pre">setShape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout.setShape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.setShape" title="Permalink to this definition"></a></dt>
+<dd><p>Change the shape of the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>shape</strong> (<em>tuple</em>) – The new shape</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.setValues">
+<span class="sig-name descname"><span class="pre">setValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout.setValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.setValues" title="Permalink to this definition"></a></dt>
+<dd><p>Set the indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>indices</strong> (<em>sequence</em><em> of </em><em>int</em>) – The indices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.valueChanged">
+<span class="sig-name descname"><span class="pre">valueChanged</span></span><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.valueChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the value is changed.</p>
 </dd></dl>
 
 </dd></dl>

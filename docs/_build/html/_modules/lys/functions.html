@@ -82,6 +82,7 @@
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 
 <span class="n">__home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
@@ -197,12 +198,28 @@
 
 
 <div class="viewcode-block" id="edit"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.edit">[docs]</a><span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edit the data in Table.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data(str or Wave or arraylike): The data to be edited. If data is str, it is interpreted as file path.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">.widgets</span> <span class="kn">import</span> <span class="n">Table</span>
+    <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">Wave</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Wave</span><span class="p">)):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="multicut"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.multicut">[docs]</a><span class="k">def</span> <span class="nf">multicut</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="multicut"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.multicut">[docs]</a><span class="k">def</span> <span class="nf">multicut</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analyze the data by MultiCut.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data(Wave or DaskWave or arraylike): The data to be analyzed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.Analysis</span> <span class="kn">import</span> <span class="n">MultiCut</span>
-    <span class="n">MultiCut</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+    <span class="n">MultiCut</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="frontCanvas"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.frontCanvas">[docs]</a><span class="k">def</span> <span class="nf">frontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
@@ -259,6 +276,26 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">c</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">wave</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">c</span></div>
+
+
+<div class="viewcode-block" id="lysPath"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.lysPath">[docs]</a><span class="k">def</span> <span class="nf">lysPath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return relative path to the home directory.</span>
+
+<span class="sd">    If the path is not in the home directory, the absolute path will be returned.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path(str): The path to be converted.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The relative path to the home directory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">Path</span><span class="p">(</span><span class="n">home</span><span class="p">())</span> <span class="ow">in</span> <span class="n">file</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">home</span><span class="p">())))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">file</span></div>
 </pre></div>
 
            </div>

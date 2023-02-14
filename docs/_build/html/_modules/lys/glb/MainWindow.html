@@ -208,9 +208,9 @@
     <span class="k">def</span> <span class="nf">_restoreWorkspaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">work</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-            <span class="n">work</span><span class="o">.</span><span class="n">RestoreAllWindows</span><span class="p">()</span>
+            <span class="n">work</span><span class="o">.</span><span class="n">restoreWorkspace</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">setTabText</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">work</span><span class="o">.</span><span class="n">getName</span><span class="p">())</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">work</span><span class="o">.</span><span class="n">StoreAllWindows</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">work</span><span class="o">.</span><span class="n">storeWorkspace</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__initMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -240,7 +240,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_closeTab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">CloseAllWindows</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">closeAllWindows</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">removeTab</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>

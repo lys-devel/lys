@@ -95,25 +95,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setLegendFont</span><span class="p">(</span><span class="n">FontInfo</span><span class="o">.</span><span class="n">defaultFamily</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLegendFont</span><span class="p">(</span><span class="n">FontInfo</span><span class="o">.</span><span class="n">defaultFont</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLegendPosition</span><span class="p">((</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLegendFrameVisible</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CanvasLegend.setLegendFont"><a class="viewcode-back" href="../../../../../lys_/graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.setLegendFont">[docs]</a>    <span class="o">@</span> <span class="n">saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setLegendFont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">family</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">setLegendFont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the font of the legend.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            family(str): The name of the font.</span>
+<span class="sd">            fname(str): The name of the font.</span>
 <span class="sd">            size(int): The size of the font.</span>
 <span class="sd">            color(str): The color of the font such as #111111.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">family</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">FontInfo</span><span class="o">.</span><span class="n">fonts</span><span class="p">():</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Font [&quot;</span> <span class="o">+</span> <span class="n">family</span> <span class="o">+</span> <span class="s2">&quot;] not found. Use default font.&quot;</span><span class="p">)</span>
-            <span class="n">family</span> <span class="o">=</span> <span class="n">FontInfo</span><span class="o">.</span><span class="n">defaultFamily</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_setLegendFont</span><span class="p">(</span><span class="n">family</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_font</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;family&quot;</span><span class="p">:</span> <span class="n">family</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">}</span></div>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">FontInfo</span><span class="p">):</span>
+            <span class="n">font</span> <span class="o">=</span> <span class="n">fname</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">font</span> <span class="o">=</span> <span class="n">FontInfo</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setLegendFont</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_font</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">toDict</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="CanvasLegend.getLegendFont"><a class="viewcode-back" href="../../../../../lys_/graph/Legend.html#lys.widgets.canvas.interface.Legend.CanvasLegend.getLegendFont">[docs]</a>    <span class="k">def</span> <span class="nf">getLegendFont</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -173,7 +174,7 @@
         <span class="k">if</span> <span class="s1">&#39;Legend&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
             <span class="n">d</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;Legend&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="s2">&quot;font&quot;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">setLegendFont</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;font&quot;</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setLegendFont</span><span class="p">(</span><span class="n">FontInfo</span><span class="o">.</span><span class="n">fromDict</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;font&quot;</span><span class="p">]))</span>
             <span class="k">if</span> <span class="s2">&quot;position&quot;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">setLegendPosition</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;position&quot;</span><span class="p">])</span>
             <span class="k">if</span> <span class="s2">&quot;frameon&quot;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
