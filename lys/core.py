@@ -74,21 +74,22 @@ class _WaveDataDescriptor:
 
     Any type of sequential array will be automatically converted to numpy.ndarray when it is set as *data*.
 
-    Example:
-        >>> w = Wave([1,2,3])
-        >>> w.data
-        [1,2,3]
-        >>> w.data = [2,3,4]
-        >>> w.data
-        [2,3,4]
+    Example::
+
+        from lys import Wave
+
+        w = Wave([1,2,3])
+        w.data # [1,2,3]
+
+        w.data = [2,3,4]
+        w.data # [2,3,4]
     """
 
     def __set__(self, instance, value):
         """set data and update axes"""
         instance._data = np.array(value)
         if hasattr(instance, "axes"):
-            if instance.axes is not None:
-                instance.axes._update(instance._data)
+            instance.axes._update(instance._data)
         instance.update()
 
     def __get__(self, instance, objtype=None):
@@ -145,17 +146,10 @@ class _WaveAxesDescriptor:
     def __set__(self, instance, value):
         # check type
         if not hasattr(value, "__iter__"):
-            raise TypeError("Axes should be a list of 1-dimensional array or None: Present value = " + str(value))
-        for item in value:
-            if (not isinstance(item, np.ndarray)) and (not isinstance(item, list)) and (not isinstance(item, tuple)) and item is not None:
-                raise TypeError("Axes should be a 1-dimensional sequence or None: Present value = " + str(value))
-        if len(value) == 0:
-            value = [np.array(None) for _ in range(instance.data.ndim)]
-        # if len(value) != instance.data.ndim:
-        #    raise ValueError("length of axes should match data.ndim")
+            raise TypeError("Axes should be a list of array or None: Present value = " + str(value))
 
         # set actual instance
-        instance._axes = WaveAxes(instance, [np.array(item) for item in value])
+        instance._axes = WaveAxes(instance, value)
         if hasattr(instance, "update"):
             instance.update()
 
@@ -178,22 +172,25 @@ class WaveAxes(list):
         :class:`Wave`, :attr:`Wave.axes`, :class:`DaskWave`
     """
 
-    def __init__(self, parent, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, parent, axes, force=False):
+        super().__init__()
         self._parent = weakref.ref(parent)
+        for d in range(parent.data.ndim):
+            if force:
+                self.append(axes[d])
+            elif len(axes) > d:
+                self.append(self.__createValidAxis(axes[d], d))
+            else:
+                self.append(self.__createValidAxis(None, d))
 
     def __setitem__(self, key, value):
-        super().__setitem__(key, value)
+        super().__setitem__(key, self.__createValidAxis(value, key))
         if hasattr(self._parent(), "update"):
             self._parent().update()
 
     def getAxis(self, dim):
         """
-        Return the axis specified dimension.
-
-        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
-
-        If the specified axis is None, then the default axis is automatically generated and returned.
+        Shortcut to wave.axes[dim]
 
         Args:
             dim (int): The dimension of the axis.
@@ -201,53 +198,21 @@ class WaveAxes(list):
         Returns:
             numpy.ndarray: The axis of the specified dimension.
 
-        Example:
-            >>> w = Wave(np.ones([2,2]), [1,2], None)
-            >>> w.getAxis(0)
-            [1,2]
-            >>> w.getAxis(1)
-            [0,1] # automatically generated axis
         """
+        return self[dim]
+
+    def __createValidAxis(self, val, dim):
+        val = np.array(val)
         data = self._parent().data
-        val = np.array(self[dim])
-        if data.ndim <= dim:
-            return None
-        elif val.ndim == 0:
-            return np.arange(data.shape[dim])
+        if val.ndim == 0:
+            return np.arange(data.shape[dim]).astype(float)
         else:
             if data.shape[dim] == val.shape[0]:
                 return val
             else:
-                res = np.empty((data.shape[dim]))
-                for i in range(data.shape[dim]):
-                    res[i] = np.NaN
-                for i in range(min(data.shape[dim], val.shape[0])):
-                    res[i] = val[i]
+                res = np.arange(data.shape[dim])
+                res[:min(data.shape[dim], val.shape[0])] = val[:min(data.shape[dim], val.shape[0])]
                 return res
-
-    def axisIsValid(self, dim):
-        """
-        Check if the axis is valid.
-
-        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
-
-        Args:
-            dim (int): The dimension to check the axis is valid.
-
-        Returns:
-            bool: The specified axis is valid or not.
-
-        Example:
-            >>> w = Wave(np.ones([2,2]), [1,2], None)
-            >>> w.axisIsValid(0)
-            True
-            >>> w.axisIsValid(1)
-            False
-        """
-        ax = self[dim]
-        if ax is None or (ax == np.array(None)).all():
-            return False
-        return True
 
     def posToPoint(self, pos, axis=None):
         """
@@ -323,10 +288,13 @@ class WaveAxes(list):
             return ax[indice]
 
     def _update(self, data):
-        while(len(self) < data.ndim):
-            self.append(np.array(None))
-        while(len(self) > data.ndim):
-            self.pop(len(self) - 1)
+        old_axes = list(self)
+        self.clear()
+        for d in range(data.ndim):
+            if len(old_axes) > d:
+                self.append(self.__createValidAxis(old_axes[d], d))
+            else:
+                self.append(self.__createValidAxis(None, d))
 
 
 class _WaveNoteDescriptor:
@@ -716,10 +684,8 @@ class Wave(WaveBase):
                 key = (slice(key),)
         while len(key) < len(w._data.shape):
             key = tuple(list(key) + [slice(None)])
-        axes = [np.array(None) if ax is None or (ax == np.array(None)).all() else ax[sl] for ax, sl in zip(self._axes, key)]
-        w._axes = WaveAxes(w, [np.array(None)] * w.ndim)
-        for i in range(w.ndim):
-            w._axes[i] = axes[i]
+        axes = [ax[sl] for ax, sl in zip(self._axes, key)]
+        w._axes = WaveAxes(w, axes, force=True)
         w.note = self._note
         return w
 
@@ -755,8 +721,7 @@ class _DaskWaveDataDescriptor:
     def __set__(self, instance, value):
         instance._data = value
         if hasattr(instance, "axes"):
-            if instance.axes is not None:
-                instance.axes._update(instance._data)
+            instance.axes._update(instance._data)
 
     def __get__(self, instance, objtype=None):
         return instance._data

@@ -120,7 +120,6 @@ class Filters_test(unittest.TestCase):
         self.assertEqual(f1.getRelativeDimension(), 1)
         result = f1.execute(w)
         assert_array_equal(result.data, np.ones([2, 3, 3]))
-        self.assertFalse(result.axisIsValid(0))
         assert_array_equal(result.y, ar)
         self.assertEqual(result.name, "wave")
 

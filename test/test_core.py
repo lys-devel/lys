@@ -38,8 +38,8 @@ class core_test(unittest.TestCase):
         # without specifing axes
         noaxes = Wave([[1, 2], [3, 4]])
         self.assertEqual(len(noaxes.axes), 2)
-        self.assertTrue((noaxes.axes[0] == np.array(None)).all())
-        self.assertTrue((noaxes.axes[1] == np.array(None)).all())
+        self.assertTrue((noaxes.axes[0] == [0, 1]).all())
+        self.assertTrue((noaxes.axes[1] == [0, 1]).all())
 
         # with specifing axes
         axis1, axis2 = [2, 3, 4], [2, 3]
@@ -53,16 +53,6 @@ class core_test(unittest.TestCase):
         assert_array_equal(w.y, axis2)
         w.x = [3, 4, 5]
         assert_array_equal(w.x, [3, 4, 5])
-
-        # invalid axes specified
-        with self.assertRaises(TypeError):
-            w = Wave(np.zeros([3, 2]), "aaa", [2, 3])
-
-        # axisIsValid method
-        self.assertFalse(noaxes.axisIsValid(0))
-        self.assertFalse(noaxes.axisIsValid(1))
-        self.assertTrue(w.axisIsValid(0))
-        self.assertTrue(w.axisIsValid(1))
 
         # getAxis method
         assert_array_equal(noaxes.getAxis(0), [0, 1])

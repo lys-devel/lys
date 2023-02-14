@@ -71,13 +71,7 @@ class SliceFilter(FilterInterface):
 
     def _execute(self, wave, **kwargs):
         slices = self._sl
-        axes = []
-        for i, s in enumerate(slices):
-            if not self._isChangeDim(s):
-                if wave.axisIsValid(i):
-                    axes.append(wave.axes[i][s])
-                else:
-                    axes.append(None)
+        axes = [wave.axes[i][s] for i, s in enumerate(slices) if not self._isChangeDim(s)]
         for i, s in enumerate(slices):
             if self._isChangeDim(s):
                 slices[i] = s.start

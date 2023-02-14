@@ -103,13 +103,7 @@ class IntegralFilter(FilterInterface):
 
     def _execute(self, wave, *args, **kwargs):
         key, sumaxes = self._getIndexAnsSumAxes(wave, self._range)
-        axes = []
-        for i in range(wave.ndim):
-            if i not in sumaxes:
-                if wave.axisIsValid(i):
-                    axes.append(wave.axes[i])
-                else:
-                    axes.append(None)
+        axes = [wave.axes[i] for i in range(wave.ndim) if i not in sumaxes]
         func = _getSumFunction(self._sumtype)
         return DaskWave(func(wave.data[key], axis=tuple(sumaxes)), *axes, **wave.note)
 

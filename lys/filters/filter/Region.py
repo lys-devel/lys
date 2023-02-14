@@ -125,12 +125,7 @@ class SelectRegionFilter(FilterInterface):
     def _execute(self, wave, *axes, **kwargs):
         key = self._makeSlice(wave)
         data = wave.data[key]
-        axes = []
-        for i, s in enumerate(key):
-            if wave.axisIsValid(i):
-                axes.append(wave.getAxis(i)[s])
-            else:
-                axes.append(None)
+        axes = [wave.getAxis(i)[s] for i, s in enumerate(key)]
         return DaskWave(data, *axes, **wave.note)
 
     def _makeSlice(self, wave):
