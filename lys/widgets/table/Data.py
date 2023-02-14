@@ -4,6 +4,12 @@ from lys.Qt import QtCore
 
 
 class TableData(QtCore.QObject):
+    """
+    TableData class handles data in :class:`lys.widgets.table.lysTable.lysTable`.
+
+    Args:
+        table(lysTable): The table widget.
+    """
     updated = QtCore.pyqtSignal()
     """
     Emitted when data data is updated.

@@ -7,6 +7,23 @@ from .TableModifyWindow import TableModifyWindow
 
 
 class lysTable(QtWidgets.QWidget):
+    """
+    lysTable is a widget that shows data and axes of :class:`lys.core.Wave`.
+
+    The functionarity of data handling is implemented in :class:`lys.widgets.table.Data.TableData` class.
+
+    All public methods in :class:`lys.widgets.table.Data.TableData` class can be accessed from lysTable.
+
+    To generate lysTable, it is recommended to use :func:`lys.functions.edit` function.
+
+    Example::
+
+        import numpy as np
+        from lys import edit, Wave
+
+        w = Wave(np.random.rand(100, 100))
+        edit(w)
+    """
     keyPressed = QtCore.pyqtSignal(object)
     """
     Emitted when keyPressEvent is raised.
@@ -166,7 +183,6 @@ class _ArrayModel(QtGui.QStandardItemModel):
         self._parent = parent
         self._parent.updated.connect(self.update)
         self.dataChanged.connect(self._parent.dataChanged)
-
 
     def update(self):
         self._data = self.__getSlicedData()
