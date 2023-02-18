@@ -140,17 +140,35 @@ class _MatplotlibTicks(CanvasTicks):
         axs = self.canvas().getAxes(axis)
         if self.canvas().getAxisMode(axis) == 'linear':
             loc = ticker.MultipleLocator(interval)
+            if axis in ['Left', 'Right']:
+                ax = axs.get_yaxis()
+                axs.set_yscale('linear')
+            if axis in ['Bottom', 'Top']:
+                ax = axs.get_xaxis()
+                axs.set_xscale('linear')
+            if which == 'major':
+                ax.set_major_locator(loc)
+            elif which == 'minor':
+                ax.set_minor_locator(loc)
         else:
-            print("log", 10**interval, which)
-            loc = ticker.LogLocator(base=10**interval)
-        if axis in ['Left', 'Right']:
-            ax = axs.get_yaxis()
-        if axis in ['Bottom', 'Top']:
-            ax = axs.get_xaxis()
-        if which == 'major':
-            ax.set_major_locator(loc)
-        elif which == 'minor':
-            ax.set_minor_locator(loc)
+            if axis in ['Left', 'Right']:
+                ax = axs.get_yaxis()
+                axs.set_yscale('log')
+            if axis in ['Bottom', 'Top']:
+                ax = axs.get_xaxis()
+                axs.set_xscale('log')
+            if which == "major":
+                base = interval
+                subs = int(self.getTickInterval(axis, which="minor", raw=False))
+            else:
+                base = self.getTickInterval(axis, which="major", raw=False)
+                subs = int(interval)
+            print(base, subs)
+            subs = tuple([1.0 / subs * (i + 1) for i in range(subs)])
+            ax.set_major_locator(ticker.LogLocator(base=base))
+            ax.set_minor_locator(ticker.LogLocator(base=base, subs=subs))
+            ax.set_major_formatter(ticker.LogFormatterSciNotation(base=base))
+            ax.set_minor_formatter(ticker.NullFormatter())
 
     def _setTickVisible(self, axis, tf, mirror, which='both'):
         axes = self.canvas().getAxes(axis)

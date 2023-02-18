@@ -32,7 +32,7 @@ class NormalizeFilter(FilterInterface):
         for i, r in enumerate(self._range):
             if r is None:
                 sl.append(slice(None))
-            elif (r[0] == 0 and r[1] == 0) or self._axis == i:
+            elif (r[0] == 0 and r[1] == 0) or i not in self._axis:
                 sl.append(slice(None))
             else:
                 ind = wave.posToPoint(r, i)

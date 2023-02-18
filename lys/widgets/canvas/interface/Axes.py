@@ -668,12 +668,17 @@ class CanvasTicks(CanvasPart):
             return self._calculateAutoInterval(axis, which)
         else:
             range = self.canvas().getAxisRange(axis)
-            if (abs(range[1] - range[0]) / value) < 100 and self.canvas().getAxisMode(axis) == 'linear':
-                return value
+            if self.canvas().getAxisMode(axis) == 'linear':
+                if (abs(range[1] - range[0]) / value) < 100:
+                    return value
             elif self.canvas().getAxisMode(axis) == 'log':
-                return value
-            else:
-                return self._calculateAutoInterval(axis, which)
+                if which == "major":
+                    if abs(np.log(range[1]) / np.log(value) - np.log(range[0]) / np.log(value)) < 100:
+                        return value
+                elif which == "minor":
+                    if value <= 100:
+                        return value
+            return self._calculateAutoInterval(axis, which)
 
     def _calculateAutoInterval(self, axis, which):
         range = self.canvas().getAxisRange(axis)
@@ -697,7 +702,10 @@ class CanvasTicks(CanvasPart):
                     return d * p / 4
                 return d * p / 5
         elif self.canvas().getAxisMode(axis) == "log":
-            return 1
+            if which == "major":
+                return 10
+            elif which == "minor":
+                return 10
 
     @ saveCanvas
     def setTickVisible(self, axis, value, mirror=False, which='both'):
