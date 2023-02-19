@@ -255,6 +255,82 @@ class RGBColorAdjustBox(QtWidgets.QWidget):
             im.setColorRotation(self.__rot.value())
 
 
+class RGBMapAdjustBox(QtWidgets.QWidget):
+    def __init__(self, canvas):
+        super().__init__()
+        self._canvas = canvas
+        self.__initlayout()
+
+    def __initlayout(self):
+        self.__check = QtWidgets.QCheckBox("Show colormap", toggled=self.__visible)
+        self.__pos1 = QtWidgets.QDoubleSpinBox(valueChanged=self.__changePos)
+        self.__pos1.setRange(-2, 2)
+        self.__pos1.setSingleStep(0.05)
+        self.__pos2 = QtWidgets.QDoubleSpinBox(valueChanged=self.__changePos)
+        self.__pos2.setRange(-2, 2)
+        self.__pos2.setSingleStep(0.05)
+        self.__size = QtWidgets.QDoubleSpinBox(valueChanged=self.__changeSize)
+        self.__size.setRange(0, 2)
+        self.__size.setSingleStep(0.05)
+
+        grid = QtWidgets.QGridLayout()
+        grid.addWidget(QtWidgets.QLabel("x"), 0, 0)
+        grid.addWidget(QtWidgets.QLabel("y"), 0, 1)
+        grid.addWidget(QtWidgets.QLabel("size"), 0, 2)
+        grid.addWidget(self.__pos1, 1, 0)
+        grid.addWidget(self.__pos2, 1, 1)
+        grid.addWidget(self.__size, 1, 2)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.__check)
+        layout.addLayout(grid)
+        layout.addStretch()
+        self.setLayout(layout)
+
+    def __setEnable(self, b):
+        self.__check.setEnabled(b)
+        if b:
+            self.__pos1.setEnabled(self.__check.isChecked())
+            self.__pos2.setEnabled(self.__check.isChecked())
+            self.__size.setEnabled(self.__check.isChecked())
+        else:
+            self.__pos1.setEnabled(b)
+            self.__pos2.setEnabled(b)
+            self.__size.setEnabled(b)
+
+    @ avoidCircularReference
+    def setRGBs(self, images):
+        self._images = images
+        if len(images) != 0:
+            self.__check.setChecked(images[0].getColormapVisible())
+            pos = images[0].getColormapPosition()
+            self.__pos1.setValue(pos[0])
+            self.__pos2.setValue(pos[1])
+            size = images[0].getColormapSize()
+            self.__size.setValue(size)
+            self.__setEnable(True)
+        else:
+            self.__setEnable(False)
+
+    @ avoidCircularReference
+    def __visible(self, *args, **kwargs):
+        for im in self._images:
+            im.setColormapVisible(self.__check.isChecked())
+        self.__pos1.setEnabled(self.__check.isChecked())
+        self.__pos2.setEnabled(self.__check.isChecked())
+        self.__size.setEnabled(self.__check.isChecked())
+
+    @ avoidCircularReference
+    def __changePos(self, *args, **kwargs):
+        for im in self._images:
+            im.setColormapPosition([self.__pos1.value(), self.__pos2.value()])
+
+    @ avoidCircularReference
+    def __changeSize(self, *args, **kwargs):
+        for im in self._images:
+            im.setColormapSize(self.__size.value())
+
+
 class VectorAdjustBox(QtWidgets.QWidget):
     _pivots = ["tail", "middle", "tip"]
 

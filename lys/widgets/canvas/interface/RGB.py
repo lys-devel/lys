@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 from matplotlib.colors import hsv_to_rgb
 
@@ -70,8 +71,81 @@ class RGBData(WaveData):
         """
         return self.__getAppearance('ColorRotation')
 
+    @saveCanvas
+    def setColormapVisible(self, visible):
+        """
+        Set the visibility of the colormap.
+
+        Args:
+            visible(bool): The visibility.
+        """
+        self._setColormapVisible(visible)
+        self.__setAppearance("colormapVisible", visible)
+
+    def getColormapVisible(self):
+        """
+        Get the visibility of the colormap.
+
+        Returns:
+            bool: The visibility.
+        """
+        return self.__getAppearance('colormapVisible', False)
+
+    @saveCanvas
+    def setColormapPosition(self, pos):
+        """
+        Set the position of the colormap.
+
+        Args:
+            pos(length 2 sequence): The position of the colormap
+        """
+        self._setColormapPosition(pos)
+        self.__setAppearance("colormapPosition", pos)
+
+    def getColormapPosition(self):
+        """
+        Get the position of the colormap.
+
+        Returns:
+            length 2 sequence: The position of the colormap.
+        """
+        return self.__getAppearance('colormapPosition', (0, 0))
+
+    @saveCanvas
+    def setColormapSize(self, size):
+        """
+        Set the size of the colormap.
+
+        Args:
+            size(float): The size of the colormap
+        """
+        self._setColormapSize(size)
+        self.__setAppearance("colormapSize", size)
+
+    def getColormapSize(self):
+        """
+        Get the size of the colormap.
+
+        Returns:
+            float: The size of the colormap.
+        """
+        return self.__getAppearance('colormapSize', 0.1)
+
     def getRGBWave(self):
+        """
+        Return RGB wave data that is used to display.
+
+        Returns:
+            Wave: The RGB data.
+        """
         return self._makeRGBData(self.getFilteredWave(), self.saveAppearance())
+
+    def getColormapData(self, size=50):
+        x = np.linspace(-1, 1, size)
+        xy = np.meshgrid(x, x)
+        res = self._Complex2HSV(xy[0] + xy[1] * 1j, -1, 1, self.getColorRotation())
+        res[np.sqrt(xy[0]**2 + xy[1]**2) >= 1] = [1, 1, 1]
+        return res
 
     def _makeRGBData(self, wav, appearance):
         wav = wav.duplicate()
@@ -107,3 +181,15 @@ class RGBData(WaveData):
     def _loadAppearance(self, appearance):
         self.setColorRange(*appearance.get('Range', self.getAutoColorRange()))
         self.setColorRotation(appearance.get('ColorRotation', 0))
+        self.setColormapVisible(appearance.get('colormapVisible', False))
+        self.setColormapPosition(appearance.get('colormapPosition', (0, 0)))
+        self.setColormapSize(appearance.get('colormapSize', 0.1))
+
+    def _setColormapVisible(self, b):
+        warnings.warn(str(type(self)) + " does not implement _setColormapVisible(b) method.", NotImplementedWarning)
+
+    def _setColormapPosition(self, pos):
+        warnings.warn(str(type(self)) + " does not implement _setColormapPosition(pos) method.", NotImplementedWarning)
+
+    def _setColormapSize(self, size):
+        warnings.warn(str(type(self)) + " does not implement _setColormapSize(size) method.", NotImplementedWarning)

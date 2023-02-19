@@ -279,6 +279,15 @@ class _PyqtgraphRGB(RGBData):
     def _setZ(self, z):
         _setZ(self._obj, z)
 
+    def _setColormapVisible(self, visible):
+        warnings.warn("pyqtGraph does not support colormap for RGB image.", NotSupportedWarning)
+
+    def _setColormapPosition(self, pos):
+        warnings.warn("pyqtGraph does not support colormap for RGB image.", NotSupportedWarning)
+
+    def _setColormapSize(self, size):
+        warnings.warn("pyqtGraph does not support colormap for RGB image.", NotSupportedWarning)
+
 
 class _PyqtgraphContour(ContourData):
     """Implementation of ContourData for pyqtgraph"""

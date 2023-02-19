@@ -7,7 +7,7 @@ from lys.widgets import LysSubWindow
 
 from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
 from .LineSettingsGUI import AppearanceBox, ErrorBox, LegendBox
-from .ImageSettingsGUI import ImageColorAdjustBox, ColorbarAdjustBox, RGBColorAdjustBox, VectorAdjustBox, ContourAdjustBox
+from .ImageSettingsGUI import ImageColorAdjustBox, ColorbarAdjustBox, RGBColorAdjustBox, RGBMapAdjustBox, VectorAdjustBox, ContourAdjustBox
 
 from .AxisSettingsGUI import AxisSelectionWidget, AxisAndTickBox
 from .AxisLabelSettingsGUI import AxisAndTickLabelBox, AxisFontBox
@@ -252,13 +252,16 @@ class _RGBTab(QtWidgets.QWidget):
     def _initlayout(self, canvas):
         rgb = RGBColorAdjustBox(canvas)
         off = OffsetAdjustBox()
+        map = RGBMapAdjustBox(canvas)
         sel = DataSelectionBox(canvas, 3, "rgb")
         sel.selected.connect(rgb.setRGBs)
         sel.selected.connect(off.setData)
+        sel.selected.connect(map.setRGBs)
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(rgb, 'Color')
         tab.addTab(off, 'Offset')
+        tab.addTab(map, 'Colormap')
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)

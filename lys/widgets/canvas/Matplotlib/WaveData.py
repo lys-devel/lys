@@ -281,6 +281,8 @@ class _MatplotlibRGB(RGBData):
         super().__init__(canvas, wave, axis)
         w = self.getRGBWave()
         self._obj = canvas.getAxes(axis).imshow(w.data.swapaxes(0, 1), aspect='auto', extent=_calcExtent2D(w), picker=True)
+        self._colormap = None
+        self.canvas().canvasResized.connect(self.__setColormap)
 
     def remove(self):
         self._obj.remove()
@@ -289,12 +291,50 @@ class _MatplotlibRGB(RGBData):
         wave = self.getRGBWave()
         self._obj.set_data(wave.data.swapaxes(0, 1))
         self._obj.set_extent(_calcExtent2D(wave))
+        if self._colormap is not None:
+            self._colormapImage.set_data(self.getColormapData().swapaxes(0, 1)[::-1, :])
 
     def _setVisible(self, visible):
         self._obj.set_visible(visible)
 
     def _setZ(self, z):
         _setZ(self._obj, z)
+
+    def _setColormapVisible(self, visible):
+        self.__setColormap(visible=visible)
+
+    def _setColormapPosition(self, pos):
+        self.__setColormap(pos=pos)
+
+    def _setColormapSize(self, size):
+        self.__setColormap(size=size)
+
+    def __setColormap(self, visible=None, pos=None, size=None):
+        if visible is None:
+            visible = self.getColormapVisible()
+        if pos is None:
+            pos = self.getColormapPosition()
+        if size is None:
+            size = self.getColormapSize()
+        if visible:
+            if self._colormap is None:
+                import warnings
+                import matplotlib.cbook
+                warnings.filterwarnings("ignore", category=matplotlib.cbook.mplDeprecation)
+                self._colormap = self.canvas().getFigure().add_axes([0, 0, 1, 1])
+                self._colormap.spines['left'].set_visible(False)
+                self._colormap.spines['right'].set_visible(False)
+                self._colormap.spines['top'].set_visible(False)
+                self._colormap.spines['bottom'].set_visible(False)
+                self._colormap.get_yaxis().set_tick_params(left=False, right=False, labelright=False, labelleft=False, which="both")
+                self._colormap.get_xaxis().set_tick_params(top=False, bottom=False, labeltop=False, labelbottom=False, which="both")
+                self._colormapImage = self._colormap.imshow(self.getColormapData().swapaxes(0, 1)[::-1, :])
+            m = self.canvas().getMargin()
+            self._colormap.set_position([m[1] + pos[0] * (m[1] - m[0]), m[2] + pos[1] * (m[3] - m[2]), size, size])
+        else:
+            if self._colormap is not None:
+                self._colormap.remove()
+                self._colormap = None
 
 
 class _MatplotlibContour(ContourData):
