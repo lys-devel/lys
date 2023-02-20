@@ -120,10 +120,18 @@ class CanvasMouseEvent(CanvasPart):
         raise NotImplementedError(str(type(self)) + " does not implement mapPosition(event, axis) method.")
 
 
-class _RegionSelector(QtCore.QObject):
+class _MouseEventBase(QtCore.QObject):
+    def __init__(self, canvas):
+        self._canvas = weakref.ref(canvas)
+
+    @property
+    def canvas(self):
+        return self._canvas()
+
+
+class _RegionSelector(_MouseEventBase):
     def __init__(self, parent, canvas):
-        super().__init__()
-        self.canvas = canvas
+        super().__init__(canvas)
         self.__select_rect = False
         parent.mousePressed.connect(self._mousePressed)
         parent.mouseReleased.connect(self._mouseReleased)
@@ -146,11 +154,10 @@ class _RegionSelector(QtCore.QObject):
             self.__select_rect = False
 
 
-class _RangeMove(QtCore.QObject):
+class _RangeMove(_MouseEventBase):
     def __init__(self, parent, canvas):
-        super().__init__()
+        super().__init__(canvas)
         self.__flg = False
-        self.canvas = canvas
         parent.mousePressed.connect(self._mousePressed)
         parent.mouseReleased.connect(self._mouseReleased)
         parent.mouseMoved.connect(self._mouseMoved)
@@ -195,10 +202,9 @@ class _RangeMove(QtCore.QObject):
             self.__top = self.canvas.getAxisRange("Top")
 
 
-class _LineDrawer(QtCore.QObject):
+class _LineDrawer(_MouseEventBase):
     def __init__(self, parent, canvas):
-        super().__init__()
-        self.canvas = canvas
+        super().__init__(canvas)
         self._line = None
         self._busy = False
         parent.mousePressed.connect(self._mousePressed)
@@ -225,10 +231,9 @@ class _LineDrawer(QtCore.QObject):
             self._line = None
 
 
-class _InfiniteLineDrawer(QtCore.QObject):
+class _InfiniteLineDrawer(_MouseEventBase):
     def __init__(self, parent, canvas):
-        super().__init__()
-        self.canvas = canvas
+        super().__init__(canvas)
         self._line = None
         self._index = 0
         parent.mousePressed.connect(self._mousePressed)
@@ -255,10 +260,9 @@ class _InfiniteLineDrawer(QtCore.QObject):
             self._line = None
 
 
-class _RectDrawer(QtCore.QObject):
+class _RectDrawer(_MouseEventBase):
     def __init__(self, parent, canvas):
-        super().__init__()
-        self.canvas = canvas
+        super().__init__(canvas)
         self._rect = None
         self._busy = False
         parent.mousePressed.connect(self._mousePressed)
@@ -287,10 +291,9 @@ class _RectDrawer(QtCore.QObject):
             self._rect = None
 
 
-class _RegionDrawer(QtCore.QObject):
+class _RegionDrawer(_MouseEventBase):
     def __init__(self, parent, canvas):
-        super().__init__()
-        self.canvas = canvas
+        super().__init__(canvas)
         self._region = None
         self._busy = False
         parent.mousePressed.connect(self._mousePressed)
@@ -325,10 +328,9 @@ class _RegionDrawer(QtCore.QObject):
             self._region = None
 
 
-class _FreeRegionDrawer(QtCore.QObject):
+class _FreeRegionDrawer(_MouseEventBase):
     def __init__(self, parent, canvas):
-        super().__init__()
-        self.canvas = canvas
+        super().__init__(canvas)
         self._line = None
         self._busy = False
         parent.mousePressed.connect(self._mousePressed)
@@ -355,10 +357,9 @@ class _FreeRegionDrawer(QtCore.QObject):
             self._line = None
 
 
-class _CrosshairDrawer(QtCore.QObject):
+class _CrosshairDrawer(_MouseEventBase):
     def __init__(self, parent, canvas):
-        super().__init__()
-        self.canvas = canvas
+        super().__init__(canvas)
         self._line = None
         parent.mousePressed.connect(self._mousePressed)
         parent.mouseReleased.connect(self._mouseReleased)
