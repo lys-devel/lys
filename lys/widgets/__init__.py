@@ -2,6 +2,7 @@
 from lys import registerFileLoader
 
 from .general import *
+from .slider import RangeSlider
 from .fileView import FileSystemView
 
 from .mdi import LysSubWindow, _ExtendMdiArea
