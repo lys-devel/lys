@@ -1,8 +1,12 @@
-from lys.Qt import QtWidgets, QtCore
 
 from lys import Wave, DaskWave
+from lys.Qt import QtWidgets, QtCore
 from lys.widgets import LysSubWindow
+
+from .MultiCut import MultiCutCUI
 from .MultiCutGUIs import CutTab, AnimationTab, PrefilterTab, ExportDataTab
+from .AxesRange import AxesRangeWidget, FreeLinesWidget
+from .CanvasManager import CanvasManager
 
 
 class MultipleGrid(LysSubWindow):
@@ -68,12 +72,20 @@ class _GridAttachedWindow(LysSubWindow):
 class MultiCut(_GridAttachedWindow):
     def __init__(self, wave=None):
         super().__init__("Multi-dimensional data analysis")
+        self._cui = MultiCutCUI(wave)
+        self._can = CanvasManager(self._cui)
         self.__initlayout__()
         self.wave = None
         self.axes = []
         self.ranges = []
         if wave is not None:
             self._load(wave)
+
+    def test(self):
+        obj = self._cui.addFreeLine([0, 1])
+        g = self._can.createCanvas([0, 1], graph=True)
+        f = g.addFreeRegionAnnotation()
+        self._can.syncAnnotation(f, obj)
 
     def keyPress(self, e):
         if e.key() == QtCore.Qt.Key_M:
@@ -94,11 +106,18 @@ class MultiCut(_GridAttachedWindow):
     def __initlayout__(self):
         self._pre = PrefilterTab()
         self._pre.filterApplied.connect(self._filterApplied)
+        self._pre.applied.connect(self._cui.applyFilter)
         self._cut = CutTab(self, self.grid)
+        self._ran = AxesRangeWidget(self._cui)
+        self._line = FreeLinesWidget(self._cui)
+        self._canl = self._can.widget()
         tab = QtWidgets.QTabWidget()
         tab.addTab(self._pre, "Prefilter")
         tab.addTab(self._cut, "Cut")
         tab.addTab(self.__exportTab(), "Export")
+        tab.addTab(self._ran, "Range")
+        tab.addTab(self._canl, "Canvas")
+        tab.addTab(self._line, "Lines")
 
         self.__useDask = QtWidgets.QCheckBox("Dask")
         self.__useDask.setChecked(True)

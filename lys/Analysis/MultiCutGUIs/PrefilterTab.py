@@ -4,6 +4,7 @@ from lys.Qt import QtWidgets, QtCore
 
 class PrefilterTab(QtWidgets.QWidget):
     filterApplied = QtCore.pyqtSignal(object)
+    applied = QtCore.pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
@@ -36,4 +37,5 @@ class PrefilterTab(QtWidgets.QWidget):
                 return
         self.__outputShape = waves.data.ndim
         waves.persist()
+        self.applied.emit(self.filt.GetFilters())
         self.filterApplied.emit(waves)
