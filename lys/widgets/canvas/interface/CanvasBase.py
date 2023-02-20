@@ -68,6 +68,8 @@ class CanvasBase(object):
     """pyqtSignal that is emitted when the canvas is initialized."""
     updated = QtCore.pyqtSignal()
     """pyqtSignal that is emitted when the canvas is updated."""
+    finalized = QtCore.pyqtSignal()
+    """pyqtSignal that is emitted when the canvas is finalized."""
 
     def __init__(self):
         self._saveflg = False
@@ -122,7 +124,7 @@ class CanvasBase(object):
 
         Call this method to finalize the canvas, which is usually done by parent widget (such as Graph).
         """
-        pass
+        self.finalized.emit()
 
     def delayUpdate(self):
         """

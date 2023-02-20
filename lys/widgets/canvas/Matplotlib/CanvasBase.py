@@ -142,6 +142,7 @@ class ExtendCanvas(CanvasBase, FigureCanvas):
         return self.figure
 
     def finalize(self):
+        super().finalize()
         self.figure.canvas = None
 
 
