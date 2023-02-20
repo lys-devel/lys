@@ -122,6 +122,7 @@ class CanvasMouseEvent(CanvasPart):
 
 class _MouseEventBase(QtCore.QObject):
     def __init__(self, canvas):
+        super().__init__()
         self._canvas = weakref.ref(canvas)
 
     @property
