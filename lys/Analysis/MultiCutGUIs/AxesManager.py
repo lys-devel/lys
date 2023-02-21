@@ -147,7 +147,7 @@ class AxesRangeWidget(QtWidgets.QWidget):
         super().__init__()
         self._cui = cui
         self.__initlayout()
-        cui.filterApplied.connect(self.__update)
+        cui.dimensionChanged.connect(self.__update)
 
     def __initlayout(self):
         self._axes = [_AxisRangeWidget(self._cui, i) for i in range(self._cui.getFilteredWave().ndim)]
@@ -228,7 +228,6 @@ class FreeLinesWidget(QtWidgets.QWidget):
         self._cui = cui
         self.__initlayout()
         self._cui.freeLineChanged.connect(self.__update)
-        cui.filterApplied.connect(self.__reset)
 
     def __initlayout(self):
         self._axes = [_FreeLineWidget(self._cui, obj) for obj in self._cui.getFreeLines()]
@@ -237,12 +236,6 @@ class FreeLinesWidget(QtWidgets.QWidget):
             self._layout.addWidget(ax)
         self._layout.addStretch()
         self.setLayout(self._layout)
-
-    def __reset(self):
-        self._cui.freeLineChanged.connect(self.__update)
-        for ax in self._axes:
-            self._layout.removeWidget(ax)
-            ax.deleteLater()
 
     def __update(self):
         for ax in self._axes:

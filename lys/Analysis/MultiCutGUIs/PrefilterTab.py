@@ -1,41 +1,36 @@
-from lys import DaskWave, filters
+from lys import filters
 from lys.Qt import QtWidgets, QtCore
 
 
 class PrefilterTab(QtWidgets.QWidget):
     filterApplied = QtCore.pyqtSignal(object)
-    applied = QtCore.pyqtSignal(object)
 
-    def __init__(self):
+    def __init__(self, cui):
         super().__init__()
+        self._cui = cui
         self.__initlayout__()
-        self.wave = None
-        self.__outputShape = None
+        self._filt.setDimension(cui.getRawWave().ndim)
+        self._dim = 0
 
     def __initlayout__(self):
-        self.filt = filters.FiltersGUI()
-        apply = QtWidgets.QPushButton("Apply filters", clicked=self._click)
+        self._filt = filters.FiltersGUI()
+        apply = QtWidgets.QPushButton("Apply filters", clicked=self._update)
+
+        self.__useDask = QtWidgets.QCheckBox("Use dask for postprocess (recommended)", toggled=self._cui.useDask)
+        self.__useDask.setChecked(True)
 
         layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self.filt)
+        layout.addWidget(self._filt)
+        layout.addWidget(self.__useDask)
         layout.addWidget(apply)
         self.setLayout(layout)
         self.adjustSize()
 
-    def setWave(self, wave):
-        wave.persist()
-        self.wave = wave
-        self.filt.setDimension(self.wave.data.ndim)
-        self._click()
-
-    def _click(self):
-        waves = DaskWave(self.wave, chunks="auto")
-        waves = self.filt.GetFilters().execute(waves)
-        if self.__outputShape != waves.data.ndim and self.__outputShape is not None:
+    def _update(self):
+        dim = self._filt.GetFilters().getRelativeDimension()
+        if self._dim != dim:
             ret = QtWidgets.QMessageBox.information(self, "Caution", "The dimension of the processed wave will be changed and the graphs will be disconnected. Do you really want to proceed?", QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
             if ret == QtWidgets.QMessageBox.No:
                 return
-        self.__outputShape = waves.data.ndim
-        waves.persist()
-        self.applied.emit(self.filt.GetFilters())
-        self.filterApplied.emit(waves)
+        self._dim = dim
+        self.filterApplied.emit(self._filt.GetFilters())

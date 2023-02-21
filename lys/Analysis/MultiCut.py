@@ -1,192 +1,213 @@
 import numpy as np
 
-from lys import DaskWave
+from lys import DaskWave, Wave, filters
 from lys.Qt import QtCore
 from lys.decorators import avoidCircularReference
 from lys.filters import Filters, SliceFilter, EmptyFilter, IntegralAllFilter, TransposeFilter
 
-from .MultiCutExecutors import FreeLineExecutor, DefaultExecutor
 
-
-class controlledObjects(QtCore.QObject):
-    appended = QtCore.pyqtSignal(object)
-    removed = QtCore.pyqtSignal(object)
-
-    def __init__(self):
+class MultiCutCUI(QtCore.QObject):
+    def __init__(self, wave):
         super().__init__()
-        self._objs = []
-        self._axis = []
+        self._wave = _MultiCutWave(wave)
+        self._axesRange = _AxesRangeManager(wave.ndim)
+        self._freeLine = _FreeLineManager()
+        self._children = _ChildWaves(self)
+        self._wave.dimensionChanged.connect(self.__reset)
 
-    def append(self, obj, axes):
-        self._objs.append(obj)
-        self._axis.append(axes)
-        self.appended.emit(obj)
+    def __reset(self, wave):
+        self._axesRange.reset(wave.ndim)
+        self._freeLine.clear()
+        self._children.clear()
 
-    def remove(self, obj):
-        if obj in self._objs:
-            i = self._objs.index(obj)
-            self._objs.pop(i)
-            self._axis.pop(i)
-            self.removed.emit(obj)
-            return i
-        return None
+    def __getattr__(self, key):
+        if "_axesRange" in self.__dict__:
+            if hasattr(self._axesRange, key):
+                return getattr(self._axesRange, key)
+        if "_wave" in self.__dict__:
+            if hasattr(self._wave, key):
+                return getattr(self._wave, key)
+        if "_freeLine" in self.__dict__:
+            if hasattr(self._freeLine, key):
+                return getattr(self._freeLine, key)
+        if "_children" in self.__dict__:
+            if hasattr(self._children, key):
+                return getattr(self._children, key)
+        return super().__getattr__(key)
 
-    def removeAt(self, index):
-        self.remove(self._objs[index])
 
-    def getAxes(self, obj):
-        i = self._objs.index(obj)
-        return self._axis[i]
+class _MultiCutWave(QtCore.QObject):
+    dimensionChanged = QtCore.pyqtSignal(object)
 
-    def getObjectsAndAxes(self):
-        return zip(self._objs, self._axis)
+    def __init__(self, wave):
+        super().__init__()
+        self._wave = self._filtered = self._load(wave)
+        self._wave.persist()
+        self._useDask = True
 
-    def __len__(self):
-        return len(self._objs)
+    def _load(self, data):
+        if isinstance(data, Wave) or isinstance(data, DaskWave):
+            return DaskWave(data)
+        else:
+            return DaskWave(Wave(data))
 
-    def __getitem__(self, index):
-        return [self._objs[index], self._axis[index]]
+    def applyFilter(self, filt):
+        dim_old = self._filtered.ndim
+        wave = filt.execute(self._wave)
+        wave.persist()
+        if self._useDask:
+            self._filtered = wave
+            print("[MultiCut] DaskWave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype, ", chunksize = ", wave.data.chunksize)
+        else:
+            self._filtered = wave.compute()
+            print("[MultiCut] Wave set. shape = ", wave.data.shape, ", dtype = ", wave.data.dtype)
+        if dim_old != self._filtered.ndim:
+            self.dimensionChanged.emit(self._filtered)
+
+    def getRawWave(self):
+        return self._wave
+
+    def getFilteredWave(self):
+        return self._filtered
+
+    def useDask(self, b):
+        self._useDask = b
+
+
+class _ChildWaves(QtCore.QObject):
+    childWavesChanged = QtCore.pyqtSignal()
+
+    def __init__(self, cui):
+        super().__init__()
+        self._cui = cui
+        self._cui.axesRangeChanged.connect(self._update)
+        self._cui.freeLineMoved.connect(self._update)
+        self._sumType = "Mean"
+        self._waves = []
 
     def clear(self):
-        while len(self._objs) != 0:
-            self.remove(self._objs[0])
+        self._waves = []
 
+    @property
+    def cui(self):
+        return self._cui
 
-class SwitchableObjects(controlledObjects):
+    def setSumType(self, sumType):
+        self._sumType = sumType
 
-    def __init__(self):
-        super().__init__()
-        self._enabled = []
+    def _update(self, axes):
+        for child in self._waves:
+            if isinstance(axes, _FreeLine):
+                if axes.getName() in child.getAxes():
+                    self.__updateSingleWave(child)
+            else:
+                if not set(child.getAxes()).issubset(axes):
+                    self.__updateSingleWave(child)
 
-    def enableAt(self, index):
-        self.enable(self._objs[index])
+    def __updateSingleWave(self, child):
+        if not child.isEnabled():
+            return
+        try:
+            wav = self._makeWave(child.getAxes())
+            child.update(wav)
+        except Exception:
+            import traceback
+            traceback.print_exc()
 
-    def disableAt(self, index):
-        self.disable(self._objs[index])
-
-    def enable(self, obj):
-        i = self._objs.index(obj)
-        self._enabled[i] = True
-
-    def disable(self, obj):
-        i = self._objs.index(obj)
-        self._enabled[i] = False
-
-    def append(self, obj, axes):
-        super().append(obj, axes)
-        self._enabled.append(True)
+    def addWave(self, axes):
+        item = _ChildWave(self._makeWave(axes), axes)
+        self._waves.append(item)
+        self.childWavesChanged.emit()
+        return item.getFilteredWave()
 
     def remove(self, obj):
-        super().remove(obj)
-        if obj in self._objs:
-            i = self._objs.index(obj)
-            self._enabled.pop(i)
+        self._waves.remove(obj)
+        self.childWavesChanged.emit()
 
-    def isEnabled(self, i):
-        if isinstance(i, int):
-            return self._enabled[i]
-        else:
-            return self.isEnabled(self._objs.index(i))
+    def _makeWave(self, axes):
+        wave = self.cui.getFilteredWave()
+        ignored = [ax for ax in axes if not isinstance(ax, str)] + self._freeLineAxes(axes)
+        slices = self._getAxisRangeSlice(wave)
+        for ax in ignored:
+            slices[ax] = slice(None, None, None)
+        sumlist = np.array([i for i in range(wave.ndim) if self.cui.getAxisRangeType(i) == 'range' and i not in ignored])
+        applied = sumlist.tolist()  # summed or integer sliced axes
+        for i in reversed(range(wave.ndim)):
+            if isinstance(slices[i], int):
+                sumlist[sumlist > i] -= 1
+                applied.append(i)
+
+        filters = []
+        filters.append(SliceFilter(slices))
+        if len(sumlist) != 0:
+            filters.append(IntegralAllFilter(sumlist.tolist(), self._sumType))
+        f3 = self.__getFreeLineFilter(axes, applied)
+        if f3 is not None:
+            filters.append(f3)
+        f4 = self.__getTransposeFilter(axes)
+        if f4 is not None:
+            filters.append(f4)
+        res = Filters(filters).execute(wave)
+        if isinstance(res, DaskWave):
+            res = res.compute()
+        return res
+
+    def _freeLineAxes(self, axes):
+        res = []
+        for ax in axes:
+            if isinstance(ax, str):
+                res.extend(self._cui.getFreeLine(ax).getAxes())
+        return res
+
+    def _getAxisRangeSlice(self, wave):
+        result = []
+        for i, r in enumerate(range(wave.ndim)):
+            r = self.cui.getAxisRange(i)
+            if hasattr(r, "__iter__"):
+                p1 = min(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
+                p2 = max(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
+                if p1 < 0:
+                    p1 = 0
+                if p2 < 0:
+                    p2 = p1
+                if p1 > wave.data.shape[i] - 1:
+                    p1 = wave.data.shape[i] - 1
+                if p2 > wave.data.shape[i] - 1:
+                    p2 = wave.data.shape[i] - 1
+                result.append(slice(p1, p2 + 1))
+            else:
+                p = wave.posToPoint(r, i)
+                if p < 0:
+                    p = 0
+                if p > wave.data.shape[i] - 1:
+                    p = wave.data.shape[i] - 1
+                result.append(p)
+        return result
+
+    def __getFreeLineFilter(self, axes_orig, applied):
+        for ax in axes_orig:
+            if isinstance(ax, str):
+                line = self._cui.getFreeLine(ax)
+                axes = list(line.getAxes())
+                for i, ax in enumerate(axes):
+                    for ax2 in applied:
+                        if ax2 < ax:
+                            axes[i] -= 1
+                return line.getFilter(axes)
+        return None
+
+    def __getTransposeFilter(self, axes):
+        if len(axes) == 2 and isinstance(axes[1], str):
+            return TransposeFilter([1, 0])
+        return None
+
+    def getChildWaves(self):
+        return self._waves
 
 
+"""
 class ExecutorList(controlledObjects):
     updated = QtCore.pyqtSignal(tuple)
-
-    def __init__(self):
-        super().__init__()
-        self._enabled = []
-        self._graphs = []
-        self._sumtype = "Mean"
-
-    def setSumType(self, sumtype):
-        self._sumtype = sumtype
-
-    def graphRemoved(self, graph):
-        for i, g in enumerate(self._graphs):
-            if g == graph:
-                self.removeAt(i)
-
-    def append(self, obj, graph=None):
-        super().append(obj, obj.getAxes())
-        self._enabled.append(False)
-        self._graphs.append(graph)
-        obj.updated.connect(self.updated.emit)
-        self.enable(obj)
-
-    def remove(self, obj):
-        obj.updated.disconnect()
-        i = super().remove(obj)
-        if i is not None:
-            self._enabled.pop(i)
-            self._graphs.pop(i)
-        self.updated.emit(tuple(obj.getAxes()))
-        return i
-
-    def enableAt(self, index):
-        self.enable(self._objs[index])
-
-    def enable(self, obj):
-        i = self._objs.index(obj)
-        self._enabled[i] = True
-        if isinstance(obj, FreeLineExecutor):
-            return
-        for o in self._objs:
-            if not o == obj:
-                for ax1 in obj.getAxes():
-                    for ax2 in o.getAxes():
-                        if ax1 == ax2 and not isinstance(o, FreeLineExecutor):
-                            self.disable(o)
-        self.updated.emit(obj.getAxes())
-
-    def setting(self, index, parentWidget=None):
-        self._objs[index].setting(parentWidget)
-
-    def disable(self, obj):
-        i = self._objs.index(obj)
-        self._enabled[i] = False
-        self.updated.emit(obj.getAxes())
-
-    def disableAt(self, index):
-        self.disable(self._objs[index])
-
-    def getFreeLines(self):
-        res = []
-        for o in self._objs:
-            if isinstance(o, FreeLineExecutor):
-                res.append(o)
-        return res
-
-    def isEnabled(self, i):
-        return self._enabled[i]
-
-    def saveEnabledState(self):
-        import copy
-        self._saveEnabled = copy.deepcopy(self._enabled)
-
-    def restoreEnabledState(self):
-        for i, b in enumerate(self._saveEnabled):
-            if b:
-                self.enableAt(i)
-            else:
-                self.disableAt(i)
-
-    def __exeList(self, wave):
-        axes = []
-        res = []
-        for i, e in enumerate(self._objs):
-            if self.isEnabled(i):
-                if not isinstance(e, FreeLineExecutor):
-                    axes.extend(e.getAxes())
-                    res.append(e)
-        for i in range(wave.data.ndim):
-            if i not in axes:
-                res.append(DefaultExecutor(i))
-        return res
-
-    def __findFreeLineExecutor(self, id):
-        for fl in self.getFreeLines():
-            if fl.ID() == id:
-                return fl
 
     def __ignoreList(self, axes):
         ignore = []
@@ -238,50 +259,51 @@ class ExecutorList(controlledObjects):
                 return TransposeFilter([1, 0])
         return EmptyFilter()
 
+"""
 
-class MultiCutCUI(QtCore.QObject):
-    def __init__(self, wave):
+
+class _ChildWave(QtCore.QObject):
+    def __init__(self, wave, axes):
         super().__init__()
-        self._wave = _MultiCutWave(wave)
-        self._wave.filterApplied.connect(self.__filterApplied)
-        self.__filterApplied(wave)
+        self._orig = wave
+        self._filt = wave
+        self._axes = axes
+        self._enabled = True
+        self._post = None
 
-    def __filterApplied(self, wave):
-        self._axesRange = _AxesRangeManager(wave.ndim)
-        self._freeLine = _FreeLineManager()
+    def getAxes(self):
+        return tuple(self._axes)
 
-    def __getattr__(self, key):
-        if "_axesRange" in self.__dict__:
-            if hasattr(self._axesRange, key):
-                return getattr(self._axesRange, key)
-        if "_wave" in self.__dict__:
-            if hasattr(self._wave, key):
-                return getattr(self._wave, key)
-        if "_freeLine" in self.__dict__:
-            if hasattr(self._freeLine, key):
-                return getattr(self._freeLine, key)
-        return super().__getattr__(key)
-
-
-class _MultiCutWave(QtCore.QObject):
-    filterApplied = QtCore.pyqtSignal(object)
-
-    def __init__(self, wave):
-        super().__init__()
-        self._wave = self._filtered = DaskWave(wave, chunks="auto")
-        self._useDask = True
-
-    def applyFilter(self, filt):
-        wave = filt.execute(self._wave)
-        wave.persist()
-        if self._useDask:
-            self._filtered = wave
-        else:
-            self._filtered = wave.compute()
-        self.filterApplied.emit(self._filtered)
+    def getRawWave(self):
+        return self._orig
 
     def getFilteredWave(self):
-        return self._filtered
+        return self._filt
+
+    def setEnabled(self, b):
+        self._enabled = b
+
+    def isEnabled(self):
+        return self._enabled
+
+    def setPostProcess(self, post):
+        self._post = post
+        self.update(self._orig)
+
+    def postProcess(self):
+        return self._post
+
+    def update(self, wave):
+        self._orig = wave
+        post = self.postProcess()
+        if post is not None:
+            wave = post.execute(wave)
+        self._filt.data = wave.data
+        self._filt.axes = wave.axes
+        self._filt.note = wave.note
+
+    def name(self):
+        return self._filt.name
 
 
 class _AxesRangeManager(QtCore.QObject):
@@ -292,6 +314,9 @@ class _AxesRangeManager(QtCore.QObject):
 
     def __init__(self, dim):
         super().__init__()
+        self.reset(dim)
+
+    def reset(self, dim):
         self._ranges = [0] * dim
 
     @avoidCircularReference
@@ -339,13 +364,19 @@ class _AxesRangeManager(QtCore.QObject):
 
 class _FreeLineManager(QtCore.QObject):
     freeLineChanged = QtCore.pyqtSignal()
+    freeLineMoved = QtCore.pyqtSignal(object)
 
     def __init__(self):
         super().__init__()
+        self.clear()
+
+    def clear(self):
         self._fregs = []
+        self.freeLineChanged.emit()
 
     def addFreeLine(self, axes, position=[[0, 0], [1, 1]], width=1):
         obj = _FreeLine(axes, position, width)
+        obj.lineChanged.connect(lambda: self.freeLineMoved.emit(obj))
         self._fregs.append(obj)
         self.freeLineChanged.emit()
         return obj
@@ -356,6 +387,11 @@ class _FreeLineManager(QtCore.QObject):
 
     def getFreeLines(self):
         return self._fregs
+
+    def getFreeLine(self, name):
+        for line in self._fregs:
+            if line.getName() == name:
+                return line
 
 
 class _FreeLine(QtCore.QObject):
@@ -390,3 +426,6 @@ class _FreeLine(QtCore.QObject):
 
     def getWidth(self):
         return self._width
+
+    def getFilter(self, axes):
+        return filters.FreeLineFilter(axes, self._pos, self._width)

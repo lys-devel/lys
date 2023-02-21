@@ -1,244 +1,11 @@
 import numpy as np
 
-from lys import filters, display, Wave, frontCanvas, edit, glb, multicut
-from lys.widgets import lysCanvas, CanvasBase
-from lys.Qt import QtWidgets, QtCore, QtGui
+from lys import Wave, frontCanvas
+from lys.Qt import QtWidgets, QtCore
 
-from ..MultiCutExecutors import PointExecutor, RegionExecutor, FreeLineExecutor
-from ..MultiCut import ExecutorList, SwitchableObjects, controlledObjects
-
-
-class ControlledObjectsModel(QtCore.QAbstractItemModel):
-    def __init__(self, obj):
-        super().__init__()
-        self.obj = obj
-        obj.appended.connect(lambda x: self.layoutChanged.emit())
-        obj.removed.connect(lambda x: self.layoutChanged.emit())
-        self.setHeaderData(0, QtCore.Qt.Horizontal, 'Name')
-        self.setHeaderData(1, QtCore.Qt.Horizontal, 'Axes')
-
-    def data(self, index, role):
-        if not index.isValid() or not role == QtCore.Qt.DisplayRole:
-            return QtCore.QVariant()
-        item = index.internalPointer()
-        if item is not None:
-            if index.column() == 0:
-                if hasattr(item, "name"):
-                    return item.name
-                return item.Name()
-            elif index.column() == 1:
-                return str(item)
-
-    def rowCount(self, parent):
-        if parent.isValid():
-            return 0
-        return len(self.obj)
-
-    def columnCount(self, parent):
-        return 2
-
-    def index(self, row, column, parent):
-        if not parent.isValid():
-            return self.createIndex(row, column, self.obj[row][column])
-        return QtCore.QModelIndex()
-
-    def parent(self, index):
-        return QtCore.QModelIndex()
-
-    def headerData(self, section, orientation, role):
-        if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
-            if section == 0:
-                return "Name"
-            else:
-                return "Axes"
-
-
-class SwitchableModel(ControlledObjectsModel):
-    def data(self, index, role):
-        item = index.internalPointer()
-        if item is not None and role == QtCore.Qt.ForegroundRole:
-            if self.obj.isEnabled(index.row()):
-                return QtGui.QBrush(QtGui.QColor("black"))
-            else:
-                return QtGui.QBrush(QtGui.QColor("gray"))
-        return super().data(index, role)
-
-
-class controlledWavesGUI(QtWidgets.QTreeView):
-    updated = QtCore.pyqtSignal()
-
-    def __init__(self, obj, dispfunc, appendfunc, parent=None):
-        super().__init__(parent)
-        self.obj = obj
-        self.disp = dispfunc
-        self.apnd = appendfunc
-        self.__model = SwitchableModel(obj)
-        self.setModel(self.__model)
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
-
-    def buildContextMenu(self):
-        menu = QtWidgets.QMenu(self)
-        connected = QtWidgets.QMenu("Connected")
-        copied = QtWidgets.QMenu("Copied")
-        menu.addMenu(connected)
-        menu.addMenu(copied)
-
-        connected.addAction(QtWidgets.QAction("Display", self, triggered=self._display))
-        connected.addAction(QtWidgets.QAction("Append", self, triggered=self._append))
-        connected.addAction(QtWidgets.QAction("Edit", self, triggered=self._edit))
-        connected.addAction(QtWidgets.QAction("Send to shell", self, triggered=self._shell))
-        connected.addAction(QtWidgets.QAction("Append as Vector", self, triggered=self._vector))
-        connected.addAction(QtWidgets.QAction("Append as Contour", self, triggered=self._contour))
-
-        copied.addAction(QtWidgets.QAction("Display", self, triggered=lambda: self._display(type="copied")))
-        copied.addAction(QtWidgets.QAction("Append", self, triggered=lambda: self._append(type="copied")))
-        copied.addAction(QtWidgets.QAction("MultiCut", self, triggered=lambda: self._multicut(type="copied")))
-        copied.addAction(QtWidgets.QAction("Edit", self, triggered=lambda: self._edit(type="copied")))
-        copied.addAction(QtWidgets.QAction("Export", self, triggered=lambda: self._export(type="copied")))
-        copied.addAction(QtWidgets.QAction("Send to shell", self, triggered=lambda: self._shell(type="copied")))
-        copied.addAction(QtWidgets.QAction("Append as Vector", self, triggered=lambda: self._vector(type="copied")))
-        copied.addAction(QtWidgets.QAction("Append as Contour", self, triggered=lambda: self._contour(type="copied")))
-
-        menu.addSeparator()
-
-        menu.addAction(QtWidgets.QAction("Enable", self, triggered=self._enable))
-        menu.addAction(QtWidgets.QAction("Disable", self, triggered=self._disable))
-        menu.addAction(QtWidgets.QAction("Remove", self, triggered=self._remove))
-        menu.addAction(QtWidgets.QAction("PostProcess", self, triggered=self._post))
-        menu.exec_(QtGui.QCursor.pos())
-
-    def _getObj(self, type="Connected"):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        res = self.obj[i]
-        if type == "copied":
-            res[0] = res[0].duplicate()
-        return res
-
-    def _display(self, type="Connected"):
-        self.disp(*self._getObj(type))
-
-    def _append(self, type="Connected"):
-        self.apnd(*self._getObj(type))
-
-    def _multicut(self, type="Connected"):
-        multicut(self._getObj(type)[0])
-
-    def _edit(self, type="Connected"):
-        edit(self._getObj(type)[0])
-
-    def _export(self, type="Connected"):
-        filt = ""
-        for f in Wave.SupportedFormats():
-            filt = filt + f + ";;"
-        filt = filt[:len(filt) - 2]
-        path, type = QtWidgets.QFileDialog.getSaveFileName(filter=filt)
-        if len(path) != 0:
-            self._getObj(type)[0].export(path, type=type)
-
-    def _shell(self, type):
-        w = self._getObj(type)[0]
-        text, ok = QtWidgets.QInputDialog.getText(None, "Send to shell", "Enter wave name", text=w.name)
-        if ok:
-            glb.shell().addObject(w, text)
-
-    def _contour(self, type="Connected"):
-        self.apnd(*self._getObj(type), contour=True)
-
-    def _vector(self, type="Connected"):
-        self.selectionModel().selectedIndexes()[0].row()
-        self.apnd(*self._getObj(type), vector=True)
-
-    def _remove(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.obj.removeAt(i)
-
-    def _post(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        w = self.obj[i][0]
-        d = _FiltersDialog(w.data.ndim, self, "Postprocess")
-        if 'MultiCut_PostProcess' in w.note:
-            d.setFilter(filters.fromString(w.note['MultiCut_PostProcess']))
-        if d.exec_():
-            w.note['MultiCut_PostProcess'] = str(d.result)
-            self.updated.emit()
-
-    def _enable(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.obj.enableAt(i)
-
-    def _disable(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.obj.disableAt(i)
-
-    def sizeHint(self):
-        return QtCore.QSize(100, 100)
-
-
-class _FiltersDialog(QtWidgets.QDialog):
-    def __init__(self, dim, parent, title=None):
-        super().__init__(parent)
-        if title is not None:
-            self.setWindowTitle(title)
-        self.filters = filters.FiltersGUI(dim, parent=self)
-
-        self.ok = QtWidgets.QPushButton("O K", clicked=self._ok)
-        self.cancel = QtWidgets.QPushButton("CANCEL", clicked=self.reject)
-        h1 = QtWidgets.QHBoxLayout()
-        h1.addWidget(self.ok)
-        h1.addWidget(self.cancel)
-
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self.filters)
-        layout.addLayout(h1)
-
-        self.setLayout(layout)
-        self.resize(500, 500)
-
-    def _ok(self):
-        self.result = self.filters.GetFilters()
-        self.accept()
-
-    def setFilter(self, filt):
-        self.filters.setFilters(filt)
-
-
-class controlledExecutorsGUI(QtWidgets.QTreeView):
-    def __init__(self, obj, parent=None):
-        super().__init__(parent)
-        self.parent = parent
-        self.obj = obj
-        self.__model = SwitchableModel(obj)
-        self.setModel(self.__model)
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.buildContextMenu)
-
-    def buildContextMenu(self):
-        menu = QtWidgets.QMenu(self)
-        menu.addAction(QtWidgets.QAction("Setting", self, triggered=self._setting))
-        menu.addAction(QtWidgets.QAction("Enable", self, triggered=self._enable))
-        menu.addAction(QtWidgets.QAction("Disable", self, triggered=self._disable))
-        menu.addAction(QtWidgets.QAction("Remove", self, triggered=self._remove))
-        menu.exec_(QtGui.QCursor.pos())
-
-    def _setting(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.obj.setting(i, parentWidget=self.parent.parent.parent)
-
-    def _remove(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.obj.removeAt(i)
-
-    def _enable(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.obj.enableAt(i)
-
-    def _disable(self):
-        i = self.selectionModel().selectedIndexes()[0].row()
-        self.obj.disableAt(i)
-
-    def sizeHint(self):
-        return QtCore.QSize(100, 100)
+from .CanvasManager import CanvasManager
+from .WaveManager import ChildWavesGUI
+from .AxesManager import AxesRangeWidget, FreeLinesWidget
 
 
 class _axisLayout(QtWidgets.QWidget):
@@ -248,25 +15,29 @@ class _axisLayout(QtWidgets.QWidget):
         self._lineids = {}
 
     def __initlayout(self, dim):
-        self.grp1 = QtWidgets.QButtonGroup(self)
-        self.grp2 = QtWidgets.QButtonGroup(self)
         self._btn1 = [QtWidgets.QRadioButton(str(d)) for d in range(dim)]
+        self._btn1.append(QtWidgets.QRadioButton("Line"))
+
         self._btn2 = [QtWidgets.QRadioButton(str(d)) for d in range(dim)]
         self._btn2.insert(0, QtWidgets.QRadioButton("None"))
-        self._btn1.append(QtWidgets.QRadioButton("Line"))
         self._btn2.append(QtWidgets.QRadioButton("Line"))
+
+        self.grp1 = QtWidgets.QButtonGroup(self)
+        self.grp2 = QtWidgets.QButtonGroup(self)
+        for b in self._btn1:
+            self.grp1.addButton(b)
+        for b in self._btn2:
+            self.grp2.addButton(b)
+
         self._cmb1 = QtWidgets.QComboBox()
         self._cmb2 = QtWidgets.QComboBox()
+
         layout = QtWidgets.QGridLayout()
         layout.addWidget(QtWidgets.QLabel("1st Axis"), 0, 0)
         layout.addWidget(QtWidgets.QLabel("2nd Axis"), 1, 0)
         for i, b in enumerate(self._btn1):
-            self.grp1.addButton(b)
-        for i, b in enumerate(self._btn1):
             layout.addWidget(b, 0, i + 2)
         layout.addWidget(self._cmb1, 0, len(self._btn1) + 2)
-        for i, b in enumerate(self._btn2):
-            self.grp2.addButton(b)
         for i, b in enumerate(self._btn2):
             layout.addWidget(b, 1, i + 1)
         layout.addWidget(self._cmb2, 1, len(self._btn2) + 1)
@@ -278,20 +49,17 @@ class _axisLayout(QtWidgets.QWidget):
             for i in range(c.count()):
                 c.removeItem(0)
             for i, l in enumerate(lines):
-                c.addItem(l.Name())
-                if l.Name() == old:
+                c.addItem(l.getName())
+                if l.getName() == old:
                     c.setCurrentIndex(i)
-        self._lineids = {}
-        for item in lines:
-            self._lineids[item.Name()] = item.ID()
 
     def getAxes(self):
         ax1 = self._btn1.index(self.grp1.checkedButton())
         ax2 = self._btn2.index(self.grp2.checkedButton()) - 1
         if ax1 == len(self._btn1) - 1:
-            ax1 = self._lineids[self._cmb1.currentText()]
+            ax1 = self._cmb1.currentText()
         if ax2 == len(self._btn2) - 2:
-            ax2 = self._lineids[self._cmb2.currentText()]
+            ax2 = self._cmb2.currentText()
         if ax2 == -1:
             return (ax1,)
         else:
@@ -308,8 +76,8 @@ class _gridTableWidget(QtWidgets.QTableWidget):
         self.verticalHeader().hide()
         self.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.customContextMenuRequested.connect(self._tableContext)
+        # self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        # self.customContextMenuRequested.connect(self._tableContext)
 
     def _tableContext(self, pos):
         menu = QtWidgets.QMenu(self)
@@ -326,136 +94,20 @@ class _gridTableWidget(QtWidgets.QTableWidget):
         return (np.min(rows), np.min(columns)), (np.max(rows) - np.min(rows) + 1, np.max(columns) - np.min(columns) + 1)
 
 
-class _InteractiveWidget(QtWidgets.QGroupBox):
-    def __init__(self, exe, canvases, parent):
-        super().__init__("Interactive")
-        self.parent = parent
-        self.__exe = exe
-        self.canvases = canvases
-        self.__cut = parent
-        self.__initlayout()
-
-    def __initlayout(self):
-        lx = QtWidgets.QPushButton("Line (X)", clicked=self._linex)
-        ly = QtWidgets.QPushButton("Line (Y)", clicked=self._liney)
-        rx = QtWidgets.QPushButton("Region (X)", clicked=self._regx)
-        ry = QtWidgets.QPushButton("Region (Y)", clicked=self._regy)
-        pt = QtWidgets.QPushButton("Point", clicked=self._point)
-        rt = QtWidgets.QPushButton("Rect", clicked=self._rect)
-        li = QtWidgets.QPushButton("Free Line", clicked=self._line)
-
-        mc = QtWidgets.QComboBox()
-        mc.addItems(["Mean", "Sum", "Median", "Max", "Min"])
-        mc.currentTextChanged.connect(lambda t: self.__exe.setSumType(t))
-
-        grid = QtWidgets.QGridLayout()
-        grid.addWidget(lx, 0, 0)
-        grid.addWidget(ly, 0, 1)
-        grid.addWidget(rx, 1, 0)
-        grid.addWidget(ry, 1, 1)
-        grid.addWidget(pt, 2, 0)
-        grid.addWidget(rt, 2, 1)
-        grid.addWidget(li, 3, 0)
-        grid.addWidget(mc, 4, 0)
-
-        elist = controlledExecutorsGUI(self.__exe, self)
-        hbox = QtWidgets.QHBoxLayout()
-        hbox.addLayout(grid)
-        hbox.addWidget(elist)
-        self.setLayout(hbox)
-
-    def _getTargetCanvas(self):
-        return self.__cut.getTargetCanvas()
-
-    def _point(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        crs = c.addCrossAnnotation()
-        e = PointExecutor(self.canvases.getAxes(c), pos=crs.getPosition())
-        crs.positionChanged.connect(e.setPosition)
-        e.updated.connect(lambda x: crs.setPosition(e.getPosition()))
-        self.__exe.append(e, c)
-
-    def _rect(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        rect = c.addRectAnnotation()
-        e = RegionExecutor(self.canvases.getAxes(c), range=rect.getRegion())
-        rect.regionChanged.connect(e.setRange)
-        e.updated.connect(lambda x: rect.setRegion(e.getRange()))
-        self.__exe.append(e, c)
-
-    def _line(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        reg = c.addFreeRegionAnnotation()
-        e = FreeLineExecutor(self.canvases.getAxes(c), pos=reg.getRegion(), width=reg.getWidth())
-        reg.regionChanged.connect(e.setPosition)
-        reg.widthChanged.connect(e.setWidth)
-        e.updated.connect(lambda x: [reg.setRegion(e.getPosition()), reg.setWidth(e.getWidth())])
-        self.__exe.append(e, c)
-
-    def _regx(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        reg = c.addRegionAnnotation()
-        e = RegionExecutor(self.canvases.getAxes(c)[0], range=reg.getRegion())
-        reg.regionChanged.connect(e.setRange)
-        e.updated.connect(lambda x: reg.setRegion(e.getRange()[0]))
-        self.__exe.append(e, c)
-
-    def _regy(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        reg = c.addRegionAnnotation(orientation="horizontal")
-        e = RegionExecutor(self.canvases.getAxes(c)[1], range=reg.getRegion())
-        reg.regionChanged.connect(e.setRange)
-        e.updated.connect(lambda x: reg.setRegion(e.getRange()[0]))
-        self.__exe.append(e, c)
-
-    def _linex(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        line = c.addInfiniteLineAnnotation()
-        e = PointExecutor(self.canvases.getAxes(c)[0], pos=line.getPosition())
-        line.positionChanged.connect(e.setPosition)
-        e.updated.connect(lambda x: line.setPosition(e.getPosition()[0]))
-        self.__exe.append(e, c)
-
-    def _liney(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        line = c.addInfiniteLineAnnotation(orientation='horizontal')
-        e = PointExecutor(self.canvases.getAxes(c)[1], pos=line.getPosition())
-        line.positionChanged.connect(e.setPosition)
-        e.updated.connect(lambda x: line.setPosition(e.getPosition()[0]))
-        self.__exe.append(e, c)
-
-
-class CutTab(QtWidgets.QWidget):
-    def __init__(self, parent, grid):
+class CutTab(QtWidgets.QTabWidget):
+    def __init__(self, cui, parent, grid):
         super().__init__()
+        self._cui = cui
         self.parent = parent
         self.grid = grid
-        self.grid.setSize(4)
+        self._can = CanvasManager(cui)
 
-        self.__exe = ExecutorList()
-        self.__exe.updated.connect(self.update)
-        self.__exe.appended.connect(lambda: self.ax.updateLines(self.__exe.getFreeLines()))
-        self.__exe.removed.connect(lambda: self.ax.updateLines(self.__exe.getFreeLines()))
-
-        self.waves = SwitchableObjects()
-        self.canvases = controlledObjects()
-        self.canvases.removed.connect(self.__exe.graphRemoved)
         self.__initlayout__()
-        self.ax = _axisLayout(2)
-        self._make.insertWidget(1, self.ax)
-        self.wave = None
+        self.__resetLayout(init=True)
+        self._cui.dimensionChanged.connect(lambda: self.__resetLayout())
 
     def __initlayout__(self):
-        self.wlist = controlledWavesGUI(self.waves, self.display, self.append)
-        self.wlist.updated.connect(self.update)
-
+        self.wlist = ChildWavesGUI(self._cui, self.display)
         self._table = _gridTableWidget(4)
         self._usegraph = QtWidgets.QCheckBox("Use Graph")
         v1 = QtWidgets.QVBoxLayout()
@@ -466,13 +118,10 @@ class CutTab(QtWidgets.QWidget):
         h1.addWidget(self.wlist, 2)
         h1.addLayout(v1, 1)
 
-        disp = QtWidgets.QPushButton("Display", clicked=self.display)
-        make = QtWidgets.QPushButton("Make", clicked=self.make)
-        typ = QtWidgets.QPushButton("Typical", clicked=self.typical)
         hbox = QtWidgets.QHBoxLayout()
-        hbox.addWidget(make)
-        hbox.addWidget(disp)
-        hbox.addWidget(typ)
+        hbox.addWidget(QtWidgets.QPushButton("Make", clicked=self.make))
+        hbox.addWidget(QtWidgets.QPushButton("Display", clicked=self.display))
+        hbox.addWidget(QtWidgets.QPushButton("Typical", clicked=self.typical))
 
         self._make = QtWidgets.QVBoxLayout()
         self._make.addLayout(h1)
@@ -481,90 +130,65 @@ class CutTab(QtWidgets.QWidget):
         make = QtWidgets.QGroupBox("Waves")
         make.setLayout(self._make)
 
-        self._int = _InteractiveWidget(self.__exe, self.canvases, self)
+        self._int = self._can.widget()
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.addWidget(make, 1)
         self.layout.addWidget(self._int, 1)
         self.layout.addStretch()
+        w = QtWidgets.QWidget()
+        w.setLayout(self.layout)
 
-        self.setLayout(self.layout)
+        self.addTab(w, "Main")
+        self.addTab(AxesRangeWidget(self._cui), "Range")
+        self.addTab(FreeLinesWidget(self._cui), "Lines")
 
-    def _setWave(self, wave):
-        old = self.wave
-        self.wave = wave
-        if old is None:
-            self.__resetLayout()
-            return
-        if old.data.ndim != wave.data.ndim:
-            self.__resetLayout()
-            return
-        self.update()
-
-    def __resetLayout(self):
-        if self.ax is not None:
-            self._make.removeWidget(self.ax)
-            self.ax.deleteLater()
-        self.ax = _axisLayout(self.wave.data.ndim)
-        self._make.insertWidget(1, self.ax)
-        self.waves.clear()
-        self.canvases.clear()
-        self.__exe.clear()
+    def __resetLayout(self, init=False):
+        if not init:
+            self._make.removeWidget(self._ax)
+            self._ax.deleteLater()
+        self._ax = _axisLayout(self._cui.getFilteredWave().ndim)
+        self._make.insertWidget(1, self._ax)
+        self._cui.freeLineChanged.connect(lambda: self._ax.updateLines(self._cui.getFreeLines()))
         self.adjustSize()
 
     def make(self, axes=None):
         if not hasattr(axes, "__iter__"):
-            if self.ax is None:
-                return
-            ax = self.ax.getAxes()
+            ax = self._ax.getAxes()
         else:
             ax = axes
-        if len(ax) in [1, 2]:
-            w = self.__exe.makeWave(self.wave, ax)
-            self.waves.append(w, ax)
-            return w
-        else:
-            return None
+        w = self._cui.addWave(ax)
+        return w
 
     def display(self, wave=None, axes=None, pos=None, wid=None):
-        if not hasattr(axes, "__iter__"):
-            ax = self.ax.getAxes()
-        else:
-            ax = axes
-        if not isinstance(wave, Wave):
-            w = self.make(ax)
-        else:
-            w = wave
-        if w is not None:
-            if self._usegraph.isChecked():
-                g = display(w)
-                self.canvases.append(g.canvas, ax)
-                g.canvas.clicked.connect(lambda e: self._gridClicked(g.canvas))
-                return g.canvas
-            else:
-                if self.getTargetCanvas() is not None:
-                    msgBox = QtWidgets.QMessageBox(parent=self)
-                    msgBox.setText("There is a graph at this position. Do you really want to proceed?")
-                    msgBox.addButton(QtWidgets.QMessageBox.Yes)
-                    graph = msgBox.addButton("Use Graph", QtWidgets.QMessageBox.ActionRole)
-                    no = msgBox.addButton(QtWidgets.QMessageBox.No)
-                    msgBox.exec_()
-                    if msgBox.clickedButton() == no:
-                        return
-                    elif msgBox.clickedButton() == graph:
-                        self._usegraph.setChecked(True)
-                        return self.display(wave, axes, pos, wid)
-                if pos is None or wid is None:
-                    pos, wid = self._table.getGridPos()
-                c = lysCanvas(lib="pyqtgraph")
-                c.Append(w)
-                c.keyPressed.connect(self.parent.keyPress)
-                self.canvases.append(c, ax)
-                c.clicked.connect(lambda e: self._gridClicked(c))
-                self.grid.Append(c, *pos, *wid)
-                return c
+        ax = axes if hasattr(axes, "__iter__") else self._ax.getAxes(c)
+        w = wave if isinstance(wave, Wave) else self.make(axes)
 
-    def _gridClicked(self, canvas):
+        if self._usegraph.isChecked():
+            c = self._can.createCanvas(ax, graph=True)
+        else:
+            if pos is None or wid is None:
+                pos, wid = self._table.getGridPos()
+            if self.grid.itemAtPosition(*pos) is not None:
+                msgBox = QtWidgets.QMessageBox(parent=self, text="There is a graph at this position. Do you really want to proceed?")
+                msgBox.addButton(QtWidgets.QMessageBox.Yes)
+                no = msgBox.addButton(QtWidgets.QMessageBox.No)
+                graph = msgBox.addButton("Use Graph", QtWidgets.QMessageBox.ActionRole)
+                msgBox.exec_()
+                if msgBox.clickedButton() == no:
+                    return
+                elif msgBox.clickedButton() == graph:
+                    self._usegraph.setChecked(True)
+                    return self.display(w, axes, pos, wid)
+            c = self._can.createCanvas(ax, lib="pyqtgraph")
+            c.keyPressed.connect(self.parent.keyPress)
+            self.grid.Append(c, *pos, *wid)
+        c.clicked.connect(self._gridClicked)
+        c.Append(w)
+        return c
+
+    def _gridClicked(self):
+        canvas = frontCanvas()
         b = False
         for i in range(4):
             for j in range(4):
@@ -575,66 +199,15 @@ class CutTab(QtWidgets.QWidget):
                     self._table.setCurrentCell(i, j, QtCore.QItemSelectionModel.Deselect)
         self._usegraph.setChecked(not b)
 
-    def append(self, wave, axes, **kwargs):
-        c = self.getTargetCanvas()
-        if not self._usegraph.isChecked():
-            msgBox = QtWidgets.QMessageBox(parent=self)
-            msgBox.setText("The wave will be appended in MultiCut grid. Do you really want to proceed?")
-            msgBox.addButton(QtWidgets.QMessageBox.Yes)
-            graph = msgBox.addButton("Use Graph", QtWidgets.QMessageBox.ActionRole)
-            no = msgBox.addButton(QtWidgets.QMessageBox.No)
-            msgBox.exec_()
-            if msgBox.clickedButton() == no:
-                return
-            elif msgBox.clickedButton() == graph:
-                self._usegraph.setChecked(True)
-                c = self.getTargetCanvas()
-        c.Append(wave, **kwargs)
-
-    def getTargetCanvas(self):
-        if self._usegraph.isChecked():
-            return frontCanvas()
-        else:
-            pos, wid = self._table.getGridPos()
-            return self.grid.itemAtPosition(*pos)
-
-    def update(self, index=None):
-        for w, axs in self.waves.getObjectsAndAxes():
-            if index is None:
-                self.__updateSingleWave(w, axs)
-                continue
-            elif index[0] < 10000:
-                if not set(index).issubset(axs):
-                    self.__updateSingleWave(w, axs)
-            else:
-                if index[0] in axs:
-                    self.__updateSingleWave(w, axs)
-
-    def __updateSingleWave(self, w, axs):
-        if not self.waves.isEnabled(w):
-            return
-        try:
-            wav = self.__exe.makeWave(self.wave, axs)
-            if "MultiCut_PostProcess" in w.note:
-                fstr = w.note["MultiCut_PostProcess"]
-                filt = filters.fromString(fstr)
-                wav = filt.execute(wav)
-                wav.note["MultiCut_PostProcess"] = fstr
-            w.axes = wav.axes
-            w.data = wav.data
-            w.note = wav.note
-        except Exception:
-            import traceback
-            traceback.print_exc()
-
     def typical(self):
-        if self.wave.data.ndim == 2:
+        dim = self._cui.getFilteredWave().ndim
+        if dim == 2:
             self.typical2d()
-        if self.wave.data.ndim == 3:
+        if dim == 3:
             self.typical3d()
-        if self.wave.data.ndim == 4:
+        if dim == 4:
             self.typical4d()
-        if self.wave.data.ndim == 5:
+        if dim == 5:
             self.typical5d()
 
     def typical2d(self):
@@ -659,9 +232,3 @@ class CutTab(QtWidgets.QWidget):
         self._int._rect(c1)
         self._int._rect(c2)
         self._int._linex(c3)
-
-    def getExecutorList(self):
-        return self.__exe
-
-    def findAxisFromCanvas(self, canvas):
-        return self.canvases.getAxes(canvas)
