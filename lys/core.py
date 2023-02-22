@@ -296,6 +296,49 @@ class WaveAxes(list):
             else:
                 self.append(self.__createValidAxis(None, d))
 
+    @ property
+    def x(self):
+        """
+        Shortcut to axes[0]
+
+        Example::
+
+            from lys import Wave
+            w = Wave([1,2,3], [1,2,3])
+            w.x
+            # [1,2,3]
+            w.x = [3,4,5]
+            w.x
+            # [3,4,5]
+        """
+        return self.getAxis(0)
+
+    @ x.setter
+    def x(self, value):
+        self[0] = value
+
+    @ property
+    def y(self):
+        """
+        Shortcut to axes[1]. See :attr:`x`
+        """
+        return self.getAxis(1)
+
+    @ y.setter
+    def y(self, value):
+        self[1] = value
+
+    @ property
+    def z(self):
+        """ 
+        Shortcut to axes[2]. See :attr:`x`
+        """
+        return self.getAxis(2)
+
+    @ z.setter
+    def z(self, value):
+        self[2] = value
+
 
 class _WaveNoteDescriptor:
     """
@@ -370,59 +413,7 @@ def _produceWave(data, axes, note):
     return Wave(data, *axes, **note)
 
 
-class WaveBase(QtCore.QObject):
-    """
-    Base class of :class:`Wave` and :class:`DaskWave`.
-
-    This class implement some useful shortcuts to functionarities of :class:`Wave` and :class:`DaskWave`.
-
-    """
-
-    @ property
-    def x(self):
-        """
-        Shortcut to axes[0]
-
-        Example::
-
-            from lys import Wave
-            w = Wave([1,2,3], [1,2,3])
-            w.x
-            # [1,2,3]
-            w.x = [3,4,5]
-            w.x
-            # [3,4,5]
-        """
-        return self.getAxis(0)
-
-    @ x.setter
-    def x(self, value):
-        self.axes[0] = value
-
-    @ property
-    def y(self):
-        """
-        Shortcut to axes[1]. See :attr:`x`
-        """
-        return self.getAxis(1)
-
-    @ y.setter
-    def y(self, value):
-        self.axes[1] = value
-
-    @ property
-    def z(self):
-        """ 
-        Shortcut to axes[2]. See :attr:`x`
-        """
-        return self.getAxis(2)
-
-    @ z.setter
-    def z(self, value):
-        self.axes[2] = value
-
-
-class Wave(WaveBase):
+class Wave(QtCore.QObject):
     """
     Wave class is a central data class in lys, which is composed of :attr:`data`, :attr:`axes`, and :attr:`note`.
 
@@ -564,6 +555,15 @@ class Wave(WaveBase):
             if hasattr(self.note, key):
                 return getattr(self.note, key)
         return super().__getattr__(key)
+
+    def __setattr__(self, key, value):
+        if "_axes" in self.__dict__:
+            if hasattr(self.axes, key):
+                return setattr(self.axes, key, value)
+        if "_note" in self.__dict__:
+            if hasattr(self.note, key):
+                return setattr(self.note, key, value)
+        return super().__setattr__(key, value)
 
     def __reduce_ex__(self, proto):
         return _produceWave, (self.data, list(self.axes), self.note)
@@ -727,7 +727,7 @@ class _DaskWaveDataDescriptor:
         return instance._data
 
 
-class DaskWave(WaveBase):
+class DaskWave(QtCore.QObject):
     """
     *DaskWave* class is a central data class in lys, which is used for easy parallel computing via dask.
 
@@ -856,6 +856,15 @@ class DaskWave(WaveBase):
             if hasattr(self.data, key):
                 return getattr(self.data, key)
         return super().__getattr__(key)
+
+    def __setattr__(self, key, value):
+        if "_axes" in self.__dict__:
+            if hasattr(self.axes, key):
+                return setattr(self.axes, key, value)
+        if "_note" in self.__dict__:
+            if hasattr(self.note, key):
+                return setattr(self.note, key, value)
+        return super().__setattr__(key, value)
 
     def compute(self):
         """
