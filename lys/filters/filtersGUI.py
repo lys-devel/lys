@@ -97,7 +97,7 @@ class FiltersGUI(QtWidgets.QTreeWidget):
             self.insertTopLevelItem(index, item)
 
     def __getDimension(self, index=-1):
-        dims = [f.getRelativeDimension() for f in self.GetFilters().getFilters()]
+        dims = [f.getRelativeDimension() for f in self.getFilters().getFilters()]
         if index == -1:
             return self.dim + int(np.sum(dims))
         else:
@@ -140,7 +140,7 @@ class FiltersGUI(QtWidgets.QTreeWidget):
                 wid.dimensionChanged.connect(self._update)
             dim += w.GetFilter().getRelativeDimension()
 
-    def GetFilters(self):
+    def getFilters(self):
         """
         Get filters based on the current state of the GUI.
 
@@ -168,7 +168,7 @@ class FiltersGUI(QtWidgets.QTreeWidget):
         self._update()
 
     def __copy(self):
-        filt = self.GetFilters()
+        filt = self.getFilters()
         filt.dimension = self.dim
         filt.saveAsFile(".lys/quickFilter.fil")
 
@@ -181,7 +181,7 @@ class FiltersGUI(QtWidgets.QTreeWidget):
         if len(path) != 0:
             if not path.endswith(".fil"):
                 path = path + ".fil"
-            filt = self.GetFilters()
+            filt = self.getFilters()
             filt.dimension = self.dim
             filt.saveAsFile(path)
 

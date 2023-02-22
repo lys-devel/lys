@@ -206,6 +206,15 @@ class Filters(FilterInterface):
     def getRelativeDimension(self):
         return sum([f.getRelativeDimension() for f in self._filters])
 
+    def isEmpty(self):
+        """
+        Check if the filter is empty.
+
+        Returns:
+            bool: True if the filter is empty.
+        """
+        return len(self._filters) == 0
+
     def __str__(self):
         result = []
         for f in self._filters:

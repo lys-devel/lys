@@ -27,10 +27,10 @@ class PrefilterTab(QtWidgets.QWidget):
         self.adjustSize()
 
     def _update(self):
-        dim = self._filt.GetFilters().getRelativeDimension()
+        dim = self._filt.getFilters().getRelativeDimension()
         if self._dim != dim:
             ret = QtWidgets.QMessageBox.information(self, "Caution", "The dimension of the processed wave will be changed and the graphs will be disconnected. Do you really want to proceed?", QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
             if ret == QtWidgets.QMessageBox.No:
                 return
         self._dim = dim
-        self.filterApplied.emit(self._filt.GetFilters())
+        self.filterApplied.emit(self._filt.getFilters())

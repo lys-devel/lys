@@ -1,6 +1,6 @@
 
 from lys.Qt import QtWidgets, QtCore, QtGui
-from lys.widgets import LysSubWindow
+from lys.widgets import LysSubWindow, CanvasBase
 
 from .MultiCut import MultiCutCUI
 from .MultiCutGUIs import CutTab, AnimationTab, PrefilterTab, ExportDataTab
@@ -27,22 +27,56 @@ class _MultipleGrid(LysSubWindow):
         w = QtWidgets.QWidget()
         w.setLayout(self.layout)
         self._overlay = _GridOverlay(w)
-        self.startSelection = self._overlay.startSelection
-        self.selected = self._overlay.selected
+        self._overlay.selected.connect(self._selected)
+        self._overlay.canceled.connect(self._canceled)
         self.resized.connect(lambda: self._overlay.resize(w.size()))
         self.resized.connect(lambda: self._overlay.raise_())
         self.setWidget(w)
 
-    def Append(self, widget, x, y, w, h):
-        for i in range(x, x + w):
-            for j in range(y, y + h):
-                wid = self.itemAtPosition(i, j)
-                if wid is not None:
-                    self.layout.removeWidget(wid)
-                    wid.deleteLater()
-                    wid.finalize()
+    def append(self, widget, pos=None, wid=None):
+        if pos is None or wid is None:
+            self.raise_()
+            self.__widget = widget
+            self._overlay.raise_()
+            self._overlay.startSelection()
+            return
+        for i in range(pos[0], pos[0] + wid[0]):
+            for j in range(pos[1], pos[1] + wid[1]):
+                w = self.itemAtPosition(i, j)
+                if w is not None:
+                    self.layout.removeWidget(widget)
+                    w.deleteLater()
+                    if isinstance(w, CanvasBase):
+                        w.finalize()
         widget.keyPressed.connect(self.keyPress)
-        self.layout.addWidget(widget, x, y, w, h)
+        self.layout.addWidget(widget, pos[0], pos[1], wid[0], wid[1])
+
+    def _selected(self, obj):
+        pos, end = obj
+        wid = end[0] - pos[0] + 1, end[1] - pos[1] + 1
+        for i in range(pos[0], pos[0] + wid[0]):
+            for j in range(pos[1], pos[1] + wid[1]):
+                if self.itemAtPosition(i, j) is not None:
+                    msgBox = QtWidgets.QMessageBox(parent=self, text="There is a graph at this position. Do you really want to proceed?")
+                    yes = msgBox.addButton(QtWidgets.QMessageBox.Yes)
+                    no = msgBox.addButton(QtWidgets.QMessageBox.No)
+                    cancel = msgBox.addButton(QtWidgets.QMessageBox.Cancel)
+                    msgBox.exec_()
+                    if msgBox.clickedButton() == yes:
+                        self._overlay.lower()
+                        return self.append(self.__widget, pos, wid)
+                    if msgBox.clickedButton() == no:
+                        return self._canceled()
+                    elif msgBox.clickedButton() == cancel:
+                        self._overlay.raise_()
+                        return self._overlay.startSelection()
+        self._overlay.lower()
+        self.append(self.__widget, pos, wid)
+
+    def _canceled(self):
+        if isinstance(self.__widget, CanvasBase):
+            self.__widget.finalize()
+            self.__widget = None
 
     def setSize(self, size):
         for s in range(size):
@@ -63,6 +97,7 @@ class _MultipleGrid(LysSubWindow):
 
 class _GridOverlay(QtWidgets.QWidget):
     selected = QtCore.pyqtSignal(object)
+    canceled = QtCore.pyqtSignal()
 
     def __init__(self, parent):
         super().__init__(parent=parent)
@@ -70,27 +105,29 @@ class _GridOverlay(QtWidgets.QWidget):
         self.setStyleSheet("background-color: transparent;")
         self.resize(parent.size())
         self.__started = False
+        self.__paint = False
         self.show()
 
     def startSelection(self):
         self.__started = True
+        self.__paint = True
         self.__p1 = (-1, -1)
         self.__p2 = (-1, -1)
         self.resize(self.parentWidget().size())
-        self.raise_()
         self.repaint()
 
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
-        if self.__started:
-            b1 = QtGui.QBrush(QtGui.QColor(255, 69, 0, 128))
-            b2 = QtGui.QBrush(QtGui.QColor(0, 0, 0, 128))
+        if self.__paint:
+            c1 = QtGui.QBrush(QtGui.QColor(255, 69, 0, 128))
+            c2 = QtGui.QBrush(QtGui.QColor(0, 0, 0, 128))
+            painter.setRenderHint(QtGui.QPainter.Antialiasing)
             for i in range(4):
                 for j in range(4):
                     x = min(self.__p1[0], self.__p2[0]) <= i <= max(self.__p1[0], self.__p2[0])
                     y = min(self.__p1[1], self.__p2[1]) <= j <= max(self.__p1[1], self.__p2[1])
-                    painter.drawRect(self.width() / 4 * i, self.height() / 4 * j, self.width() / 4 * (i + 1), self.height() / 4 * (j + 1))
-                    painter.fillRect(self.width() / 4 * i, self.height() / 4 * j, self.width() / 4, self.height() / 4, b1 if x and y else b2)
+                    painter.setBrush(c1 if x and y else c2)
+                    painter.drawRect(self.width() / 4.0 * i, self.height() / 4.0 * j, self.width() / 4.0, self.height() / 4.0)
 
     def __calcPosition(self, event):
         x, y = event.x(), event.y()
@@ -98,11 +135,14 @@ class _GridOverlay(QtWidgets.QWidget):
 
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)
-        self.__started = False
-        print(self.__p1, self.__p2)
-        self.selected.emit((self.__p1, self.__p2))
-        self.lower()
-        self.repaint()
+        if self.__started:
+            self.__started = False
+            p1 = min(self.__p1[1], self.__p2[1]), min(self.__p1[0], self.__p2[0])
+            p2 = max(self.__p1[1], self.__p2[1]), max(self.__p1[0], self.__p2[0])
+            self.selected.emit((p1, p2))
+            if not self.__started:
+                self.__paint = False
+            self.repaint()
 
     def mousePressEvent(self, event):
         super().mouseReleaseEvent(event)

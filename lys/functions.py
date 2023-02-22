@@ -147,7 +147,7 @@ def multicut(data):
         data(Wave or DaskWave or arraylike): The data to be analyzed.
     """
     from .Analysis import MultiCut
-    return MultiCut(data)
+    MultiCut(data)
 
 
 def frontCanvas(exclude=[]):

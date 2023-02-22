@@ -261,7 +261,7 @@ class FiltersDialog(LysSubWindow):
         self.resize(500, 500)
 
     def _ok(self):
-        filt = self.filters.GetFilters()
+        filt = self.filters.getFilters()
         if filt.getRelativeDimension() != 0:
             QtWidgets.QMessageBox.information(self, "Information", "You cannot aplly filters that changes dimension of data in Graph process. Use MultiCut instead.", QtWidgets.QMessageBox.Yes)
         else:
@@ -274,7 +274,7 @@ class FiltersDialog(LysSubWindow):
         self.close()
 
     def _apply(self):
-        filt = self.filters.GetFilters()
+        filt = self.filters.getFilters()
         if filt.getRelativeDimension() != 0:
             QtWidgets.QMessageBox.information(self, "Information", "You cannot aplly filters that changes dimension of data in Graph process. Use MultiCut instead.", QtWidgets.QMessageBox.Yes)
         else:

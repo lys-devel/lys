@@ -149,5 +149,5 @@ class _FiltersDialog(QtWidgets.QDialog):
         self.resize(500, 500)
 
     def _ok(self):
-        self.result = self.filters.GetFilters()
+        self.result = self.filters.getFilters()
         self.accept()

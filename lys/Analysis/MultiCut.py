@@ -114,8 +114,8 @@ class _ChildWaves(QtCore.QObject):
             import traceback
             traceback.print_exc()
 
-    def addWave(self, axes):
-        item = _ChildWave(self._makeWave(axes), axes)
+    def addWave(self, axes, filter=None):
+        item = _ChildWave(self._makeWave(axes), axes, filter)
         self._waves.append(item)
         self.childWavesChanged.emit()
         return item.getFilteredWave()
@@ -206,13 +206,16 @@ class _ChildWaves(QtCore.QObject):
 
 
 class _ChildWave(QtCore.QObject):
-    def __init__(self, wave, axes):
+    def __init__(self, wave, axes, filter=None):
         super().__init__()
         self._orig = wave
-        self._filt = wave
+        if filter is None:
+            self._filt = wave
+        else:
+            self._filt = filter.execute(wave)
         self._axes = axes
         self._enabled = True
-        self._post = None
+        self._post = filter
 
     def getAxes(self):
         return tuple(self._axes)
