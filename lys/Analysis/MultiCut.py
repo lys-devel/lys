@@ -114,11 +114,14 @@ class _ChildWaves(QtCore.QObject):
             import traceback
             traceback.print_exc()
 
-    def addWave(self, axes, filter=None):
-        item = _ChildWave(self._makeWave(axes), axes, filter)
+    def addWave(self, axes, filter=None, name=None):
+        w = self._makeWave(axes)
+        if name is not None:
+            w.name = name
+        item = _ChildWave(w, axes, filter)
         self._waves.append(item)
         self.childWavesChanged.emit()
-        return item.getFilteredWave()
+        return item
 
     def remove(self, obj):
         self._waves.remove(obj)

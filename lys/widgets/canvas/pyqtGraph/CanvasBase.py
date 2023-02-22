@@ -100,5 +100,5 @@ class _dragHelper:
     def __init__(self, obj):
         self._obj = weakref.ref(obj)
 
-    def onDrag(self, event):
+    def onDrag(self, event, *args, **kwargs):
         event.accept()

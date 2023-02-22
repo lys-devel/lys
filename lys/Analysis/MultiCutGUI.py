@@ -3,6 +3,7 @@ from lys.Qt import QtWidgets, QtCore, QtGui
 from lys.widgets import LysSubWindow, CanvasBase
 
 from .MultiCut import MultiCutCUI
+from .CanvasManager import CanvasManager
 from .MultiCutGUIs import CutTab, AnimationTab, PrefilterTab, ExportDataTab
 
 
@@ -30,7 +31,6 @@ class _MultipleGrid(LysSubWindow):
         self._overlay.selected.connect(self._selected)
         self._overlay.canceled.connect(self._canceled)
         self.resized.connect(lambda: self._overlay.resize(w.size()))
-        self.resized.connect(lambda: self._overlay.raise_())
         self.setWidget(w)
 
     def append(self, widget, pos=None, wid=None):
@@ -44,10 +44,11 @@ class _MultipleGrid(LysSubWindow):
             for j in range(pos[1], pos[1] + wid[1]):
                 w = self.itemAtPosition(i, j)
                 if w is not None:
-                    self.layout.removeWidget(widget)
+                    self.layout.removeWidget(w)
                     w.deleteLater()
                     if isinstance(w, CanvasBase):
                         w.finalize()
+        self.__widget = None
         widget.keyPressed.connect(self.keyPress)
         self.layout.addWidget(widget, pos[0], pos[1], wid[0], wid[1])
 
@@ -148,6 +149,7 @@ class _GridOverlay(QtWidgets.QWidget):
         super().mouseReleaseEvent(event)
         if self.__started:
             self.__p1 = self.__calcPosition(event)
+            self.__p2 = self.__calcPosition(event)
 
     def mouseMoveEvent(self, event):
         super().mouseReleaseEvent(event)
@@ -188,7 +190,14 @@ class MultiCut(_GridAttachedWindow):
     def __init__(self, wave):
         super().__init__("Multi-dimensional data analysis")
         self._cui = MultiCutCUI(wave)
+        self._can = CanvasManager(self._cui)
         self.__initlayout__()
+
+    def __getattr__(self, key):
+        if "_can" in self.__dict__:
+            if hasattr(self._can, key):
+                return getattr(self._can, key)
+        return super().__getattr__(key)
 
     def __exportTab(self):
         self._ani = AnimationTab(self._cui)
@@ -205,7 +214,7 @@ class MultiCut(_GridAttachedWindow):
     def __initlayout__(self):
         self._pre = PrefilterTab(self._cui)
         self._pre.filterApplied.connect(self._cui.applyFilter)
-        self._cut = CutTab(self._cui, self.grid)
+        self._cut = CutTab(self._cui, self)
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(self._pre, "Prefilter")
@@ -214,3 +223,12 @@ class MultiCut(_GridAttachedWindow):
 
         self.setWidget(tab)
         self.adjustSize()
+
+    def display(self, wave, type="grid", pos=None, wid=None):
+        if type == "graph":
+            c = self._can.createCanvas(wave.getAxes(), graph=True)
+        else:
+            c = self._can.createCanvas(wave.getAxes(), lib="pyqtgraph")
+            self.grid.append(c, pos, wid)
+        c.Append(wave.getFilteredWave())
+        return c

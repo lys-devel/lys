@@ -1,4 +1,4 @@
-from lys import filters, Wave, edit, glb, multicut, append
+from lys import filters, Wave, edit, glb, multicut, append, display
 from lys.Qt import QtWidgets, QtCore, QtGui
 
 
@@ -66,21 +66,22 @@ class ChildWavesGUI(QtWidgets.QTreeView):
         menu.addMenu(connected)
         menu.addMenu(copied)
 
-        connected.addAction(QtWidgets.QAction("Display", self, triggered=lambda: self.__disp(*self._getObj())))
-        connected.addAction(QtWidgets.QAction("Append", self, triggered=lambda: append(self._getObj()[0])))
-        connected.addAction(QtWidgets.QAction("Edit", self, triggered=lambda: edit(self._getObj()[0])))
+        connected.addAction(QtWidgets.QAction("Display in grid", self, triggered=lambda: self.__disp(self._getItem())))
+        connected.addAction(QtWidgets.QAction("Display as graph", self, triggered=lambda: self.__disp(self._getItem(), type="graph")))
+        connected.addAction(QtWidgets.QAction("Append", self, triggered=lambda: append(self._getObj())))
+        connected.addAction(QtWidgets.QAction("Edit", self, triggered=lambda: edit(self._getObj())))
         connected.addAction(QtWidgets.QAction("Send to shell", self, triggered=self._shell))
-        connected.addAction(QtWidgets.QAction("Append as Vector", self, triggered=lambda: self.apnd(self._getObj()[0], vector=True)))
-        connected.addAction(QtWidgets.QAction("Append as Contour", self, triggered=lambda: self.apnd(self._getObj()[0], contour=True)))
+        connected.addAction(QtWidgets.QAction("Append as Vector", self, triggered=lambda: self.apnd(self._getObj(), vector=True)))
+        connected.addAction(QtWidgets.QAction("Append as Contour", self, triggered=lambda: self.apnd(self._getObj(), contour=True)))
 
-        copied.addAction(QtWidgets.QAction("Display", self, triggered=lambda: self.__disp(*self._getObj("copied"))))
-        copied.addAction(QtWidgets.QAction("Append", self, triggered=lambda: append(self._getObj("copied")[0])))
-        copied.addAction(QtWidgets.QAction("MultiCut", self, triggered=lambda: multicut(self._getObj("copied")[0])))
-        copied.addAction(QtWidgets.QAction("Edit", self, triggered=lambda: edit(self._getObj("copied")[0])))
-        copied.addAction(QtWidgets.QAction("Export", self, triggered=lambda: self._export(type="copied")[0]))
+        copied.addAction(QtWidgets.QAction("Display", self, triggered=lambda: display(self._getObj("copied"))))
+        copied.addAction(QtWidgets.QAction("Append", self, triggered=lambda: append(self._getObj("copied"))))
+        copied.addAction(QtWidgets.QAction("MultiCut", self, triggered=lambda: multicut(self._getObj("copied"))))
+        copied.addAction(QtWidgets.QAction("Edit", self, triggered=lambda: edit(self._getObj("copied"))))
+        copied.addAction(QtWidgets.QAction("Export", self, triggered=lambda: self._export(type="copied")))
         copied.addAction(QtWidgets.QAction("Send to shell", self, triggered=lambda: self._shell(type="copied")))
-        copied.addAction(QtWidgets.QAction("Append as Vector", self, triggered=lambda: self.apnd(self._getObj("copied")[0], vector=True)))
-        copied.addAction(QtWidgets.QAction("Append as Contour", self, triggered=lambda: self.apnd(self._getObj("copied")[0], contour=True)))
+        copied.addAction(QtWidgets.QAction("Append as Vector", self, triggered=lambda: self.apnd(self._getObj("copied"), vector=True)))
+        copied.addAction(QtWidgets.QAction("Append as Contour", self, triggered=lambda: self.apnd(self._getObj("copied"), contour=True)))
 
         menu.addSeparator()
 
@@ -96,9 +97,9 @@ class ChildWavesGUI(QtWidgets.QTreeView):
 
     def _getObj(self, type="Connected"):
         item = self._getItem()
-        obj = [item.getFilteredWave(), item.getAxes()]
+        obj = item.getFilteredWave()
         if type == "copied":
-            obj[0] = obj[0].duplicate()
+            return obj.duplicate()
         return obj
 
     def _export(self, type="Connected"):
