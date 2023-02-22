@@ -244,12 +244,14 @@ class _ChildWave(QtCore.QObject):
 
     def update(self, wave):
         self._orig = wave
+        name = str(self._filt.name)
         post = self.postProcess()
         if post is not None:
             wave = post.execute(wave)
         self._filt.data = wave.data
         self._filt.axes = wave.axes
         self._filt.note = wave.note
+        self._filt.name = name
 
     def name(self):
         return self._filt.name

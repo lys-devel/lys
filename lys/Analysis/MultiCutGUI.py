@@ -13,6 +13,7 @@ class _MultipleGrid(LysSubWindow):
     def __init__(self):
         super().__init__()
         self.__initlayout()
+        self.__widget = None
         self.resize(400, 400)
         self.closed.connect(self.__finalize)
 
@@ -32,6 +33,12 @@ class _MultipleGrid(LysSubWindow):
         self._overlay.canceled.connect(self._canceled)
         self.resized.connect(lambda: self._overlay.resize(w.size()))
         self.setWidget(w)
+        self.installEventFilter(self)
+
+    def eventFilter(self, object, event):
+        if event.type() == QtCore.QEvent.FocusOut:
+            self._canceled()
+        return super().eventFilter(object, event)
 
     def append(self, widget, pos=None, wid=None):
         if pos is None or wid is None:
@@ -39,6 +46,7 @@ class _MultipleGrid(LysSubWindow):
             self.__widget = widget
             self._overlay.raise_()
             self._overlay.startSelection()
+            self.setFocus()
             return
         for i in range(pos[0], pos[0] + wid[0]):
             for j in range(pos[1], pos[1] + wid[1]):
@@ -75,9 +83,11 @@ class _MultipleGrid(LysSubWindow):
         self.append(self.__widget, pos, wid)
 
     def _canceled(self):
-        if isinstance(self.__widget, CanvasBase):
+        if self.__widget is not None:
             self.__widget.finalize()
             self.__widget = None
+            self._overlay.stopSelection()
+            self._overlay.lower()
 
     def setSize(self, size):
         for s in range(size):
@@ -115,6 +125,11 @@ class _GridOverlay(QtWidgets.QWidget):
         self.__p1 = (-1, -1)
         self.__p2 = (-1, -1)
         self.resize(self.parentWidget().size())
+        self.repaint()
+
+    def stopSelection(self):
+        self.__started = False
+        self.__paint = False
         self.repaint()
 
     def paintEvent(self, event):
