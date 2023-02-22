@@ -3,7 +3,7 @@ import numpy as np
 from lys import DaskWave, Wave, filters
 from lys.Qt import QtCore
 from lys.decorators import avoidCircularReference
-from lys.filters import Filters, SliceFilter, EmptyFilter, IntegralAllFilter, TransposeFilter
+from lys.filters import Filters, SliceFilter, IntegralAllFilter, TransposeFilter
 
 
 class MultiCutCUI(QtCore.QObject):
@@ -203,63 +203,6 @@ class _ChildWaves(QtCore.QObject):
 
     def getChildWaves(self):
         return self._waves
-
-
-"""
-class ExecutorList(controlledObjects):
-    updated = QtCore.pyqtSignal(tuple)
-
-    def __ignoreList(self, axes):
-        ignore = []
-        for ax in axes:
-            if ax < 10000:
-                ignore.append(ax)
-            else:
-                ignore.extend(self.__findFreeLineExecutor(ax).getAxes())
-        return ignore
-
-    def __getFreeLineFilter(self, axes_orig, applied):
-        for a in axes_orig:
-            if a >= 10000:
-                fl = self.__findFreeLineExecutor(a)
-                axes = list(fl.getAxes())
-                for i, ax in enumerate(axes):
-                    for ax2 in applied:
-                        if ax2 < ax:
-                            axes[i] -= 1
-                return fl.getFilter(axes)
-        return EmptyFilter()
-
-    def makeWave(self, wave_orig, axes):
-        wave = wave_orig.duplicate()
-        slices = [slice(None, None, None)] * wave.data.ndim
-        sumlist = []
-        for e in self.__exeList(wave):
-            if not isinstance(e, FreeLineExecutor):
-                e.set(wave, slices, sumlist, ignore=self.__ignoreList(axes))
-        sumlist = np.array(sumlist)
-        applied = sumlist.tolist()  # summed or integer sliced axes
-        for i in reversed(range(len(slices))):
-            if isinstance(slices[i], int):
-                sumlist[sumlist > i] -= 1
-                applied.append(i)
-        f1 = SliceFilter(slices)
-        f2 = IntegralAllFilter(sumlist.tolist(), self._sumtype)
-        f3 = self.__getFreeLineFilter(axes, applied)
-        f4 = self.__getTransposeFilter(axes)
-        f = Filters([f1, f2, f3, f4])
-        res = f.execute(wave)
-        if isinstance(res, DaskWave):
-            res = res.compute()
-        return res
-
-    def __getTransposeFilter(self, axes):
-        if len(axes) == 2 and axes[0] < 10000:
-            if axes[0] > axes[1] or axes[1] >= 10000:
-                return TransposeFilter([1, 0])
-        return EmptyFilter()
-
-"""
 
 
 class _ChildWave(QtCore.QObject):

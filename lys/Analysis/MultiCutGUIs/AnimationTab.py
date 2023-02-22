@@ -5,8 +5,6 @@ from lys import glb, frontCanvas
 from lys.Qt import QtWidgets, QtCore
 from lys.widgets import lysCanvas, AxisSelectionLayout
 
-from ..MultiCutExecutors import PointExecutor
-
 
 class AnimationTab(QtWidgets.QGroupBox):
     updated = QtCore.pyqtSignal(int)

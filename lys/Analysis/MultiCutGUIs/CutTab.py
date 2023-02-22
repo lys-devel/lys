@@ -76,15 +76,6 @@ class _gridTableWidget(QtWidgets.QTableWidget):
         self.verticalHeader().hide()
         self.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-        # self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        # self.customContextMenuRequested.connect(self._tableContext)
-
-    def _tableContext(self, pos):
-        menu = QtWidgets.QMenu(self)
-        menu.addAction("Graph -> Grid (Not implemented)")
-        menu.addAction("Grid -> Graph (Not implemented)")
-        menu.addAction("Grid -> Grid (Not implemented)")
-        menu.exec_(self.mapToGlobal(pos))
 
     def getGridPos(self):
         rows = [i.row() for i in self.selectionModel().selectedIndexes()]
@@ -95,10 +86,9 @@ class _gridTableWidget(QtWidgets.QTableWidget):
 
 
 class CutTab(QtWidgets.QTabWidget):
-    def __init__(self, cui, parent, grid):
+    def __init__(self, cui, grid):
         super().__init__()
         self._cui = cui
-        self.parent = parent
         self.grid = grid
         self._can = CanvasManager(cui)
 
@@ -152,17 +142,27 @@ class CutTab(QtWidgets.QTabWidget):
         self._cui.freeLineChanged.connect(lambda: self._ax.updateLines(self._cui.getFreeLines()))
         self.adjustSize()
 
-    def make(self, axes=None):
-        if not hasattr(axes, "__iter__"):
-            ax = self._ax.getAxes()
-        else:
-            ax = axes
-        w = self._cui.addWave(ax)
-        return w
+    def make(self, axes=None, useold=False):
+        ax = axes if hasattr(axes, "__iter__") else self._ax.getAxes()
+        same_type = [w for w in self._cui.getChildWaves() if tuple(w.getAxes()) == tuple(ax)]
+        if len(same_type) != 0:
+            msgBox = QtWidgets.QMessageBox(parent=self, text="There is a wave that has the same axes. Do you really want to proceed anyway?")
+            msgBox.addButton(QtWidgets.QMessageBox.Yes)
+            no = msgBox.addButton(QtWidgets.QMessageBox.No)
+            if useold:
+                old = msgBox.addButton("Use old one", QtWidgets.QMessageBox.ActionRole)
+            msgBox.exec_()
+            if msgBox.clickedButton() == no:
+                return
+            elif msgBox.clickedButton() == old:
+                return same_type[0].getFilteredWave()
+        return self._cui.addWave(ax)
 
     def display(self, wave=None, axes=None, pos=None, wid=None):
-        ax = axes if hasattr(axes, "__iter__") else self._ax.getAxes(c)
-        w = wave if isinstance(wave, Wave) else self.make(axes)
+        ax = axes if hasattr(axes, "__iter__") else self._ax.getAxes()
+        w = wave if isinstance(wave, Wave) else self.make(axes, useold=True)
+        if w is None:
+            return
 
         if self._usegraph.isChecked():
             c = self._can.createCanvas(ax, graph=True)
@@ -181,7 +181,6 @@ class CutTab(QtWidgets.QTabWidget):
                     self._usegraph.setChecked(True)
                     return self.display(w, axes, pos, wid)
             c = self._can.createCanvas(ax, lib="pyqtgraph")
-            c.keyPressed.connect(self.parent.keyPress)
             self.grid.Append(c, *pos, *wid)
         c.clicked.connect(self._gridClicked)
         c.Append(w)
@@ -216,19 +215,19 @@ class CutTab(QtWidgets.QTabWidget):
     def typical3d(self):
         c1 = self.display(axes=[2], pos=[3, 0], wid=[1, 4])
         c2 = self.display(axes=[0, 1], pos=[0, 0], wid=[3, 4])
-        self._int._linex(c1)
-        self._int._rect(c2)
+        self._can.addLine(c1, orientation="vertical")
+        self._can.addRect(c2)
 
     def typical4d(self):
         c1 = self.display(axes=[0, 1], pos=[0, 0], wid=[4, 2])
         c2 = self.display(axes=[2, 3], pos=[0, 2], wid=[4, 2])
-        self._int._rect(c1)
-        self._int._rect(c2)
+        self._can.AddRect(c1)
+        self._can.AddRect(c2)
 
     def typical5d(self):
         c1 = self.display(axes=[0, 1], pos=[0, 0], wid=[3, 2])
         c2 = self.display(axes=[2, 3], pos=[0, 2], wid=[3, 2])
         c3 = self.display(axes=(4,), pos=[3, 0], wid=[1, 4])
-        self._int._rect(c1)
-        self._int._rect(c2)
-        self._int._linex(c3)
+        self._can.addRect(c1)
+        self._can.addRect(c2)
+        self._can.addLine(c3, orientation="vertical")

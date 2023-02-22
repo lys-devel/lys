@@ -10,6 +10,7 @@ class CanvasManager(list):
     def __init__(self, cui):
         super().__init__()
         self._index = 0
+        self._wid = None
         self._cui = cui
         self._sync = {}
 
@@ -23,12 +24,15 @@ class CanvasManager(list):
         c._mname = "canvas" + str(self._index)
         self.append(c)
         c.finalized.connect(self.__removeCanvas)
+        if self._wid is not None:
+            c.clicked.connect(self._wid.setEnabled)
         return c
 
     def __removeCanvas(self, canvas):
         for an in canvas.getAnnotations():
             self.unsyncAnnotation(an)
-        self.remove(canvas)
+        if canvas in self:
+            self.remove(canvas)
 
     def syncAnnotation(self, annot, line=None):
         c = annot.canvas()
@@ -51,8 +55,77 @@ class CanvasManager(list):
         if annot in self._sync:
             del self._sync[annot]
 
+    def hasAnnotation(self, canvas, type, orientation=None):
+        for annot in self._sync.keys():
+            if annot.canvas() == canvas and isinstance(annot, type):
+                if orientation is None:
+                    return True
+                elif annot.getOrientation() == orientation:
+                    return True
+        return False
+
     def widget(self):
-        return _InteractiveWidget(self._cui, self)
+        if self._wid is None:
+            self._wid = _InteractiveWidget(self._cui, self)
+        return self._wid
+
+    def _getTargetCanvas(self):
+        c = frontCanvas()
+        if c in self:
+            return c
+        else:
+            if c is None:
+                QtWidgets.QMessageBox.information(self._wid, "Error", "You should specify the canvas to add annoation.", QtWidgets.QMessageBox.Yes)
+            else:
+                QtWidgets.QMessageBox.information(self._wid, "Error", "You should specify the canvas that is created by MultiCut.", QtWidgets.QMessageBox.Yes)
+
+    def addCross(self, c=None):
+        if not isinstance(c, CanvasBase):
+            c = self._getTargetCanvas()
+        if c is not None:
+            if self.hasAnnotation(c, CrossAnnotation):
+                QtWidgets.QMessageBox.information(self._wid, "Error", "This canvas already has same annotation.", QtWidgets.QMessageBox.Yes)
+            else:
+                crs = c.addCrossAnnotation()
+                self.syncAnnotation(crs)
+
+    def addRect(self, c=None):
+        if not isinstance(c, CanvasBase):
+            c = self._getTargetCanvas()
+        if c is not None:
+            if self.hasAnnotation(c, RectAnnotation):
+                QtWidgets.QMessageBox.information(self._wid, "Error", "This canvas already has same annotation.", QtWidgets.QMessageBox.Yes)
+            else:
+                rect = c.addRectAnnotation()
+                self.syncAnnotation(rect)
+
+    def addFreeLine(self, c=None):
+        if not isinstance(c, CanvasBase):
+            c = self._getTargetCanvas()
+        if c is not None:
+            reg = c.addFreeRegionAnnotation()
+            line = self._cui.addFreeLine(c._maxes)
+            self.syncAnnotation(reg, line)
+
+    def addRegion(self, c=None, orientation="vertical"):
+        if not isinstance(c, CanvasBase):
+            c = self._getTargetCanvas()
+        if c is not None:
+            if self.hasAnnotation(c, RegionAnnotation, orientation):
+                QtWidgets.QMessageBox.information(self._wid, "Error", "This canvas already has same annotation.", QtWidgets.QMessageBox.Yes)
+            else:
+                reg = c.addRegionAnnotation(orientation=orientation)
+                self.syncAnnotation(reg)
+
+    def addLine(self, c=None, orientation="vertical"):
+        if not isinstance(c, CanvasBase):
+            c = self._getTargetCanvas()
+        if c is not None:
+            if self.hasAnnotation(c, InfiniteLineAnnotation, orientation):
+                QtWidgets.QMessageBox.information(self._wid, "Error", "This canvas already has same annotation.", QtWidgets.QMessageBox.Yes)
+            else:
+                line = c.addInfiniteLineAnnotation(orientation=orientation)
+                self.syncAnnotation(line)
 
 
 class _InfLineSync(QtCore.QObject):
@@ -276,32 +349,34 @@ class _CanvasListModel(QtCore.QAbstractItemModel):
 
 class _InteractiveWidget(QtWidgets.QGroupBox):
     def __init__(self, cui, canvases):
-        super().__init__("Interactive")
+        super().__init__("Interactive Annotations")
         self._cui = cui
         self._can = canvases
         self.__initlayout()
 
     def __initlayout(self):
-        lx = QtWidgets.QPushButton("Line (X)", clicked=self._linex)
-        ly = QtWidgets.QPushButton("Line (Y)", clicked=self._liney)
-        rx = QtWidgets.QPushButton("Region (X)", clicked=self._regx)
-        ry = QtWidgets.QPushButton("Region (Y)", clicked=self._regy)
-        pt = QtWidgets.QPushButton("Point", clicked=self._point)
-        rt = QtWidgets.QPushButton("Rect", clicked=self._rect)
-        li = QtWidgets.QPushButton("Free Line", clicked=self._line)
+        self._lx = QtWidgets.QPushButton("Line (X)", clicked=lambda: self._can.addLine(orientation="vertical"))
+        self._ly = QtWidgets.QPushButton("Line (Y)", clicked=lambda: self._can.addLine(orientation="horizontal"))
+        self._rx = QtWidgets.QPushButton("Region (X)", clicked=lambda: self._can.addRegion(orientation="vertical"))
+        self._ry = QtWidgets.QPushButton("Region (Y)", clicked=lambda: self._can.addRegion(orientation="horizontal"))
+        self._pt = QtWidgets.QPushButton("Point", clicked=lambda: self._can.addCross())
+        self._rt = QtWidgets.QPushButton("Rect", clicked=lambda: self._can.addRect())
+        self._li = QtWidgets.QPushButton("Free Line", clicked=lambda: self._can.addFreeLine())
+        for w in [self._lx, self._ly, self._rx, self._ry, self._pt, self._rt, self._li]:
+            w.setEnabled(False)
 
         mc = QtWidgets.QComboBox()
         mc.addItems(["Mean", "Sum", "Median", "Max", "Min"])
         mc.currentTextChanged.connect(self._cui.setSumType)
 
         grid = QtWidgets.QGridLayout()
-        grid.addWidget(lx, 0, 0)
-        grid.addWidget(ly, 0, 1)
-        grid.addWidget(rx, 1, 0)
-        grid.addWidget(ry, 1, 1)
-        grid.addWidget(pt, 2, 0)
-        grid.addWidget(rt, 2, 1)
-        grid.addWidget(li, 3, 0)
+        grid.addWidget(self._lx, 0, 0)
+        grid.addWidget(self._ly, 0, 1)
+        grid.addWidget(self._rx, 1, 0)
+        grid.addWidget(self._ry, 1, 1)
+        grid.addWidget(self._pt, 2, 0)
+        grid.addWidget(self._rt, 2, 1)
+        grid.addWidget(self._li, 3, 0)
         grid.addWidget(mc, 3, 1)
 
         #self._tree = QtWidgets.QTreeView()
@@ -312,50 +387,23 @@ class _InteractiveWidget(QtWidgets.QGroupBox):
         # hbox.addWidget(self._tree)
         self.setLayout(hbox)
 
-    def _getTargetCanvas(self):
+    def setEnabled(self):
         c = frontCanvas()
-        if c in self._can:
-            return c
-
-    def _point(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        crs = c.addCrossAnnotation()
-        self._can.syncAnnotation(crs)
-
-    def _rect(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        rect = c.addRectAnnotation()
-        self._can.syncAnnotation(rect)
-
-    def _line(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        reg = c.addFreeRegionAnnotation()
-        line = self._cui.addFreeLine(c._maxes)
-        self._can.syncAnnotation(reg, line)
-
-    def _regx(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        reg = c.addRegionAnnotation()
-        self._can.syncAnnotation(reg)
-
-    def _regy(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        reg = c.addRegionAnnotation(orientation="horizontal")
-        self._can.syncAnnotation(reg)
-
-    def _linex(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        line = c.addInfiniteLineAnnotation()
-        self._can.syncAnnotation(line)
-
-    def _liney(self, c=None):
-        if not isinstance(c, CanvasBase):
-            c = self._getTargetCanvas()
-        line = c.addInfiniteLineAnnotation(orientation='horizontal')
-        self._can.syncAnnotation(line)
+        if len(c._maxes) == 1:
+            if isinstance(c._maxes[0], str):
+                for w in [self._lx, self._ly, self._rx, self._ry, self._pt, self._rt, self._li]:
+                    w.setEnabled(False)
+            else:
+                for w in [self._lx, self._rx]:
+                    w.setEnabled(True)
+                for w in [self._ly, self._ry, self._pt, self._rt, self._li]:
+                    w.setEnabled(False)
+        else:
+            for w in [self._lx, self._ly, self._rx, self._ry, self._pt, self._rt, self._li]:
+                w.setEnabled(True)
+            if isinstance(c._maxes[0], str):
+                for w in [self._lx, self._rx, self._pt, self._rt, self._li]:
+                    w.setEnabled(False)
+            if isinstance(c._maxes[1], str):
+                for w in [self._ly, self._ry, self._pt, self._rt, self._li]:
+                    w.setEnabled(False)
