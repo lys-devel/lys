@@ -142,10 +142,11 @@ class _AxisRangeWidget(QtWidgets.QGroupBox):
             self._value.setValue(v)
 
 
-class AxesRangeWidget(QtWidgets.QWidget):
+class AxesRangeWidget(QtWidgets.QScrollArea):
     def __init__(self, cui):
         super().__init__()
         self._cui = cui
+        self.setWidgetResizable(True)
         self.__initlayout()
         cui.dimensionChanged.connect(self.__update)
 
@@ -155,7 +156,10 @@ class AxesRangeWidget(QtWidgets.QWidget):
         for ax in self._axes:
             self._layout.addWidget(ax)
         self._layout.addStretch()
-        self.setLayout(self._layout)
+
+        w = QtWidgets.QWidget()
+        w.setLayout(self._layout)
+        self.setWidget(w)
 
     def __update(self):
         for ax in self._axes:
@@ -164,6 +168,9 @@ class AxesRangeWidget(QtWidgets.QWidget):
         self._axes = [_AxisRangeWidget(self._cui, i) for i in range(self._cui.getFilteredWave().ndim)]
         for i, ax in enumerate(self._axes):
             self._layout.insertWidget(i, ax)
+
+    def sizeHint(self):
+        return QtCore.QSize(100, 100)
 
 
 class _FreeLineWidget(QtWidgets.QGroupBox):
@@ -222,10 +229,11 @@ class _FreeLineWidget(QtWidgets.QGroupBox):
         self._obj.setWidth(v[1])
 
 
-class FreeLinesWidget(QtWidgets.QWidget):
+class FreeLinesWidget(QtWidgets.QScrollArea):
     def __init__(self, cui):
         super().__init__()
         self._cui = cui
+        self.setWidgetResizable(True)
         self.__initlayout()
         self._cui.freeLineChanged.connect(self.__update)
 
@@ -235,7 +243,10 @@ class FreeLinesWidget(QtWidgets.QWidget):
         for ax in self._axes:
             self._layout.addWidget(ax)
         self._layout.addStretch()
-        self.setLayout(self._layout)
+
+        w = QtWidgets.QWidget()
+        w.setLayout(self._layout)
+        self.setWidget(w)
 
     def __update(self):
         for ax in self._axes:
@@ -244,3 +255,5 @@ class FreeLinesWidget(QtWidgets.QWidget):
         self._axes = [_FreeLineWidget(self._cui, obj) for obj in self._cui.getFreeLines()]
         for i, ax in enumerate(self._axes):
             self._layout.insertWidget(i, ax)
+    def sizeHint(self):
+        return QtCore.QSize(100, 100)

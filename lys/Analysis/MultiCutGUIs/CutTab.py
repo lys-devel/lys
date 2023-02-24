@@ -70,8 +70,8 @@ class CutTab(QtWidgets.QTabWidget):
     def _typical4d(self):
         c1 = self.gui.display(self._cui.addWave([0, 1]), pos=[0, 0], wid=[4, 2])
         c2 = self.gui.display(self._cui.addWave([2, 3]), pos=[0, 2], wid=[4, 2])
-        self.gui.AddRect(c1)
-        self.gui.AddRect(c2)
+        self.gui.addRect(c1)
+        self.gui.addRect(c2)
 
     def _typical5d(self):
         c1 = self.gui.display(self._cui.addWave([0, 1]), pos=[0, 0], wid=[3, 2])
