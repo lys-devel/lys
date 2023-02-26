@@ -1,4 +1,4 @@
-from lys import display, edit, MultiCut, glb, Wave
+from lys import display, edit, multicut, glb, Wave
 from lys.Qt import QtWidgets, QtCore, QtGui
 
 
@@ -87,7 +87,7 @@ class WaveViewer(QtWidgets.QTreeView):
             edit(w)
 
     def _multicut(self, type):
-        MultiCut(self.__getWaves()[0])
+        multicut(self.__getWaves()[0])
 
     def _delete(self):
         for key in self.__getWaveNames():

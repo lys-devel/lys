@@ -102,17 +102,22 @@ class IntegralFilter(FilterInterface):
         self._sumtype = sumtype
 
     def _execute(self, wave, *args, **kwargs):
-        key, sumaxes = self._getIndexAnsSumAxes(wave, self._range)
-        axes = [wave.axes[i] for i in range(wave.ndim) if i not in sumaxes]
+        key, sumaxes, intaxes = self._getIndexAnsSumAxes(wave, self._range)
+        axes = [wave.axes[i] for i in range(wave.ndim) if i not in sumaxes + intaxes]
         func = _getSumFunction(self._sumtype)
         return DaskWave(func(wave.data[key], axis=tuple(sumaxes)), *axes, **wave.note)
 
     def _getIndexAnsSumAxes(self, wave, rang):
         sl = []
         sumaxes = []
+        intaxes = []
         for i, r in enumerate(rang):
             if r is None:
                 sl.append(slice(None))
+            elif not hasattr(r, "__iter__"):
+                ind = wave.posToPoint(r, axis=i)
+                sl.append(ind)
+                intaxes.append(i)
             elif r[0] == 0 and r[1] == 0:
                 sl.append(slice(None))
             else:
@@ -120,7 +125,7 @@ class IntegralFilter(FilterInterface):
                 sl.append(slice(*ind))
                 sumaxes.append(i)
         key = tuple(sl)
-        return key, tuple(sumaxes)
+        return key, list(sumaxes), list(intaxes)
 
     def getParameters(self):
         return {"range": self._range, "sumtype": self._sumtype}

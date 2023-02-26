@@ -1,9 +1,6 @@
-import numpy as np
-
 from lys import DaskWave, Wave, filters
 from lys.Qt import QtCore
 from lys.decorators import avoidCircularReference
-from lys.filters import Filters, SliceFilter, IntegralAllFilter, TransposeFilter
 
 
 class MultiCutCUI(QtCore.QObject):
@@ -80,8 +77,8 @@ class _ChildWaves(QtCore.QObject):
     def __init__(self, cui):
         super().__init__()
         self._cui = cui
-        self._cui.axesRangeChanged.connect(self._update)
-        self._cui.freeLineMoved.connect(self._update)
+        self._cui.axesRangeChanged.connect(self.__update)
+        self._cui.freeLineMoved.connect(self.__update)
         self._sumType = "Mean"
         self._waves = []
 
@@ -94,25 +91,6 @@ class _ChildWaves(QtCore.QObject):
 
     def setSumType(self, sumType):
         self._sumType = sumType
-
-    def _update(self, axes):
-        for child in self._waves:
-            if isinstance(axes, _FreeLine):
-                if axes.getName() in child.getAxes():
-                    self.__updateSingleWave(child)
-            else:
-                if not set(child.getAxes()).issubset(axes):
-                    self.__updateSingleWave(child)
-
-    def __updateSingleWave(self, child):
-        if not child.isEnabled():
-            return
-        try:
-            wav = self._makeWave(child.getAxes())
-            child.update(wav)
-        except Exception:
-            import traceback
-            traceback.print_exc()
 
     def addWave(self, axes, filter=None, name=None):
         w = self._makeWave(axes)
@@ -129,28 +107,13 @@ class _ChildWaves(QtCore.QObject):
 
     def _makeWave(self, axes):
         wave = self.cui.getFilteredWave()
-        ignored = [ax for ax in axes if not isinstance(ax, str)] + self._freeLineAxes(axes)
-        slices = self._getAxisRangeSlice(wave)
+        ignored = sorted([ax for ax in axes if not isinstance(ax, str)] + self._freeLineAxes(axes))
+        ranges = [self.cui.getAxisRange(i) for i in range(wave.ndim)]
         for ax in ignored:
-            slices[ax] = slice(None, None, None)
-        sumlist = np.array([i for i in range(wave.ndim) if self.cui.getAxisRangeType(i) == 'range' and i not in ignored])
-        applied = sumlist.tolist()  # summed or integer sliced axes
-        for i in reversed(range(wave.ndim)):
-            if isinstance(slices[i], int):
-                sumlist[sumlist > i] -= 1
-                applied.append(i)
+            ranges[ax] = None
 
-        filters = []
-        filters.append(SliceFilter(slices))
-        if len(sumlist) != 0:
-            filters.append(IntegralAllFilter(sumlist.tolist(), self._sumType))
-        f3 = self.__getFreeLineFilter(axes, applied)
-        if f3 is not None:
-            filters.append(f3)
-        f4 = self.__getTransposeFilter(axes)
-        if f4 is not None:
-            filters.append(f4)
-        res = Filters(filters).execute(wave)
+        f = [filters.IntegralFilter(ranges, self._sumType)] + self.__getFreeLineFilter(axes, ignored)
+        res = filters.Filters(f).execute(wave)
         if isinstance(res, DaskWave):
             res = res.compute()
         return res
@@ -162,50 +125,49 @@ class _ChildWaves(QtCore.QObject):
                 res.extend(self._cui.getFreeLine(ax).getAxes())
         return res
 
-    def _getAxisRangeSlice(self, wave):
-        result = []
-        for i, r in enumerate(range(wave.ndim)):
-            r = self.cui.getAxisRange(i)
-            if hasattr(r, "__iter__"):
-                p1 = min(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
-                p2 = max(wave.posToPoint(r[0], i), wave.posToPoint(r[1], i))
-                if p1 < 0:
-                    p1 = 0
-                if p2 < 0:
-                    p2 = p1
-                if p1 > wave.data.shape[i] - 1:
-                    p1 = wave.data.shape[i] - 1
-                if p2 > wave.data.shape[i] - 1:
-                    p2 = wave.data.shape[i] - 1
-                result.append(slice(p1, p2 + 1))
-            else:
-                p = wave.posToPoint(r, i)
-                if p < 0:
-                    p = 0
-                if p > wave.data.shape[i] - 1:
-                    p = wave.data.shape[i] - 1
-                result.append(p)
-        return result
-
-    def __getFreeLineFilter(self, axes_orig, applied):
+    def __getFreeLineFilter(self, axes_orig, ignored):
+        axes_final = list(ignored)
+        filts = []
         for ax in axes_orig:
             if isinstance(ax, str):
                 line = self._cui.getFreeLine(ax)
                 axes = list(line.getAxes())
-                for i, ax in enumerate(axes):
-                    for ax2 in applied:
-                        if ax2 < ax:
-                            axes[i] -= 1
-                return line.getFilter(axes)
-        return None
+                axes = [axes_final.index(a) for a in axes]
+                filts.append(line.getFilter(axes))
 
-    def __getTransposeFilter(self, axes):
-        if len(axes) == 2 and isinstance(axes[1], str):
-            return TransposeFilter([1, 0])
-        return None
+                axes_final[axes_final.index(axes[0])] = ax
+                axes_final.remove(axes[1])
+        if len(filts) != 0:
+            filts.append(filters.TransposeFilter([axes_final.index(a) for a in axes_orig]))
+        return filts
 
     def getChildWaves(self):
         return self._waves
+
+    def __update(self, axes):
+        for child in self._waves:
+            if isinstance(axes, _FreeLine):
+                if axes.getName() in child.getAxes():
+                    self.__updateSingleWave(child)
+            else:
+                ax = []
+                for a in child.getAxes():
+                    if isinstance(a, str):
+                        ax.extend(self._freeLineAxes([a]))
+                    else:
+                        ax.append(a)
+                if not set(axes).issubset(ax):
+                    self.__updateSingleWave(child)
+
+    def __updateSingleWave(self, child):
+        if not child.isEnabled():
+            return
+        try:
+            wav = self._makeWave(child.getAxes())
+            child.update(wav)
+        except Exception:
+            import traceback
+            traceback.print_exc()
 
 
 class _ChildWave(QtCore.QObject):

@@ -5,7 +5,6 @@ from .core import SettingDict, Wave, DaskWave
 
 from . import filters
 from .filters import filtersGUI
-from .Analysis import MultiCut
 from . import glb
 
 # register file loaders

@@ -12,7 +12,7 @@ def addFilter(filter, filterName=None, gui=None, guiName=None, guiGroup=None):
     Args:
         filter(class that implements FilterInterface): filter to be added.
         filterName(str): name of filter. If omitted, default name is used.
-        gui(class that implements FilterSettingBase, and is decorated by filterGUI): Widget that is used in MultiCut.
+        gui(class that implements FilterSettingBase, and is decorated by filterGUI): Widget that is used in FilterGUI.
         guiName(str): name of filter in GUI.
         guiGroup(str): name of group in GUI.
     """
