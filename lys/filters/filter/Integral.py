@@ -76,7 +76,7 @@ class IntegralFilter(FilterInterface):
     See :class:`.FilterInterface.FilterInterface` for general description of Filters.
 
     Args:
-        range(list of tuple of size 2): region to be integrated
+        range(list of length 2 sequence or None): region to be integrated. It it is None, the corresponding axis is not integrated.
         sumtype('Sum', 'Mean', 'Max', 'Min', or 'Median')
 
     Example::
@@ -85,7 +85,7 @@ class IntegralFilter(FilterInterface):
         import numpy as np
 
         w = Wave(np.ones([5, 5, 5]), [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6])
-        f = filters.IntegralFilter([(1, 4), (2, 4), (0, 0)], sumtype="Sum")
+        f = filters.IntegralFilter([(1, 4), (2, 4), None])
         result = f.execute(w)
 
         print(result.data)  # [6, 6, 6, 6, 6]
@@ -97,7 +97,7 @@ class IntegralFilter(FilterInterface):
 
     """
 
-    def __init__(self, range, sumtype):
+    def __init__(self, range, sumtype="Sum"):
         self._range = range
         self._sumtype = sumtype
 
