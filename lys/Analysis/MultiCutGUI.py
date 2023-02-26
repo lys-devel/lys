@@ -14,6 +14,7 @@ class _MultipleGrid(LysSubWindow):
         super().__init__()
         self.__initlayout()
         self.__widget = None
+        self.__supressCancel = False
         self.resize(400, 400)
         self.closed.connect(self.__finalize)
 
@@ -44,7 +45,6 @@ class _MultipleGrid(LysSubWindow):
         if pos is None or wid is None:
             self.raise_()
             self.__widget = widget
-            self._overlay.raise_()
             self._overlay.startSelection()
             self.setFocus()
             return
@@ -56,38 +56,51 @@ class _MultipleGrid(LysSubWindow):
                     w.deleteLater()
                     if isinstance(w, CanvasBase):
                         w.finalize()
-        self.__widget = None
         widget.keyPressed.connect(self.keyPress)
         self.layout.addWidget(widget, pos[0], pos[1], wid[0], wid[1])
+        self.__widget = None
 
     def _selected(self, obj):
         pos, end = obj
         wid = end[0] - pos[0] + 1, end[1] - pos[1] + 1
-        for i in range(pos[0], pos[0] + wid[0]):
-            for j in range(pos[1], pos[1] + wid[1]):
-                if self.itemAtPosition(i, j) is not None:
-                    msgBox = QtWidgets.QMessageBox(parent=self, text="There is a graph at this position. Do you really want to proceed?")
-                    yes = msgBox.addButton(QtWidgets.QMessageBox.Yes)
-                    no = msgBox.addButton(QtWidgets.QMessageBox.No)
-                    cancel = msgBox.addButton(QtWidgets.QMessageBox.Cancel)
-                    msgBox.exec_()
-                    if msgBox.clickedButton() == yes:
-                        self._overlay.lower()
-                        return self.append(self.__widget, pos, wid)
-                    if msgBox.clickedButton() == no:
-                        return self._canceled()
-                    elif msgBox.clickedButton() == cancel:
-                        self._overlay.raise_()
-                        return self._overlay.startSelection()
+        if self.__checkItem(pos, wid):
+            self.__supressCancel = True
+            msgBox = QtWidgets.QMessageBox(parent=self, text="There is a graph at this position. Do you really want to proceed?")
+            yes = msgBox.addButton(QtWidgets.QMessageBox.Yes)
+            no = msgBox.addButton(QtWidgets.QMessageBox.No)
+            cancel = msgBox.addButton(QtWidgets.QMessageBox.Cancel)
+            msgBox.exec_()
+            if msgBox.clickedButton() == yes:
+                self.__supressCancel = False
+                self._overlay.lower()
+                return self.append(self.__widget, pos, wid)
+            if msgBox.clickedButton() == no:
+                self.__supressCancel = False
+                return self._canceled()
+            elif msgBox.clickedButton() == cancel:
+                self.__supressCancel = -1
+                return
         self._overlay.lower()
         self.append(self.__widget, pos, wid)
 
+    def __checkItem(self, pos, wid):
+        for i in range(pos[0], pos[0] + wid[0]):
+            for j in range(pos[1], pos[1] + wid[1]):
+                if self.itemAtPosition(i, j) is not None:
+                    return True
+        return False
+
     def _canceled(self):
-        if self.__widget is not None:
+        if self.__widget is not None and self.__supressCancel is False:
+            print("canceled")
             self.__widget.finalize()
             self.__widget = None
             self._overlay.stopSelection()
             self._overlay.lower()
+        if self.__supressCancel == -1:
+            self.__supressCancel = False
+            self.setFocus()
+            self._overlay.startSelection()
 
     def setSize(self, size):
         for s in range(size):
@@ -120,6 +133,7 @@ class _GridOverlay(QtWidgets.QWidget):
         self.show()
 
     def startSelection(self):
+        self.raise_()
         self.__started = True
         self.__paint = True
         self.__p1 = (-1, -1)
