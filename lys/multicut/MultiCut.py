@@ -113,10 +113,7 @@ class _ChildWaves(QtCore.QObject):
             ranges[ax] = None
 
         f = [filters.IntegralFilter(ranges, self._sumType)] + self.__getFreeLineFilter(axes, ignored)
-        res = filters.Filters(f).execute(wave)
-        if isinstance(res, DaskWave):
-            res = res.compute()
-        return res
+        return filters.Filters(f).execute(wave)
 
     def _freeLineAxes(self, axes):
         res = []
@@ -178,6 +175,8 @@ class _ChildWave(QtCore.QObject):
             self._filt = wave
         else:
             self._filt = filter.execute(wave)
+        if isinstance(self._filt, DaskWave):
+            self._filt = self._filt.compute()
         self._axes = axes
         self._enabled = True
         self._post = filter
@@ -210,6 +209,8 @@ class _ChildWave(QtCore.QObject):
         post = self.postProcess()
         if post is not None:
             wave = post.execute(wave)
+        if isinstance(wave, DaskWave):
+            wave = wave.compute()
         self._filt.data = wave.data
         self._filt.axes = wave.axes
         self._filt.note = wave.note
