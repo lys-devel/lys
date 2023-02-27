@@ -471,7 +471,7 @@ class _ConservableWindow(_AutoSavedWindow):
             self.__file = None
         else:
             self.__file = os.path.abspath(file)
-        super().__init__()
+        super().__init__(*args, **kwargs)
         self.__closeflg = True
         self.__modified = False
         self.setWindowTitle(self.Name())
