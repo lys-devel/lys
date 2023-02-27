@@ -139,7 +139,6 @@ class _MatplotlibTicks(CanvasTicks):
     def _setTickInterval(self, axis, interval, which='major'):
         axs = self.canvas().getAxes(axis)
         if self.canvas().getAxisMode(axis) == 'linear':
-            loc = ticker.MultipleLocator(interval)
             if axis in ['Left', 'Right']:
                 ax = axs.get_yaxis()
                 axs.set_yscale('linear')
@@ -147,9 +146,11 @@ class _MatplotlibTicks(CanvasTicks):
                 ax = axs.get_xaxis()
                 axs.set_xscale('linear')
             if which == 'major':
-                ax.set_major_locator(loc)
+                ax.set_major_locator(ticker.MultipleLocator(interval))
+                ax.set_minor_locator(ticker.MultipleLocator(self.getTickInterval(axis, which="minor", raw=False)))
             elif which == 'minor':
-                ax.set_minor_locator(loc)
+                ax.set_major_locator(ticker.MultipleLocator(self.getTickInterval(axis, which="major", raw=False)))
+                ax.set_minor_locator(ticker.MultipleLocator(interval))
         else:
             if axis in ['Left', 'Right']:
                 ax = axs.get_yaxis()
@@ -163,7 +164,6 @@ class _MatplotlibTicks(CanvasTicks):
             else:
                 base = self.getTickInterval(axis, which="major", raw=False)
                 subs = int(interval)
-            print(base, subs)
             subs = tuple([1.0 / subs * (i + 1) for i in range(subs)])
             ax.set_major_locator(ticker.LogLocator(base=base))
             ax.set_minor_locator(ticker.LogLocator(base=base, subs=subs))
