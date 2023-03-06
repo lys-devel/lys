@@ -11,22 +11,22 @@ class _AxisRangeWidget(QtWidgets.QGroupBox):
         self._cui = cui
         self._index = index
         self.__initlayout()
+        self.__setEvent()
         self.__update()
         self._cui.axesRangeChanged.connect(self.__update)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._buildContextMenu)
 
     def __initlayout(self):
-        self._point = QtWidgets.QRadioButton("Point", toggled=self.__changeMode)
-        self._range = QtWidgets.QRadioButton("Range", toggled=self.__changeMode)
+        self._point = QtWidgets.QRadioButton("Point")
+        self._range = QtWidgets.QRadioButton("Range")
 
-        self._value = ScientificSpinBox(valueChanged=self.__value)
-        self._value1 = ScientificSpinBox(valueChanged=self.__range)
-        self._value2 = ScientificSpinBox(valueChanged=self.__range)
+        self._value = ScientificSpinBox()
+        self._value1 = ScientificSpinBox()
+        self._value2 = ScientificSpinBox()
 
-        self._slider = QtWidgets.QSlider(QtCore.Qt.Horizontal, valueChanged=self.__slider)
+        self._slider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self._rslider = RangeSlider(QtCore.Qt.Horizontal)
-        self._rslider.sliderMoved.connect(self.__rslider)
 
         layout = QtWidgets.QGridLayout()
         layout.addWidget(self._point, 0, 0)
@@ -41,6 +41,18 @@ class _AxisRangeWidget(QtWidgets.QGroupBox):
         v.addWidget(self._rslider)
         self.setLayout(v)
 
+    def __setEvent(self):
+        self._point.toggled.connect(self.__changeMode)
+        self._range.toggled.connect(self.__changeMode)
+
+        self._value.valueChanged.connect(self.__value)
+        self._value1.valueChanged.connect(self.__range)
+        self._value2.valueChanged.connect(self.__range)
+
+        self._slider.valueChanged.connect(self.__slider)
+        self._rslider.sliderMoved.connect(self.__rslider)
+
+    @ avoidCircularReference
     def __update(self, axes=None):
         if axes is not None:
             if self._index not in axes:
@@ -255,5 +267,6 @@ class FreeLinesWidget(QtWidgets.QScrollArea):
         self._axes = [_FreeLineWidget(self._cui, obj) for obj in self._cui.getFreeLines()]
         for i, ax in enumerate(self._axes):
             self._layout.insertWidget(i, ax)
+
     def sizeHint(self):
         return QtCore.QSize(100, 100)

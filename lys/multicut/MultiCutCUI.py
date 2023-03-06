@@ -22,13 +22,13 @@ class MultiCutCUI(QtCore.QObject):
     def __init__(self, wave):
         super().__init__()
         self._wave = MultiCutWave(wave)
-        self._axesRange = AxesRangeManager(wave.ndim)
+        self._axesRange = AxesRangeManager(wave)
         self._freeLine = FreeLineManager()
         self._children = ChildWaves(self)
         self._wave.dimensionChanged.connect(self.__reset)
 
     def __reset(self, wave):
-        self._axesRange.reset(wave.ndim)
+        self._axesRange.reset(wave)
         self._freeLine.clear()
         self._children.clear()
 
@@ -280,12 +280,12 @@ class AxesRangeManager(QtCore.QObject):
     Emitted after :meth:`setAxisRange` is called.
     """
 
-    def __init__(self, dim):
+    def __init__(self, wave):
         super().__init__()
-        self.reset(dim)
+        self.reset(wave)
 
-    def reset(self, dim):
-        self._ranges = [0] * dim
+    def reset(self, wave):
+        self._ranges = [ax[0] for ax in wave.axes]
 
     @avoidCircularReference
     def setAxisRange(self, axis, range):

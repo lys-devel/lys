@@ -13,6 +13,8 @@ class PrefilterTab(QtWidgets.QWidget):
         self._dim = 0
 
     def __initlayout__(self):
+        self._label = QtWidgets.QLabel()
+        self.__label()
         self._filt = filters.FiltersGUI()
         apply = QtWidgets.QPushButton("Apply filters", clicked=self._update)
 
@@ -20,11 +22,17 @@ class PrefilterTab(QtWidgets.QWidget):
         self.__useDask.setChecked(True)
 
         layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self._label)
         layout.addWidget(self._filt)
         layout.addWidget(self.__useDask)
         layout.addWidget(apply)
         self.setLayout(layout)
         self.adjustSize()
+
+    def __label(self):
+        w = self._cui.getRawWave()
+        txt = "shape: {0}, dtype: {1}, chunk: {2}".format(w.shape, w.dtype, w.chunksize)
+        self._label.setText(txt)
 
     def _update(self):
         dim = self._filt.getFilters().getRelativeDimension()

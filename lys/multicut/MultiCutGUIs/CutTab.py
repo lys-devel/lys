@@ -10,8 +10,11 @@ class CutTab(QtWidgets.QTabWidget):
     def __init__(self, cui, gui):
         super().__init__()
         self._cui = cui
+        self._cui.filterApplied.connect(self.__update)
+        self._cui.dimensionChanged.connect(self.__update)
         self._gui = weakref.ref(gui)
         self.__initlayout__()
+        self.__update()
 
     @property
     def gui(self):
@@ -26,11 +29,11 @@ class CutTab(QtWidgets.QTabWidget):
         vbox.addWidget(ChildWavesGUI(self._cui, self.gui.display))
         vbox.addLayout(hbox)
 
-        make = QtWidgets.QGroupBox("Data")
-        make.setLayout(vbox)
+        self._make = QtWidgets.QGroupBox("Data")
+        self._make.setLayout(vbox)
 
         vbox2 = QtWidgets.QVBoxLayout()
-        vbox2.addWidget(make)
+        vbox2.addWidget(self._make)
         vbox2.addWidget(self.gui.interactiveWidget())
         vbox2.addStretch()
         w = QtWidgets.QWidget()
@@ -39,6 +42,11 @@ class CutTab(QtWidgets.QTabWidget):
         self.addTab(w, "Main")
         self.addTab(AxesRangeWidget(self._cui), "Range")
         self.addTab(FreeLinesWidget(self._cui), "Lines")
+
+    def __update(self):
+        w = self._cui.getFilteredWave()
+        txt = "Data shape: {0}, dtype: {1}".format(w.shape, w.dtype)
+        self._make.setTitle(txt)
 
     def _add(self):
         d = AddWaveDialog(self, self._cui)
