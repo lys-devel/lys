@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MultiCutCUI &mdash; lys 0.1.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="fitting module" href="../fitting.html" />
+    <link rel="prev" title="MultiCutGUI" href="MultiCutGUI.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../api.html">Python API for lys</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core.html">core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../functions.html">functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../glb.html">glb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../widgets.html">widgets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../filters.html">filters module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../multicut.html">multicut module</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../multicut.html#main-gui-component">Main GUI component</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../multicut.html#cui-components">CUI Components</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">MultiCutCUI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../fitting.html">fitting module</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../api.html">Python API for lys</a></li>
+          <li class="breadcrumb-item"><a href="../multicut.html">multicut module</a></li>
+      <li class="breadcrumb-item active">MultiCutCUI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/lys_/multicut/MultiCutCUI.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multicutcui">
+<h1>MultiCutCUI<a class="headerlink" href="#multicutcui" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.multicut.MultiCutCUI.MultiCutCUI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.multicut.MultiCutCUI.</span></span><span class="sig-name descname"><span class="pre">MultiCutCUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/multicut/MultiCutCUI.html#MultiCutCUI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.multicut.MultiCutCUI.MultiCutCUI" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>MultiCutCUI is a class that manage contents of <a class="reference internal" href="MultiCutGUI.html#lys.multicut.MultiCutGUI.MultiCut" title="lys.multicut.MultiCutGUI.MultiCut"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.multicut.MultiCutGUI.MultiCut</span></code></a>.</p>
+<p>The instance of this class is automatically generated by <a class="reference internal" href="MultiCutGUI.html#lys.multicut.MultiCutGUI.MultiCut" title="lys.multicut.MultiCutGUI.MultiCut"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.multicut.MultiCutGUI.MultiCut</span></code></a> and therefore users should not instantiate this class.</p>
+<p>The functionarities of this class is composed of <a class="reference internal" href="#lys.multicut.MultiCutCUI.MultiCutWave" title="lys.multicut.MultiCutCUI.MultiCutWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiCutWave</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ChildWaves</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AxesRangeManger</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">FreeLineManager</span></code>.</p>
+<p>The methods of above classes can be accessed directly from this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wave</strong> (<a class="reference internal" href="../core.html#lys.core.Wave" title="lys.core.Wave"><em>Wave</em></a><em> or </em><a class="reference internal" href="../core.html#lys.core.DaskWave" title="lys.core.DaskWave"><em>DaskWave</em></a>) – The wave to be analyzed by MultiCut.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.multicut.MultiCutCUI.MultiCutWave">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.multicut.MultiCutCUI.</span></span><span class="sig-name descname"><span class="pre">MultiCutWave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/multicut/MultiCutCUI.html#MultiCutWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.multicut.MultiCutCUI.MultiCutWave" title="Permalink to this definition"></a></dt>
+<dd><p>This class manage wave and filter for analysis.</p>
+<p>All methods in this class can be accessed from <a class="reference internal" href="#lys.multicut.MultiCutCUI.MultiCutCUI" title="lys.multicut.MultiCutCUI.MultiCutCUI"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiCutCUI</span></code></a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.multicut.MultiCutCUI.MultiCutWave.applyFilter">
+<span class="sig-name descname"><span class="pre">applyFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/multicut/MultiCutCUI.html#MultiCutWave.applyFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.multicut.MultiCutCUI.MultiCutWave.applyFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Apply filter to the wave.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filt</strong> (<em>Filter</em>) – The filter to be applied.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.multicut.MultiCutCUI.MultiCutWave.dimensionChanged">
+<span class="sig-name descname"><span class="pre">dimensionChanged</span></span><a class="headerlink" href="#lys.multicut.MultiCutCUI.MultiCutWave.dimensionChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the dimension of the filtered wave is changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.multicut.MultiCutCUI.MultiCutWave.getFilteredWave">
+<span class="sig-name descname"><span class="pre">getFilteredWave</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/multicut/MultiCutCUI.html#MultiCutWave.getFilteredWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.multicut.MultiCutCUI.MultiCutWave.getFilteredWave" title="Permalink to this definition"></a></dt>
+<dd><p>Get filtered wave instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The filtered wave.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../core.html#lys.core.DaskWave" title="lys.core.DaskWave">DaskWave</a> or <a class="reference internal" href="../core.html#lys.core.Wave" title="lys.core.Wave">Wave</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.multicut.MultiCutCUI.MultiCutWave.getRawWave">
+<span class="sig-name descname"><span class="pre">getRawWave</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/multicut/MultiCutCUI.html#MultiCutWave.getRawWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.multicut.MultiCutCUI.MultiCutWave.getRawWave" title="Permalink to this definition"></a></dt>
+<dd><p>Get raw wave instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The instance of the raw wave.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../core.html#lys.core.DaskWave" title="lys.core.DaskWave">DaskWave</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.multicut.MultiCutCUI.MultiCutWave.useDask">
+<span class="sig-name descname"><span class="pre">useDask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/multicut/MultiCutCUI.html#MultiCutWave.useDask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.multicut.MultiCutCUI.MultiCutWave.useDask" title="Permalink to this definition"></a></dt>
+<dd><p>Specify whether the DaskWave is used for processing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>b</strong> (<em>bool</em>) – If True, DaskWave is used for processing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="MultiCutGUI.html" class="btn btn-neutral float-left" title="MultiCutGUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../fitting.html" class="btn btn-neutral float-right" title="fitting module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

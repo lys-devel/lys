@@ -139,7 +139,7 @@ def edit(data):
     return Table(data)
 
 
-def multicut(data):
+def multicut(data, returnInstance=False):
     """
     Analyze the data by MultiCut.
 
@@ -147,7 +147,9 @@ def multicut(data):
         data(Wave or DaskWave or arraylike): The data to be analyzed.
     """
     from .multicut import MultiCut
-    MultiCut(data)
+    m = MultiCut(data)
+    if returnInstance:
+        return m
 
 
 def frontCanvas(exclude=[]):

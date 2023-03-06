@@ -192,10 +192,19 @@
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement mapPosition(event, axis) method.&quot;</span><span class="p">)</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">_RegionSelector</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_MouseEventBase</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">_RegionSelector</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__select_rect</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
@@ -218,11 +227,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__select_rect</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<span class="k">class</span> <span class="nc">_RangeMove</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_RangeMove</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__flg</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseMoved</span><span class="p">)</span>
@@ -267,10 +275,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s2">&quot;Top&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">_LineDrawer</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_LineDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
@@ -297,10 +304,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_InfiniteLineDrawer</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_InfiniteLineDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
@@ -327,10 +333,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_RectDrawer</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_RectDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rect</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
@@ -359,10 +364,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_rect</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_RegionDrawer</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_RegionDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_region</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
@@ -397,10 +401,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_region</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_FreeRegionDrawer</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_FreeRegionDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
@@ -427,10 +430,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_CrosshairDrawer</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">_CrosshairDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">canvas</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>

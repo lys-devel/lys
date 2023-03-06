@@ -278,6 +278,15 @@
 <div class="viewcode-block" id="Filters.getRelativeDimension"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.Filters.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">getRelativeDimension</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">])</span></div>
 
+<div class="viewcode-block" id="Filters.isEmpty"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.Filters.isEmpty">[docs]</a>    <span class="k">def</span> <span class="nf">isEmpty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the filter is empty.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if the filter is empty.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
+
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">:</span>

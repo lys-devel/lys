@@ -146,21 +146,22 @@
 
 <span class="sd">    Any type of sequential array will be automatically converted to numpy.ndarray when it is set as *data*.</span>
 
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; w = Wave([1,2,3])</span>
-<span class="sd">        &gt;&gt;&gt; w.data</span>
-<span class="sd">        [1,2,3]</span>
-<span class="sd">        &gt;&gt;&gt; w.data = [2,3,4]</span>
-<span class="sd">        &gt;&gt;&gt; w.data</span>
-<span class="sd">        [2,3,4]</span>
+<span class="sd">    Example::</span>
+
+<span class="sd">        from lys import Wave</span>
+
+<span class="sd">        w = Wave([1,2,3])</span>
+<span class="sd">        w.data # [1,2,3]</span>
+
+<span class="sd">        w.data = [2,3,4]</span>
+<span class="sd">        w.data # [2,3,4]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;set data and update axes&quot;&quot;&quot;</span>
         <span class="n">instance</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">instance</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
         <span class="n">instance</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">objtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -217,17 +218,10 @@
     <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="c1"># check type</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Axes should be a list of 1-dimensional array or None: Present value = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Axes should be a 1-dimensional sequence or None: Present value = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndim</span><span class="p">)]</span>
-        <span class="c1"># if len(value) != instance.data.ndim:</span>
-        <span class="c1">#    raise ValueError(&quot;length of axes should match data.ndim&quot;)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Axes should be a list of array or None: Present value = &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
 
         <span class="c1"># set actual instance</span>
-        <span class="n">instance</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="n">WaveAxes</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">value</span><span class="p">])</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="n">WaveAxes</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">&quot;update&quot;</span><span class="p">):</span>
             <span class="n">instance</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
@@ -250,22 +244,25 @@
 <span class="sd">        :class:`Wave`, :attr:`Wave.axes`, :class:`DaskWave`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ndim</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">d</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__createValidAxis</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="n">d</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__createValidAxis</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__createValidAxis</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">(),</span> <span class="s2">&quot;update&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
 <div class="viewcode-block" id="WaveAxes.getAxis"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveAxes.getAxis">[docs]</a>    <span class="k">def</span> <span class="nf">getAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return the axis specified dimension.</span>
-
-<span class="sd">        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.</span>
-
-<span class="sd">        If the specified axis is None, then the default axis is automatically generated and returned.</span>
+<span class="sd">        Shortcut to wave.axes[dim]</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            dim (int): The dimension of the axis.</span>
@@ -273,53 +270,21 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            numpy.ndarray: The axis of the specified dimension.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave(np.ones([2,2]), [1,2], None)</span>
-<span class="sd">            &gt;&gt;&gt; w.getAxis(0)</span>
-<span class="sd">            [1,2]</span>
-<span class="sd">            &gt;&gt;&gt; w.getAxis(1)</span>
-<span class="sd">            [0,1] # automatically generated axis</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">__createValidAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">dim</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&lt;=</span> <span class="n">dim</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">elif</span> <span class="n">val</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span> <span class="o">==</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="n">val</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">]))</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">]):</span>
-                    <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">NaN</span>
-                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">],</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>
-                    <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">return</span> <span class="n">res</span></div>
-
-<div class="viewcode-block" id="WaveAxes.axisIsValid"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveAxes.axisIsValid">[docs]</a>    <span class="k">def</span> <span class="nf">axisIsValid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check if the axis is valid.</span>
-
-<span class="sd">        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            dim (int): The dimension to check the axis is valid.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: The specified axis is valid or not.</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave(np.ones([2,2]), [1,2], None)</span>
-<span class="sd">            &gt;&gt;&gt; w.axisIsValid(0)</span>
-<span class="sd">            True</span>
-<span class="sd">            &gt;&gt;&gt; w.axisIsValid(1)</span>
-<span class="sd">            False</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ax</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span></div>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">])</span>
+                <span class="n">res</span><span class="p">[:</span><span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">],</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="n">val</span><span class="p">[:</span><span class="nb">min</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">dim</span><span class="p">],</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+                <span class="k">return</span> <span class="n">res</span>
 
 <div class="viewcode-block" id="WaveAxes.posToPoint"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveAxes.posToPoint">[docs]</a>    <span class="k">def</span> <span class="nf">posToPoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -395,10 +360,56 @@
             <span class="k">return</span> <span class="n">ax</span><span class="p">[</span><span class="n">indice</span><span class="p">]</span></div>
 
     <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="k">while</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
-        <span class="k">while</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">data</span><span class="o">.</span><span class="n">ndim</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span></div>
+        <span class="n">old_axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">ndim</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">old_axes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__createValidAxis</span><span class="p">(</span><span class="n">old_axes</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="n">d</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__createValidAxis</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
+
+    <span class="o">@</span> <span class="nb">property</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shortcut to axes[0]</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            from lys import Wave</span>
+<span class="sd">            w = Wave([1,2,3], [1,2,3])</span>
+<span class="sd">            w.x</span>
+<span class="sd">            # [1,2,3]</span>
+<span class="sd">            w.x = [3,4,5]</span>
+<span class="sd">            w.x</span>
+<span class="sd">            # [3,4,5]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="o">@</span> <span class="n">x</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="o">@</span> <span class="nb">property</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shortcut to axes[1]. See :attr:`x`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="o">@</span> <span class="n">y</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="o">@</span> <span class="nb">property</span>
+    <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Shortcut to axes[2]. See :attr:`x`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="o">@</span> <span class="n">z</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
 
 <span class="k">class</span> <span class="nc">_WaveNoteDescriptor</span><span class="p">:</span>
@@ -474,59 +485,7 @@
     <span class="k">return</span> <span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">note</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="WaveBase"><a class="viewcode-back" href="../../lys_/core.html#lys.core.WaveBase">[docs]</a><span class="k">class</span> <span class="nc">WaveBase</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class of :class:`Wave` and :class:`DaskWave`.</span>
-
-<span class="sd">    This class implement some useful shortcuts to functionarities of :class:`Wave` and :class:`DaskWave`.</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="o">@</span> <span class="nb">property</span>
-    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shortcut to axes[0]</span>
-
-<span class="sd">        Example::</span>
-
-<span class="sd">            from lys import Wave</span>
-<span class="sd">            w = Wave([1,2,3], [1,2,3])</span>
-<span class="sd">            w.x</span>
-<span class="sd">            # [1,2,3]</span>
-<span class="sd">            w.x = [3,4,5]</span>
-<span class="sd">            w.x</span>
-<span class="sd">            # [3,4,5]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-    <span class="o">@</span> <span class="n">x</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="o">@</span> <span class="nb">property</span>
-    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shortcut to axes[1]. See :attr:`x`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-    <span class="o">@</span> <span class="n">y</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-
-    <span class="o">@</span> <span class="nb">property</span>
-    <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">        Shortcut to axes[2]. See :attr:`x`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-
-    <span class="o">@</span> <span class="n">z</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
-
-
-<div class="viewcode-block" id="Wave"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave">[docs]</a><span class="k">class</span> <span class="nc">Wave</span><span class="p">(</span><span class="n">WaveBase</span><span class="p">):</span>
+<div class="viewcode-block" id="Wave"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave">[docs]</a><span class="k">class</span> <span class="nc">Wave</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Wave class is a central data class in lys, which is composed of :attr:`data`, :attr:`axes`, and :attr:`note`.</span>
 
@@ -669,6 +628,15 @@
                 <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;_axes&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;_note&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__reduce_ex__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proto</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_produceWave</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
@@ -778,7 +746,26 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;Wave object (name = </span><span class="si">{0}</span><span class="s2">, dtype = </span><span class="si">{1}</span><span class="s2">, shape = </span><span class="si">{2}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">()</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">tuple</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">key</span><span class="p">,)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">key</span><span class="p">),)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)])</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span><span class="p">[</span><span class="n">sl</span><span class="p">]</span> <span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">sl</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="n">key</span><span class="p">)]</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="n">WaveAxes</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">note</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_note</span>
+        <span class="k">return</span> <span class="n">w</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
     <span class="c1"># deprecated methods</span>
+
 <div class="viewcode-block" id="Wave.Name"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.Name">[docs]</a>    <span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;deprecated method&quot;&quot;&quot;</span>
         <span class="kn">import</span> <span class="nn">inspect</span>
@@ -793,33 +780,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wave.Save is deprecated. use Wave.export instead&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">inspect</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wave.__getitem__ is deprecated.&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ax</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                    <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
-            <span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">w</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">inspect</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wave.__setitem__ is deprecated.&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">_DaskWaveDataDescriptor</span><span class="p">:</span>
@@ -832,14 +793,13 @@
     <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">instance</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">instance</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">objtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">_data</span>
 
 
-<div class="viewcode-block" id="DaskWave"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave">[docs]</a><span class="k">class</span> <span class="nc">DaskWave</span><span class="p">(</span><span class="n">WaveBase</span><span class="p">):</span>
+<div class="viewcode-block" id="DaskWave"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave">[docs]</a><span class="k">class</span> <span class="nc">DaskWave</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    *DaskWave* class is a central data class in lys, which is used for easy parallel computing via dask.</span>
 
@@ -968,6 +928,15 @@
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                 <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;_axes&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;_note&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+                <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DaskWave.compute"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>

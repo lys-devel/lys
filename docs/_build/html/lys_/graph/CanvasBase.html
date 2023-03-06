@@ -54,6 +54,7 @@
 <li class="toctree-l4"><a class="reference internal" href="../widgets/mdi.html">LysSubWindow</a></li>
 <li class="toctree-l4"><a class="reference internal" href="../widgets/fileview.html">FileView</a></li>
 <li class="toctree-l4 current"><a class="reference internal" href="../canvas.html">lysCanvas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../widgets/table.html">lysTable</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../widgets.html#module-lys.widgets.general">General widgets</a></li>
@@ -61,7 +62,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../filters.html">filters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fitting.html">fitting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../lys.Analysis.html">lys.Analysis package</a></li>
 </ul>
 </li>
 </ul>
@@ -155,6 +155,12 @@
 <dd><p>Finalize the canvas.</p>
 <p>Several graph library (including matplotlib) requires explicit finalization to break circular reference, which causes memory leak.</p>
 <p>Call this method to finalize the canvas, which is usually done by parent widget (such as Graph).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.canvas.interface.CanvasBase.CanvasBase.finalized">
+<span class="sig-name descname"><span class="pre">finalized</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.CanvasBase.CanvasBase.finalized" title="Permalink to this definition"></a></dt>
+<dd><p>pyqtSignal that is emitted when the canvas is finalized.</p>
 </dd></dl>
 
 <dl class="py attribute">

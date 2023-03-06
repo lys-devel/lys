@@ -140,6 +140,8 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;pyqtSignal that is emitted when the canvas is initialized.&quot;&quot;&quot;</span>
     <span class="n">updated</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;pyqtSignal that is emitted when the canvas is updated.&quot;&quot;&quot;</span>
+    <span class="n">finalized</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;pyqtSignal that is emitted when the canvas is finalized.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_saveflg</span> <span class="o">=</span> <span class="kc">False</span>
@@ -194,7 +196,7 @@
 
 <span class="sd">        Call this method to finalize the canvas, which is usually done by parent widget (such as Graph).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">finalized</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CanvasBase.delayUpdate"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.delayUpdate">[docs]</a>    <span class="k">def</span> <span class="nf">delayUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>

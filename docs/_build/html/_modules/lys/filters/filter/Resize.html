@@ -156,7 +156,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">position</span>
 
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">axes</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">:</span>
             <span class="n">axes</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createAxis</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">ax</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span>
@@ -178,10 +178,7 @@
         <span class="k">return</span> <span class="n">data</span>
 
     <span class="k">def</span> <span class="nf">_createAxis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">ax</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">wave</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
-            <span class="n">axis_old</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">axis_old</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">axis_old</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">e</span> <span class="o">=</span> <span class="n">axis_old</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">newlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">axis_old</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span>

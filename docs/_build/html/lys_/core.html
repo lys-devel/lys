@@ -76,16 +76,12 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#lys.core.WaveAxes"><code class="docutils literal notranslate"><span class="pre">WaveAxes</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveAxes.axisIsValid"><code class="docutils literal notranslate"><span class="pre">WaveAxes.axisIsValid()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveAxes.getAxis"><code class="docutils literal notranslate"><span class="pre">WaveAxes.getAxis()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveAxes.pointToPos"><code class="docutils literal notranslate"><span class="pre">WaveAxes.pointToPos()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveAxes.posToPoint"><code class="docutils literal notranslate"><span class="pre">WaveAxes.posToPoint()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#lys.core.WaveBase"><code class="docutils literal notranslate"><span class="pre">WaveBase</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveBase.x"><code class="docutils literal notranslate"><span class="pre">WaveBase.x</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveBase.y"><code class="docutils literal notranslate"><span class="pre">WaveBase.y</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveBase.z"><code class="docutils literal notranslate"><span class="pre">WaveBase.z</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveAxes.x"><code class="docutils literal notranslate"><span class="pre">WaveAxes.x</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveAxes.y"><code class="docutils literal notranslate"><span class="pre">WaveAxes.y</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.core.WaveAxes.z"><code class="docutils literal notranslate"><span class="pre">WaveAxes.z</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#lys.core.WaveNote"><code class="docutils literal notranslate"><span class="pre">WaveNote</span></code></a><ul>
@@ -99,7 +95,6 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filters.html">filters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fitting.html">fitting module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../lys.Analysis.html">lys.Analysis package</a></li>
 </ul>
 </li>
 </ul>
@@ -134,7 +129,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="lys.core.DaskWave">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.core.</span></span><span class="sig-name descname"><span class="pre">DaskWave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">note</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/core.html#DaskWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.core.DaskWave" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.core.WaveBase" title="lys.core.WaveBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaveBase</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
 <p><em>DaskWave</em> class is a central data class in lys, which is used for easy parallel computing via dask.</p>
 <p>This class is mainly used for parallel computing of data <em>with axes and notes</em>, which enables us to consistent calculation of data and axes.
 Particularly, <em>DaskWave</em> is extensively used in <em>Multicut</em> package.</p>
@@ -351,7 +346,7 @@ All public methods can also be accessed from <a class="reference internal" href=
 <dl class="py class">
 <dt class="sig sig-object py" id="lys.core.Wave">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.core.</span></span><span class="sig-name descname"><span class="pre">Wave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">note</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/core.html#Wave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.core.Wave" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lys.core.WaveBase" title="lys.core.WaveBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaveBase</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
 <p>Wave class is a central data class in lys, which is composed of <a class="reference internal" href="#lys.core.Wave.data" title="lys.core.Wave.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data</span></code></a>, <a class="reference internal" href="#lys.core.Wave.axes" title="lys.core.Wave.axes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">axes</span></code></a>, and <a class="reference internal" href="#lys.core.Wave.note" title="lys.core.Wave.note"><code class="xref py py-attr docutils literal notranslate"><span class="pre">note</span></code></a>.</p>
 <p><a class="reference internal" href="#lys.core.Wave.data" title="lys.core.Wave.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">data</span></code></a> is a numpy array of any dimension and <a class="reference internal" href="#lys.core.Wave.axes" title="lys.core.Wave.axes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">axes</span></code></a> is a list of numpy arrays with size = data.ndim.
 <a class="reference internal" href="#lys.core.Wave.note" title="lys.core.Wave.note"><code class="xref py py-attr docutils literal notranslate"><span class="pre">note</span></code></a> is a dictionary, which is used to save metadata.</p>
@@ -489,13 +484,14 @@ All public methods can also be accessed from <a class="reference internal" href=
 <dd><p><em>data</em> is numpy.ndarray that represents data of <a class="reference internal" href="#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wave</span></code></a></p>
 <p>All public methods of <em>data</em> can also be accessed from <a class="reference internal" href="#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wave</span></code></a>.</p>
 <p>Any type of sequential array will be automatically converted to numpy.ndarray when it is set as <em>data</em>.</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">data</span>
-<span class="go">[1,2,3]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">data</span>
-<span class="go">[2,3,4]</span>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="n">w</span><span class="o">.</span><span class="n">data</span> <span class="c1"># [1,2,3]</span>
+
+<span class="n">w</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">w</span><span class="o">.</span><span class="n">data</span> <span class="c1"># [2,3,4]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -630,7 +626,7 @@ Calling <em>update()</em> emit <em>modified</em> signal manually.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="lys.core.WaveAxes">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.core.</span></span><span class="sig-name descname"><span class="pre">WaveAxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/core.html#WaveAxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.core.WaveAxes" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.core.</span></span><span class="sig-name descname"><span class="pre">WaveAxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/core.html#WaveAxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.core.WaveAxes" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
 <p>Axes in <a class="reference internal" href="#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wave</span></code></a> and <a class="reference internal" href="#lys.core.DaskWave" title="lys.core.DaskWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">DaskWave</span></code></a> class</p>
 <p><em>WaveAxes</em> is a list of numpy array that defines axes of the <a class="reference internal" href="#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wave</span></code></a> and <a class="reference internal" href="#lys.core.DaskWave" title="lys.core.DaskWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">DaskWave</span></code></a>.</p>
@@ -642,37 +638,9 @@ Calling <em>update()</em> emit <em>modified</em> signal manually.</p>
 <p><a class="reference internal" href="#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wave</span></code></a>, <a class="reference internal" href="#lys.core.Wave.axes" title="lys.core.Wave.axes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Wave.axes</span></code></a>, <a class="reference internal" href="#lys.core.DaskWave" title="lys.core.DaskWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">DaskWave</span></code></a></p>
 </div>
 <dl class="py method">
-<dt class="sig sig-object py" id="lys.core.WaveAxes.axisIsValid">
-<span class="sig-name descname"><span class="pre">axisIsValid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/core.html#WaveAxes.axisIsValid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.core.WaveAxes.axisIsValid" title="Permalink to this definition"></a></dt>
-<dd><p>Check if the axis is valid.</p>
-<p>This method can be accessed directly from <a class="reference internal" href="#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wave</span></code></a> and <a class="reference internal" href="#lys.core.DaskWave" title="lys.core.DaskWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">DaskWave</span></code></a> class through __getattr__.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – The dimension to check the axis is valid.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The specified axis is valid or not.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">True</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="lys.core.WaveAxes.getAxis">
 <span class="sig-name descname"><span class="pre">getAxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/core.html#WaveAxes.getAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.core.WaveAxes.getAxis" title="Permalink to this definition"></a></dt>
-<dd><p>Return the axis specified dimension.</p>
-<p>This method can be accessed directly from <a class="reference internal" href="#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wave</span></code></a> and <a class="reference internal" href="#lys.core.DaskWave" title="lys.core.DaskWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">DaskWave</span></code></a> class through __getattr__.</p>
-<p>If the specified axis is None, then the default axis is automatically generated and returned.</p>
+<dd><p>Shortcut to wave.axes[dim]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – The dimension of the axis.</p>
@@ -684,14 +652,6 @@ Calling <em>update()</em> emit <em>modified</em> signal manually.</p>
 <dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">]),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">[1,2]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">[0,1] # automatically generated axis</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -764,17 +724,9 @@ When <em>axis</em> = 1, <em>pos</em> = (y1, y2, y3, …) is translated to indice
 </div>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="lys.core.WaveBase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.core.</span></span><span class="sig-name descname"><span class="pre">WaveBase</span></span><a class="reference internal" href="../_modules/lys/core.html#WaveBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.core.WaveBase" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
-<p>Base class of <a class="reference internal" href="#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wave</span></code></a> and <a class="reference internal" href="#lys.core.DaskWave" title="lys.core.DaskWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">DaskWave</span></code></a>.</p>
-<p>This class implement some useful shortcuts to functionarities of <a class="reference internal" href="#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">Wave</span></code></a> and <a class="reference internal" href="#lys.core.DaskWave" title="lys.core.DaskWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">DaskWave</span></code></a>.</p>
 <dl class="py property">
-<dt class="sig sig-object py" id="lys.core.WaveBase.x">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#lys.core.WaveBase.x" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lys.core.WaveAxes.x">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#lys.core.WaveAxes.x" title="Permalink to this definition"></a></dt>
 <dd><p>Shortcut to axes[0]</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span>
@@ -789,15 +741,15 @@ When <em>axis</em> = 1, <em>pos</em> = (y1, y2, y3, …) is translated to indice
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="lys.core.WaveBase.y">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#lys.core.WaveBase.y" title="Permalink to this definition"></a></dt>
-<dd><p>Shortcut to axes[1]. See <a class="reference internal" href="#lys.core.WaveBase.x" title="lys.core.WaveBase.x"><code class="xref py py-attr docutils literal notranslate"><span class="pre">x</span></code></a></p>
+<dt class="sig sig-object py" id="lys.core.WaveAxes.y">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#lys.core.WaveAxes.y" title="Permalink to this definition"></a></dt>
+<dd><p>Shortcut to axes[1]. See <a class="reference internal" href="#lys.core.WaveAxes.x" title="lys.core.WaveAxes.x"><code class="xref py py-attr docutils literal notranslate"><span class="pre">x</span></code></a></p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="lys.core.WaveBase.z">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#lys.core.WaveBase.z" title="Permalink to this definition"></a></dt>
-<dd><p>Shortcut to axes[2]. See <a class="reference internal" href="#lys.core.WaveBase.x" title="lys.core.WaveBase.x"><code class="xref py py-attr docutils literal notranslate"><span class="pre">x</span></code></a></p>
+<dt class="sig sig-object py" id="lys.core.WaveAxes.z">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#lys.core.WaveAxes.z" title="Permalink to this definition"></a></dt>
+<dd><p>Shortcut to axes[2]. See <a class="reference internal" href="#lys.core.WaveAxes.x" title="lys.core.WaveAxes.x"><code class="xref py py-attr docutils literal notranslate"><span class="pre">x</span></code></a></p>
 </dd></dl>
 
 </dd></dl>

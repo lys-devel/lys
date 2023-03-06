@@ -148,7 +148,7 @@
 <span class="sd">    See :class:`.FilterInterface.FilterInterface` for general description of Filters.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        range(list of tuple of size 2): region to be integrated</span>
+<span class="sd">        range(list of length 2 sequence or None): region to be integrated. It it is None, the corresponding axis is not integrated.</span>
 <span class="sd">        sumtype(&#39;Sum&#39;, &#39;Mean&#39;, &#39;Max&#39;, &#39;Min&#39;, or &#39;Median&#39;)</span>
 
 <span class="sd">    Example::</span>
@@ -157,7 +157,7 @@
 <span class="sd">        import numpy as np</span>
 
 <span class="sd">        w = Wave(np.ones([5, 5, 5]), [1, 2, 3, 4, 5], [1, 2, 3, 4, 5], [2, 3, 4, 5, 6])</span>
-<span class="sd">        f = filters.IntegralFilter([(1, 4), (2, 4), (0, 0)], sumtype=&quot;Sum&quot;)</span>
+<span class="sd">        f = filters.IntegralFilter([(1, 4), (2, 4), None])</span>
 <span class="sd">        result = f.execute(w)</span>
 
 <span class="sd">        print(result.data)  # [6, 6, 6, 6, 6]</span>
@@ -169,28 +169,27 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="n">sumtype</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="n">sumtype</span><span class="o">=</span><span class="s2">&quot;Sum&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_range</span> <span class="o">=</span> <span class="nb">range</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sumtype</span> <span class="o">=</span> <span class="n">sumtype</span>
 
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">key</span><span class="p">,</span> <span class="n">sumaxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getIndexAnsSumAxes</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">)</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">ndim</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sumaxes</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">wave</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
-                    <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">sumaxes</span><span class="p">,</span> <span class="n">intaxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getIndexAnsSumAxes</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">)</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sumaxes</span> <span class="o">+</span> <span class="n">intaxes</span><span class="p">]</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">_getSumFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sumtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">sumaxes</span><span class="p">)),</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_getIndexAnsSumAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">rang</span><span class="p">):</span>
         <span class="n">sl</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sumaxes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">intaxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rang</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+                <span class="n">ind</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">posToPoint</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span>
+                <span class="n">intaxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
@@ -198,7 +197,7 @@
                 <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="o">*</span><span class="n">ind</span><span class="p">))</span>
                 <span class="n">sumaxes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">sl</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">sumaxes</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">key</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">sumaxes</span><span class="p">),</span> <span class="nb">list</span><span class="p">(</span><span class="n">intaxes</span><span class="p">)</span>
 
 <div class="viewcode-block" id="IntegralFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">,</span> <span class="s2">&quot;sumtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sumtype</span><span class="p">}</span></div>

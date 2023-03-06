@@ -2,7 +2,7 @@
 from lys.Qt import QtWidgets, QtCore, QtGui
 from lys.widgets import LysSubWindow, CanvasBase
 
-from .MultiCut import MultiCutCUI
+from .MultiCutCUI import MultiCutCUI
 from .CanvasManager import CanvasManager
 from .MultiCutGUIs import CutTab, AnimationTab, PrefilterTab, ExportDataTab
 
@@ -261,3 +261,7 @@ class MultiCut(_GridAttachedWindow):
             self.grid.append(c, pos, wid)
         c.Append(wave.getFilteredWave())
         return c
+
+    @property
+    def cui(self):
+        return self._cui

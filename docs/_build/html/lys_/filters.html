@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Filters in lys.filters" href="filters.filter.html" />
-    <link rel="prev" title="RectAnnotation module" href="graph/RectAnnot.html" /> 
+    <link rel="prev" title="lysTable" href="widgets/table.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -128,7 +128,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filter</strong> (<em>class that implements FilterInterface</em>) – filter to be added.</p></li>
 <li><p><strong>filterName</strong> (<em>str</em>) – name of filter. If omitted, default name is used.</p></li>
-<li><p><strong>gui</strong> (<em>class that implements FilterSettingBase</em><em>, </em><em>and is decorated by filterGUI</em>) – Widget that is used in MultiCut.</p></li>
+<li><p><strong>gui</strong> (<em>class that implements FilterSettingBase</em><em>, </em><em>and is decorated by filterGUI</em>) – Widget that is used in FilterGUI.</p></li>
 <li><p><strong>guiName</strong> (<em>str</em>) – name of filter in GUI.</p></li>
 <li><p><strong>guiGroup</strong> (<em>str</em>) – name of group in GUI.</p></li>
 </ul>
@@ -456,6 +456,20 @@ Developers should implement this method to make new filter.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.interface.Filters.isEmpty">
+<span class="sig-name descname"><span class="pre">isEmpty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/interface.html#Filters.isEmpty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.interface.Filters.isEmpty" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the filter is empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if the filter is empty.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="lys.filters.interface.Filters.saveAsFile">
 <span class="sig-name descname"><span class="pre">saveAsFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/interface.html#Filters.saveAsFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.interface.Filters.saveAsFile" title="Permalink to this definition"></a></dt>
 <dd><p>Save filter as file.</p>
@@ -505,8 +519,14 @@ Developers should implement this method to make new filter.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.GetFilters">
-<span class="sig-name descname"><span class="pre">GetFilters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filtersGUI.html#FiltersGUI.GetFilters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.GetFilters" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filtersGUI.html#FiltersGUI.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.clear" title="Permalink to this definition"></a></dt>
+<dd><p>Clear all filters in GUI.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.getFilters">
+<span class="sig-name descname"><span class="pre">getFilters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filtersGUI.html#FiltersGUI.getFilters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.getFilters" title="Permalink to this definition"></a></dt>
 <dd><p>Get filters based on the current state of the GUI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -516,12 +536,6 @@ Developers should implement this method to make new filter.</p>
 <dd class="field-even"><p><a class="reference internal" href="#lys.filters.interface.Filters" title="lys.filters.interface.Filters">Filters</a></p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lys.filters.filtersGUI.FiltersGUI.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filtersGUI.html#FiltersGUI.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filtersGUI.FiltersGUI.clear" title="Permalink to this definition"></a></dt>
-<dd><p>Clear all filters in GUI.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -555,7 +569,7 @@ Developers should implement this method to make new filter.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="graph/RectAnnot.html" class="btn btn-neutral float-left" title="RectAnnotation module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="widgets/table.html" class="btn btn-neutral float-left" title="lysTable" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="filters.filter.html" class="btn btn-neutral float-right" title="Filters in lys.filters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
