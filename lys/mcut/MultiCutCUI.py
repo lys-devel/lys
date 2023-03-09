@@ -22,7 +22,7 @@ class MultiCutCUI(QtCore.QObject):
     def __init__(self, wave):
         super().__init__()
         self._wave = MultiCutWave(wave)
-        self._axesRange = AxesRangeManager(wave)
+        self._axesRange = AxesRangeManager(self.getRawWave())
         self._freeLine = FreeLineManager()
         self._children = ChildWaves(self)
         self._wave.dimensionChanged.connect(self.__reset)

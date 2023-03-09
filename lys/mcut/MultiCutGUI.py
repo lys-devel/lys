@@ -10,20 +10,18 @@ from .MultiCutGUIs import CutTab, AnimationTab, PrefilterTab, ExportDataTab
 class _MultipleGrid(LysSubWindow):
     showMulti = QtCore.pyqtSignal()
 
-    def __init__(self):
+    def __init__(self, size=4):
         super().__init__()
         self.__initlayout()
+        self.setSize(size)
         self.__widget = None
         self.__supressCancel = False
         self.resize(400, 400)
         self.closed.connect(self.__finalize)
 
     def __finalize(self):
-        for i in range(4):
-            for j in range(4):
-                w = self.itemAtPosition(i, j)
-                if w is not None:
-                    w.finalize()
+        for w in self.widgets():
+            w.finalize()
 
     def __initlayout(self):
         self.layout = QtWidgets.QGridLayout()
@@ -38,48 +36,56 @@ class _MultipleGrid(LysSubWindow):
 
     def eventFilter(self, object, event):
         if event.type() == QtCore.QEvent.FocusOut:
-            self._canceled()
+            if self.__supressCancel:
+                self.__supressCancel = False
+            else:
+                self._canceled()
         return super().eventFilter(object, event)
+
+    def __startSelection(self):
+        for w in self.widgets():
+            w.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.raise_()
+        self._overlay.startSelection()
+        self.setFocus()
 
     def append(self, widget, pos=None, wid=None):
         if pos is None or wid is None:
-            self.raise_()
             self.__widget = widget
-            self._overlay.startSelection()
-            self.setFocus()
+            self.__startSelection()
             return
         for i in range(pos[0], pos[0] + wid[0]):
             for j in range(pos[1], pos[1] + wid[1]):
-                w = self.itemAtPosition(i, j)
-                if w is not None:
-                    self.layout.removeWidget(w)
-                    w.deleteLater()
-                    if isinstance(w, CanvasBase):
-                        w.finalize()
-        widget.keyPressed.connect(self.keyPress)
+                self.remove(i, j)
         self.layout.addWidget(widget, pos[0], pos[1], wid[0], wid[1])
+        widget.keyPressed.connect(self.__keyPress)
         self.__widget = None
+
+    def remove(self, row, column):
+        w = self.itemAtPosition(row, column)
+        if w is not None:
+            self.layout.removeWidget(w)
+            w.deleteLater()
+            if isinstance(w, CanvasBase):
+                w.finalize()
 
     def _selected(self, obj):
         pos, end = obj
         wid = end[0] - pos[0] + 1, end[1] - pos[1] + 1
+        for w in self.widgets():
+            w.setFocusPolicy(QtCore.Qt.StrongFocus)
         if self.__checkItem(pos, wid):
             self.__supressCancel = True
             msgBox = QtWidgets.QMessageBox(parent=self, text="There is a graph at this position. Do you really want to proceed?")
-            yes = msgBox.addButton(QtWidgets.QMessageBox.Yes)
+            msgBox.addButton(QtWidgets.QMessageBox.Yes)
             no = msgBox.addButton(QtWidgets.QMessageBox.No)
             cancel = msgBox.addButton(QtWidgets.QMessageBox.Cancel)
             msgBox.exec_()
-            if msgBox.clickedButton() == yes:
-                self.__supressCancel = False
-                self._overlay.lower()
-                return self.append(self.__widget, pos, wid)
             if msgBox.clickedButton() == no:
-                self.__supressCancel = False
                 return self._canceled()
             elif msgBox.clickedButton() == cancel:
-                self.__supressCancel = -1
-                return
+                self.__supressCancel = True
+                return self.__startSelection()
         self._overlay.lower()
         self.append(self.__widget, pos, wid)
 
@@ -91,18 +97,18 @@ class _MultipleGrid(LysSubWindow):
         return False
 
     def _canceled(self):
-        if self.__widget is not None and self.__supressCancel is False:
-            print("canceled")
+        if self.__widget is not None:
             self.__widget.finalize()
             self.__widget = None
             self._overlay.stopSelection()
             self._overlay.lower()
-        if self.__supressCancel == -1:
-            self.__supressCancel = False
-            self.setFocus()
-            self._overlay.startSelection()
+
+    def __keyPress(self, e):
+        if e.key() == QtCore.Qt.Key_M:
+            self.showMulti.emit()
 
     def setSize(self, size):
+        self.__size = size
         for s in range(size):
             self.layout.setColumnStretch(s, 1)
             self.layout.setRowStretch(s, 1)
@@ -114,9 +120,14 @@ class _MultipleGrid(LysSubWindow):
         else:
             return None
 
-    def keyPress(self, e):
-        if e.key() == QtCore.Qt.Key_M:
-            self.showMulti.emit()
+    def widgets(self):
+        wids = []
+        for i in range(self.__size):
+            for j in range(self.__size):
+                item = self.itemAtPosition(i, j)
+                if item not in wids and item is not None:
+                    wids.append(item)
+        return wids
 
 
 class _GridOverlay(QtWidgets.QWidget):
@@ -125,6 +136,7 @@ class _GridOverlay(QtWidgets.QWidget):
 
     def __init__(self, parent):
         super().__init__(parent=parent)
+        self.setFocusPolicy(QtCore.Qt.NoFocus)
         self.setParent(parent)
         self.setStyleSheet("background-color: transparent;")
         self.resize(parent.size())
@@ -164,7 +176,6 @@ class _GridOverlay(QtWidgets.QWidget):
         return int(x / (self.width() / 4)), int(y / (self.height() / 4))
 
     def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
         if self.__started:
             self.__started = False
             p1 = min(self.__p1[1], self.__p2[1]), min(self.__p1[0], self.__p2[0])
@@ -173,18 +184,19 @@ class _GridOverlay(QtWidgets.QWidget):
             if not self.__started:
                 self.__paint = False
             self.repaint()
+        return super().mouseReleaseEvent(event)
 
     def mousePressEvent(self, event):
-        super().mouseReleaseEvent(event)
         if self.__started:
             self.__p1 = self.__calcPosition(event)
             self.__p2 = self.__calcPosition(event)
+        return super().mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event):
-        super().mouseReleaseEvent(event)
         if self.__started:
             self.__p2 = self.__calcPosition(event)
             self.repaint()
+        return super().mouseReleaseEvent(event)
 
 
 class _GridAttachedWindow(LysSubWindow):
@@ -192,14 +204,11 @@ class _GridAttachedWindow(LysSubWindow):
         super().__init__()
         self.setWindowTitle(title)
         self.grid = _MultipleGrid()
-        self.grid.setSize(4)
         self.grid.showMulti.connect(self.show)
         self.closeforce = False
         self.grid.closed.connect(self.forceclose)
         self.attach(self.grid)
         self.attachTo()
-        self.adjustSize()
-        self.updateGeometry()
 
     def forceclose(self):
         self.closeforce = True
@@ -232,11 +241,13 @@ class MultiCut(_GridAttachedWindow):
         self._ani = AnimationTab(self._cui)
         self._data = ExportDataTab(self._cui)
         self._ani.updated.connect(self._cut.update)
-        w = QtWidgets.QWidget()
-        lay = QtWidgets.QVBoxLayout(self)
+
+        lay = QtWidgets.QVBoxLayout()
         lay.addWidget(self._data)
         lay.addWidget(self._ani)
         lay.addStretch()
+
+        w = QtWidgets.QWidget()
         w.setLayout(lay)
         return w
 
@@ -252,6 +263,7 @@ class MultiCut(_GridAttachedWindow):
 
         self.setWidget(tab)
         self.adjustSize()
+        self.updateGeometry()
 
     def display(self, wave, type="grid", pos=None, wid=None):
         if type == "graph":

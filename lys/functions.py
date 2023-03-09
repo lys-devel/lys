@@ -146,7 +146,7 @@ def multicut(data, returnInstance=False):
     Args:
         data(Wave or DaskWave or arraylike): The data to be analyzed.
     """
-    from .multicut import MultiCut
+    from .mcut import MultiCut
     m = MultiCut(data)
     if returnInstance:
         return m
