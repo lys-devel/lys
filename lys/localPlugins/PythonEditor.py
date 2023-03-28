@@ -312,7 +312,7 @@ class PythonEditor(LysSubWindow):
 
     def keyPressed(self, event):
         if event.key() == QtCore.Qt.Key_S:
-            if (event.modifiers() and QtCore.Qt.ControlModifier):
+            if (event.modifiers() == QtCore.Qt.ControlModifier):
                 self.save()
 
     def save(self):
