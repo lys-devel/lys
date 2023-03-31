@@ -4,6 +4,7 @@ from lys.Qt import QtWidgets
 from .WaveManager import ChildWavesGUI
 from .AxesManager import AxesRangeWidget, FreeLinesWidget
 from .AddWaveDialog import AddWaveDialog
+from .Template import TemplateDialog
 
 
 class CutTab(QtWidgets.QTabWidget):
@@ -24,6 +25,7 @@ class CutTab(QtWidgets.QTabWidget):
         hbox = QtWidgets.QHBoxLayout()
         hbox.addWidget(QtWidgets.QPushButton("Add", clicked=self._add))
         hbox.addWidget(QtWidgets.QPushButton("Typical", clicked=self.typical))
+        hbox.addWidget(QtWidgets.QPushButton("Template", clicked=self._template))
 
         vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(ChildWavesGUI(self._cui, self.gui.display))
@@ -54,6 +56,10 @@ class CutTab(QtWidgets.QTabWidget):
             w = self._cui.addWave(d.getAxes(), filter=d.getFilter(), name=d.getName())
             if d.getDisplayMode() is not None:
                 self.gui.display(w, type=d.getDisplayMode())
+
+    def _template(self):
+        d = TemplateDialog(self, self._cui.getFilteredWave().ndim, self.gui)
+        d.exec_()
 
     def typical(self):
         dim = self._cui.getFilteredWave().ndim

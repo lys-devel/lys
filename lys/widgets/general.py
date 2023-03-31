@@ -513,7 +513,7 @@ class AxisSelectionLayout(QtWidgets.QHBoxLayout):
             self.removeWidget(c)
             self.group.removeButton(c)
             c.deleteLater()
-        self.childs = [QtWidgets.QRadioButton(str(i)) for i in range(self.dimension)]
+        self.childs = [QtWidgets.QRadioButton(str(i + 1)) for i in range(self.dimension)]
         for c in self.childs:
             self.addWidget(c)
             self.group.addButton(c)

@@ -1,4 +1,3 @@
-
 from lys.Qt import QtWidgets, QtCore, QtGui
 from lys.widgets import LysSubWindow, CanvasBase
 
@@ -273,6 +272,12 @@ class MultiCut(_GridAttachedWindow):
             self.grid.append(c, pos, wid)
         c.Append(wave.getFilteredWave())
         return c
+
+    def saveAsDictionary(self, **kwargs):
+        return {"cui": self.cui.saveAsDictionary(**kwargs)}
+
+    def loadFromDictionary(self, d, **kwargs):
+        self.cui.loadFromDictionary(d.get("cui", {}), **kwargs)
 
     @property
     def cui(self):

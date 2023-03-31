@@ -37,6 +37,7 @@ class _RechunkSetting(FilterSettingBase):
         grid = QtWidgets.QGridLayout()
         for i in range(dimension):
             grid.addWidget(QtWidgets.QLabel("Dim " + str(i + 1)), 0, i)
+            self._chunk[i].setRange(1, 100000000)
             grid.addWidget(self._chunk[i], 1, i)
 
         self._auto = QtWidgets.QRadioButton("Auto", toggled=self._toggled)

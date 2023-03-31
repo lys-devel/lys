@@ -1,8 +1,6 @@
 import os
 import sys
 import shutil
-import fnmatch
-import itertools
 import logging
 from pathlib import Path
 
@@ -29,6 +27,9 @@ class FileSystemView(QtWidgets.QWidget):
 
     """
 
+    selectionChanged = QtCore.pyqtSignal(object, object)
+    "Emitted when the selected file is changed."
+
     def __init__(self, path, model=QtWidgets.QFileSystemModel(), drop=False, filter=True, menu=True):
         super().__init__()
         self._path = path
@@ -38,14 +39,22 @@ class FileSystemView(QtWidgets.QWidget):
         else:
             self._builder = None
 
+    def __loaded(self):
+        if not self._tree.rootIndex().isValid():
+            self._Model.mod.setRootPath(self._path)
+            root = self._Model.mapFromSource(self._Model.mod.index(self._path))
+            self._tree.setRootIndex(root)
+
     def __initUI(self, path, model, drop=False, filter=True):
         self._Model = _FileSystemModel(path, model, drop)
+        model.directoryLoaded.connect(self.__loaded)
 
         self._tree = QtWidgets.QTreeView()
         self._tree.setModel(self._Model)
         self._tree.setRootIndex(self._Model.indexFromPath(path))
         self._tree.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self._tree.customContextMenuRequested.connect(self._buildContextMenu)
+        self._tree.selectionModel().selectionChanged.connect(self.selectionChanged.emit)
 
         self._tree.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self._tree.setDragEnabled(True)
@@ -57,7 +66,7 @@ class FileSystemView(QtWidgets.QWidget):
         self._tree.setColumnHidden(1, True)
 
         edit = QtWidgets.QLineEdit()
-        edit.textChanged.connect(self._Model.SetNameFilter)
+        edit.textChanged.connect(self._setFilter)
 
         h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(QtWidgets.QLabel("Filter"))
@@ -68,6 +77,10 @@ class FileSystemView(QtWidgets.QWidget):
         if filter:
             layout.addLayout(h1)
         self.setLayout(layout)
+
+    def _setFilter(self, filter):
+        self._Model.setFilterRegularExpression(filter)
+        self._tree.setRootIndex(self._Model.indexFromPath(self._path))
 
     def _buildContextMenu(self, qPoint):
         if self._builder is not None:
@@ -105,7 +118,7 @@ class FileSystemView(QtWidgets.QWidget):
             res.append(self._path)
         return res
 
-    def registerFileMenu(self, ext, menu, add_default=True):
+    def registerFileMenu(self, ext, menu, add_default=True, **kwargs):
         """register new context menu to filetype specified by *ext*
 
         Args:
@@ -122,7 +135,7 @@ class FileSystemView(QtWidgets.QWidget):
             >>> menu.addAction(action)
             >>> view.registerFileMenu(".txt", menu)
         """
-        self._builder.register(ext, menu, add_default=add_default)
+        self._builder.register(ext, menu, add_default=add_default, **kwargs)
 
     def setPath(self, path):
         """
@@ -130,12 +143,14 @@ class FileSystemView(QtWidgets.QWidget):
         Args:
             path(str): root path
         """
+        self._path = path
         self._Model.setPath(path)
         self._tree.setRootIndex(self._Model.indexFromPath(path))
 
 
 class _FileSystemModel(QtCore.QSortFilterProxyModel):
     """Model class for FileSystemView"""
+    _exclude = ["__pycache__", "dask-worker-space"]
 
     def __init__(self, path, model, drop=False):
         super().__init__()
@@ -145,63 +160,39 @@ class _FileSystemModel(QtCore.QSortFilterProxyModel):
         self.mod.setFilter(QtCore.QDir.AllDirs | QtCore.QDir.Files | QtCore.QDir.NoDotAndDotDot)
         self.mod.setRootPath(self._path)
         self.setSourceModel(self.mod)
-        self._exclude = ["*__pycache__", "*dask-worker-space"]
-        self._matched = []
-        self._filters = []
+        self.setRecursiveFilteringEnabled(True)
 
     def setPath(self, path):
         self._path = path
         self.mod.setRootPath(path)
-        self.mod.setNameFilters(["*"])
 
     def indexFromPath(self, path):
         return self.mapFromSource(self.mod.index(path))
 
-    def SetNameFilter(self, filters):
-        filters = [fil for fil in filters.split(" ") if len(fil) != 0]
-        self._filters = self.__makeFilterString(filters)
-        it = QtCore.QDirIterator(self._path, self._filters, QtCore.QDir.Dirs | QtCore.QDir.Files, QtCore.QDirIterator.Subdirectories)
-        self._matched = []
-        while it.hasNext():
-            self._matched.append(it.next().replace(self._path + "/", ""))
-        self.mod.setNameFilters(["*"])
-        self.mod.setRootPath(self._path)
-
-    def __makeFilterString(self, filters):
-        result = []
-        for fs in itertools.permutations(filters):
-            res = "*"
-            for f in fs:
-                res += f + "*"
-            result.append(res)
-        return result
-
     def filterAcceptsRow(self, row, parent):
         index = self.mod.index(row, 0, parent)
-        name = self.mod.data(index, QtCore.Qt.DisplayRole)
-        path = self.mod.filePath(index).replace(self._path + "/", "")
-        for exc in self._exclude:
-            if fnmatch.fnmatch(name, exc):
-                return False
-        if self.mod.isDir(index):
-            return self._matchPath(path)
-        return self._matchPath(path, False)
+        path, root = Path(self.mod.filePath(index)), Path(self._path)
+        if root in path.parents:
+            for exc in self._exclude:
+                if exc in str(path):
+                    return False
+            return super().filterAcceptsRow(row, parent)
+        else:
+            return True
 
-    def _matchPath(self, path, dir=True):
-        if len(self._filters) == 0:
-            return True
-        if path == self._path:
-            return True
-        for m in self._matched:
-            if m == path:
-                return True
-            if dir:
-                if m.startswith(path + "/") or m == path:
-                    return True
-            else:
-                if m == path:
-                    return True
-        return False
+    def setFilterRegularExpression(self, filters):
+        exp = QtCore.QRegularExpression(filters)
+        if exp.isValid():
+            super().setFilterRegularExpression(exp)
+        else:
+            super().setFilterRegularExpression("5314548674534687654867")
+        self.mod.setRootPath(self._path)
+
+    def filePath(self, index):
+        return self.mod.filePath(self.mapToSource(index))
+
+    def isDir(self, index):
+        return self.mod.isDir(self.mapToSource(index))
 
     def flags(self, index):
         if self._drop:
@@ -223,15 +214,6 @@ class _FileSystemModel(QtCore.QSortFilterProxyModel):
         targets = [Path(str(targetDir.absolute()) + "/" + f.name) for f in files]
         _moveFiles(files, targets)
         return True
-
-    def isDir(self, index):
-        return self.mod.isDir(self.mapToSource(index))
-
-    def filePath(self, index):
-        return self.mod.filePath(self.mapToSource(index))
-
-    def parent(self, index):
-        return self.mapFromSource(self.mod.parent(self.mapToSource(index)))
 
 
 class _contextMenuBuilder:
@@ -262,7 +244,7 @@ class _contextMenuBuilder:
 
         self.__actions = menu
 
-    def register(self, ext, menu, add_default):
+    def register(self, ext, menu, add_default, hide_load=False, hide_print=False):
         menu_s = self._duplicateMenu(menu)
         menu_m = self._duplicateMenu(menu)
         if add_default:
@@ -270,8 +252,10 @@ class _contextMenuBuilder:
                 menu_s.addAction(self._new)
                 menu_m.addAction(self._new)
             menu_s.addSeparator()
-            menu_s.addAction(self._load)
-            menu_s.addAction(self._prt)
+            if not hide_load:
+                menu_s.addAction(self._load)
+            if not hide_print:
+                menu_s.addAction(self._prt)
             menu_s.addSeparator()
             menu_s.addAction(self._cut)
             menu_s.addAction(self._copy)
@@ -280,8 +264,10 @@ class _contextMenuBuilder:
             menu_s.addAction(self._delete)
 
             menu_m.addSeparator()
-            menu_m.addAction(self._load)
-            menu_m.addAction(self._prt)
+            if not hide_load:
+                menu_m.addAction(self._load)
+            if not hide_print:
+                menu_m.addAction(self._prt)
             menu_m.addSeparator()
             menu_m.addAction(self._cut)
             menu_m.addAction(self._copy)

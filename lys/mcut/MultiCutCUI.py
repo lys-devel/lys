@@ -47,6 +47,18 @@ class MultiCutCUI(QtCore.QObject):
                 return getattr(self._children, key)
         return super().__getattr__(key)
 
+    def saveAsDictionary(self, **kwargs):
+        return {
+            "range": self._axesRange.saveAsDictionary(**kwargs),
+            "children": self._children.saveAsDictionary(**kwargs),
+            "fline": self._freeLine.saveAsDictionary(**kwargs)
+        }
+
+    def loadFromDictionary(self, d, **kwargs):
+        self._axesRange.loadFromDictionary(d.get("range", {}), **kwargs)
+        self._freeLine.loadFromDictionary(d.get("fline", {}), **kwargs)
+        self._children.loadFromDictionary(d.get("children", {}), **kwargs)
+
 
 class MultiCutWave(QtCore.QObject):
     """
@@ -68,6 +80,7 @@ class MultiCutWave(QtCore.QObject):
         super().__init__()
         self._wave = self._filtered = self._load(wave)
         self._wave.persist()
+        self._filter = None
         self._useDask = True
 
     def _load(self, data):
@@ -83,6 +96,7 @@ class MultiCutWave(QtCore.QObject):
         Args:
             filt(Filter): The filter to be applied.
         """
+        self._filter = filt
         dim_old = self._filtered.ndim
         wave = filt.execute(self._wave)
         wave.persist()
@@ -139,6 +153,7 @@ class ChildWaves(QtCore.QObject):
 
     def clear(self):
         self._waves = []
+        self.childWavesChanged.emit()
 
     @property
     def cui(self):
@@ -221,6 +236,14 @@ class ChildWaves(QtCore.QObject):
             import traceback
             traceback.print_exc()
 
+    def saveAsDictionary(self, **kwargs):
+        return {"Items": [{"axes": w.getAxes(), "filter": w.postProcess(), "name": w.name()} for w in self._waves]}
+
+    def loadFromDictionary(self, d, **kwargs):
+        self.clear()
+        for item in d.get("Items", []):
+            self.addWave(**item)
+
 
 class _ChildWave(QtCore.QObject):
     def __init__(self, wave, axes, filter=None):
@@ -286,6 +309,7 @@ class AxesRangeManager(QtCore.QObject):
 
     def reset(self, wave):
         self._ranges = [ax[0] for ax in wave.axes]
+        self.axesRangeChanged.emit(tuple(range(len(wave.axes))))
 
     @avoidCircularReference
     def setAxisRange(self, axis, range):
@@ -329,6 +353,18 @@ class AxesRangeManager(QtCore.QObject):
         else:
             return 'point'
 
+    def saveAsDictionary(self, useRange=False, **kwargs):
+        if useRange:
+            return {"range": self._ranges}
+        else:
+            return {}
+
+    def loadFromDictionary(self, d, useRange=False, **kwargs):
+        if useRange:
+            if "range" in d:
+                self._ranges = d["range"]
+                self.axesRangeChanged.emit(tuple(range(len(self._ranges))))
+
 
 class FreeLineManager(QtCore.QObject):
     freeLineChanged = QtCore.pyqtSignal()
@@ -342,12 +378,21 @@ class FreeLineManager(QtCore.QObject):
         self._fregs = []
         self.freeLineChanged.emit()
 
-    def addFreeLine(self, axes, position=[[0, 0], [1, 1]], width=1):
-        obj = _FreeLine(axes, position, width)
+    def addFreeLine(self, axes, position=[[0, 0], [1, 1]], width=1, name=None):
+        if name is None:
+            name = self.__getName()
+        obj = _FreeLine(name, axes, position, width)
         obj.lineChanged.connect(lambda: self.freeLineMoved.emit(obj))
         self._fregs.append(obj)
         self.freeLineChanged.emit()
         return obj
+
+    def __getName(self):
+        i = 0
+        names = [f.name() for f in self._fregs]
+        while "Line" + str(i) in names:
+            i += 1
+        return "Line" + str(i)
 
     def removeFreeLine(self, obj):
         self._fregs.remove(obj)
@@ -361,16 +406,33 @@ class FreeLineManager(QtCore.QObject):
             if line.getName() == name:
                 return line
 
+    def saveAsDictionary(self, useLine=False, **kwargs):
+        res = []
+        for f in self._fregs:
+            data = {"axes": f.getAxes(), "name": f.getName()}
+            if useLine:
+                data["position"] = f.getPosition()
+                data["width"] = f.getWidth()
+            res.append(data)
+        return {"freeLines": res}
+
+    def loadFromDictionary(self, d, useLine=False, **kwargs):
+        self.clear()
+        for f in d.get("freeLines", []):
+            if not useLine:
+                if "position" in f:
+                    del f["position"]
+                if "width" in f:
+                    del f["width"]
+            self.addFreeLine(**f)
+
 
 class _FreeLine(QtCore.QObject):
-    _index = 0
-
     lineChanged = QtCore.pyqtSignal()
 
-    def __init__(self, axes, position=[[0, 0], [1, 1]], width=1):
+    def __init__(self, name, axes, position=[[0, 0], [1, 1]], width=1):
         super().__init__()
-        _FreeLine._index += 1
-        self._name = "Line" + str(_FreeLine._index)
+        self._name = name
         self._axes = axes
         self._pos = position
         self._width = width

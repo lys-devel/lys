@@ -8,7 +8,7 @@ class _singleAxisWidget(QtWidgets.QFrame):
         self.__initlayout(dim, lines, init)
 
     def __initlayout(self, dim, lines, init):
-        self._btns = [QtWidgets.QRadioButton(str(d)) for d in range(dim)]
+        self._btns = [QtWidgets.QRadioButton(str(d + 1)) for d in range(dim)]
         self._btns.append(QtWidgets.QRadioButton("Line"))
         self._btns[init].setChecked(True)
         self._cmb = QtWidgets.QComboBox()

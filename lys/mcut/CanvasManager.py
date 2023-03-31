@@ -20,6 +20,7 @@ class CanvasManager(list):
         else:
             c = lysCanvas(*args, **kwargs)
         c._maxes = axes
+        c._mgraph = graph
         self.append(c)
         c.finalized.connect(self.__removeCanvas)
         if self._wid is not None:
@@ -92,6 +93,9 @@ class CanvasManager(list):
 
     def interactiveWidget(self):
         return self._wid
+
+    def saveAsDictionary(self, useGrid=False, useGraph=False, **kwargs):
+        pass
 
 
 class _AnnotationSync(QtCore.QObject):
