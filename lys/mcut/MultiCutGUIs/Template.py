@@ -1,7 +1,7 @@
 import os
 
 from lys import lysPath
-from lys.Qt import QtWidgets, QtCore
+from lys.Qt import QtWidgets
 from lys.widgets import AxisSelectionLayout, FileSystemView
 from lys.decorators import avoidCircularReference
 
@@ -65,6 +65,7 @@ class TemplateDialog(QtWidgets.QDialog):
         with open(path, "r") as f:
             d = eval(f.read())
         self._template = d
+        self._check.enableChecks(d.get("TemplateChecks", {}))
         txt = "Name: " + lysPath(path).replace(".lys/templates/" + str(self._dim) + "D/", "")
         self._label.setText(txt)
 
@@ -95,7 +96,7 @@ class TemplateDialog(QtWidgets.QDialog):
         if d.exec_():
             name = d.getName()
             dic = self._gui.saveAsDictionary(**d.getChecks())
-            print(dic)
+            dic["TemplateChecks"] = d.getChecks()
             with open(path + name, "w") as f:
                 f.write(str(dic))
 
@@ -140,7 +141,6 @@ class TemplateDialog(QtWidgets.QDialog):
         ok = msg.exec_()
         if ok == QtWidgets.QMessageBox.No:
             return
-        print(self._template)
         self._gui.loadFromDictionary(self._template, **self._check.getChecks())
         self.accept()
 
@@ -148,7 +148,6 @@ class TemplateDialog(QtWidgets.QDialog):
 class _AddDialog(QtWidgets.QDialog):
     def __init__(self, parent, directory):
         super().__init__(parent)
-        print(directory)
         self._dir = directory
         self.setWindowTitle("Save present state")
         self.__initlayout()
@@ -241,8 +240,20 @@ class _Checks(QtWidgets.QHBoxLayout):
             "useGraph": self._graph.isChecked(),
             "useAnnot": self._annot.isChecked(),
             "useRange": self._range.isChecked(),
-            "useLine": self._range.isChecked()
+            "useLine": self._lines.isChecked()
         }
+
+    def enableChecks(self, d):
+        self._grid.setEnabled(d.get("useGrid", True))
+        self._grid.setChecked(d.get("useGrid", True))
+        self._graph.setEnabled(d.get("useGraph", True))
+        self._graph.setChecked(d.get("useGraph", True))
+        self._annot.setEnabled(d.get("useAnnot", True))
+        self._annot.setChecked(d.get("useAnnot", True))
+        self._range.setEnabled(d.get("useRange", True))
+        self._range.setChecked(d.get("useRange", True))
+        self._lines.setEnabled(d.get("useLine", True))
+        self._lines.setChecked(d.get("useLine", True))
 
 
 class _AxesMap(QtWidgets.QGroupBox):

@@ -128,6 +128,10 @@ class _MultipleGrid(LysSubWindow):
                     wids.append(item)
         return wids
 
+    def getCanvasPosition(self, w):
+        index = self.layout.indexOf(w)
+        return self.layout.getItemPosition(index)
+
 
 class _GridOverlay(QtWidgets.QWidget):
     selected = QtCore.pyqtSignal(object)
@@ -224,11 +228,19 @@ class _GridAttachedWindow(LysSubWindow):
 
 
 class MultiCut(_GridAttachedWindow):
+    _colors = ["darkgreen", "darkred", "blue", "brown", "darkolivegreen", "dodgerblue", "indigo", "forestgreen", "mediumvioletred"]
+    _colorIndex = 0
+
     def __init__(self, wave):
         super().__init__("Multi-dimensional data analysis")
         self._cui = MultiCutCUI(wave)
-        self._can = CanvasManager(self._cui)
+        self._color = QtGui.QColor(self._colors[MultiCut._colorIndex % len(self._colors)])
+        self._can = CanvasManager(self._cui, self._color)
+        MultiCut._colorIndex += 1
+        self.setTitleColor(self._color)
+        self.grid.setTitleColor(self._color)
         self.__initlayout__()
+        self._cui.dimensionChanged.connect(self._can.clear)
 
     def __getattr__(self, key):
         if "_can" in self.__dict__:
@@ -274,11 +286,59 @@ class MultiCut(_GridAttachedWindow):
         return c
 
     def saveAsDictionary(self, **kwargs):
-        return {"cui": self.cui.saveAsDictionary(**kwargs)}
+        return {"cui": self.cui.saveAsDictionary(**kwargs), "gui": self.__saveCanvas(**kwargs)}
 
     def loadFromDictionary(self, d, **kwargs):
         self.cui.loadFromDictionary(d.get("cui", {}), **kwargs)
+        self.__loadCanvas(d.get("gui", {}), **kwargs)
 
     @property
     def cui(self):
         return self._cui
+
+    def __saveCanvas(self, useGrid=False, useGraph=False, useAnnot=False, **kwargs):
+        d = {}
+        if useGraph:
+            d["Graphs"] = [self.__canvasDict(c, False, useAnnot) for c in self._can if c not in self.grid.widgets()]
+        if useGrid:
+            d["Grids"] = [self.__canvasDict(c, True, useAnnot) for c in self.grid.widgets()]
+        return d
+
+    def __canvasDict(self, c, grid, useAnnot):
+        waves = self._cui.getChildWaves()
+        d = {"axes": c._maxes}
+        if grid:
+            d["position"] = self.grid.getCanvasPosition(c)
+        if useAnnot:
+            d["annotations"] = self._can.getAnnotations(c)
+        res = []
+        for wd in c.getWaveData():
+            for i, w in enumerate(waves):
+                if w.getFilteredWave() == wd.getWave():
+                    res.append({"index": i})
+        d["waves"] = res
+        return d
+
+    def __loadCanvas(self, dic, useGrid=False, useGraph=False, useAnnot=False, useLine=False, **kwargs):
+        self._can.clear()
+        if useGraph:
+            for d in dic.get("Graphs", []):
+                self.__canvasFromDict(d, useAnnot, useLine)
+        if useGrid:
+            for d in dic.get("Grids", []):
+                self.__canvasFromDict(d, useAnnot, useLine)
+
+    def __canvasFromDict(self, d, useAnnot, useLine):
+        isGrid = "position" in d
+        if isGrid:
+            c = self.createCanvas(d["axes"], graph=False, lib="pyqtgraph")
+            pos = d["position"]
+            self.grid.append(c, (pos[0], pos[1]), (pos[2], pos[3]))
+        else:
+            c = self.createCanvas(d["axes"], graph=True)
+        waves = self._cui.getChildWaves()
+        for data in d.get("waves", []):
+            w = waves[data["index"]]
+            c.Append(w.getFilteredWave())
+        if useAnnot:
+            self._can.addAnnotations(c, d.get("annotations", []), useLine)

@@ -1,37 +1,49 @@
 import weakref
 
 from lys import display, frontCanvas
-from lys.Qt import QtWidgets, QtCore
+from lys.Qt import QtWidgets, QtCore, QtGui
 from lys.decorators import avoidCircularReference
-from lys.widgets import lysCanvas, CanvasBase
+from lys.widgets import lysCanvas, CanvasBase, Graph
 from lys.widgets.canvas.interface import InfiniteLineAnnotation, RegionAnnotation, CrossAnnotation, RectAnnotation, FreeRegionAnnotation
 
 
 class CanvasManager(list):
-    def __init__(self, cui):
+    def __init__(self, cui, color):
         super().__init__()
         self._cui = cui
+        self._color = color
         self._wid = _InteractiveWidget(cui, self)
         self._sync = _AnnotationSync(cui, self)
 
     def createCanvas(self, axes, *args, graph=False, **kwargs):
         if graph:
-            c = display(*args, **kwargs).canvas
+            g = display(*args, **kwargs)
+            g.setTitleColor(self._color)
+            c = g.canvas
         else:
             c = lysCanvas(*args, **kwargs)
         c._maxes = axes
-        c._mgraph = graph
         self.append(c)
         c.finalized.connect(self.__removeCanvas)
         if self._wid is not None:
             c.clicked.connect(self._wid.setEnabled)
         return c
 
-    def __removeCanvas(self, canvas):
+    def clear(self, removeGraphs=False):
+        for w in self:
+            self.__removeCanvas(w, removeGraphs)
+
+    def __removeCanvas(self, canvas, removeGraphs=False):
         for an in canvas.getAnnotations():
             self._sync.unsyncAnnotation(an)
         if canvas in self:
             self.remove(canvas)
+            parent = canvas.getParent()
+            if isinstance(parent, Graph):
+                if removeGraphs:
+                    Graph.close(force=True)
+                else:
+                    parent.setTitleColor(QtGui.QColor())
 
     def _getTargetCanvas(self):
         c = frontCanvas()
@@ -63,13 +75,17 @@ class CanvasManager(list):
                 rect = c.addRectAnnotation()
                 self._sync.syncAnnotation(rect)
 
-    def addFreeLine(self, c=None):
+    def addFreeLine(self, c=None, line=None, syncAnnot=False):
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
         if c is not None:
             reg = c.addFreeRegionAnnotation()
-            line = self._cui.addFreeLine(c._maxes)
-            self._sync.syncAnnotation(reg, line)
+            if line is None:
+                line = self._cui.addFreeLine(c._maxes)
+                self._sync.syncAnnotation(reg, line, syncAnnot=False)
+            else:
+                line = self._cui.getFreeLine(line)
+                self._sync.syncAnnotation(reg, line, syncAnnot=syncAnnot)
 
     def addRegion(self, c=None, orientation="vertical"):
         if not isinstance(c, CanvasBase):
@@ -91,11 +107,42 @@ class CanvasManager(list):
                 line = c.addInfiniteLineAnnotation(orientation=orientation)
                 self._sync.syncAnnotation(line)
 
+    def getAnnotations(self, c):
+        res = []
+        if self._sync.hasAnnotation(c, CrossAnnotation):
+            res.append("cross")
+        if self._sync.hasAnnotation(c, RectAnnotation):
+            res.append("rect")
+        if self._sync.hasAnnotation(c, RegionAnnotation, "vertical"):
+            res.append("vertical_region")
+        if self._sync.hasAnnotation(c, RegionAnnotation, "horizontal"):
+            res.append("horizontal_region")
+        if self._sync.hasAnnotation(c, InfiniteLineAnnotation, "vertical"):
+            res.append("vertical_line")
+        if self._sync.hasAnnotation(c, InfiniteLineAnnotation, "horizontal"):
+            res.append("horizontal_line")
+        res.extend(self._sync.lineAnnotations(c))
+        return res
+
+    def addAnnotations(self, c, annotations, syncLine=False):
+        for annot in annotations:
+            if annot == "cross":
+                self.addCross(c)
+            elif annot == "rect":
+                self.addRect(c)
+            elif annot == "vertical_region":
+                self.addRegion(c, orientation="vertical")
+            elif annot == "horizontal_region":
+                self.addRegion(c, orientation="horizontal")
+            elif annot == "vertical_line":
+                self.addLine(c, orientation="vertical")
+            elif annot == "horizontal_line":
+                self.addLine(c, orientation="horizontal")
+            else:
+                self.addFreeLine(c, annot, syncLine)
+
     def interactiveWidget(self):
         return self._wid
-
-    def saveAsDictionary(self, useGrid=False, useGraph=False, **kwargs):
-        pass
 
 
 class _AnnotationSync(QtCore.QObject):
@@ -105,7 +152,7 @@ class _AnnotationSync(QtCore.QObject):
         self._cui = cui
         self._can = weakref.ref(can)
 
-    def syncAnnotation(self, annot, line=None):
+    def syncAnnotation(self, annot, line=None, syncAnnot=False):
         c = annot.canvas()
         if c not in self._can():
             raise RuntimeWarning("Could not synchronize annotations in canvas that is not controlled by CanvasManager.")
@@ -120,7 +167,7 @@ class _AnnotationSync(QtCore.QObject):
         if isinstance(annot, RectAnnotation):
             self._sync[annot] = _RectSync(self._cui, annot)
         if isinstance(annot, FreeRegionAnnotation) and line is not None:
-            self._sync[annot] = _FreeLineSync(self._cui, annot, line)
+            self._sync[annot] = _FreeLineSync(self._cui, annot, line, syncAnnot=syncAnnot)
 
     def unsyncAnnotation(self, annot):
         if annot in self._sync:
@@ -134,6 +181,13 @@ class _AnnotationSync(QtCore.QObject):
                 elif annot.getOrientation() == orientation:
                     return True
         return False
+
+    def lineAnnotations(self, canvas):
+        res = []
+        for annot in self._sync.keys():
+            if annot.canvas() == canvas and isinstance(annot, FreeRegionAnnotation):
+                res.append(self._sync[annot].getName())
+        return res
 
 
 class _InfLineSync(QtCore.QObject):
@@ -149,7 +203,10 @@ class _InfLineSync(QtCore.QObject):
             self._axis = c._maxes[0]
         else:
             self._axis = c._maxes[1]
-        self._cui.setAxisRange(self._axis, self._annot.getPosition())
+        if self._cui.getAxisRangeType(self._axis) == "point":
+            self._annot.setPosition(self._cui.getAxisRange(self._axis))
+        else:
+            self._cui.setAxisRange(self._axis, self._annot.getPosition())
         self._annot.positionChanged.connect(self.__sync)
         self._cui.axesRangeChanged.connect(self.__sync_r)
 
@@ -174,7 +231,14 @@ class _CrossSync(QtCore.QObject):
     def _sync(self):
         c = self._annot.canvas()
         self._axes = c._maxes
-        self._cui.setAxisRange(self._axes, self._annot.getPosition())
+        pos = []
+        for i, ax in enumerate(self._axes):
+            if self._cui.getAxisRangeType(ax) == "point":
+                pos.append(self._cui.getAxisRange(ax))
+            else:
+                pos.append(self._annot.getPosition()[i])
+        self._annot.setPosition(pos)
+        self._cui.setAxisRange(self._axes, pos)
         self._annot.positionChanged.connect(self.__sync)
         self._cui.axesRangeChanged.connect(self.__sync_r)
 
@@ -208,7 +272,10 @@ class _RegionSync(QtCore.QObject):
             self._axis = c._maxes[0]
         else:
             self._axis = c._maxes[1]
-        self._cui.setAxisRange(self._axis, self._annot.getRegion())
+        if self._cui.getAxisRangeType(self._axis) == "range":
+            self._annot.setRegion(self._cui.getAxisRange(self._axis))
+        else:
+            self._cui.setAxisRange(self._axis, self._annot.getRegion())
         self._annot.regionChanged.connect(self.__sync)
         self._cui.axesRangeChanged.connect(self.__sync_r)
 
@@ -233,7 +300,14 @@ class _RectSync(QtCore.QObject):
     def _sync(self):
         c = self._annot.canvas()
         self._axes = c._maxes
-        self._cui.setAxisRange(self._axes, self._annot.getRegion())
+        r = []
+        for i, ax in enumerate(self._axes):
+            if self._cui.getAxisRangeType(ax) == "range":
+                r.append(self._cui.getAxisRange(ax))
+            else:
+                r.append(self._annot.getRegion()[i])
+        self._annot.setRegion(r)
+        self._cui.setAxisRange(self._axes, r)
         self._annot.regionChanged.connect(self.__sync)
         self._cui.axesRangeChanged.connect(self.__sync_r)
 
@@ -255,16 +329,23 @@ class _RectSync(QtCore.QObject):
 
 
 class _FreeLineSync(QtCore.QObject):
-    def __init__(self, cui, annot, line):
+    def __init__(self, cui, annot, line, syncAnnot):
         super().__init__()
         self._annot = annot
         self._cui = cui
         self._line = line
-        self._sync()
+        self._sync(syncAnnot)
 
-    def _sync(self):
-        self._line.setPosition(self._annot.getRegion())
-        self._line.setWidth(self._annot.getWidth())
+    def getName(self):
+        return self._line.getName()
+
+    def _sync(self, syncAnnot):
+        if syncAnnot:
+            self._annot.setRegion(self._line.getPosition())
+            self._annot.setWidth(self._line.getWidth())
+        else:
+            self._line.setPosition(self._annot.getRegion())
+            self._line.setWidth(self._annot.getWidth())
         self._annot.regionChanged.connect(self.__sync_p)
         self._annot.widthChanged.connect(self.__sync_w)
         self._line.lineChanged.connect(self.__sync_r)

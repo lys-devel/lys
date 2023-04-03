@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 
 from lys import home, load, lysPath
-from lys.Qt import QtCore, QtWidgets
+from lys.Qt import QtCore, QtWidgets, QtGui
 from lys.decorators import avoidCircularReference
 
 
@@ -160,6 +160,22 @@ class _ExtendMdiArea(_MdiAreaTemp):
             w.fileChanged.connect(self.updated)
 
 
+class _TitleProxyStyle(QtWidgets.QProxyStyle):
+    def drawComplexControl(self, control, option, painter, widget=None):
+        if control == QtWidgets.QStyle.CC_TitleBar:
+            if hasattr(widget, "titleColor"):
+                color = widget.titleColor
+                if color.isValid():
+                    option.palette.setBrush(QtGui.QPalette.Highlight, QtGui.QColor(color))
+                    bg = QtGui.QColor(color)
+                    bg.setAlpha(128)
+                    option.palette.setBrush(QtGui.QPalette.Window, QtGui.QColor(bg))
+                    pixmap = QtGui.QPixmap(512, 512)
+                    pixmap.fill(QtGui.QColor("transparent"))
+                    option.icon = QtGui.QIcon(pixmap)
+        return super().drawComplexControl(control, option, painter, widget)
+
+
 class LysSubWindow(QtWidgets.QMdiSubWindow):
     """
     LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.
@@ -217,6 +233,8 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
         super().__init__()
         self._parent = None
         self._floating = floating
+        self._titleColor = QtGui.QColor()
+        self.setStyle(_TitleProxyStyle())
         self.installEventFilter(self)
         self._resizeTimer = QtCore.QTimer(self)
         self._resizeTimer.timeout.connect(self.resizeFinished)
@@ -232,6 +250,19 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.updateGeometry()
         self.show()
+
+    @property
+    def titleColor(self):
+        return self._titleColor
+
+    def setTitleColor(self, color):
+        """
+        Set the title color of the mdi window.
+        Args:
+            color(QColor): The title color.
+        """
+        self._titleColor = color
+        self.update()
 
     def eventFilter(self, object, event):
         if event.type() == QtCore.QEvent.FocusIn:

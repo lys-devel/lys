@@ -237,11 +237,20 @@ class ChildWaves(QtCore.QObject):
             traceback.print_exc()
 
     def saveAsDictionary(self, **kwargs):
-        return {"Items": [{"axes": w.getAxes(), "filter": w.postProcess(), "name": w.name()} for w in self._waves]}
+        items = []
+        for w in self._waves:
+            d = {"axes": w.getAxes(), "name": w.name()}
+            f = w.postProcess()
+            if f is not None:
+                d["filter"] = filters.toString(w.postProcess())
+            items.append(d)
+        return {"Items": items}
 
     def loadFromDictionary(self, d, **kwargs):
         self.clear()
         for item in d.get("Items", []):
+            if "filter" in item:
+                item["filter"] = filters.fromString(item["filter"])
             self.addWave(**item)
 
 
