@@ -132,6 +132,29 @@ class CanvasBase(object):
         """
         return _CanvasLocker(self)
 
+    @staticmethod
+    def dataTypes(wave):
+        """
+        Return possible data type (image, vector, etc).
+
+        Args:
+            wave(Wave): The wave to be checked.
+
+        Returns:
+            list of str: Possible data type.
+        """
+        if wave.ndim == 1:
+            return ["line"]
+        elif wave.ndim == 2:
+            if wave.dtype == complex:
+                return ["rgb", "vector"]
+            else:
+                return ["image", "contour"]
+        elif wave.ndim == 3:
+            if wave.shape[2] in [3, 4]:
+                return ["rgb"]
+        return []
+
 
 class _CanvasLocker:
     def __init__(self, canvas):

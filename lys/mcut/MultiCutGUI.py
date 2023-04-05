@@ -1,5 +1,5 @@
 from lys.Qt import QtWidgets, QtCore, QtGui
-from lys.widgets import LysSubWindow, CanvasBase
+from lys.widgets import LysSubWindow, CanvasBase, canvas
 
 from .MultiCutCUI import MultiCutCUI
 from .CanvasManager import CanvasManager
@@ -276,13 +276,13 @@ class MultiCut(_GridAttachedWindow):
         self.adjustSize()
         self.updateGeometry()
 
-    def display(self, wave, type="grid", pos=None, wid=None):
+    def display(self, wave, type="grid", pos=None, wid=None, **kwargs):
         if type == "graph":
             c = self._can.createCanvas(wave.getAxes(), graph=True)
         else:
             c = self._can.createCanvas(wave.getAxes(), lib="pyqtgraph")
             self.grid.append(c, pos, wid)
-        c.Append(wave.getFilteredWave())
+        c.Append(wave.getFilteredWave(), **kwargs)
         return c
 
     def saveAsDictionary(self, **kwargs):
@@ -315,7 +315,7 @@ class MultiCut(_GridAttachedWindow):
         for wd in c.getWaveData():
             for i, w in enumerate(waves):
                 if w.getFilteredWave() == wd.getWave():
-                    res.append({"index": i})
+                    res.append({"index": i, "vector": isinstance(wd, canvas.interface.VectorData), "contour": isinstance(wd, canvas.interface.ContourData)})
         d["waves"] = res
         return d
 
@@ -339,6 +339,6 @@ class MultiCut(_GridAttachedWindow):
         waves = self._cui.getChildWaves()
         for data in d.get("waves", []):
             w = waves[data["index"]]
-            c.Append(w.getFilteredWave())
+            c.Append(w.getFilteredWave(), vector=data["vector"], contour=data["contour"])
         if useAnnot:
             self._can.addAnnotations(c, d.get("annotations", []), useLine)
