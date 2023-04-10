@@ -1,0 +1,129 @@
+{
+    '1D':{
+        'cui': {
+            'range': {}, 
+            'children': {
+                'Items': [{'axes': (0,), 'name': 'data1'}]
+                }, 
+            'fline': {
+                'freeLines': []
+                }
+            },
+        'gui': {
+            'Grids': [{'axes': (0,), 'position': (0, 0, 4, 4), 'annotations': [], 
+            'waves': [{'index': 0, 'vector': False, 'contour': False}]}]
+            }, 
+        'TemplateChecks': {
+            'useGrid': True, 
+            'useGraph': False, 
+            'useAnnot': True, 
+            'useRange': False, 
+            'useLine': False
+            }
+        },
+    '2D':{
+        'cui': {
+            'range': {}, 
+            'children': {
+                'Items': [
+                    {'axes': (0, 1), 'name': 'data1'}, 
+                    {'axes': (0,), 'name': 'data2'}, 
+                    {'axes': (1,), 'name': 'data3', 'filter': "[{'axes': None, 'filterName': 'TransposeFilter'}]"}
+                ]
+            }, 
+            'fline': {'freeLines': []}
+        }, 
+        'gui': {
+            'Grids': [
+                {'axes': (0, 1), 'position': (0, 0, 3, 3), 'annotations': ['vertical_line', 'horizontal_line'], 'waves': [{'index': 0, 'vector': False, 'contour': False}]}, 
+                {'axes': (1, 0), 'position': (0, 3, 3, 1), 'annotations': [], 'waves': [{'index': 2, 'vector': False, 'contour': False}]}, 
+                {'axes': (0,), 'position': (3, 0, 1, 3), 'annotations': [], 'waves': [{'index': 1, 'vector': False, 'contour': False}]}
+                ]
+            }, 
+        'TemplateChecks': {
+            'useGrid': True, 
+            'useGraph': False, 
+            'useAnnot': True, 
+            'useRange': False, 
+            'useLine': False
+            }
+        },
+    '3D': {
+        'cui': {
+            'range': {}, 
+            'children': {
+                'Items': [
+                    {'axes': (0, 1), 'name': 'data1'}, 
+                    {'axes': (2,), 'name': 'data2'}
+                ]
+            }, 
+            'fline': {'freeLines': []}
+        }, 
+        'gui': {
+            'Grids': [
+                {'axes': (0, 1), 'position': (0, 0, 3, 4), 'annotations': ['rect'], 'waves': [{'index': 0, 'vector': False, 'contour': False}]}, 
+                {'axes': (2,), 'position': (3, 0, 1, 4), 'annotations': ['vertical_line'], 'waves': [{'index': 1, 'vector': False, 'contour': False}]}
+            ]
+        }, 
+        'TemplateChecks': {
+            'useGrid': True, 
+            'useGraph': False, 
+            'useAnnot': True, 
+            'useRange': False, 
+            'useLine': False
+            }
+        },
+    '4D': {
+        'cui': {
+            'range': {}, 
+            'children': {
+                'Items': [
+                    {'axes': (0, 1), 'name': 'data1'}, 
+                    {'axes': (2, 3), 'name': 'data2'}
+                ]
+            }, 
+            'fline': {'freeLines': []}
+        }, 
+        'gui': {
+            'Grids': [
+                {'axes': (0, 1), 'position': (0, 0, 4, 2), 'annotations': ['rect'], 'waves': [{'index': 0, 'vector': False, 'contour': False}]}, 
+                {'axes': (2, 3), 'position': (0, 2, 4, 2), 'annotations': ['rect'], 'waves': [{'index': 1, 'vector': False, 'contour': False}]}
+            ]
+        }, 
+        'TemplateChecks': {
+            'useGrid': True, 
+            'useGraph': False, 
+            'useAnnot': True, 
+            'useRange': False, 
+            'useLine': False
+            }
+        },
+    '5D': {
+        'cui': {
+            'range': {}, 
+            'children': {
+                'Items': [
+                    {'axes': (0, 1), 'name': 'data1'}, 
+                    {'axes': (2, 3), 'name': 'data2'}, 
+                    {'axes': (4,), 'name': 'data3'}
+                ]
+            }, 
+            'fline': {'freeLines': []}
+        }, 
+        'gui': {
+            'Grids': [
+                {'axes': (0, 1), 'position': (0, 0, 3, 2), 'annotations': ['rect'], 'waves': [{'index': 0, 'vector': False, 'contour': False}]}, 
+                {'axes': (2, 3), 'position': (0, 2, 3, 2), 'annotations': ['rect'], 'waves': [{'index': 1, 'vector': False, 'contour': False}]}, 
+                {'axes': (4,), 'position': (3, 0, 1, 4), 'annotations': ['vertical_line'], 'waves': [{'index': 2, 'vector': False, 'contour': False}]}
+            ]
+        }, 
+        'TemplateChecks': {
+            'useGrid': True, 
+            'useGraph': False, 
+            'useAnnot': True, 
+            'useRange': False, 
+            'useLine': False
+            }
+        },
+}
+

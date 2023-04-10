@@ -28,8 +28,11 @@ class TemplateDialog(QtWidgets.QDialog):
         return dir
 
     def __loadDefault(self, dim):
-        if dim == 3:
-            return {"test": 1}
+        if dim < 6:
+            with open(os.path.dirname(__file__) + "/DefaultTemplate.dic", "r") as f:
+                d = eval(f.read())
+            return d[str(dim) + "D"]
+        return None
 
     def __initlayout(self, dim, dir):
         self._view = FileSystemView(dir)
@@ -65,9 +68,13 @@ class TemplateDialog(QtWidgets.QDialog):
         with open(path, "r") as f:
             d = eval(f.read())
         self._template = d
-        self._check.enableChecks(d.get("TemplateChecks", {}))
-        txt = "Name: " + lysPath(path).replace(".lys/templates/" + str(self._dim) + "D/", "")
-        self._label.setText(txt)
+        if self._template is None:
+            self._check.enableChecks({})
+            self._label.setText("Invalid template. Default template is only valid for d <= 5.")
+        else:
+            self._check.enableChecks(d.get("TemplateChecks", {}))
+            txt = "Name: " + lysPath(path).replace(".lys/templates/" + str(self._dim) + "D/", "")
+            self._label.setText(txt)
 
     def __selected(self):
         path = self._view.selectedPath()

@@ -136,7 +136,9 @@ class IndexMathFilter(FilterInterface):
 
 class TransposeFilter(FilterInterface):
     """
-    Tranpose data by np.transpose
+    Tranpose data by np.transpose.
+
+    If the data is 1-dimensional, the data and x axis is swapped.
 
     Args:
         axes(sequence of int): order of axes.
@@ -156,9 +158,12 @@ class TransposeFilter(FilterInterface):
         self._axes = axes
 
     def _execute(self, wave, **kwargs):
-        data = wave.data.transpose(self._axes)
-        axes = [wave.axes[i] for i in self._axes]
-        return DaskWave(data, *axes, **wave.note)
+        if wave.ndim == 1:
+            return DaskWave(wave.x, wave.data.compute(), **wave.note)
+        else:
+            data = wave.data.transpose(self._axes)
+            axes = [wave.axes[i] for i in self._axes]
+            return DaskWave(data, *axes, **wave.note)
 
     def getParameters(self):
         return {"axes": self._axes}
@@ -234,6 +239,9 @@ class _IndexMathSetting(FilterSettingBase):
 class _TransposeSetting(FilterSettingBase):
     def __init__(self, dimension=2):
         super().__init__(dimension)
+        self._dim = dimension
+        if dimension < 2:
+            return
         lay = QtWidgets.QHBoxLayout()
         self.val = QtWidgets.QLineEdit()
         st = ""
@@ -253,9 +261,14 @@ class _TransposeSetting(FilterSettingBase):
         self.val.setText(st[:-2])
 
     def getParameters(self):
-        return {"axes": eval(self.val.text())}
+        if self._dim < 2:
+            return {"axes": None}
+        else:
+            return {"axes": eval(self.val.text())}
 
     def setParameters(self, axes):
+        if self._dim < 2:
+            return
         st = ""
         for ax in axes:
             st += str(ax) + ", "

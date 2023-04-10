@@ -147,7 +147,7 @@ class ChildWaves(QtCore.QObject):
         self._cui = cui
         self._cui.axesRangeChanged.connect(self.__update)
         self._cui.freeLineMoved.connect(self.__update)
-        self._cui.filterApplied.connect(lambda x: self.__update([d for d in range(x.ndim)]))
+        self._cui.filterApplied.connect(lambda x: self.__update())
         self._sumType = "Mean"
         self._waves = []
 
@@ -211,11 +211,16 @@ class ChildWaves(QtCore.QObject):
     def getChildWaves(self):
         return self._waves
 
-    def __update(self, axes):
+    def __update(self, axes=None):
         for child in self._waves:
-            if isinstance(axes, _FreeLine):
+            # update all
+            if axes is None:
+                self.__updateSingleWave(child)
+            # line is moved
+            elif isinstance(axes, _FreeLine):
                 if axes.getName() in child.getAxes():
                     self.__updateSingleWave(child)
+            # range changed
             else:
                 ax = []
                 for a in child.getAxes():
