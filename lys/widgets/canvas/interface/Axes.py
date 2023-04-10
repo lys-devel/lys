@@ -206,6 +206,8 @@ class CanvasAxes(CanvasPart):
                 ax = wav.data
             else:
                 ax = wav.getAxis(index)
+            if ax.dtype == complex:
+                ax = np.absolute(ax)
             max = np.nanmax([*ax, max])
             min = np.nanmin([*ax, min])
         if len(self.canvas().getLines()) == len(data):
