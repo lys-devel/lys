@@ -319,17 +319,19 @@ class MultiCut(_GridAttachedWindow):
         d["waves"] = res
         return d
 
-    def __loadCanvas(self, dic, useGrid=False, useGraph=False, useAnnot=False, useLine=False, **kwargs):
+    def __loadCanvas(self, dic, useGrid=False, useGraph=False, useAnnot=False, useLine=False, axesMap=None, **kwargs):
         self._can.clear()
         if useGraph:
             for d in dic.get("Graphs", []):
-                self.__canvasFromDict(d, useAnnot, useLine)
+                self.__canvasFromDict(d, useAnnot, useLine, axesMap)
         if useGrid:
             for d in dic.get("Grids", []):
-                self.__canvasFromDict(d, useAnnot, useLine)
+                self.__canvasFromDict(d, useAnnot, useLine, axesMap)
 
-    def __canvasFromDict(self, d, useAnnot, useLine):
+    def __canvasFromDict(self, d, useAnnot, useLine, axesMap):
         isGrid = "position" in d
+        if axesMap is not None:
+            d["axes"] = [axesMap[ax] for ax in d["axes"]]
         if isGrid:
             c = self.createCanvas(d["axes"], graph=False, lib="pyqtgraph")
             pos = d["position"]

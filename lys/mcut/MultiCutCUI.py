@@ -181,8 +181,7 @@ class ChildWaves(QtCore.QObject):
         ranges = [self.cui.getAxisRange(i) for i in range(wave.ndim)]
         for ax in ignored:
             ranges[ax] = None
-
-        f = [filters.IntegralFilter(ranges, self._sumType)] + self.__getFreeLineFilter(axes, ignored)
+        f = [filters.IntegralFilter(ranges, self._sumType)] + self.__getFreeLineTransposeFilter(axes, ignored)
         return filters.Filters(f).execute(wave)
 
     def _freeLineAxes(self, axes):
@@ -192,7 +191,7 @@ class ChildWaves(QtCore.QObject):
                 res.extend(self._cui.getFreeLine(ax).getAxes())
         return res
 
-    def __getFreeLineFilter(self, axes_orig, ignored):
+    def __getFreeLineTransposeFilter(self, axes_orig, ignored):
         axes_final = list(ignored)
         filts = []
         for ax in axes_orig:
@@ -201,10 +200,9 @@ class ChildWaves(QtCore.QObject):
                 axes = list(line.getAxes())
                 axes = [axes_final.index(a) for a in axes]
                 filts.append(line.getFilter(axes))
-
                 axes_final[axes_final.index(axes[0])] = ax
                 axes_final.remove(axes[1])
-        if len(filts) != 0:
+        if axes_final != axes_orig and len(axes_orig) != 1:
             filts.append(filters.TransposeFilter([axes_final.index(a) for a in axes_orig]))
         return filts
 
@@ -251,11 +249,13 @@ class ChildWaves(QtCore.QObject):
             items.append(d)
         return {"Items": items}
 
-    def loadFromDictionary(self, d, **kwargs):
+    def loadFromDictionary(self, d, axesMap=None, **kwargs):
         self.clear()
         for item in d.get("Items", []):
             if "filter" in item:
                 item["filter"] = filters.fromString(item["filter"])
+            if axesMap is not None:
+                item["axes"] = [axesMap[ax] for ax in item["axes"]]
             self.addWave(**item)
 
 
@@ -373,10 +373,12 @@ class AxesRangeManager(QtCore.QObject):
         else:
             return {}
 
-    def loadFromDictionary(self, d, useRange=False, **kwargs):
+    def loadFromDictionary(self, d, useRange=False, axesMap=None, **kwargs):
         if useRange:
             if "range" in d:
                 self._ranges = d["range"]
+                if axesMap is not None:
+                    self._ranges = [self._ranges[axesMap[i]] for i in range(len(self._ranges))]
                 self.axesRangeChanged.emit(tuple(range(len(self._ranges))))
 
 
@@ -430,7 +432,7 @@ class FreeLineManager(QtCore.QObject):
             res.append(data)
         return {"freeLines": res}
 
-    def loadFromDictionary(self, d, useLine=False, **kwargs):
+    def loadFromDictionary(self, d, useLine=False, axesMap=None, **kwargs):
         self.clear()
         for f in d.get("freeLines", []):
             if not useLine:
@@ -438,6 +440,8 @@ class FreeLineManager(QtCore.QObject):
                     del f["position"]
                 if "width" in f:
                     del f["width"]
+            if axesMap is not None:
+                f["axes"] = [axesMap[ax] for ax in f["axes"]]
             self.addFreeLine(**f)
 
 

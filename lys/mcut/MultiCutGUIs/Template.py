@@ -148,7 +148,8 @@ class TemplateDialog(QtWidgets.QDialog):
         ok = msg.exec_()
         if ok == QtWidgets.QMessageBox.No:
             return
-        self._gui.loadFromDictionary(self._template, **self._check.getChecks())
+        axesMap = self._axes.getAxesMap()
+        self._gui.loadFromDictionary(self._template, axesMap=axesMap, **self._check.getChecks())
         self.accept()
 
 
