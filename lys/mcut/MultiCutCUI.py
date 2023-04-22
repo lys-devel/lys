@@ -28,9 +28,9 @@ class MultiCutCUI(QtCore.QObject):
         self._wave.dimensionChanged.connect(self.__reset)
 
     def __reset(self, wave):
+        self._children.clear()
         self._axesRange.reset(wave)
         self._freeLine.clear()
-        self._children.clear()
 
     def __getattr__(self, key):
         if "_axesRange" in self.__dict__:
