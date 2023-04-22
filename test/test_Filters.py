@@ -62,6 +62,10 @@ class Filters_test(unittest.TestCase):
         loaded = filters.fromFile(self.path + "/test2.fil")
         self.assertEqual(str(loaded), str(fs))
 
+        # auto save in wave
+        f2 = filters.fromWave(result1)
+        self.assertEqual(str(f2), str(fs))
+
     def test_convolution(self):
         # PrewittFilter
         w = Wave([1, 2, 3, 4, 5], [1, 2, 3, 4, 5], name="wave")

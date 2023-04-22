@@ -37,13 +37,26 @@ class FilterInterface:
 
         """
         if isinstance(wave, DaskWave):
-            return self._execute(wave, *args, **kwargs)
+            result = self._execute(wave, *args, **kwargs)
+            self._setNote(result)
+            return result
         elif isinstance(wave, Wave):
             dw = DaskWave(wave)
             result = self._execute(dw, *args, **kwargs)
+            self._setNote(result)
             return result.compute()
         else:
             return self.execute(Wave(wave), *args, **kwargs).data
+
+    def _setNote(self, wave):
+        if isinstance(self, Filters):
+            return
+        if "lysFilters" in wave.note:
+            filters = wave.note["lysFilters"]
+        else:
+            filters = []
+        filters.append(self._toDict())
+        wave.note["lysFilters"] = filters
 
     def _applyFunc(self, func, data, *args, **kwargs):
         if data.dtype == complex:
@@ -61,7 +74,7 @@ class FilterInterface:
 
     def getParameters(self):
         """Returns parameters used for this filter as dict"""
-        raise NotImplementedError
+        return vars(self)
 
     def getRelativeDimension(self):
         """Returns change of dimension for this filter"""
@@ -81,6 +94,33 @@ class FilterInterface:
         else:
             f2 = [filt]
         return Filters([*f1, *f2])
+
+    def _toDict(self):
+        """
+        Export filter as dictionary.
+
+        Returns:
+            dict: The exported dictionary.
+        """
+        d = self.getParameters()
+        d["filterName"] = self.__class__.__name__
+        return d
+
+    @staticmethod
+    def _fromDict(d):
+        """
+        Load filter from dictionary.
+
+        Args:
+            d(dict): The dictionary.
+        """
+        fname = d["filterName"]
+        del d["filterName"]
+        filt = getFilter(fname)
+        if filt is not None:
+            return filt(**d)
+        else:
+            raise RuntimeError("Could not load " + fname + ". The filter class may be deleted or not loaded. Check plugins and their version.")
 
     def saveAsFile(self, file):
         """
@@ -216,12 +256,7 @@ class Filters(FilterInterface):
         return len(self._filters) == 0
 
     def __str__(self):
-        result = []
-        for f in self._filters:
-            d = f.getParameters()
-            d["filterName"] = f.__class__.__name__
-            result.append(d)
-        return str(result)
+        return str([f._toDict() for f in self._filters])
 
     def insert(self, index, obj):
         """
@@ -269,7 +304,7 @@ class Filters(FilterInterface):
         if isinstance(data, str):
             data = eval(data)
         if isinstance(data, list):
-            res = Filters._restoreFilter(data)
+            res = Filters([FilterInterface._fromDict(f) for f in data])
         else:  # backward compability
             data = data.replace(b"ExtendAnalysis.Analysis.filters", b"lys.filters")
             data = data.replace(b"ExtendAnalysis.Analysis.filter", b"lys.filters.filter")
@@ -277,19 +312,13 @@ class Filters(FilterInterface):
         return res
 
     @staticmethod
-    def _restoreFilter(data):
-        # parse from list of parameter dictionary
-        result = []
-        for f in data:
-            fname = f["filterName"]
-            del f["filterName"]
-            filt = getFilter(fname)
-            if filt is not None:
-                result.append(filt(**f))
-            else:
-                print("Could not load " + fname + ". The filter class may be deleted or not loaded. Check plugins and their version.", file=sys.stderr)
-                return None
-        return Filters(result)
+    def fromWave(wave):
+        """
+        Load filters automatically saved in wave.
+        """
+        if "lysFilters" in wave.note:
+            return Filters.fromString(wave.note["lysFilters"])
+        return None
 
     @staticmethod
     def fromFile(path):

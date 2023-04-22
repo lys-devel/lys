@@ -1,3 +1,5 @@
+from lys import Wave
+
 # all filter classes
 _filterClasses = {}
 _filterGuis = {}
@@ -100,7 +102,10 @@ def fromFile(file):
         # [3. 3. 3.]
     """
     from lys.filters import Filters
-    return Filters.fromFile(file)
+    if file.endswith(".npz"):
+        return fromWave(Wave(file))
+    else:
+        return Filters.fromFile(file)
 
 
 def toFile(filter, file):
@@ -113,6 +118,30 @@ def toFile(filter, file):
 
     """
     filter.saveAsFile(file)
+
+
+def fromWave(wave):
+    """
+    Load filter from wave that is automatically saved when filter is applied.
+
+    Args: 
+        wave(Wave): The wave.
+
+    Returns:
+        filter: The filter loaded form the wave. 
+
+    Example::
+
+        from lys import filters
+        # Create filter and execute
+        f = filters.IntegralAllFilter(axes=[0], sumtype="Sum") 
+        result = f.execute(Wave(np.ones([3,3])))
+
+        # Load filter from wave
+        filt = filters.fromWave(result)
+    """
+    from lys.filters import Filters
+    return Filters.fromWave(wave)
 
 
 def fromString(string):

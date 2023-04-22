@@ -2,7 +2,6 @@ import numpy as np
 
 from lys import filters
 from lys.Qt import QtCore, QtWidgets
-from lys.widgets import LysSubWindow
 
 from .function import _filterGroups, _getFilterGuiName, _getFilterGui
 
@@ -133,7 +132,7 @@ class FiltersGUI(QtWidgets.QTreeWidget):
             child = parent.child(0)
             w = self.itemWidget(child, 0)
             if dim != w.getDimension():
-                wid = _getFilterGui(parent.text(0))(dim)
+                wid = type(w)(dim)
                 wid.setParameters(**w.getParameters())
                 self.removeItemWidget(child, 0)
                 self.setItemWidget(child, 0, wid)
@@ -186,7 +185,7 @@ class FiltersGUI(QtWidgets.QTreeWidget):
             filt.saveAsFile(path)
 
     def __import(self):
-        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Load Filters', filter="Filter (*.fil);;All files (*.*)")
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Load Filters', filter="Filter (*.fil);;Wave (*.npz);;All files (*.*)")
         if fname[0]:
             filt = filters.fromFile(fname[0])
             self.setFilters(filt)

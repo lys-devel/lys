@@ -71,7 +71,6 @@ class IntegralFilter(FilterInterface):
     Range of integration is specified by *range*.
 
     Note that the *range* is specified in the units of *axes* of (Dask)Wave.
-    If axes is not specified, *range* should be specified by indice.
 
     See :class:`.FilterInterface.FilterInterface` for general description of Filters.
 
@@ -102,12 +101,12 @@ class IntegralFilter(FilterInterface):
         self._sumtype = sumtype
 
     def _execute(self, wave, *args, **kwargs):
-        key, sumaxes, intaxes = self._getIndexAnsSumAxes(wave, self._range)
+        key, sumaxes, intaxes = self._getIndexAndSumAxes(wave, self._range)
         axes = [wave.axes[i] for i in range(wave.ndim) if i not in sumaxes + intaxes]
         func = _getSumFunction(self._sumtype)
         return DaskWave(func(wave.data[key], axis=tuple(sumaxes)), *axes, **wave.note)
 
-    def _getIndexAnsSumAxes(self, wave, rang):
+    def _getIndexAndSumAxes(self, wave, rang):
         sl = []
         sumaxes = []
         intaxes = []
@@ -131,7 +130,7 @@ class IntegralFilter(FilterInterface):
         return {"range": self._range, "sumtype": self._sumtype}
 
     def getRelativeDimension(self):
-        return -len([r for r in self._range if r[0] != 0 or r[1] != 0])
+        return -len([r for r in self._range if r is not None])
 
 
 class IntegralCircleFilter(FilterInterface):
@@ -316,18 +315,30 @@ class _IntegralSetting(FilterSettingBase):
         res = []
         for r, c in zip(self.range.getRegion(), self.range.getChecked()):
             if c:
-                res.append(r)
+                if r[0] == r[1]:
+                    res.append(r[0])
+                else:
+                    res.append(r)
             else:
-                res.append([0, 0])
+                res.append(None)
         return {"range": res, "sumtype": self.type.currentText()}
 
     def setParameters(self, range, sumtype):
         self.type.setCurrentIndex(self._sumtypes.index(sumtype))
         checked = []
         for i, r in enumerate(range):
-            self.range.setRegion(i, r)
-            checked.append(not (r[0] == 0 and r[1] == 0))
+            checked.append(r is not None)
+            if r is not None:
+                if hasattr(r, "__iter__"):
+                    self.range.setRegion(i, r)
+                else:
+                    self.range.setRegion(i, [r, r])
         self.range.setChecked(checked)
+
+    def _checkValid(self, r):
+        if r is None:
+            return False
+        return True
 
 
 @filterGUI(IntegralCircleFilter)
