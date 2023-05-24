@@ -29,13 +29,13 @@ class _ResultController(QtCore.QObject):
         wave = self._data.getWave()
         f = self._info.fitFunction
         p = self._info.fitParameters
-        _, x, axis = self._mgr.getDataForFit(wave)
+        data, x, axis = self._mgr.getDataForFit(wave)
         if self._fitted is None:
             self._fitted = Wave(f(x, *p), axis, name=wave.name + "_fit")
         else:
             self._fitted.data = f(x, *p)
             self._fitted.x = axis
-        return np.sqrt(np.sum(abs(wave.data - self._fitted.data)**2)) / len(wave.data)
+        return np.sqrt(np.sum(abs(data - self._fitted.data)**2)) / len(wave.data)
 
     def _update(self):
         if self._state:
