@@ -3,7 +3,7 @@ from lys.widgets import LysSubWindow, CanvasBase, canvas
 
 from .MultiCutCUI import MultiCutCUI
 from .CanvasManager import CanvasManager
-from .MultiCutGUIs import CutTab, AnimationTab, PrefilterTab, ExportDataTab
+from .MultiCutGUIs import MultiCutTabs
 
 
 class _MultipleGrid(LysSubWindow):
@@ -248,31 +248,8 @@ class MultiCut(_GridAttachedWindow):
                 return getattr(self._can, key)
         return super().__getattr__(key)
 
-    def __exportTab(self):
-        self._ani = AnimationTab(self._cui)
-        self._data = ExportDataTab(self._cui)
-        self._ani.updated.connect(self._cut.update)
-
-        lay = QtWidgets.QVBoxLayout()
-        lay.addWidget(self._data)
-        lay.addWidget(self._ani)
-        lay.addStretch()
-
-        w = QtWidgets.QWidget()
-        w.setLayout(lay)
-        return w
-
     def __initlayout__(self):
-        self._pre = PrefilterTab(self._cui)
-        self._pre.filterApplied.connect(self._cui.applyFilter)
-        self._cut = CutTab(self._cui, self)
-
-        tab = QtWidgets.QTabWidget()
-        tab.addTab(self._pre, "Prefilter")
-        tab.addTab(self._cut, "Cut")
-        tab.addTab(self.__exportTab(), "Export")
-
-        self.setWidget(tab)
+        self.setWidget(MultiCutTabs(self._cui, self))
         self.adjustSize()
         self.updateGeometry()
 
