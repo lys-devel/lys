@@ -4,10 +4,11 @@ import traceback
 import rlcompleter
 
 from lys import home, SettingDict
-from lys.widgets import _ExtendMdiArea, FileSystemView, Graph, ModifyBar
+from lys.widgets import _ExtendMdiArea, FileSystemView, Graph
 from lys.Qt import QtWidgets, QtCore, QtGui
 
 from .shell import ExtendShell
+from .Tabs import GraphTab
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -82,32 +83,36 @@ class MainWindow(QtWidgets.QMainWindow):
         self._mainTab.tabBar().setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self._mainTab.tabBar().customContextMenuRequested.connect(self.__tabContextMenu)
         self._side = self.__sideBar()
+        self._bottom = self.__bottomBar()
 
-        sp = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-        sp.addWidget(self._mainTab)
-        sp.addWidget(self._side)
-        self.setCentralWidget(sp)
+        sp1 = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
+        sp1.addWidget(self._mainTab)
+        sp1.addWidget(self._side)
+
+        sp2 = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+        sp2.addWidget(sp1)
+        sp2.addWidget(self._bottom)
+        self.setCentralWidget(sp2)
 
     def __sideBar(self):
         self._fileView = FileSystemView(home(), drop=True)
-        self._graph = ModifyBar()
-
-        self._tab_up = QtWidgets.QTabWidget()
-        self._tab_up.addTab(_CommandLogWidget(self), "Command")
+        self._graph = GraphTab()
 
         self._tab = QtWidgets.QTabWidget()
         self._tab.addTab(self._fileView, "File")
         self._tab.addTab(self._graph, "Graph")
+        self._tab.setTabVisible(1, False)
+        return self._tab
 
-        layout_h = QtWidgets.QSplitter(QtCore.Qt.Vertical)
-        layout_h.addWidget(self._tab_up)
-        layout_h.addWidget(_CommandLineEdit(ExtendShell._instance))
-        layout_h.addWidget(self._tab)
+    def __bottomBar(self):
+        self._tab_up = QtWidgets.QTabWidget()
+        self._tab_up.addTab(_CommandLogWidget(self), "Command")
 
-        lay = QtWidgets.QHBoxLayout()
-        lay.addWidget(layout_h)
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self._tab_up)
+        layout.addWidget(_CommandLineEdit(ExtendShell._instance))
         w = QtWidgets.QWidget()
-        w.setLayout(lay)
+        w.setLayout(layout)
         return w
 
     def __tabContextMenu(self, qPoint):
@@ -151,8 +156,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         win = menu.addMenu("Sidebar")
 
-        act = win.addAction("Show/Hide Sidebar")
+        act = win.addAction("Show/Hide sidebar")
         act.triggered.connect(lambda: self._side.setVisible(not self._side.isVisible()))
+        act.setShortcut("Ctrl+H")
+
+        act = win.addAction("Show/Hide command line")
+        act.triggered.connect(lambda: self._bottom.setVisible(not self._bottom.isVisible()))
         act.setShortcut("Ctrl+J")
         return
 
@@ -174,26 +183,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self._mainTab.setCurrentIndex(index - 1)
         self._mainTab.removeTab(index)
 
-    def addTab(self, widget, name, position):
+    def tabWidget(self, position):
         """
-        This method adds tab in the side bar.
+        Get tab widget.
 
         Args:
-            widget(QtWidgets.QWidget): widget to be added.
-            name(str): Name of a tab.
-            position('up' or 'down'): TabWidget to be added to.
+            position('right' or 'bottom')
 
-        Example:
-
-            >>> from lys import glb
-            >>> main = glb.mainWindow()
-            >>> main.addTab(QtWidgets.QWidget(), "TestTab", "up")
-
+        Returns:
+            QTabWidget: The tab widget.
         """
-        if position == "up":
-            self._tab_up.addTab(widget, name)
-        if position == "down":
-            self._tab.addTab(widget, name)
+        if position == "right":
+            return self._tab
+        else:
+            return self._tab_up
 
     @property
     def fileView(self):
@@ -205,13 +208,6 @@ class MainWindow(QtWidgets.QMainWindow):
         See :class:`lys.widgets.fileView.FileSystemView` for detail.
         """
         return self._fileView
-
-    @property
-    def graphSetting(self):
-        """
-        Return graph setting widget displayed in Graph tab.
-        """
-        return self._graph
 
     def closeAllGraphs(self, workspace=None):
         """
@@ -253,7 +249,6 @@ class _CommandLogWidget(QtWidgets.QTextEdit):
         super().__init__(parent)
         self.setReadOnly(True)
         self.setUndoRedoEnabled(False)
-        self.setWordWrapMode(QtGui.QTextOption.NoWrap)
         self.__load()
         sys.stdout = self._out = self._Logger(self, sys.stdout, self.textColor())
         sys.stderr = self._err = self._Logger(self, sys.stderr, QtGui.QColor(255, 0, 0))

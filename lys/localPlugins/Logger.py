@@ -123,4 +123,4 @@ class LogWidget(QtWidgets.QWidget):
 
 
 _instance = LogWidget()
-glb.mainWindow().addTab(_instance, "Log", "up")
+glb.mainWindow().tabWidget("bottom").addTab(_instance, "Log")

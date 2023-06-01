@@ -12,11 +12,9 @@ class CanvasUtilities(CanvasPart):
     """
 
     def openModifyWindow(self):
-        from lys.widgets import Graph
-        from ..ModifyWindow import ModifyWindow
-        parent = self.getParent()
-        mod = ModifyWindow(self.canvas(), parent, showArea=isinstance(parent, Graph))
-        return mod
+        from lys import glb
+        # return ModifyWindow(self.canvas())
+        glb.editCanvas(self.canvas())
 
     def openFittingWindow(self):
         from lys.fitting import FittingWindow

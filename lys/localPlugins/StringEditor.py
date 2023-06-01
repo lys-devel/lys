@@ -65,4 +65,4 @@ class StringTextEdit(QtWidgets.QPlainTextEdit):
 
 
 _instance = StringTextEdit(".lys/memo.str")
-glb.mainWindow().addTab(_instance, "Memo", "up")
+glb.mainWindow().tabWidget("bottom").addTab(_instance, "Memo")

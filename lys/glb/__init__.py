@@ -43,6 +43,16 @@ def shell():
     return ExtendShell._instance
 
 
+def editCanvas(canvas):
+    """
+    Edit canvas by GUI.
+
+    Args:
+        canvas: The canvas to be edited.
+    """
+    mainWindow().tabWidget("right").widget(1).setCanvas(canvas)
+
+
 def createMainWindow(*args, **kwargs):
     """
     Create main window.

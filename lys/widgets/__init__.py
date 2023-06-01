@@ -7,7 +7,7 @@ from .fileView import FileSystemView
 
 from .mdi import LysSubWindow, _ExtendMdiArea
 from .table import Table, lysTable
-from .canvas import lysCanvas, Graph, CanvasBase, getFrontCanvas, ModifyBar
+from .canvas import lysCanvas, Graph, CanvasBase, getFrontCanvas, ModifyWidget
 
 registerFileLoader(".grf", Graph)
 registerFileLoader(".tbl", Table)

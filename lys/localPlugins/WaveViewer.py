@@ -99,4 +99,4 @@ class WaveViewer(QtWidgets.QTreeView):
 
 
 _instance = WaveViewer()
-glb.mainWindow().addTab(_instance, "Waves", "up")
+glb.mainWindow().tabWidget("bottom").addTab(_instance, "Waves")

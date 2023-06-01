@@ -56,17 +56,12 @@ class CanvasFocusEvent(CanvasPart):
     def __init__(self, canvas):
         super().__init__(canvas)
         self.focused.connect(self._setFrontCanvas)
-        self.focused.connect(self._emitGlobalEvent)
         self._setFrontCanvas()
 
     def _setFrontCanvas(self):
         _front.append(weakref.ref(self.canvas()))
         if len(_front) > 1000:
             _front.pop(0)
-
-    def _emitGlobalEvent(self):
-        from lys import glb
-        glb.mainWindow().graphSetting.setCanvas(self.canvas())
 
 
 class CanvasMouseEvent(CanvasPart):

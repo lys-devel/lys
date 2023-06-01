@@ -26,111 +26,62 @@ _saveDict = {}
 class ModifyWindow(LysSubWindow):
     instance = None
 
-    def __init__(self, canvas, parent=None, showArea=True):
+    def __init__(self, canvas, parent=None):
         super().__init__()
         if ModifyWindow.instance is not None:
             if ModifyWindow.instance() is not None:
                 ModifyWindow.instance().close()
-        self._canvas = canvas
-        self._initlayout(canvas, showArea)
-        self.attach(parent)
+        self._initlayout(canvas)
+        self.attach(canvas.getParent())
         self.attachTo()
         ModifyWindow.instance = weakref.ref(self)
 
-    @suppressLysWarnings
-    def _initlayout(self, canvas, showArea):
+    def _initlayout(self, canvas):
         self.setWindowTitle("Modify Window")
-        self._tab = QtWidgets.QTabWidget()
-        self._tab.tabBar().setStyleSheet("QTabBar::tab::disabled {width: 0; height: 0; margin: 0; padding: 0; border: none;} ")
-        self._tab.addTab(_AreaTab(canvas), "Area")
-        self._tab.addTab(_AxisTab(canvas), "Axis")
-        self._tab.addTab(_LineTab(canvas), "Lines")
-        self._tab.addTab(_ImageTab(canvas), "Images")
-        self._tab.addTab(_ContourTab(canvas), "Contours")
-        self._tab.addTab(_RGBTab(canvas), "RGB")
-        self._tab.addTab(_VectorTab(canvas), "Vector")
-        self._tab.addTab(_AnnotationTab(canvas), "Annot.")
-        self._tab.addTab(_OtherTab(canvas), 'Other')
-        self.__setEnabled()
-        if not showArea:
-            self._tab.setTabEnabled(0, False)
-            self._tab.setCurrentIndex(1)
+        self._tab = ModifyWidget(canvas)
         self.setWidget(self._tab)
         self.adjustSize()
         self.updateGeometry()
         self.show()
 
-    def __setEnabled(self):
-        self._tab.setTabEnabled(2, len(self._canvas.getLines()) != 0)
-        self._tab.setTabEnabled(3, len(self._canvas.getImages()) != 0)
-        self._tab.setTabEnabled(4, len(self._canvas.getContours()) != 0)
-        self._tab.setTabEnabled(5, len(self._canvas.getRGBs()) != 0)
-        self._tab.setTabEnabled(6, len(self._canvas.getVectorFields()) != 0)
-        self._tab.setTabEnabled(7, len(self._canvas.getAnnotations()) != 0)
+    def selectTab(self, tab):
+        return self._tab.selectTab(tab)
+
+
+class ModifyWidget(QtWidgets.QTabWidget):
+    def __init__(self, canvas):
+        super().__init__()
+        self._initlayout(canvas)
+        self.__setEnabled(canvas)
+
+    @suppressLysWarnings
+    def _initlayout(self, canvas):
+        self.tabBar().setStyleSheet("QTabBar::tab::disabled {width: 0; height: 0; margin: 0; padding: 0; border: none;} ")
+        self.addTab(_AreaTab(canvas), "Area")
+        self.addTab(_AxisTab(canvas), "Axis")
+        self.addTab(_LineTab(canvas), "Lines")
+        self.addTab(_ImageTab(canvas), "Images")
+        self.addTab(_ContourTab(canvas), "Contours")
+        self.addTab(_RGBTab(canvas), "RGB")
+        self.addTab(_VectorTab(canvas), "Vector")
+        self.addTab(_AnnotationTab(canvas), "Annot.")
+        self.addTab(_OtherTab(canvas), 'Other')
+
+    def __setEnabled(self, canvas):
+        from lys.widgets import Graph
+        if not isinstance(canvas.getParent(), Graph):
+            self.setTabEnabled(0, False)
+            self.setCurrentIndex(1)
+        self.setTabEnabled(2, len(canvas.getLines()) != 0)
+        self.setTabEnabled(3, len(canvas.getImages()) != 0)
+        self.setTabEnabled(4, len(canvas.getContours()) != 0)
+        self.setTabEnabled(5, len(canvas.getRGBs()) != 0)
+        self.setTabEnabled(6, len(canvas.getVectorFields()) != 0)
+        self.setTabEnabled(7, len(canvas.getAnnotations()) != 0)
 
     def selectTab(self, tab):
-        list = [self._tab.tabText(i) for i in range(self._tab.count())]
-        self._tab.setCurrentIndex(list.index(tab))
-
-
-class ModifyBar(QtWidgets.QWidget):
-    def __init__(self):
-        super().__init__()
-        self._canvas = None
-        self.__inilayout()
-
-    def __inilayout(self):
-        self._combo = QtWidgets.QComboBox(currentTextChanged=self.__changed)
-        self._widget = QtWidgets.QWidget()
-
-        self._layout = QtWidgets.QVBoxLayout()
-        self._layout.addWidget(self._combo)
-        self._layout.addWidget(self._widget)
-        self._layout.addStretch()
-        self.setLayout(self._layout)
-
-    def __changed(self):
-        if self._widget is not None:
-            self._layout.removeWidget(self._widget)
-            self._widget.deleteLater()
-        current = self._combo.currentText()
-        d = {"Area": _AreaTab, "Axis": _AxisTab, "Lines": _LineTab, "Images": _ImageTab, "Contours": _ContourTab,
-             "Vector": _VectorTab, "RGB": _RGBTab, "Annot.": _AnnotationTab, "Other": _OtherTab}
-        if current not in d:
-            current = "Axis"
-        self._widget = d[current](self.canvas)
-        self._layout.insertWidget(1, self._widget)
-
-    def setCanvas(self, canvas):
-        current = self._combo.currentText()
-        self._canvas = weakref.ref(canvas)
-        self.__setList(canvas)
-        index = self._combo.findText(current)
-        self._combo.setCurrentIndex(index)
-
-    @property
-    def canvas(self):
-        if self._canvas is None:
-            return None
-        else:
-            return self._canvas()
-
-    def __setList(self, canvas):
-        self._combo.clear()
-        self._combo.addItems(["Area", "Axis"])
-        if len(canvas.getLines()) != 0:
-            self._combo.addItem("Lines")
-        if len(canvas.getImages()) != 0:
-            self._combo.addItem("Images")
-        if len(canvas.getContours()) != 0:
-            self._combo.addItem("Contours")
-        if len(canvas.getRGBs()) != 0:
-            self._combo.addItem("RGB")
-        if len(canvas.getVectorFields()) != 0:
-            self._combo.addItem("Vector")
-        if len(canvas.getAnnotations()) != 0:
-            self._combo.addItem("Annot.")
-        self._combo.addItems(["Other"])
+        list = [self.tabText(i) for i in range(self.count())]
+        self.setCurrentIndex(list.index(tab))
 
 
 class _AreaTab(QtWidgets.QWidget):
