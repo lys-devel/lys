@@ -1,1 +1,1 @@
-from .MultiCutTabs import MultiCutTabs
+from .MultiCutTabs import MultiCutWidget

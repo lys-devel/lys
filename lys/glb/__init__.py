@@ -63,6 +63,16 @@ def editTable(table):
     mainWindow().tabWidget("right").widget(2).setTable(table)
 
 
+def editMulticut(mcut):
+    """
+    Open multicut by GUI.
+
+    Args:
+        mcut: The MuletiCut object.
+    """
+    mainWindow().tabWidget("right").widget(3).setObject(mcut)
+
+
 def createMainWindow(*args, **kwargs):
     """
     Create main window.

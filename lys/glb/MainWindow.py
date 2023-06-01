@@ -8,7 +8,7 @@ from lys.widgets import _ExtendMdiArea, FileSystemView, Graph
 from lys.Qt import QtWidgets, QtCore, QtGui
 
 from .shell import ExtendShell
-from .Tabs import GraphTab, TableTab
+from .Tabs import GraphTab, TableTab, MulticutTab
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -113,11 +113,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self._fileView = FileSystemView(home(), drop=True)
         self._graph = GraphTab()
         self._table = TableTab()
+        self._mcut = MulticutTab()
 
         self._tab = QtWidgets.QTabWidget()
         self._tab.addTab(self._fileView, "File")
         self._tab.addTab(self._graph, "Graph")
         self._tab.addTab(self._table, "Table")
+        self._tab.addTab(self._mcut, "MultiCut")
         self._tab.setTabVisible(1, False)
         self._tab.setTabVisible(2, False)
         return self._tab

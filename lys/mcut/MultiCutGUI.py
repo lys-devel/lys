@@ -1,9 +1,9 @@
+
 from lys.Qt import QtWidgets, QtCore, QtGui
 from lys.widgets import LysSubWindow, CanvasBase, canvas
 
 from .MultiCutCUI import MultiCutCUI
 from .CanvasManager import CanvasManager
-from .MultiCutGUIs import MultiCutTabs
 
 
 class _MultipleGrid(LysSubWindow):
@@ -202,45 +202,28 @@ class _GridOverlay(QtWidgets.QWidget):
         return super().mouseReleaseEvent(event)
 
 
-class _GridAttachedWindow(LysSubWindow):
-    def __init__(self, title):
-        super().__init__()
-        self.setWindowTitle(title)
-        self.grid = _MultipleGrid()
-        self.grid.showMulti.connect(self.show)
-        self.closeforce = False
-        self.grid.closed.connect(self.forceclose)
-        self.attach(self.grid)
-        self.attachTo()
-
-    def forceclose(self):
-        self.closeforce = True
-        self.close()
-
-    def closeEvent(self, event):
-        if self.closeforce:
-            event.accept()
-            return super().closeEvent(event)
-        else:
-            self.hide()
-            event.ignore()
-            return
-
-
-class MultiCut(_GridAttachedWindow):
+class MultiCut(QtCore.QObject):
+    closed = QtCore.pyqtSignal(object)
     _colors = ["darkgreen", "darkred", "blue", "brown", "darkolivegreen", "dodgerblue", "indigo", "forestgreen", "mediumvioletred"]
     _colorIndex = 0
 
     def __init__(self, wave):
-        super().__init__("Multi-dimensional data analysis")
+        super().__init__()
+        self._grid = _MultipleGrid()
+        self._grid.setWindowTitle("Multicut")
+        self._grid.focused.connect(self.openMultiCutSetting)
+        self._grid.closed.connect(lambda: self.closed.emit(self))
         self._cui = MultiCutCUI(wave)
         self._color = QtGui.QColor(self._colors[MultiCut._colorIndex % len(self._colors)])
+        self._grid.setTitleColor(self._color)
         self._can = CanvasManager(self._cui, self._color)
         MultiCut._colorIndex += 1
-        self.setTitleColor(self._color)
-        self.grid.setTitleColor(self._color)
-        self.__initlayout__()
         self._cui.dimensionChanged.connect(self._can.clear)
+        self.openMultiCutSetting()
+
+    def openMultiCutSetting(self):
+        from lys import glb
+        glb.editMulticut(self)
 
     def __getattr__(self, key):
         if "_can" in self.__dict__:
@@ -248,17 +231,13 @@ class MultiCut(_GridAttachedWindow):
                 return getattr(self._can, key)
         return super().__getattr__(key)
 
-    def __initlayout__(self):
-        self.setWidget(MultiCutTabs(self._cui, self))
-        self.adjustSize()
-        self.updateGeometry()
-
     def display(self, wave, type="grid", pos=None, wid=None, **kwargs):
         if type == "graph":
             c = self._can.createCanvas(wave.getAxes(), graph=True)
         else:
             c = self._can.createCanvas(wave.getAxes(), lib="pyqtgraph")
-            self.grid.append(c, pos, wid)
+            self._grid.append(c, pos, wid)
+        c.clicked.connect(self.openMultiCutSetting)
         c.Append(wave.getFilteredWave(), **kwargs)
         return c
 
@@ -285,7 +264,7 @@ class MultiCut(_GridAttachedWindow):
         waves = self._cui.getChildWaves()
         d = {"axes": c._maxes}
         if grid:
-            d["position"] = self.grid.getCanvasPosition(c)
+            d["position"] = self._grid.getCanvasPosition(c)
         if useAnnot:
             d["annotations"] = self._can.getAnnotations(c)
         res = []
@@ -312,9 +291,10 @@ class MultiCut(_GridAttachedWindow):
         if isGrid:
             c = self.createCanvas(d["axes"], graph=False, lib="pyqtgraph")
             pos = d["position"]
-            self.grid.append(c, (pos[0], pos[1]), (pos[2], pos[3]))
+            self._grid.append(c, (pos[0], pos[1]), (pos[2], pos[3]))
         else:
             c = self.createCanvas(d["axes"], graph=True)
+        c.clicked.connect(self.openMultiCutSetting)
         waves = self._cui.getChildWaves()
         for data in d.get("waves", []):
             w = waves[data["index"]]

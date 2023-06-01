@@ -10,10 +10,10 @@ from .AddWaveDialog import AddWaveDialog
 from .Template import TemplateDialog
 
 
-class MultiCutTabs(QtWidgets.QTabWidget):
-    def __init__(self, cui, gui):
+class MultiCutWidget(QtWidgets.QTabWidget):
+    def __init__(self, gui):
         super().__init__()
-        self.__initlayout__(cui, gui)
+        self.__initlayout__(gui.cui, gui)
 
     def __initlayout__(self, cui, gui):
         self.addTab(MainWidget(cui, gui), "Main")
