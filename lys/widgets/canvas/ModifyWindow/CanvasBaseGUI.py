@@ -1,6 +1,6 @@
 import numpy as np
 
-from lys import Wave, glb, display, append, edit, multicut
+from lys import Wave, display, append, edit, multicut
 from lys.Qt import QtCore, QtGui, QtWidgets
 from lys.widgets import ScientificSpinBox, LysSubWindow
 from lys.filters import FiltersGUI
@@ -219,6 +219,7 @@ class DataSelectionBox(_DataSelectionBoxBase):
         display(*result)
 
     def __send(self, waveType):
+        from lys import glb
         dat = self._selectedData()[0]
         text, ok = QtWidgets.QInputDialog.getText(None, "Send to shell", "Enter wave name", text=dat.getName())
         if ok:

@@ -73,6 +73,66 @@ class ModifyWindow(LysSubWindow):
         self._tab.setCurrentIndex(list.index(tab))
 
 
+class ModifyBar(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self._canvas = None
+        self.__inilayout()
+
+    def __inilayout(self):
+        self._combo = QtWidgets.QComboBox(currentTextChanged=self.__changed)
+        self._widget = QtWidgets.QWidget()
+
+        self._layout = QtWidgets.QVBoxLayout()
+        self._layout.addWidget(self._combo)
+        self._layout.addWidget(self._widget)
+        self._layout.addStretch()
+        self.setLayout(self._layout)
+
+    def __changed(self):
+        if self._widget is not None:
+            self._layout.removeWidget(self._widget)
+            self._widget.deleteLater()
+        current = self._combo.currentText()
+        d = {"Area": _AreaTab, "Axis": _AxisTab, "Lines": _LineTab, "Images": _ImageTab, "Contours": _ContourTab,
+             "Vector": _VectorTab, "RGB": _RGBTab, "Annot.": _AnnotationTab, "Other": _OtherTab}
+        if current not in d:
+            current = "Axis"
+        self._widget = d[current](self.canvas)
+        self._layout.insertWidget(1, self._widget)
+
+    def setCanvas(self, canvas):
+        current = self._combo.currentText()
+        self._canvas = weakref.ref(canvas)
+        self.__setList(canvas)
+        index = self._combo.findText(current)
+        self._combo.setCurrentIndex(index)
+
+    @property
+    def canvas(self):
+        if self._canvas is None:
+            return None
+        else:
+            return self._canvas()
+
+    def __setList(self, canvas):
+        self._combo.clear()
+        self._combo.addItems(["Area", "Axis"])
+        if len(canvas.getLines()) != 0:
+            self._combo.addItem("Lines")
+        if len(canvas.getImages()) != 0:
+            self._combo.addItem("Images")
+        if len(canvas.getContours()) != 0:
+            self._combo.addItem("Contours")
+        if len(canvas.getRGBs()) != 0:
+            self._combo.addItem("RGB")
+        if len(canvas.getVectorFields()) != 0:
+            self._combo.addItem("Vector")
+        if len(canvas.getAnnotations()) != 0:
+            self._combo.addItem("Annot.")
+        self._combo.addItems(["Other"])
+
+
 class _AreaTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()

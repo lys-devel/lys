@@ -4,7 +4,7 @@ import traceback
 import rlcompleter
 
 from lys import home, SettingDict
-from lys.widgets import _ExtendMdiArea, FileSystemView, Graph
+from lys.widgets import _ExtendMdiArea, FileSystemView, Graph, ModifyBar
 from lys.Qt import QtWidgets, QtCore, QtGui
 
 from .shell import ExtendShell
@@ -20,7 +20,7 @@ class MainWindow(QtWidgets.QMainWindow):
     """
     beforeClosed = QtCore.pyqtSignal(QtCore.QEvent)
     """
-    beforeClosed(event) signal is submitted when close button of lys is clicked.
+    beforeClosed(event) signal is emitted when close button of lys is clicked.
 
     Developers can connect any functions/methods to this signal.
 
@@ -90,12 +90,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __sideBar(self):
         self._fileView = FileSystemView(home(), drop=True)
+        self._graph = ModifyBar()
 
         self._tab_up = QtWidgets.QTabWidget()
         self._tab_up.addTab(_CommandLogWidget(self), "Command")
 
         self._tab = QtWidgets.QTabWidget()
         self._tab.addTab(self._fileView, "File")
+        self._tab.addTab(self._graph, "Graph")
 
         layout_h = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         layout_h.addWidget(self._tab_up)
@@ -203,6 +205,13 @@ class MainWindow(QtWidgets.QMainWindow):
         See :class:`lys.widgets.fileView.FileSystemView` for detail.
         """
         return self._fileView
+
+    @property
+    def graphSetting(self):
+        """
+        Return graph setting widget displayed in Graph tab.
+        """
+        return self._graph
 
     def closeAllGraphs(self, workspace=None):
         """

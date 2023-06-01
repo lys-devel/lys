@@ -1,1 +1,1 @@
-from .Main import ModifyWindow
+from .Main import ModifyWindow, ModifyBar
