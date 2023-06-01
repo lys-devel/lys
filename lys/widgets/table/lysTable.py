@@ -1,9 +1,9 @@
+import weakref
+
 from lys import Wave, display, append, multicut
 from lys.Qt import QtWidgets, QtGui, QtCore
 
-from ..mdi import LysSubWindow
 from .Data import TableData
-from .TableModifyWindow import TableModifyWindow
 
 
 class lysTable(QtWidgets.QWidget):
@@ -35,6 +35,10 @@ class lysTable(QtWidgets.QWidget):
     loadTable = QtCore.pyqtSignal(dict)
     """
     Emitted when the table is loaded by loadFromDictionary method.
+    """
+    finalized = QtCore.pyqtSignal()
+    """
+    Emitted when the table is finalized.
     """
 
     def __init__(self, parent=None):
@@ -86,58 +90,58 @@ class lysTable(QtWidgets.QWidget):
 
     def openModifyWindow(self):
         """Open modify window for this table window."""
-        parent = self.__getParent()
-        mod = TableModifyWindow(parent, self)
-        return mod
+        from lys import glb
+        glb.editTable(self)
 
-    def __getParent(self):
-        parent = self.parentWidget()
-        while(parent is not None):
-            if isinstance(parent, LysSubWindow):
-                return parent
-            parent = parent.parentWidget()
+    def closeEvent(self, e):
+        self.finalized.emit()
+        e.accept()
 
 
 class _events(QtCore.QObject):
     def __init__(self, parent):
         super().__init__()
-        self._parent = parent
+        self._parent = weakref.ref(parent)
         parent.keyPressed.connect(self.keyPressed)
         parent.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         parent.customContextMenuRequested.connect(self.constructContextMenu)
 
+    @property
+    def parent(self):
+        return self._parent()
+
     def constructContextMenu(self):
         menu = QtWidgets.QMenu()
-        menu.addAction(QtWidgets.QAction('Table settings', self._parent, triggered=self._parent.openModifyWindow, shortcut="Ctrl+T"))
+        menu.addAction(QtWidgets.QAction('Table settings', self.parent, triggered=self.parent.openModifyWindow, shortcut="Ctrl+T"))
         menu.addSeparator()
-        menu.addAction(QtWidgets.QAction('Save changes', self._parent, triggered=self._parent.save, shortcut="Ctrl+S"))
+        menu.addAction(QtWidgets.QAction('Save changes', self.parent, triggered=self.parent.save, shortcut="Ctrl+S"))
         m = menu.addMenu('Full data')
-        m.addAction(QtWidgets.QAction('Display', self._parent, triggered=lambda: self.__display()))
-        m.addAction(QtWidgets.QAction('Append', self._parent, triggered=lambda: self.__append()))
-        m.addAction(QtWidgets.QAction('Multicut', self._parent, triggered=lambda: self.__multicut()))
-        m.addAction(QtWidgets.QAction('Export', self._parent, triggered=lambda: self.__export()))
-        m.addAction(QtWidgets.QAction('Send to shell', self._parent, triggered=lambda: self.__send()))
+        m.addAction(QtWidgets.QAction('Display', self.parent, triggered=lambda: self.__display()))
+        m.addAction(QtWidgets.QAction('Append', self.parent, triggered=lambda: self.__append()))
+        m.addAction(QtWidgets.QAction('Multicut', self.parent, triggered=lambda: self.__multicut()))
+        m.addAction(QtWidgets.QAction('Export', self.parent, triggered=lambda: self.__export()))
+        m.addAction(QtWidgets.QAction('Send to shell', self.parent, triggered=lambda: self.__send()))
         m = menu.addMenu('Sliced data')
-        m.addAction(QtWidgets.QAction('Display', self._parent, triggered=lambda: self.__display("slice")))
-        m.addAction(QtWidgets.QAction('Append', self._parent, triggered=lambda: self.__append("slice")))
-        m.addAction(QtWidgets.QAction('Multicut', self._parent, triggered=lambda: self.__multicut("slice")))
-        m.addAction(QtWidgets.QAction('Export', self._parent, triggered=lambda: self.__export("slice")))
-        m.addAction(QtWidgets.QAction('Send to shell', self._parent, triggered=lambda: self.__send("slice")))
+        m.addAction(QtWidgets.QAction('Display', self.parent, triggered=lambda: self.__display("slice")))
+        m.addAction(QtWidgets.QAction('Append', self.parent, triggered=lambda: self.__append("slice")))
+        m.addAction(QtWidgets.QAction('Multicut', self.parent, triggered=lambda: self.__multicut("slice")))
+        m.addAction(QtWidgets.QAction('Export', self.parent, triggered=lambda: self.__export("slice")))
+        m.addAction(QtWidgets.QAction('Send to shell', self.parent, triggered=lambda: self.__send("slice")))
         menu.exec_(QtGui.QCursor.pos())
 
     def keyPressed(self, e):
         if e.key() == QtCore.Qt.Key_S and e.modifiers() == QtCore.Qt.ControlModifier:
-            self._parent.save()
+            self.parent.save()
             e.accept()
         elif e.key() == QtCore.Qt.Key_T:
-            self._parent.openModifyWindow()
+            self.parent.openModifyWindow()
             e.accept()
 
     def __getData(self, type="full"):
         if type == "full":
-            return self._parent.getData()
+            return self.parent.getData()
         else:
-            return self._parent.getSlicedData()
+            return self.parent.getSlicedData()
 
     def __export(self, type="full"):
         filt = ""

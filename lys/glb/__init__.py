@@ -53,6 +53,16 @@ def editCanvas(canvas):
     mainWindow().tabWidget("right").widget(1).setCanvas(canvas)
 
 
+def editTable(table):
+    """
+    Edit table by GUI.
+
+    Args:
+        table: The table to be edited.
+    """
+    mainWindow().tabWidget("right").widget(2).setTable(table)
+
+
 def createMainWindow(*args, **kwargs):
     """
     Create main window.

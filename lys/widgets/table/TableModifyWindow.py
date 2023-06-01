@@ -15,14 +15,24 @@ class TableModifyWindow(LysSubWindow):
 
     def __initlayout(self, table):
         self.setWindowTitle("Table Modify Window")
-        self._view = _viewTab(table)
-
-        self._tab = QtWidgets.QTabWidget()
-        self._tab.addTab(self._view, "View")
-        self.setWidget(self._tab)
+        self._widget = TableModifyWidget(table)
+        self.setWidget(self._widget)
         self.adjustSize()
         self.updateGeometry()
         self.show()
+
+    def setData(self, data):
+        self._view.setData(data)
+
+
+class TableModifyWidget(QtWidgets.QTabWidget):
+    def __init__(self, table):
+        super().__init__()
+        self.__initlayout(table)
+
+    def __initlayout(self, table):
+        self._view = _viewTab(table)
+        self.addTab(self._view, "View")
 
     def setData(self, data):
         self._view.setData(data)

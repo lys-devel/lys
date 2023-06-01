@@ -8,7 +8,7 @@ from lys.widgets import _ExtendMdiArea, FileSystemView, Graph
 from lys.Qt import QtWidgets, QtCore, QtGui
 
 from .shell import ExtendShell
-from .Tabs import GraphTab
+from .Tabs import GraphTab, TableTab
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -85,35 +85,54 @@ class MainWindow(QtWidgets.QMainWindow):
         self._side = self.__sideBar()
         self._bottom = self.__bottomBar()
 
+        self._showBtn = QtWidgets.QPushButton("Show", clicked=self.__setVisible)
+
+        h = QtWidgets.QHBoxLayout()
+        h.addWidget(_CommandLineEdit(ExtendShell._instance))
+        h.addWidget(self._showBtn)
+
         sp1 = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
         sp1.addWidget(self._mainTab)
         sp1.addWidget(self._side)
 
-        sp2 = QtWidgets.QSplitter(QtCore.Qt.Vertical)
-        sp2.addWidget(sp1)
-        sp2.addWidget(self._bottom)
-        self.setCentralWidget(sp2)
+        self._sp2 = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+        self._sp2.addWidget(sp1)
+        self._sp2.addWidget(self._bottom)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self._sp2)
+        layout.addLayout(h)
+
+        w = QtWidgets.QWidget()
+        w.setLayout(layout)
+
+        self.setCentralWidget(w)
+        self._bottom.hide()
 
     def __sideBar(self):
         self._fileView = FileSystemView(home(), drop=True)
         self._graph = GraphTab()
+        self._table = TableTab()
 
         self._tab = QtWidgets.QTabWidget()
         self._tab.addTab(self._fileView, "File")
         self._tab.addTab(self._graph, "Graph")
+        self._tab.addTab(self._table, "Table")
         self._tab.setTabVisible(1, False)
+        self._tab.setTabVisible(2, False)
         return self._tab
 
     def __bottomBar(self):
         self._tab_up = QtWidgets.QTabWidget()
         self._tab_up.addTab(_CommandLogWidget(self), "Command")
+        return self._tab_up
 
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self._tab_up)
-        layout.addWidget(_CommandLineEdit(ExtendShell._instance))
-        w = QtWidgets.QWidget()
-        w.setLayout(layout)
-        return w
+    def __setVisible(self):
+        self._tab_up.setVisible(not self._tab_up.isVisible())
+        if self._tab_up.isVisible():
+            self._showBtn.setText("Hide")
+        else:
+            self._showBtn.setText("Show")
 
     def __tabContextMenu(self, qPoint):
         index = self._mainTab.tabBar().tabAt(qPoint)
@@ -158,10 +177,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         act = win.addAction("Show/Hide sidebar")
         act.triggered.connect(lambda: self._side.setVisible(not self._side.isVisible()))
-        act.setShortcut("Ctrl+H")
-
-        act = win.addAction("Show/Hide command line")
-        act.triggered.connect(lambda: self._bottom.setVisible(not self._bottom.isVisible()))
         act.setShortcut("Ctrl+J")
         return
 

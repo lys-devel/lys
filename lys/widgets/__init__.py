@@ -6,7 +6,7 @@ from .slider import RangeSlider
 from .fileView import FileSystemView
 
 from .mdi import LysSubWindow, _ExtendMdiArea
-from .table import Table, lysTable
+from .table import Table, lysTable, TableModifyWidget
 from .canvas import lysCanvas, Graph, CanvasBase, getFrontCanvas, ModifyWidget
 
 registerFileLoader(".grf", Graph)
