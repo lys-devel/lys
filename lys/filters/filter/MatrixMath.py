@@ -88,7 +88,13 @@ class SliceFilter(FilterInterface):
         return {"slices": self._sl}
 
     def getRelativeDimension(self):
-        return -np.sum([1 for s in self._sl if s.start == s.stop])
+        value = 0
+        for s in self._sl:
+            if s == slice(None):
+                continue
+            if s.start == s.stop:
+                value += 1
+        return -value
 
 
 class IndexMathFilter(FilterInterface):
