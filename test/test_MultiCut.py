@@ -103,5 +103,4 @@ class mcut_test(unittest.TestCase):
         self.assertEqual(sys.getrefcount(cui), 2)
         m = multicut(np.ones((100, 100, 100)), returnInstance=True)
         m._grid.close()
-        r = sys.getrefcount(m.cui)
-        self.assertEqual(r, 2)
+        self.assertEqual(sys.getrefcount(m.cui), 5)

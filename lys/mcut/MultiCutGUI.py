@@ -210,9 +210,9 @@ class MultiCut(QtCore.QObject):
     def __init__(self, wave):
         super().__init__()
         self._grid = _MultipleGrid()
-        self._grid.setWindowTitle("Multicut")
+        self._grid.setWindowTitle("Multicut: Multi-dimensional data analysis")
         self._grid.focused.connect(self.openMultiCutSetting)
-        self._grid.closed.connect(lambda: self.closed.emit(self))
+        self._grid.closed.connect(self.__onClose)
         self._cui = MultiCutCUI(wave)
         self._color = QtGui.QColor(self._colors[MultiCut._colorIndex % len(self._colors)])
         self._grid.setTitleColor(self._color)
@@ -220,6 +220,9 @@ class MultiCut(QtCore.QObject):
         MultiCut._colorIndex += 1
         self._cui.dimensionChanged.connect(self._can.clear)
         self.openMultiCutSetting()
+
+    def __onClose(self):
+        self.closed.emit(self)
 
     def openMultiCutSetting(self):
         from lys import glb
