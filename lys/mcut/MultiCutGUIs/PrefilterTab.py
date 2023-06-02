@@ -13,6 +13,7 @@ class PrefilterTab(QtWidgets.QWidget):
         self._dim = 0
         self.filterApplied.connect(self._cui.applyFilter)
 
+
     def __initlayout__(self):
         self._label = QtWidgets.QLabel()
         self.__label()

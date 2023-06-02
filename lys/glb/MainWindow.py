@@ -54,7 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__initUI()
         self.__initMenu()
         if restore:
-            self._restoreWorkspaces(self.__file__)
+            self._restoreWorkspaces()
         if show:
             self.show()
 

@@ -15,7 +15,10 @@ class AnimationTab(QtWidgets.QGroupBox):
         self.__initlayout()
         self._cui = cui
         self.__axis.setDimension(cui.getFilteredWave().ndim)
-        self._cui.dimensionChanged.connect(lambda: self.__axis.setDimension(cui.getFilteredWave().ndim))
+        self._cui.dimensionChanged.connect(self.__dimensionChanged)
+
+    def __dimensionChanged(self):
+        self.__axis.setDimension(self._cui.getFilteredWave().ndim)
 
     def __initlayout(self):
         self.__axis = AxisSelectionLayout("Frame axis", 2)

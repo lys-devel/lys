@@ -8,6 +8,7 @@ class ExportDataTab(QtWidgets.QGroupBox):
         self._cui = cui
         self.__initlayout()
 
+
     def __initlayout(self):
         hb = QtWidgets.QHBoxLayout()
         hb.addWidget(QtWidgets.QPushButton("Export", clicked=self.__export))

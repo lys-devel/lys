@@ -783,7 +783,7 @@ class DaskWave(QtCore.QObject):
     note = _WaveNoteDescriptor()
 
     @classmethod
-    def initWorkers(cls, n_workers, threads_per_worker=2):
+    def initWorkers(cls, n_workers, threads_per_worker=1):
         """
         Initializa local cluster. 
         This method is automatically called when lys is launched with parallel computing option.

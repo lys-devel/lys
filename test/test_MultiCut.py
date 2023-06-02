@@ -1,12 +1,23 @@
 import unittest
+import warnings
+import os
+import sys
+import shutil
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 
-from lys import Wave, filters
+from lys import Wave, filters, errors, home, glb, multicut
 from lys.mcut.MultiCutCUI import MultiCutCUI
 
 
 class mcut_test(unittest.TestCase):
+    def setUp(self):
+        warnings.simplefilter("ignore", errors.NotSupportedWarning)
+        if glb.mainWindow() is None:
+            if os.path.exists(home() + "/.lys"):
+                shutil.rmtree(home() + "/.lys")
+            glb.createMainWindow(show=False, restore=False)
+
     def test_MultiCutWave(self):
         w = Wave(np.random.rand(100, 100))
         cui = MultiCutCUI(w)
@@ -86,3 +97,11 @@ class mcut_test(unittest.TestCase):
         assert_array_almost_equal(w2.getFilteredWave().data, np.ones((101, 21)) * 10)
         fline.setWidth(2)
         assert_array_almost_equal(w2.getFilteredWave().data, np.ones((101, 21)) * 20)
+
+    def test_memory(self):
+        cui = MultiCutCUI(np.ones((100, 100, 100)))
+        self.assertEqual(sys.getrefcount(cui), 2)
+        m = multicut(np.ones((100, 100, 100)), returnInstance=True)
+        m._grid.close()
+        r = sys.getrefcount(m.cui)
+        self.assertEqual(r, 2)

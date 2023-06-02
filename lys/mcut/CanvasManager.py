@@ -368,17 +368,17 @@ class _InteractiveWidget(QtWidgets.QGroupBox):
     def __init__(self, cui, canvases):
         super().__init__("Interactive Annotations")
         self._cui = cui
-        self._can = canvases
+        self._can = weakref.ref(canvases)
         self.__initlayout()
 
     def __initlayout(self):
-        self._lx = QtWidgets.QPushButton("Line (X)", clicked=lambda: self._can.addLine(orientation="vertical"))
-        self._ly = QtWidgets.QPushButton("Line (Y)", clicked=lambda: self._can.addLine(orientation="horizontal"))
-        self._rx = QtWidgets.QPushButton("Region (X)", clicked=lambda: self._can.addRegion(orientation="vertical"))
-        self._ry = QtWidgets.QPushButton("Region (Y)", clicked=lambda: self._can.addRegion(orientation="horizontal"))
-        self._pt = QtWidgets.QPushButton("Point", clicked=lambda: self._can.addCross())
-        self._rt = QtWidgets.QPushButton("Rect", clicked=lambda: self._can.addRect())
-        self._li = QtWidgets.QPushButton("Free Line", clicked=lambda: self._can.addFreeLine())
+        self._lx = QtWidgets.QPushButton("Line (X)", clicked=self.__addLineX)
+        self._ly = QtWidgets.QPushButton("Line (Y)", clicked=self.__addLineY)
+        self._rx = QtWidgets.QPushButton("Region (X)", clicked=self.__addRegionX)
+        self._ry = QtWidgets.QPushButton("Region (Y)", clicked=self.__addRegionY)
+        self._pt = QtWidgets.QPushButton("Point", clicked=self.__addPoint)
+        self._rt = QtWidgets.QPushButton("Rect", clicked=self.__addRect)
+        self._li = QtWidgets.QPushButton("Free Line", clicked=self.__addFreeLine)
         for w in [self._lx, self._ly, self._rx, self._ry, self._pt, self._rt, self._li]:
             w.setEnabled(False)
 
@@ -397,6 +397,27 @@ class _InteractiveWidget(QtWidgets.QGroupBox):
         grid.addWidget(mc, 3, 1)
 
         self.setLayout(grid)
+
+    def __addLineX(self):
+        self._can().addLine(orientation="vertical")
+
+    def __addLineY(self):
+        self._can().addLine(orientation="horizontal")
+
+    def __addRegionX(self):
+        self._can().addRegion(orientation="vertical")
+
+    def __addRegionY(self):
+        self._can().addRegion(orientation="horizontal")
+
+    def __addPoint(self):
+        self._can().addCross()
+
+    def __addRect(self):
+        self._can().addRect()
+
+    def __addFreeLine(self):
+        self._can().addFreeLine()
 
     def setEnabled(self):
         c = frontCanvas()

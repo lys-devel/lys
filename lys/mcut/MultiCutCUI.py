@@ -1,4 +1,6 @@
 import logging
+import weakref
+
 from lys import DaskWave, Wave, filters
 from lys.Qt import QtCore
 from lys.decorators import avoidCircularReference
@@ -160,10 +162,10 @@ class ChildWaves(QtCore.QObject):
 
     def __init__(self, cui):
         super().__init__()
-        self._cui = cui
-        self._cui.axesRangeChanged.connect(self.__update)
-        self._cui.freeLineMoved.connect(self.__update)
-        self._cui.filterApplied.connect(lambda x: self.__update())
+        self._cui = weakref.ref(cui)
+        self.cui.axesRangeChanged.connect(self.__update)
+        self.cui.freeLineMoved.connect(self.__update)
+        self.cui.filterApplied.connect(lambda x: self.__update())
         self._sumType = "Mean"
         self._waves = []
 
@@ -173,7 +175,7 @@ class ChildWaves(QtCore.QObject):
 
     @property
     def cui(self):
-        return self._cui
+        return self._cui()
 
     def setSumType(self, sumType):
         """
@@ -228,7 +230,7 @@ class ChildWaves(QtCore.QObject):
         res = []
         for ax in axes:
             if isinstance(ax, str):
-                res.extend(self._cui.getFreeLine(ax).getAxes())
+                res.extend(self.cui.getFreeLine(ax).getAxes())
         return res
 
     def __getFreeLineTransposeFilter(self, axes_orig, ignored):
@@ -236,7 +238,7 @@ class ChildWaves(QtCore.QObject):
         filts = []
         for ax in axes_orig:
             if isinstance(ax, str):
-                line = self._cui.getFreeLine(ax)
+                line = self.cui.getFreeLine(ax)
                 axes = list(line.getAxes())
                 axes = [axes_final.index(a) for a in axes]
                 filts.append(line.getFilter(axes))

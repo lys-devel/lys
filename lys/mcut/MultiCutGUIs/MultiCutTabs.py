@@ -45,7 +45,7 @@ class MainWidget(QtWidgets.QWidget):
         self._cui.dimensionChanged.connect(self.__update)
         self._gui = weakref.ref(gui)
         self.__initlayout()
-        self.__update()
+        # self.__update()
 
     @property
     def gui(self):

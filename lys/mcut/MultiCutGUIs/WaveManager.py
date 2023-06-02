@@ -7,7 +7,10 @@ class _ChildWavesModel(QtCore.QAbstractItemModel):
     def __init__(self, obj):
         super().__init__()
         self.obj = obj
-        obj.childWavesChanged.connect(lambda: self.layoutChanged.emit())
+        obj.childWavesChanged.connect(self.__changed)
+
+    def __changed(self):
+        self.layoutChanged.emit()
 
     def data(self, index, role):
         item = index.internalPointer()
@@ -77,8 +80,7 @@ class ChildWavesGUI(QtWidgets.QTreeView):
         w = self._getObj()
         types = CanvasBase.dataTypes(w)
 
-
-        if len(types) == 1 or len(types)==2 and "vector" in types:
+        if len(types) == 1 or len(types) == 2 and "vector" in types:
             connected.addAction(QtWidgets.QAction("Display in grid", self, triggered=lambda: self.__disp(self._getItem())))
         else:
             g = QtWidgets.QMenu("Display in grid")
@@ -117,7 +119,7 @@ class ChildWavesGUI(QtWidgets.QTreeView):
         copied.addAction(QtWidgets.QAction("Send to shell", self, triggered=lambda: self._shell(type="copied")))
 
         menu.addSeparator()
-  
+
         menu.addAction(QtWidgets.QAction("Enable", self, triggered=lambda: self._getItem().setEnabled(True)))
         menu.addAction(QtWidgets.QAction("Disable", self, triggered=lambda: self._getItem().setEnabled(False)))
         menu.addAction(QtWidgets.QAction("Remove", self, triggered=lambda: self.obj.remove(self._getItem())))
@@ -132,7 +134,7 @@ class ChildWavesGUI(QtWidgets.QTreeView):
         elif imageType == "vector":
             kwargs["vector"] = True
         if func == self.__disp:
-            return QtWidgets.QAction(imageType, self, triggered=lambda: func(self._getItem(), **kwargs))        
+            return QtWidgets.QAction(imageType, self, triggered=lambda: func(self._getItem(), **kwargs))
         else:
             return QtWidgets.QAction(imageType, self, triggered=lambda: func(self._getObj(type=waveType), **kwargs))
 
