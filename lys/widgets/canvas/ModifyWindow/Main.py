@@ -103,8 +103,8 @@ class _AreaTab(QtWidgets.QWidget):
         self.layout = QtWidgets.QVBoxLayout(self)
         self.layout.addWidget(self._size)
         self.layout.addWidget(self._margin)
-        self.layout.addStretch()
         self.layout.addLayout(hbox)
+        self.layout.addStretch()
         self.setLayout(self.layout)
 
     def _save(self):
@@ -155,6 +155,7 @@ class _AxisTab(QtWidgets.QWidget):
         layout.addLayout(h1)
         layout.addWidget(tab)
         layout.addLayout(hbox)
+        layout.addStretch()
         self.setLayout(layout)
 
     def getCurrentAxis(self):
@@ -202,6 +203,7 @@ class _LineTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
+        layout.addStretch()
         self.setLayout(layout)
 
 
@@ -228,6 +230,7 @@ class _ImageTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
+        layout.addStretch()
         self.setLayout(layout)
 
 
@@ -251,6 +254,8 @@ class _ContourTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
+        layout.addStretch()
+
         self.setLayout(layout)
 
 
@@ -277,6 +282,8 @@ class _RGBTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
+        layout.addStretch()
+
         self.setLayout(layout)
 
 
@@ -300,6 +307,8 @@ class _VectorTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
+        layout.addStretch()
+
         self.setLayout(layout)
 
 
@@ -329,6 +338,8 @@ class _AnnotationTab(QtWidgets.QWidget):
         self._test = QtWidgets.QPushButton('Legend(test)')
         self._test.clicked.connect(self.test)
         layout.addWidget(tab)
+        layout.addStretch()
+
         self.setLayout(layout)
 
     def test(self):

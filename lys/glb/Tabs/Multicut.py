@@ -13,7 +13,6 @@ class MulticutTab(QtWidgets.QWidget):
 
     def __inilayout(self):
         self._layout = QtWidgets.QVBoxLayout()
-        self._layout.addStretch()
         self.setLayout(self._layout)
 
     def setObject(self, obj):

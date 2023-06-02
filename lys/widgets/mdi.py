@@ -6,6 +6,7 @@ from pathlib import Path
 
 from lys import home, load, lysPath
 from lys.Qt import QtCore, QtWidgets, QtGui
+from lys.resources import lysIcon
 from lys.decorators import avoidCircularReference
 
 
@@ -235,6 +236,7 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
         self._floating = floating
         self._titleColor = QtGui.QColor()
         self.setStyle(_TitleProxyStyle())
+        self.setWindowIcon(lysIcon)
         self.installEventFilter(self)
         self._resizeTimer = QtCore.QTimer(self)
         self._resizeTimer.timeout.connect(self.resizeFinished)

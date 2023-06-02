@@ -38,3 +38,7 @@ app = QtWidgets.QApplication([])
 
 def start():
     sys.exit(app.exec_())
+
+
+def processEvents():
+    app.processEvents()

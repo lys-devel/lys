@@ -5,6 +5,7 @@ import rlcompleter
 
 from lys import home, SettingDict
 from lys.widgets import _ExtendMdiArea, FileSystemView, Graph
+from lys.resources import lysIcon
 from lys.Qt import QtWidgets, QtCore, QtGui
 
 from .shell import ExtendShell
@@ -53,7 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.__initUI()
         self.__initMenu()
         if restore:
-            self._restoreWorkspaces()
+            self._restoreWorkspaces(self.__file__)
         if show:
             self.show()
 
@@ -69,6 +70,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def __initUI(self):
         self.setWindowTitle('lys')
+        self.setWindowIcon(lysIcon)
 
         self._mainTab = QtWidgets.QTabWidget()
         self._mainTab.setTabsClosable(True)
@@ -90,18 +92,23 @@ class MainWindow(QtWidgets.QMainWindow):
         h = QtWidgets.QHBoxLayout()
         h.addWidget(_CommandLineEdit(ExtendShell._instance))
         h.addWidget(self._showBtn)
+        h.setContentsMargins(0, 0, 0, 0)
 
         sp1 = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
+        sp1.setHandleWidth(0)
         sp1.addWidget(self._mainTab)
         sp1.addWidget(self._side)
 
         self._sp2 = QtWidgets.QSplitter(QtCore.Qt.Vertical)
+        self._sp2.setHandleWidth(0)
         self._sp2.addWidget(sp1)
         self._sp2.addWidget(self._bottom)
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self._sp2)
         layout.addLayout(h)
+        layout.setContentsMargins(2, 0, 2, 2)
+        layout.setSpacing(2)
 
         w = QtWidgets.QWidget()
         w.setLayout(layout)
@@ -122,6 +129,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._tab.addTab(self._mcut, "MultiCut")
         self._tab.setTabVisible(1, False)
         self._tab.setTabVisible(2, False)
+        self._tab.setTabVisible(3, False)
         return self._tab
 
     def __bottomBar(self):
