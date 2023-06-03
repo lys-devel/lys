@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="fitting module" href="fitting.html" />
+    <link rel="next" title="multicut module" href="multicut.html" />
     <link rel="prev" title="filters module" href="filters.html" /> 
 </head>
 
@@ -60,6 +60,7 @@
 <li class="toctree-l3"><a class="reference internal" href="filters.html#module-lys.filters.filtersGUI">GUI</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="multicut.html">multicut module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fitting.html">fitting module</a></li>
 </ul>
 </li>
@@ -510,8 +511,7 @@ Uses should rechunk before applying this filter by <code class="xref py py-class
 <dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
 <p>Integrate wave.</p>
 <p>Range of integration is specified by <em>range</em>.</p>
-<p>Note that the <em>range</em> is specified in the units of <em>axes</em> of (Dask)Wave.
-If axes is not specified, <em>range</em> should be specified by indice.</p>
+<p>Note that the <em>range</em> is specified in the units of <em>axes</em> of (Dask)Wave.</p>
 <p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface.FilterInterface</span></code> for general description of Filters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -677,7 +677,8 @@ If axes is not specified, <em>range</em> should be specified by indice.</p>
 <dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.TransposeFilter">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.MatrixMath.</span></span><span class="sig-name descname"><span class="pre">TransposeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#TransposeFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.TransposeFilter" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
-<p>Tranpose data by np.transpose</p>
+<p>Tranpose data by np.transpose.</p>
+<p>If the data is 1-dimensional, the data and x axis is swapped.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>axes</strong> (<em>sequence</em><em> of </em><em>int</em>) – order of axes.</p>
@@ -1289,7 +1290,7 @@ When type=’stop’, then the new axis is val1, …, val2.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="filters.html" class="btn btn-neutral float-left" title="filters module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="fitting.html" class="btn btn-neutral float-right" title="fitting module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="multicut.html" class="btn btn-neutral float-right" title="multicut module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

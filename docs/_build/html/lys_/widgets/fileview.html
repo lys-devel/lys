@@ -61,6 +61,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../filters.html">filters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../multicut.html">multicut module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../fitting.html">fitting module</a></li>
 </ul>
 </li>
@@ -115,7 +116,7 @@ Context menu for specified type can be registered by <a class="reference interna
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.fileView.FileSystemView.registerFileMenu">
-<span class="sig-name descname"><span class="pre">registerFileMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/fileView.html#FileSystemView.registerFileMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.fileView.FileSystemView.registerFileMenu" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">registerFileMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/fileView.html#FileSystemView.registerFileMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.fileView.FileSystemView.registerFileMenu" title="Permalink to this definition"></a></dt>
 <dd><p>register new context menu to filetype specified by <em>ext</em></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -170,6 +171,12 @@ Context menu for specified type can be registered by <a class="reference interna
 <span class="go">[&quot;path selected&quot;, &quot;path selected2, ...&quot;]</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.fileView.FileSystemView.selectionChanged">
+<span class="sig-name descname"><span class="pre">selectionChanged</span></span><a class="headerlink" href="#lys.widgets.fileView.FileSystemView.selectionChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the selected file is changed.</p>
 </dd></dl>
 
 <dl class="py method">

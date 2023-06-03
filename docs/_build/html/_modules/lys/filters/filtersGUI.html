@@ -74,7 +74,6 @@
 
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">filters</span>
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
-<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">LysSubWindow</span>
 
 <span class="kn">from</span> <span class="nn">.function</span> <span class="kn">import</span> <span class="n">_filterGroups</span><span class="p">,</span> <span class="n">_getFilterGuiName</span><span class="p">,</span> <span class="n">_getFilterGui</span>
 
@@ -205,7 +204,7 @@
             <span class="n">child</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">child</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">dim</span> <span class="o">!=</span> <span class="n">w</span><span class="o">.</span><span class="n">getDimension</span><span class="p">():</span>
-                <span class="n">wid</span> <span class="o">=</span> <span class="n">_getFilterGui</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mi">0</span><span class="p">))(</span><span class="n">dim</span><span class="p">)</span>
+                <span class="n">wid</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">w</span><span class="p">)(</span><span class="n">dim</span><span class="p">)</span>
                 <span class="n">wid</span><span class="o">.</span><span class="n">setParameters</span><span class="p">(</span><span class="o">**</span><span class="n">w</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">removeItemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">setItemWidget</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wid</span><span class="p">)</span>
@@ -258,7 +257,7 @@
             <span class="n">filt</span><span class="o">.</span><span class="n">saveAsFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__import</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">fname</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Load Filters&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Filter (*.fil);;All files (*.*)&quot;</span><span class="p">)</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;Load Filters&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;Filter (*.fil);;Wave (*.npz);;All files (*.*)&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
             <span class="n">filt</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">fromFile</span><span class="p">(</span><span class="n">fname</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setFilters</span><span class="p">(</span><span class="n">filt</span><span class="p">)</span></div>

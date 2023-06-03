@@ -202,7 +202,30 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This method should be used (as [*with*] block) when the canvas is heavily modified to avoid drawing repeatedly.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">_CanvasLocker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">_CanvasLocker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CanvasBase.dataTypes"><a class="viewcode-back" href="../../../../../lys_/graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase.dataTypes">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">dataTypes</span><span class="p">(</span><span class="n">wave</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return possible data type (image, vector, etc).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            wave(Wave): The wave to be checked.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of str: Possible data type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">wave</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">wave</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wave</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">complex</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;rgb&quot;</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">,</span> <span class="s2">&quot;contour&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">wave</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wave</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;rgb&quot;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[]</span></div></div>
 
 
 <span class="k">class</span> <span class="nc">_CanvasLocker</span><span class="p">:</span>

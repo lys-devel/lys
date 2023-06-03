@@ -160,7 +160,13 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;slices&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sl</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="SliceFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.SliceFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sl</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">start</span> <span class="o">==</span> <span class="n">s</span><span class="o">.</span><span class="n">stop</span><span class="p">])</span></div></div>
+        <span class="n">value</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sl</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">start</span> <span class="o">==</span> <span class="n">s</span><span class="o">.</span><span class="n">stop</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">value</span></div></div>
 
 
 <div class="viewcode-block" id="IndexMathFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.IndexMathFilter">[docs]</a><span class="k">class</span> <span class="nc">IndexMathFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
@@ -208,7 +214,9 @@
 
 <div class="viewcode-block" id="TransposeFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.TransposeFilter">[docs]</a><span class="k">class</span> <span class="nc">TransposeFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Tranpose data by np.transpose</span>
+<span class="sd">    Tranpose data by np.transpose.</span>
+
+<span class="sd">    If the data is 1-dimensional, the data and x axis is swapped.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        axes(sequence of int): order of axes.</span>
@@ -228,9 +236,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="n">axes</span>
 
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">)</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">wave</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">compute</span><span class="p">(),</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">)</span>
+            <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TransposeFilter.getParameters"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.MatrixMath.TransposeFilter.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span></div></div>
@@ -306,6 +317,9 @@
 <span class="k">class</span> <span class="nc">_TransposeSetting</span><span class="p">(</span><span class="n">FilterSettingBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span> <span class="o">=</span> <span class="n">dimension</span>
+        <span class="k">if</span> <span class="n">dimension</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span>
         <span class="n">lay</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">val</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">()</span>
         <span class="n">st</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -325,9 +339,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">st</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">.</span><span class="n">text</span><span class="p">())}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">val</span><span class="o">.</span><span class="n">text</span><span class="p">())}</span>
 
     <span class="k">def</span> <span class="nf">setParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span>
         <span class="n">st</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
             <span class="n">st</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span>

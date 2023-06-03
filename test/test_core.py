@@ -21,9 +21,8 @@ class core_test(unittest.TestCase):
 
     def test_SettingDict(self):
         # check normal save
-        d = SettingDict()
+        d = SettingDict(self.path + "/test.dic")
         d["test1"] = "test1"
-        d.Save(self.path + "/test.dic")
 
         # check normal load
         d2 = SettingDict(self.path + "/test.dic")

@@ -93,15 +93,15 @@
 <span class="sd">    Args:</span>
 <span class="sd">        file (string): The filename to be loaded and saved</span>
 
-<span class="sd">    Examples:</span>
-<span class="sd">        &gt;&gt;&gt; d = SettingDict()</span>
-<span class="sd">        &gt;&gt;&gt; d[&quot;setting1&quot;] = &quot;SettingString&quot;</span>
-<span class="sd">        &gt;&gt;&gt; d.Save(&quot;Setting.dic&quot;)</span>
+<span class="sd">    Examples::</span>
 
-<span class="sd">        &gt;&gt;&gt; d2 = SettingDict(&quot;Setting.dic&quot;)   # setting.dic is loaded</span>
-<span class="sd">        &gt;&gt;&gt; d2[&quot;setting1&quot;]</span>
-<span class="sd">        SettingString</span>
+<span class="sd">        from lys import SettingDict</span>
 
+<span class="sd">        d = SettingDict(&quot;Setting.dic&quot;)</span>
+<span class="sd">        d[&quot;setting1&quot;] = &quot;SettingString&quot;</span>
+
+<span class="sd">        d2 = SettingDict(&quot;Setting.dic&quot;)   # setting.dic is loaded</span>
+<span class="sd">        d2[&quot;setting1&quot;] # SettingString</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -116,13 +116,13 @@
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__Save</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Save</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__Save</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SettingDict.Save"><a class="viewcode-back" href="../../lys_/core.html#lys.core.SettingDict.Save">[docs]</a>    <span class="k">def</span> <span class="nf">Save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__Save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save dictionary</span>
 
 <span class="sd">        Args:</span>
@@ -135,7 +135,7 @@
         <span class="n">file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div></div>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
 
 
 <span class="k">class</span> <span class="nc">_WaveDataDescriptor</span><span class="p">:</span>
@@ -151,10 +151,10 @@
 <span class="sd">        from lys import Wave</span>
 
 <span class="sd">        w = Wave([1,2,3])</span>
-<span class="sd">        w.data # [1,2,3]</span>
+<span class="sd">        print(w.data)     # [1,2,3]</span>
 
 <span class="sd">        w.data = [2,3,4]</span>
-<span class="sd">        w.data # [2,3,4]</span>
+<span class="sd">        print(w.data)     # [2,3,4]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -176,40 +176,17 @@
 
 <span class="sd">    All public methods in *WaveAxes* class can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example::</span>
 
-<span class="sd">        The initialization can be done from constructor of :class:`Wave`</span>
+<span class="sd">        from lys import Wave</span>
 
-<span class="sd">            &gt;&gt;&gt; w = Wave(np.ones([3,3]), [1,2,3], [4,5,6])</span>
-<span class="sd">            &gt;&gt;&gt; w.axes</span>
-<span class="sd">            [[1,2,3],[4,5,6]]</span>
+<span class="sd">        w = Wave(np.ones([3,3]), [1,2,3], [4,5,6])</span>
+<span class="sd">        print(w.axes)        # [array([1, 2, 3]), array([4, 5, 6])]</span>
 
-<span class="sd">        Then the *axes* can be changed as following.</span>
+<span class="sd">        w.axes[0] = [7,8,9]</span>
+<span class="sd">        print(w.axes)        # [array([7, 8, 9]), array([4, 5, 6])]</span>
 
-<span class="sd">            &gt;&gt;&gt; w.axes[0] = [7,8,9]</span>
-<span class="sd">            &gt;&gt;&gt; w.axes</span>
-<span class="sd">            [[7,8,9],[4,5,6]]</span>
-
-<span class="sd">        None can also be set to axis.</span>
-
-<span class="sd">            &gt;&gt;&gt; w.axes[1] = None</span>
-<span class="sd">            &gt;&gt;&gt; w.axes</span>
-<span class="sd">            [[7,8,9], None]</span>
-
-<span class="sd">        Even if the axis is None, automatically-generated axis can be always obtained by *getAxis* method.</span>
-
-<span class="sd">            &gt;&gt;&gt; w.getAxis(0)</span>
-<span class="sd">            [7,8,9]</span>
-<span class="sd">            &gt;&gt;&gt; w.getAxis(1)</span>
-<span class="sd">            [0,1,2]</span>
-
-<span class="sd">        *x*, *y*, and *z* is shortcut to axes[0], axes[1], and axes[2]</span>
-
-<span class="sd">            &gt;&gt;&gt; w = Wave(np.ones([2,3]), [0,1], [2,3,4])</span>
-<span class="sd">            &gt;&gt;&gt; w.x</span>
-<span class="sd">            [0,1]</span>
-<span class="sd">            &gt;&gt;&gt; w.y</span>
-<span class="sd">            [2,3,4]</span>
+<span class="sd">        print(w.x, w.y)      # [7,8,9], [4,5,6], shortcut to axes[0] and axes[1]</span>
 
 <span class="sd">    See also:</span>
 <span class="sd">        :class:`WaveAxes`, :attr:`x`, :attr:`y`, :attr:`z`</span>
@@ -305,14 +282,15 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            tuple or int: The indice corresponding to pos.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave(np.ones([3,3]), [1,2,3], [3,4,5])</span>
-<span class="sd">            &gt;&gt;&gt; w.posToPoint((2,4))</span>
-<span class="sd">            (1,1) # position (x,y)=(2,4) corresponds index (1,1)</span>
-<span class="sd">            &gt;&gt;&gt; w.posToPoint((1,2,3), axis=0)</span>
-<span class="sd">            (0,1,2) # position (x1, x2, x3 = 1,2,3) in the 0th dimension correspoinds index (0,1,2)</span>
-<span class="sd">            &gt;&gt;&gt; w.posToPoint(2, axis=0)</span>
-<span class="sd">            1 # position x = 2  correspoinds index 1 in 0th dimension</span>
+<span class="sd">        Example::</span>
+
+<span class="sd">            from lys import Wave</span>
+
+<span class="sd">            w = Wave(np.ones([3,3]), [1,2,3], [3,4,5])</span>
+
+<span class="sd">            w.posToPoint((2,4))             # (1,1), position (x,y)=(2,4) corresponds index (1,1)</span>
+<span class="sd">            w.posToPoint((1,2,3), axis=0)   # (0,1,2), position (x1, x2, x3 = 1,2,3) in the 0th dimension correspoinds index (0,1,2)</span>
+<span class="sd">            w.posToPoint(2, axis=0)         # 1, position x = 2  correspoinds index 1 in 0th dimension</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))]</span>
@@ -341,14 +319,14 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            tuple or float: The position corresponding to indice.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave(np.ones([2,2]), [1,2,3], [3,4,5])</span>
-<span class="sd">            &gt;&gt;&gt; w.pointToPos((1,1))</span>
-<span class="sd">            (2,4)       # index (1,1) corresponds to position (x,y)=(2,4)</span>
-<span class="sd">            &gt;&gt;&gt; w.posToPoint((0,1,2), axis=0)</span>
-<span class="sd">            (1,2,3)     # index (0,1,2) in the 0th dimension correspoinds position (x1, x2, x3 = 1,2,3)</span>
-<span class="sd">            &gt;&gt;&gt; w.posToPoint(1, axis=0)</span>
-<span class="sd">            2           #  index 1 in 0th dimensions correspoinds position x = 2</span>
+<span class="sd">        Example::</span>
+
+<span class="sd">            from lys import Wave</span>
+
+<span class="sd">            w = Wave(np.ones([3,3]), [1,2,3], [3,4,5])</span>
+<span class="sd">            w.pointToPos((1,1))             # (2,4), index (1,1) corresponds to position (x,y)=(2,4)</span>
+<span class="sd">            w.pointToPos((0,1,2), axis=0)   # (1,2,3), index (0,1,2) in the 0th dimension correspoinds position (x1, x2, x3 = 1,2,3)</span>
+<span class="sd">            w.pointToPos(1, axis=0)         # 2, index 1 in 0th dimensions correspoinds position x = 2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))]</span>
@@ -370,19 +348,7 @@
 
     <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">x</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shortcut to axes[0]</span>
-
-<span class="sd">        Example::</span>
-
-<span class="sd">            from lys import Wave</span>
-<span class="sd">            w = Wave([1,2,3], [1,2,3])</span>
-<span class="sd">            w.x</span>
-<span class="sd">            # [1,2,3]</span>
-<span class="sd">            w.x = [3,4,5]</span>
-<span class="sd">            w.x</span>
-<span class="sd">            # [3,4,5]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shortcut to axes[0]&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="o">@</span> <span class="n">x</span><span class="o">.</span><span class="n">setter</span>
@@ -391,9 +357,7 @@
 
     <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Shortcut to axes[1]. See :attr:`x`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shortcut to axes[1].&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="o">@</span> <span class="n">y</span><span class="o">.</span><span class="n">setter</span>
@@ -402,9 +366,7 @@
 
     <span class="o">@</span> <span class="nb">property</span>
     <span class="k">def</span> <span class="nf">z</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">        Shortcut to axes[2]. See :attr:`x`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shortcut to axes[2].&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getAxis</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
     <span class="o">@</span> <span class="n">z</span><span class="o">.</span><span class="n">setter</span>
@@ -415,17 +377,20 @@
 <span class="k">class</span> <span class="nc">_WaveNoteDescriptor</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Metadata of :class:`Wave` and :class:`DaskWave` implemented as :class:`WaveNote` class.</span>
+
 <span class="sd">    All public methods can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.</span>
 
 <span class="sd">    *note* is python dictionary and is used to save metadata in :class:`Wave` :class:`DaskWave` class.</span>
 
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; w = Wave([1,2,3], key = &quot;item&quot;})</span>
-<span class="sd">        &gt;&gt;&gt; w.note[&quot;key&quot;]</span>
-<span class="sd">        item</span>
-<span class="sd">        &gt;&gt;&gt; w.note[&quot;key2&quot;] = 1111</span>
-<span class="sd">        &gt;&gt;&gt; w.note[&quot;key2&quot;]</span>
-<span class="sd">        1111</span>
+<span class="sd">    Example::</span>
+
+<span class="sd">        from lys import Wave</span>
+
+<span class="sd">        w = Wave([1,2,3], key = &quot;item&quot;)</span>
+<span class="sd">        print(w.note[&quot;key&quot;])  # item</span>
+
+<span class="sd">        w.note[&quot;key2&quot;] = 1111</span>
+<span class="sd">        print(w.note[&quot;key2&quot;]) # 1111</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -458,17 +423,16 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shortcut to note[&quot;name&quot;], which is frequently used as a name of :class:`Wave` and :class:`DaskWave`.</span>
 
-<span class="sd">        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.</span>
+<span class="sd">        Example::</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave([1,2,3], name=&quot;wave1&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; w.note</span>
-<span class="sd">            {&quot;name&quot;: &quot;wave1&quot;}</span>
-<span class="sd">            &gt;&gt;&gt; w.name</span>
-<span class="sd">            wave1</span>
-<span class="sd">            &gt;&gt;&gt; w.name=&quot;wave2&quot;</span>
-<span class="sd">            &gt;&gt;&gt; w.name</span>
-<span class="sd">            wave2</span>
+<span class="sd">            from lys import Wave</span>
+
+<span class="sd">            w = Wave([1,2,3], name=&quot;wave1&quot;)</span>
+<span class="sd">            print(w.note)    # {&#39;name&#39;: &#39;wave1&#39;}</span>
+<span class="sd">            print(w.name)    # &#39;wave1&#39;</span>
+
+<span class="sd">            w.name=&quot;wave2&quot;</span>
+<span class="sd">            print(w.name)    # &#39;wave2&#39;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="s2">&quot;name&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
@@ -501,54 +465,49 @@
 <span class="sd">        axes (list of array_like): The axes of data</span>
 <span class="sd">        note (dict): metadata for Wave.</span>
 
-<span class="sd">    Examples:</span>
-<span class="sd">        Basic initialization without axses and note</span>
+<span class="sd">    Basic initialization without axes and note::</span>
 
-<span class="sd">            &gt;&gt;&gt; from lys import Wave</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave([1,2,3])</span>
-<span class="sd">            &gt;&gt;&gt; w.data</span>
-<span class="sd">            [1,2,3]</span>
+<span class="sd">        from lys import Wave</span>
 
-<span class="sd">        Basic initialization with axes and note</span>
+<span class="sd">        w = Wave([1,2,3])   # Axes are automatically set.</span>
+<span class="sd">        print(w.data, w.x)  # [1 2 3] [0. 1. 2.]</span>
 
-<span class="sd">            &gt;&gt;&gt; w = Wave(np.ones([2,3]), [1,2], [1,2,3], name=&quot;wave1&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; w.axes          # positional arguments are used for axes</span>
-<span class="sd">            [[1,2],[1,2,3]]</span>
-<span class="sd">            &gt;&gt;&gt; w.x             # axes can be accessed from Wave.x, Wave.y etc...</span>
-<span class="sd">            [1,2]</span>
-<span class="sd">            &gt;&gt;&gt; w.note          # keyword arguments are saved in note</span>
-<span class="sd">            {&quot;name&quot;: &quot;wave1&quot;}</span>
+<span class="sd">    Basic initialization with axes and note::</span>
 
-<span class="sd">        Initialize Wave from array of Wave</span>
+<span class="sd">        from lys import Wave</span>
 
-<span class="sd">            &gt;&gt;&gt; w = Wave([1,2,3], [4,5,6])</span>
-<span class="sd">            &gt;&gt;&gt; w2 = Wave([w,w], [7,8])</span>
-<span class="sd">            &gt;&gt;&gt; w2.data</span>
-<span class="sd">            [[1,2,3], [1,2,3]]</span>
-<span class="sd">            &gt;&gt;&gt; w2.x</span>
-<span class="sd">            [7,8]</span>
-<span class="sd">            &gt;&gt;&gt; w2.y</span>
-<span class="sd">            [4,5,6]</span>
+<span class="sd">        w = Wave(np.ones([2,3]), [1,2], [1,2,3], name=&quot;wave1&quot;)</span>
 
-<span class="sd">        Save &amp; load numpy npz file</span>
+<span class="sd">        print(w.axes)     # [array([1, 2]), array([1, 2, 3])]</span>
+<span class="sd">        print(w.x)        # [1 2], axes can be accessed from Wave.x, Wave.y etc...</span>
+<span class="sd">        print(w.note)     # {&#39;name&#39;: &#39;wave1&#39;}, keyword arguments are saved in note</span>
 
-<span class="sd">            &gt;&gt;&gt; w = Wave([1,2,3])</span>
-<span class="sd">            &gt;&gt;&gt; w.export(&quot;wave.npz&quot;) # save wave to wave.npz</span>
-<span class="sd">            &gt;&gt;&gt; w2 = Wave(&quot;wave.npz&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; w2.data</span>
-<span class="sd">            [1,2,3]</span>
+<span class="sd">    Initialize Wave from array of Wave::</span>
 
-<span class="sd">        Direct access numpy array methods</span>
+<span class="sd">        from lys import Wave</span>
 
-<span class="sd">            &gt;&gt;&gt; w = Wave(np.zeros((100,100)))</span>
-<span class="sd">            &gt;&gt;&gt; w.shape</span>
-<span class="sd">            (100,100)</span>
+<span class="sd">        w = Wave([1,2,3], [4,5,6])</span>
+<span class="sd">        w2 = Wave([w,w], [7,8])</span>
 
-<span class="sd">        Load from various file types by :func:`.functions.load`</span>
+<span class="sd">        print(w2.data)       # [[1 2 3], [1 2 3]]</span>
+<span class="sd">        print(w2.x, w2.y)    # [7,8], [4,5,6]</span>
 
-<span class="sd">            &gt;&gt;&gt; from lys import load</span>
-<span class="sd">            &gt;&gt;&gt; w = load(&quot;data.png&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; display(w)</span>
+<span class="sd">    Save &amp; load numpy npz file::</span>
+
+<span class="sd">        from lys import Wave</span>
+
+<span class="sd">        w = Wave([1,2,3])</span>
+<span class="sd">        w.export(&quot;wave.npz&quot;) # save wave to wave.npz</span>
+
+<span class="sd">        w2 = Wave(&quot;wave.npz&quot;)</span>
+<span class="sd">        print(w2.data)       # [1 2 3]</span>
+
+<span class="sd">    Direct access numpy array methods::</span>
+
+<span class="sd">        from lys import Wave</span>
+
+<span class="sd">        w = Wave(np.zeros((100,100)))</span>
+<span class="sd">        print(w.shape)  # (100,100)</span>
 
 <span class="sd">    See also:</span>
 <span class="sd">        :attr:`data`, :attr:`axes`, :attr:`note`</span>
@@ -557,11 +516,13 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    *modified* is a pyqtSignal, which is emitted when *Wave* is changed.</span>
 
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; w = Wave([1,2,3], name=&quot;wave1&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; w.modified.connect(lambda w: print(&quot;modified&quot;, w.name))</span>
-<span class="sd">        &gt;&gt;&gt; w.data = [2,3,4]</span>
-<span class="sd">        modified wave1</span>
+<span class="sd">    Example::</span>
+
+<span class="sd">        from lys import Wave</span>
+
+<span class="sd">        w = Wave([1,2,3], name=&quot;wave1&quot;)</span>
+<span class="sd">        w.modified.connect(lambda w: print(&quot;modified&quot;, w.name))</span>
+<span class="sd">        w.data = [2,3,4] # modified wave1</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">_WaveDataDescriptor</span><span class="p">()</span>
     <span class="n">axes</span> <span class="o">=</span> <span class="n">_WaveAxesDescriptor</span><span class="p">()</span>
@@ -653,12 +614,17 @@
 <span class="sd">            path (str): File path to be saved.</span>
 <span class="sd">            type (str): File extension. See :meth:`SupportedFormats`.</span>
 
-<span class="sd">        Exmple:</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave([1,2,3])</span>
-<span class="sd">            &gt;&gt;&gt; w.export(&quot;wave.npz&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; w2 = Wave.importFrom(&quot;wave.npz&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; w2.data</span>
-<span class="sd">            [1,2,3]</span>
+<span class="sd">        Exmple::</span>
+
+<span class="sd">            from lys import Wave</span>
+
+<span class="sd">            w = Wave([1,2,3])</span>
+<span class="sd">            w.export(&quot;wave.npz&quot;)</span>
+
+<span class="sd">            w2 = Wave.importFrom(&quot;wave.npz&quot;)</span>
+<span class="sd">            print(w2.data) # [1,2,3]</span>
+
+<span class="sd">            w3 = Wave(&quot;wave.npz&quot;) # If the file is .npz, this is also possible.</span>
 
 <span class="sd">        See also:</span>
 <span class="sd">            :meth:`importFrom`</span>
@@ -686,18 +652,9 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Import *Wave* from file.</span>
 
-<span class="sd">        It is recommended to use :func:`functions.loadWave` to load Wave from various types of files.</span>
-
 <span class="sd">        Args:</span>
 <span class="sd">            path (str): File path to be saved.</span>
 <span class="sd">            type (str): File extension. See :meth:`SupportedFormats`.</span>
-
-<span class="sd">        Exmple:</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave([1,2,3])</span>
-<span class="sd">            &gt;&gt;&gt; w.export(&quot;wave.npz&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; w2 = Wave.importFrom(&quot;wave.npz&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; w2.data</span>
-<span class="sd">            [1,2,3]</span>
 
 <span class="sd">        See also:</span>
 <span class="sd">            :meth:`export`</span>
@@ -715,13 +672,15 @@
 <span class="sd">        Create duplicated *Wave*</span>
 
 <span class="sd">        Return:</span>
-<span class="sd">            Wave: duplicated wave.</span>
+<span class="sd">            Wave: Duplicated wave.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave([1,2,3])</span>
-<span class="sd">            &gt;&gt;&gt; w2=w.duplicate()</span>
-<span class="sd">            &gt;&gt;&gt; w2.data</span>
-<span class="sd">            [1,2,3]</span>
+<span class="sd">        Example::</span>
+
+<span class="sd">            from lys import Wave</span>
+
+<span class="sd">            w = Wave([1,2,3])</span>
+<span class="sd">            w2=w.duplicate()</span>
+<span class="sd">            print(w2.data) # [1,2,3]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Wave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">)</span></div>
 
@@ -732,14 +691,16 @@
 <span class="sd">        When *data* is directly changed by indexing, *modified* signal is not emitted.</span>
 <span class="sd">        Calling *update()* emit *modified* signal manually.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; w = Wave([1,2,3])</span>
-<span class="sd">            &gt;&gt;&gt; w.modified.connect(lambda: print(&quot;modified&quot;))</span>
-<span class="sd">            &gt;&gt;&gt; w.data = [0, 1, 2]        # modified is emitted when Wave.data is changed.</span>
-<span class="sd">            modified</span>
-<span class="sd">            &gt;&gt;&gt; w.data[1]=0               # modified is NOT emitted through data.__setitem__ is called.</span>
-<span class="sd">            &gt;&gt;&gt; w.update()</span>
-<span class="sd">            modified</span>
+<span class="sd">        Example::</span>
+
+<span class="sd">            from lys import Wave</span>
+
+<span class="sd">            w = Wave([1,2,3])</span>
+<span class="sd">            w.modified.connect(lambda: print(&quot;modified&quot;))</span>
+
+<span class="sd">            w.data = [0, 1, 2]        # modified, modified is emitted when Wave.data is changed.</span>
+<span class="sd">            w.data[1] = 0             # modified is NOT emitted through data.__setitem__ is called.</span>
+<span class="sd">            w.update()                # modified</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
@@ -763,24 +724,7 @@
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-    <span class="c1"># deprecated methods</span>
-
-<div class="viewcode-block" id="Wave.Name"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.Name">[docs]</a>    <span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;deprecated method&quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">inspect</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wave.Name is deprecated. use Wave.name instead&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
-
-<div class="viewcode-block" id="Wave.Save"><a class="viewcode-back" href="../../lys_/core.html#lys.core.Wave.Save">[docs]</a>    <span class="k">def</span> <span class="nf">Save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;deprecated method&quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">inspect</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wave.Save is deprecated. use Wave.export instead&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <span class="k">class</span> <span class="nc">_DaskWaveDataDescriptor</span><span class="p">:</span>
@@ -804,11 +748,11 @@
 <span class="sd">    *DaskWave* class is a central data class in lys, which is used for easy parallel computing via dask.</span>
 
 <span class="sd">    This class is mainly used for parallel computing of data *with axes and notes*, which enables us to consistent calculation of data and axes.</span>
-<span class="sd">    Particularly, *DaskWave* is extensively used in *Multicut* package.</span>
+<span class="sd">    Particularly, *DaskWave* is extensively used in MultiCut.</span>
 
 <span class="sd">    :attr:`data` is a dask array of any dimension. See :class:`Wave` for :attr:`axes` and :attr:`note`.</span>
 
-<span class="sd">    Semi-automatic parallel computing is executed is *lys* is launched with parallel computing option.</span>
+<span class="sd">    Semi-automatic parallel computing is executed when *lys* is launched with parallel computing option (-n).</span>
 
 <span class="sd">    See dask manual in https://docs.dask.org/en/latest/ for detailed usage of dask array.</span>
 
@@ -822,40 +766,38 @@
 <span class="sd">        note (dict): metadata for Wave.</span>
 <span class="sd">        chunks (&#39;auto&#39; or tuple): chunks to be used for dask array.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example1::</span>
 
-<span class="sd">        Basic usage</span>
+<span class="sd">        from lys import Wave, DaskWave</span>
 
-<span class="sd">        &gt;&gt;&gt; from lys import Wave, DaskWave</span>
-<span class="sd">        &gt;&gt;&gt; w = Wave([1,2,3])       # Initial wave</span>
-<span class="sd">        &gt;&gt;&gt; dw = DaskWave(w)        # convert to DaskWave</span>
-<span class="sd">        &gt;&gt;&gt; dw.data *= 2</span>
-<span class="sd">        &gt;&gt;&gt; result = dw.compute()   # parallel computing is executed through dask</span>
-<span class="sd">        &gt;&gt;&gt; type(result)</span>
-<span class="sd">        &lt;class &#39;lys.core.Wave&#39;&gt;</span>
-<span class="sd">        &gt;&gt;&gt; result.data</span>
-<span class="sd">        [2,4,6]</span>
+<span class="sd">        w = Wave([1,2,3])       # Initial wave</span>
+<span class="sd">        dw = DaskWave(w)        # Convert to DaskWave</span>
+<span class="sd">        dw.data *= 2</span>
+<span class="sd">        result = dw.compute()   # Parallel computing is executed through dask. Result is Wave.</span>
+<span class="sd">        print(result,data)      # [2,4,6]</span>
 
-<span class="sd">        Initialization from array</span>
+<span class="sd">    Example2::</span>
 
-<span class="sd">        &gt;&gt;&gt; dw = DaskWave([1,2,3])  # through dask.array.from_array</span>
-<span class="sd">        &gt;&gt;&gt; dw.compute().data</span>
-<span class="sd">        [1,2,3]</span>
+<span class="sd">        from lys import Wave, DaskWave</span>
 
-<span class="sd">        Initialization from dask array (for large array)</span>
+<span class="sd">        dw = DaskWave([1,2,3])  # through dask.array.from_array</span>
+<span class="sd">        dw.compute().data       # [1,2,3]</span>
 
-<span class="sd">        &gt;&gt;&gt; import dask.array as da</span>
-<span class="sd">        &gt;&gt;&gt; arr = da.from_array([1,2,3])   # dask array can be prepared by other mehotds, such as dask.delayed if data is huge</span>
-<span class="sd">        &gt;&gt;&gt; dw = DaskWave(arr)</span>
-<span class="sd">        &gt;&gt;&gt; dw.compute().data</span>
-<span class="sd">        [1,2,3]</span>
+<span class="sd">    Example3::</span>
+
+<span class="sd">        from lys import Wave, DaskWave</span>
+<span class="sd">        import dask.array as da</span>
+
+<span class="sd">        arr = da.from_array([1,2,3])   # dask array can be prepared by other mehotds, such as dask.delayed if data is huge</span>
+<span class="sd">        dw = DaskWave(arr)</span>
+<span class="sd">        dw.compute().data   #[1,2,3]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">_DaskWaveDataDescriptor</span><span class="p">()</span>
     <span class="n">axes</span> <span class="o">=</span> <span class="n">_WaveAxesDescriptor</span><span class="p">()</span>
     <span class="n">note</span> <span class="o">=</span> <span class="n">_WaveNoteDescriptor</span><span class="p">()</span>
 
 <div class="viewcode-block" id="DaskWave.initWorkers"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave.initWorkers">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">initWorkers</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">initWorkers</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">n_workers</span><span class="p">,</span> <span class="n">threads_per_worker</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializa local cluster. </span>
 <span class="sd">        This method is automatically called when lys is launched with parallel computing option.</span>
@@ -940,8 +882,10 @@
 
 <div class="viewcode-block" id="DaskWave.compute"><a class="viewcode-back" href="../../lys_/core.html#lys.core.DaskWave.compute">[docs]</a>    <span class="k">def</span> <span class="nf">compute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return calculated Wave</span>
+<span class="sd">        Return calculated Wave.</span>
+
 <span class="sd">        Wave.data.compute() is called when this method is called.</span>
+
 <span class="sd">        After lazy evaluation is finished, this method returns calculated *Wave*.</span>
 
 <span class="sd">        Return:</span>
@@ -960,32 +904,15 @@
 <span class="sd">        Return:</span>
 <span class="sd">            DaskWave: duplicated wave.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; w = DaskWave([1,2,3])</span>
-<span class="sd">            &gt;&gt;&gt; w2=w.duplicate()</span>
-<span class="sd">            &gt;&gt;&gt; w2.compute().data</span>
-<span class="sd">            [1,2,3]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="s2">&quot;NoRechunk&quot;</span><span class="p">)</span></div>
+<span class="sd">        Example::</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">inspect</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Wave.__getitem__ is deprecated.&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-            <span class="n">axes</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ax</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                        <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">axes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ax</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">d</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span></div>
+<span class="sd">            from lys import DaskWave</span>
+
+<span class="sd">            w = DaskWave([1,2,3])</span>
+<span class="sd">            w2=w.duplicate()</span>
+<span class="sd">            print(w2.compute().data) # [1,2,3]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chunks</span><span class="o">=</span><span class="s2">&quot;NoRechunk&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

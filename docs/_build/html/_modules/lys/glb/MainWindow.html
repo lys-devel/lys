@@ -78,9 +78,11 @@
 
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">home</span><span class="p">,</span> <span class="n">SettingDict</span>
 <span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">_ExtendMdiArea</span><span class="p">,</span> <span class="n">FileSystemView</span><span class="p">,</span> <span class="n">Graph</span>
+<span class="kn">from</span> <span class="nn">lys.resources</span> <span class="kn">import</span> <span class="n">lysIcon</span>
 <span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
 
 <span class="kn">from</span> <span class="nn">.shell</span> <span class="kn">import</span> <span class="n">ExtendShell</span>
+<span class="kn">from</span> <span class="nn">.Tabs</span> <span class="kn">import</span> <span class="n">GraphTab</span><span class="p">,</span> <span class="n">TableTab</span><span class="p">,</span> <span class="n">MulticutTab</span>
 
 
 <div class="viewcode-block" id="MainWindow"><a class="viewcode-back" href="../../../lys_/glb.html#lys.glb.MainWindow.MainWindow">[docs]</a><span class="k">class</span> <span class="nc">MainWindow</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMainWindow</span><span class="p">):</span>
@@ -93,7 +95,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">beforeClosed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    beforeClosed(event) signal is submitted when close button of lys is clicked.</span>
+<span class="sd">    beforeClosed(event) signal is emitted when close button of lys is clicked.</span>
 
 <span class="sd">    Developers can connect any functions/methods to this signal.</span>
 
@@ -141,6 +143,7 @@
 
     <span class="k">def</span> <span class="nf">__initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s1">&#39;lys&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">lysIcon</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTabWidget</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">setTabsClosable</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
@@ -155,31 +158,64 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">tabBar</span><span class="p">()</span><span class="o">.</span><span class="n">setContextMenuPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">CustomContextMenu</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">tabBar</span><span class="p">()</span><span class="o">.</span><span class="n">customContextMenuRequested</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__tabContextMenu</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_side</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sideBar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bottom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bottomBar</span><span class="p">()</span>
 
-        <span class="n">sp</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSplitter</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">)</span>
-        <span class="n">sp</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="p">)</span>
-        <span class="n">sp</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_side</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_showBtn</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QPushButton</span><span class="p">(</span><span class="s2">&quot;Show&quot;</span><span class="p">,</span> <span class="n">clicked</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__setVisible</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">_CommandLineEdit</span><span class="p">(</span><span class="n">ExtendShell</span><span class="o">.</span><span class="n">_instance</span><span class="p">))</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_showBtn</span><span class="p">)</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">sp1</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSplitter</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Horizontal</span><span class="p">)</span>
+        <span class="n">sp1</span><span class="o">.</span><span class="n">setHandleWidth</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">sp1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="p">)</span>
+        <span class="n">sp1</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_side</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sp2</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSplitter</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Vertical</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sp2</span><span class="o">.</span><span class="n">setHandleWidth</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sp2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">sp1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sp2</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bottom</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sp2</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bottom</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__sideBar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fileView</span> <span class="o">=</span> <span class="n">FileSystemView</span><span class="p">(</span><span class="n">home</span><span class="p">(),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTabWidget</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">_CommandLogWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s2">&quot;Command&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">GraphTab</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_table</span> <span class="o">=</span> <span class="n">TableTab</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mcut</span> <span class="o">=</span> <span class="n">MulticutTab</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTabWidget</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fileView</span><span class="p">,</span> <span class="s2">&quot;File&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_graph</span><span class="p">,</span> <span class="s2">&quot;Graph&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_table</span><span class="p">,</span> <span class="s2">&quot;Table&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mcut</span><span class="p">,</span> <span class="s2">&quot;MultiCut&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">setTabVisible</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">setTabVisible</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">setTabVisible</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span>
 
-        <span class="n">layout_h</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSplitter</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Vertical</span><span class="p">)</span>
-        <span class="n">layout_h</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span><span class="p">)</span>
-        <span class="n">layout_h</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">_CommandLineEdit</span><span class="p">(</span><span class="n">ExtendShell</span><span class="o">.</span><span class="n">_instance</span><span class="p">))</span>
-        <span class="n">layout_h</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__bottomBar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTabWidget</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">_CommandLogWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s2">&quot;Command&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span>
 
-        <span class="n">lay</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QHBoxLayout</span><span class="p">()</span>
-        <span class="n">lay</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">layout_h</span><span class="p">)</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
-        <span class="n">w</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">lay</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">w</span>
+    <span class="k">def</span> <span class="nf">__setVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span><span class="o">.</span><span class="n">isVisible</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span><span class="o">.</span><span class="n">isVisible</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_showBtn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Hide&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_showBtn</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Show&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__tabContextMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qPoint</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">tabBar</span><span class="p">()</span><span class="o">.</span><span class="n">tabAt</span><span class="p">(</span><span class="n">qPoint</span><span class="p">)</span>
@@ -222,7 +258,7 @@
 
         <span class="n">win</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="s2">&quot;Sidebar&quot;</span><span class="p">)</span>
 
-        <span class="n">act</span> <span class="o">=</span> <span class="n">win</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Show/Hide Sidebar&quot;</span><span class="p">)</span>
+        <span class="n">act</span> <span class="o">=</span> <span class="n">win</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="s2">&quot;Show/Hide sidebar&quot;</span><span class="p">)</span>
         <span class="n">act</span><span class="o">.</span><span class="n">triggered</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_side</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_side</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()))</span>
         <span class="n">act</span><span class="o">.</span><span class="n">setShortcut</span><span class="p">(</span><span class="s2">&quot;Ctrl+J&quot;</span><span class="p">)</span>
         <span class="k">return</span>
@@ -245,26 +281,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mainTab</span><span class="o">.</span><span class="n">removeTab</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MainWindow.addTab"><a class="viewcode-back" href="../../../lys_/glb.html#lys.glb.MainWindow.MainWindow.addTab">[docs]</a>    <span class="k">def</span> <span class="nf">addTab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+<div class="viewcode-block" id="MainWindow.tabWidget"><a class="viewcode-back" href="../../../lys_/glb.html#lys.glb.MainWindow.MainWindow.tabWidget">[docs]</a>    <span class="k">def</span> <span class="nf">tabWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This method adds tab in the side bar.</span>
+<span class="sd">        Get tab widget.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            widget(QtWidgets.QWidget): widget to be added.</span>
-<span class="sd">            name(str): Name of a tab.</span>
-<span class="sd">            position(&#39;up&#39; or &#39;down&#39;): TabWidget to be added to.</span>
+<span class="sd">            position(&#39;right&#39; or &#39;bottom&#39;)</span>
 
-<span class="sd">        Example:</span>
-
-<span class="sd">            &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">            &gt;&gt;&gt; main = glb.mainWindow()</span>
-<span class="sd">            &gt;&gt;&gt; main.addTab(QtWidgets.QWidget(), &quot;TestTab&quot;, &quot;up&quot;)</span>
-
+<span class="sd">        Returns:</span>
+<span class="sd">            QTabWidget: The tab widget.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">position</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">position</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">position</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tab_up</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fileView</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -317,7 +347,6 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setReadOnly</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setUndoRedoEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWordWrapMode</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QTextOption</span><span class="o">.</span><span class="n">NoWrap</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__load</span><span class="p">()</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">textColor</span><span class="p">())</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_err</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>

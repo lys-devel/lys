@@ -21,15 +21,15 @@ class SettingDict(dict):
     Args:
         file (string): The filename to be loaded and saved
 
-    Examples:
-        >>> d = SettingDict()
-        >>> d["setting1"] = "SettingString"
-        >>> d.Save("Setting.dic")
+    Examples::
 
-        >>> d2 = SettingDict("Setting.dic")   # setting.dic is loaded
-        >>> d2["setting1"]
-        SettingString
+        from lys import SettingDict
 
+        d = SettingDict("Setting.dic")
+        d["setting1"] = "SettingString"
+
+        d2 = SettingDict("Setting.dic")   # setting.dic is loaded
+        d2["setting1"] # SettingString
     """
 
     def __init__(self, file=None):
@@ -44,13 +44,13 @@ class SettingDict(dict):
 
     def __setitem__(self, key, value):
         super().__setitem__(key, value)
-        self.Save()
+        self.__Save()
 
     def __delitem__(self, key):
         del self.data[key]
-        self.Save()
+        self.__Save()
 
-    def Save(self, file=None):
+    def __Save(self, file=None):
         """Save dictionary
 
         Args:
@@ -79,10 +79,10 @@ class _WaveDataDescriptor:
         from lys import Wave
 
         w = Wave([1,2,3])
-        w.data # [1,2,3]
+        print(w.data)     # [1,2,3]
 
         w.data = [2,3,4]
-        w.data # [2,3,4]
+        print(w.data)     # [2,3,4]
     """
 
     def __set__(self, instance, value):
@@ -104,40 +104,17 @@ class _WaveAxesDescriptor:
 
     All public methods in *WaveAxes* class can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.
 
-    Example:
+    Example::
 
-        The initialization can be done from constructor of :class:`Wave`
+        from lys import Wave
 
-            >>> w = Wave(np.ones([3,3]), [1,2,3], [4,5,6])
-            >>> w.axes
-            [[1,2,3],[4,5,6]]
+        w = Wave(np.ones([3,3]), [1,2,3], [4,5,6])
+        print(w.axes)        # [array([1, 2, 3]), array([4, 5, 6])]
 
-        Then the *axes* can be changed as following.
+        w.axes[0] = [7,8,9]
+        print(w.axes)        # [array([7, 8, 9]), array([4, 5, 6])]
 
-            >>> w.axes[0] = [7,8,9]
-            >>> w.axes
-            [[7,8,9],[4,5,6]]
-
-        None can also be set to axis.
-
-            >>> w.axes[1] = None
-            >>> w.axes
-            [[7,8,9], None]
-
-        Even if the axis is None, automatically-generated axis can be always obtained by *getAxis* method.
-
-            >>> w.getAxis(0)
-            [7,8,9]
-            >>> w.getAxis(1)
-            [0,1,2]
-
-        *x*, *y*, and *z* is shortcut to axes[0], axes[1], and axes[2]
-
-            >>> w = Wave(np.ones([2,3]), [0,1], [2,3,4])
-            >>> w.x
-            [0,1]
-            >>> w.y
-            [2,3,4]
+        print(w.x, w.y)      # [7,8,9], [4,5,6], shortcut to axes[0] and axes[1]
 
     See also:
         :class:`WaveAxes`, :attr:`x`, :attr:`y`, :attr:`z`
@@ -233,14 +210,15 @@ class WaveAxes(list):
         Returns:
             tuple or int: The indice corresponding to pos.
 
-        Example:
-            >>> w = Wave(np.ones([3,3]), [1,2,3], [3,4,5])
-            >>> w.posToPoint((2,4))
-            (1,1) # position (x,y)=(2,4) corresponds index (1,1)
-            >>> w.posToPoint((1,2,3), axis=0)
-            (0,1,2) # position (x1, x2, x3 = 1,2,3) in the 0th dimension correspoinds index (0,1,2)
-            >>> w.posToPoint(2, axis=0)
-            1 # position x = 2  correspoinds index 1 in 0th dimension
+        Example::
+
+            from lys import Wave
+
+            w = Wave(np.ones([3,3]), [1,2,3], [3,4,5])
+
+            w.posToPoint((2,4))             # (1,1), position (x,y)=(2,4) corresponds index (1,1)
+            w.posToPoint((1,2,3), axis=0)   # (0,1,2), position (x1, x2, x3 = 1,2,3) in the 0th dimension correspoinds index (0,1,2)
+            w.posToPoint(2, axis=0)         # 1, position x = 2  correspoinds index 1 in 0th dimension
         """
         if axis is None:
             axes = [self.getAxis(d) for d in range(len(self))]
@@ -269,14 +247,14 @@ class WaveAxes(list):
         Returns:
             tuple or float: The position corresponding to indice.
 
-        Example:
-            >>> w = Wave(np.ones([2,2]), [1,2,3], [3,4,5])
-            >>> w.pointToPos((1,1))
-            (2,4)       # index (1,1) corresponds to position (x,y)=(2,4)
-            >>> w.posToPoint((0,1,2), axis=0)
-            (1,2,3)     # index (0,1,2) in the 0th dimension correspoinds position (x1, x2, x3 = 1,2,3)
-            >>> w.posToPoint(1, axis=0)
-            2           #  index 1 in 0th dimensions correspoinds position x = 2
+        Example::
+
+            from lys import Wave
+
+            w = Wave(np.ones([3,3]), [1,2,3], [3,4,5])
+            w.pointToPos((1,1))             # (2,4), index (1,1) corresponds to position (x,y)=(2,4)
+            w.pointToPos((0,1,2), axis=0)   # (1,2,3), index (0,1,2) in the 0th dimension correspoinds position (x1, x2, x3 = 1,2,3)
+            w.pointToPos(1, axis=0)         # 2, index 1 in 0th dimensions correspoinds position x = 2
         """
         if axis is None:
             axes = [self.getAxis(d) for d in range(len(self))]
@@ -298,19 +276,7 @@ class WaveAxes(list):
 
     @ property
     def x(self):
-        """
-        Shortcut to axes[0]
-
-        Example::
-
-            from lys import Wave
-            w = Wave([1,2,3], [1,2,3])
-            w.x
-            # [1,2,3]
-            w.x = [3,4,5]
-            w.x
-            # [3,4,5]
-        """
+        """Shortcut to axes[0]"""
         return self.getAxis(0)
 
     @ x.setter
@@ -319,9 +285,7 @@ class WaveAxes(list):
 
     @ property
     def y(self):
-        """
-        Shortcut to axes[1]. See :attr:`x`
-        """
+        """Shortcut to axes[1]."""
         return self.getAxis(1)
 
     @ y.setter
@@ -330,9 +294,7 @@ class WaveAxes(list):
 
     @ property
     def z(self):
-        """ 
-        Shortcut to axes[2]. See :attr:`x`
-        """
+        """Shortcut to axes[2]."""
         return self.getAxis(2)
 
     @ z.setter
@@ -343,17 +305,20 @@ class WaveAxes(list):
 class _WaveNoteDescriptor:
     """
     Metadata of :class:`Wave` and :class:`DaskWave` implemented as :class:`WaveNote` class.
+
     All public methods can also be accessed from :class:`Wave` and :class:`DaskWave` through __getattr__.
 
     *note* is python dictionary and is used to save metadata in :class:`Wave` :class:`DaskWave` class.
 
-    Example:
-        >>> w = Wave([1,2,3], key = "item"})
-        >>> w.note["key"]
-        item
-        >>> w.note["key2"] = 1111
-        >>> w.note["key2"]
-        1111
+    Example::
+
+        from lys import Wave
+
+        w = Wave([1,2,3], key = "item")
+        print(w.note["key"])  # item
+
+        w.note["key2"] = 1111
+        print(w.note["key2"]) # 1111
     """
 
     def __set__(self, instance, value):
@@ -386,17 +351,16 @@ class WaveNote(dict):
         """
         Shortcut to note["name"], which is frequently used as a name of :class:`Wave` and :class:`DaskWave`.
 
-        This method can be accessed directly from :class:`Wave` and :class:`DaskWave` class through __getattr__.
+        Example::
 
-        Example:
-            >>> w = Wave([1,2,3], name="wave1")
-            >>> w.note
-            {"name": "wave1"}
-            >>> w.name
-            wave1
-            >>> w.name="wave2"
-            >>> w.name
-            wave2
+            from lys import Wave
+
+            w = Wave([1,2,3], name="wave1")
+            print(w.note)    # {'name': 'wave1'}
+            print(w.name)    # 'wave1'
+
+            w.name="wave2"
+            print(w.name)    # 'wave2'
         """
 
         if "name" not in self:
@@ -429,54 +393,49 @@ class Wave(QtCore.QObject):
         axes (list of array_like): The axes of data
         note (dict): metadata for Wave.
 
-    Examples:
-        Basic initialization without axses and note
+    Basic initialization without axes and note::
 
-            >>> from lys import Wave
-            >>> w = Wave([1,2,3])
-            >>> w.data
-            [1,2,3]
+        from lys import Wave
 
-        Basic initialization with axes and note
+        w = Wave([1,2,3])   # Axes are automatically set.
+        print(w.data, w.x)  # [1 2 3] [0. 1. 2.]
 
-            >>> w = Wave(np.ones([2,3]), [1,2], [1,2,3], name="wave1")
-            >>> w.axes          # positional arguments are used for axes
-            [[1,2],[1,2,3]]
-            >>> w.x             # axes can be accessed from Wave.x, Wave.y etc...
-            [1,2]
-            >>> w.note          # keyword arguments are saved in note
-            {"name": "wave1"}
+    Basic initialization with axes and note::
 
-        Initialize Wave from array of Wave
+        from lys import Wave
 
-            >>> w = Wave([1,2,3], [4,5,6])
-            >>> w2 = Wave([w,w], [7,8])
-            >>> w2.data
-            [[1,2,3], [1,2,3]]
-            >>> w2.x
-            [7,8]
-            >>> w2.y
-            [4,5,6]
+        w = Wave(np.ones([2,3]), [1,2], [1,2,3], name="wave1")
 
-        Save & load numpy npz file
+        print(w.axes)     # [array([1, 2]), array([1, 2, 3])]
+        print(w.x)        # [1 2], axes can be accessed from Wave.x, Wave.y etc...
+        print(w.note)     # {'name': 'wave1'}, keyword arguments are saved in note
 
-            >>> w = Wave([1,2,3])
-            >>> w.export("wave.npz") # save wave to wave.npz
-            >>> w2 = Wave("wave.npz")
-            >>> w2.data
-            [1,2,3]
+    Initialize Wave from array of Wave::
 
-        Direct access numpy array methods
+        from lys import Wave
 
-            >>> w = Wave(np.zeros((100,100)))
-            >>> w.shape
-            (100,100)
+        w = Wave([1,2,3], [4,5,6])
+        w2 = Wave([w,w], [7,8])
 
-        Load from various file types by :func:`.functions.load`
+        print(w2.data)       # [[1 2 3], [1 2 3]]
+        print(w2.x, w2.y)    # [7,8], [4,5,6]
 
-            >>> from lys import load
-            >>> w = load("data.png")
-            >>> display(w)
+    Save & load numpy npz file::
+
+        from lys import Wave
+
+        w = Wave([1,2,3])
+        w.export("wave.npz") # save wave to wave.npz
+
+        w2 = Wave("wave.npz")
+        print(w2.data)       # [1 2 3]
+
+    Direct access numpy array methods::
+
+        from lys import Wave
+
+        w = Wave(np.zeros((100,100)))
+        print(w.shape)  # (100,100)
 
     See also:
         :attr:`data`, :attr:`axes`, :attr:`note`
@@ -485,11 +444,13 @@ class Wave(QtCore.QObject):
     """
     *modified* is a pyqtSignal, which is emitted when *Wave* is changed.
 
-    Example:
-        >>> w = Wave([1,2,3], name="wave1")
-        >>> w.modified.connect(lambda w: print("modified", w.name))
-        >>> w.data = [2,3,4]
-        modified wave1
+    Example::
+
+        from lys import Wave
+
+        w = Wave([1,2,3], name="wave1")
+        w.modified.connect(lambda w: print("modified", w.name))
+        w.data = [2,3,4] # modified wave1
     """
     data = _WaveDataDescriptor()
     axes = _WaveAxesDescriptor()
@@ -581,12 +542,17 @@ class Wave(QtCore.QObject):
             path (str): File path to be saved.
             type (str): File extension. See :meth:`SupportedFormats`.
 
-        Exmple:
-            >>> w = Wave([1,2,3])
-            >>> w.export("wave.npz")
-            >>> w2 = Wave.importFrom("wave.npz")
-            >>> w2.data
-            [1,2,3]
+        Exmple::
+
+            from lys import Wave
+
+            w = Wave([1,2,3])
+            w.export("wave.npz")
+
+            w2 = Wave.importFrom("wave.npz")
+            print(w2.data) # [1,2,3]
+
+            w3 = Wave("wave.npz") # If the file is .npz, this is also possible.
 
         See also:
             :meth:`importFrom`
@@ -614,18 +580,9 @@ class Wave(QtCore.QObject):
         """
         Import *Wave* from file.
 
-        It is recommended to use :func:`functions.loadWave` to load Wave from various types of files.
-
         Args:
             path (str): File path to be saved.
             type (str): File extension. See :meth:`SupportedFormats`.
-
-        Exmple:
-            >>> w = Wave([1,2,3])
-            >>> w.export("wave.npz")
-            >>> w2 = Wave.importFrom("wave.npz")
-            >>> w2.data
-            [1,2,3]
 
         See also:
             :meth:`export`
@@ -643,13 +600,15 @@ class Wave(QtCore.QObject):
         Create duplicated *Wave*
 
         Return:
-            Wave: duplicated wave.
+            Wave: Duplicated wave.
 
-        Example:
-            >>> w = Wave([1,2,3])
-            >>> w2=w.duplicate()
-            >>> w2.data
-            [1,2,3]
+        Example::
+
+            from lys import Wave
+
+            w = Wave([1,2,3])
+            w2=w.duplicate()
+            print(w2.data) # [1,2,3]
         """
         return Wave(self.data, *self.axes, **self.note)
 
@@ -660,14 +619,16 @@ class Wave(QtCore.QObject):
         When *data* is directly changed by indexing, *modified* signal is not emitted.
         Calling *update()* emit *modified* signal manually.
 
-        Example:
-            >>> w = Wave([1,2,3])
-            >>> w.modified.connect(lambda: print("modified"))
-            >>> w.data = [0, 1, 2]        # modified is emitted when Wave.data is changed.
-            modified
-            >>> w.data[1]=0               # modified is NOT emitted through data.__setitem__ is called.
-            >>> w.update()
-            modified
+        Example::
+
+            from lys import Wave
+
+            w = Wave([1,2,3])
+            w.modified.connect(lambda: print("modified"))
+
+            w.data = [0, 1, 2]        # modified, modified is emitted when Wave.data is changed.
+            w.data[1] = 0             # modified is NOT emitted through data.__setitem__ is called.
+            w.update()                # modified
         """
         self.modified.emit(self)
 
@@ -692,23 +653,6 @@ class Wave(QtCore.QObject):
     def __setitem__(self, key, value):
         self._data[key] = value
         self.modified.emit(self)
-    # deprecated methods
-
-    def Name(self):
-        """deprecated method"""
-        import inspect
-        print("Wave.Name is deprecated. use Wave.name instead")
-        print(inspect.stack()[1].filename)
-        print(inspect.stack()[1].function)
-        return self.name
-
-    def Save(self, file):
-        """deprecated method"""
-        import inspect
-        print("Wave.Save is deprecated. use Wave.export instead")
-        print(inspect.stack()[1].filename)
-        print(inspect.stack()[1].function)
-        self.export(file)
 
 
 class _DaskWaveDataDescriptor:
@@ -732,11 +676,11 @@ class DaskWave(QtCore.QObject):
     *DaskWave* class is a central data class in lys, which is used for easy parallel computing via dask.
 
     This class is mainly used for parallel computing of data *with axes and notes*, which enables us to consistent calculation of data and axes.
-    Particularly, *DaskWave* is extensively used in *Multicut* package.
+    Particularly, *DaskWave* is extensively used in MultiCut.
 
     :attr:`data` is a dask array of any dimension. See :class:`Wave` for :attr:`axes` and :attr:`note`.
 
-    Semi-automatic parallel computing is executed is *lys* is launched with parallel computing option.
+    Semi-automatic parallel computing is executed when *lys* is launched with parallel computing option (-n).
 
     See dask manual in https://docs.dask.org/en/latest/ for detailed usage of dask array.
 
@@ -750,33 +694,31 @@ class DaskWave(QtCore.QObject):
         note (dict): metadata for Wave.
         chunks ('auto' or tuple): chunks to be used for dask array.
 
-    Example:
+    Example1::
 
-        Basic usage
+        from lys import Wave, DaskWave
 
-        >>> from lys import Wave, DaskWave
-        >>> w = Wave([1,2,3])       # Initial wave
-        >>> dw = DaskWave(w)        # convert to DaskWave
-        >>> dw.data *= 2
-        >>> result = dw.compute()   # parallel computing is executed through dask
-        >>> type(result)
-        <class 'lys.core.Wave'>
-        >>> result.data
-        [2,4,6]
+        w = Wave([1,2,3])       # Initial wave
+        dw = DaskWave(w)        # Convert to DaskWave
+        dw.data *= 2
+        result = dw.compute()   # Parallel computing is executed through dask. Result is Wave.
+        print(result,data)      # [2,4,6]
 
-        Initialization from array
+    Example2::
 
-        >>> dw = DaskWave([1,2,3])  # through dask.array.from_array
-        >>> dw.compute().data
-        [1,2,3]
+        from lys import Wave, DaskWave
 
-        Initialization from dask array (for large array)
+        dw = DaskWave([1,2,3])  # through dask.array.from_array
+        dw.compute().data       # [1,2,3]
 
-        >>> import dask.array as da
-        >>> arr = da.from_array([1,2,3])   # dask array can be prepared by other mehotds, such as dask.delayed if data is huge
-        >>> dw = DaskWave(arr)
-        >>> dw.compute().data
-        [1,2,3]
+    Example3::
+
+        from lys import Wave, DaskWave
+        import dask.array as da
+
+        arr = da.from_array([1,2,3])   # dask array can be prepared by other mehotds, such as dask.delayed if data is huge
+        dw = DaskWave(arr)
+        dw.compute().data   #[1,2,3]
     """
     data = _DaskWaveDataDescriptor()
     axes = _WaveAxesDescriptor()
@@ -868,8 +810,10 @@ class DaskWave(QtCore.QObject):
 
     def compute(self):
         """
-        Return calculated Wave
+        Return calculated Wave.
+
         Wave.data.compute() is called when this method is called.
+
         After lazy evaluation is finished, this method returns calculated *Wave*.
 
         Return:
@@ -888,29 +832,12 @@ class DaskWave(QtCore.QObject):
         Return:
             DaskWave: duplicated wave.
 
-        Example:
-            >>> w = DaskWave([1,2,3])
-            >>> w2=w.duplicate()
-            >>> w2.compute().data
-            [1,2,3]
+        Example::
+
+            from lys import DaskWave
+
+            w = DaskWave([1,2,3])
+            w2=w.duplicate()
+            print(w2.compute().data) # [1,2,3]
         """
         return DaskWave(self, chunks="NoRechunk")
-
-    def __getitem__(self, key):
-        import inspect
-        print("Wave.__getitem__ is deprecated.")
-        print(inspect.stack()[1].filename)
-        print(inspect.stack()[1].function)
-        if isinstance(key, tuple):
-            data = self.data[key]
-            axes = []
-            for s, ax in zip(key, self.axes):
-                if not isinstance(s, int):
-                    if ax is None or (ax == np.array(None)).all():
-                        axes.append(None)
-                    else:
-                        axes.append(ax[s])
-            d = DaskWave(data, *axes, **self.note)
-            return d
-        else:
-            super().__getitem__(key)

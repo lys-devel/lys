@@ -109,13 +109,26 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">DaskWave</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setNote</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">Wave</span><span class="p">):</span>
             <span class="n">dw</span> <span class="o">=</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setNote</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">wave</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">data</span></div>
+
+    <span class="k">def</span> <span class="nf">_setNote</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Filters</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="s2">&quot;lysFilters&quot;</span> <span class="ow">in</span> <span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">:</span>
+            <span class="n">filters</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">[</span><span class="s2">&quot;lysFilters&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_toDict</span><span class="p">())</span>
+        <span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">[</span><span class="s2">&quot;lysFilters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filters</span>
 
     <span class="k">def</span> <span class="nf">_applyFunc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="nb">complex</span><span class="p">:</span>
@@ -133,7 +146,7 @@
 
 <div class="viewcode-block" id="FilterInterface.getParameters"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.FilterInterface.getParameters">[docs]</a>    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns parameters used for this filter as dict&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+        <span class="k">return</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FilterInterface.getRelativeDimension"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.FilterInterface.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns change of dimension for this filter&quot;&quot;&quot;</span>
@@ -153,6 +166,33 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">f2</span> <span class="o">=</span> <span class="p">[</span><span class="n">filt</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">Filters</span><span class="p">([</span><span class="o">*</span><span class="n">f1</span><span class="p">,</span> <span class="o">*</span><span class="n">f2</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_toDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Export filter as dictionary.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: The exported dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getParameters</span><span class="p">()</span>
+        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;filterName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_fromDict</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load filter from dictionary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            d(dict): The dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;filterName&quot;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;filterName&quot;</span><span class="p">]</span>
+        <span class="n">filt</span> <span class="o">=</span> <span class="n">getFilter</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">filt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">filt</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Could not load &quot;</span> <span class="o">+</span> <span class="n">fname</span> <span class="o">+</span> <span class="s2">&quot;. The filter class may be deleted or not loaded. Check plugins and their version.&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="FilterInterface.saveAsFile"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.FilterInterface.saveAsFile">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -288,12 +328,7 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span></div>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">:</span>
-            <span class="n">d</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">getParameters</span><span class="p">()</span>
-            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;filterName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">_toDict</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">])</span>
 
 <div class="viewcode-block" id="Filters.insert"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.Filters.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -341,27 +376,21 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">data</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">Filters</span><span class="o">.</span><span class="n">_restoreFilter</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">Filters</span><span class="p">([</span><span class="n">FilterInterface</span><span class="o">.</span><span class="n">_fromDict</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># backward compability</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;ExtendAnalysis.Analysis.filters&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;lys.filters&quot;</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;ExtendAnalysis.Analysis.filter&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;lys.filters.filter&quot;</span><span class="p">)</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_restoreFilter</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-        <span class="c1"># parse from list of parameter dictionary</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="n">fname</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;filterName&quot;</span><span class="p">]</span>
-            <span class="k">del</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;filterName&quot;</span><span class="p">]</span>
-            <span class="n">filt</span> <span class="o">=</span> <span class="n">getFilter</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">filt</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filt</span><span class="p">(</span><span class="o">**</span><span class="n">f</span><span class="p">))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not load &quot;</span> <span class="o">+</span> <span class="n">fname</span> <span class="o">+</span> <span class="s2">&quot;. The filter class may be deleted or not loaded. Check plugins and their version.&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
-                <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">Filters</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<div class="viewcode-block" id="Filters.fromWave"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.Filters.fromWave">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">fromWave</span><span class="p">(</span><span class="n">wave</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load filters automatically saved in wave.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s2">&quot;lysFilters&quot;</span> <span class="ow">in</span> <span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">[</span><span class="s2">&quot;lysFilters&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Filters.fromFile"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.Filters.fromFile">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">fromFile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>

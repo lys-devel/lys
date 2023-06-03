@@ -59,6 +59,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#lys.filters.function.addFilter"><code class="docutils literal notranslate"><span class="pre">addFilter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.filters.function.fromFile"><code class="docutils literal notranslate"><span class="pre">fromFile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.filters.function.fromString"><code class="docutils literal notranslate"><span class="pre">fromString()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.filters.function.fromWave"><code class="docutils literal notranslate"><span class="pre">fromWave()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.filters.function.getFilter"><code class="docutils literal notranslate"><span class="pre">getFilter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.filters.function.toFile"><code class="docutils literal notranslate"><span class="pre">toFile()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.filters.function.toString"><code class="docutils literal notranslate"><span class="pre">toString()</span></code></a></li>
@@ -77,6 +78,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="multicut.html">multicut module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fitting.html">fitting module</a></li>
 </ul>
 </li>
@@ -198,6 +200,33 @@
 <span class="c1"># Execute</span>
 <span class="n">filt</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]))</span>
 <span class="c1"># [3. 3. 3.]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.filters.function.fromWave">
+<span class="sig-prename descclassname"><span class="pre">lys.filters.function.</span></span><span class="sig-name descname"><span class="pre">fromWave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/function.html#fromWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.function.fromWave" title="Permalink to this definition"></a></dt>
+<dd><p>Load filter from wave that is automatically saved when filter is applied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wave</strong> (<a class="reference internal" href="core.html#lys.core.Wave" title="lys.core.Wave"><em>Wave</em></a>) – The wave.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The filter loaded form the wave.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>filter</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">filters</span>
+<span class="c1"># Create filter and execute</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">IntegralAllFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sumtype</span><span class="o">=</span><span class="s2">&quot;Sum&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">])))</span>
+
+<span class="c1"># Load filter from wave</span>
+<span class="n">filt</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">fromWave</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -413,6 +442,12 @@ Developers should implement this method to make new filter.</p>
 <dt class="sig sig-object py" id="lys.filters.interface.Filters.fromString">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/interface.html#Filters.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.interface.Filters.fromString" title="Permalink to this definition"></a></dt>
 <dd><p>Do not use this method. Use <a class="reference internal" href="#lys.filters.function.fromString" title="lys.filters.function.fromString"><code class="xref py py-func docutils literal notranslate"><span class="pre">lys.filters.function.fromString()</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.interface.Filters.fromWave">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fromWave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/interface.html#Filters.fromWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.interface.Filters.fromWave" title="Permalink to this definition"></a></dt>
+<dd><p>Load filters automatically saved in wave.</p>
 </dd></dl>
 
 <dl class="py method">

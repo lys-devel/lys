@@ -115,6 +115,36 @@
     <span class="k">return</span> <span class="n">ExtendShell</span><span class="o">.</span><span class="n">_instance</span></div>
 
 
+<div class="viewcode-block" id="editCanvas"><a class="viewcode-back" href="../../lys_/glb.html#lys.glb.editCanvas">[docs]</a><span class="k">def</span> <span class="nf">editCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edit canvas by GUI.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        canvas: The canvas to be edited.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">tabWidget</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">setCanvas</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="editTable"><a class="viewcode-back" href="../../lys_/glb.html#lys.glb.editTable">[docs]</a><span class="k">def</span> <span class="nf">editTable</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Edit table by GUI.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table: The table to be edited.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">tabWidget</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">setTable</span><span class="p">(</span><span class="n">table</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="editMulticut"><a class="viewcode-back" href="../../lys_/glb.html#lys.glb.editMulticut">[docs]</a><span class="k">def</span> <span class="nf">editMulticut</span><span class="p">(</span><span class="n">mcut</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Open multicut by GUI.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        mcut: The MuletiCut object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">tabWidget</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">setObject</span><span class="p">(</span><span class="n">mcut</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="createMainWindow"><a class="viewcode-back" href="../../lys_/glb.html#lys.glb.createMainWindow">[docs]</a><span class="k">def</span> <span class="nf">createMainWindow</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create main window.</span>

@@ -70,7 +70,9 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.filters.function</h1><div class="highlight"><pre>
-<span></span><span class="c1"># all filter classes</span>
+<span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span>
+
+<span class="c1"># all filter classes</span>
 <span class="n">_filterClasses</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="n">_filterGuis</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="c1"># all filter GUIs</span>
@@ -172,7 +174,10 @@
 <span class="sd">        # [3. 3. 3.]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
-    <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.npz&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">fromWave</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="toFile"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.toFile">[docs]</a><span class="k">def</span> <span class="nf">toFile</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
@@ -185,6 +190,30 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">filter</span><span class="o">.</span><span class="n">saveAsFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="fromWave"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromWave">[docs]</a><span class="k">def</span> <span class="nf">fromWave</span><span class="p">(</span><span class="n">wave</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load filter from wave that is automatically saved when filter is applied.</span>
+
+<span class="sd">    Args: </span>
+<span class="sd">        wave(Wave): The wave.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        filter: The filter loaded form the wave. </span>
+
+<span class="sd">    Example::</span>
+
+<span class="sd">        from lys import filters</span>
+<span class="sd">        # Create filter and execute</span>
+<span class="sd">        f = filters.IntegralAllFilter(axes=[0], sumtype=&quot;Sum&quot;) </span>
+<span class="sd">        result = f.execute(Wave(np.ones([3,3])))</span>
+
+<span class="sd">        # Load filter from wave</span>
+<span class="sd">        filt = filters.fromWave(result)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
+    <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromWave</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="fromString"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromString">[docs]</a><span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>

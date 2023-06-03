@@ -143,7 +143,6 @@
 <span class="sd">    Range of integration is specified by *range*.</span>
 
 <span class="sd">    Note that the *range* is specified in the units of *axes* of (Dask)Wave.</span>
-<span class="sd">    If axes is not specified, *range* should be specified by indice.</span>
 
 <span class="sd">    See :class:`.FilterInterface.FilterInterface` for general description of Filters.</span>
 
@@ -174,12 +173,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_sumtype</span> <span class="o">=</span> <span class="n">sumtype</span>
 
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">key</span><span class="p">,</span> <span class="n">sumaxes</span><span class="p">,</span> <span class="n">intaxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getIndexAnsSumAxes</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">)</span>
+        <span class="n">key</span><span class="p">,</span> <span class="n">sumaxes</span><span class="p">,</span> <span class="n">intaxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getIndexAndSumAxes</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">)</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sumaxes</span> <span class="o">+</span> <span class="n">intaxes</span><span class="p">]</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">_getSumFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sumtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">sumaxes</span><span class="p">)),</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_getIndexAnsSumAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">rang</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_getIndexAndSumAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">rang</span><span class="p">):</span>
         <span class="n">sl</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">sumaxes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">intaxes</span> <span class="o">=</span> <span class="p">[]</span>
@@ -203,7 +202,7 @@
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">,</span> <span class="s2">&quot;sumtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sumtype</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="IntegralFilter.getRelativeDimension"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralFilter.getRelativeDimension">[docs]</a>    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="o">-</span><span class="nb">len</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span></div></div>
+        <span class="k">return</span> <span class="o">-</span><span class="nb">len</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">])</span></div></div>
 
 
 <div class="viewcode-block" id="IntegralCircleFilter"><a class="viewcode-back" href="../../../../lys_/filters.filter.html#lys.filters.filter.Integral.IntegralCircleFilter">[docs]</a><span class="k">class</span> <span class="nc">IntegralCircleFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
@@ -388,18 +387,30 @@
         <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">getRegion</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">getChecked</span><span class="p">()):</span>
             <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="n">res</span><span class="p">,</span> <span class="s2">&quot;sumtype&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">currentText</span><span class="p">()}</span>
 
     <span class="k">def</span> <span class="nf">setParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">,</span> <span class="n">sumtype</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sumtypes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">sumtype</span><span class="p">))</span>
         <span class="n">checked</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">range</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-            <span class="n">checked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">))</span>
+            <span class="n">checked</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">[</span><span class="n">r</span><span class="p">,</span> <span class="n">r</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">checked</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_checkValid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
 
 
 <span class="nd">@filterGUI</span><span class="p">(</span><span class="n">IntegralCircleFilter</span><span class="p">)</span>

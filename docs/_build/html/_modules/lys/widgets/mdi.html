@@ -77,7 +77,8 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 
 <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">home</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">lysPath</span>
-<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtGui</span>
+<span class="kn">from</span> <span class="nn">lys.resources</span> <span class="kn">import</span> <span class="n">lysIcon</span>
 <span class="kn">from</span> <span class="nn">lys.decorators</span> <span class="kn">import</span> <span class="n">avoidCircularReference</span>
 
 
@@ -232,6 +233,22 @@
             <span class="n">w</span><span class="o">.</span><span class="n">fileChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="p">)</span>
 
 
+<span class="k">class</span> <span class="nc">_TitleProxyStyle</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QProxyStyle</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">drawComplexControl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">painter</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">control</span> <span class="o">==</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QStyle</span><span class="o">.</span><span class="n">CC_TitleBar</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="s2">&quot;titleColor&quot;</span><span class="p">):</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">titleColor</span>
+                <span class="k">if</span> <span class="n">color</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
+                    <span class="n">option</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPalette</span><span class="o">.</span><span class="n">Highlight</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="n">color</span><span class="p">))</span>
+                    <span class="n">bg</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+                    <span class="n">bg</span><span class="o">.</span><span class="n">setAlpha</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+                    <span class="n">option</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPalette</span><span class="o">.</span><span class="n">Window</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="n">bg</span><span class="p">))</span>
+                    <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+                    <span class="n">pixmap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="s2">&quot;transparent&quot;</span><span class="p">))</span>
+                    <span class="n">option</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="n">pixmap</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">drawComplexControl</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">painter</span><span class="p">,</span> <span class="n">widget</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="LysSubWindow"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow">[docs]</a><span class="k">class</span> <span class="nc">LysSubWindow</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMdiSubWindow</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.</span>
@@ -289,6 +306,9 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_floating</span> <span class="o">=</span> <span class="n">floating</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_titleColor</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">_TitleProxyStyle</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">lysIcon</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">installEventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resizeTimer</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_resizeTimer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resizeFinished</span><span class="p">)</span>
@@ -304,6 +324,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_DeleteOnClose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">updateGeometry</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">titleColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_titleColor</span>
+
+<div class="viewcode-block" id="LysSubWindow.setTitleColor"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.setTitleColor">[docs]</a>    <span class="k">def</span> <span class="nf">setTitleColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the title color of the mdi window.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            color(QColor): The title color.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_titleColor</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="LysSubWindow.eventFilter"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.eventFilter">[docs]</a>    <span class="k">def</span> <span class="nf">eventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">FocusIn</span><span class="p">:</span>
@@ -543,7 +576,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__closeflg</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Name</span><span class="p">())</span>
