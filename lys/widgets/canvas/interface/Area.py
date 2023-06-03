@@ -16,9 +16,8 @@ class CanvasMargin(CanvasPart):
 
         from lys import display
         g = display([1,2,3])
-        g.canvas.setMargin(0, 0.3, 0.8, 0.9) # 0 means auto
-        print(g.canvas.getMargin())
-        # (0.2, 0.3, 0.8, 0.9)
+        g.canvas.setMargin(0, 0.7, 0.2, 0.9)  # 0 means auto
+        print(g.canvas.getMargin())           # (0, 0.7, 0.2, 0.9)
     """
 
     marginChanged = QtCore.pyqtSignal()
@@ -110,8 +109,7 @@ class CanvasSize(CanvasPart):
         g = display([1,2,3])
         g.canvas.setCanvasSize("Width", "Absolute", 4)
         g.canvas.setCanvasSize("Height", "Absolute", 5)
-        print(g.canvas.getCanvasSize())
-        # (4, 5)
+        print(g.canvas.getCanvasSize()) # (4, 5)        
     """
 
     canvasResized = QtCore.pyqtSignal(object)

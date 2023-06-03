@@ -156,10 +156,9 @@
 
 <span class="sd">            from lys import display</span>
 <span class="sd">            g = display([1,2,3])</span>
-<span class="sd">            g.canvas.axisIsValid(&quot;Left&quot;)</span>
-<span class="sd">            # True</span>
-<span class="sd">            g.canvas.axisIsValid(&quot;Right&quot;)</span>
-<span class="sd">            # False</span>
+<span class="sd">            g.canvas.axisIsValid(&quot;Left&quot;)   # True</span>
+<span class="sd">            g.canvas.axisIsValid(&quot;Right&quot;)  # False</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">axis</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__axisList</span></div>
 
@@ -175,8 +174,8 @@
 
 <span class="sd">            from lys import display</span>
 <span class="sd">            g = display([1,2,3])</span>
-<span class="sd">            g.canvas.axisList()</span>
-<span class="sd">            # [&#39;Left&#39;, &#39;Bottom&#39;]</span>
+<span class="sd">            g.canvas.axisList() # [&#39;Left&#39;, &#39;Bottom&#39;]</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__axisList</span></div>
 
@@ -194,8 +193,8 @@
 <span class="sd">            from lys import display</span>
 <span class="sd">            g = display([1,2,3])</span>
 <span class="sd">            g.canvas.setAxisRange(&#39;Left&#39;, [0, 5])</span>
-<span class="sd">            g.canvas.getAxisRange(&#39;Left&#39;)</span>
-<span class="sd">            # [0, 5]</span>
+<span class="sd">            g.canvas.getAxisRange(&#39;Left&#39;) # [0, 5]</span>
+
 
 <span class="sd">        See also:</span>
 <span class="sd">            :meth:`getAxisRange`, :meth:`setAutoScaleAxis`</span>
@@ -253,8 +252,8 @@
 <span class="sd">            from lys import display</span>
 <span class="sd">            g = display([1,2,3])</span>
 <span class="sd">            g.canvas.setAutoScaleAxis(&#39;Left&#39;)</span>
-<span class="sd">            g.canvas.getAxisRange(&#39;Left&#39;)</span>
-<span class="sd">            # [-0.1, 2,1]</span>
+<span class="sd">            g.canvas.getAxisRange(&#39;Left&#39;) # [0.9, 3.1]</span>
+
 
 <span class="sd">        See also:</span>
 <span class="sd">            :meth:`setAxisRange`, :meth:`getAxisRange`, :meth:`isAutoScaled`</span>
@@ -312,11 +311,10 @@
 
 <span class="sd">            from lys import display</span>
 <span class="sd">            g = display([1,2,3])</span>
-<span class="sd">            g.canvas.setRange(&#39;Bottom&#39;, [0, 3])</span>
-<span class="sd">            g.canvas.isAutoScaled(&#39;Left&#39;)</span>
-<span class="sd">            # True</span>
-<span class="sd">            g.canvas.isAutoScaled(&#39;Bottom&#39;)</span>
-<span class="sd">            # False</span>
+<span class="sd">            g.canvas.setAxisRange(&#39;Bottom&#39;, [0, 3])</span>
+<span class="sd">            g.canvas.isAutoScaled(&#39;Left&#39;)     # True</span>
+<span class="sd">            g.canvas.isAutoScaled(&#39;Bottom&#39;)   # False</span>
+
 
 <span class="sd">        See also:</span>
 <span class="sd">            :meth:`setAxisRange`, :meth:`getAxisRange`, :meth:`setAutoScaleAxis`</span>

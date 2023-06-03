@@ -12,18 +12,7 @@ class FilterInterface:
     """
     FilterInterface is a base class of all filters in lys.
 
-    See :doc:`../tutorials/newFilter` for detail
-
-    Example::
-
-        from lys import filters
-
-        # make filter that integrate data along the 0th axis
-        f = filters.IntegralAllFilter(axes=[0], sumtype="Sum")
-
-        # apply the filter to data
-        result = f.execute(np.ones(3,4))
-
+    See :doc:`../tutorials/newFilter` for detail.
     """
 
     def execute(self, wave, *args, **kwargs):
@@ -124,17 +113,10 @@ class FilterInterface:
 
     def saveAsFile(self, file):
         """
-        Save filter as file.
+        Save filter as file. It is recommended to use :func:`lys.filters.function.toFile` function to save filter. 
 
         Args:
             file(str): filename
-
-        Example::
-
-            from lys import filters
-            f = filters.IntegralAllFilter(axes=[0], sumtype="Sum")
-            f.saveAsFile("filter.fil")
-
         """
         f = Filters([self])
         f.saveAsFile(file)

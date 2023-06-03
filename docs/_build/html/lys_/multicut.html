@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="MultiCutGUI" href="multicut/MultiCutGUI.html" />
+    <link rel="next" title="fitting module" href="fitting.html" />
     <link rel="prev" title="Filters in lys.filters" href="filters.filter.html" /> 
 </head>
 
@@ -52,12 +52,16 @@
 <li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filters.html">filters module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">multicut module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#main-gui-component">Main GUI component</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="multicut/MultiCutGUI.html">MultiCutGUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lys.mcut.MultiCutGUI">GUI modules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lys.mcut.MultiCutGUI.MultiCut"><code class="docutils literal notranslate"><span class="pre">MultiCut</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#cui-components">CUI Components</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="multicut/MultiCutCUI.html">MultiCutCUI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cui-modules">CUI modules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lys.mcut.MultiCutCUI.MultiCutCUI"><code class="docutils literal notranslate"><span class="pre">MultiCutCUI</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.mcut.MultiCutCUI.MultiCutWave"><code class="docutils literal notranslate"><span class="pre">MultiCutWave</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.mcut.MultiCutCUI.AxesRangeManager"><code class="docutils literal notranslate"><span class="pre">AxesRangeManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.mcut.MultiCutCUI.FreeLineManager"><code class="docutils literal notranslate"><span class="pre">FreeLineManager</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.mcut.MultiCutCUI.ChildWaves"><code class="docutils literal notranslate"><span class="pre">ChildWaves</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -94,21 +98,430 @@
              
   <section id="multicut-module">
 <h1>multicut module<a class="headerlink" href="#multicut-module" title="Permalink to this heading"></a></h1>
-<section id="main-gui-component">
-<h2>Main GUI component<a class="headerlink" href="#main-gui-component" title="Permalink to this heading"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="multicut/MultiCutGUI.html">MultiCutGUI</a></li>
-</ul>
-</div>
+<section id="module-lys.mcut.MultiCutGUI">
+<span id="gui-modules"></span><h2>GUI modules<a class="headerlink" href="#module-lys.mcut.MultiCutGUI" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.mcut.MultiCutGUI.</span></span><span class="sig-name descname"><span class="pre">MultiCut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.closed">
+<span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.closed" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.cui">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cui</span></span><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.cui" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'grid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.display" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.loadFromDictionary">
+<span class="sig-name descname"><span class="pre">loadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut.loadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.loadFromDictionary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.openMultiCutSetting">
+<span class="sig-name descname"><span class="pre">openMultiCutSetting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut.openMultiCutSetting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.openMultiCutSetting" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.saveAsDictionary">
+<span class="sig-name descname"><span class="pre">saveAsDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut.saveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.saveAsDictionary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </section>
-<section id="cui-components">
-<h2>CUI Components<a class="headerlink" href="#cui-components" title="Permalink to this heading"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="multicut/MultiCutCUI.html">MultiCutCUI</a></li>
+<section id="cui-modules">
+<h2>CUI modules<a class="headerlink" href="#cui-modules" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutCUI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.mcut.MultiCutCUI.</span></span><span class="sig-name descname"><span class="pre">MultiCutCUI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#MultiCutCUI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutCUI" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>MultiCutCUI is a class that manage contents of <code class="xref py py-class docutils literal notranslate"><span class="pre">lys.multicut.MultiCutGUI.MultiCut</span></code>.</p>
+<p>The instance of this class is automatically generated by <code class="xref py py-class docutils literal notranslate"><span class="pre">lys.multicut.MultiCutGUI.MultiCut</span></code> and therefore users should not instantiate this class.</p>
+<p>The functionarities of this class is composed of <a class="reference internal" href="#lys.mcut.MultiCutCUI.MultiCutWave" title="lys.mcut.MultiCutCUI.MultiCutWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiCutWave</span></code></a>, <a class="reference internal" href="#lys.mcut.MultiCutCUI.ChildWaves" title="lys.mcut.MultiCutCUI.ChildWaves"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChildWaves</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">AxesRangeManger</span></code>, and <a class="reference internal" href="#lys.mcut.MultiCutCUI.FreeLineManager" title="lys.mcut.MultiCutCUI.FreeLineManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">FreeLineManager</span></code></a>.</p>
+<p>The methods of above classes can be accessed directly from this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wave</strong> (<a class="reference internal" href="core.html#lys.core.Wave" title="lys.core.Wave"><em>Wave</em></a><em> or </em><a class="reference internal" href="core.html#lys.core.DaskWave" title="lys.core.DaskWave"><em>DaskWave</em></a>) – The wave to be analyzed by MultiCut.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutCUI.loadFromDictionary">
+<span class="sig-name descname"><span class="pre">loadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#MultiCutCUI.loadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutCUI.loadFromDictionary" title="Permalink to this definition"></a></dt>
+<dd><p>Load the state stored in the dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutCUI.saveAsDictionary">
+<span class="sig-name descname"><span class="pre">saveAsDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#MultiCutCUI.saveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutCUI.saveAsDictionary" title="Permalink to this definition"></a></dt>
+<dd><p>Save present state as dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutWave">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.mcut.MultiCutCUI.</span></span><span class="sig-name descname"><span class="pre">MultiCutWave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#MultiCutWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutWave" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>This class manage wave and filter for analysis.</p>
+<p>All methods in this class can be accessed from <a class="reference internal" href="#lys.mcut.MultiCutCUI.MultiCutCUI" title="lys.mcut.MultiCutCUI.MultiCutCUI"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiCutCUI</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wave</strong> (<a class="reference internal" href="core.html#lys.core.Wave" title="lys.core.Wave"><em>Wave</em></a><em> or </em><a class="reference internal" href="core.html#lys.core.DaskWave" title="lys.core.DaskWave"><em>DaskWave</em></a>) – The wave to be analyzed.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutWave.applyFilter">
+<span class="sig-name descname"><span class="pre">applyFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#MultiCutWave.applyFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutWave.applyFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Apply filter to the wave.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filt</strong> (<em>Filter</em>) – The filter to be applied.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutWave.dimensionChanged">
+<span class="sig-name descname"><span class="pre">dimensionChanged</span></span><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutWave.dimensionChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the dimension of the filtered wave is changed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutWave.filterApplied">
+<span class="sig-name descname"><span class="pre">filterApplied</span></span><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutWave.filterApplied" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when filter is applied.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutWave.getFilteredWave">
+<span class="sig-name descname"><span class="pre">getFilteredWave</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#MultiCutWave.getFilteredWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutWave.getFilteredWave" title="Permalink to this definition"></a></dt>
+<dd><p>Get filtered wave instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The filtered wave.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="core.html#lys.core.DaskWave" title="lys.core.DaskWave">DaskWave</a> or <a class="reference internal" href="core.html#lys.core.Wave" title="lys.core.Wave">Wave</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutWave.getRawWave">
+<span class="sig-name descname"><span class="pre">getRawWave</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#MultiCutWave.getRawWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutWave.getRawWave" title="Permalink to this definition"></a></dt>
+<dd><p>Get raw wave instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The instance of the raw wave.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="core.html#lys.core.DaskWave" title="lys.core.DaskWave">DaskWave</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.MultiCutWave.useDask">
+<span class="sig-name descname"><span class="pre">useDask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#MultiCutWave.useDask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.MultiCutWave.useDask" title="Permalink to this definition"></a></dt>
+<dd><p>Specify whether the DaskWave is used for processing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>b</strong> (<em>bool</em>) – If True, DaskWave is used for processing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.mcut.MultiCutCUI.</span></span><span class="sig-name descname"><span class="pre">AxesRangeManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#AxesRangeManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>AxesRangeManager manage axes range that determines the result of MultiCut.</p>
+<p>This class is automatically instanciated by MultiCutCUI.</p>
+<p>Do not directly instanciate this class.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.axesRangeChanged">
+<span class="sig-name descname"><span class="pre">axesRangeChanged</span></span><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.axesRangeChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted after <a class="reference internal" href="#lys.mcut.MultiCutCUI.AxesRangeManager.setAxisRange" title="lys.mcut.MultiCutCUI.AxesRangeManager.setAxisRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAxisRange()</span></code></a> is called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.getAxisRange">
+<span class="sig-name descname"><span class="pre">getAxisRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#AxesRangeManager.getAxisRange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.getAxisRange" title="Permalink to this definition"></a></dt>
+<dd><p>Get the integrated range for MultiCut.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>int</em>) – The axis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>See <a class="reference internal" href="#lys.mcut.MultiCutCUI.AxesRangeManager.setAxisRange" title="lys.mcut.MultiCutCUI.AxesRangeManager.setAxisRange"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setAxisRange()</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or length 2 sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.getAxisRangeType">
+<span class="sig-name descname"><span class="pre">getAxisRangeType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#AxesRangeManager.getAxisRangeType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.getAxisRangeType" title="Permalink to this definition"></a></dt>
+<dd><p>Get the axis range type for the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The axis range type.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>‘point’ or ‘range’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.loadFromDictionary">
+<span class="sig-name descname"><span class="pre">loadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useRange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axesMap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#AxesRangeManager.loadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.loadFromDictionary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#AxesRangeManager.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.reset" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.saveAsDictionary">
+<span class="sig-name descname"><span class="pre">saveAsDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">useRange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#AxesRangeManager.saveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.saveAsDictionary" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.setAxisRange">
+<span class="sig-name descname"><span class="pre">setAxisRange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.setAxisRange" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.mcut.MultiCutCUI.</span></span><span class="sig-name descname"><span class="pre">FreeLineManager</span></span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#FreeLineManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>FreeLineManager manages free lines in MultiCut.</p>
+<p>Methods in this class can be accessed from MultiCutCUI.</p>
+<p>Do not instantiate this class except in MultiCutCUI.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager.addFreeLine">
+<span class="sig-name descname"><span class="pre">addFreeLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[[0,</span> <span class="pre">0],</span> <span class="pre">[1,</span> <span class="pre">1]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#FreeLineManager.addFreeLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager.addFreeLine" title="Permalink to this definition"></a></dt>
+<dd><p>Add free line to MultiCut.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axes</strong> (<em>length 2 sequence</em>) – The axes for which the free line is added.</p></li>
+<li><p><strong>position</strong> (<em>2*2 array</em>) – The position of the free line in the form of [(x1,y1), (x2,y2)]</p></li>
+<li><p><strong>width</strong> (<em>float</em>) – The width of the free line.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the free line. If omitted, the line name is automatically generated.</p></li>
 </ul>
-</div>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The free line object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_FreeLine</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#FreeLineManager.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager.clear" title="Permalink to this definition"></a></dt>
+<dd><p>Clear all free lines.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager.freeLineChanged">
+<span class="sig-name descname"><span class="pre">freeLineChanged</span></span><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager.freeLineChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when free lines are added or removed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager.freeLineMoved">
+<span class="sig-name descname"><span class="pre">freeLineMoved</span></span><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager.freeLineMoved" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when one of the free line is moved.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager.getFreeLine">
+<span class="sig-name descname"><span class="pre">getFreeLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#FreeLineManager.getFreeLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager.getFreeLine" title="Permalink to this definition"></a></dt>
+<dd><p>Get free line from name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of free line.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The free line object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_FreeLine</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager.getFreeLines">
+<span class="sig-name descname"><span class="pre">getFreeLines</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#FreeLineManager.getFreeLines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager.getFreeLines" title="Permalink to this definition"></a></dt>
+<dd><p>Return list of free lines.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The list of free lines.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager.loadFromDictionary">
+<span class="sig-name descname"><span class="pre">loadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useLine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axesMap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#FreeLineManager.loadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager.loadFromDictionary" title="Permalink to this definition"></a></dt>
+<dd><p>Load information of free lines from dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d</strong> (<em>dict</em>) – The dictionary that is generated by saveAsDictionary method.</p></li>
+<li><p><strong>useLine</strong> (<em>bool</em>) – It determines to load position and width of the free lines.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager.removeFreeLine">
+<span class="sig-name descname"><span class="pre">removeFreeLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#FreeLineManager.removeFreeLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager.removeFreeLine" title="Permalink to this definition"></a></dt>
+<dd><p>Remove free line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>_FreeLine</em>) – The free line to be removed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.FreeLineManager.saveAsDictionary">
+<span class="sig-name descname"><span class="pre">saveAsDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">useLine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#FreeLineManager.saveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.FreeLineManager.saveAsDictionary" title="Permalink to this definition"></a></dt>
+<dd><p>Save information of free lines as dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>useLine</strong> – If it is False, the position and width is not saved.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The dictonary that contains the information of free line.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.mcut.MultiCutCUI.</span></span><span class="sig-name descname"><span class="pre">ChildWaves</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cui</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#ChildWaves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>This class manages child waves in MultiCut.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.addWave">
+<span class="sig-name descname"><span class="pre">addWave</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#ChildWaves.addWave"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.addWave" title="Permalink to this definition"></a></dt>
+<dd><p>Add new wave to MultiCut.
+The child waves that is generated by this method is automatically updated when axes range of free lines are changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – The axes of the child wave.</p></li>
+<li><p><strong>filter</strong> (<em>filter</em>) – The filter for postprocess.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the child wave.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The object that include information of the child wave.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>_ChildWave</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.childWavesChanged">
+<span class="sig-name descname"><span class="pre">childWavesChanged</span></span><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.childWavesChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the child waves are added or removed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#ChildWaves.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.clear" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.cui">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cui</span></span><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.cui" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.getChildWaves">
+<span class="sig-name descname"><span class="pre">getChildWaves</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#ChildWaves.getChildWaves"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.getChildWaves" title="Permalink to this definition"></a></dt>
+<dd><p>Return the list of child waves:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The list of child waves.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of _ChildWave</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.loadFromDictionary">
+<span class="sig-name descname"><span class="pre">loadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axesMap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#ChildWaves.loadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.loadFromDictionary" title="Permalink to this definition"></a></dt>
+<dd><p>Load the state stored in the dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#ChildWaves.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.remove" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a child wave.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>obj</strong> (<em>_ChildWave</em>) – The child wave to be removed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.saveAsDictionary">
+<span class="sig-name descname"><span class="pre">saveAsDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#ChildWaves.saveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.saveAsDictionary" title="Permalink to this definition"></a></dt>
+<dd><p>Save the present state as dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.setSumType">
+<span class="sig-name descname"><span class="pre">setSumType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sumType</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#ChildWaves.setSumType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.setSumType" title="Permalink to this definition"></a></dt>
+<dd><p>Set the sum type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sumType</strong> (<em>&quot;Sum&quot;</em><em>, </em><em>&quot;Mean&quot;</em><em>, </em><em>&quot;Median&quot;</em><em>, </em><em>&quot;Max&quot;</em><em>, or </em><em>&quot;Min&quot;</em>) – The sum type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 
@@ -117,7 +530,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="filters.filter.html" class="btn btn-neutral float-left" title="Filters in lys.filters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="multicut/MultiCutGUI.html" class="btn btn-neutral float-right" title="MultiCutGUI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="fitting.html" class="btn btn-neutral float-right" title="fitting module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

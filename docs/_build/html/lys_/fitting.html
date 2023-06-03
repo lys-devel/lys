@@ -52,8 +52,8 @@
 <li class="toctree-l2"><a class="reference internal" href="filters.html">filters module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multicut.html">multicut module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">fitting module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lys.fitting.addFittingFunction"><code class="docutils literal notranslate"><span class="pre">addFittingFunction()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-lys.fitting.Functions">List of pre-defined fitting functions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.addFittingFunction"><code class="docutils literal notranslate"><span class="pre">addFittingFunction()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.const"><code class="docutils literal notranslate"><span class="pre">const()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.cos"><code class="docutils literal notranslate"><span class="pre">cos()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#lys.fitting.Functions.doubleExp"><code class="docutils literal notranslate"><span class="pre">doubleExp()</span></code></a></li>
@@ -101,13 +101,15 @@
              
   <section id="module-lys.fitting">
 <span id="fitting-module"></span><h1>fitting module<a class="headerlink" href="#module-lys.fitting" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="lys.fitting.addFittingFunction">
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.</span></span><span class="sig-name descname"><span class="pre">addFittingFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting.html#addFittingFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.addFittingFunction" title="Permalink to this definition"></a></dt>
+<dd><p>Add fitting function to the lys fitting module.</p>
+<p>Use <a class="reference internal" href="functions.html#lys.functions.registerFittingFunction" title="lys.functions.registerFittingFunction"><code class="xref py py-func docutils literal notranslate"><span class="pre">lys.functions.registerFittingFunction()</span></code></a> instead of this function.</p>
+</dd></dl>
+
 <section id="module-lys.fitting.Functions">
 <span id="list-of-pre-defined-fitting-functions"></span><h2>List of pre-defined fitting functions<a class="headerlink" href="#module-lys.fitting.Functions" title="Permalink to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.fitting.Functions.addFittingFunction">
-<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">addFittingFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#addFittingFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.addFittingFunction" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.const">
 <span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">const</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#const"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.const" title="Permalink to this definition"></a></dt>
@@ -118,27 +120,87 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.cos">
 <span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">cos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#cos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.cos" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Cosine function</p>
+<p><img class="math" src="_images/math/3c9c1c752f973cf03f55a3b55dc18eebc9cddbbc.png" alt="y = h \cos(f(x-x_0)+\phi)"/></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – <img class="math" src="_images/math/ed7fb0260e58d3ca5851e823ff991dae4cde5671.png" alt="x_0"/>.</p></li>
+<li><p><strong>height</strong> – <img class="math" src="_images/math/4c120f773ab4e1c59ad2bd44aae969ce24dd190a.png" alt="h"/>.</p></li>
+<li><p><strong>frequency</strong> – <img class="math" src="_images/math/5b7752c757e0b691a80ab8227eadb8a8389dc58a.png" alt="f"/>.</p></li>
+<li><p><strong>phase</strong> – <img class="math" src="_images/math/fffd2357ee88a9c50ba9e831ed64c39c73d54a07.png" alt="\phi"/>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.doubleExp">
 <span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">doubleExp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#doubleExp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.doubleExp" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Double exponential function with step.</p>
+<p><img class="math" src="_images/math/9d5e0de7101e8fc0893bdecc34b2818417e8ceb9.png" alt="y = h\theta (x-x_0)(1-\exp[-(x-x_0)/a]^2)\exp[-(x-x_0)/b]"/></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – <img class="math" src="_images/math/ed7fb0260e58d3ca5851e823ff991dae4cde5671.png" alt="x_0"/>.</p></li>
+<li><p><strong>height</strong> – <img class="math" src="_images/math/4c120f773ab4e1c59ad2bd44aae969ce24dd190a.png" alt="h"/>.</p></li>
+<li><p><strong>a</strong> – <img class="math" src="_images/math/b3e65e3b6408fcfa00452530b73f55d1755f9965.png" alt="a"/>.</p></li>
+<li><p><strong>b</strong> – <img class="math" src="_images/math/68c7c8c65602677ab56cf7fd88002023f0edc575.png" alt="b"/>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.error">
 <span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.error" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Error function for fitting.</p>
+<p>For convenience, this function is defined as</p>
+<p><img class="math" src="_images/math/e5832cf762acbba9297bae9cc28c5517cc0977d5.png" alt="h(\mathrm{erf}[(x-x_0)/\tau] + 1)/2"/></p>
+<p>erf is error function (scipy.special.erf).</p>
+<p>FWHM is of gaussian function integrated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – <img class="math" src="_images/math/ed7fb0260e58d3ca5851e823ff991dae4cde5671.png" alt="x_0"/>.</p></li>
+<li><p><strong>height</strong> – <img class="math" src="_images/math/4c120f773ab4e1c59ad2bd44aae969ce24dd190a.png" alt="h"/>.</p></li>
+<li><p><strong>fwhm</strong> – :<img class="math" src="_images/math/58aaf33735ceb69f5c858aca57f35f5e55e5351a.png" alt="2\sqrt{\log 2}\tau"/>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.exp">
 <span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#exp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.exp" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Simple exponential function</p>
+<p><img class="math" src="_images/math/84ad8cd32bd2761d23bf048aac3b4ad928b30a5c.png" alt="y=h\exp(a(x-x_0))"/></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – <img class="math" src="_images/math/ed7fb0260e58d3ca5851e823ff991dae4cde5671.png" alt="x_0"/>.</p></li>
+<li><p><strong>height</strong> – <img class="math" src="_images/math/4c120f773ab4e1c59ad2bd44aae969ce24dd190a.png" alt="h"/>.</p></li>
+<li><p><strong>a</strong> – <img class="math" src="_images/math/b3e65e3b6408fcfa00452530b73f55d1755f9965.png" alt="a"/>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.gauss">
 <span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">gauss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#gauss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.gauss" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Simple gaussian</p>
+<p><img class="math" src="_images/math/fd1a2102327de19bf8978356f57ad2118c4b099f.png" alt="y=h\exp[-(x-x_0)^2/2\sigma^2]"/></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – <img class="math" src="_images/math/ed7fb0260e58d3ca5851e823ff991dae4cde5671.png" alt="x_0"/>.</p></li>
+<li><p><strong>height</strong> – <img class="math" src="_images/math/4c120f773ab4e1c59ad2bd44aae969ce24dd190a.png" alt="h"/>.</p></li>
+<li><p><strong>sigma</strong> – <img class="math" src="_images/math/b52df27bfb0b1e3af0c2c68a7b9da459178c2a7d.png" alt="\sigma"/>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.linear">
@@ -150,7 +212,18 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.lorentz">
 <span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">lorentz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#lorentz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.lorentz" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Lorentz function.</p>
+<p><img class="math" src="_images/math/fd6b689ac7fe3524fb67e09f792ca28805062da2.png" alt="y = hd^2/[(x-x_0)^2+d^2]"/></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – <img class="math" src="_images/math/ed7fb0260e58d3ca5851e823ff991dae4cde5671.png" alt="x_0"/>.</p></li>
+<li><p><strong>height</strong> – <img class="math" src="_images/math/4c120f773ab4e1c59ad2bd44aae969ce24dd190a.png" alt="h"/>.</p></li>
+<li><p><strong>fwhm</strong> – <img class="math" src="_images/math/b31857e0f3595923a9330bef7a88b26ffa014562.png" alt="2d"/>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.quadratic">
@@ -161,19 +234,53 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.relaxOsci">
-<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">relaxOsci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">relax</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#relaxOsci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.relaxOsci" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">relaxOsci</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#relaxOsci"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.relaxOsci" title="Permalink to this definition"></a></dt>
+<dd><p>Relaxed ocillation.</p>
+<p><img class="math" src="_images/math/a44c48a89cea4e23cbbfcd70376d1dbde9f8cc68.png" alt="y=h(C + cos[f(x-x_0)+\phi])\exp[-(x-x_0)/\tau]\theta(x-x_0)"/></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – <img class="math" src="_images/math/ed7fb0260e58d3ca5851e823ff991dae4cde5671.png" alt="x_0"/>.</p></li>
+<li><p><strong>height</strong> – <img class="math" src="_images/math/4c120f773ab4e1c59ad2bd44aae969ce24dd190a.png" alt="h"/>.</p></li>
+<li><p><strong>frequency</strong> – <img class="math" src="_images/math/5b7752c757e0b691a80ab8227eadb8a8389dc58a.png" alt="f"/>.</p></li>
+<li><p><strong>phase</strong> – <img class="math" src="_images/math/fffd2357ee88a9c50ba9e831ed64c39c73d54a07.png" alt="\phi"/>.</p></li>
+<li><p><strong>offset</strong> – <img class="math" src="_images/math/4db5b6e16e06f929ce3f675c5e535d06ffb02ff7.png" alt="C"/>.</p></li>
+<li><p><strong>tau</strong> – <img class="math" src="_images/math/914b2d4b6659b86d3153d5510839dfb254dfc8a3.png" alt="\tau"/>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.step">
 <span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.step" title="Permalink to this definition"></a></dt>
 <dd><p>Heaviside step function for fitting.</p>
+<p><img class="math" src="_images/math/724fe8994c645be38fa550b6e1a5b780a7ee30c7.png" alt="y = h \theta(x-x_0)"/></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – <img class="math" src="_images/math/ed7fb0260e58d3ca5851e823ff991dae4cde5671.png" alt="x_0"/>.</p></li>
+<li><p><strong>height</strong> – <img class="math" src="_images/math/4c120f773ab4e1c59ad2bd44aae969ce24dd190a.png" alt="h"/>.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lys.fitting.Functions.stepExp">
 <span class="sig-prename descclassname"><span class="pre">lys.fitting.Functions.</span></span><span class="sig-name descname"><span class="pre">stepExp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/fitting/Functions.html#stepExp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.fitting.Functions.stepExp" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Exponential decay multiplied by step function.</p>
+<p><img class="math" src="_images/math/1599be59972a4ce7604d4ed987eec7c2b17aedb7.png" alt="y = h\theta(x-x_0)\exp[-a(x-x_0)]"/></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>position</strong> – <img class="math" src="_images/math/ed7fb0260e58d3ca5851e823ff991dae4cde5671.png" alt="x_0"/>.</p></li>
+<li><p><strong>height</strong> – <img class="math" src="_images/math/4c120f773ab4e1c59ad2bd44aae969ce24dd190a.png" alt="h"/>.</p></li>
+<li><p><strong>a</strong> – <img class="math" src="_images/math/b3e65e3b6408fcfa00452530b73f55d1755f9965.png" alt="a"/>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 </section>

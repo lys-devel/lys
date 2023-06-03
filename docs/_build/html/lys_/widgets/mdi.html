@@ -99,8 +99,8 @@
 <dt class="sig sig-object py" id="lys.widgets.mdi.LysSubWindow">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.mdi.</span></span><span class="sig-name descname"><span class="pre">LysSubWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">floating</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/mdi.html#LysSubWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.mdi.LysSubWindow" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMdiSubWindow</span></code></p>
-<p>LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.</p>
-<p>When a <em>AutoSavedWindow</em> is instantiated, it is automatically added to current MdiArea.</p>
+<p><em>LysSubWindow</em> is customized QMdiSubWindow, which implement some usuful methods and signals.</p>
+<p>When a <em>LysSavedWindow</em> is instantiated, it is automatically added to current MdiArea.</p>
 <p>It is recommended to inherit this class when developers implement new sub windows in lys.</p>
 <p>User input on several QWidgets can be saved and restored from file. See <a class="reference internal" href="#lys.widgets.mdi.LysSubWindow.saveSettings" title="lys.widgets.mdi.LysSubWindow.saveSettings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">saveSettings()</span></code></a> and <a class="reference internal" href="#lys.widgets.mdi.LysSubWindow.restoreSettings" title="lys.widgets.mdi.LysSubWindow.restoreSettings"><code class="xref py py-meth docutils literal notranslate"><span class="pre">restoreSettings()</span></code></a> for detail.</p>
 <p>LysSubWindow can be attached to different LysSubWindow. See <a class="reference internal" href="#lys.widgets.mdi.LysSubWindow.attach" title="lys.widgets.mdi.LysSubWindow.attach"><code class="xref py py-meth docutils literal notranslate"><span class="pre">attach()</span></code></a> for detail.</p>
@@ -112,9 +112,15 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.mdi.LysSubWindow.attach">
 <span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/mdi.html#LysSubWindow.attach"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.mdi.LysSubWindow.attach" title="Permalink to this definition"></a></dt>
-<dd><p>Attach <em>self</em> to <em>parent</em></p>
+<dd><p>Attach this window to <em>parent</em></p>
 <p>After it is attached, the window follows the <em>parent</em> widget automatically.</p>
-<p>This functionarity is usually used for several setting widgets (such as ModifyWindow of Graph), which should follow the parent (such as Graph)</p>
+<p>This functionarity is usually used for several setting widgets, which should follow the parent (such as Graph)</p>
+<p>However, in the recent release of lys, it is recommended to use sidebar instead of attached window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parent</strong> (<a class="reference internal" href="#lys.widgets.mdi.LysSubWindow" title="lys.widgets.mdi.LysSubWindow"><em>LysSubWindow</em></a>) – The window to which this window is attached.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -139,8 +145,9 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.mdi.LysSubWindow.eventFilter">
-<span class="sig-name descname"><span class="pre">eventFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QObject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QEvent</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/lys/widgets/mdi.html#LysSubWindow.eventFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.mdi.LysSubWindow.eventFilter" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">eventFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/mdi.html#LysSubWindow.eventFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.mdi.LysSubWindow.eventFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Implementation of eventFilter in LysSubWindow.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.mdi.LysSubWindow.focused">

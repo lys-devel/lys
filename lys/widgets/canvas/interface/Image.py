@@ -16,8 +16,8 @@ class ImageData(WaveData):
     Example::
 
         from lys import display
-        im = display([[1,2,3],[4,5,6]])
-        im.setColormap('gray')
+        g = display([[1,2,3],[4,5,6]])
+        g.getImages()[0].setColormap('gray')
     """
 
     def __setAppearance(self, key, value):

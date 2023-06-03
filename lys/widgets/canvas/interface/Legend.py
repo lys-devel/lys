@@ -14,6 +14,9 @@ class CanvasLegend(CanvasPart):
     """
 
     legendPositionChanged = QtCore.pyqtSignal(tuple)
+    """
+    Emitted when the position of the legend is changed.
+    """
 
     def __init__(self, canvas):
         super().__init__(canvas)

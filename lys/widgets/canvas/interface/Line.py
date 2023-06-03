@@ -26,8 +26,8 @@ class LineData(WaveData):
     Example::
 
         from lys import display
-        line = display([1,2,3])
-        line.setColor('#ff0000')
+        g = display([1,2,3])
+        g.getLines()[0].setColor('#ff0000')
     """
 
     def __setAppearance(self, key, value):

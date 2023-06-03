@@ -138,10 +138,8 @@ Developers should implement a abstract methods.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
-<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">)</span>
-<span class="c1"># True</span>
-<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">)</span>
-<span class="c1"># False</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">)</span>   <span class="c1"># True</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axisIsValid</span><span class="p">(</span><span class="s2">&quot;Right&quot;</span><span class="p">)</span>  <span class="c1"># False</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -161,8 +159,7 @@ Developers should implement a abstract methods.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
-<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axisList</span><span class="p">()</span>
-<span class="c1"># [&#39;Left&#39;, &#39;Bottom&#39;]</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">axisList</span><span class="p">()</span> <span class="c1"># [&#39;Left&#39;, &#39;Bottom&#39;]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -303,11 +300,9 @@ Developers should implement a abstract methods.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
-<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setRange</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">isAutoScaled</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
-<span class="c1"># True</span>
-<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">isAutoScaled</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">)</span>
-<span class="c1"># False</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">isAutoScaled</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>     <span class="c1"># True</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">isAutoScaled</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">)</span>   <span class="c1"># False</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -363,8 +358,7 @@ Developers should implement a abstract methods.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setAutoScaleAxis</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
-<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
-<span class="c1"># [-0.1, 2,1]</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span> <span class="c1"># [0.9, 3.1]</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -425,8 +419,7 @@ Developers should implement a abstract methods.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
-<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
-<span class="c1"># [0, 5]</span>
+<span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span> <span class="c1"># [0, 5]</span>
 </pre></div>
 </div>
 <div class="admonition seealso">

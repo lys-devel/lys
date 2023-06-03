@@ -1,17 +1,38 @@
 multicut module
 ===================
 
-Main GUI component
+GUI modules
 ------------------------------------------------------
-.. toctree::
-   :maxdepth: 1
 
-   multicut/MultiCutGUI
+.. automodule:: lys.mcut.MultiCutGUI
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-CUI Components
+CUI modules
 ------------------------------------------------------
-.. toctree::
-   :maxdepth: 2
 
-   multicut/MultiCutCUI
+.. autoclass:: lys.mcut.MultiCutCUI.MultiCutCUI
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
+.. autoclass:: lys.mcut.MultiCutCUI.MultiCutWave
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: lys.mcut.MultiCutCUI.AxesRangeManager
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: lys.mcut.MultiCutCUI.FreeLineManager
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. autoclass:: lys.mcut.MultiCutCUI.ChildWaves
+   :members:
+   :undoc-members:
+   :show-inheritance:

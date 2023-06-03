@@ -139,7 +139,7 @@ class IntegralCircleFilter(FilterInterface):
 
     Circularly integrate *f*(*x*,*y*) and returns *f*(*r*).
 
-    This filter is under development.
+    This filter is under development. Do not use.
 
     See :class:`.FilterInterface.FilterInterface` for general description of Filters.
 

@@ -84,10 +84,9 @@ class CanvasAxes(CanvasPart):
 
             from lys import display
             g = display([1,2,3])
-            g.canvas.axisIsValid("Left")
-            # True
-            g.canvas.axisIsValid("Right")
-            # False
+            g.canvas.axisIsValid("Left")   # True
+            g.canvas.axisIsValid("Right")  # False
+
         """
         return axis in self.__axisList
 
@@ -103,8 +102,8 @@ class CanvasAxes(CanvasPart):
 
             from lys import display
             g = display([1,2,3])
-            g.canvas.axisList()
-            # ['Left', 'Bottom']
+            g.canvas.axisList() # ['Left', 'Bottom']
+
         """
         return self.__axisList
 
@@ -122,8 +121,8 @@ class CanvasAxes(CanvasPart):
             from lys import display
             g = display([1,2,3])
             g.canvas.setAxisRange('Left', [0, 5])
-            g.canvas.getAxisRange('Left')
-            # [0, 5]
+            g.canvas.getAxisRange('Left') # [0, 5]
+
 
         See also:
             :meth:`getAxisRange`, :meth:`setAutoScaleAxis`
@@ -181,8 +180,8 @@ class CanvasAxes(CanvasPart):
             from lys import display
             g = display([1,2,3])
             g.canvas.setAutoScaleAxis('Left')
-            g.canvas.getAxisRange('Left')
-            # [-0.1, 2,1]
+            g.canvas.getAxisRange('Left') # [0.9, 3.1]
+
 
         See also:
             :meth:`setAxisRange`, :meth:`getAxisRange`, :meth:`isAutoScaled`
@@ -240,11 +239,10 @@ class CanvasAxes(CanvasPart):
 
             from lys import display
             g = display([1,2,3])
-            g.canvas.setRange('Bottom', [0, 3])
-            g.canvas.isAutoScaled('Left')
-            # True
-            g.canvas.isAutoScaled('Bottom')
-            # False
+            g.canvas.setAxisRange('Bottom', [0, 3])
+            g.canvas.isAutoScaled('Left')     # True
+            g.canvas.isAutoScaled('Bottom')   # False
+
 
         See also:
             :meth:`setAxisRange`, :meth:`getAxisRange`, :meth:`setAutoScaleAxis`

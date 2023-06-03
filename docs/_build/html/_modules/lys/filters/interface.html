@@ -84,18 +84,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FilterInterface is a base class of all filters in lys.</span>
 
-<span class="sd">    See :doc:`../tutorials/newFilter` for detail</span>
-
-<span class="sd">    Example::</span>
-
-<span class="sd">        from lys import filters</span>
-
-<span class="sd">        # make filter that integrate data along the 0th axis</span>
-<span class="sd">        f = filters.IntegralAllFilter(axes=[0], sumtype=&quot;Sum&quot;)</span>
-
-<span class="sd">        # apply the filter to data</span>
-<span class="sd">        result = f.execute(np.ones(3,4))</span>
-
+<span class="sd">    See :doc:`../tutorials/newFilter` for detail.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="FilterInterface.execute"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.FilterInterface.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -196,17 +185,10 @@
 
 <div class="viewcode-block" id="FilterInterface.saveAsFile"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.interface.FilterInterface.saveAsFile">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save filter as file.</span>
+<span class="sd">        Save filter as file. It is recommended to use :func:`lys.filters.function.toFile` function to save filter. </span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            file(str): filename</span>
-
-<span class="sd">        Example::</span>
-
-<span class="sd">            from lys import filters</span>
-<span class="sd">            f = filters.IntegralAllFilter(axes=[0], sumtype=&quot;Sum&quot;)</span>
-<span class="sd">            f.saveAsFile(&quot;filter.fil&quot;)</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">Filters</span><span class="p">([</span><span class="bp">self</span><span class="p">])</span>
         <span class="n">f</span><span class="o">.</span><span class="n">saveAsFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div></div>

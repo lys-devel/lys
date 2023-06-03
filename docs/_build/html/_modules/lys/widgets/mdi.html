@@ -251,9 +251,9 @@
 
 <div class="viewcode-block" id="LysSubWindow"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow">[docs]</a><span class="k">class</span> <span class="nc">LysSubWindow</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMdiSubWindow</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.</span>
+<span class="sd">    *LysSubWindow* is customized QMdiSubWindow, which implement some usuful methods and signals.</span>
 
-<span class="sd">    When a *AutoSavedWindow* is instantiated, it is automatically added to current MdiArea.</span>
+<span class="sd">    When a *LysSavedWindow* is instantiated, it is automatically added to current MdiArea.</span>
 
 <span class="sd">    It is recommended to inherit this class when developers implement new sub windows in lys.</span>
 
@@ -339,6 +339,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="LysSubWindow.eventFilter"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.eventFilter">[docs]</a>    <span class="k">def</span> <span class="nf">eventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implementation of eventFilter in LysSubWindow.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">FocusIn</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">eventFilter</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span></div>
@@ -371,11 +374,16 @@
 
 <div class="viewcode-block" id="LysSubWindow.attach"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Attach *self* to *parent*</span>
+<span class="sd">        Attach this window to *parent*</span>
 
 <span class="sd">        After it is attached, the window follows the *parent* widget automatically.</span>
 
-<span class="sd">        This functionarity is usually used for several setting widgets (such as ModifyWindow of Graph), which should follow the parent (such as Graph)</span>
+<span class="sd">        This functionarity is usually used for several setting widgets, which should follow the parent (such as Graph)</span>
+
+<span class="sd">        However, in the recent release of lys, it is recommended to use sidebar instead of attached window.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent(LysSubWindow): The window to which this window is attached.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">LysSubWindow</span><span class="p">):</span>

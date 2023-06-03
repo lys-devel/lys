@@ -1,7 +1,7 @@
 MultiCutGUI
 ----------------------------------------------
 
-.. automodule:: lys.multicut.MultiCutGUI
+.. automodule:: lys.mcut.MultiCutGUI
    :members:
    :undoc-members:
    :show-inheritance:
