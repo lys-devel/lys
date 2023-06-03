@@ -60,7 +60,6 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-          <li class="breadcrumb-item"><a href="../glb.html">lys.glb</a></li>
       <li class="breadcrumb-item active">lys.glb.shell</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -91,25 +90,17 @@
 
 <span class="sd">    ExtendShell is basically singleton object. Developers should access the instance of ExtendShell from :func:`.glb.shell` function.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example::</span>
 
-<span class="sd">        Execute some commands in lys Python Interface.</span>
+<span class="sd">        from lys import glb</span>
 
-<span class="sd">        &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">        &gt;&gt;&gt; shell = glb.shell()</span>
-<span class="sd">        &gt;&gt;&gt; shell.exec(&quot;a=1&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; shell.eval(a)</span>
-<span class="sd">        1</span>
+<span class="sd">        shell = glb.shell()          # The global shell instance</span>
+<span class="sd">        shell.exec(&quot;a=1&quot;)            # Execute a command</span>
+<span class="sd">        print(shell.eval(&quot;a&quot;))       # 1, Evaluate a expression</span>
 
-<span class="sd">        Adding new function in lys Python Interface.</span>
-
-<span class="sd">        &gt;&gt;&gt; f = lambda: print(&quot;hello&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; shell.addObject(f, name = &quot;hello&quot;)</span>
-
-<span class="sd">        Import new module in lys Python Interface.</span>
-
-<span class="sd">        &gt;&gt;&gt; # define *my_module* that is used in Python Interface</span>
-<span class="sd">        &gt;&gt;&gt; shell.importModule(&quot;my_module&quot;)</span>
+<span class="sd">        f = lambda: print(&quot;hello&quot;)</span>
+<span class="sd">        shell.addObject(f, name = &quot;sayHello&quot;)  # Adding new function in lys Python Interface.</span>
+<span class="sd">        sayHello()                             # hello</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
@@ -135,13 +126,6 @@
 
 <span class="sd">        Return:</span>
 <span class="sd">            Any: Result</span>
-
-<span class="sd">        Example:</span>
-
-<span class="sd">            &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">            &gt;&gt;&gt; glb.shell().exec(&quot;a=1&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; glb.shell().eval(&quot;a&quot;)</span>
-<span class="sd">            1</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__mod</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
@@ -158,12 +142,6 @@
 <span class="sd">            expr (str): expression to be executed</span>
 <span class="sd">            save (bool): if True, *expr* is added to command log.</span>
 
-<span class="sd">        Example:</span>
-
-<span class="sd">            &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">            &gt;&gt;&gt; glb.shell().exec(&quot;a=1&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; glb.shell().eval(&quot;a&quot;)</span>
-<span class="sd">            1</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__mod</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
@@ -182,9 +160,11 @@
 <span class="sd">        Args:</span>
 <span class="sd">            module(str): module to be loaded.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">            &gt;&gt;&gt; glb.shell().importModule(&quot;time&quot;)</span>
+<span class="sd">        Example::</span>
+
+<span class="sd">            from lys import glb</span>
+<span class="sd">            glb.shell().importModule(&quot;time&quot;)</span>
+<span class="sd">            print(time.time())</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__mod</span><span class="o">.</span><span class="n">importModule</span><span class="p">(</span><span class="n">module</span><span class="p">)</span></div>
@@ -200,9 +180,11 @@
 <span class="sd">        Args:</span>
 <span class="sd">            module(str): module to be loaded.</span>
 
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">            &gt;&gt;&gt; glb.shell().importAll(&quot;time&quot;)</span>
+<span class="sd">        Example::</span>
+
+<span class="sd">            from lys import glb</span>
+<span class="sd">            glb.shell().importAll(&quot;time&quot;)</span>
+<span class="sd">            print(time())</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__mod</span><span class="o">.</span><span class="n">importModule</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">importAll</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
@@ -213,7 +195,7 @@
 
 <div class="viewcode-block" id="ExtendShell.addObject"><a class="viewcode-back" href="../../../lys_/glb.html#lys.glb.shell.ExtendShell.addObject">[docs]</a>    <span class="k">def</span> <span class="nf">addObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">printResult</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Add object to shell.</span>
+<span class="sd">        Add an object to shell.</span>
 
 <span class="sd">        *name* represents name of object on shell.</span>
 <span class="sd">        If None, obj.__name__ and obj.name is used as a name.</span>
@@ -225,6 +207,17 @@
 <span class="sd">            obj(any): object to be loaded</span>
 <span class="sd">            name(str): name of object</span>
 <span class="sd">            printResult(bool): If True, message is printed after loading.</span>
+
+<span class="sd">        Retruns:</span>
+<span class="sd">            str: The name of the object added.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            from lys import glb</span>
+<span class="sd">            name = glb.shell().addObject(&quot;test&quot;, name=&quot;a&quot;)</span>
+<span class="sd">            instance = eval(name)   # Since the name may be changed from &#39;a&#39; to avoid conflict.</span>
+<span class="sd">            print(instance)         # test</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">):</span>
@@ -236,7 +229,8 @@
         <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__GetValidName</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span>
         <span class="k">if</span> <span class="n">printResult</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;is added to shell.&quot;</span><span class="p">)</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;is added to shell.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">commandLog</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -254,6 +248,8 @@
 <span class="sd">        Global dictionary of shell.</span>
 
 <span class="sd">        This is useful when developers want to access local variables in Python Interface.</span>
+
+<span class="sd">        It is recommended to use :meth:`addObject` to add an object in shell.</span>
 
 <span class="sd">        Return:</span>
 <span class="sd">            dict: Global dictionary of shell</span>

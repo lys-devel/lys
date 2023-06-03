@@ -3,9 +3,9 @@
 
 Functions related to global variables, such as main window, are given in :mod:`.glb` module.
 
-Most of functions can be directly imported from lys Package:
+Most of functions can be directly imported from lys Package::
 
->>> from lys import home
+    from lys import home
 """
 
 import os
@@ -47,11 +47,18 @@ def load(file, *args, **kwargs):
     Return:
         Any: return value depends on file type
 
-    Example:
-        >>> from lys import load
-        >>> w = load("wave.npz")
-        >>> type(w)
-        <lys.core.Wave>
+    Example::
+
+        import numpy as np
+        from lys import load, registerFileLoader, loadableFiles
+
+        np.savetxt("data.txt", np.array([1,2]))  # prepare txt file
+
+        registerFileLoader(".txt", np.loadtxt)   # Add file loader for .txt file using numpy.loadtxt.
+        print(loadableFiles())                   # List of loadable files, including .txt
+
+        arr = load("data.txt")                   # After registration, :func:`load` function can load .txt files as numpy array.
+        print(type(arr))                         # <class 'numpy.ndarray'>
 
     See also:
          :func:`registerFileLoader`, :func:`loadableFiles`
@@ -72,14 +79,10 @@ def loadableFiles():
     Returns list of extensions loadable by :func:`load`.
 
     Return:
-        list of str: list of extensions
+        list of str: List of extensions
 
-    Example:
-        >>> from lys import loadableFiles
-        >>> loadableFiles()
-        [".npz", ".png", ".tif", "jpg", ".grf", ".dic"]
     """
-    return _dic.keys()
+    return list(_dic.keys())
 
 
 def registerFileLoader(type, func):
@@ -93,20 +96,6 @@ def registerFileLoader(type, func):
     Args:
         type (str): file extention, such as ".txt"
         func (function): function to load file.
-
-    Example:
-        Add file loader for .txt file using numpy.loadtxt.
-
-        >>> import numpy as np
-        >>> from lys import registerFileLoader
-        >>> registerFileLoader(".txt", np.loadtxt)
-
-        After executing above commands, :func:`load` function can load .txt files as numpy array.
-
-        >>> from lys import load
-        >>> arr = load("data.txt")
-        >>> type(arr)
-        numpy.ndarray
     """
     _dic[type] = func
 
@@ -118,7 +107,7 @@ def registerFittingFunction(func, name=None):
     The fitting can be started when Ctrl+F is pressed on the graphs with 1D data.
 
     Args:
-        func(callable): The function. The information of the function should be obtained from inspect.signature.
+        func(callable): The function.
         name(str): The name of the function. If it is None, then func.__name__ is used.
     """
     from .fitting import addFittingFunction
@@ -171,9 +160,9 @@ def display(*args, lib=None, **kwargs):
     Display Waves as graph.
 
     Args:
-        args: The waves to be added. If the item is not Wave, then it is automatically converted to Wave.
+        args(list of Wave or arraylike): The waves to be added. If the item is not Wave, then it is automatically converted to Wave.
         lib ('matplotlib' or 'pyqtgraph'): The library used to create canvas. 
-        kwargs: The keywords arguments that is passed to Append method of canvas.
+        kwargs: The keywords arguments that is passed to Append method of canvas. Typically vector=True and contour=True is specified to show vector and contour plots. 
 
     Returns:
         Graph: The graph that contains the waves.
@@ -189,7 +178,7 @@ def append(*args, canvas=None, exclude=[], **kwargs):
     Append waves to the front canvas. 
 
     Args:
-        args: The waves to be added. If the item is not Wave, then it is automatically converted to Wave.
+        args(list of Wave or arraylike): The waves to be added. If the item is not Wave, then it is automatically converted to Wave.
         canvas (CanvasBase): The canvas to which the wave are appended. If canvas is None, then front canvas is used.
         exclude (list of canvas): If the front canvas is in *exclude*, then it is ignored and next canvas is used.
         kwargs: The keywords arguments that is passed to Append method of canvas.

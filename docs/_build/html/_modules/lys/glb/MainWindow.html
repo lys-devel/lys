@@ -60,7 +60,6 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-          <li class="breadcrumb-item"><a href="../glb.html">lys.glb</a></li>
       <li class="breadcrumb-item active">lys.glb.MainWindow</li>
       <li class="wy-breadcrumbs-aside">
       </li>
@@ -89,9 +88,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    *Main window* class gives several methods to customize lys GUI.</span>
 
-<span class="sd">    New tabs in side bar can be added by :meth:`addTab` method.</span>
+<span class="sd">    Tabs can be customized by :meth:`tabWidget` method.</span>
 
 <span class="sd">    Developers can access :class:`lys.widgets.fileView.FileSystemView` by :attr:`fileView` property.</span>
+
+<span class="sd">    Do not instanciate this class because it is automatically done by lys.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">beforeClosed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -101,23 +102,20 @@
 
 <span class="sd">    If the main window should not be closed, call event.ignore() in the connected functions/methods.</span>
 
-<span class="sd">    Example:</span>
+<span class="sd">    Example::</span>
 
-<span class="sd">        &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">        &gt;&gt;&gt; main = glb.mainWindow()</span>
-<span class="sd">        &gt;&gt;&gt; main.beforeClosed.connect(lambda event: print(&quot;Main window closed.&quot;))</span>
+<span class="sd">        from lys import glb</span>
+<span class="sd">        glb.mainWindow().beforeClosed.connect(lambda event: print(&quot;Main window closed.&quot;))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">closed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    beforeClosed(event) signal is submitted when main window of lys is closed.</span>
+<span class="sd">    closed(event) signal is emitted when main window of lys is closed.</span>
 
-<span class="sd">    Developers can connect any functions/methods to this signal for finalization.</span>
+<span class="sd">    Example::</span>
 
-<span class="sd">    Example:</span>
-
-<span class="sd">        &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">        &gt;&gt;&gt; main = glb.mainWindow()</span>
-<span class="sd">        &gt;&gt;&gt; main.closed.connect(lambda: print(&quot;Main window closed.&quot;))</span>
+<span class="sd">        from lys import glb</span>
+<span class="sd">        glb.mainWindow().closed.connect(lambda: print(&quot;Main window closed.&quot;))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">restore</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -283,7 +281,7 @@
 
 <div class="viewcode-block" id="MainWindow.tabWidget"><a class="viewcode-back" href="../../../lys_/glb.html#lys.glb.MainWindow.MainWindow.tabWidget">[docs]</a>    <span class="k">def</span> <span class="nf">tabWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get tab widget.</span>
+<span class="sd">        Get tab widget that is located at the right and bottom of the main window.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            position(&#39;right&#39; or &#39;bottom&#39;)</span>
@@ -310,6 +308,9 @@
 <div class="viewcode-block" id="MainWindow.closeAllGraphs"><a class="viewcode-back" href="../../../lys_/glb.html#lys.glb.MainWindow.MainWindow.closeAllGraphs">[docs]</a>    <span class="k">def</span> <span class="nf">closeAllGraphs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Close all graphs in the workspace.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            workspace(str): The name of the workspace to close all graphs. If it is None, present workspace is selected.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mdiArea</span><span class="p">(</span><span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span><span class="o">.</span><span class="n">subWindowList</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMdiArea</span><span class="o">.</span><span class="n">ActivationHistoryOrder</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>

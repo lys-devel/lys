@@ -83,7 +83,7 @@
 
 <div class="viewcode-block" id="FileSystemView"><a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView">[docs]</a><span class="k">class</span> <span class="nc">FileSystemView</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    *FileSystemView* is a custom widget to see files in lys, which is mainly used in main window.</span>
+<span class="sd">    *FileSystemView* is a custom widget to see files, which is mainly used in main window.</span>
 
 <span class="sd">    Developers can get selected paths by :meth:`selectedPaths` method.</span>
 <span class="sd">    Context menu for specified type can be registered by :meth:`registerFileMenu` method.</span>
@@ -96,7 +96,6 @@
 <span class="sd">        drop(bool): Accept drag &amp; drop or not.</span>
 <span class="sd">        filter(bool): Enable filtering or not.</span>
 <span class="sd">        menu(bool): Enable context menu or not.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">selectionChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span>
@@ -175,12 +174,11 @@
 <span class="sd">        Return:</span>
 <span class="sd">            list of str: paths selected</span>
 
-<span class="sd">        Example:</span>
+<span class="sd">        Example::</span>
 
-<span class="sd">            &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">            &gt;&gt;&gt; view = glb.mainWindow().fileView     # access global fileview in main window.</span>
-<span class="sd">            &gt;&gt;&gt; view.selectedPaths()</span>
-<span class="sd">            [&quot;path selected&quot;, &quot;path selected2, ...&quot;]</span>
+<span class="sd">            from lys import glb</span>
+<span class="sd">            view = glb.mainWindow().fileView     # access global fileview in main window.</span>
+<span class="sd">            view.selectedPaths()                 # [&quot;path selected&quot;, &quot;path selected2, ...&quot;]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">selectedIndexes</span><span class="p">()</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
@@ -198,14 +196,17 @@
 <span class="sd">            menu(QMenu): context menu to be added.</span>
 <span class="sd">            add_default: if True, default menus such as Cut, Copy is automatically added at the end of menu.</span>
 
-<span class="sd">        Example:</span>
+<span class="sd">        Example::</span>
 
-<span class="sd">            &gt;&gt;&gt; from lys import glb</span>
-<span class="sd">            &gt;&gt;&gt; view = glb.mainWindow().fileView     # access global fileview in main window.</span>
-<span class="sd">            &gt;&gt;&gt; menu = QMenu()</span>
-<span class="sd">            &gt;&gt;&gt; action = QAction(&quot;Print&quot;, triggered = lambda: print(&quot;test&quot;))</span>
-<span class="sd">            &gt;&gt;&gt; menu.addAction(action)</span>
-<span class="sd">            &gt;&gt;&gt; view.registerFileMenu(&quot;.txt&quot;, menu)</span>
+<span class="sd">            from lys import glb</span>
+<span class="sd">            from lys.Qt import QtWidgets</span>
+
+<span class="sd">            action = QtWidgets.QAction(&quot;Test&quot;, triggered = lambda: print(&quot;test&quot;))</span>
+<span class="sd">            menu = QtWidgets.QMenu()</span>
+<span class="sd">            menu.addAction(action)</span>
+
+<span class="sd">            view = glb.mainWindow().fileView     # access global fileview in main window.</span>
+<span class="sd">            view.registerFileMenu(&quot;.txt&quot;, menu)  # By right clicking .txt file, you see &#39;test&#39; menu.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_builder</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">add_default</span><span class="o">=</span><span class="n">add_default</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 

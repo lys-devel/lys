@@ -49,16 +49,6 @@
 <li class="toctree-l2"><a class="reference internal" href="core.html">core module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="functions.html">functions module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">glb module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-lys.glb">Functions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#lys.glb.createMainWindow"><code class="docutils literal notranslate"><span class="pre">createMainWindow()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lys.glb.editCanvas"><code class="docutils literal notranslate"><span class="pre">editCanvas()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lys.glb.editMulticut"><code class="docutils literal notranslate"><span class="pre">editMulticut()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lys.glb.editTable"><code class="docutils literal notranslate"><span class="pre">editTable()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lys.glb.mainWindow"><code class="docutils literal notranslate"><span class="pre">mainWindow()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lys.glb.restoreWorkspaces"><code class="docutils literal notranslate"><span class="pre">restoreWorkspaces()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#lys.glb.shell"><code class="docutils literal notranslate"><span class="pre">shell()</span></code></a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-lys.glb.shell">Shell</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#lys.glb.shell.ExtendShell"><code class="docutils literal notranslate"><span class="pre">ExtendShell</span></code></a></li>
 </ul>
@@ -104,84 +94,7 @@
              
   <section id="glb-module">
 <h1>glb module<a class="headerlink" href="#glb-module" title="Permalink to this heading"></a></h1>
-<section id="module-lys.glb">
-<span id="functions"></span><h2>Functions<a class="headerlink" href="#module-lys.glb" title="Permalink to this heading"></a></h2>
-<p><em>glb</em> module gives global variables such as a instance of main window.</p>
-<p>Functions used by general users are given in <a class="reference internal" href="functions.html#module-lys.functions" title="lys.functions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">functions</span></code></a> module.</p>
-<p>All global variables can NOT be directly imported from lys because these are used only by developers.</p>
-<p>Developers should import lys.glb module to access global variables</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span>
-</pre></div>
-</div>
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.glb.createMainWindow">
-<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">createMainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#createMainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.createMainWindow" title="Permalink to this definition"></a></dt>
-<dd><p>Create main window.</p>
-<p>This function is called by lys automatically, and thus users and developers need not to use this function.</p>
-<p>If you want to make custom launch script of lys, see <code class="xref py py-mod docutils literal notranslate"><span class="pre">__main__</span></code> module.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.glb.editCanvas">
-<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">editCanvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#editCanvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.editCanvas" title="Permalink to this definition"></a></dt>
-<dd><p>Edit canvas by GUI.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>canvas</strong> – The canvas to be edited.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.glb.editMulticut">
-<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">editMulticut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mcut</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#editMulticut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.editMulticut" title="Permalink to this definition"></a></dt>
-<dd><p>Open multicut by GUI.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>mcut</strong> – The MuletiCut object.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.glb.editTable">
-<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">editTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#editTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.editTable" title="Permalink to this definition"></a></dt>
-<dd><p>Edit table by GUI.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>table</strong> – The table to be edited.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.glb.mainWindow">
-<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">mainWindow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#mainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.mainWindow" title="Permalink to this definition"></a></dt>
-<dd><p>Return <a class="reference internal" href="#lys.glb.MainWindow.MainWindow" title="lys.glb.MainWindow.MainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">MainWindow.MainWindow</span></code></a> object.</p>
-<p><em>MainWindow</em> is used to realize new GUI functionalities in lys.
-See <a class="reference internal" href="#lys.glb.MainWindow.MainWindow" title="lys.glb.MainWindow.MainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">MainWindow.MainWindow</span></code></a> for detailed description.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.glb.restoreWorkspaces">
-<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">restoreWorkspaces</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#restoreWorkspaces"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.restoreWorkspaces" title="Permalink to this definition"></a></dt>
-<dd><p>Restore workspaces.</p>
-<p>This function is called by lys automatically, and thus users and developers need not to use this function.</p>
-<p>If you want to make custom launch script of lys, see <code class="xref py py-mod docutils literal notranslate"><span class="pre">__main__</span></code> module.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lys.glb.shell">
-<span class="sig-prename descclassname"><span class="pre">lys.glb.</span></span><span class="sig-name descname"><span class="pre">shell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb.html#shell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.shell" title="Permalink to this definition"></a></dt>
-<dd><p>Return <a class="reference internal" href="#lys.glb.shell.ExtendShell" title="lys.glb.shell.ExtendShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">shell.ExtendShell</span></code></a> object.</p>
-<p>ExtendShell object is used to realize new functionalities in lys Python Interface.
-See <a class="reference internal" href="#lys.glb.shell.ExtendShell" title="lys.glb.shell.ExtendShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">shell.ExtendShell</span></code></a> for detailed description.</p>
-</dd></dl>
-
-</section>
+<p>Developers can access global shell and main window from this module.</p>
 <section id="module-lys.glb.shell">
 <span id="shell"></span><h2>Shell<a class="headerlink" href="#module-lys.glb.shell" title="Permalink to this heading"></a></h2>
 <dl class="py class">
@@ -193,29 +106,22 @@ See <a class="reference internal" href="#lys.glb.shell.ExtendShell" title="lys.g
 <p>Any expression can be executed and evaluated by <a class="reference internal" href="#lys.glb.shell.ExtendShell.exec" title="lys.glb.shell.ExtendShell.exec"><code class="xref py py-func docutils literal notranslate"><span class="pre">exec()</span></code></a> and <a class="reference internal" href="#lys.glb.shell.ExtendShell.eval" title="lys.glb.shell.ExtendShell.eval"><code class="xref py py-func docutils literal notranslate"><span class="pre">eval()</span></code></a> functions.
 Any object can be added by <a class="reference internal" href="#lys.glb.shell.ExtendShell.addObject" title="lys.glb.shell.ExtendShell.addObject"><code class="xref py py-func docutils literal notranslate"><span class="pre">addObject()</span></code></a></p>
 <p>ExtendShell is basically singleton object. Developers should access the instance of ExtendShell from <code class="xref py py-func docutils literal notranslate"><span class="pre">glb.shell()</span></code> function.</p>
-<p class="rubric">Example</p>
-<p>Execute some commands in lys Python Interface.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;a=1&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="go">1</span>
-</pre></div>
-</div>
-<p>Adding new function in lys Python Interface.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;hello&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Import new module in lys Python Interface.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># define *my_module* that is used in Python Interface</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">shell</span><span class="o">.</span><span class="n">importModule</span><span class="p">(</span><span class="s2">&quot;my_module&quot;</span><span class="p">)</span>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+
+<span class="n">shell</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span>          <span class="c1"># The global shell instance</span>
+<span class="n">shell</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;a=1&quot;</span><span class="p">)</span>            <span class="c1"># Execute a command</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">))</span>       <span class="c1"># 1, Evaluate a expression</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hello&quot;</span><span class="p">)</span>
+<span class="n">shell</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;sayHello&quot;</span><span class="p">)</span>  <span class="c1"># Adding new function in lys Python Interface.</span>
+<span class="n">sayHello</span><span class="p">()</span>                             <span class="c1"># hello</span>
 </pre></div>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.glb.shell.ExtendShell.addObject">
 <span class="sig-name descname"><span class="pre">addObject</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">printResult</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb/shell.html#ExtendShell.addObject"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.shell.ExtendShell.addObject" title="Permalink to this definition"></a></dt>
-<dd><p>Add object to shell.</p>
+<dd><p>Add an object to shell.</p>
 <p><em>name</em> represents name of object on shell.
 If None, obj.__name__ and obj.name is used as a name.
 If both methods are not defined, object is loaded as default name “obj”.</p>
@@ -229,6 +135,17 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 </ul>
 </dd>
 </dl>
+<dl class="simple">
+<dt>Retruns:</dt><dd><p>str: The name of the object added.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="n">name</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="n">instance</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>   <span class="c1"># Since the name may be changed from &#39;a&#39; to avoid conflict.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>         <span class="c1"># test</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py attribute">
@@ -256,6 +173,7 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dict</span></span><a class="headerlink" href="#lys.glb.shell.ExtendShell.dict" title="Permalink to this definition"></a></dt>
 <dd><p>Global dictionary of shell.</p>
 <p>This is useful when developers want to access local variables in Python Interface.</p>
+<p>It is recommended to use <a class="reference internal" href="#lys.glb.shell.ExtendShell.addObject" title="lys.glb.shell.ExtendShell.addObject"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addObject()</span></code></a> to add an object in shell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Global dictionary of shell</p>
@@ -284,13 +202,6 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 <dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;a=1&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
-<span class="go">1</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -305,13 +216,6 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;a=1&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
-<span class="go">1</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py method">
@@ -325,9 +229,10 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 <dd class="field-odd"><p><strong>module</strong> (<em>str</em>) – module to be loaded.</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">importAll</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">importAll</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="p">())</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -343,9 +248,10 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 <dd class="field-odd"><p><strong>module</strong> (<em>str</em>) – module to be loaded.</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">importModule</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span><span class="o">.</span><span class="n">importModule</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -366,18 +272,18 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.glb.MainWindow.</span></span><span class="sig-name descname"><span class="pre">MainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb/MainWindow.html#MainWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.MainWindow.MainWindow" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMainWindow</span></code></p>
 <p><em>Main window</em> class gives several methods to customize lys GUI.</p>
-<p>New tabs in side bar can be added by <code class="xref py py-meth docutils literal notranslate"><span class="pre">addTab()</span></code> method.</p>
+<p>Tabs can be customized by <a class="reference internal" href="#lys.glb.MainWindow.MainWindow.tabWidget" title="lys.glb.MainWindow.MainWindow.tabWidget"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tabWidget()</span></code></a> method.</p>
 <p>Developers can access <a class="reference internal" href="widgets/fileview.html#lys.widgets.fileView.FileSystemView" title="lys.widgets.fileView.FileSystemView"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.fileView.FileSystemView</span></code></a> by <a class="reference internal" href="#lys.glb.MainWindow.MainWindow.fileView" title="lys.glb.MainWindow.MainWindow.fileView"><code class="xref py py-attr docutils literal notranslate"><span class="pre">fileView</span></code></a> property.</p>
+<p>Do not instanciate this class because it is automatically done by lys.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.glb.MainWindow.MainWindow.beforeClosed">
 <span class="sig-name descname"><span class="pre">beforeClosed</span></span><a class="headerlink" href="#lys.glb.MainWindow.MainWindow.beforeClosed" title="Permalink to this definition"></a></dt>
 <dd><p>beforeClosed(event) signal is emitted when close button of lys is clicked.</p>
 <p>Developers can connect any functions/methods to this signal.</p>
 <p>If the main window should not be closed, call event.ignore() in the connected functions/methods.</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="o">.</span><span class="n">beforeClosed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Main window closed.&quot;</span><span class="p">))</span>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">beforeClosed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span> <span class="n">event</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Main window closed.&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -386,6 +292,11 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 <dt class="sig sig-object py" id="lys.glb.MainWindow.MainWindow.closeAllGraphs">
 <span class="sig-name descname"><span class="pre">closeAllGraphs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">workspace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb/MainWindow.html#MainWindow.closeAllGraphs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.MainWindow.MainWindow.closeAllGraphs" title="Permalink to this definition"></a></dt>
 <dd><p>Close all graphs in the workspace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>workspace</strong> (<em>str</em>) – The name of the workspace to close all graphs. If it is None, present workspace is selected.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -397,12 +308,10 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.glb.MainWindow.MainWindow.closed">
 <span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#lys.glb.MainWindow.MainWindow.closed" title="Permalink to this definition"></a></dt>
-<dd><p>beforeClosed(event) signal is submitted when main window of lys is closed.</p>
-<p>Developers can connect any functions/methods to this signal for finalization.</p>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Main window closed.&quot;</span><span class="p">))</span>
+<dd><p>closed(event) signal is emitted when main window of lys is closed.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Main window closed.&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -418,7 +327,7 @@ If both methods are not defined, object is loaded as default name “obj”.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.glb.MainWindow.MainWindow.tabWidget">
 <span class="sig-name descname"><span class="pre">tabWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/glb/MainWindow.html#MainWindow.tabWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.glb.MainWindow.MainWindow.tabWidget" title="Permalink to this definition"></a></dt>
-<dd><p>Get tab widget.</p>
+<dd><p>Get tab widget that is located at the right and bottom of the main window.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>position</strong> (<em>'right'</em><em> or </em><em>'bottom'</em>) – </p>

@@ -179,9 +179,9 @@ class _TitleProxyStyle(QtWidgets.QProxyStyle):
 
 class LysSubWindow(QtWidgets.QMdiSubWindow):
     """
-    LysSubWindow is customized QMdiSubWindow, which implement some usuful methods and signals.
+    *LysSubWindow* is customized QMdiSubWindow, which implement some usuful methods and signals.
 
-    When a *AutoSavedWindow* is instantiated, it is automatically added to current MdiArea.
+    When a *LysSavedWindow* is instantiated, it is automatically added to current MdiArea.
 
     It is recommended to inherit this class when developers implement new sub windows in lys.
 
@@ -267,6 +267,9 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
         self.update()
 
     def eventFilter(self, object, event):
+        """
+        Implementation of eventFilter in LysSubWindow.
+        """
         if event.type() == QtCore.QEvent.FocusIn:
             self.focused.emit()
         return super().eventFilter(object, event)
@@ -299,11 +302,16 @@ class LysSubWindow(QtWidgets.QMdiSubWindow):
 
     def attach(self, parent):
         """
-        Attach *self* to *parent*
+        Attach this window to *parent*
 
         After it is attached, the window follows the *parent* widget automatically.
 
-        This functionarity is usually used for several setting widgets (such as ModifyWindow of Graph), which should follow the parent (such as Graph)
+        This functionarity is usually used for several setting widgets, which should follow the parent (such as Graph)
+
+        However, in the recent release of lys, it is recommended to use sidebar instead of attached window.
+
+        Args:
+            parent(LysSubWindow): The window to which this window is attached.
         """
         self._parent = parent
         if isinstance(parent, LysSubWindow):

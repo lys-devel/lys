@@ -11,7 +11,7 @@ from lys.Qt import QtWidgets, QtCore, QtGui
 
 class FileSystemView(QtWidgets.QWidget):
     """
-    *FileSystemView* is a custom widget to see files in lys, which is mainly used in main window.
+    *FileSystemView* is a custom widget to see files, which is mainly used in main window.
 
     Developers can get selected paths by :meth:`selectedPaths` method.
     Context menu for specified type can be registered by :meth:`registerFileMenu` method.
@@ -24,7 +24,6 @@ class FileSystemView(QtWidgets.QWidget):
         drop(bool): Accept drag & drop or not.
         filter(bool): Enable filtering or not.
         menu(bool): Enable context menu or not.
-
     """
 
     selectionChanged = QtCore.pyqtSignal(object, object)
@@ -103,12 +102,11 @@ class FileSystemView(QtWidgets.QWidget):
         Return:
             list of str: paths selected
 
-        Example:
+        Example::
 
-            >>> from lys import glb
-            >>> view = glb.mainWindow().fileView     # access global fileview in main window.
-            >>> view.selectedPaths()
-            ["path selected", "path selected2, ..."]
+            from lys import glb
+            view = glb.mainWindow().fileView     # access global fileview in main window.
+            view.selectedPaths()                 # ["path selected", "path selected2, ..."]
         """
         list = self._tree.selectedIndexes()
         res = []
@@ -126,14 +124,17 @@ class FileSystemView(QtWidgets.QWidget):
             menu(QMenu): context menu to be added.
             add_default: if True, default menus such as Cut, Copy is automatically added at the end of menu.
 
-        Example:
+        Example::
 
-            >>> from lys import glb
-            >>> view = glb.mainWindow().fileView     # access global fileview in main window.
-            >>> menu = QMenu()
-            >>> action = QAction("Print", triggered = lambda: print("test"))
-            >>> menu.addAction(action)
-            >>> view.registerFileMenu(".txt", menu)
+            from lys import glb
+            from lys.Qt import QtWidgets
+
+            action = QtWidgets.QAction("Test", triggered = lambda: print("test"))
+            menu = QtWidgets.QMenu()
+            menu.addAction(action)
+
+            view = glb.mainWindow().fileView     # access global fileview in main window.
+            view.registerFileMenu(".txt", menu)  # By right clicking .txt file, you see 'test' menu.
         """
         self._builder.register(ext, menu, add_default=add_default, **kwargs)
 

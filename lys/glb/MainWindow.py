@@ -16,9 +16,11 @@ class MainWindow(QtWidgets.QMainWindow):
     """
     *Main window* class gives several methods to customize lys GUI.
 
-    New tabs in side bar can be added by :meth:`addTab` method.
+    Tabs can be customized by :meth:`tabWidget` method.
 
     Developers can access :class:`lys.widgets.fileView.FileSystemView` by :attr:`fileView` property.
+
+    Do not instanciate this class because it is automatically done by lys.
     """
     beforeClosed = QtCore.pyqtSignal(QtCore.QEvent)
     """
@@ -28,23 +30,20 @@ class MainWindow(QtWidgets.QMainWindow):
 
     If the main window should not be closed, call event.ignore() in the connected functions/methods.
 
-    Example:
+    Example::
 
-        >>> from lys import glb
-        >>> main = glb.mainWindow()
-        >>> main.beforeClosed.connect(lambda event: print("Main window closed."))
+        from lys import glb
+        glb.mainWindow().beforeClosed.connect(lambda event: print("Main window closed."))
     """
+
     closed = QtCore.pyqtSignal()
     """
-    beforeClosed(event) signal is submitted when main window of lys is closed.
+    closed(event) signal is emitted when main window of lys is closed.
 
-    Developers can connect any functions/methods to this signal for finalization.
+    Example::
 
-    Example:
-
-        >>> from lys import glb
-        >>> main = glb.mainWindow()
-        >>> main.closed.connect(lambda: print("Main window closed."))
+        from lys import glb
+        glb.mainWindow().closed.connect(lambda: print("Main window closed."))
     """
 
     def __init__(self, show=True, restore=False):
@@ -210,7 +209,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def tabWidget(self, position):
         """
-        Get tab widget.
+        Get tab widget that is located at the right and bottom of the main window.
 
         Args:
             position('right' or 'bottom')
@@ -237,6 +236,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def closeAllGraphs(self, workspace=None):
         """
         Close all graphs in the workspace.
+
+        Args:
+            workspace(str): The name of the workspace to close all graphs. If it is None, present workspace is selected.
         """
         list = self._mdiArea(workspace=workspace).subWindowList(order=QtWidgets.QMdiArea.ActivationHistoryOrder)
         for item in reversed(list):

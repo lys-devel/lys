@@ -99,7 +99,7 @@
 <dt class="sig sig-object py" id="lys.widgets.fileView.FileSystemView">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.fileView.</span></span><span class="sig-name descname"><span class="pre">FileSystemView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model=&lt;PyQt5.QtWidgets.QFileSystemModel</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">menu=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/fileView.html#FileSystemView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.fileView.FileSystemView" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
-<p><em>FileSystemView</em> is a custom widget to see files in lys, which is mainly used in main window.</p>
+<p><em>FileSystemView</em> is a custom widget to see files, which is mainly used in main window.</p>
 <p>Developers can get selected paths by <a class="reference internal" href="#lys.widgets.fileView.FileSystemView.selectedPaths" title="lys.widgets.fileView.FileSystemView.selectedPaths"><code class="xref py py-meth docutils literal notranslate"><span class="pre">selectedPaths()</span></code></a> method.
 Context menu for specified type can be registered by <a class="reference internal" href="#lys.widgets.fileView.FileSystemView.registerFileMenu" title="lys.widgets.fileView.FileSystemView.registerFileMenu"><code class="xref py py-meth docutils literal notranslate"><span class="pre">registerFileMenu()</span></code></a> method.</p>
 <p>See <a class="reference internal" href="#lys.widgets.fileView.FileSystemView.selectedPaths" title="lys.widgets.fileView.FileSystemView.selectedPaths"><code class="xref py py-meth docutils literal notranslate"><span class="pre">selectedPaths()</span></code></a> and <a class="reference internal" href="#lys.widgets.fileView.FileSystemView.registerFileMenu" title="lys.widgets.fileView.FileSystemView.registerFileMenu"><code class="xref py py-meth docutils literal notranslate"><span class="pre">registerFileMenu()</span></code></a> for detail and examples</p>
@@ -127,13 +127,16 @@ Context menu for specified type can be registered by <a class="reference interna
 </ul>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">fileView</span>     <span class="c1"># access global fileview in main window.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">menu</span> <span class="o">=</span> <span class="n">QMenu</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">action</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Print&quot;</span><span class="p">,</span> <span class="n">triggered</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">registerFileMenu</span><span class="p">(</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="n">menu</span><span class="p">)</span>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
+
+<span class="n">action</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s2">&quot;Test&quot;</span><span class="p">,</span> <span class="n">triggered</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">))</span>
+<span class="n">menu</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenu</span><span class="p">()</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+<span class="n">view</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">fileView</span>     <span class="c1"># access global fileview in main window.</span>
+<span class="n">view</span><span class="o">.</span><span class="n">registerFileMenu</span><span class="p">(</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="n">menu</span><span class="p">)</span>  <span class="c1"># By right clicking .txt file, you see &#39;test&#39; menu.</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -164,11 +167,10 @@ Context menu for specified type can be registered by <a class="reference interna
 <dd class="field-even"><p>list of str</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">fileView</span>     <span class="c1"># access global fileview in main window.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">selectedPaths</span><span class="p">()</span>
-<span class="go">[&quot;path selected&quot;, &quot;path selected2, ...&quot;]</span>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="n">view</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">fileView</span>     <span class="c1"># access global fileview in main window.</span>
+<span class="n">view</span><span class="o">.</span><span class="n">selectedPaths</span><span class="p">()</span>                 <span class="c1"># [&quot;path selected&quot;, &quot;path selected2, ...&quot;]</span>
 </pre></div>
 </div>
 </dd></dl>

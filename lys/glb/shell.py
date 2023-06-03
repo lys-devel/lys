@@ -18,25 +18,17 @@ class ExtendShell(QtCore.QObject):
 
     ExtendShell is basically singleton object. Developers should access the instance of ExtendShell from :func:`.glb.shell` function.
 
-    Example:
+    Example::
 
-        Execute some commands in lys Python Interface.
+        from lys import glb
 
-        >>> from lys import glb
-        >>> shell = glb.shell()
-        >>> shell.exec("a=1")
-        >>> shell.eval(a)
-        1
+        shell = glb.shell()          # The global shell instance
+        shell.exec("a=1")            # Execute a command
+        print(shell.eval("a"))       # 1, Evaluate a expression
 
-        Adding new function in lys Python Interface.
-
-        >>> f = lambda: print("hello")
-        >>> shell.addObject(f, name = "hello")
-
-        Import new module in lys Python Interface.
-
-        >>> # define *my_module* that is used in Python Interface
-        >>> shell.importModule("my_module")
+        f = lambda: print("hello")
+        shell.addObject(f, name = "sayHello")  # Adding new function in lys Python Interface.
+        sayHello()                             # hello
 
     """
     _instance = None
@@ -62,13 +54,6 @@ class ExtendShell(QtCore.QObject):
 
         Return:
             Any: Result
-
-        Example:
-
-            >>> from lys import glb
-            >>> glb.shell().exec("a=1")
-            >>> glb.shell().eval("a")
-            1
         """
         self.__mod.reload()
         if save:
@@ -85,12 +70,6 @@ class ExtendShell(QtCore.QObject):
             expr (str): expression to be executed
             save (bool): if True, *expr* is added to command log.
 
-        Example:
-
-            >>> from lys import glb
-            >>> glb.shell().exec("a=1")
-            >>> glb.shell().eval("a")
-            1
         """
         self.__mod.reload()
         if save:
@@ -109,9 +88,11 @@ class ExtendShell(QtCore.QObject):
         Args:
             module(str): module to be loaded.
 
-        Example:
-            >>> from lys import glb
-            >>> glb.shell().importModule("time")
+        Example::
+
+            from lys import glb
+            glb.shell().importModule("time")
+            print(time.time())
 
         """
         self.__mod.importModule(module)
@@ -127,9 +108,11 @@ class ExtendShell(QtCore.QObject):
         Args:
             module(str): module to be loaded.
 
-        Example:
-            >>> from lys import glb
-            >>> glb.shell().importAll("time")
+        Example::
+
+            from lys import glb
+            glb.shell().importAll("time")
+            print(time())
 
         """
         self.__mod.importModule(module, importAll=True)
@@ -140,7 +123,7 @@ class ExtendShell(QtCore.QObject):
 
     def addObject(self, obj, name=None, printResult=True):
         """
-        Add object to shell.
+        Add an object to shell.
 
         *name* represents name of object on shell.
         If None, obj.__name__ and obj.name is used as a name.
@@ -152,6 +135,17 @@ class ExtendShell(QtCore.QObject):
             obj(any): object to be loaded
             name(str): name of object
             printResult(bool): If True, message is printed after loading.
+
+        Retruns:
+            str: The name of the object added.
+
+        Example::
+
+            from lys import glb
+            name = glb.shell().addObject("test", name="a")
+            instance = eval(name)   # Since the name may be changed from 'a' to avoid conflict.
+            print(instance)         # test
+
         """
         if name is None:
             if hasattr(obj, "__name__"):
@@ -164,6 +158,7 @@ class ExtendShell(QtCore.QObject):
         self.__dict[name] = obj
         if printResult:
             print(name, "is added to shell.")
+        return name
 
     @property
     def commandLog(self):
@@ -181,6 +176,8 @@ class ExtendShell(QtCore.QObject):
         Global dictionary of shell.
 
         This is useful when developers want to access local variables in Python Interface.
+
+        It is recommended to use :meth:`addObject` to add an object in shell.
 
         Return:
             dict: Global dictionary of shell

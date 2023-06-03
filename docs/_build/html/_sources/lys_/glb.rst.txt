@@ -2,12 +2,7 @@
 glb module
 ==========
 
-Functions
------------------------
-.. automodule:: lys.glb
-   :members:
-   :undoc-members:
-   :show-inheritance:
+Developers can access global shell and main window from this module.
 
 Shell
 -----------------------

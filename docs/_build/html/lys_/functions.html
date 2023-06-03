@@ -98,9 +98,9 @@
   <section id="module-lys.functions">
 <span id="functions-module"></span><h1>functions module<a class="headerlink" href="#module-lys.functions" title="Permalink to this heading"></a></h1>
 <p><em>functions</em> module gives general functions for users and developers.</p>
-<p>Functions related to global variables, such as main window, are given in <a class="reference internal" href="glb.html#module-lys.glb" title="lys.glb"><code class="xref py py-mod docutils literal notranslate"><span class="pre">glb</span></code></a> module.</p>
+<p>Functions related to global variables, such as main window, are given in <code class="xref py py-mod docutils literal notranslate"><span class="pre">glb</span></code> module.</p>
 <p>Most of functions can be directly imported from lys Package:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">home</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">home</span>
 </pre></div>
 </div>
 <dl class="py function">
@@ -110,7 +110,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> – The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</p></li>
+<li><p><strong>args</strong> (<em>list</em><em> of </em><a class="reference internal" href="core.html#lys.core.Wave" title="lys.core.Wave"><em>Wave</em></a><em> or </em><em>arraylike</em>) – The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</p></li>
 <li><p><strong>canvas</strong> (<a class="reference internal" href="graph/CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasBase" title="lys.widgets.canvas.interface.CanvasBase.CanvasBase"><em>CanvasBase</em></a>) – The canvas to which the wave are appended. If canvas is None, then front canvas is used.</p></li>
 <li><p><strong>exclude</strong> (<em>list</em><em> of </em><em>canvas</em>) – If the front canvas is in <em>exclude</em>, then it is ignored and next canvas is used.</p></li>
 <li><p><strong>kwargs</strong> – The keywords arguments that is passed to Append method of canvas.</p></li>
@@ -126,9 +126,9 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> – The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</p></li>
+<li><p><strong>args</strong> (<em>list</em><em> of </em><a class="reference internal" href="core.html#lys.core.Wave" title="lys.core.Wave"><em>Wave</em></a><em> or </em><em>arraylike</em>) – The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</p></li>
 <li><p><strong>lib</strong> (<em>'matplotlib'</em><em> or </em><em>'pyqtgraph'</em>) – The library used to create canvas.</p></li>
-<li><p><strong>kwargs</strong> – The keywords arguments that is passed to Append method of canvas.</p></li>
+<li><p><strong>kwargs</strong> – The keywords arguments that is passed to Append method of canvas. Typically vector=True and contour=True is specified to show vector and contour plots.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -204,11 +204,17 @@
 <dd class="field-odd"><p>Any</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">load</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">w</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s2">&quot;wave.npz&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
-<span class="go">&lt;lys.core.Wave&gt;</span>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">load</span><span class="p">,</span> <span class="n">registerFileLoader</span><span class="p">,</span> <span class="n">loadableFiles</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;data.txt&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]))</span>  <span class="c1"># prepare txt file</span>
+
+<span class="n">registerFileLoader</span><span class="p">(</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">)</span>   <span class="c1"># Add file loader for .txt file using numpy.loadtxt.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">loadableFiles</span><span class="p">())</span>                   <span class="c1"># List of loadable files, including .txt</span>
+
+<span class="n">arr</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s2">&quot;data.txt&quot;</span><span class="p">)</span>                   <span class="c1"># After registration, :func:`load` function can load .txt files as numpy array.</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">))</span>                         <span class="c1"># &lt;class &#39;numpy.ndarray&#39;&gt;</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -223,18 +229,12 @@
 <dd><p>Returns list of extensions loadable by <a class="reference internal" href="#lys.functions.load" title="lys.functions.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">load()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>list of extensions</p>
+<dd class="field-odd"><p>List of extensions</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>list of str</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">loadableFiles</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">loadableFiles</span><span class="p">()</span>
-<span class="go">[&quot;.npz&quot;, &quot;.png&quot;, &quot;.tif&quot;, &quot;jpg&quot;, &quot;.grf&quot;, &quot;.dic&quot;]</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -280,20 +280,6 @@
 </ul>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<p>Add file loader for .txt file using numpy.loadtxt.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">registerFileLoader</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">registerFileLoader</span><span class="p">(</span><span class="s2">&quot;.txt&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>After executing above commands, <a class="reference internal" href="#lys.functions.load" title="lys.functions.load"><code class="xref py py-func docutils literal notranslate"><span class="pre">load()</span></code></a> function can load .txt files as numpy array.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">load</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s2">&quot;data.txt&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
-<span class="go">numpy.ndarray</span>
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">
@@ -304,7 +290,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em>) – The function. The information of the function should be obtained from inspect.signature.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – The function.</p></li>
 <li><p><strong>name</strong> (<em>str</em>) – The name of the function. If it is None, then func.__name__ is used.</p></li>
 </ul>
 </dd>

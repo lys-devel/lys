@@ -75,9 +75,9 @@
 
 <span class="sd">Functions related to global variables, such as main window, are given in :mod:`.glb` module.</span>
 
-<span class="sd">Most of functions can be directly imported from lys Package:</span>
+<span class="sd">Most of functions can be directly imported from lys Package::</span>
 
-<span class="sd">&gt;&gt;&gt; from lys import home</span>
+<span class="sd">    from lys import home</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -119,11 +119,18 @@
 <span class="sd">    Return:</span>
 <span class="sd">        Any: return value depends on file type</span>
 
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; from lys import load</span>
-<span class="sd">        &gt;&gt;&gt; w = load(&quot;wave.npz&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; type(w)</span>
-<span class="sd">        &lt;lys.core.Wave&gt;</span>
+<span class="sd">    Example::</span>
+
+<span class="sd">        import numpy as np</span>
+<span class="sd">        from lys import load, registerFileLoader, loadableFiles</span>
+
+<span class="sd">        np.savetxt(&quot;data.txt&quot;, np.array([1,2]))  # prepare txt file</span>
+
+<span class="sd">        registerFileLoader(&quot;.txt&quot;, np.loadtxt)   # Add file loader for .txt file using numpy.loadtxt.</span>
+<span class="sd">        print(loadableFiles())                   # List of loadable files, including .txt</span>
+
+<span class="sd">        arr = load(&quot;data.txt&quot;)                   # After registration, :func:`load` function can load .txt files as numpy array.</span>
+<span class="sd">        print(type(arr))                         # &lt;class &#39;numpy.ndarray&#39;&gt;</span>
 
 <span class="sd">    See also:</span>
 <span class="sd">         :func:`registerFileLoader`, :func:`loadableFiles`</span>
@@ -144,14 +151,10 @@
 <span class="sd">    Returns list of extensions loadable by :func:`load`.</span>
 
 <span class="sd">    Return:</span>
-<span class="sd">        list of str: list of extensions</span>
+<span class="sd">        list of str: List of extensions</span>
 
-<span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; from lys import loadableFiles</span>
-<span class="sd">        &gt;&gt;&gt; loadableFiles()</span>
-<span class="sd">        [&quot;.npz&quot;, &quot;.png&quot;, &quot;.tif&quot;, &quot;jpg&quot;, &quot;.grf&quot;, &quot;.dic&quot;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="registerFileLoader"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.registerFileLoader">[docs]</a><span class="k">def</span> <span class="nf">registerFileLoader</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
@@ -165,20 +168,6 @@
 <span class="sd">    Args:</span>
 <span class="sd">        type (str): file extention, such as &quot;.txt&quot;</span>
 <span class="sd">        func (function): function to load file.</span>
-
-<span class="sd">    Example:</span>
-<span class="sd">        Add file loader for .txt file using numpy.loadtxt.</span>
-
-<span class="sd">        &gt;&gt;&gt; import numpy as np</span>
-<span class="sd">        &gt;&gt;&gt; from lys import registerFileLoader</span>
-<span class="sd">        &gt;&gt;&gt; registerFileLoader(&quot;.txt&quot;, np.loadtxt)</span>
-
-<span class="sd">        After executing above commands, :func:`load` function can load .txt files as numpy array.</span>
-
-<span class="sd">        &gt;&gt;&gt; from lys import load</span>
-<span class="sd">        &gt;&gt;&gt; arr = load(&quot;data.txt&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; type(arr)</span>
-<span class="sd">        numpy.ndarray</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_dic</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span></div>
 
@@ -190,7 +179,7 @@
 <span class="sd">    The fitting can be started when Ctrl+F is pressed on the graphs with 1D data.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        func(callable): The function. The information of the function should be obtained from inspect.signature.</span>
+<span class="sd">        func(callable): The function.</span>
 <span class="sd">        name(str): The name of the function. If it is None, then func.__name__ is used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">.fitting</span> <span class="kn">import</span> <span class="n">addFittingFunction</span>
@@ -243,9 +232,9 @@
 <span class="sd">    Display Waves as graph.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        args: The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</span>
+<span class="sd">        args(list of Wave or arraylike): The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</span>
 <span class="sd">        lib (&#39;matplotlib&#39; or &#39;pyqtgraph&#39;): The library used to create canvas. </span>
-<span class="sd">        kwargs: The keywords arguments that is passed to Append method of canvas.</span>
+<span class="sd">        kwargs: The keywords arguments that is passed to Append method of canvas. Typically vector=True and contour=True is specified to show vector and contour plots. </span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Graph: The graph that contains the waves.</span>
@@ -261,7 +250,7 @@
 <span class="sd">    Append waves to the front canvas. </span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        args: The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</span>
+<span class="sd">        args(list of Wave or arraylike): The waves to be added. If the item is not Wave, then it is automatically converted to Wave.</span>
 <span class="sd">        canvas (CanvasBase): The canvas to which the wave are appended. If canvas is None, then front canvas is used.</span>
 <span class="sd">        exclude (list of canvas): If the front canvas is in *exclude*, then it is ignored and next canvas is used.</span>
 <span class="sd">        kwargs: The keywords arguments that is passed to Append method of canvas.</span>
