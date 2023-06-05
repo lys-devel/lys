@@ -1,0 +1,26 @@
+Introduction
+==================================================
+
+*lys* is a hybrid graphical- and character-based user interface (GUI/CUI) program for data analysis and visualization.
+This is based on the several popular Python libraries:
+
+- Data analysis: numpy, scipy, opencv, dask
+- Data visualization: matplotlib, pyqtgraph
+- GUIs: PyQt
+
+Data analysis and visualization libraries have been used in CUI such as bare Python and Jupyter notebooks.
+Although these CUI environment has played important roles, however, such CUI-based analysis environment has several disadvantages:
+
+- Users should be familiar with many commands of numpy, matplotlib, etc..
+- Management of Python code is troublesome when you have many and similar .py files.
+- Parallel computation requires some additional coding.
+- It is hard to remain editable figures because figures are saved as image file such as .png.
+- It is difficult to intuitively edit figures.
+
+*lys* gives the opportunity to avoid these problems by employing hybrid GUI/CUI archtechture while flexibility of CUI system is not lost.
+
+*lys* is composed of several functionalities that process the analysis and visualization:
+
+- CUI:
+- lysCanvas:
+- MultiCut:

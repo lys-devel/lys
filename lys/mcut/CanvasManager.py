@@ -16,6 +16,16 @@ class CanvasManager(list):
         self._sync = _AnnotationSync(cui, self)
 
     def createCanvas(self, axes, *args, graph=False, **kwargs):
+        """
+        Create canvas that is associated with axes.
+        All canvas managed by MultiCut should be instanciated by this method.
+
+        Args:
+            axes(list of int): The axes that is associated with the canvas. This is required to specify the axes range from the interactive annotations.
+            graph(bool): If True, the canvas is created as independent graph window. Otherwise it is in the grid.
+            args(any): This is passed to display method of lys. See :func:`lys.functions.display`.
+            kwargs(any): This is passed to display method of lys. See :func:`lys.functions.display`.
+        """
         if graph:
             g = display(*args, **kwargs)
             g.setTitleColor(self._color)
@@ -30,6 +40,9 @@ class CanvasManager(list):
         return c
 
     def clear(self, removeGraphs=False):
+        """
+        Clear all canvases managed by this class.
+        """
         for w in self:
             self.__removeCanvas(w, removeGraphs)
 
@@ -56,6 +69,14 @@ class CanvasManager(list):
                 QtWidgets.QMessageBox.information(self._wid, "Error", "You should specify the canvas that is created by MultiCut.", QtWidgets.QMessageBox.Yes)
 
     def addCross(self, c=None):
+        """
+        Add cross annotation to canvas.
+
+        The added annotation is synchronized with axes range of MultiCut.
+
+        Args:
+            c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.
+        """
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
         if c is not None:
@@ -66,6 +87,15 @@ class CanvasManager(list):
                 self._sync.syncAnnotation(crs)
 
     def addRect(self, c=None):
+        """
+        Add rectangle annotation to canvas.
+
+        The added annotation is synchronized with axes range of MultiCut.
+
+        Args:
+            c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.
+        """
+
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
         if c is not None:
@@ -76,6 +106,15 @@ class CanvasManager(list):
                 self._sync.syncAnnotation(rect)
 
     def addFreeLine(self, c=None, line=None, syncAnnot=False):
+        """
+        Add free line annotation to canvas.
+
+        The added annotation is synchronized with axes range of MultiCut.
+
+        Args:
+            c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.
+        """
+
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
         if c is not None:
@@ -88,6 +127,15 @@ class CanvasManager(list):
                 self._sync.syncAnnotation(reg, line, syncAnnot=syncAnnot)
 
     def addRegion(self, c=None, orientation="vertical"):
+        """
+        Add region annotation to canvas.
+
+        The added annotation is synchronized with axes range of MultiCut.
+
+        Args:
+            c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.
+        """
+
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
         if c is not None:
@@ -98,6 +146,15 @@ class CanvasManager(list):
                 self._sync.syncAnnotation(reg)
 
     def addLine(self, c=None, orientation="vertical"):
+        """
+        Add infinite line annotation to canvas.
+
+        The added annotation is synchronized with axes range of MultiCut.
+
+        Args:
+            c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.
+        """
+
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
         if c is not None:
@@ -108,6 +165,12 @@ class CanvasManager(list):
                 self._sync.syncAnnotation(line)
 
     def getAnnotations(self, c):
+        """
+        Return all annotations managed by this class.
+
+        Args:
+            c(canvas): The targe tcanvas.
+        """
         res = []
         if self._sync.hasAnnotation(c, CrossAnnotation):
             res.append("cross")
@@ -125,6 +188,12 @@ class CanvasManager(list):
         return res
 
     def addAnnotations(self, c, annotations, syncLine=False):
+        """
+        Add annotations to the canvas.
+
+        This method is internal use only. Do not call.
+
+        """
         for annot in annotations:
             if annot == "cross":
                 self.addCross(c)
@@ -142,6 +211,11 @@ class CanvasManager(list):
                 self.addFreeLine(c, annot, syncLine)
 
     def interactiveWidget(self):
+        """
+        Return interactive widget in GUI.
+
+        This method is internal use only. Do not call.
+        """
         return self._wid
 
 

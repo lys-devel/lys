@@ -274,8 +274,24 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="MultiCut"><a class="viewcode-back" href="../../../lys_/multicut/MultiCutGUI.html#lys.mcut.MultiCutGUI.MultiCut">[docs]</a><span class="k">class</span> <span class="nc">MultiCut</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCut"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut">[docs]</a><span class="k">class</span> <span class="nc">MultiCut</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is central class of MultiCut.</span>
+
+<span class="sd">    Although MultiCut is mainly GUI interface, it is also possible to manipulate it programatically through methods.</span>
+
+<span class="sd">    Filters, axes ranges, free lines, child waves are controlled via :class:`MultiCutCUI` via *cui* property.</span>
+
+<span class="sd">    Canvases in grid and independent Graphs are added by :meth:`display` method of this class.</span>
+
+<span class="sd">    After adding the canvases, they are managed by :class:`CanvasManager` class.</span>
+
+<span class="sd">    :class:`CanvasManager` also manages interactive annotations in the canvas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">closed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Emited when the MultiCut window is closed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;darkgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;darkred&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;brown&quot;</span><span class="p">,</span> <span class="s2">&quot;darkolivegreen&quot;</span><span class="p">,</span> <span class="s2">&quot;dodgerblue&quot;</span><span class="p">,</span> <span class="s2">&quot;indigo&quot;</span><span class="p">,</span> <span class="s2">&quot;forestgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;mediumvioletred&quot;</span><span class="p">]</span>
     <span class="n">_colorIndex</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -296,7 +312,10 @@
     <span class="k">def</span> <span class="nf">__onClose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MultiCut.openMultiCutSetting"><a class="viewcode-back" href="../../../lys_/multicut/MultiCutGUI.html#lys.mcut.MultiCutGUI.MultiCut.openMultiCutSetting">[docs]</a>    <span class="k">def</span> <span class="nf">openMultiCutSetting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCut.openMultiCutSetting"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.openMultiCutSetting">[docs]</a>    <span class="k">def</span> <span class="nf">openMultiCutSetting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Open multicut setting window in side bar.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
         <span class="n">glb</span><span class="o">.</span><span class="n">editMulticut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
@@ -306,7 +325,16 @@
                 <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_can</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MultiCut.display"><a class="viewcode-back" href="../../../lys_/multicut/MultiCutGUI.html#lys.mcut.MultiCutGUI.MultiCut.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCut.display"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Display wave data created by addWave method of cui.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            wave(_ChildWave): The child wave data created by addWave method of cui.</span>
+<span class="sd">            type(&#39;grid&#39; or &#39;graph&#39;): Specifi the wave is displayed in grid or independent graph.</span>
+<span class="sd">            pos(length 2 sequence): The position in the grid where the wave is displayed. If type is &#39;graph&#39;, it is ignored.</span>
+<span class="sd">            wid(length 2 sequence): The width of the graph displayed in grid. If type is &#39;graph&#39;, it is ignored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;graph&quot;</span><span class="p">:</span>
             <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_can</span><span class="o">.</span><span class="n">createCanvas</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">getAxes</span><span class="p">(),</span> <span class="n">graph</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -316,15 +344,24 @@
         <span class="n">c</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">getFilteredWave</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">c</span></div>
 
-<div class="viewcode-block" id="MultiCut.saveAsDictionary"><a class="viewcode-back" href="../../../lys_/multicut/MultiCutGUI.html#lys.mcut.MultiCutGUI.MultiCut.saveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCut.saveAsDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.saveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the present state as dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cui&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cui</span><span class="o">.</span><span class="n">saveAsDictionary</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="s2">&quot;gui&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__saveCanvas</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)}</span></div>
 
-<div class="viewcode-block" id="MultiCut.loadFromDictionary"><a class="viewcode-back" href="../../../lys_/multicut/MultiCutGUI.html#lys.mcut.MultiCutGUI.MultiCut.loadFromDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCut.loadFromDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.loadFromDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the present state from dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cui</span><span class="o">.</span><span class="n">loadFromDictionary</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cui&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__loadCanvas</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gui&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">cui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        MultiCutCUI class that manages filters, axes ranges, free lines, child waves.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span>
 
     <span class="k">def</span> <span class="nf">__saveCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">useGrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useGraph</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useAnnot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

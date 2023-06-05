@@ -175,6 +175,9 @@ class ChildWaves(QtCore.QObject):
 
     @property
     def cui(self):
+        """
+        Return the cui of MultiCut.
+        """
         return self._cui()
 
     def setSumType(self, sumType):
@@ -383,6 +386,9 @@ class AxesRangeManager(QtCore.QObject):
         self.reset(wave)
 
     def reset(self, wave):
+        """
+        Reset all axes ranges to default.
+        """
         self._ranges = [ax[0] for ax in wave.axes]
         self.axesRangeChanged.emit(tuple(range(len(wave.axes))))
 
@@ -429,12 +435,25 @@ class AxesRangeManager(QtCore.QObject):
             return 'point'
 
     def saveAsDictionary(self, useRange=False, **kwargs):
+        """
+        Save the present state as dictionary.
+
+        Args:
+            useRange(bool): If True, save the ranges.
+        """
         if useRange:
             return {"range": self._ranges}
         else:
             return {}
 
     def loadFromDictionary(self, d, useRange=False, axesMap=None, **kwargs):
+        """
+        Load the state from the dictionary.
+
+        Args:
+            d(dict): The dictionary.
+            useRange(bool): If True, the range is loaded.
+        """
         if useRange:
             if "range" in d:
                 self._ranges = d["range"]

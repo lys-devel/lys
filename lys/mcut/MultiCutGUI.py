@@ -203,7 +203,23 @@ class _GridOverlay(QtWidgets.QWidget):
 
 
 class MultiCut(QtCore.QObject):
+    """
+    This is central class of MultiCut.
+
+    Although MultiCut is mainly GUI interface, it is also possible to manipulate it programatically through methods.
+
+    Filters, axes ranges, free lines, child waves are controlled via :class:`MultiCutCUI` via *cui* property.
+
+    Canvases in grid and independent Graphs are added by :meth:`display` method of this class.
+
+    After adding the canvases, they are managed by :class:`CanvasManager` class.
+
+    :class:`CanvasManager` also manages interactive annotations in the canvas.
+    """
     closed = QtCore.pyqtSignal(object)
+    """
+    Emited when the MultiCut window is closed.
+    """
     _colors = ["darkgreen", "darkred", "blue", "brown", "darkolivegreen", "dodgerblue", "indigo", "forestgreen", "mediumvioletred"]
     _colorIndex = 0
 
@@ -225,6 +241,9 @@ class MultiCut(QtCore.QObject):
         self.closed.emit(self)
 
     def openMultiCutSetting(self):
+        """
+        Open multicut setting window in side bar.
+        """
         from lys import glb
         glb.editMulticut(self)
 
@@ -235,6 +254,15 @@ class MultiCut(QtCore.QObject):
         return super().__getattr__(key)
 
     def display(self, wave, type="grid", pos=None, wid=None, **kwargs):
+        """
+        Display wave data created by addWave method of cui.
+
+        Args:
+            wave(_ChildWave): The child wave data created by addWave method of cui.
+            type('grid' or 'graph'): Specifi the wave is displayed in grid or independent graph.
+            pos(length 2 sequence): The position in the grid where the wave is displayed. If type is 'graph', it is ignored.
+            wid(length 2 sequence): The width of the graph displayed in grid. If type is 'graph', it is ignored.
+        """
         if type == "graph":
             c = self._can.createCanvas(wave.getAxes(), graph=True)
         else:
@@ -245,14 +273,23 @@ class MultiCut(QtCore.QObject):
         return c
 
     def saveAsDictionary(self, **kwargs):
+        """
+        Save the present state as dictionary.
+        """
         return {"cui": self.cui.saveAsDictionary(**kwargs), "gui": self.__saveCanvas(**kwargs)}
 
     def loadFromDictionary(self, d, **kwargs):
+        """
+        Load the present state from dictionary.
+        """
         self.cui.loadFromDictionary(d.get("cui", {}), **kwargs)
         self.__loadCanvas(d.get("gui", {}), **kwargs)
 
     @property
     def cui(self):
+        """
+        MultiCutCUI class that manages filters, axes ranges, free lines, child waves.
+        """
         return self._cui
 
     def __saveCanvas(self, useGrid=False, useGraph=False, useAnnot=False, **kwargs):

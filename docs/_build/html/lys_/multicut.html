@@ -54,6 +54,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">multicut module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#module-lys.mcut.MultiCutGUI">GUI modules</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#lys.mcut.MultiCutGUI.MultiCut"><code class="docutils literal notranslate"><span class="pre">MultiCut</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.mcut.CanvasManager.CanvasManager"><code class="docutils literal notranslate"><span class="pre">CanvasManager</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#cui-modules">CUI modules</a><ul>
@@ -104,35 +105,171 @@
 <dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.mcut.MultiCutGUI.</span></span><span class="sig-name descname"><span class="pre">MultiCut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>This is central class of MultiCut.</p>
+<p>Although MultiCut is mainly GUI interface, it is also possible to manipulate it programatically through methods.</p>
+<p>Filters, axes ranges, free lines, child waves are controlled via <code class="xref py py-class docutils literal notranslate"><span class="pre">MultiCutCUI</span></code> via <em>cui</em> property.</p>
+<p>Canvases in grid and independent Graphs are added by <a class="reference internal" href="#lys.mcut.MultiCutGUI.MultiCut.display" title="lys.mcut.MultiCutGUI.MultiCut.display"><code class="xref py py-meth docutils literal notranslate"><span class="pre">display()</span></code></a> method of this class.</p>
+<p>After adding the canvases, they are managed by <code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasManager</span></code> class.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasManager</span></code> also manages interactive annotations in the canvas.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.closed">
 <span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.closed" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Emited when the MultiCut window is closed.</p>
+</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.cui">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cui</span></span><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.cui" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>MultiCutCUI class that manages filters, axes ranges, free lines, child waves.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.display">
 <span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'grid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.display" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Display wave data created by addWave method of cui.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wave</strong> (<em>_ChildWave</em>) – The child wave data created by addWave method of cui.</p></li>
+<li><p><strong>type</strong> (<em>'grid'</em><em> or </em><em>'graph'</em>) – Specifi the wave is displayed in grid or independent graph.</p></li>
+<li><p><strong>pos</strong> (<em>length 2 sequence</em>) – The position in the grid where the wave is displayed. If type is ‘graph’, it is ignored.</p></li>
+<li><p><strong>wid</strong> (<em>length 2 sequence</em>) – The width of the graph displayed in grid. If type is ‘graph’, it is ignored.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.loadFromDictionary">
 <span class="sig-name descname"><span class="pre">loadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut.loadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.loadFromDictionary" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Load the present state from dictionary.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.openMultiCutSetting">
 <span class="sig-name descname"><span class="pre">openMultiCutSetting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut.openMultiCutSetting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.openMultiCutSetting" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Open multicut setting window in side bar.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutGUI.MultiCut.saveAsDictionary">
 <span class="sig-name descname"><span class="pre">saveAsDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutGUI.html#MultiCut.saveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutGUI.MultiCut.saveAsDictionary" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Save the present state as dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.mcut.CanvasManager"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.mcut.CanvasManager.</span></span><span class="sig-name descname"><span class="pre">CanvasManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cui</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addAnnotations">
+<span class="sig-name descname"><span class="pre">addAnnotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">syncLine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Add annotations to the canvas.</p>
+<p>This method is internal use only. Do not call.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addCross">
+<span class="sig-name descname"><span class="pre">addCross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addCross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addCross" title="Permalink to this definition"></a></dt>
+<dd><p>Add cross annotation to canvas.</p>
+<p>The added annotation is synchronized with axes range of MultiCut.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addFreeLine">
+<span class="sig-name descname"><span class="pre">addFreeLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">syncAnnot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addFreeLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addFreeLine" title="Permalink to this definition"></a></dt>
+<dd><p>Add free line annotation to canvas.</p>
+<p>The added annotation is synchronized with axes range of MultiCut.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addLine">
+<span class="sig-name descname"><span class="pre">addLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertical'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addLine" title="Permalink to this definition"></a></dt>
+<dd><p>Add infinite line annotation to canvas.</p>
+<p>The added annotation is synchronized with axes range of MultiCut.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addRect">
+<span class="sig-name descname"><span class="pre">addRect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addRect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addRect" title="Permalink to this definition"></a></dt>
+<dd><p>Add rectangle annotation to canvas.</p>
+<p>The added annotation is synchronized with axes range of MultiCut.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addRegion">
+<span class="sig-name descname"><span class="pre">addRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertical'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addRegion" title="Permalink to this definition"></a></dt>
+<dd><p>Add region annotation to canvas.</p>
+<p>The added annotation is synchronized with axes range of MultiCut.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">removeGraphs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.clear" title="Permalink to this definition"></a></dt>
+<dd><p>Clear all canvases managed by this class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.createCanvas">
+<span class="sig-name descname"><span class="pre">createCanvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.createCanvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.createCanvas" title="Permalink to this definition"></a></dt>
+<dd><p>Create canvas that is associated with axes.
+All canvas managed by MultiCut should be instanciated by this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – The axes that is associated with the canvas. This is required to specify the axes range from the interactive annotations.</p></li>
+<li><p><strong>graph</strong> (<em>bool</em>) – If True, the canvas is created as independent graph window. Otherwise it is in the grid.</p></li>
+<li><p><strong>args</strong> (<em>any</em>) – This is passed to display method of lys. See <a class="reference internal" href="functions.html#lys.functions.display" title="lys.functions.display"><code class="xref py py-func docutils literal notranslate"><span class="pre">lys.functions.display()</span></code></a>.</p></li>
+<li><p><strong>kwargs</strong> (<em>any</em>) – This is passed to display method of lys. See <a class="reference internal" href="functions.html#lys.functions.display" title="lys.functions.display"><code class="xref py py-func docutils literal notranslate"><span class="pre">lys.functions.display()</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.getAnnotations">
+<span class="sig-name descname"><span class="pre">getAnnotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.getAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.getAnnotations" title="Permalink to this definition"></a></dt>
+<dd><p>Return all annotations managed by this class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The targe tcanvas.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.interactiveWidget">
+<span class="sig-name descname"><span class="pre">interactiveWidget</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.interactiveWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.interactiveWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Return interactive widget in GUI.</p>
+<p>This method is internal use only. Do not call.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -288,17 +425,33 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.loadFromDictionary">
 <span class="sig-name descname"><span class="pre">loadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useRange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axesMap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#AxesRangeManager.loadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.loadFromDictionary" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Load the state from the dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>d</strong> (<em>dict</em>) – The dictionary.</p></li>
+<li><p><strong>useRange</strong> (<em>bool</em>) – If True, the range is loaded.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wave</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#AxesRangeManager.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.reset" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Reset all axes ranges to default.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.saveAsDictionary">
 <span class="sig-name descname"><span class="pre">saveAsDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">useRange</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/MultiCutCUI.html#AxesRangeManager.saveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.MultiCutCUI.AxesRangeManager.saveAsDictionary" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Save the present state as dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>useRange</strong> (<em>bool</em>) – If True, save the ranges.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.AxesRangeManager.setAxisRange">
@@ -470,7 +623,8 @@ The child waves that is generated by this method is automatically updated when a
 <dl class="py property">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.cui">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cui</span></span><a class="headerlink" href="#lys.mcut.MultiCutCUI.ChildWaves.cui" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return the cui of MultiCut.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.MultiCutCUI.ChildWaves.getChildWaves">

@@ -9,6 +9,11 @@ GUI modules
    :undoc-members:
    :show-inheritance:
 
+.. automodule:: lys.mcut.CanvasManager
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 CUI modules
 ------------------------------------------------------
 
