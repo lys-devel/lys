@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Introduction" href="introduction.html" />
-    <link rel="prev" title="lys documentation" href="../index.html" /> 
+    <link rel="prev" title="Installation" href="../install.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,6 +44,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basic-required-for-all-users">Basic: Required for all users</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="introduction.html">Introduction</a></li>
@@ -53,10 +54,13 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#advanced-read-if-it-is-needed">Advanced: Read if it is needed</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="shell.html">Understanding shell in lys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="newLoader.html">Loading your file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="variousData.html">Displaying various data types</a></li>
-<li class="toctree-l3"><a class="reference internal" href="newFilter.html">Tutorial: Adding a new filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="newLoader.html">Tutorial: Loading new file type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="newFilter.html">Adding your original filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="animation.html">Advanced usage of MultiCut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GUI.html">Customizing GUIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shell.html">Understanding shell in lys</a></li>
 </ul>
 </li>
 </ul>
@@ -105,10 +109,41 @@
 <h2>Advanced: Read if it is needed<a class="headerlink" href="#advanced-read-if-it-is-needed" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="newLoader.html">Loading your file</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="newLoader.html#loading-csv-file">Loading csv file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="newLoader.html#loading-data-by-dask">Loading data by dask</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="variousData.html">Displaying various data types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="variousData.html#line">Line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variousData.html#image">Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variousData.html#rgb">RGB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variousData.html#vector">vector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="variousData.html#contour">Contour</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="newFilter.html">Adding your original filter</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="newFilter.html#add-a-very-simple-filter">Add a very simple filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="newFilter.html#parallel-computation-by-dask">Parallel computation by dask</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="animation.html">Advanced usage of MultiCut</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="animation.html#creating-animation">Creating animation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fitting.html">Fitting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fitting.html#fitting-1d-data">Fitting 1D data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fitting.html#add-new-function">Add new function</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="GUI.html">Customizing GUIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="GUI.html#add-new-window">Add new window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GUI.html#add-new-tab-in-sidebar">Add new tab in sidebar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GUI.html#add-menu">Add menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GUI.html#add-context-menu-in-fileview">Add context menu in fileview</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="shell.html">Understanding shell in lys</a></li>
-<li class="toctree-l1"><a class="reference internal" href="variousData.html">Displaying various data types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="newFilter.html">Tutorial: Adding a new filter</a></li>
-<li class="toctree-l1"><a class="reference internal" href="newLoader.html">Tutorial: Loading new file type</a></li>
 </ul>
 </div>
 </section>
@@ -118,7 +153,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="lys documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="introduction.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

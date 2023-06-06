@@ -295,9 +295,9 @@ class MultiCut(QtCore.QObject):
     def __saveCanvas(self, useGrid=False, useGraph=False, useAnnot=False, **kwargs):
         d = {}
         if useGraph:
-            d["Graphs"] = [self.__canvasDict(c, False, useAnnot) for c in self._can if c not in self.grid.widgets()]
+            d["Graphs"] = [self.__canvasDict(c, False, useAnnot) for c in self._can if c not in self._grid.widgets()]
         if useGrid:
-            d["Grids"] = [self.__canvasDict(c, True, useAnnot) for c in self.grid.widgets()]
+            d["Grids"] = [self.__canvasDict(c, True, useAnnot) for c in self._grid.widgets()]
         return d
 
     def __canvasDict(self, c, grid, useAnnot):

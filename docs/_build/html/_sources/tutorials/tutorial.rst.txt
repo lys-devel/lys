@@ -15,9 +15,12 @@ Basic: Required for all users
 Advanced: Read if it is needed
 ----------------------------------
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   shell
+   newLoader
    variousData
    newFilter
-   newLoader
+   animation
+   fitting
+   GUI
+   shell
