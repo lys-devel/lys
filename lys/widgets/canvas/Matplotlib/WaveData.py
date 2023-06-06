@@ -310,7 +310,7 @@ class _MatplotlibRGB(RGBData):
         self.__setColormap(size=size)
 
     def __setColormap(self, visible=None, pos=None, size=None):
-        if visible is None:
+        if visible is None or not isinstance(visible, bool):
             visible = self.getColormapVisible()
         if pos is None:
             pos = self.getColormapPosition()
