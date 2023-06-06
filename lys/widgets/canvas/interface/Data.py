@@ -102,6 +102,8 @@ class CanvasData(CanvasPart):
                 else:
                     return "image"
         elif wav.data.ndim == 3:
+            if wav.data.shape[2] == 2:
+                return "vector"
             if wav.data.shape[2] in [3, 4]:
                 return "rgb"
         raise RuntimeError("[Graph] Can't append this data. shape = " + str(wav.data.shape))

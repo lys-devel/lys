@@ -237,7 +237,10 @@ class _MatplotlibVector(VectorData):
         super().__init__(canvas, wave, axis)
         self._axis = axis
         xx, yy = np.meshgrid(wave.x, wave.y)
-        self._obj = canvas.getAxes(axis).quiver(xx, yy, np.real(wave.data.T), np.imag(wave.data.T), pivot="mid")
+        if wave.dtype == complex:
+            self._obj = canvas.getAxes(axis).quiver(xx, yy, np.real(wave.data.T), np.imag(wave.data.T), pivot="mid")
+        else:
+            self._obj = canvas.getAxes(axis).quiver(xx, yy, np.real(wave.data[:, :, 0].T), np.imag(wave.data[:, :, 1].T), pivot="mid")
         canvas.axisRangeChanged.connect(self._updateData)
 
     def remove(self):
@@ -245,8 +248,12 @@ class _MatplotlibVector(VectorData):
 
     def _updateData(self):
         X, Y = np.meshgrid(self.getFilteredWave().x, self.getFilteredWave().y)
-        data_x = np.array(np.real(self.getFilteredWave().data.T))
-        data_y = np.array(np.imag(self.getFilteredWave().data.T))
+        if self.getFilteredWave().dtype == complex:
+            data_x = np.array(np.real(self.getFilteredWave().data.T))
+            data_y = np.array(np.imag(self.getFilteredWave().data.T))
+        else:
+            data_x = self.getFilteredWave().data[:, :, 0].T
+            data_y = self.getFilteredWave().data[:, :, 1].T
         rx, ry = self.canvas().getAxisRange(self._axis)
         if rx[0] > rx[1]:
             data_x = -data_x
