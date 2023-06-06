@@ -13,3 +13,9 @@ def gauss_3d_data():
     t = np.linspace(0, 100, 100, dtype=float)
     data = [np.exp(-((xx - x_0 / 20) / 0.5) ** 2 - (yy / 0.5)**2) + np.random.rand(101, 101) / 2 for x_0 in t]
     return Wave(np.array(data).transpose(1, 2, 0), x, y, t)
+
+
+def load_csv():
+    import numpy as np
+    data = np.linspace(0, 100)
+    np.savetxt("csvfile.csv", data, delimiter=",")
