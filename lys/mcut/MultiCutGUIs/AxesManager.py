@@ -14,6 +14,7 @@ class _AxisRangeWidget(QtWidgets.QGroupBox):
         self.__setEvent()
         self.__update()
         self._cui.axesRangeChanged.connect(self.__update)
+        self._cui.filterApplied.connect(self.__filterApplied)
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(self._buildContextMenu)
 
@@ -51,6 +52,9 @@ class _AxisRangeWidget(QtWidgets.QGroupBox):
 
         self._slider.valueChanged.connect(self.__slider)
         self._rslider.sliderMoved.connect(self.__rslider)
+
+    def __filterApplied(self):
+        self.__update()
 
     @ avoidCircularReference
     def __update(self, axes=None):
