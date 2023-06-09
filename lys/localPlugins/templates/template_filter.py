@@ -14,8 +14,6 @@ from lys.Qt import QtWidgets
 
 
 class FilterName(FilterInterface):
-    """Filter class"""
-
     def __init__(self, param1, param2):
         """ Save parameters """
         self._param1 = param1
@@ -39,8 +37,6 @@ class FilterName(FilterInterface):
 
 @filterGUI(FilterName)
 class _FilterNameSetting(FilterSettingBase):
-    """GUI (QWidget) for filter used by MultiCut."""
-
     def __init__(self, dimension):
         """
         __init__ must take an argument that indicate dimension of input data.

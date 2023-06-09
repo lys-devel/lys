@@ -399,6 +399,22 @@ def _makeFilterTemplate():
         PythonEditor(pyfile)
 
 
+def _makeWindowTemplate():
+    name, ok = QtWidgets.QInputDialog.getText(glb.mainWindow(), "New window", "Enter new window name", text="Window")
+    if ok:
+        pyfile = home() + "/module/" + name + ".py"
+        if os.path.exists(pyfile):
+            QtWidgets.QMessageBox.information(glb.mainWindow(), "Caution", "File " + name + ".py already exists.")
+            return
+        filename = os.path.dirname(__file__) + "/templates/template_window.py"
+        with open(filename, "r") as f:
+            txt = f.read().replace("WindowName", name)
+        _prepareInit()
+        with open(pyfile, "w") as f:
+            f.write(txt)
+        PythonEditor(pyfile)
+
+
 def _register():
     registerFileLoader(".py", PythonEditor)
     glb.mainWindow().beforeClosed.connect(PythonEditor.CloseAllEditors)
@@ -418,6 +434,9 @@ def _register():
 
     makeFil = prog.addAction("Create new filter from template")
     makeFil.triggered.connect(_makeFilterTemplate)
+
+    makeWin = prog.addAction("Create new window from template")
+    makeWin.triggered.connect(_makeWindowTemplate)
 
     prog.addSeparator()
 

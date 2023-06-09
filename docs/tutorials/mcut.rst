@@ -1,7 +1,7 @@
 Interactive GUI analysis system MultiCut
 ==============================================
 
-MultiCut is a GUI tool implemented in *lys*. Itenables users to efficiently visualize and analyze multi-dimensional arrays.
+MultiCut is a GUI tool implemented in *lys*. It enables users to efficiently visualize and analyze multi-dimensional arrays.
 
 Use default template
 ----------------------------

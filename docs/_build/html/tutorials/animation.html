@@ -53,6 +53,8 @@
 <li class="toctree-l3"><a class="reference internal" href="newFilter.html">Adding your original filter</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Advanced usage of MultiCut</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#parallel-computing">Parallel computing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#import-export-filters">Import/Export filters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reproduce-your-analysis">Reproduce your analysis</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#creating-animation">Creating animation</a></li>
 </ul>
 </li>
@@ -95,6 +97,75 @@
 <h1>Advanced usage of MultiCut<a class="headerlink" href="#advanced-usage-of-multicut" title="Permalink to this heading"></a></h1>
 <section id="parallel-computing">
 <h2>Parallel computing<a class="headerlink" href="#parallel-computing" title="Permalink to this heading"></a></h2>
+<p>MultiCut uses dask for the backend, and there fore most of calculation is done in parallel when you launch <em>lys</em> with -n option.
+However, there are several note to efficiently parallelize all calculations.</p>
+<ul class="simple">
+<li><p>To do all calculation efficiently, load data by dask (see <a class="reference internal" href="newLoader.html"><span class="doc">Loading your file</span></a>). If the data loading is not paralle, it could become bottleneck.</p></li>
+<li><p>If you implement your own filter, take care the calculation is efficiently done (see <a class="reference internal" href="newFilter.html"><span class="doc">Adding your original filter</span></a>).</p></li>
+<li><p>Several pre-defined filters may not be efficient. See diagnostics below to confirm.</p></li>
+<li><p>When you want to see the diagnostics of dask, go to “Help”-“Open dask status in browser” (<a class="reference external" href="https://docs.dask.org/en/stable/dashboard.html">https://docs.dask.org/en/stable/dashboard.html</a>).</p></li>
+<li><p>At present, <em>lys</em> does not support distributed computing although it should work.</p></li>
+</ul>
+</section>
+<section id="import-export-filters">
+<h2>Import/Export filters<a class="headerlink" href="#import-export-filters" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>You can save the filters to files. Open MultiCut by the code below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">multicut</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
+</li>
+<li><p>Go to “Filters” tab, add “Median” filter in “Smoothing”.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/adv5.png"><img alt="../_images/adv5.png" src="../_images/adv5.png" style="width: 297.0px; height: 296.0px;" /></a>
+<ol class="arabic simple" start="3">
+<li><p>Right click “Filters” and select “Export to file”.</p></li>
+</ol>
+<img alt="../_images/adv6.png" src="../_images/adv6.png" />
+<ol class="arabic simple" start="4">
+<li><p>Save as “filter1.fil”</p></li>
+<li><p>Right clidk “Filters” and select “Clear”. All filters are cleared.</p></li>
+<li><p>Right click “Filters” and select “Import from file”. Select “filter1.fil”.</p></li>
+</ol>
+</section>
+<section id="reproduce-your-analysis">
+<h2>Reproduce your analysis<a class="headerlink" href="#reproduce-your-analysis" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>MultiCut automatically save the analysis process as filters in the result. You can check what is done in MultiCut as following.</p></li>
+<li><p>Start MultiCut by the code below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">multicut</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Apply default template (see <a class="reference internal" href="mcut.html"><span class="doc">Interactive GUI analysis system MultiCut</span></a>).</p></li>
+<li><p>Right click “data2”, and select “Copied”-“Export”.</p></li>
+</ol>
+<img alt="../_images/adv1.png" src="../_images/adv1.png" />
+<ol class="arabic" start="5">
+<li><p>Save as “data2.npz”.</p></li>
+<li><p>Close the MultiCut window and restart it by the code below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multicut</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Go to “Filter” tab in the sidebar, right click “Filters”, select “Import from file”.</p></li>
+</ol>
+<img alt="../_images/adv2.png" src="../_images/adv2.png" />
+<ol class="arabic simple" start="8">
+<li><p>Change “Files of type” to .npz and select “data2.npz”</p></li>
+</ol>
+<img alt="../_images/adv3.png" src="../_images/adv3.png" />
+<ol class="arabic simple" start="9">
+<li><p>The filter to reproduce “data2” is loaded. Press “Apply filters” at the bottom.</p></li>
+<li><p>When you see the result by applying default template for 1D data, you can confirm “data2” is reproduced.</p></li>
+</ol>
+<img alt="../_images/adv4.png" src="../_images/adv4.png" />
+<ol class="arabic simple" start="11">
+<li><p>It is noted that the analysis results should be saved as .npz file to enable this functionarities. We recommend to save all important results to .npz file. In addition, original data is not saved because it may be very large. Do not forget which is the original data.</p></li>
+</ol>
 </section>
 <section id="creating-animation">
 <h2>Creating animation<a class="headerlink" href="#creating-animation" title="Permalink to this heading"></a></h2>
@@ -112,7 +183,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, Asuka Nakamura.</p>
+    <p>&#169; Copyright 2023, Asuka Nakamura.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
