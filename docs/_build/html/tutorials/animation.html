@@ -169,7 +169,37 @@ However, there are several note to efficiently parallelize all calculations.</p>
 </section>
 <section id="creating-animation">
 <h2>Creating animation<a class="headerlink" href="#creating-animation" title="Permalink to this heading"></a></h2>
-<p>Animation is under test.</p>
+<ol class="arabic" start="0">
+<li><p>(Optional) To create an animation, we highly recommend to use ffmpeg. Install ffmpeg following the instruction in official website (<a class="reference external" href="https://ffmpeg.org/">https://ffmpeg.org/</a>).</p></li>
+<li><p>Open test data by the code below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multicut</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">gauss_3d_data</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+<li><p>Apply default template from the sidebar.</p></li>
+<li><p>It is highly recommended to create new independent graph to create animation. Right click “data1” and select “Connected”-“Display as graph”-“image”.</p></li>
+</ol>
+<img alt="../_images/anim1.png" src="../_images/anim1.png" />
+<ol class="arabic simple" start="4">
+<li><p>Confirm that the image is changed when you change the value of “axis3” from “Range” tab of “MultiCut” tab in sidebar.</p></li>
+<li><p>Change the colormap of the image to “BuGn”. Apply any modification you want.</p></li>
+</ol>
+<img alt="../_images/anim2.png" src="../_images/anim2.png" />
+<ol class="arabic simple" start="6">
+<li><p>Go to “Export” tab of “MultiCut” tab in sidebar.</p></li>
+<li><p>Confirm that “Frame axis” is “3”. In the present case, “Axis 3” is used as animation axis.</p></li>
+<li><p>Check “Draw frame”, and type “frm” in the textbox at the right.</p></li>
+</ol>
+<img alt="../_images/anim3.png" src="../_images/anim3.png" />
+<ol class="arabic simple" start="9">
+<li><p>(Important) Click the graph that you want to create animation. In the present case, you should click Graph000.</p></li>
+<li><p>Click “Create animation”. After several time (depending on the environment, it takes 20 seconds in our environment), you see a message box.</p></li>
+</ol>
+<img alt="../_images/anim4.png" src="../_images/anim4.png" />
+<ol class="arabic simple" start="11">
+<li><p>You see the .mp4 file is created.</p></li>
+</ol>
+<img alt="../_images/anim5.png" src="../_images/anim5.png" />
 </section>
 </section>
 

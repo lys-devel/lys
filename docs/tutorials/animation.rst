@@ -78,5 +78,39 @@ Reproduce your analysis
 
 Creating animation
 ----------------------------
+0. (Optional) To create an animation, we highly recommend to use ffmpeg. Install ffmpeg following the instruction in official website (https://ffmpeg.org/).
 
-Animation is under test. 
+1. Open test data by the code below::
+
+    multicut(resources.gauss_3d_data())
+
+2. Apply default template from the sidebar.
+
+3. It is highly recommended to create new independent graph to create animation. Right click "data1" and select "Connected"-"Display as graph"-"image".
+
+.. image:: ./image_mcut/anim1.png
+
+4. Confirm that the image is changed when you change the value of "axis3" from "Range" tab of "MultiCut" tab in sidebar.
+
+5. Change the colormap of the image to "BuGn". Apply any modification you want.
+
+.. image:: ./image_mcut/anim2.png
+
+6. Go to "Export" tab of "MultiCut" tab in sidebar.
+
+7. Confirm that "Frame axis" is "3". In the present case, "Axis 3" is used as animation axis.
+
+8. Check "Draw frame", and type "frm" in the textbox at the right.
+
+.. image:: ./image_mcut/anim3.png
+    
+9. (Important) Click the graph that you want to create animation. In the present case, you should click Graph000.
+
+10. Click "Create animation". After several time (depending on the environment, it takes 20 seconds in our environment), you see a message box.
+
+.. image:: ./image_mcut/anim4.png
+
+11. You see the .mp4 file is created.
+
+.. image:: ./image_mcut/anim5.png
+

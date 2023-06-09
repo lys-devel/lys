@@ -15,15 +15,18 @@ class AnimationTab(QtWidgets.QGroupBox):
         self.__initlayout()
         self._cui = cui
         self.__axis.setDimension(cui.getFilteredWave().ndim)
+        self.__axis.setAxis(cui.getFilteredWave().ndim - 1)
         self._cui.dimensionChanged.connect(self.__dimensionChanged)
 
     def __dimensionChanged(self):
         self.__axis.setDimension(self._cui.getFilteredWave().ndim)
+        self.__axis.setAxis(self._cui.getFilteredWave().ndim - 1)
 
     def __initlayout(self):
         self.__axis = AxisSelectionLayout("Frame axis", 2)
         btn = QtWidgets.QPushButton("Create animation", clicked=self.__animation)
         self.__filename = QtWidgets.QLineEdit()
+        self.__filename.setText("movie1")
         self.__types = QtWidgets.QComboBox()
         self.__types.addItems(self._type)
 
@@ -43,19 +46,18 @@ class AnimationTab(QtWidgets.QGroupBox):
 
     def __makeTimeOptionLayout(self):
         self.__useTime = QtWidgets.QCheckBox('Draw frame')
-        self.__timeoffset = QtWidgets.QDoubleSpinBox()
-        self.__timeoffset.setRange(float('-inf'), float('inf'))
         self.__timeunit = QtWidgets.QLineEdit()
+        self.__timeunit.setPlaceholderText("Enter the unit")
 
         hbox1 = QtWidgets.QHBoxLayout()
         hbox1.addWidget(self.__useTime)
-        hbox1.addWidget(self.__timeoffset)
         hbox1.addWidget(self.__timeunit)
         return hbox1
 
     def __makeGeneralFuncLayout(self):
         self.__useFunc = QtWidgets.QCheckBox("Use general func f(canv, i, axis)")
         self.__funcName = QtWidgets.QLineEdit()
+        self.__funcName.setPlaceholderText("Function name")
 
         h1 = QtWidgets.QHBoxLayout()
         h1.addWidget(self.__useFunc)
@@ -100,7 +102,7 @@ class AnimationTab(QtWidgets.QGroupBox):
     def __prepareOptionalParams(self):
         params = {}
         if self.__useTime.isChecked():
-            params['time'] = {"unit": self.__timeunit.text(), "offset": self.__timeoffset.value()}
+            params['time'] = {"unit": self.__timeunit.text(), "offset": 0}
         if self.__useFunc.isChecked():
             params['gfunc'] = self.__funcName.text()
         return params
