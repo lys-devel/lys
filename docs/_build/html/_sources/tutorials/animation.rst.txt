@@ -34,7 +34,7 @@ Import/Export filters
 
 5. Right clidk "Filters" and select "Clear". All filters are cleared.
 
-6. Right click "Filters" and select "Import from file". Select "filter1.fil".
+6. Right click "Filters" and select "Import from file". Select "filter1.fil". You can reproduce the Median filter.
 
 
 Reproduce your analysis
@@ -78,3 +78,5 @@ Reproduce your analysis
 
 Creating animation
 ----------------------------
+
+Animation is under test. 

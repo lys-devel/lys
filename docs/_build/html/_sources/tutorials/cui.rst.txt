@@ -4,7 +4,7 @@ Use lys as Python interpreter
 Use Python interpreter
 ---------------------------
 
-1. After staring *lys*, you see the main window.
+1. After starting *lys*, you see the main window.
 
 .. image:: ./image_cui/overview.png
 
