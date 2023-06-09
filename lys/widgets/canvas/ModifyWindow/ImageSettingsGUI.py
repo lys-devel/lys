@@ -400,7 +400,7 @@ class VectorAdjustBox(QtWidgets.QWidget):
             v.setColor(color)
 
     @ avoidCircularReference
-    def __changePivot(self):
+    def __changePivot(self, *args):
         for v in self._vectors:
             v.setPivot(self.__pivot.currentText())
 
