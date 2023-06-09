@@ -1,56 +1,44 @@
-import inspect
-import itertools
 import numpy as np
 
-from lys import Wave, display
+from lys import display
 from lys.Qt import QtWidgets, QtGui, QtCore
 from lys.widgets import ScientificSpinBox
 from lys.decorators import avoidCircularReference
 
 from .Functions import functions
-from .Fitting import fit, sumFunction
+from .FittingCUI import FittingCUI
 
 
 class _ResultController(QtCore.QObject):
-    stateChanged = QtCore.pyqtSignal(bool)
-
-    def __init__(self, canvas, data, info, manager):
+    def __init__(self, canvas, cui, data):
         super().__init__()
         self._canvas = canvas
-        self._state = False
+        self._cui = cui
         self._data = data
-        self._info = info
-        self._info.updated.connect(self._update)
-        self._mgr = manager
-        self._fitted = None
-        self._obj = None
+        self._state, self._obj, self._fitted = self.__initObj(canvas)
+        self._cui.updated.connect(self._update)
 
-    def calculateResidualSum(self):
-        wave = self._data.getWave()
-        f = self._info.fitFunction
-        p = self._info.fitParameters
-        data, x, axis = self._mgr.getDataForFit(wave)
-        if self._fitted is None:
-            self._fitted = Wave(f(x, *p), axis, name=wave.name + "_fit")
-        else:
-            self._fitted.data = f(x, *p)
-            self._fitted.x = axis
-        return np.sqrt(np.sum(abs(data - self._fitted.data)**2)) / len(wave.data)
+    def __initObj(self, canvas):
+        for line in canvas.getLines():
+            w = line.getWave()
+            if "lys_Fitting" in w.note:
+                if w.note["lys_Fitting"]["fitted"] is False:
+                    if w.note["lys_Fitting"]["id"] == self._cui.id:
+                        return True, line, w
+        return False, None, None
 
     def _update(self):
         if self._state:
-            f = self._info.fitFunction
+            f = self._cui.fitFunction
             if f is None:
                 self._remove()
                 return False
-            wave = self._data.getWave()
-            p = self._info.fitParameters
-            _, x, axis = self._mgr.getDataForFit(wave)
+            fitted = self._cui.fittedData()
             if self._fitted is None:
-                self._fitted = Wave(f(x, *p), axis, name=wave.name + "_fit")
+                self._fitted = fitted
             else:
-                self._fitted.data = f(x, *p)
-                self._fitted.x = axis
+                self._fitted.data = fitted.data
+                self._fitted.x = fitted.x
             if self._obj is None:
                 self._obj = self._canvas.Append(self._fitted, offset=self._data.getOffset())
         else:
@@ -70,251 +58,133 @@ class _ResultController(QtCore.QObject):
         return self._state
 
 
-class _DataManager(QtCore.QObject):
-    def __init__(self):
+class FittingWidget(QtWidgets.QWidget):
+    def __init__(self, canvas):
         super().__init__()
-        self._range = [None, None]
-        self._xdata = None
+        self.canvas = canvas
+        self._items, lines = self.__loadItems()
+        self._ctrls = [_ResultController(canvas, item, line) for item, line in zip(self._items, lines)]
+        self.__initlayout()
+        self.__targetChanged(0)
 
-    def getDataForFit(self, wave):
-        axis = wave.x
-        range = list(self._range)
-        if range[0] is None:
-            range[0] = np.min(axis) - 1
-        if range[1] is None:
-            range[1] = np.max(axis) + 1
-        p = wave.posToPoint(range, axis=0)
-        if self._xdata is None:
-            x = wave.x
+    def __loadItems(self):
+        items, lines = [], []
+        for line in self.canvas.getLines():
+            wave = line.getWave()
+            if "lys_Fitting" in wave.note:
+                if wave.note["lys_Fitting"]["fitted"] is False:
+                    continue
+            items.append(FittingCUI(wave))
+            lines.append(line)
+        return items, lines
+
+    def __initlayout(self):
+        self._tree = FittingTree()
+        self._tree.plotRequired.connect(self.__plot)
+        self._target = QtWidgets.QComboBox()
+        self._target.addItems([item.name for item in self._items])
+        self._target.currentIndexChanged.connect(self.__targetChanged)
+
+        hbox2 = QtWidgets.QHBoxLayout()
+        hbox2.addWidget(QtWidgets.QLabel("Target"))
+        hbox2.addWidget(self._target)
+
+        self._dm = _DataAxisWidget(self.canvas)
+        self._dm.axisChanged.connect(self.__axisChanged)
+
+        self._append = QtWidgets.QCheckBox("Append result", stateChanged=self.__append)
+        self._all = QtWidgets.QCheckBox("Apply to all")
+
+        hbox1 = QtWidgets.QHBoxLayout()
+        hbox1.addWidget(self._append)
+        hbox1.addWidget(self._all)
+
+        exec = QtWidgets.QPushButton('Fit', clicked=self.__fit)
+        resi = QtWidgets.QPushButton('Residual sum', clicked=self.__resi)
+        hbox3 = QtWidgets.QHBoxLayout()
+        hbox3.addWidget(exec)
+        hbox3.addWidget(resi)
+
+        vbox1 = QtWidgets.QVBoxLayout()
+        vbox1.addLayout(hbox2)
+        vbox1.addWidget(self._dm)
+        vbox1.addWidget(self._tree)
+        vbox1.addLayout(hbox1)
+        vbox1.addLayout(hbox3)
+        self.setLayout(vbox1)
+        self.adjustSize()
+        self.updateGeometry()
+        self.show()
+
+    def __axisChanged(self, type, range):
+        self._currentItem.setFittingRange(type, range)
+
+    @avoidCircularReference
+    def __targetChanged(self, i):
+        if len(self._items) > 0:
+            self._tree.set(self._items[i])
+            self._append.setChecked(self._currentResult.state)
+            self._dm.setRange(*self._currentItem.getFittingRange())
+
+    def __resi(self):
+        if self._all.isChecked():
+            display([item.residualSum() for item in self._items])
         else:
-            x = wave.note[self._xdata]
-        return wave.data[p[0]:p[1] + 1], x[p[0]:p[1] + 1], wave.x[p[0]:p[1] + 1]
+            print("Residual sum:", self._currentItem.residualSum())
 
-    def getOffset(self, line):
-        return line.getOffset()
-
-    def setRange(self, range):
-        self._range = range
-
-    def setAxisType(self, t):
-        self._xdata = t
-
-
-class _FittingInfo(QtCore.QObject):
-    functionAdded = QtCore.pyqtSignal(object)
-    functionRemoved = QtCore.pyqtSignal(object)
-    updated = QtCore.pyqtSignal()
-
-    def __init__(self, data, manager):
-        super().__init__()
-        self._data = data
-        self._mgr = manager
-        self._funcs = []
-
-    @property
-    def name(self):
-        return self._data.name
-
-    @property
-    def functions(self):
-        return self._funcs
-
-    def addFunction(self, func):
-        if isinstance(func, dict):
-            item = _FuncInfo.loadFromDictionary(func)
+    def __fit(self):
+        if self._all.isChecked():
+            msg = "This operation will delete all fitting results except displayed and then fit all data in the graph using displayed fitting function. Are your really want to proceed?"
+            res = QtWidgets.QMessageBox.information(self, "Warning", msg, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+            if res == QtWidgets.QMessageBox.Yes:
+                d = self._currentItem.saveAsDictionary()
+                for item in self._items:
+                    if item != self._currentItem:
+                        item.loadFromDictionary(d)
+                    res, msg = item.fit()
+                    if not res:
+                        QtWidgets.QMessageBox.warning(self, "Error", msg)
+                        return
+                QtWidgets.QMessageBox.information(self, "Information", "All fittings finished.", QtWidgets.QMessageBox.Yes)
         else:
-            item = _FuncInfo(func)
-        item.updated.connect(self.updated)
-        self._funcs.append(item)
-        self.functionAdded.emit(item)
-        self.updated.emit()
+            res, msg = self._currentItem.fit()
+            if res is False:
+                QtWidgets.QMessageBox.warning(self, "Error", msg)
 
-    def removeFunction(self, index):
-        del self._funcs[index]
-        self.functionRemoved.emit(index)
-        self.updated.emit()
+    def __append(self, state):
+        if self._all.isChecked():
+            for c in self._ctrls:
+                c.set(state)
+        else:
+            self._ctrls[self._target.currentIndex()].set(state)
 
-    def clear(self):
-        while len(self.functions) != 0:
-            self.removeFunction(0)
-
-    def fit(self, parent):
-        guess = self.fitParameters
-        bounds = np.array(list(itertools.chain(*[fi.range for fi in self._funcs])))
-        for g, b in zip(guess, bounds):
-            if g < b[0] or g > b[1] or b[0] > b[1]:
-                QtWidgets.QMessageBox.warning(parent, "Error", "Fit error: all fitting parameters should between minimum and maximum.")
-                return False
-        data, x, _ = self._mgr.getDataForFit(self._data)
-        res, sig = fit(self.fitFunction, x, data, guess=guess, bounds=bounds.T)
-        n = 0
-        for fi in self._funcs:
-            m = len(fi.parameters)
-            fi.setValue(res[n:n + m])
-            n = n + m
-        return True
-
-    def getParamValue(self, index_f, index_p):
-        if len(self.functions) > index_f:
-            f = self.functions[index_f]
-            if len(f.value) > index_p:
-                return f.value[index_p]
-
-    def saveAsDictionary(self):
-        return {"function_" + str(i): f.saveAsDictionary() for i, f in enumerate(self.functions)}
-
-    def loadFromDictionary(self, dic):
-        i = 0
-        while "function_" + str(i) in dic:
-            self.addFunction(dic["function_" + str(i)])
-            i += 1
-
-    @property
-    def fitFunction(self):
-        if len(self._funcs) == 0:
-            return None
-        return sumFunction([fi.function for fi in self._funcs])
-
-    @property
-    def fitParameters(self):
-        return np.array(list(itertools.chain(*[fi.value for fi in self._funcs])))
-
-
-class _FuncInfo(QtCore.QObject):
-    updated = QtCore.pyqtSignal()
-
-    def __init__(self, name):
-        super().__init__()
-        self._name = name
-        param = inspect.signature(functions[name]).parameters
-        self._params = [_ParamInfo(n, p) for n, p in zip(list(param.keys())[1:], list(param.values())[1:])]
-        for p in self._params:
-            p.stateChanged.connect(self.updated)
-
-    def setValue(self, value):
-        for p, v in zip(self.parameters, value):
-            p.setValue(v)
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def parameters(self):
-        return self._params
-
-    @property
-    def function(self):
-        return functions[self._name]
-
-    @property
-    def paramNames(self):
-        return [p.name for p in self.parameters]
-
-    @property
-    def value(self):
-        return [p.value for p in self.parameters]
-
-    @property
-    def range(self):
+    def __plot(self, f, p):
         res = []
-        for p in self.parameters:
-            if p.enabled:
-                b = list(p.range)
-                min_enabled, max_enabled = p.minMaxEnabled
-                if not min_enabled:
-                    b[0] = -np.inf
-                if not max_enabled:
-                    b[1] = np.inf
-                res.append(tuple(b))
-            else:
-                res.append((p.value, p.value))
-        return res
-
-    def saveAsDictionary(self):
-        d = {"param_" + str(i): p.saveAsDictionary() for i, p in enumerate(self.parameters)}
-        d["name"] = self._name
-        return d
-
-    @classmethod
-    def loadFromDictionary(cls, dic):
-        obj = cls(dic["name"])
-        for i, p in enumerate(obj.parameters):
-            p.loadParameters(**dic["param_" + str(i)])
-        return obj
-
-
-class _ParamInfo(QtCore.QObject):
-    stateChanged = QtCore.pyqtSignal(object)
-
-    def __init__(self, name, param, value=None, range=(0, 1), enabled=True, minMaxEnabled=(False, False)):
-        super().__init__()
-        self._name = name
-        if param.default != inspect._empty:
-            self._value = param.default
-        else:
-            self._value = 1
-        if value is not None:
-            self._value = value
-        self._range = range
-        self._use = enabled
-        self._min, self._max = minMaxEnabled
+        for item in self._items:
+            tmp = item.getParamValue(f, p)
+            if tmp is None:
+                QtWidgets.QMessageBox.information(self, "Warning", "All data should be fitted by the same function to plot parameter.")
+                return
+            res.append(tmp)
+        display(res)
 
     @property
-    def name(self):
-        return self._name
-
-    def setValue(self, value):
-        self._value = value
-        self.stateChanged.emit(self)
+    def _currentItem(self):
+        return self._items[self._target.currentIndex()]
 
     @property
-    def value(self):
-        return self._value
-
-    def setEnabled(self, b):
-        self._use = b
-        self.stateChanged.emit(self)
-
-    @property
-    def enabled(self):
-        return self._use
-
-    def setRange(self, min=None, max=None):
-        if min is not None:
-            self._range[0] = min
-        if max is not None:
-            self._range[1] = max
-        self.stateChanged.emit(self)
-
-    @property
-    def range(self):
-        return tuple(self._range)
-
-    def setMinMaxEnabled(self, min, max):
-        self._min = min
-        self._max = max
-
-    @property
-    def minMaxEnabled(self):
-        return self._min, self._max
-
-    def saveAsDictionary(self):
-        return {"name": self._name, "value": self.value, "range": self.range, "enabled": self.enabled, "minMaxEnabled": self.minMaxEnabled}
-
-    def loadParameters(self, name, value, range, enabled, minMaxEnabled):
-        self._name = name
-        self._value = value
-        self._range = range
-        self._use = enabled
-        self._min, self._max = minMaxEnabled
+    def _currentResult(self):
+        return self._ctrls[self._target.currentIndex()]
 
 
-class DataAxisWidget(QtWidgets.QGroupBox):
-    def __init__(self, obj, canvas):
+class _DataAxisWidget(QtWidgets.QGroupBox):
+    axisChanged = QtCore.pyqtSignal(object, tuple)
+
+    def __init__(self, canvas):
         super().__init__("x axis")
         self.__initlayout()
-        self._obj = obj
+        self.__type = None
+        self.__range = (None, None)
         self._canvas = canvas
 
     def __initlayout(self):
@@ -352,7 +222,8 @@ class DataAxisWidget(QtWidgets.QGroupBox):
 
         self.setLayout(g)
 
-    def __loadRange(self):
+    @avoidCircularReference
+    def __loadRange(self, *args, **kwargs):
         r = [0, 0]
         if self._useMin.isChecked():
             r[0] = self._min.value()
@@ -362,18 +233,21 @@ class DataAxisWidget(QtWidgets.QGroupBox):
             r[1] = self._max.value()
         else:
             r[1] = None
-        self._obj.setRange(tuple(r))
+        self.__range = tuple(r)
+        self.axisChanged.emit(self.__type, self.__range)
 
     def __changeXAxis(self, txt):
         self._keyLabel.setVisible(txt == "from Wave.note")
         self._keyText.setVisible(txt == "from Wave.note")
         self.__setXAxis()
 
-    def __setXAxis(self):
+    @avoidCircularReference
+    def __setXAxis(self, *args, **kwargs):
         if self._xdata.currentText() == "x axis":
-            self._obj.setAxisType(None)
+            self.__type = None
         else:
-            self._obj.setAxisType(self._keyText.text())
+            self.__type = self._keyText.text()
+        self.axisChanged.emit(self.__type, self.__range)
 
     def __loadFromGraph(self):
         if self._canvas.isRangeSelected():
@@ -386,108 +260,30 @@ class DataAxisWidget(QtWidgets.QGroupBox):
         else:
             QtWidgets.QMessageBox.information(self, "Warning", "Please select region by dragging in the graph.")
 
-
-class FittingWidget(QtWidgets.QWidget):
-    def __init__(self, canvas):
-        super().__init__()
-        self.canvas = canvas
-        self._data = _DataManager()
-        self._items = [_FittingInfo(line.getWave(), self._data) for line in self.canvas.getLines()]
-        self._ctrls = [_ResultController(canvas, data, item, self._data) for data, item in zip(self.canvas.getLines(), self._items)]
-        self.__initlayout()
-        self.__targetChanged(0, init=True)
-
-    def __initlayout(self):
-        self._tree = FittingTree()
-        self._tree.plotRequired.connect(self.__plot)
-        self._target = QtWidgets.QComboBox()
-        self._target.addItems([item.name for item in self._items])
-        self._target.currentIndexChanged.connect(self.__targetChanged)
-
-        hbox2 = QtWidgets.QHBoxLayout()
-        hbox2.addWidget(QtWidgets.QLabel("Target"))
-        hbox2.addWidget(self._target)
-
-        dm = DataAxisWidget(self._data, self.canvas)
-
-        self._append = QtWidgets.QCheckBox("Append result", stateChanged=self.__append)
-        self._all = QtWidgets.QCheckBox("Apply to all")
-
-        hbox1 = QtWidgets.QHBoxLayout()
-        hbox1.addWidget(self._append)
-        hbox1.addWidget(self._all)
-
-        exec = QtWidgets.QPushButton('Fit', clicked=self.__fit)
-        resi = QtWidgets.QPushButton('Residual sum', clicked=self.__resi)
-        hbox3 = QtWidgets.QHBoxLayout()
-        hbox3.addWidget(exec)
-        hbox3.addWidget(resi)
-
-        vbox1 = QtWidgets.QVBoxLayout()
-        vbox1.addLayout(hbox2)
-        vbox1.addWidget(dm)
-        vbox1.addWidget(self._tree)
-        vbox1.addLayout(hbox1)
-        vbox1.addLayout(hbox3)
-        self.setLayout(vbox1)
-        self.adjustSize()
-        self.updateGeometry()
-        self.show()
-
     @avoidCircularReference
-    def __targetChanged(self, i, init=False):
-        if len(self._items) > 0:
-            self._tree.set(self._items[i])
-            if not init:
-                self._old_ctrl.stateChanged.disconnect(self._append.setChecked)
-            self._old_ctrl = self._ctrls[i]
-            self._append.setChecked(self._ctrls[i].state)
-            self._ctrls[i].stateChanged.connect(self._append.setChecked)
-
-    def __resi(self):
-        R = self._ctrls[self._target.currentIndex()].calculateResidualSum()
-        print("Residual sum:", R)
-
-    def __fit(self):
-        if self._all.isChecked():
-            msg = "This operation will delete all fitting results except displayed and then fit all data in the graph using displayed fitting function. Are your really want to proceed?"
-            res = QtWidgets.QMessageBox.information(self, "Warning", msg, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-            if res == QtWidgets.QMessageBox.Yes:
-                d = self._currentItem.saveAsDictionary()
-                for item in self._items:
-                    if item != self._currentItem:
-                        item.clear()
-                        item.loadFromDictionary(d)
-                    res = item.fit(self)
-                    if not res:
-                        return
-            QtWidgets.QMessageBox.information(self, "Information", "All fittings finished.", QtWidgets.QMessageBox.Yes)
+    def setRange(self, type, range):
+        self.__type = type
+        self.__range = tuple(range)
+        if self.__type is None:
+            self._xdata.setCurrentIndex(0)
         else:
-            self._currentItem.fit(self)
+            self._xdata.setCurrentIndex(1)
+            self._keyText.setText(self.__type)
 
-    def __append(self, state):
-        if self._all.isChecked():
-            for c in self._ctrls:
-                c.set(state)
+        if self.__range[0] is None:
+            self._useMin.setChecked(False)
         else:
-            self._ctrls[self._target.currentIndex()].set(state)
-
-    def __plot(self, f, p):
-        res = []
-        for item in self._items:
-            tmp = item.getParamValue(f, p)
-            if tmp is None:
-                QtWidgets.QMessageBox.information(self, "Warning", "All data should be fitted by the same function to plot parameter.")
-                return
-            res.append(tmp)
-        display(res)
-
-    @property
-    def _currentItem(self):
-        return self._items[self._target.currentIndex()]
+            self._useMin.setChecked(True)
+            self._min.setValue(self.__range[0])
+        if self.__range[1] is None:
+            self._useMax.setChecked(False)
+        else:
+            self._useMax.setChecked(True)
+            self._max.setValue(self.__range[1])
 
 
 class FittingTree(QtWidgets.QTreeView):
+    """The widget for _FittingFunctions"""
     __copied = None
     __allCopied = None
     plotRequired = QtCore.pyqtSignal(int, int)
