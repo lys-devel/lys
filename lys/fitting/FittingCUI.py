@@ -82,19 +82,21 @@ class FittingCUI(QtCore.QObject):
     def getFittingRange(self):
         return self._xdata, self._range
 
-    def saveAsDictionary(self):
+    def saveAsDictionary(self, useId=True):
         d = self._funcs.saveAsDictionary()
         d["fitted"] = True
         d["range"] = self._range
         d["xdata"] = self._xdata
-        d["id"] = self._id
+        if useId:
+            d["id"] = self._id
         return d
 
     def loadFromDictionary(self, dic):
         self._funcs.loadFromDictionary(dic)
         self._range = dic.get("range", [None, None])
         self._xdata = dic.get("xdata", None)
-        self._id = dic["id"]
+        if "id" in dic:
+            self._id = dic["id"]
 
     @property
     def name(self):

@@ -12,14 +12,18 @@ class CanvasUtilities(CanvasPart):
     """
 
     def openModifyWindow(self):
+        """
+        Open graph setting window.
+        """
         from lys import glb
-        # return ModifyWindow(self.canvas())
         glb.editCanvas(self.canvas())
 
     def openFittingWindow(self):
-        from lys.fitting import FittingWindow
-        fit = FittingWindow(self.getParent(), self.canvas())
-        return fit
+        """
+        Open fitting window.
+        """
+        from lys import glb
+        glb.startFitting(self.canvas())
 
     def getParent(self):
         """

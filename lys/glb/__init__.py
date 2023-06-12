@@ -73,6 +73,16 @@ def editMulticut(mcut):
     mainWindow().tabWidget("right").widget(3).setObject(mcut)
 
 
+def startFitting(canvas):
+    """
+    Open fitting window.
+
+    Args:
+        canvas: The canvas to be fitted.
+    """
+    mainWindow().tabWidget("right").widget(4).setCanvas(canvas)
+
+
 def createMainWindow(*args, **kwargs):
     """
     Create main window.

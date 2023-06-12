@@ -112,9 +112,6 @@ class FittingWidget(QtWidgets.QWidget):
         vbox1.addLayout(hbox1)
         vbox1.addLayout(hbox3)
         self.setLayout(vbox1)
-        self.adjustSize()
-        self.updateGeometry()
-        self.show()
 
     def __axisChanged(self, type, range):
         self._currentItem.setFittingRange(type, range)
@@ -330,9 +327,11 @@ class FittingTree(QtWidgets.QTreeView):
             menu.addAction(QtWidgets.QAction('Copy Parameters as dict', self, triggered=lambda: self.__copyParams("dict")))
             menu.addSeparator()
             menu.addAction(QtWidgets.QAction('Copy Function', self, triggered=self.__copyFunction))
+        if self.__copied is not None:
             menu.addAction(QtWidgets.QAction('Paste Function', self, triggered=self.__pasteFunction))
         menu.addAction(QtWidgets.QAction('Copy All Functions', self, triggered=lambda: self.__copyFunction(all=True)))
-        menu.addAction(QtWidgets.QAction('Paste All Functions', self, triggered=lambda: self.__pasteFunction(all=True)))
+        if self.__allCopied is not None:
+            menu.addAction(QtWidgets.QAction('Paste All Functions', self, triggered=lambda: self.__pasteFunction(all=True)))
         menu.addSeparator()
         menu.addAction(QtWidgets.QAction('Import from File', self, triggered=self.__import))
         menu.addAction(QtWidgets.QAction('Export to File', self, triggered=self.__export))
@@ -394,7 +393,7 @@ class FittingTree(QtWidgets.QTreeView):
             if not path.endswith(".dic"):
                 path = path + ".dic"
             with open(path, "w") as f:
-                f.write(str(self._obj.saveAsDictionary()))
+                f.write(str(self._obj.saveAsDictionary(useId=False)))
 
     def __import(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Load fitting', filter="Dictionary (*.dic);;All files (*.*)")

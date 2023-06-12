@@ -1,6 +1,7 @@
 from .FittingWindow import FittingWindow
 from .Fitting import fit, sumFunction
 from .Functions import _addFittingFunction
+from .FittingWidget import FittingWidget
 
 
 def addFittingFunction(func, name):
