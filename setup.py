@@ -5,6 +5,6 @@ sys.path.append('./test')
 
 setup(
     name="lys",
-    version="0.2.1",
-    install_requires=["numpy", "scipy", "opencv-python-headless", "loky", "Pillow", "PyQt5", "matplotlib", "pyqtGraph", "dask[array]", "dask[distributed]", "dask_image", "autopep8", "qtpy"],
+    version="0.3.0",
+    install_requires=["numpy", "scipy", "opencv-python-headless", "PyQt5", "matplotlib", "pyqtGraph", "dask[array]", "dask[distributed]", "dask_image", "autopep8", "qtpy"],
 )

@@ -8,7 +8,7 @@ from lys.widgets import lysCanvas, AxisSelectionLayout
 
 class AnimationTab(QtWidgets.QGroupBox):
     updated = QtCore.pyqtSignal(int)
-    _type = [".mp4 (ffmpeg required)", ".gif"]
+    _type = [".mp4 (ffmpeg required)", ".gif (Pillow required)"]
 
     def __init__(self, cui):
         super().__init__("Animation")
@@ -86,7 +86,10 @@ class AnimationTab(QtWidgets.QGroupBox):
             QtWidgets.QMessageBox.information(self, "Error", "Filename is required to make animation.", QtWidgets.QMessageBox.Yes)
             return
 
-        if self.__types.currentText() == ".gif":
+        if self.__types.currentText() == ".gif (Pillow required)":
+            if "pillow" not in animation.writers:
+                QtWidgets.QMessageBox.information(self, "Error", "Pillow is required to make gif animation.", QtWidgets.QMessageBox.Yes)
+                return
             name += ".gif"
         else:
             if "ffmpeg" not in animation.writers:
@@ -113,7 +116,7 @@ class AnimationTab(QtWidgets.QGroupBox):
         c.LoadFromDictionary(dic)
         setter = _valueSetter(self._cui, self.__axis.getAxis(), len(axis))
         ani = animation.FuncAnimation(c.getFigure(), _frame, fargs=(c, axis, params, setter.setValue), frames=len(axis), interval=30, repeat=False, init_func=_init)
-        if self.__types.currentText() == ".gif":
+        if self.__types.currentText() == ".gif (Pillow required)":
             writer = "pillow"
         else:
             writer = "ffmpeg"
