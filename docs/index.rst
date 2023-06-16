@@ -6,7 +6,8 @@
 lys documentation
 ===============================
 
-*lys* is a hybrid CUI/GUI analysis system for scientific data inspired by several softwares such as Matlab and Igor. The characteristics of *lys* is as following.
+*lys* is a Python-based multi-dimensional data analysis and visualization platform based on the several popular libraries such as numpy, dask, matplotlib, and PyQt. 
+The characteristics of *lys* is as following.
 
 - Flexibile data analysis by Python CUI (numpy, scipy, dask) and GUI (PyQt, matplotlib, pyqtgraph).
 - Interactive publication-quality data visualization based on matplotlib supported by the original GUI interface.
@@ -22,9 +23,4 @@ To use *lys*, go to :doc:`install` and :doc:`tutorials/tutorial`.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
-
-   install
-   tutorials/tutorial
-   api
-
+   :caption: Con
