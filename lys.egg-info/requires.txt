@@ -1,0 +1,11 @@
+numpy
+scipy
+opencv-python-headless
+PySide2
+matplotlib
+pyqtGraph
+dask[array]
+dask[distributed]
+dask_image
+autopep8
+qtpy

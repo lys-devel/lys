@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Filters in lys.filters &mdash; lys 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="multicut module" href="multicut.html" />
+    <link rel="prev" title="filters module" href="filters.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="core.html">core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions.html">functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glb.html">glb module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="widgets.html">widgets module</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="filters.html">filters module</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="filters.html#list-of-pre-defined-filters">List of pre-defined filters</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Filters in lys.filters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="filters.html#module-lys.filters.function">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="filters.html#module-lys.filters.interface">Interfaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="filters.html#module-lys.filters.filtersGUI">GUI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="multicut.html">multicut module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fitting.html">fitting module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+          <li class="breadcrumb-item"><a href="filters.html">filters module</a></li>
+      <li class="breadcrumb-item active">Filters in lys.filters</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lys_/filters.filter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.filters.filter.Convolution">
+<span id="filters-in-lys-filters"></span><h1>Filters in lys.filters<a class="headerlink" href="#module-lys.filters.filter.Convolution" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Convolution.LaplacianConvFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Convolution.</span></span><span class="sig-name descname"><span class="pre">LaplacianConvFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Convolution.html#LaplacianConvFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Convolution.LaplacianConvFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ConvolutionFilter</span></code></p>
+<p>Apply Laplacian by convolution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> (<em>tuple</em><em> of </em><em>int</em>) – axes of wave along which to apply.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">filters</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">LaplacianConvFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1"># [1,0,0,0,-1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Convolution.PrewittFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Convolution.</span></span><span class="sig-name descname"><span class="pre">PrewittFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Convolution.html#PrewittFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Convolution.PrewittFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ConvolutionFilter</span></code></p>
+<p>Apply prewitt filter. See scipy.ndimage.filters.prewitt for detail.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> (<em>tuple</em><em> of </em><em>int</em>) – axes of wave along which to apply.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">filters</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">PrewittFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1"># [1,2,2,2,1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Convolution.SobelFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Convolution.</span></span><span class="sig-name descname"><span class="pre">SobelFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Convolution.html#SobelFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Convolution.SobelFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_ConvolutionFilter</span></code></p>
+<p>Apply prewitt filter. See scipy.ndimage.filters.sobel for detail.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> (<em>tuple</em><em> of </em><em>int</em>) – axes of wave along which to apply.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">filters</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">SobelFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="c1"># [1,2,2,2,1]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Dask"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Dask.RechunkFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Dask.</span></span><span class="sig-name descname"><span class="pre">RechunkFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">chunks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Dask.html#RechunkFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Dask.RechunkFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Rechunk dask array</p>
+<p>Users should proper chunk size for efficient parallel calculation for dask array.</p>
+<p>RechunkFilter enables users to rechunk dask array manually.</p>
+<p>See dask manual (<a class="reference external" href="https://docs.dask.org/en/latest/array-chunks.html">https://docs.dask.org/en/latest/array-chunks.html</a>) for detail.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>chunks</strong> (<em>'auto'</em><em> or </em><em>tuple</em><em> of </em><em>int</em>) – chunk size.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Dask.RechunkFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Dask.html#RechunkFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Dask.RechunkFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Differentiate"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Differentiate.GradientFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Differentiate.</span></span><span class="sig-name descname"><span class="pre">GradientFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Differentiate.html#GradientFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Differentiate.GradientFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Differentiate wave along <em>axes</em> (implementation of np.gradient in lys)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – axes to be differentiated</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">GradientFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># [1,1,1,1,1]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Differentiate.GradientFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Differentiate.html#GradientFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Differentiate.GradientFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Differentiate.LaplacianFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Differentiate.</span></span><span class="sig-name descname"><span class="pre">LaplacianFilter</span></span><a class="reference internal" href="../_modules/lys/filters/filter/Differentiate.html#LaplacianFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Differentiate.LaplacianFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply Laplacian</p>
+<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface.FilterInterface</span></code> for general description of Filters.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">LaplacianFilter</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># [1, 1.5, 2, 2, 2, ...]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Differentiate.LaplacianFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Differentiate.html#LaplacianFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Differentiate.LaplacianFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Differentiate.NablaFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Differentiate.</span></span><span class="sig-name descname"><span class="pre">NablaFilter</span></span><a class="reference internal" href="../_modules/lys/filters/filter/Differentiate.html#NablaFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Differentiate.NablaFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply nabla vector</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+
+<span class="n">ar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">([</span><span class="n">ar</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)],</span> <span class="n">ar</span><span class="p">,</span> <span class="n">ar</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wave&quot;</span><span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">NablaFilter</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># [[1,1,1], [1,1,1], [1,1,1]]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Differentiate.NablaFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Differentiate.html#NablaFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Differentiate.NablaFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Differentiate.NablaFilter.getRelativeDimension">
+<span class="sig-name descname"><span class="pre">getRelativeDimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Differentiate.html#NablaFilter.getRelativeDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Differentiate.NablaFilter.getRelativeDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Returns change of dimension for this filter</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.FreeLine"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.FreeLine.FreeLineFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.FreeLine.</span></span><span class="sig-name descname"><span class="pre">FreeLineFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/FreeLine.html#FreeLineFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.FreeLine.FreeLineFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Cut 2-dimensional data along arbitrary line with finite width.</p>
+<p><em>range</em> specifies start and end points in axes coordinates, [(x1, y1), (x2, y2)].
+For example, [(0,0),(5,10)] means that data is cut along y=2x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axes</strong> (<em>tuple</em><em> of </em><em>size 2</em>) – axes to be cut.</p></li>
+<li><p><strong>range</strong> (<em>2*2 sequence</em>) – see description above.</p></li>
+<li><p><strong>width</strong> (<em>int</em>) – width of integration around the line in pixel unit.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+
+<span class="c1"># prepare data</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wave&quot;</span><span class="p">)</span>
+
+<span class="c1"># apply FreeLineFilter</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">FreeLineFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="nb">range</span><span class="o">=</span><span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># [1, 3, 5]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.FreeLine.FreeLineFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/FreeLine.html#FreeLineFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.FreeLine.FreeLineFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.FreeLine.FreeLineFilter.getRelativeDimension">
+<span class="sig-name descname"><span class="pre">getRelativeDimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/FreeLine.html#FreeLineFilter.getRelativeDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.FreeLine.FreeLineFilter.getRelativeDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Returns change of dimension for this filter</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Frequency"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.BandPassFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Frequency.</span></span><span class="sig-name descname"><span class="pre">BandPassFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#BandPassFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.BandPassFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply band-pass (butterworth) filter by scipy.signal.filtfilt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>int</em>) – order of butterworth filter.</p></li>
+<li><p><strong>cutoff</strong> (<em>length-2 sequence</em>) – cutoff frequency in the Nyquist frequency unit (0 &lt; cutoff &lt; 1).</p></li>
+<li><p><strong>axes</strong> – axes to be applied.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.BandPassFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#BandPassFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.BandPassFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.BandStopFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Frequency.</span></span><span class="sig-name descname"><span class="pre">BandStopFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#BandStopFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.BandStopFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply band-stop (butterworth) filter by scipy.signal.filtfilt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>int</em>) – order of butterworth filter.</p></li>
+<li><p><strong>cutoff</strong> (<em>length-2 sequence</em>) – cutoff frequency in the Nyquist frequency unit (0 &lt; cutoff &lt; 1).</p></li>
+<li><p><strong>axes</strong> – axes to be applied.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.BandStopFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#BandStopFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.BandStopFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.FourierFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Frequency.</span></span><span class="sig-name descname"><span class="pre">FourierFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'forward'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">process</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'absolute'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Rect'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roll</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#FourierFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.FourierFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply fast Fourier transformation (FFT).</p>
+<p>If <em>process</em> is not complex, postprocessing is applied to FFT data.
+For example, when <em>process</em> =”real”, real part of FFT data is returned.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>dask.array.fft requires chunk along <em>axes</em> along which the FFT is applied should be one.
+Uses should rechunk before applying this filter by <code class="xref py py-class docutils literal notranslate"><span class="pre">RechunkFilter</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – axes to be transformed</p></li>
+<li><p><strong>type</strong> (<em>'forward'</em><em> or </em><em>'backward'</em>) – specify foward or backward FFT.</p></li>
+<li><p><strong>process</strong> (<em>'absolute'</em><em> or </em><em>'real'</em><em> or </em><em>'imag'</em><em> or </em><em>'complex'</em><em> or </em><em>'phase'</em><em> or </em><em>'complex'</em>) – see description above.</p></li>
+<li><p><strong>window</strong> (<em>'Rect'</em><em> or </em><em>'Hann'</em><em> or </em><em>'Hamming'</em><em> or </em><em>'Blackman'</em>) – a window function used for FFT</p></li>
+</ul>
+</dd>
+</dl>
+<p>Examle:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+
+<span class="c1"># prepare data and filter</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]))</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">FourierFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="c1"># FFT changes x axis as well as data</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># [0,0,0], [0,9,0], [0,0,0]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>    <span class="c1"># [-0.3333333, 0, 0.33333333]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.FourierFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#FourierFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.FourierFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.HighPassFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Frequency.</span></span><span class="sig-name descname"><span class="pre">HighPassFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#HighPassFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.HighPassFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply high-pass (butterworth) filter by scipy.signal.filtfilt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>int</em>) – order of butterworth filter.</p></li>
+<li><p><strong>cutoff</strong> (<em>float</em>) – cutoff frequency in the Nyquist frequency unit (0 &lt; cutoff &lt; 1).</p></li>
+<li><p><strong>axes</strong> – axes to be applied.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.HighPassFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#HighPassFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.HighPassFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.LowPassFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Frequency.</span></span><span class="sig-name descname"><span class="pre">LowPassFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#LowPassFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.LowPassFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply low-pass (butterworth) filter by scipy.signal.filtfilt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>order</strong> (<em>int</em>) – order of butterworth filter.</p></li>
+<li><p><strong>cutoff</strong> (<em>float</em>) – cutoff frequency in the Nyquist frequency unit (0 &lt; cutoff &lt; 1).</p></li>
+<li><p><strong>axes</strong> – axes to be applied.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Frequency.LowPassFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Frequency.html#LowPassFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Frequency.LowPassFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Integral"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Integral.IntegralAllFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Integral.</span></span><span class="sig-name descname"><span class="pre">IntegralAllFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sumtype</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Integral.html#IntegralAllFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Integral.IntegralAllFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Integrate wave along <em>axes</em> (implementation of np.sum, mean, max, min, and median in lys)</p>
+<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface.FilterInterface</span></code> for general description of Filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – axes to be integrated</p></li>
+<li><p><strong>sumtype</strong> (<em>'Sum'</em><em>, </em><em>'Mean'</em><em>, </em><em>'Max'</em><em>, </em><em>'Min'</em><em>, or </em><em>'Median'</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">])</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">IntegralAllFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sumtype</span><span class="o">=</span><span class="s2">&quot;Sum&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="c1"># [3,3,3,3]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>    <span class="c1"># [5,6,7,8]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.filters.filter.Integral.IntegralFilter" title="lys.filters.filter.Integral.IntegralFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntegralFilter</span></code></a></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Integral.IntegralAllFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Integral.html#IntegralAllFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Integral.IntegralAllFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Integral.IntegralAllFilter.getRelativeDimension">
+<span class="sig-name descname"><span class="pre">getRelativeDimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Integral.html#IntegralAllFilter.getRelativeDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Integral.IntegralAllFilter.getRelativeDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Returns change of dimension for this filter</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Integral.IntegralCircleFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Integral.</span></span><span class="sig-name descname"><span class="pre">IntegralCircleFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radiuses</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Integral.html#IntegralCircleFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Integral.IntegralCircleFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Circular integration of wave.</p>
+<p>Circularly integrate <em>f*(*x</em>,*y*) and returns <em>f*(*r</em>).</p>
+<p>This filter is under development. Do not use.</p>
+<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface.FilterInterface</span></code> for general description of Filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<em>tuple</em><em> of </em><em>size 2</em>) – position where <em>r</em> = 0</p></li>
+<li><p><strong>radiuses</strong> (<em>tuple</em><em> of </em><em>size 2</em>) – </p></li>
+<li><p><strong>axes</strong> (<em>tuple</em><em> of </em><em>size 2</em>) – axes to be integrated, i.e. (x,y)</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Integral.IntegralCircleFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Integral.html#IntegralCircleFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Integral.IntegralCircleFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Integral.IntegralCircleFilter.getRelativeDimension">
+<span class="sig-name descname"><span class="pre">getRelativeDimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Integral.html#IntegralCircleFilter.getRelativeDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Integral.IntegralCircleFilter.getRelativeDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Returns change of dimension for this filter</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Integral.IntegralFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Integral.</span></span><span class="sig-name descname"><span class="pre">IntegralFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sumtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Sum'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Integral.html#IntegralFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Integral.IntegralFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Integrate wave.</p>
+<p>Range of integration is specified by <em>range</em>.</p>
+<p>Note that the <em>range</em> is specified in the units of <em>axes</em> of (Dask)Wave.</p>
+<p>See <code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface.FilterInterface</span></code> for general description of Filters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>range</strong> (<em>list</em><em> of </em><em>length 2 sequence</em><em> or </em><em>None</em>) – region to be integrated. It it is None, the corresponding axis is not integrated.</p></li>
+<li><p><strong>sumtype</strong> (<em>'Sum'</em><em>, </em><em>'Mean'</em><em>, </em><em>'Max'</em><em>, </em><em>'Min'</em><em>, or </em><em>'Median'</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">IntegralFilter</span><span class="p">([(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="kc">None</span><span class="p">])</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># [6, 6, 6, 6, 6]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>     <span class="c1"># [2, 3, 4, 5, 6]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#lys.filters.filter.Integral.IntegralAllFilter" title="lys.filters.filter.Integral.IntegralAllFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntegralAllFilter</span></code></a></p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Integral.IntegralFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Integral.html#IntegralFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Integral.IntegralFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Integral.IntegralFilter.getRelativeDimension">
+<span class="sig-name descname"><span class="pre">getRelativeDimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Integral.html#IntegralFilter.getRelativeDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Integral.IntegralFilter.getRelativeDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Returns change of dimension for this filter</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Interporation"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Interporation.InterpFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Interporation.</span></span><span class="sig-name descname"><span class="pre">InterpFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Interporation.html#InterpFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Interporation.InterpFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Interpolate data by scipy.interpolate</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> (<em>tuple</em><em> of </em><em>int</em>) – new shape</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">InterpFilter</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">200</span><span class="p">,))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># (100,), (200,)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Interporation.InterpFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Interporation.html#InterpFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Interporation.InterpFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.MatrixMath"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.IndexMathFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.MatrixMath.</span></span><span class="sig-name descname"><span class="pre">IndexMathFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#IndexMathFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.IndexMathFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Calculate wave[<em>index1</em>] op wave[<em>index2</em>].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int</em>) – axis to be calculated</p></li>
+<li><p><strong>type</strong> (<em>'+'</em><em> or </em><em>'-'</em><em> or </em><em>'*'</em><em> or </em><em>'/'</em>) – operator type</p></li>
+<li><p><strong>index1</strong> (<em>int</em>) – index1 along <em>axis</em></p></li>
+<li><p><strong>index2</strong> (<em>int</em>) – index2 along <em>axis</em></p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.IndexMathFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#IndexMathFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.IndexMathFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.IndexMathFilter.getRelativeDimension">
+<span class="sig-name descname"><span class="pre">getRelativeDimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#IndexMathFilter.getRelativeDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.IndexMathFilter.getRelativeDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Returns change of dimension for this filter</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.SelectIndexFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.MatrixMath.</span></span><span class="sig-name descname"><span class="pre">SelectIndexFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#SelectIndexFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.SelectIndexFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Indexing of data.</p>
+<p>For example, when <em>axis</em> = 1 and index=4, data[:,4] is returned.</p>
+<p>For more complex indexing, use <a class="reference internal" href="#lys.filters.filter.MatrixMath.SliceFilter" title="lys.filters.filter.MatrixMath.SliceFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SliceFilter</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<em>int</em>) – index to be evaluated.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – axis to be evaluated.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.SelectIndexFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#SelectIndexFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.SelectIndexFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.SelectIndexFilter.getRelativeDimension">
+<span class="sig-name descname"><span class="pre">getRelativeDimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#SelectIndexFilter.getRelativeDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.SelectIndexFilter.getRelativeDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Returns change of dimension for this filter</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.SliceFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.MatrixMath.</span></span><span class="sig-name descname"><span class="pre">SliceFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#SliceFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.SliceFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Slicing waves.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>slices</strong> (<em>sequence</em><em> of </em><em>slice object</em>) – slices to be applied.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;wave&quot;</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">SliceFilter</span><span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="nb">slice</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)])</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">)</span> <span class="c1"># [[2, 3], [5, 6]], [7, 8], [10, 11]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.SliceFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#SliceFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.SliceFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.SliceFilter.getRelativeDimension">
+<span class="sig-name descname"><span class="pre">getRelativeDimension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#SliceFilter.getRelativeDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.SliceFilter.getRelativeDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Returns change of dimension for this filter</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.TransposeFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.MatrixMath.</span></span><span class="sig-name descname"><span class="pre">TransposeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#TransposeFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.TransposeFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Tranpose data by np.transpose.</p>
+<p>If the data is 1-dimensional, the data and x axis is swapped.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> (<em>sequence</em><em> of </em><em>int</em>) – order of axes.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">TransposeFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># [[1, 4], [2, 5], [3, 6]]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.MatrixMath.TransposeFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/MatrixMath.html#TransposeFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.MatrixMath.TransposeFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Region"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Region.NormalizeFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Region.</span></span><span class="sig-name descname"><span class="pre">NormalizeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#NormalizeFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.NormalizeFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Normalize data specified by <em>range</em>.</p>
+<p>Data is integrated along the axes specified by <em>axis</em> and then used for normalization.</p>
+<p>If <em>axis</em> is (1,2) For 4-dimensional data I(x,y,z,t), then I_norm(x,y,z,t) = I(x,y,z,t)/N(x,t) is calculated where N(x,t) = I_sliced.mean(axis=1).mean(axis=2).
+I_sliced is determined by <em>range</em> parameter.
+For example, when range= [None, (0,1), (2,3), None], I_sliced = Int_0^1 Int_1^2 dydz I(x,y,z,t).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>range</strong> (<em>sqeuence</em><em> of </em><em>length-2 float</em><em> or </em><em>None</em>) – see description above.</p></li>
+<li><p><strong>axis</strong> (<em>tuple</em><em> of </em><em>int</em>) – axes along which the wave is integrated.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Region.NormalizeFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#NormalizeFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.NormalizeFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Region.ReferenceNormalizeFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Region.</span></span><span class="sig-name descname"><span class="pre">ReferenceNormalizeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refIndex</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#ReferenceNormalizeFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.ReferenceNormalizeFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Normalize data by reference specified by refIndex.</p>
+<p>When data.ndim=2 and <em>axis</em> = 1, type=’Divide’, refIndex=5, data is normalized as
+data[:,0] = data[:,0]/data[:,5], data[:,1]=data[:,1]/dsata[:,5], …</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int</em>) – axis along which data is normalized.</p></li>
+<li><p><strong>type</strong> (<em>'Diff'</em><em> or </em><em>'Divide'</em>) – operator between data and reference.</p></li>
+<li><p><strong>refIndex</strong> (<em>int</em>) – index of reference data.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Region.ReferenceNormalizeFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#ReferenceNormalizeFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.ReferenceNormalizeFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Region.SelectRegionFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Region.</span></span><span class="sig-name descname"><span class="pre">SelectRegionFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">range</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#SelectRegionFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.SelectRegionFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Cut data by range specified by <em>region</em></p>
+<p><em>range</em> should be [(x1,x2),(y1,y2),…], where x1 and y2 specifies selected region in <em>axes</em> units.</p>
+<p>The calculated result is data[x1:x2, y1:y2, …]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>range</strong> (<em>sequence</em><em> of </em><em>length-2 tuple</em><em> or </em><em>None</em>) – see above description.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">])</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">SelectRegionFilter</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">14</span><span class="p">)])</span> <span class="c1"># range is given in axes unit</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># (2, 3)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>           <span class="c1"># [2, 3]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>           <span class="c1"># [11, 12, 13]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Region.SelectRegionFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Region.html#SelectRegionFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Region.SelectRegionFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Resize"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Resize.PaddingFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Resize.</span></span><span class="sig-name descname"><span class="pre">PaddingFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'first'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Resize.html#PaddingFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Resize.PaddingFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Add value at the edge of data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – axes to be padded.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – value to be added.</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – size of padding.</p></li>
+<li><p><strong>position</strong> (<em>'first'</em><em> or </em><em>'last'</em><em> or </em><em>'both'</em>) – position of padding.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">PaddingFilter</span><span class="p">(</span><span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;first&quot;</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># [0, 0, 1, 2, 3]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>     <span class="c1"># [-2, -1, 0, 1, 2]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Resize.PaddingFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Resize.html#PaddingFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Resize.PaddingFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Resize.ReduceSizeFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Resize.</span></span><span class="sig-name descname"><span class="pre">ReduceSizeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Resize.html#ReduceSizeFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Resize.ReduceSizeFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Reduce size of data.</p>
+<p>When <em>kernel</em> = (xn,yn), shape of data is reduced to 1/xn and 1/yn along both x and y direction, respectively.</p>
+<p>This filter is used to gain signal to noise ratio by summation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kernel</strong> (<em>sequence</em><em> of </em><em>int</em>) – see above description.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">]),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">ReduceSizeFilter</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># (3, 3)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>      <span class="c1"># [0, 2, 4]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Resize.ReduceSizeFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Resize.html#ReduceSizeFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Resize.ReduceSizeFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Segmentation"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Segmentation.AdaptiveThresholdFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Segmentation.</span></span><span class="sig-name descname"><span class="pre">AdaptiveThresholdFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Median'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mask'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Segmentation.html#AdaptiveThresholdFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Segmentation.AdaptiveThresholdFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Segmentation by adaptive thresholding.</p>
+<p>When mode=’Median’, and if data &gt;= median(data, size)+c, the result is one. Otherwise, result is np.nan.</p>
+<p><em>axes</em> specifies which axes are used for thresholding. Median (and Gaussian) filter is applied along these axes.
+For 2-dimensional image, <em>axes*=(0,1) is used. If data.ndim != 2, users should specifies *axes</em> manually.</p>
+<p>If output = ‘MaskedData’, then this filter returns mask*data.
+If ‘inv’ is included in <em>output</em>, the mask is reverted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>size</strong> (<em>int</em><em> or </em><em>float</em>) – size of Median and Gaussian filter in pixel units.</p></li>
+<li><p><strong>c</strong> (<em>float</em>) – offset for thresholding.</p></li>
+<li><p><strong>mode</strong> (<em>'Median'</em><em> or </em><em>'Gaussian'</em>) – specifies whether Median or Gaussian is applied to original data to generate adaptive threshold.</p></li>
+<li><p><strong>output</strong> (<em>'Mask'</em><em>, or </em><em>'MaskedData'</em><em>, or </em><em>'Mask_inv'</em><em> or </em><em>'MaskedData_inv'</em>) – see description above.</p></li>
+<li><p><strong>axes</strong> (<em>tuple</em><em> of </em><em>int</em>) – specifies axes used for adaptive thresholding.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Segmentation.AdaptiveThresholdFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Segmentation.html#AdaptiveThresholdFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Segmentation.AdaptiveThresholdFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Segmentation.ThresholdFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Segmentation.</span></span><span class="sig-name descname"><span class="pre">ThresholdFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Mask'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Segmentation.html#ThresholdFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Segmentation.ThresholdFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Segmentation by thresholding.</p>
+<p>If data &gt;= <em>threshold</em>, the result is one. Otherwise, result is np.nan.</p>
+<p>If output = ‘MaskedData’, then this filter returns mask*data.</p>
+<p>If ‘inv’ is included in <em>output</em>, the mask is reverted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>) – value of threshold</p></li>
+<li><p><strong>output</strong> (<em>'Mask'</em><em>, or </em><em>'MaskedData'</em><em>, or </em><em>'Mask_inv'</em><em> or </em><em>'MaskedData_inv'</em>) – ‘inv’ means the mask is reverted.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Segmentation.ThresholdFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Segmentation.html#ThresholdFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Segmentation.ThresholdFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Shift"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Shift.ReflectFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Shift.</span></span><span class="sig-name descname"><span class="pre">ReflectFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Shift.html#ReflectFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Shift.ReflectFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Reflect data.</p>
+<p>type(‘center’ or ‘first’ or ‘last’): specifies where the data is reflected.
+axes(tuple of int): specifies axes reflected.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Shift.ReflectFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Shift.html#ReflectFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Shift.ReflectFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Shift.ReverseFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Shift.</span></span><span class="sig-name descname"><span class="pre">ReverseFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Shift.html#ReverseFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Shift.ReverseFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Reverse data by dask.array.flip</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – axes to be reversed.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Shift.ReverseFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Shift.html#ReverseFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Shift.ReverseFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Shift.RollFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Shift.</span></span><span class="sig-name descname"><span class="pre">RollFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amount</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Shift.html#RollFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Shift.RollFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Reverse data by dask.array.roll</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>amount</strong> (<em>'1/2'</em><em> or </em><em>'1/4'</em><em> or </em><em>'-1/4'</em>) – amount of roll.</p></li>
+<li><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – axes to be rolled.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Shift.RollFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Shift.html#RollFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Shift.RollFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Shift.ShiftFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Shift.</span></span><span class="sig-name descname"><span class="pre">ShiftFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Shift.html#ShiftFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Shift.ShiftFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Shift data by scipy.ndimage.interpolation.shift.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>shift</strong> (<em>tuple</em><em> of </em><em>float</em>) – The shift along the axes.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Shift.ShiftFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Shift.html#ShiftFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Shift.ShiftFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.SimpleMath"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.SimpleMath.ComplexFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.SimpleMath.</span></span><span class="sig-name descname"><span class="pre">ComplexFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/SimpleMath.html#ComplexFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.SimpleMath.ComplexFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Calculate absolute, real, and image part of complex wave.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type</strong> (<em>'absolute'</em><em> or </em><em>'real'</em><em> or </em><em>'imag'</em>) – operation type.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.SimpleMath.ComplexFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/SimpleMath.html#ComplexFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.SimpleMath.ComplexFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.SimpleMath.NanToNumFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.SimpleMath.</span></span><span class="sig-name descname"><span class="pre">NanToNumFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/SimpleMath.html#NanToNumFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.SimpleMath.NanToNumFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Replace np.nan to <em>value</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>any</em>) – value by which replace np.nan.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.SimpleMath.NanToNumFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/SimpleMath.html#NanToNumFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.SimpleMath.NanToNumFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.SimpleMath.PhaseFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.SimpleMath.</span></span><span class="sig-name descname"><span class="pre">PhaseFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'deg'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/SimpleMath.html#PhaseFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.SimpleMath.PhaseFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Rotate complex value by <em>rot</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rot</strong> (<em>float</em>) – rotation angle.</p></li>
+<li><p><strong>unit</strong> (<em>'deg'</em><em> or </em><em>'rad'</em>) – unit used to specify rotation angle.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.SimpleMath.PhaseFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/SimpleMath.html#PhaseFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.SimpleMath.PhaseFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.SimpleMath.SimpleMathFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.SimpleMath.</span></span><span class="sig-name descname"><span class="pre">SimpleMathFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/SimpleMath.html#SimpleMathFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.SimpleMath.SimpleMathFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply simple mathematical calculation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>'+'</em><em> or </em><em>'-'</em><em> or </em><em>'*'</em><em> or </em><em>'/'</em>) – operator type.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – value used for calculation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.SimpleMath.SimpleMathFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/SimpleMath.html#SimpleMathFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.SimpleMath.SimpleMathFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Smooth"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Smooth.AverageFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Smooth.</span></span><span class="sig-name descname"><span class="pre">AverageFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Smooth.html#AverageFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.AverageFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply average filter (scipy.ndimage.uniform_filter) to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kernel</strong> (<em>list</em><em> of </em><em>int</em>) – kernel size along each axis.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Smooth.AverageFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Smooth.html#AverageFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.AverageFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Smooth.GaussianFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Smooth.</span></span><span class="sig-name descname"><span class="pre">GaussianFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Smooth.html#GaussianFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.GaussianFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply gaussian filter (scipy.ndimage.gaussian_filter) to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kernel</strong> (<em>list</em><em> of </em><em>int</em>) – kernel size (=sigma) along each axis.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Smooth.GaussianFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Smooth.html#GaussianFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.GaussianFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Smooth.MedianFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Smooth.</span></span><span class="sig-name descname"><span class="pre">MedianFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Smooth.html#MedianFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.MedianFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Apply median filter (scipy.ndimage.median_filter) to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kernel</strong> (<em>list</em><em> of </em><em>int</em>) – kernel size along each axis.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Smooth.MedianFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Smooth.html#MedianFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.MedianFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Smooth.RemoveImpulsiveNoise">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Smooth.</span></span><span class="sig-name descname"><span class="pre">RemoveImpulsiveNoise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Smooth.html#RemoveImpulsiveNoise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.RemoveImpulsiveNoise" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Remove impulsive noise.</p>
+<p>This filter removes impulsive noise by the code below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">median</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndfilters</span><span class="o">.</span><span class="n">median_filter</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">kernel</span><span class="p">)</span>
+<span class="n">new_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">data</span> <span class="o">-</span> <span class="n">median</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kernel</strong> (<em>int</em><em> or </em><em>tuple</em><em> of </em><em>int</em>) – The kernel that is pssed to median filter.</p></li>
+<li><p><strong>threshold</strong> (<em>float</em>) – The threshold value. See description.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Smooth.RemoveImpulsiveNoise.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Smooth.html#RemoveImpulsiveNoise.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Smooth.RemoveImpulsiveNoise.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-lys.filters.filter.Transform"></span><dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.AxisShiftFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Transform.</span></span><span class="sig-name descname"><span class="pre">AxisShiftFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#AxisShiftFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.AxisShiftFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Shit axes by <em>shift</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shift</strong> (<em>list</em><em> of </em><em>float</em>) – The values to be added to the axes.</p></li>
+<li><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – The shifted axes.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.AxisShiftFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#AxisShiftFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.AxisShiftFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.MagnificationFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Transform.</span></span><span class="sig-name descname"><span class="pre">MagnificationFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#MagnificationFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.MagnificationFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Magnify axes by <em>mag</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shift</strong> (<em>list</em><em> of </em><em>float</em>) – The values to be added to the axes.</p></li>
+<li><p><strong>axes</strong> (<em>list</em><em> of </em><em>int</em>) – The shifted axes.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.MagnificationFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#MagnificationFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.MagnificationFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.MirrorFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Transform.</span></span><span class="sig-name descname"><span class="pre">MirrorFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">positions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#MirrorFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.MirrorFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Reflect 2D data with respect to a line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>positions</strong> (<em>2*2 array</em>) – The positions that specify mirror axis in the form of [(x1, y1), (x2, y2)].</p></li>
+<li><p><strong>axes</strong> (<em>length 2 sequence</em>) – The axes to be symmetrized.</p></li>
+<li><p><strong>sum</strong> (<em>bool</em>) – If sum is False, the image is reflected with respect to the mirror axis. Otherwise, the mirrored image is added to the original image.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.MirrorFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#MirrorFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.MirrorFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.OffsetFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Transform.</span></span><span class="sig-name descname"><span class="pre">OffsetFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#OffsetFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.OffsetFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Add offset to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>offset</strong> (<em>list</em>) – The offset added for each axes.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.OffsetFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#OffsetFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.OffsetFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.Rotation2DFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Transform.</span></span><span class="sig-name descname"><span class="pre">Rotation2DFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#Rotation2DFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.Rotation2DFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>The array is rotated in the plane defined by the two axes given by the axes parameter using spline interpolation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>angle</strong> (<em>float</em>) – The rotation angle in degrees</p></li>
+<li><p><strong>axes</strong> – (tuple of 2 ints): The two axes that define the plane of rotation.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.Rotation2DFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#Rotation2DFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.Rotation2DFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.SetAxisFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Transform.</span></span><span class="sig-name descname"><span class="pre">SetAxisFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#SetAxisFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.SetAxisFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Set axis value.</p>
+<p>When type=’step’, then the new axis is val1, val1 + val2, val1 + 2 * val2, …
+When type=’stop’, then the new axis is val1, …, val2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int</em>) – axis to be set.</p></li>
+<li><p><strong>val1</strong> (<em>float</em>) – see description above.</p></li>
+<li><p><strong>val2</strong> (<em>float</em>) – see description above.</p></li>
+<li><p><strong>type</strong> (<em>'step'</em><em> or </em><em>'stop'</em>) – see description above.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.SetAxisFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#SetAxisFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.SetAxisFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.SymmetrizeFilter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.filters.filter.Transform.</span></span><span class="sig-name descname"><span class="pre">SymmetrizeFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rotation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">1)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#SymmetrizeFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.SymmetrizeFilter" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="filters.html#lys.filters.interface.FilterInterface" title="lys.filters.interface.FilterInterface"><code class="xref py py-class docutils literal notranslate"><span class="pre">FilterInterface</span></code></a></p>
+<p>Symmetrize 2D data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rotation</strong> (<em>int</em>) – The image is <em>rotation</em>-fold symmetrized.</p></li>
+<li><p><strong>center</strong> (<em>length 2 sequence</em>) – The central position of rotation.</p></li>
+<li><p><strong>axes</strong> (<em>length 2 sequence</em>) – The axes to be symmetrized.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.filters.filter.Transform.SymmetrizeFilter.getParameters">
+<span class="sig-name descname"><span class="pre">getParameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/filters/filter/Transform.html#SymmetrizeFilter.getParameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.filters.filter.Transform.SymmetrizeFilter.getParameters" title="Permalink to this definition"></a></dt>
+<dd><p>Returns parameters used for this filter as dict</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="filters.html" class="btn btn-neutral float-left" title="filters module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="multicut.html" class="btn btn-neutral float-right" title="multicut module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

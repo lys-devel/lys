@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>widgets module &mdash; lys 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="LysSubWindow" href="widgets/mdi.html" />
+    <link rel="prev" title="glb module" href="glb.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">Python API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="core.html">core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functions.html">functions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glb.html">glb module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">widgets module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#special-widgets">Special widgets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="widgets/mdi.html">LysSubWindow</a></li>
+<li class="toctree-l4"><a class="reference internal" href="widgets/fileview.html">FileView</a></li>
+<li class="toctree-l4"><a class="reference internal" href="canvas.html">lysCanvas</a></li>
+<li class="toctree-l4"><a class="reference internal" href="widgets/table.html">lysTable</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-lys.widgets.general">General widgets</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.AxesSelectionDialog"><code class="docutils literal notranslate"><span class="pre">AxesSelectionDialog</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.AxisCheckLayout"><code class="docutils literal notranslate"><span class="pre">AxisCheckLayout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.AxisSelectionLayout"><code class="docutils literal notranslate"><span class="pre">AxisSelectionLayout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.ColorSelection"><code class="docutils literal notranslate"><span class="pre">ColorSelection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.ColormapSelection"><code class="docutils literal notranslate"><span class="pre">ColormapSelection</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.IndiceSelectionLayout"><code class="docutils literal notranslate"><span class="pre">IndiceSelectionLayout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.RegionSelectWidget"><code class="docutils literal notranslate"><span class="pre">RegionSelectWidget</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.ScientificSpinBox"><code class="docutils literal notranslate"><span class="pre">ScientificSpinBox</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.kernelSigmaLayout"><code class="docutils literal notranslate"><span class="pre">kernelSigmaLayout</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#lys.widgets.general.kernelSizeLayout"><code class="docutils literal notranslate"><span class="pre">kernelSizeLayout</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html">filters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multicut.html">multicut module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fitting.html">fitting module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../api.html">Python API</a></li>
+      <li class="breadcrumb-item active">widgets module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/lys_/widgets.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-lys.widgets">
+<span id="widgets-module"></span><h1>widgets module<a class="headerlink" href="#module-lys.widgets" title="Permalink to this heading"></a></h1>
+<section id="special-widgets">
+<h2>Special widgets<a class="headerlink" href="#special-widgets" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="widgets/mdi.html">LysSubWindow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="widgets/fileview.html">FileView</a></li>
+<li class="toctree-l1"><a class="reference internal" href="canvas.html">lysCanvas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="widgets/table.html">lysTable</a></li>
+</ul>
+</div>
+</section>
+<section id="module-lys.widgets.general">
+<span id="general-widgets"></span><h2>General widgets<a class="headerlink" href="#module-lys.widgets.general" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.AxesSelectionDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">AxesSelectionDialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxesSelectionDialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxesSelectionDialog" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDialog</span></code></p>
+<p>A dialog to select two axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – The dimension of the data.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.AxesSelectionDialog.getAxes">
+<span class="sig-name descname"><span class="pre">getAxes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxesSelectionDialog.getAxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxesSelectionDialog.getAxes" title="Permalink to this definition"></a></dt>
+<dd><p>Get axes selected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The selected axes</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple of length 2</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.AxesSelectionDialog.setDimension">
+<span class="sig-name descname"><span class="pre">setDimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxesSelectionDialog.setDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxesSelectionDialog.setDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Change the dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>d</strong> (<em>int</em>) – The new dimension</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisCheckLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">AxisCheckLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisCheckLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisCheckLayout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QHBoxLayout</span></code></p>
+<p>A layout that specifies axes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dim</strong> (<em>int</em>) – The dimension of data.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisCheckLayout.GetChecked">
+<span class="sig-name descname"><span class="pre">GetChecked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisCheckLayout.GetChecked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisCheckLayout.GetChecked" title="Permalink to this definition"></a></dt>
+<dd><p>Return checked axes as array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The selected axes</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of integers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisCheckLayout.SetChecked">
+<span class="sig-name descname"><span class="pre">SetChecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisCheckLayout.SetChecked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisCheckLayout.SetChecked" title="Permalink to this definition"></a></dt>
+<dd><p>Set the state of the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axes</strong> (<em>list</em><em> of </em><em>integers</em>) – The list of axes to be checked.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisCheckLayout.stateChanged">
+<span class="sig-name descname"><span class="pre">stateChanged</span></span><a class="headerlink" href="#lys.widgets.general.AxisCheckLayout.stateChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the state of the layout is changed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisSelectionLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">AxisSelectionLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisSelectionLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisSelectionLayout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QHBoxLayout</span></code></p>
+<p>A layout to specify an axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<em>str</em>) – The label of the layout.</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – The dimension of data.</p></li>
+<li><p><strong>init</strong> (<em>int</em>) – The axis initially selected.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisSelectionLayout.axisChanged">
+<span class="sig-name descname"><span class="pre">axisChanged</span></span><a class="headerlink" href="#lys.widgets.general.AxisSelectionLayout.axisChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the selected axis is changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisSelectionLayout.getAxis">
+<span class="sig-name descname"><span class="pre">getAxis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisSelectionLayout.getAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisSelectionLayout.getAxis" title="Permalink to this definition"></a></dt>
+<dd><p>Get the selected axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The selected axis.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisSelectionLayout.setAxis">
+<span class="sig-name descname"><span class="pre">setAxis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisSelectionLayout.setAxis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisSelectionLayout.setAxis" title="Permalink to this definition"></a></dt>
+<dd><p>Set the selected axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>int</em>) – The axis to select.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisSelectionLayout.setDimension">
+<span class="sig-name descname"><span class="pre">setDimension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisSelectionLayout.setDimension"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisSelectionLayout.setDimension" title="Permalink to this definition"></a></dt>
+<dd><p>Change the dimension of the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>d</strong> (<em>int</em>) – The new dimension</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.AxisSelectionLayout.setEnabled">
+<span class="sig-name descname"><span class="pre">setEnabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#AxisSelectionLayout.setEnabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.AxisSelectionLayout.setEnabled" title="Permalink to this definition"></a></dt>
+<dd><p>Enable the widgets in this layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enabled</strong> (<em>bool</em>) – Whether the widgets are enabled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.ColorSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">ColorSelection</span></span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColorSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColorSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QPushButton</span></code></p>
+<p>A widget to select color.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.general.ColorSelection.colorChanged">
+<span class="sig-name descname"><span class="pre">colorChanged</span></span><a class="headerlink" href="#lys.widgets.general.ColorSelection.colorChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the selected color is changed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColorSelection.getColor">
+<span class="sig-name descname"><span class="pre">getColor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColorSelection.getColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColorSelection.getColor" title="Permalink to this definition"></a></dt>
+<dd><p>Get the color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The color string such as ‘#112233’</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColorSelection.getColorAsArray">
+<span class="sig-name descname"><span class="pre">getColorAsArray</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColorSelection.getColorAsArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColorSelection.getColorAsArray" title="Permalink to this definition"></a></dt>
+<dd><p>Get the color as QtGui.QColor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The color selected by user.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>QColor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColorSelection.setColor">
+<span class="sig-name descname"><span class="pre">setColor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColorSelection.setColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColorSelection.setColor" title="Permalink to this definition"></a></dt>
+<dd><p>Set the color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>color</strong> (<em>str</em>) – The color string such as ‘#112233’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">ColormapSelection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opacity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>A widget to select colormap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>opacity</strong> (<em>bool</em>) – If True, the opacity setting is enabled.</p></li>
+<li><p><strong>log</strong> (<em>bool</em>) – If True, ‘log’ checkbox is enabled.</p></li>
+<li><p><strong>reverse</strong> (<em>bool</em>) – If True, ‘reverse’ checkbox is enabled.</p></li>
+<li><p><strong>gamma</strong> (<em>bool</em>) – If True, gamma value can be set.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.colorChanged">
+<span class="sig-name descname"><span class="pre">colorChanged</span></span><a class="headerlink" href="#lys.widgets.general.ColormapSelection.colorChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the color map is changed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.currentColor">
+<span class="sig-name descname"><span class="pre">currentColor</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.currentColor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.currentColor" title="Permalink to this definition"></a></dt>
+<dd><p>Get the name of the selected colormap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The name of the selected colormap.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.currentColorMaps">
+<span class="sig-name descname"><span class="pre">currentColorMaps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.currentColorMaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.currentColorMaps" title="Permalink to this definition"></a></dt>
+<dd><p>Get the QtGui.QPixmap of the selected colormap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The selected colormap.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>QPixmap</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.gamma">
+<span class="sig-name descname"><span class="pre">gamma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.gamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.gamma" title="Permalink to this definition"></a></dt>
+<dd><p>Get the gamma.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The value of gamma.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.isLog">
+<span class="sig-name descname"><span class="pre">isLog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.isLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.isLog" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the ‘log’ checkbox is checked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether the ‘log’ checkbox is checked.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.opacity">
+<span class="sig-name descname"><span class="pre">opacity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.opacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.opacity" title="Permalink to this definition"></a></dt>
+<dd><p>Get the opacity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The value of opacity.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.setColormap">
+<span class="sig-name descname"><span class="pre">setColormap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmap</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.setColormap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.setColormap" title="Permalink to this definition"></a></dt>
+<dd><p>Set the colormap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cmap</strong> (<em>str</em>) – The name of matplotlib colormaps. Use matplotlib.pyplot.colormaps to view all colormap names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.setEnabled">
+<span class="sig-name descname"><span class="pre">setEnabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.setEnabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.setEnabled" title="Permalink to this definition"></a></dt>
+<dd><p>Enable the widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enable</strong> (<em>bool</em>) – The boolean to specify whether enabling or disabling the widget</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.setGamma">
+<span class="sig-name descname"><span class="pre">setGamma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.setGamma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.setGamma" title="Permalink to this definition"></a></dt>
+<dd><p>Set the gamma of the colormap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float</em>) – The gamma value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.setLog">
+<span class="sig-name descname"><span class="pre">setLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.setLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.setLog" title="Permalink to this definition"></a></dt>
+<dd><p>Set the state of the ‘log’ checkbox.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>bool</em>) – True to check ‘log’ checkbox.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ColormapSelection.setOpacity">
+<span class="sig-name descname"><span class="pre">setOpacity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ColormapSelection.setOpacity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ColormapSelection.setOpacity" title="Permalink to this definition"></a></dt>
+<dd><p>Set the opacity of the colormap.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>float</em>) – The opacity between 0 to 1.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">IndiceSelectionLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGridLayout</span></code></p>
+<p>A layout to specify indice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>shape</strong> (<em>tuple</em>) – The shape of data.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.getIndices">
+<span class="sig-name descname"><span class="pre">getIndices</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout.getIndices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.getIndices" title="Permalink to this definition"></a></dt>
+<dd><p>Get the indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The indices.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>sequence of int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.setEnabled">
+<span class="sig-name descname"><span class="pre">setEnabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enabled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout.setEnabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.setEnabled" title="Permalink to this definition"></a></dt>
+<dd><p>Enable the respective spin box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enabled</strong> (<em>sequence</em><em> of </em><em>boolean</em>) – Whether the spin box is enabled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.setShape">
+<span class="sig-name descname"><span class="pre">setShape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout.setShape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.setShape" title="Permalink to this definition"></a></dt>
+<dd><p>Change the shape of the layout.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>shape</strong> (<em>tuple</em>) – The new shape</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.setValues">
+<span class="sig-name descname"><span class="pre">setValues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#IndiceSelectionLayout.setValues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.setValues" title="Permalink to this definition"></a></dt>
+<dd><p>Set the indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>indices</strong> (<em>sequence</em><em> of </em><em>int</em>) – The indices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.general.IndiceSelectionLayout.valueChanged">
+<span class="sig-name descname"><span class="pre">valueChanged</span></span><a class="headerlink" href="#lys.widgets.general.IndiceSelectionLayout.valueChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the value is changed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.RegionSelectWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">RegionSelectWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#RegionSelectWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.RegionSelectWidget" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGridLayout</span></code></p>
+<p>A widget to select region of multi-dimensional data.
+:param parent: The parent widget.
+:param dim: The dimension of the data.
+:param check: If True, user can select the axes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.RegionSelectWidget.getChecked">
+<span class="sig-name descname"><span class="pre">getChecked</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#RegionSelectWidget.getChecked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.RegionSelectWidget.getChecked" title="Permalink to this definition"></a></dt>
+<dd><p>Get the state of the checkboxes.</p>
+<dl class="simple">
+<dt>Reutrns:</dt><dd><p>list of boolean: The state of the checkboxes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.RegionSelectWidget.getRegion">
+<span class="sig-name descname"><span class="pre">getRegion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#RegionSelectWidget.getRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.RegionSelectWidget.getRegion" title="Permalink to this definition"></a></dt>
+<dd><p>Get the specified region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The specified region.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list of length 2 sequence</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.RegionSelectWidget.setChecked">
+<span class="sig-name descname"><span class="pre">setChecked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">checked</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#RegionSelectWidget.setChecked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.RegionSelectWidget.setChecked" title="Permalink to this definition"></a></dt>
+<dd><p>Set the state of the checkboxes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>checked</strong> (<em>list</em><em> of </em><em>boolean</em>) – The state to be set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.RegionSelectWidget.setRegion">
+<span class="sig-name descname"><span class="pre">setRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">range</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#RegionSelectWidget.setRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.RegionSelectWidget.setRegion" title="Permalink to this definition"></a></dt>
+<dd><p>Set the region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int</em>) – The axis to be changed.</p></li>
+<li><p><strong>range</strong> (<em>length 2 sequency</em>) – The range to be set.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lys.widgets.general.RegionSelectWidget.stateChanged">
+<span class="sig-name descname"><span class="pre">stateChanged</span></span><a class="headerlink" href="#lys.widgets.general.RegionSelectWidget.stateChanged" title="Permalink to this definition"></a></dt>
+<dd><p>Emitted when the state of the checkbox is changed.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.ScientificSpinBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">ScientificSpinBox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valueChanged</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ScientificSpinBox"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ScientificSpinBox" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QDoubleSpinBox</span></code></p>
+<p>Spin box that displays values in sdientific notation, which is frequently used in lys.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ScientificSpinBox.stepBy">
+<span class="sig-name descname"><span class="pre">stepBy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ScientificSpinBox.stepBy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ScientificSpinBox.stepBy" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of stepBy</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ScientificSpinBox.textFromValue">
+<span class="sig-name descname"><span class="pre">textFromValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ScientificSpinBox.textFromValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ScientificSpinBox.textFromValue" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of textFromValue</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ScientificSpinBox.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ScientificSpinBox.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ScientificSpinBox.validate" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of validate</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.ScientificSpinBox.valueFromText">
+<span class="sig-name descname"><span class="pre">valueFromText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#ScientificSpinBox.valueFromText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.ScientificSpinBox.valueFromText" title="Permalink to this definition"></a></dt>
+<dd><p>Reimplementation of valueFromText</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.kernelSigmaLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">kernelSigmaLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#kernelSigmaLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.kernelSigmaLayout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGridLayout</span></code></p>
+<p>A layout that specifies the kernel of gaussian convolution filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dimension</strong> (<em>int</em>) – The dimension of the kernel.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.kernelSigmaLayout.getKernelSigma">
+<span class="sig-name descname"><span class="pre">getKernelSigma</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#kernelSigmaLayout.getKernelSigma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.kernelSigmaLayout.getKernelSigma" title="Permalink to this definition"></a></dt>
+<dd><p>Get kernel sigma as array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The kernel sigma.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.kernelSigmaLayout.setKernelSigma">
+<span class="sig-name descname"><span class="pre">setKernelSigma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#kernelSigmaLayout.setKernelSigma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.kernelSigmaLayout.setKernelSigma" title="Permalink to this definition"></a></dt>
+<dd><p>Set kernel sigma.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<em>list</em><em> of </em><em>float</em>) – The kernel sigma.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lys.widgets.general.kernelSizeLayout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.general.</span></span><span class="sig-name descname"><span class="pre">kernelSizeLayout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">odd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#kernelSizeLayout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.kernelSizeLayout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QGridLayout</span></code></p>
+<p>A layout that specifies the kernel size of convolution filter (such as median filter).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimension</strong> (<em>int</em>) – The dimension of the kernel.</p></li>
+<li><p><strong>odd</strong> (<em>bool</em>) – If True, only odd values can be set.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.kernelSizeLayout.getKernelSize">
+<span class="sig-name descname"><span class="pre">getKernelSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#kernelSizeLayout.getKernelSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.kernelSizeLayout.getKernelSize" title="Permalink to this definition"></a></dt>
+<dd><p>Get kernel size as array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The kernel size.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lys.widgets.general.kernelSizeLayout.setKernelSize">
+<span class="sig-name descname"><span class="pre">setKernelSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/widgets/general.html#kernelSizeLayout.setKernelSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.general.kernelSizeLayout.setKernelSize" title="Permalink to this definition"></a></dt>
+<dd><p>Set kernel size.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<em>list</em><em> of </em><em>integers</em>) – The kernel size.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="glb.html" class="btn btn-neutral float-left" title="glb module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="widgets/mdi.html" class="btn btn-neutral float-right" title="LysSubWindow" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lys.widgets.mdi &mdash; lys 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> lys
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python API for lys</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.widgets.mdi</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lys.widgets.mdi</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">home</span><span class="p">,</span> <span class="n">load</span><span class="p">,</span> <span class="n">lysPath</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtGui</span>
+<span class="kn">from</span> <span class="nn">lys.resources</span> <span class="kn">import</span> <span class="n">lysIcon</span>
+<span class="kn">from</span> <span class="nn">lys.decorators</span> <span class="kn">import</span> <span class="n">avoidCircularReference</span>
+
+
+<span class="k">class</span> <span class="nc">_MdiAreaBase</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMdiArea</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MDI window that handle LysSubWindow&quot;&quot;&quot;</span>
+    <span class="n">_main</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">updated</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when the contents of the workspace is sotred in file.&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">current</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_main</span><span class="o">.</span><span class="n">_mdiArea</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">_ExtendMdiArea</span><span class="o">.</span><span class="n">_main</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span> <span class="o">=</span> <span class="n">workspace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">workspace</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dicFile</span> <span class="o">=</span> <span class="n">home</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/.lys/workspace/&#39;</span> <span class="o">+</span> <span class="n">workspace</span> <span class="o">+</span> <span class="s1">&#39;/winDict.dic&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="k">def</span> <span class="nf">addSubWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">addSubWindow</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="n">window</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">removeSubWindow</span><span class="p">(</span><span class="n">window</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">removeSubWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">window</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subWindowList</span><span class="p">():</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">removeSubWindow</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">storeWorkspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">restoreWorkspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># load dict to restore</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_windir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dicFile</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dicFile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">dic</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_restore</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_restore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workspace</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_saveAsDict</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dicFile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_saveAsDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;Name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">}</span>
+
+
+<span class="k">class</span> <span class="nc">_MdiAreaTemp</span><span class="p">(</span><span class="n">_MdiAreaBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;MdiArea that manage AutoSavedWindows.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">workspace</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_windir</span> <span class="o">=</span> <span class="n">home</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;/.lys/workspace/&#39;</span> <span class="o">+</span> <span class="n">workspace</span> <span class="o">+</span> <span class="s1">&#39;/wins&#39;</span>
+
+    <span class="k">def</span> <span class="nf">_autoWindows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subWindowList</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMdiArea</span><span class="o">.</span><span class="n">ActivationHistoryOrder</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">_AutoSavedWindow</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">_saveAsDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_saveAsDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_autoWindows</span><span class="p">()):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_windowDict</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dic</span>
+
+    <span class="k">def</span> <span class="nf">_restore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_restore</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_restoreWindow</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Load is skipped because of Failure (The file is temporary saved in ./backup):&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(),</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;backup&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">shutil</span><span class="o">.</span><span class="n">copy2</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;TemporaryFile&quot;</span><span class="p">],</span> <span class="s2">&quot;backup/&quot;</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_windowDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;TemporaryFile&quot;</span><span class="p">:</span> <span class="n">lysPath</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">TemporaryFile</span><span class="p">())}</span>
+
+    <span class="k">def</span> <span class="nf">_restoreWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">load</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;TemporaryFile&quot;</span><span class="p">],</span> <span class="n">tmpFile</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;TemporaryFile&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">removeSubWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">removeSubWindow</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">_AutoSavedWindow</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">tmpFilePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">suffix</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_windir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">used</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">TemporaryFile</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_autoWindows</span><span class="p">()]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_windir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">prefix</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="n">suffix</span>
+            <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">path</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Too many windows.&#39;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">closeAllWindows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">win</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_autoWindows</span><span class="p">():</span>
+            <span class="n">win</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">storeWorkspace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">storeWorkspace</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">win</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_autoWindows</span><span class="p">():</span>
+            <span class="n">win</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_ExtendMdiArea</span><span class="p">(</span><span class="n">_MdiAreaTemp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MdiArea that manage AutoSavedWindows.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_conservableWindows</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subWindowList</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMdiArea</span><span class="o">.</span><span class="n">ActivationHistoryOrder</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">_ConservableWindow</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">addSubWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">window</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">addSubWindow</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">window</span><span class="p">,</span> <span class="n">_ConservableWindow</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">window</span><span class="o">.</span><span class="n">FileName</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">w</span><span class="o">.</span><span class="n">FileName</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_conservableWindows</span><span class="p">()</span> <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">FileName</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">]:</span>
+                <span class="n">window</span><span class="o">.</span><span class="n">fileChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_windowDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_windowDict</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">_ConservableWindow</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">FileName</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">file</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">file</span> <span class="o">=</span> <span class="n">lysPath</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">FileName</span><span class="p">())</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;FileName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">file</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+    <span class="k">def</span> <span class="nf">_restoreWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_restoreWindow</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">_ConservableWindow</span><span class="p">):</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">_changeFileName</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;FileName&quot;</span><span class="p">])</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">fileChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">updated</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_TitleProxyStyle</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QProxyStyle</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">drawComplexControl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">control</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">painter</span><span class="p">,</span> <span class="n">widget</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">control</span> <span class="o">==</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QStyle</span><span class="o">.</span><span class="n">CC_TitleBar</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="s2">&quot;titleColor&quot;</span><span class="p">):</span>
+                <span class="n">color</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">titleColor</span>
+                <span class="k">if</span> <span class="n">color</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
+                    <span class="n">option</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPalette</span><span class="o">.</span><span class="n">Highlight</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="n">color</span><span class="p">))</span>
+                    <span class="n">bg</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+                    <span class="n">bg</span><span class="o">.</span><span class="n">setAlpha</span><span class="p">(</span><span class="mi">128</span><span class="p">)</span>
+                    <span class="n">option</span><span class="o">.</span><span class="n">palette</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QPalette</span><span class="o">.</span><span class="n">Window</span><span class="p">,</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="n">bg</span><span class="p">))</span>
+                    <span class="n">pixmap</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPixmap</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="mi">512</span><span class="p">)</span>
+                    <span class="n">pixmap</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="s2">&quot;transparent&quot;</span><span class="p">))</span>
+                    <span class="n">option</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QIcon</span><span class="p">(</span><span class="n">pixmap</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">drawComplexControl</span><span class="p">(</span><span class="n">control</span><span class="p">,</span> <span class="n">option</span><span class="p">,</span> <span class="n">painter</span><span class="p">,</span> <span class="n">widget</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="LysSubWindow"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow">[docs]</a><span class="k">class</span> <span class="nc">LysSubWindow</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMdiSubWindow</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *LysSubWindow* is customized QMdiSubWindow, which implement some usuful methods and signals.</span>
+
+<span class="sd">    When a *LysSavedWindow* is instantiated, it is automatically added to current MdiArea.</span>
+
+<span class="sd">    It is recommended to inherit this class when developers implement new sub windows in lys.</span>
+
+<span class="sd">    User input on several QWidgets can be saved and restored from file. See :meth:`saveSettings` and :meth:`restoreSettings` for detail.</span>
+
+<span class="sd">    LysSubWindow can be attached to different LysSubWindow. See :meth:`attach` for detail.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        floating(bool): Whether the window in in the current mdi area, or floating out side the medi area.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__win</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">resized</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *resized* signal is emitted when the window is resized.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resizeFinished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *resizedFinished* signal is emitted when the resize of the window is finished.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">moved</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *moved* signal is emitted when the window is moved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">moveFinished</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *moveFinished* signal is emitted when the move of the window is finished.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">focused</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *focused* signal is emitted when the window is focused.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">closed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *closed* signal is emitted when the window is closed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">saved</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *saved* signal is emitted when the saveSettings method is called.</span>
+<span class="sd">    User settings can be stored in dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">loaded</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    *loaded* signal is emitted when the loadSettings method is called.</span>
+<span class="sd">    User settings can be restored from dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">floating</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_floating</span> <span class="o">=</span> <span class="n">floating</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_titleColor</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">_TitleProxyStyle</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowIcon</span><span class="p">(</span><span class="n">lysIcon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">installEventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resizeTimer</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resizeTimer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resizeFinished</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resizeTimer</span><span class="o">.</span><span class="n">setSingleShot</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moveTimer</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moveTimer</span><span class="o">.</span><span class="n">timeout</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">resizeFinished</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moveTimer</span><span class="o">.</span><span class="n">setSingleShot</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">floating</span><span class="p">:</span>
+            <span class="n">LysSubWindow</span><span class="o">.</span><span class="n">__win</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_ExtendMdiArea</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">addSubWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setAttribute</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">WA_DeleteOnClose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">updateGeometry</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">titleColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_titleColor</span>
+
+<div class="viewcode-block" id="LysSubWindow.setTitleColor"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.setTitleColor">[docs]</a>    <span class="k">def</span> <span class="nf">setTitleColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the title color of the mdi window.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            color(QColor): The title color.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_titleColor</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LysSubWindow.eventFilter"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.eventFilter">[docs]</a>    <span class="k">def</span> <span class="nf">eventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implementation of eventFilter in LysSubWindow.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">FocusIn</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">eventFilter</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LysSubWindow.resizeEvent"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.resizeEvent">[docs]</a>    <span class="k">def</span> <span class="nf">resizeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reimplementation of resizeEvent in QMdiSubWindow&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resized</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resizeTimer</span><span class="o">.</span><span class="n">isActive</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_resizeTimer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_resizeTimer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">resizeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LysSubWindow.moveEvent"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.moveEvent">[docs]</a>    <span class="k">def</span> <span class="nf">moveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reimplementation of moveEvent in QMdiSubWindow&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moved</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_moveTimer</span><span class="o">.</span><span class="n">isActive</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_moveTimer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_moveTimer</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">moveEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LysSubWindow.closeEvent"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.closeEvent">[docs]</a>    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reimplementation of closeEvent in QMdiSubWindow&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">focused</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_setFocus</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">moved</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachTo</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">resized</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachTo</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LysSubWindow.attach"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.attach">[docs]</a>    <span class="k">def</span> <span class="nf">attach</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attach this window to *parent*</span>
+
+<span class="sd">        After it is attached, the window follows the *parent* widget automatically.</span>
+
+<span class="sd">        This functionarity is usually used for several setting widgets, which should follow the parent (such as Graph)</span>
+
+<span class="sd">        However, in the recent release of lys, it is recommended to use sidebar instead of attached window.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parent(LysSubWindow): The window to which this window is attached.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">LysSubWindow</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_setFocus</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">focused</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_setFocus</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">moved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachTo</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">resized</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachTo</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">)</span></div>
+
+    <span class="nd">@avoidCircularReference</span>
+    <span class="k">def</span> <span class="nf">_setFocus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_ExtendMdiArea</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">setActiveSubWindow</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">_ExtendMdiArea</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">setActiveSubWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LysSubWindow.attachTo"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.attachTo">[docs]</a>    <span class="k">def</span> <span class="nf">attachTo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Attach *self* to pre-registered parent by :meth:`attach`.</span>
+
+<span class="sd">        When the parent window is move programatically by :func:`move`, the window does not follow.</span>
+
+<span class="sd">        Developers should call this method to intentionally attach it to parent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">pos</span><span class="p">()</span>
+            <span class="n">frm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">frameGeometry</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QPoint</span><span class="p">(</span><span class="n">pos</span><span class="o">.</span><span class="n">x</span><span class="p">()</span> <span class="o">+</span> <span class="n">frm</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">pos</span><span class="o">.</span><span class="n">y</span><span class="p">()))</span></div>
+
+<div class="viewcode-block" id="LysSubWindow.saveSettings"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.saveSettings">[docs]</a>    <span class="k">def</span> <span class="nf">saveSettings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Export all widgets settings from default setting file specified by name.</span>
+<span class="sd">        User input on various widgets are easily loaded from file by :meth:`restoreSettings`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">saved</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">file</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="LysSubWindow.restoreSettings"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.restoreSettings">[docs]</a>    <span class="k">def</span> <span class="nf">restoreSettings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Import all widgets settings from default setting file specified by name.</span>
+<span class="sd">        User input on various widgets are easily exported to file by :meth:`saveSettings`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="n">_restore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loaded</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LysSubWindow.setSettingFile"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.setSettingFile">[docs]</a>    <span class="k">def</span> <span class="nf">setSettingFile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enable automatic setting storing by saveSettings.</span>
+<span class="sd">        restoreSettings will be called when this functions is called.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+        <span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">()</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">saveSettings</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">saveSettings</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">restoreSettings</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LysSubWindow.isFloating"><a class="viewcode-back" href="../../../lys_/widgets/mdi.html#lys.widgets.mdi.LysSubWindow.isFloating">[docs]</a>    <span class="k">def</span> <span class="nf">isFloating</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return if the window is out of the mdi window or not&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_floating</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_restore</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDoubleSpinBox</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QRadioButton</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">findText</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">obj</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QListWidget</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">addItems</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTextEdit</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">settings</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">setPlainText</span><span class="p">(</span><span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QDoubleSpinBox</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QCheckBox</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QRadioButton</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QComboBox</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">currentText</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QLineEdit</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QListWidget</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">count</span><span class="p">())]</span>
+
+    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">findChildren</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QTextEdit</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">objectName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">toPlainText</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">settings</span>
+
+
+<span class="k">def</span> <span class="nf">_checkName</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;qt_&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">class</span> <span class="nc">_AutoSavedWindow</span><span class="p">(</span><span class="n">LysSubWindow</span><span class="p">):</span>
+    <span class="n">modified</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*modified* signal is emitted when the content of the window is changed.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">tmpFile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">tmpFile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__tmpFile</span> <span class="o">=</span> <span class="n">_ExtendMdiArea</span><span class="o">.</span><span class="n">current</span><span class="p">()</span><span class="o">.</span><span class="n">tmpFilePath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_suffix</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__tmpFile</span> <span class="o">=</span> <span class="n">tmpFile</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__save</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__delete</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__delete</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TemporaryFile</span><span class="p">()):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TemporaryFile</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__tmpFile</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__tmpFile</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">TemporaryFile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return temporary filename that hold content of the window&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__tmpFile</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return name of the window, which is automatically determined.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">TemporaryFile</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_suffix</span><span class="p">(),</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; (not saved)&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_suffix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">_ConservableWindow</span><span class="p">(</span><span class="n">_AutoSavedWindow</span><span class="p">):</span>
+    <span class="n">fileChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;*fileChanged* signal is emitted when it is saved.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__closeflg</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Name</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__onModified</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__onModified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Name</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_changeFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mkdir</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__file</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Name</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">Save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the content of the window.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            file(str): The file to be saved. If *file* is None, the window is saved in the last-saved file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_changeFileName</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">mkdir</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fileChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Name</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reimplementation of close in QMdiSubWindow&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__closeflg</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">force</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reimplementation of closeEvent in QMdiSubWindow&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__closeflg</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">_ExtendMdiArea</span><span class="o">.</span><span class="n">current</span><span class="p">())</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Warning</span><span class="p">)</span>
+            <span class="n">msg</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Caution&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;This window is not saved. Do you really want to close it?&quot;</span><span class="p">)</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Ok</span> <span class="o">|</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span><span class="p">:</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Do you want to save the content of this window to &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="o">+</span> <span class="s2">&quot;?&quot;</span><span class="p">)</span>
+                <span class="n">msg</span><span class="o">.</span><span class="n">setStandardButtons</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span> <span class="o">|</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">No</span> <span class="o">|</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="n">ok</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ok</span> <span class="o">==</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Cancel</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">event</span><span class="o">.</span><span class="n">ignore</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ok</span> <span class="o">==</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">FileName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return filename that saves content of the window&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__file</span>
+
+    <span class="k">def</span> <span class="nf">Name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return name of the window, which is automatically determined by filename.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FileName</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">Path</span><span class="o">.</span><span class="n">cwd</span><span class="p">()</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">home</span><span class="p">())</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__modified</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">+=</span> <span class="s2">&quot;*&quot;</span>
+            <span class="k">return</span> <span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">Name</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

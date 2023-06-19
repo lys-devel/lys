@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lys.widgets.canvas.interface.Annotation &mdash; lys 0.3.0 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> lys
+            <img src="../../../../../_static/logo.png" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                0.3.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API for lys</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.widgets.canvas.interface.Annotation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lys.widgets.canvas.interface.Annotation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
+
+<span class="kn">from</span> <span class="nn">lys.errors</span> <span class="kn">import</span> <span class="n">NotImplementedWarning</span>
+<span class="kn">from</span> <span class="nn">.LineAnnotation</span> <span class="kn">import</span> <span class="n">LineAnnotation</span><span class="p">,</span> <span class="n">InfiniteLineAnnotation</span>
+<span class="kn">from</span> <span class="nn">.RectAnnotation</span> <span class="kn">import</span> <span class="n">RectAnnotation</span>
+<span class="kn">from</span> <span class="nn">.RegionAnnotation</span> <span class="kn">import</span> <span class="n">RegionAnnotation</span><span class="p">,</span> <span class="n">FreeRegionAnnotation</span>
+<span class="kn">from</span> <span class="nn">.CrossAnnotation</span> <span class="kn">import</span> <span class="n">CrossAnnotation</span>
+<span class="kn">from</span> <span class="nn">.TextAnnotation</span> <span class="kn">import</span> <span class="n">TextAnnotation</span>
+<span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span>
+
+
+<div class="viewcode-block" id="CanvasAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation">[docs]</a><span class="k">class</span> <span class="nc">CanvasAnnotation</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface to add, remove, and get annotations in canvas.</span>
+
+<span class="sd">    All public methods in this class can be accessed from :class:`.CanvasBase.CanvasBase`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        canvas(.CanvasBase.CanvasBase): The parent canvas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_axisDict</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;TopLeft&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s2">&quot;BottomRight&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s2">&quot;TopRight&quot;</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">:</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;TopLeft&quot;</span><span class="p">:</span> <span class="s2">&quot;TopLeft&quot;</span><span class="p">,</span> <span class="s2">&quot;BottomRight&quot;</span><span class="p">:</span> <span class="s2">&quot;BottomRight&quot;</span><span class="p">,</span> <span class="s2">&quot;TopRight&quot;</span><span class="p">:</span> <span class="s2">&quot;TopRight&quot;</span><span class="p">}</span>
+    <span class="n">annotationChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;pyqtSignal that is emitted when annotations are added or removed.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__saveGeneral</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadGeneral</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__saveLines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadLines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__saveInfiniteLines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadInfiniteLines</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__saveRect</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadRect</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__saveRegion</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadRegion</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__saveFreeRegions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadFreeRegions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__saveCross</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadCross</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__saveText</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loadText</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_getDefaultAnnotationName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">return</span> <span class="nb">type</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__saveGeneral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="n">d</span><span class="p">[</span><span class="s2">&quot;AnnotationsIndices&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span>
+
+    <span class="k">def</span> <span class="nf">__loadGeneral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;AnnotationIndices&quot;</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;AnnotationIndices&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__getRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">dir</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">dir</span> <span class="o">==</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;Bottom&#39;</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Bottom&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Top&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;Left&#39;</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Left&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s1">&#39;Right&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__addObject</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">):</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">setZOrder</span><span class="p">(</span><span class="mi">20000</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">loadAppearance</span><span class="p">(</span><span class="n">appearance</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotationChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
+<div class="viewcode-block" id="CanvasAnnotation.addLineAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addLineAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">addLineAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add line annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pos(2*2 sequence): The position of the line in the form of [(x0, y0), (x1 ,y1)]</span>
+<span class="sd">            axis(&#39;BottomLeft&#39;, &#39;BottomRight&#39;, &#39;TopLeft&#39;, or &#39;TopRight&#39;): The axis to which the line annotation is added.</span>
+<span class="sd">            appearance(dict): Appearance dictionary, which is generated by :meth:`.AnnotationData.saveAppearance` method.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            LineAnnotation: The annotation added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="n">rl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="n">rb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rb</span><span class="p">))</span>
+            <span class="n">dl</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rl</span><span class="p">))</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span> <span class="o">+</span> <span class="n">db</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span> <span class="o">+</span> <span class="n">dl</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">db</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dl</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addLineAnnotation</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CanvasAnnotation.getLineAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getLineAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getLineAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of all line annotations in canvas.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            list: list of :class:`.LineAnnotation.LineAnnotation`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">annot</span> <span class="k">for</span> <span class="n">annot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">LineAnnotation</span><span class="p">)]</span></div>
+
+    <span class="k">def</span> <span class="nf">__saveLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getLineAnnotations</span><span class="p">()):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getPosition</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">())</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getAxis</span><span class="p">()</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_lines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="k">def</span> <span class="nf">__loadLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;annot_lines&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_lines&#39;</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="n">p0</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position0&#39;</span><span class="p">]</span>
+                <span class="n">p1</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position1&#39;</span><span class="p">]</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
+                <span class="n">appearance</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">])</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axisDict</span><span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addLineAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="CanvasAnnotation.addInfiniteLineAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addInfiniteLineAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">addInfiniteLineAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add infinite line annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pos(float): The position of the line.</span>
+<span class="sd">            orientation(&#39;vertical&#39; or &#39;horizontal&#39;): The orientation of the line.</span>
+<span class="sd">            axis(&#39;BottomLeft&#39;, &#39;BottomRight&#39;, &#39;TopLeft&#39;, or &#39;TopRight&#39;): The axis to which the annotation is added.</span>
+<span class="sd">            appearance(dict): Appearance dictionary, which is generated by :meth:`.AnnotationData.saveAppearance` method.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            InfiniteLineAnnotation: The annotation added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="s1">&#39;vertical&#39;</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addInfiniteLineAnnotation</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CanvasAnnotation.getInfiniteLineAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getInfiniteLineAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getInfiniteLineAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of all infinite line annotations in canvas.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            list: list of :class:`.LineAnnotation.InfiniteLineAnnotation`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">annot</span> <span class="k">for</span> <span class="n">annot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">InfiniteLineAnnotation</span><span class="p">)]</span></div>
+
+    <span class="k">def</span> <span class="nf">__saveInfiniteLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getInfiniteLineAnnotations</span><span class="p">()):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getPosition</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getOrientation</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">())</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getAxis</span><span class="p">()</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_infiniteLines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="k">def</span> <span class="nf">__loadInfiniteLines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;annot_infiniteLines&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_infiniteLines&#39;</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position&#39;</span><span class="p">]</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span>
+                <span class="n">appearance</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">])</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axisDict</span><span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addInfiniteLineAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="CanvasAnnotation.addRectAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRectAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">addRectAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add rectangle annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pos(length 2 sequence): The position of the rectangle edge in the form of (x, y).</span>
+<span class="sd">            size(length 2 sequence): The size of the rectangle in the form of (width, height).</span>
+<span class="sd">            axis(&#39;BottomLeft&#39;, &#39;BottomRight&#39;, &#39;TopLeft&#39;, or &#39;TopRight&#39;): The axis to which the annotation is added.</span>
+<span class="sd">            appearance(dict): Appearance dictionary, which is generated by :meth:`.AnnotationData.saveAppearance` method.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            RectAnnotation: The annotation added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="n">rb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rb</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rl</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rb</span><span class="p">))</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rl</span><span class="p">))</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addRectAnnotation</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CanvasAnnotation.getRectAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRectAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getRectAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of all rectangle annotations in canvas.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            list: list of :class:`.RectAnnotation.RectAnnotation`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">annot</span> <span class="k">for</span> <span class="n">annot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">RectAnnotation</span><span class="p">)]</span></div>
+
+    <span class="k">def</span> <span class="nf">__saveRect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getRectAnnotations</span><span class="p">()):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getPosition</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getSize</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getAxis</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">())</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_rect&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="k">def</span> <span class="nf">__loadRect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;annot_rect&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_rect&#39;</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position&#39;</span><span class="p">]</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Size&#39;</span><span class="p">]</span>
+                <span class="n">appearance</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">])</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axisDict</span><span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addRectAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="CanvasAnnotation.addRegionAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addRegionAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">addRegionAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;vertical&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add region annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            region(length 2 sequence): The region in the form of (x1, x2).</span>
+<span class="sd">            orientation(&#39;vertical&#39; or &#39;horizontal&#39;): The orientation of the annotation.</span>
+<span class="sd">            axis(&#39;BottomLeft&#39;, &#39;BottomRight&#39;, &#39;TopLeft&#39;, or &#39;TopRight&#39;): The axis to which the annotation is added.</span>
+<span class="sd">            appearance(dict): Appearance dictionary, which is generated by :meth:`.AnnotationData.saveAppearance` method.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            RegionAnnotation: The annotation added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">region</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">orientation</span> <span class="o">==</span> <span class="s1">&#39;vertical&#39;</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">r</span><span class="p">))</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addRegionAnnotation</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CanvasAnnotation.getRegionAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getRegionAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getRegionAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of all region annotations in canvas.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            list: list of :class:`.RegionAnnotation.RegionAnnotation`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">annot</span> <span class="k">for</span> <span class="n">annot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">RegionAnnotation</span><span class="p">)]</span></div>
+
+    <span class="k">def</span> <span class="nf">__saveRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getRegionAnnotations</span><span class="p">()):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getRegion</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getOrientation</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getAxis</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">())</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_region&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="k">def</span> <span class="nf">__loadRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;annot_region&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_region&#39;</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position&#39;</span><span class="p">]</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Type&#39;</span><span class="p">]</span>
+                <span class="n">appearance</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">])</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axisDict</span><span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addRegionAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="CanvasAnnotation.addCrossAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addCrossAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">addCrossAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add cross annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pos(length 2 sequence): The position in the form of (x, y).</span>
+<span class="sd">            axis(&#39;BottomLeft&#39;, &#39;BottomRight&#39;, &#39;TopLeft&#39;, or &#39;TopRight&#39;): The axis to which the annotation is added.</span>
+<span class="sd">            appearance(dict): Appearance dictionary, which is generated by :meth:`.AnnotationData.saveAppearance` method.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            CrossAnnotation: The annotation added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">rb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="n">rl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rb</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rl</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addCrossAnnotation</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CanvasAnnotation.getCrossAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getCrossAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getCrossAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of all cross annotations in canvas.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            list: list of :class:`.CrossAnnotation.CrossAnnotation`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">annot</span> <span class="k">for</span> <span class="n">annot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">CrossAnnotation</span><span class="p">)]</span></div>
+
+    <span class="k">def</span> <span class="nf">__saveCross</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getCrossAnnotations</span><span class="p">()):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getPosition</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getAxis</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">())</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_cross&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="k">def</span> <span class="nf">__loadCross</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;annot_cross&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_cross&#39;</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position&#39;</span><span class="p">]</span>
+                <span class="n">appearance</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">])</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axisDict</span><span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addCrossAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="CanvasAnnotation.addFreeRegionAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addFreeRegionAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">addFreeRegionAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add free region annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            region(2*2 sequence): The position of the region in the form of [(x0, y0), (x1 ,y1)]</span>
+<span class="sd">            width(float): The width of the region.</span>
+<span class="sd">            axis(&#39;BottomLeft&#39;, &#39;BottomRight&#39;, &#39;TopLeft&#39;, or &#39;TopRight&#39;): The axis to which the annotation is added.</span>
+<span class="sd">            appearance(dict): Appearance dictionary, which is generated by :meth:`.AnnotationData.saveAppearance` method.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            FreeRegionAnnotation: The annotation added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">region</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="n">rl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="n">rb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getRange</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rb</span><span class="p">))</span>
+            <span class="n">dl</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rl</span><span class="p">))</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rb</span><span class="p">)</span> <span class="o">+</span> <span class="n">db</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">rl</span><span class="p">)</span> <span class="o">+</span> <span class="n">dl</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">db</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dl</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+            <span class="n">region</span> <span class="o">=</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">width</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">region</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">region</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">region</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">region</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addFreeRegionAnnotation</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CanvasAnnotation.getFreeRegionAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getFreeRegionAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getFreeRegionAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of all free region annotations in canvas.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            list: list of :class:`.RegionAnnotation.FreeRegionAnnotation`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">annot</span> <span class="k">for</span> <span class="n">annot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">FreeRegionAnnotation</span><span class="p">)]</span></div>
+
+    <span class="k">def</span> <span class="nf">__saveFreeRegions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getFreeRegionAnnotations</span><span class="p">()):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getRegion</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getWidth</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">())</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getAxis</span><span class="p">()</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_freeRegion&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="k">def</span> <span class="nf">__loadFreeRegions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;annot_freeRegion&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;annot_freeRegion&#39;</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="n">p0</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position0&#39;</span><span class="p">]</span>
+                <span class="n">p1</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position1&#39;</span><span class="p">]</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">p1</span><span class="p">)</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Width&#39;</span><span class="p">]</span>
+                <span class="n">appearance</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">])</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axisDict</span><span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addFreeRegionAnnotation</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="CanvasAnnotation.addText"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.addText">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">addText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;BottomLeft&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add text annotation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text(str): The text to be shown.</span>
+<span class="sd">            pos(length 2 sequence): The position in the form of (x, y).</span>
+<span class="sd">            axis(&#39;BottomLeft&#39;, &#39;BottomRight&#39;, &#39;TopLeft&#39;, or &#39;TopRight&#39;): The axis to which the annotation is added.</span>
+<span class="sd">            appearance(dict): Appearance dictionary, which is generated by :meth:`.AnnotationData.saveAppearance` method.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            TextAnnotation: The annotation added.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_addTextAnnotation</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__addObject</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">appearance</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CanvasAnnotation.getTextAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getTextAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getTextAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of all text annotations in canvas.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            list: list of :class:`.TextAnnotation.TextAnnotation`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">annot</span> <span class="k">for</span> <span class="n">annot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">TextAnnotation</span><span class="p">)]</span></div>
+
+    <span class="k">def</span> <span class="nf">__saveText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getTextAnnotations</span><span class="p">()):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getText</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Position&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getPosition</span><span class="p">()</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">saveAppearance</span><span class="p">())</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">getAxis</span><span class="p">()</span>
+        <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;Textlist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
+
+    <span class="k">def</span> <span class="nf">__loadText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;Textlist&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="n">dic</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;Textlist&#39;</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Text&#39;</span><span class="p">]</span>
+                <span class="n">appearance</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Appearance&#39;</span><span class="p">])</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axisDict</span><span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Axis&#39;</span><span class="p">]]</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Position&#39;</span><span class="p">,</span> <span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addText</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="o">**</span><span class="n">appearance</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<div class="viewcode-block" id="CanvasAnnotation.getAnnotations"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.getAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of all annotations in canvas.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            type(str): The type of annotations (&#39;all&#39;, &#39;text&#39;, &#39;line&#39;, &#39;infiniteLine&#39;, &#39;rect&#39;, &#39;region&#39;, &#39;freeRegion&#39;, or &#39;cross&#39;)</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            list: list of :class:`.AnnotationData.AnnotationData`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getTextAnnotations</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getLineAnnotations</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;infiniteLine&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getInfiniteLineAnnotations</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;rect&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRectAnnotations</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;region&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getRegionAnnotations</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;freeRegion&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getFreeRegionAnnotations</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s2">&quot;cross&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCrossAnnotations</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="CanvasAnnotation.removeAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/Annotation.html#lys.widgets.canvas.interface.Annotation.CanvasAnnotation.removeAnnotation">[docs]</a>    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">removeAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annot</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove annotation from the canvas.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            annot(AnnotationData): The annotation removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_annotations</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">annot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_removeAnnotation</span><span class="p">(</span><span class="n">annot</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">annotationChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_addLineAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _addLineAnnotation(pos, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addInfiniteLineAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _addInfiniteLineAnnotation(pos, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addRectAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _addRectAnnotation(pos, size, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addRegionAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _addRegionAnnotation(region, orientation, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addFreeRegionAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _addRegionAnnotation(region, width, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addCrossAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _addCrossAnnotation(pos, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_addTextAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _addTextAnnotation(text, pos, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_removeAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _removeAnnotation(obj) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
