@@ -36,4 +36,4 @@ Pull requests are the best way to propose changes to the code. We actively welco
 
 License
 ------------------------
-By contributing, you agree that your contributions will be licensed under its MIT License.
+By contributing, you agree that your contributions will be licensed under its GPLv3 License.
