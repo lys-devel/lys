@@ -13,3 +13,4 @@ build
 dist
 docs_src/_build
 __pycache__
+lys.egg-info/
