@@ -3,8 +3,8 @@ Installation
 
 System requirements
 -------------------------
-- Python (version >= 3.6) installed.
-- X11 client installed. For windows users using Windows Subsystem for Linux, it is recommended to use xvcsrv (https://sourceforge.net/projects/vcxsrv/) as X11 client.
+- Python (version >= 3.6).
+- (For linux only) X11 system. Make sure other GUI programs (such as xeyes) works properly. For Windows users using Windows Subsystem for Linux (WSL), it is recommended to use xvcsrv (https://sourceforge.net/projects/vcxsrv/) as X11 client. 
 
 Before installation
 --------------------------

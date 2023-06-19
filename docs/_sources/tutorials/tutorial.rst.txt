@@ -24,3 +24,10 @@ Advanced: Read if it is needed
    fitting
    GUI
    shell
+
+Tips:
+-------------------------
+.. toctree::
+   :maxdepth: 1
+
+   loadVector
