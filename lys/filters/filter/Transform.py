@@ -33,7 +33,7 @@ class SetAxisFilter(FilterInterface):
             a = np.linspace(self._val1, self._val1 + self._val2 *
                             (wave.data.shape[self._axis] - 1), wave.data.shape[self._axis])
         else:
-            a = np.linspace(self._val1, self._val1 + self._val2, wave.data.shape[self._axis])
+            a = np.linspace(self._val1, self._val2, wave.data.shape[self._axis])
         axes = list(wave.axes)
         axes[self._axis] = a
         return DaskWave(wave.data, *axes, **wave.note)
