@@ -237,16 +237,25 @@ class ChildWaves(QtCore.QObject):
         return res
 
     def __getFreeLineTransposeFilter(self, axes_orig, ignored):
+        """
+        Get freeline and transpose filter for multicut.
+        Since several axes are integrated, axes for free line should be modified.
+        This method calculate appropriate free line filter and additional transpose filter if needed.
+
+        Args:
+            axes_orig(list): The axes of data in the original wave.
+            ignored: The axes of data in the original wave that is not integrated.
+        """
         axes_final = list(ignored)
         filts = []
         for ax in axes_orig:
             if isinstance(ax, str):
                 line = self.cui.getFreeLine(ax)
-                axes = list(line.getAxes())
-                axes = [axes_final.index(a) for a in axes]
-                filts.append(line.getFilter(axes))
-                axes_final[axes_final.index(axes[0])] = ax
-                axes_final.remove(axes[1])
+                line_axes_orig = list(line.getAxes())                      # Axes for non-integrated data
+                line_axes = [axes_final.index(a) for a in line_axes_orig]  # Axes for integrated data used to create free line filter
+                filts.append(line.getFilter(line_axes))
+                axes_final[axes_final.index(line_axes_orig[0])] = ax       # Replace original axes to the name of line.
+                axes_final.remove(line_axes_orig[1])
         if axes_final != axes_orig and len(axes_orig) != 1:
             filts.append(filters.TransposeFilter([axes_final.index(a) for a in axes_orig]))
         return filts
