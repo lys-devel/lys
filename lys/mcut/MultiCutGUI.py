@@ -315,16 +315,16 @@ class MultiCut(QtCore.QObject):
         d["waves"] = res
         return d
 
-    def __loadCanvas(self, dic, useGrid=False, useGraph=False, useAnnot=False, useLine=False, axesMap=None, **kwargs):
+    def __loadCanvas(self, dic, useGrid=False, useGraph=False, useAnnot=False, useLine=False, useRange=False, axesMap=None, **kwargs):
         self._can.clear()
         if useGraph:
             for d in dic.get("Graphs", []):
-                self.__canvasFromDict(d, useAnnot, useLine, axesMap)
+                self.__canvasFromDict(d, useAnnot, useLine, useRange, axesMap)
         if useGrid:
             for d in dic.get("Grids", []):
-                self.__canvasFromDict(d, useAnnot, useLine, axesMap)
+                self.__canvasFromDict(d, useAnnot, useLine, useRange, axesMap)
 
-    def __canvasFromDict(self, d, useAnnot, useLine, axesMap):
+    def __canvasFromDict(self, d, useAnnot, useLine, useRange, axesMap):
         isGrid = "position" in d
         if axesMap is not None:
             d["axes"] = [axesMap[ax] for ax in d["axes"]]
@@ -340,4 +340,4 @@ class MultiCut(QtCore.QObject):
             w = waves[data["index"]]
             c.Append(w.getFilteredWave(), vector=data["vector"], contour=data["contour"])
         if useAnnot:
-            self._can.addAnnotations(c, d.get("annotations", []), useLine)
+            self._can.addAnnotations(c, d.get("annotations", []), useLine, overwrite=not useRange)
