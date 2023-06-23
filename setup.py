@@ -1,14 +1,24 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import sys
+from pathlib import Path
 sys.path.append('./lys')
 sys.path.append('./test')
 
+
+this_directory = Path(__file__).parent
+long_description = (this_directory / "README.md").read_text()
+
+
 setup(
-    name="lys",
-    version="0.3.0",
+    name="lys-python",
+    packages=find_packages(exclude=("test*",)),
+    version="0.3.0.3",
     description="Interactive multi-dimensional data analysis and visualization",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Asuka Nakamura",
-    author_email="lys.dev@gmail.com",
+    author_email="lys.devel@gmail.com",
+    url="https://github.com/lys-devel/lys",
     license="GNU GPLv3",
-    install_requires=["numpy", "scipy", "opencv-python-headless", "PyQt5", "matplotlib", "pyqtGraph", "dask[array]", "dask[distributed]", "dask_image", "autopep8", "qtpy"],
+    install_requires=open('requirements.txt').read().splitlines(),
 )

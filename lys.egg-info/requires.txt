@@ -1,7 +1,7 @@
 numpy
 scipy
 opencv-python-headless
-PySide2
+PyQt5
 matplotlib
 pyqtGraph
 dask[array]

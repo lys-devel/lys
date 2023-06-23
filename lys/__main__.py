@@ -66,7 +66,7 @@ lys.glb.createMainWindow(show=False)
 # Load local Plugins
 if not args.noplugin:
     loadWindow.setPixmap(splash["local_plugin"])
-    import lys.localPlugins.init
+    from . import localPlugins
 
     # Load Plugins
     loadWindow.setPixmap(splash["plugin"])

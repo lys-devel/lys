@@ -61,9 +61,3 @@ We confirmed that *lys* works well under the environment below. If *lys* does no
 - qtpy 2.0.1
 - autopep8 1.6.0
 
-Unittest
----------------
-
-Go to lys install directory, and run the code below::
-
-    python -m unittest discover
