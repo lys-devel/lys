@@ -121,7 +121,7 @@ class AddWaveDialog(QtWidgets.QDialog):
     def __initlayout(self):
         self._ax = _waveWidget(self._cui.getFilteredWave().ndim, self._cui.getFreeLines(), name="data" + str(AddWaveDialog._index + 1))
         self._canvas = _canvasWidget()
-        self._filt = filters.FiltersGUI(2)
+        self._filt = filters.FiltersGUI(min(self._cui.getFilteredWave().ndim, 2))
         self._ax.dimensionChanged.connect(lambda x: self._canvas.setEnabled(x < 3))
         self._ax.dimensionChanged.connect(self._filt.clear)
         self._ax.dimensionChanged.connect(self._filt.setDimension)
