@@ -9,6 +9,7 @@ lys documentation
 *lys* is a Python-based multi-dimensional data analysis and visualization platform based on several popular libraries such as numpy, dask, matplotlib, and Qt. 
 
 To use *lys*, go to :doc:`install` and :doc:`tutorials/tutorial`.
+Source code of *lys* is opened in GitHub (https://github.com/lys-devel/lys).
 
 What *lys* can do in visualization:
 
