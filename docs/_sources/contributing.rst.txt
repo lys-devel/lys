@@ -33,6 +33,12 @@ Pull requests are the best way to propose changes to the code. We actively welco
 5. If you've changed APIs, update the documentation. We use sphinx and reStructuredText for documentation.
 6. Issue that pull request in GitHub.
 
+Unittest
+---------------
+
+Go to lys directory, and run the code below::
+
+    python -m unittest discover
 
 License
 ------------------------
