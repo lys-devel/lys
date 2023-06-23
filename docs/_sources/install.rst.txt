@@ -31,7 +31,7 @@ Installation
 
 2. Install lys by pip::
 
-    pip install lys_python
+    pip install lys-python
 
 3. Start lys by the commande below. Note that the current directory of the system is used as the working directory of lys::
 
