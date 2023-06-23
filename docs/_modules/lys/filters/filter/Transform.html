@@ -27,7 +27,6 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="../../../../index.html" class="icon icon-home"> lys
-            <img src="../../../../_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 0.3.0
@@ -44,7 +43,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API for lys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 </ul>
 
         </div>
@@ -107,7 +107,7 @@
             <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_val1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val2</span> <span class="o">*</span>
                             <span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_val1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val2</span><span class="p">,</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">])</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_val1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_val2</span><span class="p">,</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">])</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">)</span>
         <span class="n">axes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>

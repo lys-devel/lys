@@ -27,7 +27,6 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="../../../../index.html" class="icon icon-home"> lys
-            <img src="../../../../_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 0.3.0
@@ -44,7 +43,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API for lys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
 </ul>
 
         </div>
@@ -176,7 +176,8 @@
 
     <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">key</span><span class="p">,</span> <span class="n">sumaxes</span><span class="p">,</span> <span class="n">intaxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getIndexAndSumAxes</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range</span><span class="p">)</span>
-        <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sumaxes</span> <span class="o">+</span> <span class="n">intaxes</span><span class="p">]</span>
+        <span class="n">axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sumaxes</span> <span class="o">+</span> <span class="n">intaxes</span><span class="p">]</span>
+        <span class="n">sumaxes</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">intaxes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sumaxes</span><span class="p">]</span>
         <span class="n">func</span> <span class="o">=</span> <span class="n">_getSumFunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sumtype</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">sumaxes</span><span class="p">)),</span> <span class="o">*</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
 
@@ -347,7 +348,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">R</span> <span class="o">-</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
 
 
-<span class="nd">@filterGUI</span><span class="p">(</span><span class="n">IntegralAllFilter</span><span class="p">)</span>
+<span class="o">@</span> <span class="n">filterGUI</span><span class="p">(</span><span class="n">IntegralAllFilter</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">_IntegralAllSetting</span><span class="p">(</span><span class="n">FilterSettingBase</span><span class="p">):</span>
     <span class="n">_sumtypes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Sum&quot;</span><span class="p">,</span> <span class="s2">&quot;Mean&quot;</span><span class="p">,</span> <span class="s2">&quot;Median&quot;</span><span class="p">,</span> <span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Min&quot;</span><span class="p">]</span>
 
@@ -370,7 +371,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sumtypes</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">sumtype</span><span class="p">))</span>
 
 
-<span class="nd">@filterGUI</span><span class="p">(</span><span class="n">IntegralFilter</span><span class="p">)</span>
+<span class="o">@</span> <span class="n">filterGUI</span><span class="p">(</span><span class="n">IntegralFilter</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">_IntegralSetting</span><span class="p">(</span><span class="n">FilterSettingBase</span><span class="p">):</span>
     <span class="n">_sumtypes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Sum&quot;</span><span class="p">,</span> <span class="s2">&quot;Mean&quot;</span><span class="p">,</span> <span class="s2">&quot;Median&quot;</span><span class="p">,</span> <span class="s2">&quot;Max&quot;</span><span class="p">,</span> <span class="s2">&quot;Min&quot;</span><span class="p">]</span>
 
@@ -415,7 +416,7 @@
         <span class="k">return</span> <span class="kc">True</span>
 
 
-<span class="nd">@filterGUI</span><span class="p">(</span><span class="n">IntegralCircleFilter</span><span class="p">)</span>
+<span class="o">@</span> <span class="n">filterGUI</span><span class="p">(</span><span class="n">IntegralCircleFilter</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">_CircleSetting</span><span class="p">(</span><span class="n">FilterSettingBase</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>

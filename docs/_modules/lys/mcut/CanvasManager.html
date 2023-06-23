@@ -27,7 +27,6 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="../../../index.html" class="icon icon-home"> lys
-            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 0.3.0
@@ -44,7 +43,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials/tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python API for lys</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 </ul>
 
         </div>
@@ -142,7 +142,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wid</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;You should specify the canvas that is created by MultiCut.&quot;</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CanvasManager.addCross"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addCross">[docs]</a>    <span class="k">def</span> <span class="nf">addCross</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasManager.addCross"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addCross">[docs]</a>    <span class="k">def</span> <span class="nf">addCross</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add cross annotation to canvas.</span>
 
@@ -150,6 +150,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</span>
+<span class="sd">            overwrite(bool): If it is True, the axis range type is changed to &quot;point&quot;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">CanvasBase</span><span class="p">):</span>
             <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getTargetCanvas</span><span class="p">()</span>
@@ -158,9 +159,9 @@
                 <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wid</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;This canvas already has same annotation.&quot;</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">crs</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">addCrossAnnotation</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">syncAnnotation</span><span class="p">(</span><span class="n">crs</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">syncAnnotation</span><span class="p">(</span><span class="n">crs</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasManager.addRect"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addRect">[docs]</a>    <span class="k">def</span> <span class="nf">addRect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasManager.addRect"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addRect">[docs]</a>    <span class="k">def</span> <span class="nf">addRect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add rectangle annotation to canvas.</span>
 
@@ -168,6 +169,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</span>
+<span class="sd">            overwrite(bool): If it is True, the axis range type is changed to &quot;range&quot;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">CanvasBase</span><span class="p">):</span>
@@ -177,7 +179,7 @@
                 <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wid</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;This canvas already has same annotation.&quot;</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">rect</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">addRectAnnotation</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">syncAnnotation</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">syncAnnotation</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CanvasManager.addFreeLine"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addFreeLine">[docs]</a>    <span class="k">def</span> <span class="nf">addFreeLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">syncAnnot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -200,7 +202,7 @@
                 <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">getFreeLine</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">syncAnnotation</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">syncAnnot</span><span class="o">=</span><span class="n">syncAnnot</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasManager.addRegion"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addRegion">[docs]</a>    <span class="k">def</span> <span class="nf">addRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasManager.addRegion"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addRegion">[docs]</a>    <span class="k">def</span> <span class="nf">addRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add region annotation to canvas.</span>
 
@@ -208,6 +210,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</span>
+<span class="sd">            overwrite(bool): If it is True, the axis range type is changed to &quot;range&quot;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">CanvasBase</span><span class="p">):</span>
@@ -216,10 +219,10 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">hasAnnotation</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">RegionAnnotation</span><span class="p">,</span> <span class="n">orientation</span><span class="p">):</span>
                 <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wid</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;This canvas already has same annotation.&quot;</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">reg</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">addRegionAnnotation</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">)</span>
+                <span class="n">reg</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">addRegionAnnotation</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">syncAnnotation</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CanvasManager.addLine"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addLine">[docs]</a>    <span class="k">def</span> <span class="nf">addLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasManager.addLine"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addLine">[docs]</a>    <span class="k">def</span> <span class="nf">addLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add infinite line annotation to canvas.</span>
 
@@ -227,6 +230,7 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</span>
+<span class="sd">            overwrite(bool): If it is True, the axis range type is changed to &quot;point&quot;.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">CanvasBase</span><span class="p">):</span>
@@ -236,7 +240,7 @@
                 <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wid</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;This canvas already has same annotation.&quot;</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Yes</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">addInfiniteLineAnnotation</span><span class="p">(</span><span class="n">orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">syncAnnotation</span><span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">syncAnnotation</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CanvasManager.getAnnotations"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.getAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">getAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -261,7 +265,7 @@
         <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="o">.</span><span class="n">lineAnnotations</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="CanvasManager.addAnnotations"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">addAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">annotations</span><span class="p">,</span> <span class="n">syncLine</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasManager.addAnnotations"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.CanvasManager.CanvasManager.addAnnotations">[docs]</a>    <span class="k">def</span> <span class="nf">addAnnotations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">annotations</span><span class="p">,</span> <span class="n">syncLine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add annotations to the canvas.</span>
 
@@ -270,17 +274,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">annot</span> <span class="ow">in</span> <span class="n">annotations</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">annot</span> <span class="o">==</span> <span class="s2">&quot;cross&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">addCross</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addCross</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">annot</span> <span class="o">==</span> <span class="s2">&quot;rect&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">addRect</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addRect</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">annot</span> <span class="o">==</span> <span class="s2">&quot;vertical_region&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">addRegion</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addRegion</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">annot</span> <span class="o">==</span> <span class="s2">&quot;horizontal_region&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">addRegion</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addRegion</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">annot</span> <span class="o">==</span> <span class="s2">&quot;vertical_line&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">addLine</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addLine</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">annot</span> <span class="o">==</span> <span class="s2">&quot;horizontal_line&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">addLine</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addLine</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">addFreeLine</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">syncLine</span><span class="p">)</span></div>
 
@@ -300,20 +304,27 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span> <span class="o">=</span> <span class="n">cui</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_can</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">can</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">syncAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">syncAnnot</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">syncAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">syncAnnot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Synchronize annotation with cui.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            annot: The annotation to be synchronized.</span>
+<span class="sd">            overwrite: If it is True, the axis range type of cui is changed to corresponding type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">annot</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_can</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">RuntimeWarning</span><span class="p">(</span><span class="s2">&quot;Could not synchronize annotations in canvas that is not controlled by CanvasManager.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">annot</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">InfiniteLineAnnotation</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">[</span><span class="n">annot</span><span class="p">]</span> <span class="o">=</span> <span class="n">_InfLineSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">[</span><span class="n">annot</span><span class="p">]</span> <span class="o">=</span> <span class="n">_InfLineSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">RegionAnnotation</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">[</span><span class="n">annot</span><span class="p">]</span> <span class="o">=</span> <span class="n">_RegionSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">[</span><span class="n">annot</span><span class="p">]</span> <span class="o">=</span> <span class="n">_RegionSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">CrossAnnotation</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">[</span><span class="n">annot</span><span class="p">]</span> <span class="o">=</span> <span class="n">_CrossSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">[</span><span class="n">annot</span><span class="p">]</span> <span class="o">=</span> <span class="n">_CrossSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">RectAnnotation</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">[</span><span class="n">annot</span><span class="p">]</span> <span class="o">=</span> <span class="n">_RectSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">[</span><span class="n">annot</span><span class="p">]</span> <span class="o">=</span> <span class="n">_RectSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">annot</span><span class="p">,</span> <span class="n">FreeRegionAnnotation</span><span class="p">)</span> <span class="ow">and</span> <span class="n">line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">[</span><span class="n">annot</span><span class="p">]</span> <span class="o">=</span> <span class="n">_FreeLineSync</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">syncAnnot</span><span class="o">=</span><span class="n">syncAnnot</span><span class="p">)</span>
 
@@ -339,13 +350,22 @@
 
 
 <span class="k">class</span> <span class="nc">_InfLineSync</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sync infinite line annotation with range of MultiCut CUI.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cui: The CUI object.</span>
+<span class="sd">        annot: The infinite line annotation object to be syncronized.</span>
+<span class="sd">        overwite(bool): If it is True, axis range type is force changed to &quot;point&quot;. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span> <span class="o">=</span> <span class="n">annot</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span> <span class="o">=</span> <span class="n">cui</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">):</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">getOrientation</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;vertical&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">_maxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -353,7 +373,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">_maxes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">getAxisRangeType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;point&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">getPosition</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">positionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">axesRangeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_r</span><span class="p">)</span>
@@ -370,13 +390,22 @@
 
 
 <span class="k">class</span> <span class="nc">_CrossSync</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sync cross annotation with range of MultiCut CUI.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cui: The CUI object.</span>
+<span class="sd">        annot: The cross annotation object to be syncronized.</span>
+<span class="sd">        overwite(bool): If it is True, axis range type is force changed to &quot;point&quot;. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span> <span class="o">=</span> <span class="n">annot</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span> <span class="o">=</span> <span class="n">cui</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">):</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">_maxes</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="p">[]</span>
@@ -386,7 +415,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">getPosition</span><span class="p">()[</span><span class="n">i</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">setPosition</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="n">pos</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">positionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">axesRangeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_r</span><span class="p">)</span>
 
@@ -408,13 +438,22 @@
 
 
 <span class="k">class</span> <span class="nc">_RegionSync</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sync region annotation with range of MultiCut CUI.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cui: The CUI object.</span>
+<span class="sd">        annot: The region annotation object to be syncronized.</span>
+<span class="sd">        overwite(bool): If it is True, axis range type is force changed to &quot;range&quot;. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span> <span class="o">=</span> <span class="n">annot</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span> <span class="o">=</span> <span class="n">cui</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">):</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">getOrientation</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;vertical&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">_maxes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -422,7 +461,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">_maxes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">getAxisRangeType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;range&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">getRegion</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">regionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">axesRangeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_r</span><span class="p">)</span>
@@ -439,13 +478,22 @@
 
 
 <span class="k">class</span> <span class="nc">_RectSync</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sync rect annotation with range of MultiCut CUI.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        cui: The CUI object.</span>
+<span class="sd">        annot: The rect annotation object to be syncronized.</span>
+<span class="sd">        overwite(bool): If it is True, axis range type is force changed to &quot;range&quot;. </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">,</span> <span class="n">annot</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span> <span class="o">=</span> <span class="n">annot</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span> <span class="o">=</span> <span class="n">cui</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sync</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="p">):</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">_maxes</span>
         <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
@@ -455,7 +503,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">getRegion</span><span class="p">()[</span><span class="n">i</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_annot</span><span class="o">.</span><span class="n">regionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">axesRangeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__sync_r</span><span class="p">)</span>
 

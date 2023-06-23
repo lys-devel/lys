@@ -167,19 +167,22 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addAnnotations">
-<span class="sig-name descname"><span class="pre">addAnnotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">syncLine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addAnnotations" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">addAnnotations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">syncLine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addAnnotations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addAnnotations" title="Permalink to this definition"></a></dt>
 <dd><p>Add annotations to the canvas.</p>
 <p>This method is internal use only. Do not call.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addCross">
-<span class="sig-name descname"><span class="pre">addCross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addCross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addCross" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">addCross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addCross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addCross" title="Permalink to this definition"></a></dt>
 <dd><p>Add cross annotation to canvas.</p>
 <p>The added annotation is synchronized with axes range of MultiCut.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – If it is True, the axis range type is changed to “point”.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -198,36 +201,45 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addLine">
-<span class="sig-name descname"><span class="pre">addLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertical'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addLine" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">addLine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addLine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addLine" title="Permalink to this definition"></a></dt>
 <dd><p>Add infinite line annotation to canvas.</p>
 <p>The added annotation is synchronized with axes range of MultiCut.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – If it is True, the axis range type is changed to “point”.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addRect">
-<span class="sig-name descname"><span class="pre">addRect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addRect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addRect" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">addRect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addRect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addRect" title="Permalink to this definition"></a></dt>
 <dd><p>Add rectangle annotation to canvas.</p>
 <p>The added annotation is synchronized with axes range of MultiCut.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – If it is True, the axis range type is changed to “range”.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.mcut.CanvasManager.CanvasManager.addRegion">
-<span class="sig-name descname"><span class="pre">addRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertical'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addRegion" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">addRegion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'vertical'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/lys/mcut/CanvasManager.html#CanvasManager.addRegion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.mcut.CanvasManager.CanvasManager.addRegion" title="Permalink to this definition"></a></dt>
 <dd><p>Add region annotation to canvas.</p>
 <p>The added annotation is synchronized with axes range of MultiCut.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>c</strong> (<em>canvas</em>) – The canvas to which the annotation is added. If it is omitted, frontCanvas is used.</p></li>
+<li><p><strong>overwrite</strong> (<em>bool</em>) – If it is True, the axis range type is changed to “range”.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
