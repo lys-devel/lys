@@ -20,7 +20,7 @@ class _ChildWavesModel(QtCore.QAbstractItemModel):
             if index.column() == 0:
                 return item.name()
             elif index.column() == 1:
-                axes = tuple(ax + 1 for ax in item.getAxes())
+                axes = tuple(ax + 1 if isinstance(ax, int) else ax for ax in item.getAxes())
                 return str(axes)
             elif index.column() == 2:
                 p = item.postProcess()

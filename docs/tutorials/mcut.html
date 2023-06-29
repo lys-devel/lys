@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive GUI analysis system MultiCut &mdash; lys 0.3.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Loading your file" href="newLoader.html" />
+    <link rel="prev" title="Display graphs in lys" href="visualization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.3.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="tutorial.html#basic-required-for-all-users">Basic: Required for all users</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cui.html">Use lys as Python interpreter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="visualization.html">Display graphs in lys</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Interactive GUI analysis system MultiCut</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#use-default-template">Use default template</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#manually-setup-multicut">Manually setup MultiCut</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cut-along-free-line">Cut along free line</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apply-filter">Apply filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#postprocessing">Postprocessing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make-your-own-template">Make your own template</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-publication-quality-figure">Create publication-quality figure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#advanced-read-if-it-is-needed">Advanced: Read if it is needed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#tips">Tips:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="tutorial.html">Tutorial</a></li>
+      <li class="breadcrumb-item active">Interactive GUI analysis system MultiCut</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/mcut.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="interactive-gui-analysis-system-multicut">
+<h1>Interactive GUI analysis system MultiCut<a class="headerlink" href="#interactive-gui-analysis-system-multicut" title="Permalink to this heading"></a></h1>
+<p>MultiCut is a GUI tool implemented in <em>lys</em>. It enables users to efficiently visualize and analyze multi-dimensional arrays.</p>
+<section id="use-default-template">
+<h2>Use default template<a class="headerlink" href="#use-default-template" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>Load sample data by typing the code below in the command line of main window:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="n">gauss_3d_data</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p>Open MultiCut by the command below. You will find an empty window (MultiCut window) and “MultiCut” tab in sidebar.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multicut</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>Click “Template” button in the sidebar.</p></li>
+</ol>
+<img alt="../_images/MultiCutTab.png" src="../_images/MultiCutTab.png" />
+<ol class="arabic simple" start="4">
+<li><p>In the dialog box, confirm that the “Default” is displayed in Information and click “OK” at the bottom.</p></li>
+</ol>
+<img alt="../_images/template1.png" src="../_images/template1.png" />
+<ol class="arabic simple" start="5">
+<li><p>Click “Yes” in the message box.</p></li>
+</ol>
+<img alt="../_images/template2.png" src="../_images/template2.png" />
+<p>6. The analyzed data is shown in the MultiCut window. The original data is a sequence of 2D gaussian image with noise. The central position of gaussian is moved depending on the 3rd-axis.
+The top image is one of the gaussian image at the line in the bottom window. And the bottom curve represents integrated intensity inside the rectangle of top window.</p>
+<a class="reference internal image-reference" href="../_images/mcut1.png"><img alt="../_images/mcut1.png" src="../_images/mcut1.png" style="width: 481.5px; height: 577.0px;" /></a>
+<p>7. When you change the position of the line in the bottom figure, the gaussian image is changed. Similarly, when you change the position of rectangle in top window, the bottom curve is changed.
+These functionarities are very useful to visualize multi-dimensional data more than 3D.</p>
+</section>
+<section id="manually-setup-multicut">
+<h2>Manually setup MultiCut<a class="headerlink" href="#manually-setup-multicut" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>The default template is powerfull but non-flexible way to use MultiCut. Try to setup MultiCut manually. You can close MultiCut window if it is still opened.</p></li>
+<li><p>Open MultiCut by the command below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multicut</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">gauss_3d_data</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+<li><p>Click “Add” button in the main tab in the sidebar. A dialog box is opened.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/add1.png"><img alt="../_images/add1.png" src="../_images/add1.png" style="width: 429.0px; height: 641.5px;" /></a>
+<ol class="arabic simple" start="4">
+<li><p>In the dialog box, set the following parameters, and press “OK”. The parameters means the “image1” is 2D image whose axes are 1st and 2nd axes of original 3D data.</p></li>
+</ol>
+<ul class="simple">
+<li><p>Name: image1</p></li>
+<li><p>Dimension: 2 (default)</p></li>
+<li><p>Axis1: 1 (default)</p></li>
+<li><p>Axis2: 2 (default)</p></li>
+</ul>
+<img alt="../_images/add2.png" src="../_images/add2.png" />
+<ol class="arabic simple" start="5">
+<li><p>You are asked to select where to display the data in MultiCut window. Select like the image below. Orange region is selected.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/add3.png"><img alt="../_images/add3.png" src="../_images/add3.png" style="width: 460.5px; height: 445.0px;" /></a>
+<ol class="arabic simple" start="6">
+<li><p>Go to “Range” tab in the sidebar and change a slider for “Axis 3”. The “image1” is changed. Since “image1” is along 1st and 2nd axes, changing sliders of axis 1 and 2 do not affect “image1”.</p></li>
+</ol>
+<img alt="../_images/add4.png" src="../_images/add4.png" />
+<ol class="arabic simple" start="7">
+<li><p>Go back to “Main” tab and click “Add” button. In the dialog box, set the following parameters. This means “curve1” is 1D curve whose axis is along 3rd axis of original 3D data.</p></li>
+</ol>
+<ul class="simple">
+<li><p>Name: curve1</p></li>
+<li><p>Dimension: 1</p></li>
+<li><p>Axis1: 2</p></li>
+</ul>
+<img alt="../_images/add5.png" src="../_images/add5.png" />
+<ol class="arabic simple" start="8">
+<li><p>Press “OK” in the dialog and select region to show data.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/add6.png"><img alt="../_images/add6.png" src="../_images/add6.png" style="width: 384.5px; height: 472.0px;" /></a>
+<ol class="arabic simple" start="9">
+<li><p>Since “curve1” is along the 3rd axis of the original data, it is changed when you change Axis 1 and 2 in the “Range” tab.</p></li>
+</ol>
+<img alt="../_images/add7.png" src="../_images/add7.png" />
+<ol class="arabic simple" start="10">
+<li><p>It is useful to add annotations that are synchronized with the contents of “Range” tab. Click the top image in MultiCut window, and click “Rect” in “Main” tab.</p></li>
+</ol>
+<img alt="../_images/add8.png" src="../_images/add8.png" />
+<ol class="arabic simple" start="11">
+<li><p>When you change the position of the rectangle annotation in top graph, values in “Range” tab is synchronously changed.</p></li>
+</ol>
+<img alt="../_images/add9.png" src="../_images/add9.png" />
+<ol class="arabic simple" start="12">
+<li><p>Click bottom figure in the MultiCut window and click “Line (X)” button in the “Main” tab. You can edit the value of “Axis 3” from the line annnotation.</p></li>
+</ol>
+<img alt="../_images/add10.png" src="../_images/add10.png" />
+<ol class="arabic simple" start="13">
+<li><p>It’s done! All you do in this section is identical to use default template.</p></li>
+</ol>
+</section>
+<section id="cut-along-free-line">
+<h2>Cut along free line<a class="headerlink" href="#cut-along-free-line" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p><em>lys</em> can cut the image along arbitrary line in an interactive way. Close old MultiCut window it is still opended.</p></li>
+<li><p>Open MultiCut by the command below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multicut</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">gauss_3d_data</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+<li><p>From the “Add” button in the sidebar, add an image by setting below.</p></li>
+</ol>
+<ul class="simple">
+<li><p>Name: image1</p></li>
+<li><p>Dimension: 2 (default)</p></li>
+<li><p>Axis1: 1 (default)</p></li>
+<li><p>Axis2: 2 (default)</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/line1.png"><img alt="../_images/line1.png" src="../_images/line1.png" style="width: 353.0px; height: 327.0px;" /></a>
+<ol class="arabic simple" start="4">
+<li><p>We want to cut this image along arbitrary direction. Click the image in the MultiCut window and click “Free Line” in the sidebar.</p></li>
+</ol>
+<img alt="../_images/line2.png" src="../_images/line2.png" />
+<ol class="arabic simple" start="5">
+<li><p>It is hard to see the annotation. Double click the image in the MultiCut window to open graph setting.</p></li>
+</ol>
+<img alt="../_images/line3.png" src="../_images/line3.png" />
+<ol class="arabic simple" start="6">
+<li><p>Go to “images” tab, select data1, and change colormap to “GnBu”.</p></li>
+</ol>
+<img alt="../_images/line4.png" src="../_images/line4.png" />
+<ol class="arabic simple" start="7">
+<li><p>There is a annotation that you can change position freely. Set the position of the annotation to cross gaussian. You can move the annotation by drag and drop.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/line5.png"><img alt="../_images/line5.png" src="../_images/line5.png" style="width: 344.0px; height: 312.5px;" /></a>
+<p>8. Go back to “MultiCut” tab in the sidebar, and click “Lines” tab.
+.. image:: ./image_mcut/line6.png</p>
+<ol class="arabic simple" start="9">
+<li><p>You can edit the position and width of line. Set the parameters below. This means the annotation is between (x0,y0)=(0,-4) and (x1,y1)=(0,4).</p></li>
+</ol>
+<ul class="simple">
+<li><p>Point 0: 0, -4</p></li>
+<li><p>Point 1: 0, 4</p></li>
+</ul>
+<img alt="../_images/line7.png" src="../_images/line7.png" />
+<ol class="arabic simple" start="10">
+<li><p>Go back to “Main” tab, and click “Add” button.</p></li>
+</ol>
+<img alt="../_images/line8.png" src="../_images/line8.png" />
+<ol class="arabic simple" start="11">
+<li><p>In the dialog box, set the parameters below.</p></li>
+</ol>
+<ul class="simple">
+<li><p>Name: fline1</p></li>
+<li><p>Dimension: 1</p></li>
+<li><p>Axis1: Line (Line0)</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/line9.png"><img alt="../_images/line9.png" src="../_images/line9.png" style="width: 369.0px; height: 355.0px;" /></a>
+<ol class="arabic simple" start="12">
+<li><p>Click OK and select where to show the graph.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/line10.png"><img alt="../_images/line10.png" src="../_images/line10.png" style="width: 412.5px; height: 504.0px;" /></a>
+<ol class="arabic simple" start="13">
+<li><p>You see the line profile along the annotation. When you change the position of annotation, data is automatically updated.</p></li>
+</ol>
+<img alt="../_images/line11.png" src="../_images/line11.png" />
+<ol class="arabic simple" start="14">
+<li><p>Confirm that the data is also changed when you change the value of 3rd axis in “Range” tab.</p></li>
+<li><p>It’s done! You can cut the image along arbitrary line.</p></li>
+</ol>
+</section>
+<section id="apply-filter">
+<h2>Apply filter<a class="headerlink" href="#apply-filter" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>The tutorials above are just visualization of multi-dimensional data. MultiCut also enables you to analyze data. Close old MultiCut window it is still opended.</p></li>
+<li><p>Open MultiCut by the command below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multicut</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">gauss_3d_data</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+<li><p>Click “Template” in the “Main” tab. Click “OK” to apply default template. You see an image and a curve.</p></li>
+</ol>
+<img alt="../_images/filt1.png" src="../_images/filt1.png" />
+<ol class="arabic simple" start="4">
+<li><p>The image is a bit noizy. We want to smooth data along 1st and 2nd axes.</p></li>
+<li><p>Go to “Filter” tab, right click in the “Filters” box. Select “Add a filter”</p></li>
+</ol>
+<img alt="../_images/filt2.png" src="../_images/filt2.png" />
+<ol class="arabic simple" start="6">
+<li><p>In <em>lys</em>, we call an analysis process as “filter”. You see list of filters that can be applicable to the data in the dialog box.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/filt3.png"><img alt="../_images/filt3.png" src="../_images/filt3.png" style="width: 433.5px; height: 386.5px;" /></a>
+<ol class="arabic simple" start="7">
+<li><p>Select “Smoothing”-“Median” to apply median filter. Click “OK”.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/filt4.png"><img alt="../_images/filt4.png" src="../_images/filt4.png" style="width: 440.5px; height: 397.0px;" /></a>
+<ol class="arabic simple" start="8">
+<li><p>The median filter is added to the “Filters” box. Click “Apply filters” at the bottom.</p></li>
+</ol>
+<img alt="../_images/filt5.png" src="../_images/filt5.png" />
+<ol class="arabic simple" start="9">
+<li><p>The data is smoothed by median filter.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/filt6.png"><img alt="../_images/filt6.png" src="../_images/filt6.png" style="width: 422.0px; height: 488.5px;" /></a>
+<ol class="arabic simple" start="10">
+<li><p>It’s done! You can add arbitrary number of filters sequencially. List of filters implemented in <em>lys</em> is given in <a class="reference internal" href="../lys_/filters.html"><span class="doc">filters module</span></a>. When you want to add your own filter, see <a class="reference internal" href="newFilter.html"><span class="doc">Adding your original filter</span></a>.</p></li>
+</ol>
+</section>
+<section id="postprocessing">
+<h2>Postprocessing<a class="headerlink" href="#postprocessing" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>The filter can be applied to the analysis result, not to the original data. Close old MultiCut window it is still opended.</p></li>
+<li><p>Open MultiCut by the command below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multicut</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">gauss_3d_data</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+<li><p>Click “Template” in the “Main” tab. Click “OK” to apply default template. You see an image and a curve.</p></li>
+<li><p>You want to smooth only the curve and compare it with original one. Click “Add” button in “Main” tab. Set the parameters below.</p></li>
+</ol>
+<ul class="simple">
+<li><p>Name: smoothed</p></li>
+<li><p>Dimension: 1</p></li>
+<li><p>Axis1: 3</p></li>
+<li><p>Uncheck “Display generated data”</p></li>
+</ul>
+<img alt="../_images/post1.png" src="../_images/post1.png" />
+<ol class="arabic simple" start="5">
+<li><p>To apply smoothing, click “Postprocess” at the right-bottom edge. Add “Median Filter” in “Smoothing”.</p></li>
+</ol>
+<img alt="../_images/post2.png" src="../_images/post2.png" />
+<ol class="arabic simple" start="6">
+<li><p>Click “OK”. You see “smoothed” is added in the list in the sidebar.</p></li>
+</ol>
+<img alt="../_images/post3.png" src="../_images/post3.png" />
+<ol class="arabic simple" start="7">
+<li><p>Click the bottom graph in MultiCut window, and right click “smoothed” in the list. You see context menu.</p></li>
+</ol>
+<img alt="../_images/post4.png" src="../_images/post4.png" />
+<ol class="arabic simple" start="8">
+<li><p>Select “Connected”-“Append”. This will append the data to the last-clicked graph.</p></li>
+</ol>
+<img alt="../_images/post5.png" src="../_images/post5.png" />
+<ol class="arabic simple" start="9">
+<li><p>You see smoothed data is shown in the bottom graph. When you change the rectangle annotation in the top graph, both curves changes at the same time.</p></li>
+</ol>
+<img alt="../_images/post6.png" src="../_images/post6.png" />
+<ol class="arabic simple" start="10">
+<li><p>It’s done! The postprocess greatly enhance the analysis flexibility.</p></li>
+<li><p>(You can skip this part) The image below shows processing flow of MultiCut, for your information. When one of the filter, range, lines, or postprocess ischanged, corresponding data is automatically updated.</p></li>
+</ol>
+<img alt="../_images/post7.png" src="../_images/post7.png" />
+<ol class="arabic simple" start="12">
+<li><p>(You can skip this part) The generated data is displayed or appended in MultiCut window. This process is almost independent of dat processing part above. Therefore it is also possible to add same data to different graph.</p></li>
+</ol>
+<img alt="../_images/post8.png" src="../_images/post8.png" />
+</section>
+<section id="make-your-own-template">
+<h2>Make your own template<a class="headerlink" href="#make-your-own-template" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Once you set up the analysis on MultiCut, it can be saved as template. Do not close the MultiCut window in the previous section.</p></li>
+<li><p>Click “Template” button in the sidebar. You see “Template Manager”.</p></li>
+</ol>
+<img alt="../_images/template3.png" src="../_images/template3.png" />
+<ol class="arabic simple" start="3">
+<li><p>Right click the list box at the left-edge, and select “Save present state”.</p></li>
+</ol>
+<img alt="../_images/template4.png" src="../_images/template4.png" />
+<ol class="arabic simple" start="4">
+<li><p>Usually, default setting works well. Click “OK”. If you want to integrated range in “Range” tab and free lines in “Lines” tab, you should check them.</p></li>
+</ol>
+<img alt="../_images/template5.png" src="../_images/template5.png" />
+<ol class="arabic simple" start="5">
+<li><p>“template1” is created. Click “CANCEL” and close MultiCut window.</p></li>
+</ol>
+<img alt="../_images/template6.png" src="../_images/template6.png" />
+<ol class="arabic" start="6">
+<li><p>Open new MultiCut window by the code below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multicut</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">gauss_3d_data</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+<li><p>Click “Template” button in the sidebar.</p></li>
+</ol>
+<img alt="../_images/template7.png" src="../_images/template7.png" />
+<ol class="arabic simple" start="8">
+<li><p>Select “template1” and click “OK”.</p></li>
+</ol>
+<img alt="../_images/template8.png" src="../_images/template8.png" />
+<ol class="arabic simple" start="9">
+<li><p>It’s done! Settings are loaded from the template. You see the smoothed data in Main tab and in the bottom graph.</p></li>
+</ol>
+<img alt="../_images/template9.png" src="../_images/template9.png" />
+</section>
+<section id="create-publication-quality-figure">
+<h2>Create publication-quality figure<a class="headerlink" href="#create-publication-quality-figure" title="Permalink to this heading"></a></h2>
+<ol class="arabic">
+<li><p>In MultiCut, we use pyqtgraph to show graphs because it is much faster than matplotlib. Close old MultiCut window it is still opended.</p></li>
+<li><p>However, matplotlib is more suitable for publication-quality figure. You should export analysis result to matplotlib figure.</p></li>
+<li><p>Open new MultiCut window by the code below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">multicut</span><span class="p">(</span><span class="n">resources</span><span class="o">.</span><span class="n">gauss_3d_data</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+<li><p>Apply default template for simplicity.</p></li>
+</ol>
+<img alt="../_images/export2.png" src="../_images/export2.png" />
+<ol class="arabic simple" start="5">
+<li><p>Right click “data1” in the sidebar, select “Copied”-“Display”-“image”.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/export1.png"><img alt="../_images/export1.png" src="../_images/export1.png" style="width: 416.5px; height: 505.0px;" /></a>
+<ol class="arabic simple" start="6">
+<li><p>It’s done, you have the image in matplotlib graph. Data in “Copied” is not updated even when MultiCut parameters are changed.</p></li>
+<li><p>Go back to <a class="reference internal" href="visualization.html"><span class="doc">Display graphs in lys</span></a> for further setting of graph.</p></li>
+</ol>
+<p>All tutorial has been done! You can analyze multi-dimensional data using filters and visualize them by MultiCut.
+You can also create publication-quality figures based on the matplotlib graph.</p>
+<p>For futher learning, go to Advanced tutorial in <a class="reference internal" href="tutorial.html"><span class="doc">Tutorial</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="visualization.html" class="btn btn-neutral float-left" title="Display graphs in lys" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="newLoader.html" class="btn btn-neutral float-right" title="Loading your file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

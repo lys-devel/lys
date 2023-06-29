@@ -11,8 +11,7 @@ test/proc.py
 .lys
 build
 dist
-docs/_static
-docs/_templates
-docs/_build/.doctrees
-docs/_build/doctrees
+docs_src/_build
 __pycache__
+lys.egg-info/
+lys_python.egg-info/

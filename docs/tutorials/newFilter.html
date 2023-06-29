@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Adding your original filter &mdash; lys 0.3.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Advanced usage of MultiCut" href="animation.html" />
+    <link rel="prev" title="Displaying various data types" href="variousData.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lys
+          </a>
+              <div class="version">
+                0.3.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorial.html">Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#basic-required-for-all-users">Basic: Required for all users</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="tutorial.html#advanced-read-if-it-is-needed">Advanced: Read if it is needed</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="newLoader.html">Loading your file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="variousData.html">Displaying various data types</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Adding your original filter</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#add-a-very-simple-filter">Add a very simple filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implement-filter-gui">Implement filter GUI</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parallel-computation-by-dask">Parallel computation by dask</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="animation.html">Advanced usage of MultiCut</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fitting.html">Fitting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="GUI.html">Customizing GUIs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="shell.html">Understanding shell in lys</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#tips">Tips:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="tutorial.html">Tutorial</a></li>
+      <li class="breadcrumb-item active">Adding your original filter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/newFilter.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="adding-your-original-filter">
+<h1>Adding your original filter<a class="headerlink" href="#adding-your-original-filter" title="Permalink to this heading"></a></h1>
+<section id="add-a-very-simple-filter">
+<h2>Add a very simple filter<a class="headerlink" href="#add-a-very-simple-filter" title="Permalink to this heading"></a></h2>
+<p>Implementing new filter is one of the hardest task in <em>lys</em>.
+Before implementing new filter in <em>lys</em>, you have to lean how to use dask.array (<a class="reference external" href="https://docs.dask.org/en/stable/">https://docs.dask.org/en/stable/</a>).
+Here we show very simple implementation of filter in <em>lys</em>.</p>
+<ol class="arabic simple">
+<li><p>From the main menu, select “Python”-“Create new filter from template”. This code demonstrates how you should implement new filter.</p></li>
+</ol>
+<img alt="../_images/image11.png" src="../_images/image11.png" />
+<ol class="arabic" start="2">
+<li><p>You find the code below that create a filter in the opened .py file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span>
+<span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterSettingBase</span><span class="p">,</span> <span class="n">filterGUI</span><span class="p">,</span> <span class="n">addFilter</span><span class="p">,</span> <span class="n">FilterInterface</span>
+
+<span class="c1"># We recommend users to import Qt widgets from llys, which is alias to Qt5 libraries (PyQt5 or PySide2)</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span>
+
+<span class="k">class</span> <span class="nc">FilterName</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Save parameters &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param1</span> <span class="o">=</span> <span class="n">param1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param2</span> <span class="o">=</span> <span class="n">param2</span>
+
+    <span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; execute and return result as DaskWave. This filter simply add param1 to data. &quot;&quot;&quot;</span>
+        <span class="n">newData</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param1</span>
+        <span class="n">newAxes</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">axes</span>
+        <span class="n">newNote</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">note</span>
+        <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">newData</span><span class="p">,</span> <span class="o">*</span><span class="n">newAxes</span><span class="p">,</span> <span class="o">**</span><span class="n">newNote</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return dictionary. Keys must be consistent with arguments of __init__. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;param1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param1</span><span class="p">,</span> <span class="s2">&quot;param2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param2</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return change of dimension. For example, when 2D data is changed to 3D, return 1 &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">0</span>
+</pre></div>
+</div>
+</li>
+<li><p>You have to implement at least 3 methods: __init__, _execute, and getParameters.</p></li>
+<li><p>Let’s start from _execute method. A instance of <a class="reference internal" href="../lys_/core.html#lys.core.DaskWave" title="lys.core.DaskWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.core.DaskWave</span></code></a> is given as the first argument, and you should return <a class="reference internal" href="../lys_/core.html#lys.core.DaskWave" title="lys.core.DaskWave"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.core.DaskWave</span></code></a> instance as return value.</p></li>
+<li><p>The wave.data is a instance of dark.array. You can edit this array following the dask manner. In the present case, a float value (self._param1) is simply added:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">newData</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param1</span>
+</pre></div>
+</div>
+</li>
+<li><p>The wave.axes is a list of np.array that defines axes of data. You can modify axes if it is needed. In the present case, the original axes is not changed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">newAxes</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">axes</span>
+</pre></div>
+</div>
+</li>
+<li><p>The wave.note is a dictionary that defines meta data. You can add/delete arbitrary keys if it is needed. In the present case, the original not is used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">newNote</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">note</span>
+</pre></div>
+</div>
+</li>
+<li><p>Initialize DaskWave from newData, newAxes, and newNote. Note that axes and note should be passed as variable-length and keyword arguments:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">newData</span><span class="p">,</span> <span class="o">*</span><span class="n">newAxes</span><span class="p">,</span> <span class="o">**</span><span class="n">newNote</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>9. Once you define _execute method, go to __init__ method. You have to take parameters as arguments.
+In the present case, only “param1” is needed, but param2 is also defined for demonstration.
+Do not forget to store parameters since it will be used in _execute method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Save parameters &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_param1</span> <span class="o">=</span> <span class="n">param1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_param2</span> <span class="o">=</span> <span class="n">param2</span>
+</pre></div>
+</div>
+<p>10. Next, go to getParameters method. This method should return parameters as dictionary.
+The keys of this dictionary should be consistent with __init__.
+In other words, the code below should work:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f1</span> <span class="o">=</span> <span class="n">FilterName</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">f2</span> <span class="o">=</span> <span class="n">FilterName</span><span class="p">(</span><span class="o">**</span><span class="n">f1</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>11. It is noted that parameters should be primitive type such as int, float, str.
+The dictionary is saved as string like below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f1</span> <span class="o">=</span> <span class="n">FilterName</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">filter_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">f1</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span> <span class="c1"># this string is used to save the filter by lys.</span>
+</pre></div>
+</div>
+<p>12. If the dimension of the DaskWave is changed by the filter, you have to change the return value of getRelativeDimension method.
+For example, the filter changes 2D array to 1D, you have to return -1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">getRelativeDimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mi">0</span>     <span class="c1"># You have to change this value if needed. If you omit this method, 0 is returned.</span>
+</pre></div>
+</div>
+<p>13. It’s done!
+It is recommended to test the filter like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">FilterName</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">test_data</span> <span class="o">=</span><span class="n">Wave</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>          <span class="c1"># You can use Wave as test data.</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>     <span class="c1"># When you passed Wave to filter, it is translated to DaskWave automatically. The return value is also translated to Wave from DaskWave.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>                <span class="c1"># check if the result is correct.</span>
+</pre></div>
+</div>
+</section>
+<section id="implement-filter-gui">
+<h2>Implement filter GUI<a class="headerlink" href="#implement-filter-gui" title="Permalink to this heading"></a></h2>
+<p>It is useless just implementing a filter like above because the filter is used from only CUI.
+However, when you implement filter GUI, it can be used in MultiCut. Therefore you can combine you own filter with powerfull analysis tools in MultiCut.</p>
+<ol class="arabic">
+<li><p>You see template for GUI in the latter half of the added code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@filterGUI</span><span class="p">(</span><span class="n">FilterName</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">_FilterNameSetting</span><span class="p">(</span><span class="n">FilterSettingBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        __init__ must take an argument that indicate dimension of input data.</span>
+<span class="sd">        Initialize widgets (see documentation of PyQt5 and PySide2) after calling super().__init__(dimension).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spin1</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spin2</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spin1</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spin2</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Return dictionary. Keys must be consistent with arguments of FilterName.__init__. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;param1&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spin1</span><span class="o">.</span><span class="n">value</span><span class="p">(),</span> <span class="s2">&quot;param2&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spin2</span><span class="o">.</span><span class="n">value</span><span class="p">()}</span>
+
+    <span class="k">def</span> <span class="nf">setParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Set widget values. Arguments should be consistent with FilterName.__init__. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spin1</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">param1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spin2</span><span class="o">.</span><span class="n">setValue</span><span class="p">(</span><span class="n">param2</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>2. First of all, you have to implement __init__ method. The argument of this method should be only “dimension”.
+You have to call constructor of the superclass first:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimension</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic" start="3">
+<li><p>Then you have to create user interface following Qt manner (You can find a lot of information when you google “PyQt GUI”):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">_spin1</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">_spin2</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QSpinBox</span><span class="p">()</span>
+
+<span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QVBoxLayout</span><span class="p">()</span>
+<span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spin1</span><span class="p">)</span>
+<span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_spin2</span><span class="p">)</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>4. You should implement getParameters method. It should return dictionary whose keys are consistent with arguments of Filter class.
+In other words, the code like below should work:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gui</span> <span class="o">=</span> <span class="n">_FilterNameSetting</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># Users set parameters from GUI</span>
+<span class="c1">#</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">FilterName</span><span class="p">(</span><span class="o">**</span><span class="n">gui</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>5. You should also implement setParameters method.
+The parameters should be reflected to GUI.
+The code like below should work:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gui1</span> <span class="o">=</span> <span class="n">_FilterNameSetting</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># Users set parameters from GUI</span>
+<span class="c1">#</span>
+<span class="n">gui2</span> <span class="o">=</span> <span class="n">_FilterNameSetting</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">gui2</span><span class="o">.</span><span class="n">setParameters</span><span class="p">(</span><span class="o">**</span><span class="n">gui1</span><span class="o">.</span><span class="n">getParameters</span><span class="p">())</span>  <span class="c1"># This line should duplicate the setting from gui1 to gui2.</span>
+</pre></div>
+</div>
+<ol class="arabic" start="6">
+<li><p>Finally, you have to register a filter and a GUI to lys system by calling addFilter function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">addFilter</span><span class="p">(</span>
+    <span class="n">FilterName</span><span class="p">,</span>                        <span class="c1"># The filter class you implemented in previous section</span>
+    <span class="n">gui</span><span class="o">=</span><span class="n">_FilterNameSetting</span><span class="p">,</span>            <span class="c1"># The GUI class you implement in this section</span>
+    <span class="n">guiName</span><span class="o">=</span><span class="s2">&quot;FilterName&quot;</span><span class="p">,</span>              <span class="c1"># This is shown in the MultiCut (arbitrary string)</span>
+    <span class="n">guiGroup</span><span class="o">=</span><span class="s2">&quot;User Defined Filters&quot;</span>    <span class="c1"># The filter is located below this group  (arbitrary string)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>It’s done! You can find the new filter in the “Filter” tab in MultiCut.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/image21.png"><img alt="../_images/image21.png" src="../_images/image21.png" style="width: 295.0px; height: 297.0px;" /></a>
+</section>
+<section id="parallel-computation-by-dask">
+<h2>Parallel computation by dask<a class="headerlink" href="#parallel-computation-by-dask" title="Permalink to this heading"></a></h2>
+<p>For the implementation of the filter, it is recommended to read source code of pre-defined filters (<a class="reference internal" href="../lys_/filters.html"><span class="doc">filters module</span></a>).
+In paricular, dask.array.ufunc is very often used to extend functions for 1D or 2D data to multi-dimensional array.</p>
+<p>For your information, the code using dask.array.ufunc is shown. In this code, scipy.ndimage.rotate is parallelized:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">dask.array</span> <span class="k">as</span> <span class="nn">da</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">ndimage</span>
+
+<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span>
+<span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">FilterInterface</span>
+
+<span class="k">class</span> <span class="nc">Rotation2DFilter</span><span class="p">(</span><span class="n">FilterInterface</span><span class="p">):</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The array is rotated in the plane defined by the two axes given by the axes parameter using spline interpolation.</span>
+
+<span class="sd">Args:</span>
+<span class="sd">    angle(float): The rotation angle in degrees</span>
+<span class="sd">    axes:(tuple of 2 ints): The two axes that define the plane of rotation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_angle</span> <span class="o">=</span> <span class="n">angle</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="n">axes</span>
+
+<span class="k">def</span> <span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="c1"># This is simple function that rotate 2D image. Multi-dimensional data is not accepted.</span>
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ndimage</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># da.gufunc automaticallly extend the function for multi-dimensional array.</span>
+    <span class="n">gumap</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">gufunc</span><span class="p">(</span><span class="n">f</span><span class="p">,</span>
+                    <span class="n">signature</span><span class="o">=</span><span class="s2">&quot;(i,j)-&gt;(i,j)&quot;</span><span class="p">,</span>
+                    <span class="n">output_dtypes</span><span class="o">=</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                    <span class="n">vectorize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">)],</span>
+                    <span class="n">allow_rechunk</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Apply function and return. Axes and note is not changed.</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">gumap</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="o">*</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">wave</span><span class="o">.</span><span class="n">note</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">getParameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_axes&quot;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;angle&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle</span><span class="p">,</span> <span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="variousData.html" class="btn btn-neutral float-left" title="Displaying various data types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="animation.html" class="btn btn-neutral float-right" title="Advanced usage of MultiCut" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

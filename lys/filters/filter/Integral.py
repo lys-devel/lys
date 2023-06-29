@@ -102,7 +102,8 @@ class IntegralFilter(FilterInterface):
 
     def _execute(self, wave, *args, **kwargs):
         key, sumaxes, intaxes = self._getIndexAndSumAxes(wave, self._range)
-        axes = [wave.axes[i] for i in range(wave.ndim) if i not in sumaxes + intaxes]
+        axes = [wave.axes[i][k] for i, k in enumerate(key) if i not in sumaxes + intaxes]
+        sumaxes = [s - np.sum(np.array(intaxes) < s) for s in sumaxes]
         func = _getSumFunction(self._sumtype)
         return DaskWave(func(wave.data[key], axis=tuple(sumaxes)), *axes, **wave.note)
 
@@ -273,7 +274,7 @@ def _calcCross(y, R):
         return np.sqrt(R * R - y * y)
 
 
-@filterGUI(IntegralAllFilter)
+@ filterGUI(IntegralAllFilter)
 class _IntegralAllSetting(FilterSettingBase):
     _sumtypes = ["Sum", "Mean", "Median", "Max", "Min"]
 
@@ -296,7 +297,7 @@ class _IntegralAllSetting(FilterSettingBase):
         self.type.setCurrentIndex(self._sumtypes.index(sumtype))
 
 
-@filterGUI(IntegralFilter)
+@ filterGUI(IntegralFilter)
 class _IntegralSetting(FilterSettingBase):
     _sumtypes = ["Sum", "Mean", "Median", "Max", "Min"]
 
@@ -341,7 +342,7 @@ class _IntegralSetting(FilterSettingBase):
         return True
 
 
-@filterGUI(IntegralCircleFilter)
+@ filterGUI(IntegralCircleFilter)
 class _CircleSetting(FilterSettingBase):
     def __init__(self, dim):
         super().__init__(dim)

@@ -1,0 +1,12 @@
+Python API
+===============================
+.. toctree::
+   :maxdepth: 1
+
+   lys_/core
+   lys_/functions
+   lys_/glb
+   lys_/widgets
+   lys_/filters
+   lys_/multicut
+   lys_/fitting

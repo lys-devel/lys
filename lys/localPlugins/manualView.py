@@ -1,4 +1,3 @@
-from pathlib import Path
 import webbrowser
 
 import lys
@@ -21,7 +20,7 @@ def _register():
     menu = glb.mainWindow().menuBar()
     prog = menu.addMenu("Help")
 
-    url = str(Path(lys.__file__).parent.parent) + "/docs/_build/html/index.html"
+    url = "https://lys-devel.github.io/lys/index.html"
     menu1 = prog.addMenu("Open lys reference")
     proc = menu1.addAction("Internal browser")
     proc.triggered.connect(lambda: manualView(url))

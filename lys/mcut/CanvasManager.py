@@ -68,7 +68,7 @@ class CanvasManager(list):
             else:
                 QtWidgets.QMessageBox.information(self._wid, "Error", "You should specify the canvas that is created by MultiCut.", QtWidgets.QMessageBox.Yes)
 
-    def addCross(self, c=None):
+    def addCross(self, c=None, overwrite=True):
         """
         Add cross annotation to canvas.
 
@@ -76,6 +76,7 @@ class CanvasManager(list):
 
         Args:
             c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.
+            overwrite(bool): If it is True, the axis range type is changed to "point".
         """
         if not isinstance(c, CanvasBase):
             c = self._getTargetCanvas()
@@ -84,9 +85,9 @@ class CanvasManager(list):
                 QtWidgets.QMessageBox.information(self._wid, "Error", "This canvas already has same annotation.", QtWidgets.QMessageBox.Yes)
             else:
                 crs = c.addCrossAnnotation()
-                self._sync.syncAnnotation(crs)
+                self._sync.syncAnnotation(crs, overwrite=overwrite)
 
-    def addRect(self, c=None):
+    def addRect(self, c=None, overwrite=True):
         """
         Add rectangle annotation to canvas.
 
@@ -94,6 +95,7 @@ class CanvasManager(list):
 
         Args:
             c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.
+            overwrite(bool): If it is True, the axis range type is changed to "range".
         """
 
         if not isinstance(c, CanvasBase):
@@ -103,7 +105,7 @@ class CanvasManager(list):
                 QtWidgets.QMessageBox.information(self._wid, "Error", "This canvas already has same annotation.", QtWidgets.QMessageBox.Yes)
             else:
                 rect = c.addRectAnnotation()
-                self._sync.syncAnnotation(rect)
+                self._sync.syncAnnotation(rect, overwrite=overwrite)
 
     def addFreeLine(self, c=None, line=None, syncAnnot=False):
         """
@@ -126,7 +128,7 @@ class CanvasManager(list):
                 line = self._cui.getFreeLine(line)
                 self._sync.syncAnnotation(reg, line, syncAnnot=syncAnnot)
 
-    def addRegion(self, c=None, orientation="vertical"):
+    def addRegion(self, c=None, orientation="vertical", overwrite=True):
         """
         Add region annotation to canvas.
 
@@ -134,6 +136,7 @@ class CanvasManager(list):
 
         Args:
             c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.
+            overwrite(bool): If it is True, the axis range type is changed to "range".
         """
 
         if not isinstance(c, CanvasBase):
@@ -142,10 +145,10 @@ class CanvasManager(list):
             if self._sync.hasAnnotation(c, RegionAnnotation, orientation):
                 QtWidgets.QMessageBox.information(self._wid, "Error", "This canvas already has same annotation.", QtWidgets.QMessageBox.Yes)
             else:
-                reg = c.addRegionAnnotation(orientation=orientation)
+                reg = c.addRegionAnnotation(orientation=orientation, overwrite=overwrite)
                 self._sync.syncAnnotation(reg)
 
-    def addLine(self, c=None, orientation="vertical"):
+    def addLine(self, c=None, orientation="vertical", overwrite=True):
         """
         Add infinite line annotation to canvas.
 
@@ -153,6 +156,7 @@ class CanvasManager(list):
 
         Args:
             c(canvas): The canvas to which the annotation is added. If it is omitted, frontCanvas is used.
+            overwrite(bool): If it is True, the axis range type is changed to "point".
         """
 
         if not isinstance(c, CanvasBase):
@@ -162,7 +166,7 @@ class CanvasManager(list):
                 QtWidgets.QMessageBox.information(self._wid, "Error", "This canvas already has same annotation.", QtWidgets.QMessageBox.Yes)
             else:
                 line = c.addInfiniteLineAnnotation(orientation=orientation)
-                self._sync.syncAnnotation(line)
+                self._sync.syncAnnotation(line, overwrite=overwrite)
 
     def getAnnotations(self, c):
         """
@@ -187,7 +191,7 @@ class CanvasManager(list):
         res.extend(self._sync.lineAnnotations(c))
         return res
 
-    def addAnnotations(self, c, annotations, syncLine=False):
+    def addAnnotations(self, c, annotations, syncLine=False, overwrite=False):
         """
         Add annotations to the canvas.
 
@@ -196,17 +200,17 @@ class CanvasManager(list):
         """
         for annot in annotations:
             if annot == "cross":
-                self.addCross(c)
+                self.addCross(c, overwrite=overwrite)
             elif annot == "rect":
-                self.addRect(c)
+                self.addRect(c, overwrite=overwrite)
             elif annot == "vertical_region":
-                self.addRegion(c, orientation="vertical")
+                self.addRegion(c, orientation="vertical", overwrite=overwrite)
             elif annot == "horizontal_region":
-                self.addRegion(c, orientation="horizontal")
+                self.addRegion(c, orientation="horizontal", overwrite=overwrite)
             elif annot == "vertical_line":
-                self.addLine(c, orientation="vertical")
+                self.addLine(c, orientation="vertical", overwrite=overwrite)
             elif annot == "horizontal_line":
-                self.addLine(c, orientation="horizontal")
+                self.addLine(c, orientation="horizontal", overwrite=overwrite)
             else:
                 self.addFreeLine(c, annot, syncLine)
 
@@ -226,20 +230,27 @@ class _AnnotationSync(QtCore.QObject):
         self._cui = cui
         self._can = weakref.ref(can)
 
-    def syncAnnotation(self, annot, line=None, syncAnnot=False):
+    def syncAnnotation(self, annot, line=None, syncAnnot=False, overwrite=True):
+        """
+        Synchronize annotation with cui.
+
+        Args:
+            annot: The annotation to be synchronized.
+            overwrite: If it is True, the axis range type of cui is changed to corresponding type.
+        """
         c = annot.canvas()
         if c not in self._can():
             raise RuntimeWarning("Could not synchronize annotations in canvas that is not controlled by CanvasManager.")
         if annot in self._sync:
             return
         if isinstance(annot, InfiniteLineAnnotation):
-            self._sync[annot] = _InfLineSync(self._cui, annot)
+            self._sync[annot] = _InfLineSync(self._cui, annot, overwrite=overwrite)
         if isinstance(annot, RegionAnnotation):
-            self._sync[annot] = _RegionSync(self._cui, annot)
+            self._sync[annot] = _RegionSync(self._cui, annot, overwrite=overwrite)
         if isinstance(annot, CrossAnnotation):
-            self._sync[annot] = _CrossSync(self._cui, annot)
+            self._sync[annot] = _CrossSync(self._cui, annot, overwrite=overwrite)
         if isinstance(annot, RectAnnotation):
-            self._sync[annot] = _RectSync(self._cui, annot)
+            self._sync[annot] = _RectSync(self._cui, annot, overwrite=overwrite)
         if isinstance(annot, FreeRegionAnnotation) and line is not None:
             self._sync[annot] = _FreeLineSync(self._cui, annot, line, syncAnnot=syncAnnot)
 
@@ -265,13 +276,22 @@ class _AnnotationSync(QtCore.QObject):
 
 
 class _InfLineSync(QtCore.QObject):
-    def __init__(self, cui, annot):
+    """
+    Sync infinite line annotation with range of MultiCut CUI.
+
+    Args:
+        cui: The CUI object.
+        annot: The infinite line annotation object to be syncronized.
+        overwite(bool): If it is True, axis range type is force changed to "point". 
+    """
+
+    def __init__(self, cui, annot, overwrite=True):
         super().__init__()
         self._annot = annot
         self._cui = cui
-        self._sync()
+        self._sync(overwrite)
 
-    def _sync(self):
+    def _sync(self, overwrite):
         c = self._annot.canvas()
         if self._annot.getOrientation() == "vertical":
             self._axis = c._maxes[0]
@@ -279,7 +299,7 @@ class _InfLineSync(QtCore.QObject):
             self._axis = c._maxes[1]
         if self._cui.getAxisRangeType(self._axis) == "point":
             self._annot.setPosition(self._cui.getAxisRange(self._axis))
-        else:
+        elif overwrite:
             self._cui.setAxisRange(self._axis, self._annot.getPosition())
         self._annot.positionChanged.connect(self.__sync)
         self._cui.axesRangeChanged.connect(self.__sync_r)
@@ -296,13 +316,22 @@ class _InfLineSync(QtCore.QObject):
 
 
 class _CrossSync(QtCore.QObject):
-    def __init__(self, cui, annot):
+    """
+    Sync cross annotation with range of MultiCut CUI.
+
+    Args:
+        cui: The CUI object.
+        annot: The cross annotation object to be syncronized.
+        overwite(bool): If it is True, axis range type is force changed to "point". 
+    """
+
+    def __init__(self, cui, annot, overwrite=True):
         super().__init__()
         self._annot = annot
         self._cui = cui
-        self._sync()
+        self._sync(overwrite)
 
-    def _sync(self):
+    def _sync(self, overwrite):
         c = self._annot.canvas()
         self._axes = c._maxes
         pos = []
@@ -312,7 +341,8 @@ class _CrossSync(QtCore.QObject):
             else:
                 pos.append(self._annot.getPosition()[i])
         self._annot.setPosition(pos)
-        self._cui.setAxisRange(self._axes, pos)
+        if overwrite:
+            self._cui.setAxisRange(self._axes, pos)
         self._annot.positionChanged.connect(self.__sync)
         self._cui.axesRangeChanged.connect(self.__sync_r)
 
@@ -334,13 +364,22 @@ class _CrossSync(QtCore.QObject):
 
 
 class _RegionSync(QtCore.QObject):
-    def __init__(self, cui, annot):
+    """
+    Sync region annotation with range of MultiCut CUI.
+
+    Args:
+        cui: The CUI object.
+        annot: The region annotation object to be syncronized.
+        overwite(bool): If it is True, axis range type is force changed to "range". 
+    """
+
+    def __init__(self, cui, annot, overwrite=True):
         super().__init__()
         self._annot = annot
         self._cui = cui
-        self._sync()
+        self._sync(overwrite)
 
-    def _sync(self):
+    def _sync(self, overwrite):
         c = self._annot.canvas()
         if self._annot.getOrientation() == "vertical":
             self._axis = c._maxes[0]
@@ -348,7 +387,7 @@ class _RegionSync(QtCore.QObject):
             self._axis = c._maxes[1]
         if self._cui.getAxisRangeType(self._axis) == "range":
             self._annot.setRegion(self._cui.getAxisRange(self._axis))
-        else:
+        elif overwrite:
             self._cui.setAxisRange(self._axis, self._annot.getRegion())
         self._annot.regionChanged.connect(self.__sync)
         self._cui.axesRangeChanged.connect(self.__sync_r)
@@ -365,13 +404,22 @@ class _RegionSync(QtCore.QObject):
 
 
 class _RectSync(QtCore.QObject):
-    def __init__(self, cui, annot):
+    """
+    Sync rect annotation with range of MultiCut CUI.
+
+    Args:
+        cui: The CUI object.
+        annot: The rect annotation object to be syncronized.
+        overwite(bool): If it is True, axis range type is force changed to "range". 
+    """
+
+    def __init__(self, cui, annot, overwrite=True):
         super().__init__()
         self._annot = annot
         self._cui = cui
-        self._sync()
+        self._sync(overwrite)
 
-    def _sync(self):
+    def _sync(self, overwrite):
         c = self._annot.canvas()
         self._axes = c._maxes
         r = []
@@ -381,7 +429,8 @@ class _RectSync(QtCore.QObject):
             else:
                 r.append(self._annot.getRegion()[i])
         self._annot.setRegion(r)
-        self._cui.setAxisRange(self._axes, r)
+        if overwrite:
+            self._cui.setAxisRange(self._axes, r)
         self._annot.regionChanged.connect(self.__sync)
         self._cui.axesRangeChanged.connect(self.__sync_r)
 
