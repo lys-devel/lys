@@ -39,10 +39,10 @@ $$A'(x_i,y_j,t_k) = \mathcal{M}[A(x_i,y_j,t_k)],$$
 where $\mathcal{M}$ represents median filter to remove the noise. Second, MultiCut generates images and curves from $A'$ by taking a summation:
 
 $$
-\begin{align}
+\begin{aligned}
 I(x_i,y_j) &= \sum_{t_k}A'(x_i,y_j,t_k), \\
 C(t_k) &= \sum_{x_i, y_i}A'(x_i,y_j,t_k). 
-\end{align}
+\end{aligned}
 $$
 
 The range of the summation is specified from the GUI as described later. Third, each piece of data can be individually modified by postprocessing. In Fig. 2(b) Fourier transformation along time axis $\mathcal{F}_t$ is applied to time-dependent image intensity $C(t_k)$:
