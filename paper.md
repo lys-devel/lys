@@ -30,13 +30,13 @@ The multi-dimensional data analysis and visualization platform, `lys`, offers a 
 
 `lys` is a hybrid GUI/CUI platform oriented towards the multi-dimensional data analysis. Figure 1 shows main features of `lys`. Arbitrary Python commands can be executed from integrated Python shell (#1). User-defined Python scripts can be edited by the internal editor (#2) and can be executed. Matplotlib graphs that contains curves, images, vector fields, and RGB images can be displayed (#3) and edited via GUI in sidebar (#4). 
 
-![Figure 1: Screenshot of lys. Red rectangles (#1-#4) denote main features of lys.](Fig1.png)
+![Screenshot of lys. Red rectangles (#1-#4) denote main features of lys.](Fig1.png)
 
-`MultiCut` is a central tool in `lys`, which enables intuitive, low-code, parallel, flexible, and extensible analysis for multi-dimensional arrays. Figure 2 shows the flow of data processing for three-dimensional movie data $A(x_i,y_j,t_k)$, where $i,j,k$ represent indices of the array. The data analysis in `MultiCut` is done in four steps. First, the original data $A$ is modified by preprocess. For example, impulsive noise in the original data is removed using median filter: 
+`MultiCut` is a central tool in `lys`, which enables intuitive, low-code, parallel, flexible, and extensible analysis for multi-dimensional arrays. In the following, the data analysis and visualization processes are explained, using three-dimensional movie data $A(x_i,y_j,t_k)$ as an example ($i,j,k$ represent indices of the array). The data analysis in `MultiCut` is done in four steps. First, the original $N$-dimensional data $A$ is modified by preprocess as $A' = P(A)$, where $P$ is an arbitrary function that translates $N$ dimensional data to $M$ dimensional data. In the example case in Fig. 2, impulsive noise in the original data is removed using $3 \times 3 \times 3$ median filter: 
 
 $$A'(x_i,y_j,t_k) = \mathcal{M}[A(x_i,y_j,t_k)],$$
 
-where $\mathcal{M}$ represents median filter to remove the noise. Second, MultiCut generates images and curves from $A'$ by taking a summation along the arbitrary axes:
+where $P = \mathcal{M}$ represents median filter to remove the noise. Since the median filter does not change the dimension of data, $N=3$ equals $M$ in this case. The preprocess is used for heavy analysis that requires whole $N$-dimensional data. Second, MultiCut generates an arbitrary number of 2-dimensional images and 1-dimensional curves from $M$-dimensional $A'$ by taking a summation along arbitrary axes. In the example case in Fig. 2, an image $I(x_i,y_j)$ and a curve $C(t_k)$ is generated as:
 
 $$
 \begin{aligned}
@@ -45,15 +45,15 @@ C(t_k) &= \sum_{x_i, y_i}A'(x_i,y_j,t_k).
 \end{aligned}
 $$
 
-The range of the summation is specified from the GUI as described later. Third, each piece of data can be individually modified by postprocessing. In Fig. 2(b) Fourier transformation along time axis $\mathcal{F}_t$ is applied to time-dependent image intensity $C(t_k)$:
+The range of the summation is specified from the GUI as described later. These images and curves are used for visualization in step 4. Third, each image and curve can be individually modified by postprocessing. In Fig. 2, Fourier transformation along time axis $\mathcal{F}_t$ is applied to time-dependent image intensity $C(t_k)$:
 
 $$
 C'(\omega_l) = \mathcal{F}_t[C(t_k)].
 $$
 
-We employed preprocessing (step 1) for heavy analysis that requires whole data while relatively light on-demand work can be done as a postprocessing (step 3). Finally, these analyzed data are displayed in a GUI, where users can modify the ranges of the summation interactively. Once the summation range fro step 2 is changed, the postprocess is recalculated and the result is automatically updated. Such four-step calculation enables flexible analysis of multi-dimensional data. In the above example, spectrum of the image intensity $C'(\omega_l)$ within the user-specified image region can be interactively analyzed and displayed. Constructing such interactive analysis system is a hard task in conventional Python systems. Once the interactive analysis system is constructed using MultiCut, the settings for the analysis can be exported as a file and can be reused. This guarantees the scientific reproducibility of the data analysis, which can be confirmed by other scientists. In addition, all of the processes in `lys` are implemented using `dask`, and therefore all calculations can be performed in parallel when they are done on HPC systems.
+Different from preprocessing (step 1), postprocessing function access only an image or a curve. In addition, the postprocessing should be executed within short time (< 0.1 s) because it is repeatedly called whenever the summation range in step 2 is changed. Finally, these analyzed data are displayed in a GUI, where users can modify the ranges of the summation interactively. Once the summation range from step 2 is changed, the postprocess is recalculated and the result is automatically updated. Such four-step calculation enables flexible analysis of multi-dimensional data. In the above example, spectrum of the image intensity $C'(\omega_l)$ within the user-specified image region can be interactively analyzed and displayed while the time-consuming median filter is done only once in step 1. It should be noted that a multi-dimensional array of arbitrary dimensions can be analyzed and visualized by 'MultiCut' although the given example is for a 3-dimensional case. Constructing such interactive analysis system is a hard task in conventional Python systems. Once the interactive analysis system is set up using MultiCut, the settings for the analysis can be exported as a file and reused. This guarantees the scientific reproducibility of the data analysis, which can be verified by other scientists. In addition, all of the processes in `lys` are implemented using `dask` array, and therefore all calculations can be performed in parallel when they are done on HPC systems.
 
-![Figure 2: Data analysis and visualization in MultiCut.](Fig2.png)
+![Example for 3-dimensional time-dependent data analysis and visualization.](Fig2.png)
 
 In addition to the features described above, `lys` provides some basic analysis such as data fitting and array editor GUIs. Combining these functionarities of `lys` offers intuitive, low-code, fast, and flexible analysis to users not familiar with Python while preserving the expansion capability for experts.
 
