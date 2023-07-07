@@ -233,6 +233,7 @@ class _ModuleManager:
         self.__dict = dic
         self.__importedModules = []
         exec("import importlib", self.__dict)
+        exec("from lys import *", self.__dict)
 
     def importModule(self, module, importAll=False):
         try:

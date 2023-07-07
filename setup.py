@@ -12,7 +12,8 @@ long_description = (this_directory / "README.md").read_text()
 setup(
     name="lys-python",
     packages=find_packages(exclude=("test*",)),
-    version="0.3.1",
+    package_data={"lys.resources": ["*.dic", "images/*.png"]},
+    version="0.3.2",
     description="Interactive multi-dimensional data analysis and visualization",
     long_description=long_description,
     long_description_content_type="text/markdown",

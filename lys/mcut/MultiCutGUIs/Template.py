@@ -1,6 +1,6 @@
 import os
 
-from lys import lysPath
+from lys import lysPath, resources
 from lys.Qt import QtWidgets
 from lys.widgets import AxisSelectionLayout, FileSystemView
 from lys.decorators import avoidCircularReference
@@ -22,17 +22,10 @@ class TemplateDialog(QtWidgets.QDialog):
             os.makedirs(dir, exist_ok=True)
         default = lysPath(".lys/templates/" + str(dim) + "D/" + "Default")
         if not os.path.exists(default):
-            d = self.__loadDefault(dim)
+            d = resources.loadDefaultTemplate(dim)
             with open(default, "w") as f:
                 f.write(str(d))
         return dir
-
-    def __loadDefault(self, dim):
-        if dim < 6:
-            with open(os.path.dirname(__file__) + "/DefaultTemplate.dic", "r") as f:
-                d = eval(f.read())
-            return d[str(dim) + "D"]
-        return None
 
     def __initlayout(self, dim, dir):
         self._view = FileSystemView(dir)
