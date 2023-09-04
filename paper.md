@@ -9,6 +9,7 @@ authors:
   - name: Asuka Nakamura
     orcid: 0000-0002-3010-9475
     equal-contrib: false
+    affiliation: 1
 affiliations:
  - name: RIKEN Center for Emergent Matter Science, Japan
 date: 29 June 2023
