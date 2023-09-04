@@ -12,6 +12,7 @@ authors:
     affiliation: 1
 affiliations:
  - name: RIKEN Center for Emergent Matter Science, Japan
+   index: 1
 date: 29 June 2023
 bibliography: paper.bib
 
