@@ -48,11 +48,22 @@ class AnimationTab(QtWidgets.QGroupBox):
         self.__useTime = QtWidgets.QCheckBox('Draw frame')
         self.__timeunit = QtWidgets.QLineEdit()
         self.__timeunit.setPlaceholderText("Enter the unit")
+        self.__timeX = QtWidgets.QDoubleSpinBox()
+        self.__timeX.setRange(-2, 2)
+        self.__timeX.setValue(0.1)
+        self.__timeY = QtWidgets.QDoubleSpinBox()
+        self.__timeY.setRange(-2, 2)
+        self.__timeY.setValue(0.1)
 
-        hbox1 = QtWidgets.QHBoxLayout()
-        hbox1.addWidget(self.__useTime)
-        hbox1.addWidget(self.__timeunit)
-        return hbox1
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(self.__useTime, 0, 0)
+        layout.addWidget(QtWidgets.QLabel("Unit"), 0, 1)
+        layout.addWidget(QtWidgets.QLabel("Pos. x"), 0, 2)
+        layout.addWidget(QtWidgets.QLabel("Pos. y"), 0, 3)
+        layout.addWidget(self.__timeunit, 1, 1)
+        layout.addWidget(self.__timeX, 1, 2)
+        layout.addWidget(self.__timeY, 1, 3)
+        return layout
 
     def __makeGeneralFuncLayout(self):
         self.__useFunc = QtWidgets.QCheckBox("Use general func f(canv, i, axis)")
@@ -105,7 +116,7 @@ class AnimationTab(QtWidgets.QGroupBox):
     def __prepareOptionalParams(self):
         params = {}
         if self.__useTime.isChecked():
-            params['time'] = {"unit": self.__timeunit.text(), "offset": 0}
+            params['time'] = {"unit": self.__timeunit.text(), "offset": 0, "pos": (self.__timeX.value(), self.__timeY.value())}
         if self.__useFunc.isChecked():
             params['gfunc'] = self.__funcName.text()
         return params
@@ -152,11 +163,11 @@ def _frame(i, c, axis, params, setValue):
         f(c, i, axis)
 
 
-def _drawTime(c, data=None, unit="", offset=0):
+def _drawTime(c, data=None, unit="", offset=0, pos=(0.1, 0.1)):
     t = '{:.10g}'.format(round(data + float(offset), 1)) + " " + unit
     ta = c.getTextAnnotations()
     if len(ta) == 0:
-        t = c.addText(t, pos=(0.1, 0.1))
+        t = c.addText(t, pos=pos)
         t.setBoxStyle("square")
     else:
         ta[0].setText(t)
