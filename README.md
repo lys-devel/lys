@@ -6,7 +6,7 @@ Check out for the [documentation](https://lys-devel.github.io/lys/index.html) fo
 
 ## Installation
 
-See the [install documentation](https://lys-devel.github.io/lys/install.html).
+See the [install documentation](https://lys-devel.github.io/lys/install.html). System requirements are also found in this page.
 
 ## Contributing
 
