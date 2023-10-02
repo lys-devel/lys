@@ -310,7 +310,7 @@ class _CommandLogWidget(QtWidgets.QTextEdit):
 class _CommandLineEdit(QtWidgets.QTextEdit):
     def __init__(self, shell):
         super().__init__()
-        self.setPlaceholderText("Type python command and press enter")
+        self.setPlaceholderText("Type python command and press enter, press tab to auto-complete")
         self.shell = shell
         self.__logn = 0
         self.completer = rlcompleter.Completer(self.shell.dict)

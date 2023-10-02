@@ -234,8 +234,14 @@ class _ModuleManager:
         self.__importedModules = []
         exec("import importlib", self.__dict)
         exec("from lys import *", self.__dict)
+        self.reload()
 
     def importModule(self, module, importAll=False):
+        """
+        Import module. If the module has already been loaded, it is reloaded by importlib.reload method.
+
+        If *importAll* is True, then all methods and variables in the module is also loaded.
+        """
         try:
             if module in self.__importedModules:
                 exec("importlib.reload(" + module + ")", self.__dict)
@@ -248,6 +254,9 @@ class _ModuleManager:
             print("Error on loading", module, "\n", traceback.format_exc(), file=sys.stderr)
 
     def reload(self):
+        """
+        Iterate all .py files in module directory and import them.
+        """
         if os.path.exists(home() + "/proc.py"):
             print("proc.py in home folder is deprecated. move it in module folder.")
         files = glob.glob(home() + "/module/*.py")

@@ -20,7 +20,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Copy graphs from lys to vector graphics software" href="loadVector.html" />
+    <link rel="next" title="Automated test" href="test.html" />
     <link rel="prev" title="Customizing GUIs" href="GUI.html" /> 
 </head>
 
@@ -91,7 +91,41 @@
              
   <section id="understanding-shell-in-lys">
 <h1>Understanding shell in lys<a class="headerlink" href="#understanding-shell-in-lys" title="Permalink to this heading"></a></h1>
-<p>Under construction</p>
+<ol class="arabic" start="0">
+<li><p>The commands below can be executed in usual Python interpreter as well as Python interpretr in lys main window.</p></li>
+<li><p>The shell in <cite>lys</cite> is an <a class="reference internal" href="../lys_/glb.html#lys.glb.shell.ExtendShell" title="lys.glb.shell.ExtendShell"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.glb.shell.ExtendShell</span></code></a> instance:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+<span class="n">shell</span> <span class="o">=</span> <span class="n">glb</span><span class="o">.</span><span class="n">shell</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">shell</span><span class="p">)</span> <span class="c1"># &lt;lys.glb.shell.ExtendShell object at somewhere&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p>When the user enter a command from GUI command line in the main window, the python command is executed via <cite>exec</cite> and <cite>eval</cite> methods. Similarly, you can execute arbitrary Python command by the methods above:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># When a user enter &quot;a=2&quot; in Python interpreter in lys, the command below is executed.</span>
+<span class="n">shell</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;a=2&quot;</span><span class="p">)</span>
+<span class="c1"># When a user enter &quot;a&quot;, the command below is executed.</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;a =&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span> <span class="c1"># a = 2</span>
+</pre></div>
+</div>
+</li>
+<li><p>All variables are stored as dictionary that can be obtained by <cite>dict</cite> property. This is corresponds to <cite>locals</cite> function in usual Python interpreter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">var_a</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">dict</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">var_a</span><span class="p">)</span> <span class="c1"># 2</span>
+</pre></div>
+</div>
+</li>
+<li><p>To enable users to define original functions/classes, all .py files in <cite>module</cite> directory is automatically loaded before calling <cite>shell.exec</cite> and <cite>shell.eval</cite> methods. For example, if proc.py and test.py exist under <cite>module</cite> directory, these files are loaded automatically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="c1"># This is (almost) equivalent to the code below.</span>
+<span class="c1"># from module.proc import *</span>
+<span class="c1"># from module.test import *</span>
+<span class="c1"># result = eval(&quot;a&quot;, shell.dict)  # This is built-in eval function</span>
+</pre></div>
+</div>
+</li>
+<li><p>(For developer/specialist only) Calling “from module.name import *” do nothing when the module has already been loaded (This is a specification of Python). Please take care that special module manager class is implemented in lys.glb.shell module to avoid this problem. General users do not need to take care of this problem.</p></li>
+</ol>
 </section>
 
 
@@ -99,7 +133,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="GUI.html" class="btn btn-neutral float-left" title="Customizing GUIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="loadVector.html" class="btn btn-neutral float-right" title="Copy graphs from lys to vector graphics software" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="test.html" class="btn btn-neutral float-right" title="Automated test" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
