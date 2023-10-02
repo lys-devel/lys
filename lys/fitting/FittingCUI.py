@@ -72,7 +72,7 @@ class FittingCUI(QtCore.QObject):
     def residualSum(self):
         data, _, _ = self.__getDataForFit()
         fitted = self.fittedData()
-        return np.sqrt(np.sum(abs(data - fitted.data)**2)) / len(data)
+        return np.sqrt(np.sum(abs(data - fitted.data)**2) / len(data))
 
     def setFittingRange(self, type, range):
         self._range = range
