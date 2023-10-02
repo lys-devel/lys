@@ -22,8 +22,8 @@ It is encouraged to use virtual environment to avoid conflict. You can skip this
 
     source lys/bin/activate
 
-Installation
-------------------------
+Installation from pip (recommended)
+----------------------------------------------------
 
 1. Update pip::
 
@@ -41,6 +41,34 @@ Installation
 
     python -m lys -n [number of cores]
 
+Installation from source (not recommended)
+--------------------------------------------------------
+
+If you want to install `lys` from source, follow the instructions below.
+In particular, this is recommended if you want to use :doc:`tutorials/test`.
+
+1. Update pip::
+
+    pip install --upgrade pip
+
+2. Clone lys. If you do not have git, you can download the source code from GitHub (https://github.com/lys-devel/lys)::
+
+    git clone git@github.com:lys-devel/lys.git
+
+3. Install lys by pip. If you want to install lys in development mode, add `-e` option after `pip install`::
+
+    cd lys
+    pip install .
+
+4. (Optional) If you want to check installation, go to :doc:`tutorials/test`.
+
+5. Start lys by the commande below. Note that the current directory of the system is used as the working directory of lys::
+
+    python -m lys
+
+6. If you want to enable parallel computing, start *lys* with -n option::
+
+    python -m lys -n [number of cores]
 
 Library version
 -------------------------
