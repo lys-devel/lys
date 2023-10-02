@@ -168,7 +168,7 @@ class _pyqtGraphAxes(CanvasAxes):
         for a in ax:
             pen = a.pen()
             if isinstance(color, tuple):
-                col = [c * 255 for c in color]
+                col = [int(c * 255) for c in color]
                 pen.setColor(QtGui.QColor(*col))
             else:
                 pen.setColor(QtGui.QColor(color))

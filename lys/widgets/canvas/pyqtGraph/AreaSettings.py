@@ -6,7 +6,7 @@ class _PyqtGraphMargin(CanvasMargin):
     """Implementation of CanvasMargin for pyqtGraph"""
 
     def _setMargin(self, left, right, top, bottom):
-        self.canvas().setContentsMargins(left, right, top, bottom)
+        self.canvas().setContentsMargins(int(left), int(right), int(top), int(bottom))
 
 
 _unit = 2.54 / QtWidgets.QDesktopWidget().physicalDpiX()  # cm/pixel
@@ -48,6 +48,6 @@ class _PyqtGraphCanvasSize(CanvasSize):
 
     def _adjust(self):
         size = self.canvas().fig.size()
-        self.canvas().resize(size.width(), size.height())
+        self.canvas().resize(int(size.width()), int(size.height()))
         self.canvas().adjustSize()
         # self.canvas().draw()

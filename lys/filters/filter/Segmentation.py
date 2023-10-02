@@ -30,7 +30,7 @@ class ThresholdFilter(FilterInterface):
         self._output = output
 
     def _execute(self, wave, *args, **kwargs):
-        mask = wave.data.copy()
+        mask = wave.data.copy().astype(float)
         if "inv" in self._output:
             mask[wave.data < self._threshold] = 1
             mask[wave.data >= self._threshold] = np.nan

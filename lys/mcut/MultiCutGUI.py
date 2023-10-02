@@ -172,7 +172,7 @@ class _GridOverlay(QtWidgets.QWidget):
                     x = min(self.__p1[0], self.__p2[0]) <= i <= max(self.__p1[0], self.__p2[0])
                     y = min(self.__p1[1], self.__p2[1]) <= j <= max(self.__p1[1], self.__p2[1])
                     painter.setBrush(c1 if x and y else c2)
-                    painter.drawRect(self.width() / 4.0 * i, self.height() / 4.0 * j, self.width() / 4.0, self.height() / 4.0)
+                    painter.drawRect(int(self.width() / 4.0 * i), int(self.height() / 4.0 * j), int(self.width() / 4.0), int(self.height() / 4.0))
 
     def __calcPosition(self, event):
         x, y = event.x(), event.y()
@@ -327,7 +327,7 @@ class MultiCut(QtCore.QObject):
     def __canvasFromDict(self, d, useAnnot, useLine, useRange, axesMap):
         isGrid = "position" in d
         if axesMap is not None:
-            d["axes"] = [axesMap[ax] for ax in d["axes"]]
+            d["axes"] = [axesMap[ax] if ax in axesMap else ax for ax in d["axes"]]
         if isGrid:
             c = self.createCanvas(d["axes"], graph=False, lib="pyqtgraph")
             pos = d["position"]

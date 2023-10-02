@@ -321,7 +321,7 @@ class ChildWaves(QtCore.QObject):
             if "filter" in item:
                 item["filter"] = filters.fromString(item["filter"])
             if axesMap is not None:
-                item["axes"] = [axesMap[ax] for ax in item["axes"]]
+                item["axes"] = [axesMap[ax] if ax in axesMap else ax for ax in item["axes"]]
             self.addWave(**item)
 
 

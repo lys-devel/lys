@@ -1,7 +1,13 @@
 
 import copy
 import numpy as np
-from matplotlib import lines, cm, colors
+import matplotlib as mpl
+from matplotlib import lines, colors
+try:
+    from matplotlib import colormaps as cm
+except ImportError:
+    from matplotlib import cm
+
 from ..interface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 
 
@@ -353,55 +359,70 @@ class _MatplotlibContour(ContourData):
         self._obj = canvas.getAxes(axis).contour(wave.data.T[::-1, :], [0.5], extent=_calcExtent2D(wave))
 
     def remove(self):
-        for o in self._obj.collections:
-            o.remove()
+        if hasattr(self._obj, "remove"):
+            self._obj.remove()
+        else:
+            for o in self._obj.collections:
+                o.remove()
 
     def _updateData(self):
         w = self.getFilteredWave()
-        for o in self._obj.collections:
-            o.remove()
+        self.remove()
         self._obj = self.canvas().getAxes(self._axis).contour(w.data.T[::-1, :], [0.5], extent=_calcExtent2D(w))
 
     def __update(self, level=None):
         if level is None:
             level = self.getLevel()
-        for o in self._obj.collections:
-            o.remove()
+        self.remove()
         w = self.getFilteredWave()
         self._obj = self.canvas().getAxes(self._axis).contour(w.data.T[::-1, :], [level], extent=_calcExtent2D(w))
         color = self.getColor()
         style = self.getStyle()
         width = self.getWidth()
-        for o in self._obj.collections:
-            if color is not None:
-                o.set_color(color)
-            if style is not None:
-                o.set_linestyle(style)
-            if width is not None:
-                o.set_linewidth(width)
+        if color is not None:
+            self._setColor(color)
+        if style is not None:
+            self._setStyle(style)
+        if width is not None:
+            self._setWidth(width)
 
     def _setLevel(self, level):
         self.__update(level=level)
 
     def _setColor(self, color):
-        for o in self._obj.collections:
-            o.set_color(color)
+        if hasattr(self._obj, "set"):
+            self._obj.set(color=color)
+        else:
+            for o in self._obj.collections:
+                o.set_color(color)
 
     def _setStyle(self, style):
-        for o in self._obj.collections:
-            o.set_linestyle(style)
+        if hasattr(self._obj, "set"):
+            self._obj.set(linestyle=style)
+        else:
+            for o in self._obj.collections:
+                o.set_linestyle(style)
 
     def _setWidth(self, width):
-        for o in self._obj.collections:
-            o.set_linewidth(width)
+        if hasattr(self._obj, "set"):
+            self._obj.set(linewidth=width)
+        else:
+            for o in self._obj.collections:
+                o.set_linewidth(width)
 
     def _setVisible(self, visible):
-        for o in self._obj.collections:
-            o.set_visible(visible)
+        if hasattr(self._obj, "set"):
+            self._obj.set(visible=visible)
+        else:
+            for o in self._obj.collections:
+                o.set_visible(visible)
 
     def _setZ(self, z):
-        for o in self._obj.collections:
-            _setZ(o, z)
+        if hasattr(self._obj, "set"):
+            self._obj.set(zorder=z)
+        else:
+            for o in self._obj.collections:
+                _setZ(o, z)
 
 
 class _MatplotlibData(CanvasData):

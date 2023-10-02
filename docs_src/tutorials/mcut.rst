@@ -137,6 +137,7 @@ Cut along free line
     :scale: 50%
 
 8. Go back to "MultiCut" tab in the sidebar, and click "Lines" tab.
+
 .. image:: ./image_mcut/line6.png
 
 9. You can edit the position and width of line. Set the parameters below. This means the annotation is between (x0,y0)=(0,-4) and (x1,y1)=(0,4).

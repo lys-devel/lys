@@ -1,8 +1,11 @@
 import copy
 import warnings
 import numpy as np
-from matplotlib import cm
 import pyqtgraph as pg
+try:
+    from matplotlib import colormaps as cm
+except ImportError:
+    from matplotlib import cm
 
 from lys.Qt import QtCore, QtGui
 from lys.errors import NotSupportedWarning
@@ -326,7 +329,7 @@ class _PyqtgraphContour(ContourData):
 
     def _setWidth(self, width):
         p = self._getLinePen()
-        p.setWidth(width)
+        p.setWidth(int(width))
         self._obj.setPen(p)
 
     def _setVisible(self, visible):

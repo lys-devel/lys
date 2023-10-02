@@ -191,7 +191,7 @@ class AxesRangeWidget(QtWidgets.QScrollArea):
 
 class _FreeLineWidget(QtWidgets.QGroupBox):
     def __init__(self, cui, obj):
-        super().__init__(obj.getName() + ": " + str(obj.getAxes()) + " axes")
+        super().__init__(obj.getName() + ": " + str([i + 1 for i in obj.getAxes()]) + " axes")
         self._cui = cui
         self._obj = obj
         self.__initlayout()

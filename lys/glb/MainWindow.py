@@ -321,7 +321,7 @@ class _CommandLineEdit(QtWidgets.QTextEdit):
         doc = self.document()
         margins = self.contentsMargins()
         h = doc.size().toSize().height() + (doc.documentMargin() + self.frameWidth()) * 2 + margins.top() + margins.bottom()
-        self.setFixedHeight(h)
+        self.setFixedHeight(int(h))
 
     def __findBlock(self):
         text = self.toPlainText()
