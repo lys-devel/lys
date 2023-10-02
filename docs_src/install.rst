@@ -75,8 +75,7 @@ Library version
 
 We confirmed that *lys* works well under the environment below. If *lys* does not work, try the library versions below.
 
-- OS: AlmaLinux 8.3
-- Python 3.6.8
+Python 3.6.8
 
 - numpy 1.19.5
 - scipy 1.5.4
@@ -88,4 +87,18 @@ We confirmed that *lys* works well under the environment below. If *lys* does no
 - PyQt5 5.15.6
 - qtpy 2.0.1
 - autopep8 1.6.0
+
+
+Python 3.11.5
+
+- numpy 1.26.0
+- scipy 1.11.3
+- opencv-python-headless 4.8.1.78
+- dask 2023.9.3
+- dask-image 2023.8.1
+- matplotlib 3.8.0
+- pyqtgraph 0.13.3
+- PyQt5 5.15.9
+- qtpy 2.4.0
+- autopep8 2.0.4
 
