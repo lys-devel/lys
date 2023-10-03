@@ -33,7 +33,11 @@ Characteristics of *lys*:
 - Extendable: Both CUI and GUI can be customized by users.
 - Open source: Free to use. You can confirm what is done in lys and change it.
 
+How *lys* differs from other similar softwares:
 
+- It employs Python (*numpy*/*dask*) as a backend. Variety of scientific computing libraries such as *scipy* can be used. This cannot be achieved by similar softwares such as *Igor Pro* and *Matlab*. 
+- *lys* offers interactive GUIs, which lacks in the scientific Python ecosystems.
+- *lys* can treat massive multi-dimensional array more than hundreds of gigabites through *dask*. Coexistence of intuitive GUI and fast parallel calculation also lacks in other similar software/libraries. 
 
 .. toctree::
    :maxdepth: 1
