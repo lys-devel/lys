@@ -8,6 +8,8 @@ lys documentation
 
 *lys* is a Python-based multi-dimensional data analysis and visualization platform based on several popular libraries such as numpy, dask, matplotlib, and Qt. 
 
+.. image:: ./image_top.png
+
 To use *lys*, go to :doc:`install` and :doc:`tutorials/tutorial`.
 Source code of *lys* is opened in GitHub (https://github.com/lys-devel/lys).
 
@@ -36,6 +38,7 @@ Characteristics of *lys*:
 How *lys* differs from other similar softwares:
 
 - It employs Python (*numpy*/*dask*) as a backend. Variety of scientific computing libraries such as *scipy* can be used. This cannot be achieved by similar softwares such as *Igor Pro* and *Matlab*. 
+- It is open source software. Users can confirm what is done in `lys` and modify it. This cannot be realized in proprietary softwares.
 - *lys* offers interactive GUIs, which lacks in the scientific Python ecosystems.
 - *lys* can treat massive multi-dimensional array more than hundreds of gigabites through *dask*. Coexistence of intuitive GUI and fast parallel calculation also lacks in other similar software/libraries. 
 

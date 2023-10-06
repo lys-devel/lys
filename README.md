@@ -2,6 +2,8 @@
 
 lys is an interactive multi-dimensional data analysis and visualization platform based on several popular libraries such as numpy, scipy, dask, and matplotlib. lys enables users to intuitive, flexible, parallelized, low-code, and extendable data analysis.
 
+![Brief image of lys](docs_src/image_top.png)
+
 Check out for the [documentation](https://lys-devel.github.io/lys/index.html) for more information.
 
 ## Installation
