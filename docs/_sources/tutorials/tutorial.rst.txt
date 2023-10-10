@@ -32,3 +32,11 @@ Tips:
 
    test
    loadVector
+
+
+Examples gallery:
+-------------------------
+.. toctree::
+   :maxdepth: 1
+
+   cells3d
