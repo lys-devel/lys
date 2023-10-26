@@ -95,12 +95,17 @@
 <ol class="arabic">
 <li><p>To execute the automated test, <cite>lys</cite> should be installed from source. See <a class="reference internal" href="../install.html"><span class="doc">Installation</span></a>.</p></li>
 <li><p>Install <cite>pytest</cite> if it is not installed:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytest</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytest</span> <span class="n">pytest</span><span class="o">-</span><span class="n">cov</span>
 </pre></div>
 </div>
 </li>
 <li><p>Go to <cite>lys</cite> installation directory and execute automated tests:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
+</pre></div>
+</div>
+</li>
+<li><p>If you want to see code coverage, execute the command below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">--</span><span class="n">cov</span>
 </pre></div>
 </div>
 </li>

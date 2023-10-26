@@ -7,9 +7,12 @@ Before testing
 
 2. Install `pytest` if it is not installed::
 
-    pip install pytest
+    pip install pytest pytest-cov
 
 3. Go to `lys` installation directory and execute automated tests::
 
     pytest
 
+4. If you want to see code coverage, execute the command below::
+
+    pytest --cov
