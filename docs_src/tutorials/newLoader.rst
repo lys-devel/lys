@@ -3,7 +3,7 @@ Loading your file
 
 Although *lys* enables you to easily analyze and visualize multi-dimensional data, usually you should load your experimental/calculated data from file.
 
-Here I show how your data should be imported into *lys* although it is strongly dependent on your file type.
+Here I show how your data should be imported into *lys* although it is strongly dependent on your file type. Several examples of loading file is found in :doc:`load_examples`
 
 Loading csv file
 ---------------------------

@@ -40,3 +40,4 @@ Examples gallery:
    :maxdepth: 1
 
    cells3d
+   load_examples
