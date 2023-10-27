@@ -30,11 +30,11 @@ The multi-dimensional data analysis and visualization platform, `lys`, offers a 
 
 The philosophy of `lys` is to be a general platform of data analysis and visualization (not to be a simple image viewer/analysis program) that targets on research scientists who want to minimize efforts for these processes. All of processes from loading data to generating publication-quality figure can be done in `lys`. In addition, these processes (including user-defined Python code) are stored in single directory and can be used to reproduce the results. The rich features of `lys` significantly compress the time for analysis/visualization of multi-dimensional array. 
 
+![Screenshot of lys. Red rectangles (#1-#4) denote main features of lys.](Fig1.png)
+
 # Overview
 
 `lys` is a hybrid GUI/CUI platform oriented towards the multi-dimensional data analysis. Figure 1 shows main features of `lys`. Arbitrary Python commands can be executed from integrated Python shell (#1). User-defined Python scripts can be edited by the internal editor (#2) and can be executed. Matplotlib graphs that contain curves, images, vector fields, and RGB images can be displayed (#3) and edited via GUI in sidebar (#4). 
-
-![Screenshot of lys. Red rectangles (#1-#4) denote main features of lys.](Fig1.png)
 
 `MultiCut` is a central tool in `lys`, which enables intuitive, low-code, parallel, flexible, and extensible analysis for multi-dimensional arrays. In the following, the data analysis and visualization processes are explained, using three-dimensional movie data $A(x_i,y_j,t_k)$ as an example ($i,j,k$ represent indices of the array). The data analysis in `MultiCut` is done in four steps. First, the original $N$-dimensional data $A$ is modified by preprocess as $A' = P(A)$, where $P$ is an arbitrary function that translates $N$ dimensional data to $M$ dimensional data. In the example case in Fig. 2, impulsive noise in the original data is removed using $3 \times 3 \times 3$ median filter: 
 
