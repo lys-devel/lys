@@ -30,8 +30,6 @@ The multi-dimensional data analysis and visualization platform, `lys`, offers a 
 
 The philosophy of lys is to serve as a versatile data analysis and visualization platform, rather than a basic image viewer/analysis program. It was developed to minimize the time required for data analysis and visualization for researchers. All of the processes from loading data to generating publication-quality figures can be done in `lys`. In addition, these processes (including user-defined Python code) are stored in a single directory and can be used to reproduce the results. The rich features of `lys` significantly reduce the time for analysis/visualization of multi-dimensional arrays.
 
-![Screenshot of lys. Users can execute arbitrary Python commands from embedded CUI (#1), which can be extended by the user-defined scripts (#2). Matplotlib figures that contain curves, images, vector fields, and RGB images can be displayed (#3). These figures can be edited via GUI in the sidebar (#4).](Fig1.png)
-
 # Overview
 
 `lys` is a hybrid GUI/CUI platform oriented towards multi-dimensional data analysis. Figure 1 shows the main features of `lys`. Arbitrary Python commands can be executed from an integrated Python shell (#1). User-defined Python scripts can be edited by the internal editor (#2) and can be executed. Matplotlib graphs that contain curves, images, vector fields, and RGB images can be displayed (#3) and edited via GUI in the sidebar (#4). 
@@ -40,12 +38,14 @@ The philosophy of lys is to serve as a versatile data analysis and visualization
 
 $$A'(x_i,y_j,t_k) = \mathcal{M}[A(x_i,y_j,t_k)],$$
 
+![Screenshot of lys. Users can execute arbitrary Python commands from embedded CUI (#1), which can be extended by the user-defined scripts (#2). Matplotlib figures that contain curves, images, vector fields, and RGB images can be displayed (#3). These figures can be edited via GUI in the sidebar (#4).](Fig1.png)
+
 where $P = \mathcal{M}$ represents median filter to remove the noise. Since the median filter does not change the dimension of data, $N=3$ equals $M$ in this case. The preprocessing is used for heavy analysis that requires whole $N$-dimensional data. Second, MultiCut generates an arbitrary number of 2-dimensional images and 1-dimensional curves from $M$-dimensional $A'$ by taking a summation along arbitrary axes. In the example case in Fig. 2, an image $I(x_i,y_j)$ and a curve $C(t_k)$ is generated as:
 
 $$
 \begin{aligned}
 I(x_i,y_j) &= \sum_{t_k}A'(x_i,y_j,t_k), \\
-C(t_k) &= \sum_{x_i, y_i}A'(x_i,y_j,t_k).
+C(t_k) &= \sum_{x_i, y_j}A'(x_i,y_j,t_k).
 \end{aligned}
 $$
 
@@ -61,7 +61,7 @@ Different from the preprocessing (step 1), the postprocessing function accesses 
 
 In addition to the features described above, `lys` provides some basic analysis such as data fitting and array editor GUIs. Combining these functionalities of `lys` offers intuitive, low-code, fast, and flexible analysis to users not familiar with Python while preserving the extensibility for experts.
 
-As compared to other analysis/visualization software, `lys` has several advantages. First, it employs Python (`numpy`/`dask`) as a backend, and therefore variety of scientific computing libraries such as `scipy` can be used. This cannot be achieved by similar software such as `Igor Pro` and `Matlab`. Second, `lys` is an open-source software. Users can verify the software and modify it if needed, which cannot be realized in proprietary software. Third, `lys` offers interactive GUIs represented by `MultiCut`. Although there has been much effort to realize sophisticated GUIs such as `napari` [@chiu_clack_2022] and `data-slicer` [@Kramer2021], it is still very limited in the scientific Python ecosystems so far. Fourth, `lys` can treat massive multi-dimensional arrays of more than hundreds of gigabytes through `dask`. The coexistence of intuitive GUI and fast parallel calculation is very limited in other similar software/libraries so far. Finally, `lys` is a general platform for data analysis and visualization. All of the processes from loading data to generating publication-quality figures can be done in `lys`. Although it is noted that `data-slicer` offers similar and interactive data manipulation, it is data inspection and visualization software rather than the general platform for research scientists. `napari` also offers similar functionalities for multi-dimensional images, `lys` is designed to handle a variety of data types (images, curves, contours, vector fields, and RGB images) to serve as a general-purpose platform. 
+As compared to other analysis/visualization software, `lys` has several advantages. First, it employs Python (`numpy`/`dask`) as a backend, and therefore variety of scientific computing libraries such as `scipy` can be used. This cannot be achieved by similar software such as `Igor Pro` and `Matlab`. Second, `lys` is an open-source software. Users can verify the software and modify it if needed, which cannot be realized in proprietary software. Third, `lys` offers interactive GUIs represented by `MultiCut`. Although there has been much effort to realize sophisticated GUIs such as `napari` [@chiu_clack_2022] and `data-slicer` [@Kramer2021], it is still very limited in the scientific Python ecosystems so far. Fourth, `lys` can treat massive multi-dimensional arrays of more than hundreds of gigabytes through `dask`. The coexistence of intuitive GUI and fast parallel calculation is very limited in other similar software/libraries so far. Finally, `lys` is a general platform for data analysis and visualization. All of the processes from loading data to generating publication-quality figures can be done in `lys`. Although `data-slicer` offers similar and interactive data manipulation, it is data inspection and visualization software rather than the general platform for research scientists. `napari` also offers similar functionalities for multi-dimensional images, `lys` is designed to handle a variety of data types (images, curves, contours, vector fields, and RGB images) to serve as a general-purpose platform. 
 
 # Projects using the software
 
