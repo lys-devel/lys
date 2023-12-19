@@ -155,6 +155,20 @@ def frontCanvas(exclude=[]):
     return getFrontCanvas(exclude=exclude)
 
 
+def frontCanvas3D(exclude=[]):
+    """
+    Get the front 3D canvas.
+
+    Args:
+        exclude(list of canvas): If the front canvas is in exclude, the it will be ignored.
+
+    Return:
+        canvas: The front canvas
+    """
+    from .widgets import getFrontCanvas3D
+    return getFrontCanvas3D(exclude=exclude)
+
+
 def display(*args, lib=None, **kwargs):
     """
     Display Waves as graph.
@@ -170,6 +184,22 @@ def display(*args, lib=None, **kwargs):
     from .widgets import Graph
     g = Graph(lib=lib)
     append(*args, canvas=g.canvas, **kwargs)
+    return g
+
+
+def display3D(*args, **kwargs):
+    """
+    Display Waves in 3d graph.
+
+    Args:
+        args(list of Wave or arraylike): The waves to be added. If the item is not Wave, then it is automatically converted to Wave.
+
+    Returns:
+        Graph3D: The graph that contains the waves.
+    """
+    from .widgets import Graph3D
+    g = Graph3D()
+    append3D(*args, canvas = g.canvas, **kwargs)
     return g
 
 
@@ -195,6 +225,24 @@ def append(*args, canvas=None, exclude=[], **kwargs):
         else:
             c.Append(Wave(wave), **kwargs)
     return c
+
+
+def append3D(*args, canvas=None, exclude=[], **kwargs):
+    """
+    Append waves to the front 3D canvas. 
+
+    Args:
+        args(list of Wave): The waves to be added.
+        canvas (CanvasBase): The canvas to which the wave are appended. If canvas is None, then front canvas is used.
+        exclude (list of canvas): If the front canvas is in *exclude*, then it is ignored and next canvas is used.
+        kwargs: The keywords arguments that is passed to Append method of canvas.
+    """
+    if canvas is None:
+        c = frontCanvas3D(exclude=exclude)
+    else:
+        c = canvas
+    for wave in args:
+        c.append(wave, **kwargs)
 
 
 def lysPath(path):
