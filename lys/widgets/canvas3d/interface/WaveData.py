@@ -18,23 +18,18 @@ class WaveData3D(CanvasPart3D):
         self._wave = wave
         self._wave.modified.connect(self._update)
         self._appearance = {}
-        self._offset = (0, 0, 0, 0)
         self._filter = None
         self._filteredWave = wave
 
     @saveCanvas
     def _update(self, *args, **kwargs):
-        self._filteredWave = self._calcFilteredWave(self._wave, self._offset, self._filter)
+        self._filteredWave = self._calcFilteredWave(self._wave, self._filter)
         self._updateData()
         self.modified.emit()
 
-    def _calcFilteredWave(self, w, offset, filter):
-        if filter is None:
-            filt = filters.Filters([filters.OffsetFilter(offset)])
-            filt = filters.Filters([])
-        else:
-            filt = filter
-        w = filt.execute(w)
+    def _calcFilteredWave(self, w, filter):
+        if filter is not None:
+            w = filter.execute(w)
         return w
 
     def getWave(self):
@@ -92,30 +87,6 @@ class WaveData3D(CanvasPart3D):
             bool: The visibility of the data.
         """
         return self._appearance.get('Visible', True)
-
-    @saveCanvas
-    def setOffset(self, offset):
-        """
-        Set the offset to the data.
-
-        The data is offset as x'=x*x1+x0 and y'=y*y1+y0.
-
-        Args:
-            offset(tuple of length 4 float): The offset in the form of (x0, y0, x1, y1).
-        """
-        self._offset = offset
-        self._update()
-
-    def getOffset(self):
-        """
-        Get the offset to the data.
-
-        See :meth:`setOffset` for detail.
-
-        Return:
-            tuple of length 4 float: The offset in the form of (x0, y0, x1, y1).
-        """
-        return tuple(self._offset)
 
     @saveCanvas
     def setFilter(self, filter=None):

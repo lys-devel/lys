@@ -28,7 +28,7 @@ class CanvasData3D(CanvasPart3D):
         canvas.loadCanvas.connect(self._load)
 
     @saveCanvas
-    def append(self, wave, appearance={}, offset=(0, 0, 0, 0), filter=None):
+    def append(self, wave, appearance={}, filter=None):
         """
         Append Wave to canvas.
 
@@ -45,13 +45,10 @@ class CanvasData3D(CanvasPart3D):
         # Update
         if isinstance(wave, WaveData3D):
             return self.append(wave.getWave(),
-                               axis=wave.getAxis(),
                                appearance=wave.saveAppearance(),
-                               offset=wave.getOffset(),
                                filter=wave.getFilter())
         type = self.__checkType(wave)
         obj = func[type](wave)
-        obj.setOffset(offset)
         obj.setFilter(filter)
         obj.loadAppearance(appearance)
         obj.modified.connect(self.dataChanged)

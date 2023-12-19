@@ -1,12 +1,18 @@
 import numpy as np
-from lys.Qt import QtWidgets, QtCore
+from lys.Qt import QtWidgets, QtCore, QtGui
 from pyvistaqt import QtInteractor
 
-from ..interface import CanvasBase3D, CanvasPart3D, CanvasFocusEvent3D
+from ..interface import CanvasBase3D, CanvasPart3D, CanvasFocusEvent3D, CanvasMouseEvent3D, CanvasKeyboardEvent3D
 from .WaveData import _pyvistaData
 
 
 class _Plotter(QtInteractor):
+    mouseReleased = QtCore.pyqtSignal(object)
+    mousePressed = QtCore.pyqtSignal(object)
+    mouseMoved = QtCore.pyqtSignal(object)
+    focused = QtCore.pyqtSignal(object)
+    keyPressed = QtCore.pyqtSignal(QtGui.QKeyEvent)
+
     def enableRendering(self, b):
         self._render = b
 
@@ -14,6 +20,25 @@ class _Plotter(QtInteractor):
         if self._render:
             return super().render()
 
+    def mouseReleaseEvent(self, event):
+        self.mouseReleased.emit(event)
+        super().mouseReleaseEvent(event)
+
+    def mousePressEvent(self, event):
+        self.mousePressed.emit(event)
+        super().mouseReleaseEvent(event)
+
+    def mouseMoveEvent(self, event):
+        self.mouseMoved.emit(event)
+        super().mouseReleaseEvent(event)
+
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        self.focused.emit(event)
+
+    def keyPressEvent(self, event):
+        super().keyPressEvent(event)
+        self.keyPressed.emit(event)
 
 class Canvas3d(CanvasBase3D, QtWidgets.QWidget):
     def __init__(self, parent=None):
@@ -21,6 +46,11 @@ class Canvas3d(CanvasBase3D, QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
         self.__initlayout()
         self.__initCanvasParts()
+        self.plotter.mouseMoved.connect(self.mouseMoved)
+        self.plotter.mouseReleased.connect(self.mouseReleased)
+        self.plotter.mousePressed.connect(self.mousePressed)
+        self.plotter.focused.connect(self.focused)
+        self.plotter.keyPressed.connect(self.keyPressed)
 
     def __initlayout(self):
         self._plotter = _Plotter()
@@ -32,10 +62,8 @@ class Canvas3d(CanvasBase3D, QtWidgets.QWidget):
         self.addCanvasPart(_pyvistaData(self))
         self.addCanvasPart(ObjectPicker(self))
         self.addCanvasPart(CanvasFocusEvent3D(self))
-
-    def focusInEvent(self, event):
-        super().focusInEvent(event)
-        self.focused.emit(event)
+        self.addCanvasPart(CanvasMouseEvent3D(self))
+        self.addCanvasPart(CanvasKeyboardEvent3D(self))
 
     @property
     def plotter(self):
