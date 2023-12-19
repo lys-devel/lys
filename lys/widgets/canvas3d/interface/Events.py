@@ -61,7 +61,7 @@ class CanvasMouseEvent3D(CanvasPart3D):
     def __init__(self, canvas):
         super().__init__(canvas)
         self.mouseReleased.connect(self._mouseReleased)
-        #self.doubleClicked.connect(canvas.openModifyWindow)
+        self.doubleClicked.connect(canvas.openModifyWindow)
         self._clicktime = 0
 
     def _mouseReleased(self, e):
@@ -85,14 +85,7 @@ class CanvasKeyboardEvent3D(CanvasPart3D):
         self.keyPressed.connect(self._keyPressed)
 
     def _keyPressed(self, e):
-        if e.key() == QtCore.Qt.Key_A and e.modifiers() == QtCore.Qt.ControlModifier:
-            for i in self.canvas().getRGBs() + self.canvas().getImages():
-                i.setColorRange()
-        if e.key() == QtCore.Qt.Key_C and e.modifiers() == QtCore.Qt.ControlModifier:
-            self.canvas().copyToClipboard()
         if e.key() == QtCore.Qt.Key_G and e.modifiers() == QtCore.Qt.ControlModifier:
             self.canvas().openModifyWindow()
-        if e.key() == QtCore.Qt.Key_F and e.modifiers() == QtCore.Qt.ControlModifier:
-            self.canvas().openFittingWindow()
         if e.key() == QtCore.Qt.Key_D and e.modifiers() == QtCore.Qt.ControlModifier:
             self.canvas().duplicate()

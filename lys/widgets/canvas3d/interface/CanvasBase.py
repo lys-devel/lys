@@ -45,6 +45,8 @@ class CanvasBase3D(object):
     """pyqtSignal that is emitted when the canvas is initialized."""
     updated = QtCore.pyqtSignal()
     """pyqtSignal that is emitted when the canvas is updated."""
+    finalized = QtCore.pyqtSignal(object)
+    """pyqtSignal that is emitted when the canvas is finalized."""
 
     def __init__(self):
         self._saveflg = False

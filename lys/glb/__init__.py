@@ -52,6 +52,15 @@ def editCanvas(canvas):
     """
     mainWindow().tabWidget("right").widget(1).setCanvas(canvas)
 
+def editCanvas3D(canvas):
+    """
+    Edit canvas by GUI.
+
+    Args:
+        canvas: The canvas to be edited.
+    """
+    mainWindow().tabWidget("right").widget(2).setCanvas(canvas)
+
 
 def editTable(table):
     """
@@ -60,7 +69,7 @@ def editTable(table):
     Args:
         table: The table to be edited.
     """
-    mainWindow().tabWidget("right").widget(2).setTable(table)
+    mainWindow().tabWidget("right").widget(3).setTable(table)
 
 
 def editMulticut(mcut):
@@ -70,7 +79,7 @@ def editMulticut(mcut):
     Args:
         mcut: The MuletiCut object.
     """
-    mainWindow().tabWidget("right").widget(3).setObject(mcut)
+    mainWindow().tabWidget("right").widget(4).setObject(mcut)
 
 
 def startFitting(canvas):
@@ -80,7 +89,7 @@ def startFitting(canvas):
     Args:
         canvas: The canvas to be fitted.
     """
-    mainWindow().tabWidget("right").widget(4).setCanvas(canvas)
+    mainWindow().tabWidget("right").widget(5).setCanvas(canvas)
 
 
 def createMainWindow(*args, **kwargs):

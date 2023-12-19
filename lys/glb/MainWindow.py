@@ -9,7 +9,7 @@ from lys.resources import lysIcon
 from lys.Qt import QtWidgets, QtCore, QtGui
 
 from .shell import ExtendShell
-from .Tabs import GraphTab, TableTab, MulticutTab, FittingTab
+from .Tabs import GraphTab, Graph3DTab, TableTab, MulticutTab, FittingTab
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -118,6 +118,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __sideBar(self):
         self._fileView = FileSystemView(home(), drop=True)
         self._graph = GraphTab()
+        self._graph3d = Graph3DTab()
         self._table = TableTab()
         self._mcut = MulticutTab()
         self._fit = FittingTab()
@@ -125,6 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._tab = QtWidgets.QTabWidget()
         self._tab.addTab(self._fileView, "File")
         self._tab.addTab(self._graph, "Graph")
+        self._tab.addTab(self._graph3d, "3D Graph")
         self._tab.addTab(self._table, "Table")
         self._tab.addTab(self._mcut, "MultiCut")
         self._tab.addTab(self._fit, "Fitting")
@@ -132,6 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._tab.setTabVisible(2, False)
         self._tab.setTabVisible(3, False)
         self._tab.setTabVisible(4, False)
+        self._tab.setTabVisible(5, False)
         return self._tab
 
     def __bottomBar(self):

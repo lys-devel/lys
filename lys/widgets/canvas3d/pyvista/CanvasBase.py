@@ -2,7 +2,7 @@ import numpy as np
 from lys.Qt import QtWidgets, QtCore, QtGui
 from pyvistaqt import QtInteractor
 
-from ..interface import CanvasBase3D, CanvasPart3D, CanvasFocusEvent3D, CanvasMouseEvent3D, CanvasKeyboardEvent3D
+from ..interface import CanvasBase3D, CanvasPart3D, CanvasFocusEvent3D, CanvasMouseEvent3D, CanvasKeyboardEvent3D, CanvasUtilities3D
 from .WaveData import _pyvistaData
 
 
@@ -26,11 +26,11 @@ class _Plotter(QtInteractor):
 
     def mousePressEvent(self, event):
         self.mousePressed.emit(event)
-        super().mouseReleaseEvent(event)
+        super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event):
         self.mouseMoved.emit(event)
-        super().mouseReleaseEvent(event)
+        super().mouseMoveEvent(event)
 
     def focusInEvent(self, event):
         super().focusInEvent(event)
@@ -61,6 +61,7 @@ class Canvas3d(CanvasBase3D, QtWidgets.QWidget):
     def __initCanvasParts(self):
         self.addCanvasPart(_pyvistaData(self))
         self.addCanvasPart(ObjectPicker(self))
+        self.addCanvasPart(CanvasUtilities3D(self))
         self.addCanvasPart(CanvasFocusEvent3D(self))
         self.addCanvasPart(CanvasMouseEvent3D(self))
         self.addCanvasPart(CanvasKeyboardEvent3D(self))
@@ -72,6 +73,9 @@ class Canvas3d(CanvasBase3D, QtWidgets.QWidget):
     def enableRendering(self, b):
         self.plotter.enableRendering(b)
 
+    def closeEvent(self, e):
+        self.finalized.emit(e)
+        e.accept()
 
 class ObjectPicker(CanvasPart3D):
     objectPicked = QtCore.pyqtSignal(object)
