@@ -16,6 +16,7 @@ class Graph3DTab(QtWidgets.QWidget):
     def __inilayout(self):
         self._layout = QtWidgets.QVBoxLayout()
         self._layout.setContentsMargins(0, 0, 0, 0)
+        self._layout.addStretch()
         self.setLayout(self._layout)
 
     def setCanvas(self, canvas):

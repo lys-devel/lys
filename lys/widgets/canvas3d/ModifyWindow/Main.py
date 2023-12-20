@@ -1,5 +1,5 @@
 from lys.Qt import QtCore, QtWidgets
-from .DataGUI import MeshSelectionBox3D
+from .DataGUI import MeshSelectionBox3D, FilterEditWidget
 
 
 class ModifyWidget3D(QtWidgets.QTabWidget):
@@ -27,9 +27,16 @@ class _VolumeTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self._sel = MeshSelectionBox3D(canvas, "volume")
+        self._filt = FilterEditWidget()
+
+        self._sel.selected.connect(self._filt.setData)
+
+        self._tab = QtWidgets.QTabWidget()
+        self._tab.addTab(self._filt, "Filter")
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self._sel)
+        layout.addWidget(self._tab)
         self.setLayout(layout)
 
 
