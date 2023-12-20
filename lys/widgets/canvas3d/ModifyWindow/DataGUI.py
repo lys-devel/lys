@@ -1,8 +1,8 @@
 import numpy as np
 
-from lys import Wave, display, append, edit, multicut
+from lys import Wave, display3D, append3D
 from lys.Qt import QtCore, QtGui, QtWidgets
-from lys.widgets import ScientificSpinBox, LysSubWindow
+from lys.widgets import LysSubWindow
 from lys.filters import FiltersGUI
 from lys.errors import suppressLysWarnings
 from lys.decorators import avoidCircularReference
@@ -100,10 +100,10 @@ class MeshSelectionBox3D(_MeshSelectionBoxBase):
         menu.addAction(QtWidgets.QAction('Remove', self, triggered=self.__remove))
         menu.addAction(QtWidgets.QAction('Duplicate', self, triggered=self.__duplicate))
         menu.addSeparator()
-        menu.addAction(QtWidgets.QAction('Process', self, triggered=self.__process))
+        #menu.addAction(QtWidgets.QAction('Process', self, triggered=self.__process))
 
         raw = menu.addMenu("Raw data")
-        raw.addAction(QtWidgets.QAction('Display', self, triggered=lambda: display(*self.__getWaves("Wave"))))
+        raw.addAction(QtWidgets.QAction('Display', self, triggered=lambda: display3D(*self.__getWaves("Wave"))))
         raw.addAction(QtWidgets.QAction('Append', self, triggered=lambda: self.__append("Wave")))
         raw.addAction(QtWidgets.QAction('Print', self, triggered=lambda: self.__print("Wave")))
         #raw.addAction(QtWidgets.QAction('MultiCut', self, triggered=lambda: self.__multicut("Wave")))
@@ -136,14 +136,14 @@ class MeshSelectionBox3D(_MeshSelectionBoxBase):
 
     def __remove(self):
         for d in self._selectedData():
-            self.canvas.Remove(d)
+            self.canvas.remove(d)
 
     def __append(self, type, **kwargs):
-        append(*self.__getWaves(type), exclude=self.canvas, **kwargs)
+        append3D(*self.__getWaves(type), exclude=self.canvas, **kwargs)
 
     def __duplicate(self):
         for d in self._selectedData():
-            self.canvas.Append(d)
+            self.canvas.append(d)
 
     def __multicut(self, type):
         for d in self.__getWaves(type):
@@ -182,23 +182,6 @@ class MeshSelectionBox3D(_MeshSelectionBoxBase):
             d = self.__getWaves(waveType)[0]
             d.export(path, type=type)
 
-    def __to1d(self, waveType):
-        d = self.__getWaves(waveType)[0]
-        w = d.duplicate()
-        dialog = _SliceDialog(w, self)
-        result = dialog.exec_()
-        if result:
-            axis, n = dialog.getParams()
-            result = []
-            for i in range(n):
-                if axis == "y":
-                    index = int(w.data.shape[0] / n * i)
-                    result.append(Wave(w.data[index, :], w.y))
-                else:
-                    index = int(w.data.shape[1] / n * i)
-                    result.append(Wave(w.data[:, index], w.x))
-        display(*result)
-
     def __send(self, waveType):
         from lys import glb
         dat = self._selectedData()[0]
@@ -208,13 +191,6 @@ class MeshSelectionBox3D(_MeshSelectionBoxBase):
             w.name = text
             glb.shell().addObject(w, text)
 
-    def __zorder(self):
-        data = self._selectedData()
-        d = _ZOrderDialog(np.min([item.getZOrder() for item in data]))
-        if d.exec_():
-            fr, step = d.getParams()
-            for i, item in enumerate(data):
-                item.setZOrder(fr + step * i)
 
 
 class FiltersDialog(LysSubWindow):

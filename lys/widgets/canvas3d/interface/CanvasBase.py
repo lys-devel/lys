@@ -33,9 +33,10 @@ class CanvasBase3D(object):
     """
     Base class for canvas.
 
-    All of these classes inherits :class:`CanvasPart` and added by :meth:`addCanvasPart`.
+    A 3D canvas is composed of :class:`.Data.CanvasData3D`.
+    All of these classes inherits :class:`CanvasPart3D` and added by :meth:`addCanvasPart`.
 
-    Users can access all public methods of the classes above.
+    Users can access all public methods of the classes above from canvas instance.
     """
     saveCanvas = QtCore.pyqtSignal(dict)
     """pyqtSignal that is emitted when :meth:`SaveAsDictionary` is called."""
@@ -54,10 +55,10 @@ class CanvasBase3D(object):
 
     def addCanvasPart(self, part):
         """
-        Add :class:`CanvasPart` as a part of the canvas.
+        Add :class:`CanvasPart3D` as a part of the canvas.
 
         Args:
-            part(CanvasPart): The part to be added.
+            part(CanvasPart3D): The part to be added.
         """
         self.__parts.append(part)
 
@@ -115,7 +116,7 @@ class _CanvasLocker3D:
 
 class CanvasPart3D(QtCore.QObject):
     """
-    The canvas that inherit :class:`CanvasBase` class is composed of multiple *CanvasPart*.
+    The canvas that inherit :class:`CanvasBase3D` class is composed of multiple *CanvasPart3D*.
     """
 
     def __init__(self, canvas):
@@ -124,9 +125,9 @@ class CanvasPart3D(QtCore.QObject):
 
     def canvas(self):
         """
-        Get the canvas that contains the CanvasPart.
+        Get the canvas that contains the CanvasPart3D.
 
         Return:
-            CanvasBase: The canvas.
+            CanvasBase3D: The canvas.
         """
         return self._canvas()

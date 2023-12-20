@@ -34,9 +34,11 @@ class CanvasData3D(CanvasPart3D):
 
         Args:
             wave(Wave): The data to be added.
-            appearance(dict): The dictionary that determins appearance. See :meth:`.WaveData.saveAppearance` for detail.
-            offset(tuple  of length 4): See :meth:`.WaveData.setOffset`
-            filter(filter): See :meth:`.WaveData.setFilter`
+            appearance(dict): The dictionary that determins appearance. See :meth:`.WaveData3D.saveAppearance` for detail.
+            filter(filter): See :meth:`.WaveData3D.setFilter`
+
+        Returns:
+            WaveData3D: The object from which users can modify the data in graph.
         """
         func = {"point": self._appendPoint, "line": self._appendLine, "volume": self._appendVolume, "surface": self._appendSurface}
         # When multiple data is passed
@@ -159,14 +161,10 @@ class CanvasData3D(CanvasPart3D):
         dic = {}
         for i, data in enumerate(self._Datalist):
             dic[i] = {}
-            dic[i]['File'] = None
             b = io.BytesIO()
             data.getWave().export(b)
             dic[i]['Wave_npz'] = b.getvalue()
-            dic[i]['Axis'] = data.getAxis()
             dic[i]['Appearance'] = str(data.saveAppearance())
-            dic[i]['Offset'] = str(data.getOffset())
-            dic[i]['ZOrder'] = data.getZOrder()
             if data.getFilter() is None:
                 dic[i]['Filter'] = None
             else:
@@ -175,18 +173,16 @@ class CanvasData3D(CanvasPart3D):
 
     def _load(self, dictionary):
         if 'Datalist' in dictionary:
-            self.Clear()
+            self.clear()
             dic = dictionary['Datalist']
             i = 0
             while i in dic:
                 w = Wave(io.BytesIO(dic[i]['Wave_npz']))
-                obj = self.Append(w)
+                obj = self.append(w)
                 self.__loadMetaData(obj, dic[i])
                 i += 1
 
     def __loadMetaData(self, obj, d):
-        if 'Offset' in d:
-            obj.setOffset(eval(d['Offset']))
         filter = d.get('Filter', None)
         if filter is not None:
             obj.setFilter(filters.fromString(filter))

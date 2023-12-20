@@ -14,7 +14,7 @@ class _pyvistaVolume(VolumeData):
     def __init__(self, canvas, wave):
         super().__init__(canvas, wave)
         self._wave = wave
-        self._mesh = pv.UnstructuredGrid({_key_list[key]: item for key, item in wave.note["elements"].items()}, wave.x.astype(float))
+        self._mesh = pv.UnstructuredGrid({_key_list[key]: np.array(item) for key, item in wave.note["elements"].items()}, wave.x.astype(float))
         self._edges = self._mesh.extract_feature_edges(boundary_edges=True)
         self._obj = canvas.plotter.add_mesh(self._mesh, scalars=wave.data)
         if self._edges.n_lines > 0:
@@ -35,7 +35,9 @@ class _pyvistaVolume(VolumeData):
         return
 
     def _setVisible(self, visible):
-        pass
+        self._obj.visibility = visible
+        if self._obje is not None:
+            self._obje.visibility = visible
 
     def _setColor(self, color, type):
         if type == "color":
@@ -61,7 +63,7 @@ class _pyvistaSurface(SurfaceData):
         super().__init__(canvas, wave)
         self._wave = wave
         faces = [np.ravel(np.hstack([np.ones((len(faces), 1), dtype=int) * _num_list[key], faces])) for key, faces in wave.note["elements"].items()]
-        self._mesh = pv.PolyData(wave.x, np.hstack(faces))
+        self._mesh = pv.PolyData(wave.x.astype(float), np.hstack(faces))
         self._edges = self._mesh.extract_feature_edges(boundary_edges=True)
         self._obj = canvas.plotter.add_mesh(self._mesh, scalars=wave.data)
         self._obje = canvas.plotter.add_mesh(self._edges, color='k', line_width=3)
@@ -106,10 +108,10 @@ class _pyvistaLine(LineData):
         self._p0 = np.array([wave.x[i] for i, _ in list(wave.note["elements"].values())[0]])
         self._p1 = np.array([wave.x[i] for _, i in list(wave.note["elements"].values())[0]])
         lines = [np.ravel(np.hstack([np.ones((len(faces), 1), dtype=int) * _num_list[key], faces])) for key, faces in wave.note["elements"].items()]
-        self._mesh = pv.PolyData(wave.x, lines=np.hstack(lines))
+        self._mesh = pv.PolyData(wave.x.astype(float), lines=np.hstack(lines))
         self._obj = canvas.plotter.add_mesh(self._mesh, line_width=4, scalars=wave.data)
         value, counts = np.unique(wave.note["elements"]["line"], return_counts=True)
-        self._obje = canvas.plotter.add_points(wave.x[value[counts == 1]], render_points_as_spheres=True, point_size=7, color="k")
+        self._obje = canvas.plotter.add_points(wave.x[value[counts == 1]].astype(float), render_points_as_spheres=True, point_size=7, color="k")
         self._type = "scalars"
         self._mesh_points = None
 
@@ -182,7 +184,7 @@ class _pyvistaPoint(PointData):
     def __init__(self, canvas, wave):
         super().__init__(canvas, wave)
         self._wave = wave
-        self._obj = canvas.plotter.add_points(wave.x, scalars=wave.data, render_points_as_spheres=True, point_size=17, color="k")
+        self._obj = canvas.plotter.add_points(wave.x.astype(float), scalars=wave.data, render_points_as_spheres=True, point_size=17, color="k")
         self._type = "scalars"
 
     def remove(self):
