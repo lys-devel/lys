@@ -33,7 +33,7 @@ Interface to data
    graph/Vector
    graph/Contour
 
-Interface to annotationsss
+Interface to annotations
 ------------------------------------------------------
 .. toctree::
    :maxdepth: 1
