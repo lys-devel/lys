@@ -111,7 +111,6 @@ class DataSelectionBox(_DataSelectionBoxBase):
         menu.addAction(QtWidgets.QAction('Duplicate', self, triggered=self.__duplicate))
         menu.addAction(QtWidgets.QAction('Z order', self, triggered=self.__zorder))
         menu.addSeparator()
-        menu.addAction(QtWidgets.QAction('Process', self, triggered=self.__process))
 
         raw = menu.addMenu("Raw data")
         raw.addAction(QtWidgets.QAction('Display', self, triggered=lambda: display(*self.__getWaves("Wave"))))
@@ -176,21 +175,6 @@ class DataSelectionBox(_DataSelectionBoxBase):
         for d in self.__getWaves(type):
             print(d)
 
-    def __process(self):
-        data = self._selectedData()
-        if len(data) == 1:
-            title = "Process for " + data[0].getName()
-        else:
-            title = "Process for " + str(len(data)) + " waves"
-        dlg = FiltersDialog(data[0].getWave().data.ndim, title)
-        for d in data:
-            dlg.applied.connect(d.setFilter)
-        if data[0].getFilter() is not None:
-            dlg.setFilter(data[0].getFilter())
-        dlg.attach(self.canvas.getParent())
-        dlg.attachTo()
-        dlg.show()
-
     def __export(self, waveType):
         filt = ""
         for f in Wave.SupportedFormats():
@@ -236,53 +220,42 @@ class DataSelectionBox(_DataSelectionBoxBase):
                 item.setZOrder(fr + step * i)
 
 
-class FiltersDialog(LysSubWindow):
-    applied = QtCore.pyqtSignal(object)
-
-    def __init__(self, dim, title=None):
+class FilterEditWidget(QtWidgets.QWidget):
+    def __init__(self, dim=1):
         super().__init__()
-        if title is not None:
-            self.setWindowTitle(title)
         self.filters = FiltersGUI(dim, parent=self)
-
-        self.ok = QtWidgets.QPushButton("O K", clicked=self._ok)
-        self.cancel = QtWidgets.QPushButton("CANCEL", clicked=self._cancel)
         self.apply = QtWidgets.QPushButton("Apply", clicked=self._apply)
-        h1 = QtWidgets.QHBoxLayout()
-        h1.addWidget(self.ok)
-        h1.addWidget(self.cancel)
-        h1.addWidget(self.apply)
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.filters)
-        layout.addLayout(h1)
-        w = QtWidgets.QWidget()
-        w.setLayout(layout)
-        self.setWidget(w)
-        self.resize(500, 500)
+        layout.addWidget(self.apply)
+        self.setLayout(layout)
+        self.__setEnabled(False)
 
-    def _ok(self):
-        filt = self.filters.getFilters()
-        if filt.getRelativeDimension() != 0:
-            QtWidgets.QMessageBox.information(self, "Information", "You cannot aplly filters that changes dimension of data in Graph process. Use MultiCut instead.", QtWidgets.QMessageBox.Yes)
-        else:
-            self.ok = True
-            self.applied.emit(filt)
-            self.close()
-
-    def _cancel(self):
-        self.ok = False
-        self.close()
+        self._data = []
 
     def _apply(self):
         filt = self.filters.getFilters()
         if filt.getRelativeDimension() != 0:
             QtWidgets.QMessageBox.information(self, "Information", "You cannot aplly filters that changes dimension of data in Graph process. Use MultiCut instead.", QtWidgets.QMessageBox.Yes)
         else:
-            self.applied.emit(filt)
+            for d in self._data:
+                d.setFilter(filt)
 
-    def setFilter(self, filt):
-        self.filters.setFilters(filt)
+    def __setEnabled(self, b):
+        self.apply.setEnabled(b)
+
+    def setData(self, data):
+        self._data = data
+        self.filters.clear()
+        if len(data) != 0:
+            self.__setEnabled(True)
+            self.filters.setDimension(data[0].getWave().ndim)
+            filt = data[0].getFilter()
+            if filt is not None:
+                self.filters.setFilters(filt)
+        else:
+            self.__setEnabled(False)
 
 
 class _ZOrderDialog(QtWidgets.QDialog):
