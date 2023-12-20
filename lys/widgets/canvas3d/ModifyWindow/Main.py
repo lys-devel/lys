@@ -1,5 +1,6 @@
 from lys.Qt import QtCore, QtWidgets
-from .DataGUI import MeshSelectionBox3D, FilterEditWidget
+from lys.widgets.canvas.ModifyWindow.CanvasBaseGUI import FilterEditWidget
+from .DataGUI import MeshSelectionBox3D
 
 
 class ModifyWidget3D(QtWidgets.QTabWidget):
