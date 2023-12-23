@@ -93,12 +93,19 @@ class WaveData3D(CanvasPart3D):
         Apply filter to the data.
 
         Args:
-            filter(filterr): The filter. See :class:`lys.filters.filter.FilterInterface.FilterInterface`
+            filter(filter): The filter. See :class:`lys.filters.filter.FilterInterface.FilterInterface`
         """
         self._filter = filter
         self._update()
 
     def getFilter(self):
+        """
+        Get filter applied to the data.
+
+        Returns:
+            filter: The filter. See :class:`lys.filters.filter.FilterInterface.FilterInterface`
+
+        """
         return self._filter
 
     def saveAppearance(self):
@@ -158,7 +165,7 @@ class MeshData3D(WaveData3D):
 
     def getColor(self):
         """
-        Get the color or colormap of the mesh. See `meth`:setColor:.
+        Get the color or colormap of the mesh. See :meth:`setColor`.
         
         Returns:
             colorlike or colormap: The color or colormap
@@ -167,7 +174,7 @@ class MeshData3D(WaveData3D):
 
     def getColorType(self):
         """
-        Get the present color type of the mesh. See `meth`:setColor:.
+        Get the present color type of the mesh. See :meth:`setColor`.
 
         Returns:
             str: 'scalars' or 'color'
@@ -224,9 +231,9 @@ class MeshData3D(WaveData3D):
         if "colorType" in appearance:
             self.setColor(appearance["color"], appearance["colorType"])
         if "showMeshes" in appearance:
-            self.setMeshes(appearance["showMeshes"])
+            self.showMeshes(appearance["showMeshes"])
         if "showEdges" in appearance:
-            self.setEdges(appearance["showEdges"])
+            self.showEdges(appearance["showEdges"])
 
     def _setColor(self, color, type):
         warnings.warn(str(type(self)) + " does not implement _setColor(color, type) method.", NotImplementedWarning)

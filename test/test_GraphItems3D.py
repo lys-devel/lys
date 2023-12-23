@@ -91,6 +91,7 @@ class Graph3D_test(unittest.TestCase):
         obj.setVisible(True)
 
         c.LoadFromDictionary(d)
+        obj = c.getSurface()[0]
         self.assertFalse(obj.getVisible())
 
     def test_Volume(self):
@@ -99,4 +100,95 @@ class Graph3D_test(unittest.TestCase):
 
         data_tetra = Wave([0]*4, [[0,0,0], [1,0,0], [0,1,0], [0,0,1]], elements={"tetra": [[0,1,2,3]]})
         obj = c.append(data_tetra)
-        
+
+        obj.showEdges(True)
+        self.assertTrue(obj.edgesVisible())
+
+        obj.showMeshes(True)
+        self.assertTrue(obj.meshesVisible())        
+
+        obj.setColor(color="#222222", type="color")
+        self.assertEqual(obj.getColor(), "#222222")
+        self.assertEqual(obj.getColorType(), "color")
+
+        obj.setColor(color="gray", type="scalars")
+        self.assertEqual(obj.getColor(), "gray")
+        self.assertEqual(obj.getColorType(), "scalars")
+
+        d = c.SaveAsDictionary()
+        obj.showEdges(False)
+        obj.showMeshes(False)
+        obj.setColor(color="#222222", type="color")
+
+        c.LoadFromDictionary(d)
+        obj = c.getVolume()[0]
+        self.assertTrue(obj.edgesVisible())
+        self.assertTrue(obj.meshesVisible())        
+        self.assertEqual(obj.getColor(), "gray")
+        self.assertEqual(obj.getColorType(), "scalars")
+
+    def test_Surface(self):
+        g = self._graph
+        c = g.canvas
+
+        data_triangle = Wave([0]*3, [[0,0,0], [1,0,0], [0,1,0]], elements={"triangle": [[0,1,2]]})
+        obj = c.append(data_triangle)
+
+        obj.showEdges(True)
+        self.assertTrue(obj.edgesVisible())
+
+        obj.showMeshes(True)
+        self.assertTrue(obj.meshesVisible())        
+
+        obj.setColor(color="#222222", type="color")
+        self.assertEqual(obj.getColor(), "#222222")
+        self.assertEqual(obj.getColorType(), "color")
+
+        obj.setColor(color="gray", type="scalars")
+        self.assertEqual(obj.getColor(), "gray")
+        self.assertEqual(obj.getColorType(), "scalars")
+
+        d = c.SaveAsDictionary()
+        obj.showEdges(False)
+        obj.showMeshes(False)
+        obj.setColor(color="#222222", type="color")
+
+        c.LoadFromDictionary(d)
+        obj = c.getSurface()[0]
+        self.assertTrue(obj.edgesVisible())
+        self.assertTrue(obj.meshesVisible())        
+        self.assertEqual(obj.getColor(), "gray")
+        self.assertEqual(obj.getColorType(), "scalars")
+
+    def test_Line(self):
+        g = self._graph
+        c = g.canvas
+
+        data_line = Wave([0]*2, [[0,0,0], [1,0,0]], elements={"line": [[0,1]]})
+        obj = c.append(data_line)
+
+        obj.showEdges(True)
+        self.assertTrue(obj.edgesVisible())
+
+        obj.showMeshes(True)
+        self.assertTrue(obj.meshesVisible())        
+
+        obj.setColor(color="#222222", type="color")
+        self.assertEqual(obj.getColor(), "#222222")
+        self.assertEqual(obj.getColorType(), "color")
+
+        obj.setColor(color="gray", type="scalars")
+        self.assertEqual(obj.getColor(), "gray")
+        self.assertEqual(obj.getColorType(), "scalars")
+
+        d = c.SaveAsDictionary()
+        obj.showEdges(False)
+        obj.showMeshes(False)
+        obj.setColor(color="#222222", type="color")
+
+        c.LoadFromDictionary(d)
+        obj = c.getLine()[0]
+        self.assertTrue(obj.edgesVisible())
+        self.assertTrue(obj.meshesVisible())        
+        self.assertEqual(obj.getColor(), "gray")
+        self.assertEqual(obj.getColorType(), "scalars")

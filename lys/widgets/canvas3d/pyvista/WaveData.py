@@ -173,7 +173,7 @@ class _pyvistaLine(LineData):
 
         self._obj = canvas.plotter.add_mesh(self._mesh, line_width=4, scalars=wave.data)
         self._obje = canvas.plotter.add_points(wave.x[value[counts == 1]].astype(float), render_points_as_spheres=True, point_size=7, color="k")
-        self._mesh_points = self.canvas().plotter.add_points(self._wave.x, render_points_as_spheres=True, point_size=5, color="k")
+        self._mesh_points = self.canvas().plotter.add_points(self._wave.x.astype(float), render_points_as_spheres=True, point_size=5, color="k")
         self._mesh_points.visibility = False
     
     def remove(self):
@@ -253,13 +253,13 @@ class _pyvistaPoint(PointData):
             c = QtGui.QColor(color)
             if self._type == "scalars":
                 self.canvas().plotter.remove_actor(self._obj)
-                self._obj = self.canvas().plotter.add_points(self._wave.x, color=[c.redF(), c.greenF(), c.blueF()], render_points_as_spheres=True, point_size=17)
+                self._obj = self.canvas().plotter.add_points(self._wave.x.astype(float), color=[c.redF(), c.greenF(), c.blueF()], render_points_as_spheres=True, point_size=17)
             else:
                 self._obj.GetProperty().SetColor([c.redF(), c.greenF(), c.blueF()])
             self._type = "color"
         if type == "scalars":
             self.canvas().plotter.remove_actor(self._obj)
-            self._obj = self.canvas().plotter.add_points(self._wave.x, cmap=color, render_points_as_spheres=True, point_size=17)
+            self._obj = self.canvas().plotter.add_points(self._wave.x.astype(float), cmap=color, render_points_as_spheres=True, point_size=17)
             self._type = "scalars"
 
     def rayTrace(self, start, end):

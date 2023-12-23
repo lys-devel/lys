@@ -22,6 +22,9 @@ Interface to data
    :maxdepth: 1
 
    graph3d/WaveData
+   graph3d/Volume
+   graph3d/Surface
+   graph3d/Line
 
 
 Use canvas as widget
