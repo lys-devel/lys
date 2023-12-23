@@ -72,3 +72,31 @@ class Graph3D_test(unittest.TestCase):
 
         c.clear()
         self.assertEqual(len(c.getWaveData()), 0)
+
+    def test_WaveData3D(self):
+        g = self._graph
+        c = g.canvas
+
+        data_triangle = Wave([0]*3, [[0,0,0], [1,0,0], [0,1,0]], elements={"triangle": [[0,1,2]]})
+
+        obj = c.append(data_triangle)
+        obj.setVisible(False)
+        self.assertFalse(obj.getVisible())
+
+        f = filters.SimpleMathFilter('+', 1)
+        obj.setFilter(f)
+        self.assertEqual(obj.getFilter(), f)
+
+        d = c.SaveAsDictionary()
+        obj.setVisible(True)
+
+        c.LoadFromDictionary(d)
+        self.assertFalse(obj.getVisible())
+
+    def test_Volume(self):
+        g = self._graph
+        c = g.canvas
+
+        data_tetra = Wave([0]*4, [[0,0,0], [1,0,0], [0,1,0], [0,0,1]], elements={"tetra": [[0,1,2,3]]})
+        obj = c.append(data_tetra)
+        

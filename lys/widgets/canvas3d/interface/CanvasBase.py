@@ -19,8 +19,9 @@ def saveCanvas(func):
             res = func(*args, **kwargs)
         else:
             canvas._saveflg = True
-            res = func(*args, **kwargs)
-            canvas.updated.emit()
+            with canvas.delayUpdate():
+                res = func(*args, **kwargs)
+                canvas.updated.emit()
             canvas._saveflg = False
         return res
     return wrapper
@@ -51,6 +52,7 @@ class CanvasBase3D(object):
 
     def __init__(self):
         self._saveflg = False
+        self._updateFlg = False
         self.__parts = []
 
     def addCanvasPart(self, part):
@@ -106,11 +108,13 @@ class _CanvasLocker3D:
         self.canvas = canvas
 
     def __enter__(self):
-        self.canvas._saveflg = True
+        if self.canvas._updateFlg:
+            return
+        self.canvas._updateFlg = True
         self.canvas.enableRendering(False)
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.canvas._saveflg = False
+        self.canvas._updateFlg = False
         self.canvas.enableRendering(True)
 
 

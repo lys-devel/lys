@@ -1,5 +1,4 @@
 import warnings
-from lys import filters
 from lys.Qt import QtCore
 from lys.errors import NotImplementedWarning
 
@@ -140,19 +139,80 @@ class WaveData3D(CanvasPart3D):
 class MeshData3D(WaveData3D):
     @saveCanvas
     def setColor(self, color=None, type="scalars"):
+        """
+        Set the color of the mesh data.
+
+        If type == "scalars", the surface of the mesh is drawn using scalar data.
+        In this case, *color* should be a name of colormap to be used.
+
+        If type == "color", the surface of the mesh is colored by a single color.
+        In this case, *color* should be a color string, length 3 RGB sequence.
+
+        Args:
+            color: See above.
+            type: See above.
+        """
         self.__setAppearance("colorType", type)
         self.__setAppearance("color", color)
         self._setColor(color, type)
 
+    def getColor(self):
+        """
+        Get the color or colormap of the mesh. See `meth`:setColor:.
+        
+        Returns:
+            colorlike or colormap: The color or colormap
+        """
+        return self.__getAppearance("color", "viridis")
+
+    def getColorType(self):
+        """
+        Get the present color type of the mesh. See `meth`:setColor:.
+
+        Returns:
+            str: 'scalars' or 'color'
+        """
+        return self.__getAppearance("colorType", "scalars")
+
+    @saveCanvas
     def showEdges(self, b):
+        """
+        Show edges of the object.
+
+        Args:
+            b(bool): Whether the edges of the object are shown.
+        """
+        self.__setAppearance("showEdges", b)
+        self._showEdges(b)
+
+    def edgesVisible(self):
+        """
+        Return if the edges are visible.
+
+        Returns:
+            bool: The visibility
+        """
+        return self.__getAppearance("showEdges", True)
+
+    @saveCanvas
+    def showMeshes(self, b):
         """
         Show edges of the mesh.
 
         Args:
             b(bool): Whether the edges of the mesh are shown.
         """
-        self.__setAppearance("showEdges", b)
-        self._showEdges(b)
+        self.__setAppearance("showMeshes", b)
+        self._showMeshes(b)
+
+    def meshesVisible(self):
+        """
+        Return if the meshes are visible.
+
+        Returns:
+            bool: The visibility
+        """
+        return self.__getAppearance("showMeshes", False)
 
     def __setAppearance(self, key, value):
         self._appearance[key] = value
@@ -161,10 +221,20 @@ class MeshData3D(WaveData3D):
         return self._appearance.get(key, default)
 
     def _loadAppearance(self, appearance):
-        pass
+        if "colorType" in appearance:
+            self.setColor(appearance["color"], appearance["colorType"])
+        if "showMeshes" in appearance:
+            self.setMeshes(appearance["showMeshes"])
+        if "showEdges" in appearance:
+            self.setEdges(appearance["showEdges"])
 
     def _setColor(self, color, type):
         warnings.warn(str(type(self)) + " does not implement _setColor(color, type) method.", NotImplementedWarning)
 
     def _showEdges(self, b):
         warnings.warn(str(type(self)) + " does not implement _showEdges(b) method.", NotImplementedWarning)
+
+    def _showMeshes(self, b):
+        warnings.warn(str(type(self)) + " does not implement _showMeshes(b) method.", NotImplementedWarning)
+
+

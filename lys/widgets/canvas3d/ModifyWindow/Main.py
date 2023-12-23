@@ -1,6 +1,7 @@
 from lys.Qt import QtCore, QtWidgets
 from lys.widgets.canvas.ModifyWindow.CanvasBaseGUI import FilterEditWidget
 from .DataGUI import MeshSelectionBox3D
+from .MeshGUI import MeshAppearanceBox
 
 
 class ModifyWidget3D(QtWidgets.QTabWidget):
@@ -28,11 +29,14 @@ class _VolumeTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self._sel = MeshSelectionBox3D(canvas, "volume")
+        self._app = MeshAppearanceBox(canvas)
         self._filt = FilterEditWidget()
 
+        self._sel.selected.connect(self._app.setData)
         self._sel.selected.connect(self._filt.setData)
 
         self._tab = QtWidgets.QTabWidget()
+        self._tab.addTab(self._app, "Appearance")
         self._tab.addTab(self._filt, "Filter")
 
         layout = QtWidgets.QVBoxLayout()
@@ -45,9 +49,19 @@ class _SurfaceTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self._sel = MeshSelectionBox3D(canvas, "surface")
+        self._app = MeshAppearanceBox(canvas)
+        self._filt = FilterEditWidget()
+
+        self._sel.selected.connect(self._app.setData)
+        self._sel.selected.connect(self._filt.setData)
+
+        self._tab = QtWidgets.QTabWidget()
+        self._tab.addTab(self._app, "Appearance")
+        self._tab.addTab(self._filt, "Filter")
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self._sel)
+        layout.addWidget(self._tab)
         self.setLayout(layout)
 
 
@@ -55,9 +69,19 @@ class _LineTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self._sel = MeshSelectionBox3D(canvas, "line")
+        self._app = MeshAppearanceBox(canvas)
+        self._filt = FilterEditWidget()
+
+        self._sel.selected.connect(self._app.setData)
+        self._sel.selected.connect(self._filt.setData)
+
+        self._tab = QtWidgets.QTabWidget()
+        self._tab.addTab(self._app, "Appearance")
+        self._tab.addTab(self._filt, "Filter")
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self._sel)
+        layout.addWidget(self._tab)
         self.setLayout(layout)
 
 
@@ -65,7 +89,14 @@ class _PointTab(QtWidgets.QWidget):
     def __init__(self, canvas):
         super().__init__()
         self._sel = MeshSelectionBox3D(canvas, "point")
+        self._filt = FilterEditWidget()
+
+        self._sel.selected.connect(self._filt.setData)
+
+        self._tab = QtWidgets.QTabWidget()
+        self._tab.addTab(self._filt, "Filter")
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self._sel)
+        layout.addWidget(self._tab)
         self.setLayout(layout)

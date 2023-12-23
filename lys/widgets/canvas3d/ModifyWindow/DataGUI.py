@@ -1,9 +1,5 @@
-import numpy as np
-
 from lys import Wave, display3D, append3D
 from lys.Qt import QtCore, QtGui, QtWidgets
-from lys.widgets import LysSubWindow
-from lys.filters import FiltersGUI
 from lys.errors import suppressLysWarnings
 from lys.decorators import avoidCircularReference
 
@@ -100,7 +96,6 @@ class MeshSelectionBox3D(_MeshSelectionBoxBase):
         menu.addAction(QtWidgets.QAction('Remove', self, triggered=self.__remove))
         menu.addAction(QtWidgets.QAction('Duplicate', self, triggered=self.__duplicate))
         menu.addSeparator()
-        #menu.addAction(QtWidgets.QAction('Process', self, triggered=self.__process))
 
         raw = menu.addMenu("Raw data")
         raw.addAction(QtWidgets.QAction('Display', self, triggered=lambda: display3D(*self.__getWaves("Wave"))))
@@ -111,14 +106,14 @@ class MeshSelectionBox3D(_MeshSelectionBoxBase):
         raw.addAction(QtWidgets.QAction('Export', self, triggered=lambda: self.__export("Wave")))
         raw.addAction(QtWidgets.QAction('Send to shell', self, triggered=lambda: self.__send("Wave")))
 
-        #pr = menu.addMenu("Processed data")
-        #pr.addAction(QtWidgets.QAction('Display', self, triggered=lambda: display(*self.__getWaves("ProcessedWave"))))
-        #pr.addAction(QtWidgets.QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
-        #pr.addAction(QtWidgets.QAction('Print', self, triggered=lambda: self.__print("ProcessedWave")))
+        pr = menu.addMenu("Processed data")
+        pr.addAction(QtWidgets.QAction('Display', self, triggered=lambda: display3D(*self.__getWaves("ProcessedWave"))))
+        pr.addAction(QtWidgets.QAction('Append', self, triggered=lambda: self.__append("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('Print', self, triggered=lambda: self.__print("ProcessedWave")))
         #pr.addAction(QtWidgets.QAction('MultiCut', self, triggered=lambda: self.__multicut("ProcessedWave")))
         #pr.addAction(QtWidgets.QAction('Edit', self, triggered=lambda: self.__edit("ProcessedWave")))
-        #pr.addAction(QtWidgets.QAction('Export', self, triggered=lambda: self.__export("ProcessedWave")))
-        #pr.addAction(QtWidgets.QAction('Send to shell', self, triggered=lambda: self.__send("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('Export', self, triggered=lambda: self.__export("ProcessedWave")))
+        pr.addAction(QtWidgets.QAction('Send to shell', self, triggered=lambda: self.__send("ProcessedWave")))
         menu.exec_(QtGui.QCursor.pos())
 
     def __getWaves(self, type="Wave"):
@@ -156,21 +151,6 @@ class MeshSelectionBox3D(_MeshSelectionBoxBase):
     def __print(self, type):
         for d in self.__getWaves(type):
             print(d)
-
-    def __process(self):
-        data = self._selectedData()
-        if len(data) == 1:
-            title = "Process for " + data[0].getName()
-        else:
-            title = "Process for " + str(len(data)) + " waves"
-        dlg = FiltersDialog(data[0].getWave().data.ndim, title)
-        for d in data:
-            dlg.applied.connect(d.setFilter)
-        if data[0].getFilter() is not None:
-            dlg.setFilter(data[0].getFilter())
-        dlg.attach(self.canvas.getParent())
-        dlg.attachTo()
-        dlg.show()
 
     def __export(self, waveType):
         filt = ""
