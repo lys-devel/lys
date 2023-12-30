@@ -149,6 +149,8 @@ class CanvasData3D(CanvasPart3D):
         data = self.getWaveData(type)
         distance = np.linalg.norm(end - start)
         for d in data:
+            if not d.getVisible():
+                continue
             point = self._rayTrace(d, start, end)
             if len(point) == 0:
                 continue
