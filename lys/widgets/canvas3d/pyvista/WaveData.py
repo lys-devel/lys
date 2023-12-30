@@ -172,13 +172,17 @@ class _pyvistaLine(LineData):
         value, counts = np.unique(wave.note["elements"]["line"], return_counts=True)
 
         self._obj = canvas.plotter.add_mesh(self._mesh, line_width=4, scalars=wave.data)
-        self._obje = canvas.plotter.add_points(wave.x[value[counts == 1]].astype(float), render_points_as_spheres=True, point_size=7, color="k")
+        if len(wave.x[value[counts == 1]]) > 0:
+            self._obje = canvas.plotter.add_points(wave.x[value[counts == 1]].astype(float), render_points_as_spheres=True, point_size=7, color="k")
+        else:
+            self._obje = None
         self._mesh_points = self.canvas().plotter.add_points(self._wave.x.astype(float), render_points_as_spheres=True, point_size=5, color="k")
         self._mesh_points.visibility = False
     
     def remove(self):
         self.canvas().plotter.remove_actor(self._obj)
-        self.canvas().plotter.remove_actor(self._obje)
+        if self._obje is not None:
+            self.canvas().plotter.remove_actor(self._obje)
         self.canvas().plotter.remove_actor(self._mesh_points)
 
     def _setColor(self, color, type):
@@ -198,14 +202,17 @@ class _pyvistaLine(LineData):
     def _setVisible(self, visible):
         self._obj.visibility = visible
         if visible:
-            self._obje.visibility = self.edgesVisible()
+            if self._obje is not None:
+                self._obje.visibility = self.edgesVisible()
             self._mesh_points.visibility = self.meshesVisible()
         else:
-            self._obje.visibility = False
+            if self._obje is not None:
+                self._obje.visibility = False
             self._mesh_points.visibility = False
 
     def _showEdges(self, b):
-        self._obje.visibility = b
+        if self._obje is not None:
+            self._obje.visibility = b
 
     def _showMeshes(self, b):
         self._mesh_points.visibility = b
