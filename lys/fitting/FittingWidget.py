@@ -1,13 +1,15 @@
+import inspect
+import itertools
 import numpy as np
 
-from lys import display
+from lys import display, multicut, Wave
 from lys.Qt import QtWidgets, QtGui, QtCore
 from lys.widgets import ScientificSpinBox
 from lys.decorators import avoidCircularReference
 
+from .Fitting import fit
 from .Functions import functions
 from .FittingCUI import FittingCUI
-
 
 class _ResultController(QtCore.QObject):
     def __init__(self, canvas, cui, data):
@@ -100,9 +102,11 @@ class FittingWidget(QtWidgets.QWidget):
         hbox1.addWidget(self._all)
 
         exec = QtWidgets.QPushButton('Fit', clicked=self.__fit)
+        pfit = QtWidgets.QPushButton('Parametric', clicked=self.__pfit)
         resi = QtWidgets.QPushButton('Residual sum', clicked=self.__resi)
         hbox3 = QtWidgets.QHBoxLayout()
         hbox3.addWidget(exec)
+        hbox3.addWidget(pfit)
         hbox3.addWidget(resi)
 
         vbox1 = QtWidgets.QVBoxLayout()
@@ -147,6 +151,40 @@ class FittingWidget(QtWidgets.QWidget):
             res, msg = self._currentItem.fit()
             if res is False:
                 QtWidgets.QMessageBox.warning(self, "Error", msg)
+
+    def __pfit(self):
+        print("------ Parameterized Fitting ---------")
+        np.set_printoptions(precision=4, floatmode='fixed')
+        f = self._currentItem.fitFunction
+        names = [s for s in inspect.signature(f).parameters][1:]
+        dialog = _ParametrizedDialog(names, parent=self)
+        result = dialog.exec_()
+        if result:
+            data, x, _ = self._currentItem.dataForFit()
+            guess = self._currentItem.fitParameters
+            bounds = self._currentItem.fitBounds
+
+            params = dialog.getParameters()
+            indices = [i for i, p in enumerate(params) if p is not None]
+            params = [p for p in params if p is not None]
+
+            print("List of all parameters:", tuple(names))
+            print("List of sweep parameters:", tuple([names[i] for i in indices]))
+            result = []
+            for ps in itertools.product(*params):
+                for i, p in zip(indices, ps):
+                    guess[i] = p
+                    bounds[i] = [p, p]
+                res, _ = fit(f, x, data, guess=guess, bounds=bounds.T)
+                print("Params =", np.array(ps), ", Results =", np.array(res))
+                if dialog.getType() == "Fitting Function":
+                    res = f(x,*res)
+                elif dialog.getType() == "Residual":
+                    res = np.sqrt(np.sum(abs(data - f(x,*res))**2) / len(data))
+                result.append(res)
+            result = np.array(result).reshape(*[len(p) for p in params], *np.shape(res))
+            print("---------- Parametrized fitting finished ---------")
+            multicut(Wave(result, *params))
 
     def __append(self, state):
         if self._all.isChecked():
@@ -527,3 +565,84 @@ class _SingleParamGUI(QtCore.QObject):
         min, max = obj.minMaxEnabled
         self._min.setChecked(min)
         self._max.setChecked(max)
+
+
+class _ParametrizedDialog(QtWidgets.QDialog):
+    def __init__(self, params, parent=None):
+        super().__init__(parent)
+        self._tree = _ParameterizeTree(params)
+        self._combo = QtWidgets.QComboBox()
+        self._combo.addItems(["Parameters", "Fitted function", "Residual"])
+
+        h2 = QtWidgets.QHBoxLayout()
+        h2.addWidget(QtWidgets.QLabel("Output type"))
+        h2.addWidget(self._combo)
+
+        h1 = QtWidgets.QHBoxLayout()
+        h1.addWidget(QtWidgets.QPushButton('O K', clicked=self.accept))
+        h1.addWidget(QtWidgets.QPushButton('CALCEL', clicked=self.reject))
+
+        v1 = QtWidgets.QVBoxLayout()
+        v1.addLayout(h2)
+        v1.addWidget(self._tree)
+        v1.addLayout(h1)
+        self.setLayout(v1)
+
+    def getParameters(self):
+        return self._tree.getParameters()
+
+    def getType(self):
+        return self._combo.currentText()
+
+
+class _ParameterizeTree(QtWidgets.QTreeView):
+    def __init__(self, params):
+        super().__init__()
+        self.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
+        self.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self._model = QtGui.QStandardItemModel(0, 2)
+        self._model.setHeaderData(0, QtCore.Qt.Horizontal, 'Variable')
+        self._model.setHeaderData(1, QtCore.Qt.Horizontal, 'Type')
+        self.setModel(self._model)
+
+        for p in params:
+            item = QtGui.QStandardItem(p)
+            combo = QtWidgets.QComboBox()
+            combo.addItems(["Default", "Parametrized"])
+            item2 = QtGui.QStandardItem()
+            self._model.appendRow([item, item2])
+            self.setIndexWidget(item2.index(), combo)
+            combo.currentTextChanged.connect(lambda txt, i=item: self.__changeType(txt, i))
+
+    def __changeType(self, typ, item):
+        if typ=="Default":
+            if item.rowCount() == 3:
+                item.removeRow(0)
+                item.removeRow(0)
+                item.removeRow(0)
+        else:
+            if item.rowCount() == 0:
+                frm = QtGui.QStandardItem()
+                to = QtGui.QStandardItem()
+                n = QtGui.QStandardItem()
+                item.appendRow([QtGui.QStandardItem("From"), frm])
+                item.appendRow([QtGui.QStandardItem("To"), to])
+                item.appendRow([QtGui.QStandardItem("Num"), n])
+                self.setIndexWidget(frm.index(), ScientificSpinBox())
+                self.setIndexWidget(to.index(), ScientificSpinBox())
+                spn = QtWidgets.QSpinBox()
+                spn.setRange(1,100000000)
+                self.setIndexWidget(n.index(), spn)
+
+    def getParameters(self):
+        result = []
+        for r in range(self._model.rowCount()):
+            item = self._model.item(r, 0)
+            if item.rowCount() == 0:
+                result.append(None)
+            else:
+                v1 = self.indexWidget(item.child(0,1).index()).value()
+                v2 = self.indexWidget(item.child(1,1).index()).value()
+                v3 = self.indexWidget(item.child(2,1).index()).value()
+                result.append(np.linspace(v1,v2,v3).tolist())
+        return result

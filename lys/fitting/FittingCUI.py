@@ -32,7 +32,7 @@ class FittingCUI(QtCore.QObject):
     def __update(self):
         self._data.note["lys_Fitting"] = self.saveAsDictionary()
 
-    def __getDataForFit(self):
+    def dataForFit(self):
         wave = self._data
         axis = wave.x
         range = list(self._range)
@@ -49,11 +49,11 @@ class FittingCUI(QtCore.QObject):
 
     def fit(self):
         guess = self.fitParameters
-        bounds = np.array(list(itertools.chain(*[fi.range for fi in self.functions])))
+        bounds = self.fitBounds
         for g, b in zip(guess, bounds):
             if g < b[0] or g > b[1] or b[0] > b[1]:
                 return False, "Fit error: all fitting parameters should between minimum and maximum."
-        data, x, _ = self.__getDataForFit()
+        data, x, _ = self.dataForFit()
         res, sig = fit(self.fitFunction, x, data, guess=guess, bounds=bounds.T)
         n = 0
         for fi in self.functions:
@@ -66,11 +66,11 @@ class FittingCUI(QtCore.QObject):
         wave = self._data
         f = self.fitFunction
         p = self.fitParameters
-        data, x, axis = self.__getDataForFit()
+        data, x, axis = self.dataForFit()
         return Wave(f(x, *p), axis, name=wave.name + "_fit", lys_Fitting={"fitted": False, "id": self._id})
 
     def residualSum(self):
-        data, _, _ = self.__getDataForFit()
+        data, _, _ = self.dataForFit()
         fitted = self.fittedData()
         return np.sqrt(np.sum(abs(data - fitted.data)**2) / len(data))
 
@@ -164,6 +164,11 @@ class _FittingFunctions(QtCore.QObject):
     @property
     def fitParameters(self):
         return np.array(list(itertools.chain(*[fi.value for fi in self._funcs])))
+
+    @property
+    def fitBounds(self):
+        return np.array(list(itertools.chain(*[fi.range for fi in self._funcs])))
+
 
 
 class _FuncInfo(QtCore.QObject):
