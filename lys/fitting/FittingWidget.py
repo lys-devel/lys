@@ -31,7 +31,7 @@ class _ResultController(QtCore.QObject):
 
     def _update(self):
         if self._state:
-            f = self._cui.fitFunction
+            f = self._cui.fitFunction(None)
             if f is None:
                 self._remove()
                 return False
@@ -94,6 +94,12 @@ class FittingWidget(QtWidgets.QWidget):
         self._dm = _DataAxisWidget(self.canvas)
         self._dm.axisChanged.connect(self.__axisChanged)
 
+        self._algo = _AlgoWidget()
+
+        tab = QtWidgets.QTabWidget()
+        tab.addTab(self._dm, "x data")
+        tab.addTab(self._algo, "method")
+
         self._append = QtWidgets.QCheckBox("Append result", stateChanged=self.__append)
         self._all = QtWidgets.QCheckBox("Apply to all")
 
@@ -111,8 +117,8 @@ class FittingWidget(QtWidgets.QWidget):
 
         vbox1 = QtWidgets.QVBoxLayout()
         vbox1.addLayout(hbox2)
-        vbox1.addWidget(self._dm)
-        vbox1.addWidget(self._tree)
+        vbox1.addWidget(tab)
+        vbox1.addWidget(self._tree, 10)
         vbox1.addLayout(hbox1)
         vbox1.addLayout(hbox3)
         self.setLayout(vbox1)
@@ -134,6 +140,7 @@ class FittingWidget(QtWidgets.QWidget):
             print("Residual sum:", self._currentItem.residualSum())
 
     def __fit(self):
+        algo = self._algo.method()
         if self._all.isChecked():
             msg = "This operation will delete all fitting results except displayed and then fit all data in the graph using displayed fitting function. Are your really want to proceed?"
             res = QtWidgets.QMessageBox.information(self, "Warning", msg, QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
@@ -142,24 +149,24 @@ class FittingWidget(QtWidgets.QWidget):
                 for item in self._items:
                     if item != self._currentItem:
                         item.loadFromDictionary(d)
-                    res, msg = item.fit()
+                    res, msg = item.fit(algo = algo)
                     if not res:
                         QtWidgets.QMessageBox.warning(self, "Error", msg)
                         return
                 QtWidgets.QMessageBox.information(self, "Information", "All fittings finished.", QtWidgets.QMessageBox.Yes)
         else:
-            res, msg = self._currentItem.fit()
+            res, msg = self._currentItem.fit(algo = algo)
             if res is False:
                 QtWidgets.QMessageBox.warning(self, "Error", msg)
 
     def __pfit(self):
-        print("------ Parameterized Fitting ---------")
         np.set_printoptions(precision=4, floatmode='fixed')
-        f = self._currentItem.fitFunction
+        f = self._currentItem.fitFunction(self._currentItem.dataForFit()[0])
         names = [s for s in inspect.signature(f).parameters][1:]
         dialog = _ParametrizedDialog(names, parent=self)
         result = dialog.exec_()
         if result:
+            print("------ Parameterized Fitting ---------")
             data, x, _ = self._currentItem.dataForFit()
             guess = self._currentItem.fitParameters
             bounds = self._currentItem.fitBounds
@@ -212,11 +219,11 @@ class FittingWidget(QtWidgets.QWidget):
         return self._ctrls[self._target.currentIndex()]
 
 
-class _DataAxisWidget(QtWidgets.QGroupBox):
+class _DataAxisWidget(QtWidgets.QWidget):
     axisChanged = QtCore.pyqtSignal(object, tuple)
 
     def __init__(self, canvas):
-        super().__init__("x axis")
+        super().__init__()
         self.__initlayout()
         self.__type = None
         self.__range = (None, None)
@@ -315,6 +322,33 @@ class _DataAxisWidget(QtWidgets.QGroupBox):
         else:
             self._useMax.setChecked(True)
             self._max.setValue(self.__range[1])
+
+class _AlgoWidget(QtWidgets.QWidget):
+    def __init__(self):
+        super().__init__()
+        self.__initLayout()
+
+    def __initLayout(self):
+        self._type = QtWidgets.QComboBox()
+        self._type.addItems(["curve_fit", "Nelder-Mead", "Powell", "BFGS"])
+        self._type_lay = QtWidgets.QHBoxLayout()
+        self._type_lay.addWidget(QtWidgets.QLabel("Method"))
+        self._type_lay.addWidget(self._type)
+
+        self._resi = QtWidgets.QComboBox()
+        self._resi.addItems(["Order 2, normalized", "Order 1, normalized","Order 2, not normalized", "Order 1, not normalized"])
+        self._resi_lay = QtWidgets.QHBoxLayout()
+        self._resi_lay.addWidget(QtWidgets.QLabel("Residual"))
+        self._resi_lay.addWidget(self._resi)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addLayout(self._type_lay)
+        layout.addLayout(self._resi_lay)
+        layout.addWidget(QtWidgets.QLabel("*Only curve_fit handle bounds."))
+        self.setLayout(layout)
+
+    def method(self):
+        return self._type.currentText()+":"+self._resi.currentText()
 
 
 class FittingTree(QtWidgets.QTreeView):

@@ -47,14 +47,14 @@ class FittingCUI(QtCore.QObject):
             x = wave.note[self._xdata]
         return wave.data[p[0]:p[1] + 1], x[p[0]:p[1] + 1], wave.x[p[0]:p[1] + 1]
 
-    def fit(self):
+    def fit(self, algo="curve_fit"):
         guess = self.fitParameters
         bounds = self.fitBounds
         for g, b in zip(guess, bounds):
             if g < b[0] or g > b[1] or b[0] > b[1]:
                 return False, "Fit error: all fitting parameters should between minimum and maximum."
         data, x, _ = self.dataForFit()
-        res, sig = fit(self.fitFunction, x, data, guess=guess, bounds=bounds.T)
+        res, sig = fit(self.fitFunction(data), x, data, guess=guess, bounds=bounds.T, algo=algo)
         n = 0
         for fi in self.functions:
             m = len(fi.parameters)
@@ -64,9 +64,9 @@ class FittingCUI(QtCore.QObject):
 
     def fittedData(self):
         wave = self._data
-        f = self.fitFunction
         p = self.fitParameters
         data, x, axis = self.dataForFit()
+        f = self.fitFunction(data)
         return Wave(f(x, *p), axis, name=wave.name + "_fit", lys_Fitting={"fitted": False, "id": self._id})
 
     def residualSum(self):
@@ -155,11 +155,26 @@ class _FittingFunctions(QtCore.QObject):
             self.addFunction(dic["function_" + str(i)])
             i += 1
 
-    @property
-    def fitFunction(self):
+    def fitFunction(self, data=None):
         if len(self._funcs) == 0:
             return None
-        return sumFunction([fi.function for fi in self._funcs])
+        return sumFunction([self._applyData(fi.function, data) for fi in self._funcs])
+
+    def _applyData(self, f, data):
+        use_data = False
+        params = []
+        for p in inspect.signature(f).parameters.values():
+            if p.name == "data":
+                use_data = True
+            else:
+                params.append(inspect.Parameter(p.name, inspect.Parameter.POSITIONAL_OR_KEYWORD))
+        if use_data:
+            def func(x,*args):
+                return f(x,data,*args)
+            func.__signature__ = inspect.Signature(params)
+            return func
+        else:
+            return f
 
     @property
     def fitParameters(self):
@@ -178,7 +193,7 @@ class _FuncInfo(QtCore.QObject):
         super().__init__()
         self._name = name
         param = inspect.signature(functions[name]).parameters
-        self._params = [_ParamInfo(n, p) for n, p in zip(list(param.keys())[1:], list(param.values())[1:])]
+        self._params = [_ParamInfo(n, p) for n, p in zip(list(param.keys())[1:], list(param.values())[1:]) if p.name!="data"]
         for p in self._params:
             p.stateChanged.connect(self.updated)
 

@@ -4,7 +4,7 @@ import numpy as np
 from scipy import optimize
 
 
-def fit(f, xdata, ydata, guess=None, bounds=None):
+def fit(f, xdata, ydata, guess=None, bounds=None, algo="curve_fit"):
     """
     Wrapper of scipy.curve_fit that implements several useful functionarities.
 
@@ -37,11 +37,29 @@ def fit(f, xdata, ydata, guess=None, bounds=None):
         for i in reversed(fixed):
             f = _fixFunc(f, i, bounds[0][i])
         guess = [g for i, g in enumerate(guess) if i not in fixed]
-        res, sig = optimize.curve_fit(f, xdata, ydata, guess, bounds=(b_low, b_high))
+        if "curve_fit" in algo:
+            res, sig = optimize.curve_fit(f, xdata, ydata, guess, bounds=(b_low, b_high))
+        else:
+            res, sig = _fit_minimize(f,xdata,ydata,guess,bounds=(b_low, b_high), method=algo)
         for i in fixed:
             res = np.insert(res, i, bounds[0][i])
-            sig = np.insert(sig, i, None)
+            #sig = np.insert(sig, i, None)
     return res, sig
+
+
+def _fit_minimize(f, xdata, ydata, guess, bounds, method):
+    if "1" in method:
+        ord = 1
+    else:
+        ord = 2
+    if "not" in method:
+        def residual(x, *args):
+            return np.linalg.norm(f(xdata, *x) - ydata, ord=ord)
+    else:
+        def residual(x, *args):
+            return np.linalg.norm(f(xdata, *x) - ydata, ord=ord) / np.linalg.norm(ydata, ord=ord)
+    res=optimize.minimize(residual, guess, method=method.split(":")[0])
+    return res.x, res.message
 
 
 def _nparam(f):
