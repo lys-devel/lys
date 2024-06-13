@@ -100,5 +100,5 @@ class ObjectPicker(CanvasPart3D):
         picked_pt = np.array(self.canvas().plotter.pick_mouse_position())
         direction = picked_pt - self.canvas().plotter.camera_position[0]
         direction = direction / np.linalg.norm(direction)
-        res = self.canvas().rayTrace(picked_pt - 1 * direction, picked_pt + 10000 * direction, type=self.__type)
+        res = self.canvas().rayTrace(picked_pt, picked_pt + 10000 * direction, type=self.__type)
         self.objectPicked.emit(res)
