@@ -330,7 +330,7 @@ class _AlgoWidget(QtWidgets.QWidget):
 
     def __initLayout(self):
         self._type = QtWidgets.QComboBox()
-        self._type.addItems(["curve_fit", "Nelder-Mead", "Powell", "BFGS"])
+        self._type.addItems(["curve_fit", "Nelder-Mead", "Powell", "BFGS", "Bayesian"])
         self._type_lay = QtWidgets.QHBoxLayout()
         self._type_lay.addWidget(QtWidgets.QLabel("Method"))
         self._type_lay.addWidget(self._type)
@@ -344,7 +344,7 @@ class _AlgoWidget(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addLayout(self._type_lay)
         layout.addLayout(self._resi_lay)
-        layout.addWidget(QtWidgets.QLabel("*Only curve_fit handle bounds."))
+        layout.addWidget(QtWidgets.QLabel("*Only curve_fit and Bayesian handle bounds."))
         self.setLayout(layout)
 
     def method(self):

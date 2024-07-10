@@ -262,7 +262,7 @@ class _ParamInfo(QtCore.QObject):
             self._value = 1
         if value is not None:
             self._value = value
-        self._range = range
+        self._range = list(range)
         self._use = enabled
         self._min, self._max = minMaxEnabled
 
@@ -311,6 +311,6 @@ class _ParamInfo(QtCore.QObject):
     def loadParameters(self, name, value, range, enabled, minMaxEnabled):
         self._name = name
         self._value = value
-        self._range = range
+        self._range = list(range)
         self._use = enabled
         self._min, self._max = minMaxEnabled

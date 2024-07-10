@@ -39,6 +39,8 @@ def fit(f, xdata, ydata, guess=None, bounds=None, algo="curve_fit"):
         guess = [g for i, g in enumerate(guess) if i not in fixed]
         if "curve_fit" in algo:
             res, sig = optimize.curve_fit(f, xdata, ydata, guess, bounds=(b_low, b_high))
+        elif "Bayesian" in algo:
+            res, sig = _fit_bayesian(f, xdata, ydata, guess, bounds=(b_low, b_high), method=algo)
         else:
             res, sig = _fit_minimize(f,xdata,ydata,guess,bounds=(b_low, b_high), method=algo)
         for i in fixed:
@@ -48,6 +50,20 @@ def fit(f, xdata, ydata, guess=None, bounds=None, algo="curve_fit"):
 
 
 def _fit_minimize(f, xdata, ydata, guess, bounds, method):
+    residual = _getResidualFunc(f, xdata, ydata, method)
+    res=optimize.minimize(residual, guess, method=method.split(":")[0])
+    return res.x, res.message
+
+
+def _fit_bayesian(f, x, y, x0, bounds, method):
+    from skopt import gp_minimize
+    residual = _getResidualFunc(f, x, y, method)
+    dim = [(low, high) for low, high in zip(*bounds)]
+    res = gp_minimize(residual, dim, x0=x0, noise=1e-10, n_calls=250)
+    return res.x, None 
+
+
+def _getResidualFunc(f, xdata, ydata, method):
     if "1" in method:
         ord = 1
     else:
@@ -58,9 +74,7 @@ def _fit_minimize(f, xdata, ydata, guess, bounds, method):
     else:
         def residual(x, *args):
             return np.linalg.norm(f(xdata, *x) - ydata, ord=ord) / np.linalg.norm(ydata, ord=ord)
-    res=optimize.minimize(residual, guess, method=method.split(":")[0])
-    return res.x, res.message
-
+    return residual
 
 def _nparam(f):
     return len(inspect.signature(f).parameters) - 1
