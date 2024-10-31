@@ -121,7 +121,7 @@ class IntegralFilter(FilterInterface):
             elif r[0] == 0 and r[1] == 0:
                 sl.append(slice(None))
             else:
-                ind = wave.posToPoint(r, axis=i)
+                ind = sorted(wave.posToPoint(r, axis=i))
                 sl.append(slice(*ind))
                 sumaxes.append(i)
         key = tuple(sl)
