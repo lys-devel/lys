@@ -841,3 +841,37 @@ class DaskWave(QtCore.QObject):
             print(w2.compute().data) # [1,2,3]
         """
         return DaskWave(self, chunks="NoRechunk")
+
+
+class Version:
+    def __init__(self, version):
+        self._version = str(version)
+        self._verNum = tuple(int(i) for i in self._version.split(".") if i.isdigit())
+
+    def __gt__(self, other):
+        if (not isinstance(other, Version)):
+            other = Version(other)
+        maxlen = max(len(self._verNum), len(other._verNum))
+        nself = 10**np.arange(maxlen, maxlen - len(self._verNum), -1, dtype=int)
+        nother = 10**np.arange(maxlen, maxlen - len(other._verNum), -1, dtype=int)
+        return nself.dot(self._verNum) > nother.dot(other._verNum)
+
+    def __lt__(self, other):
+        return not (self > other or self == other)
+
+    def __eq__(self, other):
+        if (not isinstance(other, Version)):
+            other = Version(other)
+        return self._verNum == other._verNum
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __ge__(self, other):
+        return self > other or self == other
+
+    def __le__(self, other):
+        return self < other or self == other
+
+    def __str__(self):
+        return self._version
