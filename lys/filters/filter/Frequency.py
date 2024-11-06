@@ -1,6 +1,5 @@
 import numpy as np
 import dask.array as da
-import scipy
 from scipy import signal
 from dask.array import apply_along_axis
 
@@ -196,7 +195,7 @@ class FourierFilter(FilterInterface):
         return axes
 
     def __applyWindow(self, wave):
-        if Version(scipy.__version__) >= 1:
+        if hasattr(signal, "windows"):
             windowFunc = {"Rect": None, "Hann": signal.windows.hann, "Hamming": signal.windows.hamming, "Blackman": signal.windows.blackman}
         else:
             windowFunc = {"Rect": None, "Hann": signal.hann, "Hamming": signal.hamming, "Blackman": signal.blackman}
