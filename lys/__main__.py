@@ -47,6 +47,8 @@ parser.add_argument("-p", "--plugin", help="Import plugins", nargs="*", required
 parser.add_argument("-np", "--noplugin", help="Do not import local plugins", action="store_true")
 # Clean
 parser.add_argument("--clean", help="Delete all settings. Try it when lys is broken", action="store_true")
+# Ask when lys is closing
+parser.add_argument("-ac", help="Ask when lys is closing", action="store_true")
 
 # parse args
 args = parser.parse_args()
@@ -61,7 +63,7 @@ if args.ncore is not None:
     lys.DaskWave.initWorkers(args.ncore)
 
 # Create main window
-lys.glb.createMainWindow(show=False)
+lys.glb.createMainWindow(show=False, askClose=args.ac)
 
 # Load local Plugins
 if not args.noplugin:
