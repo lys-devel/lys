@@ -1,5 +1,6 @@
 import weakref
 from lys.Qt import QtWidgets
+from lys.widgets import InfoView
 
 from .WaveManager import ChildWavesGUI
 from .AxesManager import AxesRangeWidget, FreeLinesWidget
@@ -52,6 +53,13 @@ class MainWidget(QtWidgets.QWidget):
         return self._gui()
 
     def __initlayout(self):
+        note = self._cui.getRawWave().note
+        form = self.form_layout = QtWidgets.QFormLayout()
+        self._name = QtWidgets.QLineEdit()
+        self._name.setText(note.name)
+        self._name.textChanged.connect(self._renameWaveName)
+        form.addRow("Wave Name:", self._name)
+
         hbox = QtWidgets.QHBoxLayout()
         hbox.addWidget(QtWidgets.QPushButton("Add", clicked=self._add))
         hbox.addWidget(QtWidgets.QPushButton("Template", clicked=self._template))
@@ -63,11 +71,15 @@ class MainWidget(QtWidgets.QWidget):
         self._make = QtWidgets.QGroupBox("Data")
         self._make.setLayout(vbox)
 
+        self._info = InfoView(title="Note", info=note)
+
         vbox2 = QtWidgets.QVBoxLayout()
+        vbox2.addLayout(form)
         vbox2.addWidget(self._make)
         vbox2.addWidget(self.gui.interactiveWidget())
-        vbox2.addStretch()
+        vbox2.addLayout(self._info)
         self.setLayout(vbox2)
+        self.adjustSize()
 
     def __update(self):
         w = self._cui.getFilteredWave()
@@ -84,3 +96,9 @@ class MainWidget(QtWidgets.QWidget):
     def _template(self):
         d = TemplateDialog(self, self._cui.getFilteredWave().ndim, self.gui)
         d.exec_()
+
+    def _renameWaveName(self, name):
+        wf = self._cui.getFilteredWave()
+        wr = self._cui.getRawWave()
+        wr.name = name
+        wf.name = name

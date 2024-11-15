@@ -3,7 +3,7 @@ import weakref
 
 from lys.Qt import QtCore, QtWidgets
 from lys.errors import suppressLysWarnings
-from lys.widgets import LysSubWindow
+from lys.widgets import LysSubWindow, InfoView
 
 from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
 from .LineSettingsGUI import AppearanceBox, ErrorBox, LegendBox
@@ -189,10 +189,12 @@ class _LineTab(QtWidgets.QWidget):
         off = OffsetAdjustBox()
         leg = LegendBox(canvas)
         sel = DataSelectionBox(canvas, 1, "line")
+        info = InfoView(title="Data Info")
         sel.selected.connect(app.setLines)
         sel.selected.connect(err.setData)
         sel.selected.connect(off.setData)
         sel.selected.connect(leg.setData)
+        sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(app, 'Appearance')
@@ -203,8 +205,9 @@ class _LineTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
-        layout.addStretch()
+        layout.addLayout(info)
         self.setLayout(layout)
+        self.adjustSize()
 
 
 class _ImageTab(QtWidgets.QWidget):
@@ -218,9 +221,11 @@ class _ImageTab(QtWidgets.QWidget):
         off = OffsetAdjustBox()
         col = ColorbarAdjustBox(canvas)
         sel = DataSelectionBox(canvas, 2, "image")
+        info = InfoView(title="Data Info")
         sel.selected.connect(im.setImages)
         sel.selected.connect(off.setData)
         sel.selected.connect(col.setData)
+        sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(im, 'Color')
@@ -230,8 +235,9 @@ class _ImageTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
-        layout.addStretch()
+        layout.addLayout(info)
         self.setLayout(layout)
+        self.adjustSize()
 
 
 class _ContourTab(QtWidgets.QWidget):
@@ -244,8 +250,10 @@ class _ContourTab(QtWidgets.QWidget):
         cn = ContourAdjustBox(canvas)
         off = OffsetAdjustBox()
         sel = DataSelectionBox(canvas, 2, "contour")
+        info = InfoView(title="Data Info")
         sel.selected.connect(cn.setContours)
         sel.selected.connect(off.setData)
+        sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(cn, 'Appearance')
@@ -254,9 +262,9 @@ class _ContourTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
-        layout.addStretch()
-
+        layout.addLayout(info)
         self.setLayout(layout)
+        self.adjustSize()
 
 
 class _RGBTab(QtWidgets.QWidget):
@@ -270,9 +278,11 @@ class _RGBTab(QtWidgets.QWidget):
         off = OffsetAdjustBox()
         map = RGBMapAdjustBox(canvas)
         sel = DataSelectionBox(canvas, 3, "rgb")
+        info = InfoView(title="Data Info")
         sel.selected.connect(rgb.setRGBs)
         sel.selected.connect(off.setData)
         sel.selected.connect(map.setRGBs)
+        sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(rgb, 'Color')
@@ -282,9 +292,9 @@ class _RGBTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
-        layout.addStretch()
-
+        layout.addLayout(info)
         self.setLayout(layout)
+        self.adjustSize()
 
 
 class _VectorTab(QtWidgets.QWidget):
@@ -297,8 +307,10 @@ class _VectorTab(QtWidgets.QWidget):
         vec = VectorAdjustBox(canvas)
         off = OffsetAdjustBox()
         sel = DataSelectionBox(canvas, 2, "vector")
+        info = InfoView(title="Data Info")
         sel.selected.connect(vec.setVectors)
         sel.selected.connect(off.setData)
+        sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(vec, 'Vector')
@@ -307,9 +319,9 @@ class _VectorTab(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
         layout.addWidget(tab)
-        layout.addStretch()
-
+        layout.addLayout(info)
         self.setLayout(layout)
+        self.adjustSize()
 
 
 class _AnnotationTab(QtWidgets.QWidget):
