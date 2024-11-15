@@ -1,6 +1,8 @@
 
 import math
 import numpy as np
+import json
+import re
 from matplotlib import cm
 
 from lys import frontCanvas
@@ -783,3 +785,93 @@ class IndiceSelectionLayout(QtWidgets.QGridLayout):
         """
         for c, e in zip(self._childs, enabled):
             c.setEnabled(e)
+
+
+class InfoView(QtWidgets.QVBoxLayout):
+    """
+    A layout to display information.
+
+    Args:
+        title(str): The title of the layout.
+
+        info: The information to be displayed.
+    """
+
+    def __init__(self, title="Info", info=""):
+        super().__init__()
+        self._title = title
+        self._infoView = QtWidgets.QTextEdit()
+        self._infoView.setReadOnly(True)
+        self.set(info)
+        self.__initLayout()
+
+    def __initLayout(self):
+        self.addWidget(QtWidgets.QLabel(self._title))
+        self.addWidget(self._infoView)
+
+    def setWavesNotes(self, waves):
+        waves = list(waves)
+        info = []
+        for wave in waves:
+            info.append({"Wave Name": wave.name, "Note": wave.note})
+        self.set(info)
+
+    def set(self, info):
+        self._info = info
+        self._infoView.setText(self.__viewStyleText(self._info))
+
+    def clear(self):
+        self.set("")
+
+    def get(self):
+        return self._info
+
+    def __viewStyleText(self, info, indent=0, key=""):
+        if isinstance(info, str):
+            try:
+                info = json.loads(info.replace("'", '"'))
+            except json.JSONDecodeError as e:
+                return info
+
+        if isinstance(info, dict):
+            text = ""
+            for k, v in info.items():
+                if isinstance(v, str):
+                    try:
+                        v = json.loads(v)
+                    except json.JSONDecodeError as e:
+                        pass
+                text += " " * indent * 4 + "[" + str(k) + "]"
+                if self.__isDictListLike(v):
+                    text += "\n" + self.__viewStyleText(v, indent=indent + 1, key=k)
+                else:
+                    v = str(v).rstrip()
+                    if "\n" in v:
+                        text += "\n" + " " * (indent + 1) * 4 + v.replace("\n", "\n" + " " * (indent + 1) * 4) + "\n"
+                    else:
+                        text += "  " + v + "\n"
+            return text
+
+        if self.__isDictListLike(info):
+            text = ""
+            for i in range(len(info)):
+                if len(info) > 1:
+                    text += " " * indent * 4 + "<" + (key if key else "Item") + str(i + 1) + ">\n"
+                text += self.__viewStyleText(info[i], indent + (1 if len(info) > 1 else 0))
+            return text
+
+        return str(info)
+
+    def __isDictListLike(self, obj):
+        if isinstance(obj, str):
+            try:
+                obj = json.loads(obj)
+            except json.JSONDecodeError as e:
+                return False
+
+        if isinstance(obj, dict):
+            return True
+        elif type(obj) in (list, tuple):
+            return all(self.__isDictListLike(item) for item in obj)
+        else:
+            return False
