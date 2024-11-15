@@ -274,30 +274,30 @@ class WaveAxes(list):
             else:
                 self.append(self.__createValidAxis(None, d))
 
-    @ property
+    @property
     def x(self):
         """Shortcut to axes[0]"""
         return self.getAxis(0)
 
-    @ x.setter
+    @x.setter
     def x(self, value):
         self[0] = value
 
-    @ property
+    @property
     def y(self):
         """Shortcut to axes[1]."""
         return self.getAxis(1)
 
-    @ y.setter
+    @y.setter
     def y(self, value):
         self[1] = value
 
-    @ property
+    @property
     def z(self):
         """Shortcut to axes[2]."""
         return self.getAxis(2)
 
-    @ z.setter
+    @z.setter
     def z(self, value):
         self[2] = value
 
@@ -346,7 +346,7 @@ class WaveNote(dict):
     """
     _nameIndex = 0
 
-    @ property
+    @property
     def name(self):
         """
         Shortcut to note["name"], which is frequently used as a name of :class:`Wave` and :class:`DaskWave`.
@@ -368,7 +368,7 @@ class WaveNote(dict):
             WaveNote._nameIndex += 1
         return self.get("name")
 
-    @ name.setter
+    @name.setter
     def name(self, value):
         self["name"] = value
 
@@ -484,6 +484,9 @@ class Wave(QtCore.QObject):
             self.axes = []
         if 'note' in tmp:
             self.note = tmp['note'][()]
+        self.note["file"] = file
+        if isinstance(file, str):
+            self.name = os.path.splitext(os.path.basename(file))[0]
 
     def __setData(self, data, *axes, **note):
         """Set data from *data*, *axes*, and *note*"""
@@ -529,7 +532,7 @@ class Wave(QtCore.QObject):
     def __reduce_ex__(self, proto):
         return _produceWave, (self.data, list(self.axes), self.note)
 
-    @ staticmethod
+    @staticmethod
     def SupportedFormats():
         """List of supported file formats to export. see :meth:`export`"""
         return ["Numpy npz (*.npz)", "Comma-Separated Values (*.csv)", "Text file (*.txt)"]
@@ -575,7 +578,7 @@ class Wave(QtCore.QObject):
                     path = path + ".txt"
             np.savetxt(path, self.data)
 
-    @ staticmethod
+    @staticmethod
     def importFrom(path):
         """
         Import *Wave* from file.
