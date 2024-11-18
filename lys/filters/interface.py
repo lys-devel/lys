@@ -1,6 +1,7 @@
 import sys
 import _pickle as cPickle
 import dask.array as da
+import math
 
 from lys import Wave, DaskWave
 from lys.Qt import QtCore, QtWidgets
@@ -92,6 +93,7 @@ class FilterInterface:
             dict: The exported dictionary.
         """
         d = self.getParameters()
+        d = {k: self._round_sigdig(v, 6) for k, v in d.items()}
         d["filterName"] = self.__class__.__name__
         return d
 
@@ -120,6 +122,38 @@ class FilterInterface:
         """
         f = Filters([self])
         f.saveAsFile(file)
+
+    def _round_sigdig(self, val, sigdig: int):
+        """
+        Round val to sigdig significant digits.
+
+        Args:
+            val: The value to round.
+            sigdig(int): The number of significant digits to round to.
+
+        Returns:
+            The rounded value.
+        """
+        if type(val) not in (list, tuple, float, dict):
+            return val
+        _sigdig = sigdig - 1
+
+        def __round_sigdig(val):
+            if isinstance(val, list):
+                return list(map(__round_sigdig, val))
+            if isinstance(val, tuple):
+                return tuple(map(__round_sigdig, val))
+            if "float" not in str(type(val)):
+                return val
+            if math.isclose(val, 0):
+                return val
+            d = int(-(math.floor(math.log10(abs(val))) - _sigdig))
+            val = round(val, d)
+            if val >= 10**(_sigdig):
+                return int(val)
+            else:
+                return val
+        return __round_sigdig(val)
 
 
 def filterGUI(filterClass):
