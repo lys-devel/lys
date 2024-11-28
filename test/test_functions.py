@@ -22,7 +22,7 @@ class functions_test(unittest.TestCase):
         self.assertEqual(w.data[0][0], 0)
         self.assertEqual(w.x[0], 0)
         self.assertEqual(w.y[0], 0)
-        self.assertEqual(w.name, "wave")
+        self.assertEqual(w.name, "data1")
 
         # load dic
         d = load(self.path + "/test.dic")
