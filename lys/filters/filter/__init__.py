@@ -14,3 +14,4 @@ from .Integral import *
 from .Differentiate import *
 from .MatrixMath import *
 from .Dask import *
+from .Drift import *

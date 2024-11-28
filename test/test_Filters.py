@@ -6,7 +6,7 @@ import shutil
 import numpy as np
 from scipy import signal
 
-from numpy.testing import assert_array_equal, assert_array_almost_equal
+from numpy.testing import assert_array_equal, assert_array_almost_equal, assert_allclose
 
 from lys import Wave, DaskWave, filters
 
@@ -66,16 +66,16 @@ class Filters_test(unittest.TestCase):
         f2 = filters.fromWave(result1)
         self.assertEqual(str(f2), str(fs))
 
-    def _check(self, f, w, data=None, x=None, y=None):
+    def _check(self, f, w, data=None, x=None, y=None, decimal=7):
         f1 = type(f)(**f.getParameters())
         w.name = "wave"
         result = f1.execute(w)
         if data is not None:
-            assert_array_almost_equal(result.data, data)
+            assert_array_almost_equal(result.data, data, decimal=decimal)
         if x is not None:
-            assert_array_almost_equal(result.x, x)
+            assert_array_almost_equal(result.x, x, decimal=decimal)
         if y is not None:
-            assert_array_almost_equal(result.y, y)
+            assert_array_almost_equal(result.y, y, decimal=decimal)
         self.assertEqual(result.name, w.name)
         self.assertEqual(result.ndim, w.ndim + f1.getRelativeDimension())
         return result
@@ -355,3 +355,27 @@ class Filters_test(unittest.TestCase):
         # Symmetrize
         f = filters.SymmetrizeFilter(rotation=90, center=(1, 1))
         self._check(f, w, data=np.ones([3, 3]) * 5)
+
+    def test_drift(self):
+        x, y = np.linspace(-10, 10, 200), np.linspace(-10, 10, 200)
+        xx, yy = np.meshgrid(x,y)
+        w = Wave([np.exp(-(xx ** 2 + yy**2)), np.exp(-((xx-2) ** 2 + (yy-3)**2)), np.exp(-((xx-3) ** 2 + (yy-4)**2))], None, x, y)
+
+        f1 = filters.DriftCorrection((1,2), [(-10, 10), (-10, 10)], apply = False, method="Cross correlation")
+        self._check(f1, w, data=[(0,0), (20,30), (30,40)])
+
+        f1a = filters.DriftCorrection((1,2), [(-10, 10), (-10, 10)], method="Cross correlation")
+        assert_allclose(f1a.execute(w).data[2, 50:150, 50:150], w.data[0, 50:150, 50:150], atol=0.1, rtol=0)
+
+        f2 = filters.DriftCorrection((1,2), [(-10, 10), (-10, 10)], apply = False, method="Phase correlation")
+        assert_allclose(f2.execute(w).data, [(0,0), (20,30), (30,40)], rtol=0, atol=1)
+
+        f2a = filters.DriftCorrection((1,2), [(-10, 10), (-10, 10)], method="Phase correlation")
+        assert_allclose(f2a.execute(w).data[2, 50:150, 50:150], w.data[0, 50:150, 50:150], atol=0.1, rtol=0)
+
+        f1.execute(w).export(self.path+"/shift.npz")
+        f3 = filters.DriftCorrection((1,2), self.path+"/shift.npz", apply=False, method="From file")
+        self._check(f3, w, data=[(0,0), (20,30), (30,40)])
+
+        f3a = filters.DriftCorrection((1,2), self.path+"/shift.npz", apply=True, method="From file")
+        assert_allclose(f3a.execute(w).data[2, 50:150, 50:150], w.data[0, 50:150, 50:150], atol=0.1, rtol=0)
