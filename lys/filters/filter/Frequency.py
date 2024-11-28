@@ -3,7 +3,7 @@ import dask.array as da
 from scipy import signal
 from dask.array import apply_along_axis
 
-from lys import DaskWave
+from lys import DaskWave, Version
 from lys.Qt import QtWidgets
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 from lys.widgets import AxisCheckLayout
@@ -195,7 +195,10 @@ class FourierFilter(FilterInterface):
         return axes
 
     def __applyWindow(self, wave):
-        windowFunc = {"Rect": None, "Hann": signal.hann, "Hamming": signal.hamming, "Blackman": signal.blackman}
+        if hasattr(signal, "windows"):
+            windowFunc = {"Rect": None, "Hann": signal.windows.hann, "Hamming": signal.windows.hamming, "Blackman": signal.windows.blackman}
+        else:
+            windowFunc = {"Rect": None, "Hann": signal.hann, "Hamming": signal.hamming, "Blackman": signal.blackman}
         index = ["i", "j", "k", "l", "m", "n", "o", "p", "q", "r"]
         f = windowFunc[self.window]
         if f is None:

@@ -35,7 +35,7 @@ class NormalizeFilter(FilterInterface):
             elif (r[0] == 0 and r[1] == 0) or i not in self._axis:
                 sl.append(slice(None))
             else:
-                ind = wave.posToPoint(r, i)
+                ind = sorted(wave.posToPoint(r, i))
                 sl.append(slice(*ind))
         return tuple(sl)
 
@@ -136,7 +136,7 @@ class SelectRegionFilter(FilterInterface):
             elif r[0] == 0 and r[1] == 0:
                 sl.append(slice(None))
             else:
-                ind = wave.posToPoint(r, i)
+                ind = sorted(wave.posToPoint(r, i))
                 sl.append(slice(*ind))
         return tuple(sl)
 
