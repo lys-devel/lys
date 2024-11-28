@@ -810,6 +810,12 @@ class InfoView(QtWidgets.QVBoxLayout):
         self.addWidget(self._infoView)
 
     def setWavesNotes(self, waves):
+        """
+        Set the information to the notes of the given waves.
+
+        Args:
+            waves(Wave or sequence of Wave): The waves.
+        """
         waves = list(waves)
         info = []
         for wave in waves:
@@ -817,10 +823,23 @@ class InfoView(QtWidgets.QVBoxLayout):
         self.set(info)
 
     def set(self, info):
+        """
+        Set the information to be displayed.
+
+        Args:
+            info(str or sequence of dict): The information to be displayed.
+                If str, the str is displayed as is.
+                If sequence of dict, the dict is displayed as a table.
+        """
         self._info = info
         self._infoView.setText(self.__viewStyleText(self._info))
 
     def clear(self):
+        """
+        Clear the information view.
+
+        This method sets the information to be displayed to an empty string.
+        """
         self.set("")
 
     def get(self):
