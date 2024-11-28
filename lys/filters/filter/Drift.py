@@ -148,7 +148,7 @@ class _DriftCorrectionSetting(FilterSettingBase):
 
     def __initLayout(self, dim):
         self._method = QtWidgets.QComboBox()
-        self._method.addItems(["Phase correlation", "Cross correlation", "AKAZE", "From file"])
+        self._method.addItems(["Phase correlation", "Cross correlation", "From file"])
         self._method.currentTextChanged.connect(self.__methodChanged)
         h0 = QtWidgets.QHBoxLayout()
         h0.setContentsMargins(0,0,0,0)
@@ -248,4 +248,4 @@ addFilter(
     DriftCorrection,
     gui=_DriftCorrectionSetting,
     guiName="Drift correction",
-    guiGroup="Image transforma
+    guiGroup="Image transformation")
