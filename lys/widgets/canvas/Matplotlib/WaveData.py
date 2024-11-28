@@ -3,10 +3,7 @@ import copy
 import numpy as np
 import matplotlib as mpl
 from matplotlib import lines, colors
-try:
-    from matplotlib import colormaps as cm
-except ImportError:
-    from matplotlib import cm
+from matplotlib import cm
 
 from ..interface import CanvasData, LineData, ImageData, RGBData, VectorData, ContourData
 

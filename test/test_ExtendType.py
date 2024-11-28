@@ -27,5 +27,5 @@ class ExtendType_test(unittest.TestCase):
         self.assertEqual(f.getRelativeDimension(), -2)
 
         # load old type graph
-        g = load(self.path + "/oldgraph1.grf")
+        g = Graph(self.path + "/oldgraph1.grf")
         self.assertEqual(type(g), Graph)

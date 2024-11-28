@@ -2,10 +2,7 @@ import copy
 import warnings
 import numpy as np
 import pyqtgraph as pg
-try:
-    from matplotlib import colormaps as cm
-except ImportError:
-    from matplotlib import cm
+from matplotlib import cm
 
 from lys.Qt import QtCore, QtGui
 from lys.errors import NotSupportedWarning
