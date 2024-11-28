@@ -40,17 +40,16 @@ class DriftCorrection(FilterInterface):
             sign = ",".join("abcdefghijklmn"[0:len(self._axes)])
             sign = "(" + sign + "),(z)->(" + sign + ")"
             uf = self._generalizedFunction(wave, ndimage.interpolation.shift, signature=sign, axes=[self._axes, [0], self._axes])
-            return DaskWave(uf(wave.data, -shift), *wave.axes, **wave.note)
+            return DaskWave(uf(wave.data, shift), *wave.axes, **wave.note)
 
     def _calcShift1(self, wave):
         region = [wave.posToPoint(r, ax) for ax, r in zip(self._axes, self._region)]
         ref, data = self._makeReferenceData1(wave.data, region, self._axes)
-        window = cv2.createHanningWindow(ref.shape, cv2.CV_32F).astype(np.float32).T
         def f(d):
             return np.array(cv2.phaseCorrelate(d.astype(np.float32), ref.astype(np.float32))[0])[::-1]
         sign = "(" + ",".join("abcdefghijklmn"[0:len(self._axes)]) + ")->(z)"
         uf = self._generalizedFunction(None, f, signature=sign, axes=[self._axes, [0]], output_dtypes=float, output_sizes={"z": 2})
-        return -uf(data)
+        return uf(data)
 
     def _makeReferenceData1(self, data, region, axes):
         sl = []
@@ -113,7 +112,7 @@ def _normalize(data, region):
 def _findShift(data, ref, region, s_ref=0):
     d_c = _normalize(data, region)
     c = signal.correlate(ref, d_c, mode='valid')
-    return np.array(np.unravel_index(np.argmax(data), data.shape)) - s_ref
+    return np.array(np.unravel_index(np.argmax(c), c.shape)) - s_ref
 
 
 @filterGUI(DriftCorrection)
