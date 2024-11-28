@@ -32,6 +32,8 @@ class DriftCorrection(FilterInterface):
             shift = self._calcShift1(wave)
         elif self._method == "Cross correlation":
             shift = self._calcShift(wave)
+        elif self._method == "AKAZE":
+            shift = self._calcShift_tm(wave)
         elif self._method == "From file":
             shift = load(self._region).data[:,::-1].T
         if not self._apply:
@@ -93,6 +95,28 @@ class DriftCorrection(FilterInterface):
             result.append(ref)
         return result
 
+    def _calcShift_tm(self, wave):
+        region = [wave.posToPoint(r, ax) for ax, r in zip(self._axes, self._region)]
+        reference, s0 = self._makeReferenceData(wave.data, region, self._axes)
+        reference = reference.compute()
+        def f(d):
+            akaze = cv2.AKAZE_create()
+            kp1, float_des = akaze.detectAndCompute(d.astype(np.float32), None)
+            kp2, ref_des = akaze.detectAndCompute(reference.astype(np.float32), None)
+
+            bf = cv2.BFMatcher()
+            matches = bf.match(float_des, ref_des)
+            matches = sorted(matches, key = lambda x:x.distance)
+            if len(matches) == 0:
+                return np.array([0,0])
+            else:
+                k1, k2 = kp1[matches[0].queryIdx], kp2[matches[0].trainIdx]
+                return np.array(k2.pt) - np.array(k1.pt)
+
+        sign = "(" + ",".join("abcdefghijklmn"[0:len(self._axes)]) + ")->(z)"
+        uf = self._generalizedFunction(wave, f, signature=sign, axes=[self._axes, [0]], output_dtypes=float, output_sizes={"z": 2})
+        return uf(wave.data)
+
     def getParameters(self):
         return {"axes": self._axes, "region": self._region, "apply": self._apply, "method": self._method}
 
@@ -124,7 +148,7 @@ class _DriftCorrectionSetting(FilterSettingBase):
 
     def __initLayout(self, dim):
         self._method = QtWidgets.QComboBox()
-        self._method.addItems(["Phase correlation", "Cross correlation", "From file"])
+        self._method.addItems(["Phase correlation", "Cross correlation", "AKAZE", "From file"])
         self._method.currentTextChanged.connect(self.__methodChanged)
         h0 = QtWidgets.QHBoxLayout()
         h0.setContentsMargins(0,0,0,0)
@@ -224,6 +248,4 @@ addFilter(
     DriftCorrection,
     gui=_DriftCorrectionSetting,
     guiName="Drift correction",
-    guiGroup="Image transformation"
-)
-
+    guiGroup="Image transforma

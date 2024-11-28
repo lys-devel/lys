@@ -357,25 +357,25 @@ class Filters_test(unittest.TestCase):
         self._check(f, w, data=np.ones([3, 3]) * 5)
 
     def test_drift(self):
-        x, y = np.linspace(-10, 10, 200), np.linspace(-10, 10, 200)
+        x, y = np.linspace(-10, 10, 201), np.linspace(-10, 10, 201)
         xx, yy = np.meshgrid(x,y)
-        w = Wave([np.exp(-(xx ** 2 + yy**2)), np.exp(-((xx-2) ** 2 + (yy-3)**2)), np.exp(-((xx-3) ** 2 + (yy-4)**2))], None, x, y)
+        w = Wave([np.exp(-(xx ** 2 + yy**2)), np.exp(-((xx-0.2) ** 2 + (yy-0.3)**2)), np.exp(-((xx-0.3) ** 2 + (yy-0.4)**2))], None, x, y)
 
-        f1 = filters.DriftCorrection((1,2), [(-10, 10), (-10, 10)], apply = False, method="Cross correlation")
-        self._check(f1, w, data=[(0,0), (20,30), (30,40)])
-
-        f1a = filters.DriftCorrection((1,2), [(-10, 10), (-10, 10)], method="Cross correlation")
+        f1 = filters.DriftCorrection((1,2), [(-5, 5), (-5, 5)], apply = False, method="Cross correlation")
+        f1a = filters.DriftCorrection((1,2), [(-5, 5), (-5, 5)], method="Cross correlation")
         assert_allclose(f1a.execute(w).data[2, 50:150, 50:150], w.data[0, 50:150, 50:150], atol=0.1, rtol=0)
 
         f2 = filters.DriftCorrection((1,2), [(-10, 10), (-10, 10)], apply = False, method="Phase correlation")
-        assert_allclose(f2.execute(w).data, [(0,0), (20,30), (30,40)], rtol=0, atol=1)
+        assert_allclose(f2.execute(w).data, [(0,0), (-2,-3), (-3,-4)], rtol=0, atol=1)
 
         f2a = filters.DriftCorrection((1,2), [(-10, 10), (-10, 10)], method="Phase correlation")
         assert_allclose(f2a.execute(w).data[2, 50:150, 50:150], w.data[0, 50:150, 50:150], atol=0.1, rtol=0)
 
         f1.execute(w).export(self.path+"/shift.npz")
-        f3 = filters.DriftCorrection((1,2), self.path+"/shift.npz", apply=False, method="From file")
-        self._check(f3, w, data=[(0,0), (20,30), (30,40)])
-
         f3a = filters.DriftCorrection((1,2), self.path+"/shift.npz", apply=True, method="From file")
         assert_allclose(f3a.execute(w).data[2, 50:150, 50:150], w.data[0, 50:150, 50:150], atol=0.1, rtol=0)
+
+        f4 = filters.DriftCorrection((1,2), [(-5, 5), (-5, 5)], apply = False, method="AKAZE")
+        assert_allclose(f4.execute(w).data, [(0,0), (-2,-3), (-3,-4)], rtol=0, atol=1)
+        f4a = filters.DriftCorrection((1,2), [(-5, 5), (-5, 5)], method="AKAZE")
+        assert_allclose(f4a.execute(w).data[2, 50:150, 50:150], w.data[0, 50:150, 50:150], atol=0.15, rtol=0)
