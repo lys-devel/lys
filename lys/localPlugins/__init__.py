@@ -12,6 +12,7 @@ if glb.mainWindow() is not None:  # This is required to avoid local plugins impo
     # Menus
     from . import PythonEditor
     from . import GraphSetting
+    from . import fontSetting
     from . import manualView
 
     # Basic file menus
