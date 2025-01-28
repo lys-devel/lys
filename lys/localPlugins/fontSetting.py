@@ -11,8 +11,8 @@ def _register():
     font = menu.addMenu("Font")
     font.addAction("Set Font").triggered.connect(_setFont)
     default = font.addMenu("Default")
-    default.addAction("Register as default").triggered.connect(_registerAsDefault)
-    default.addAction("Set to default").triggered.connect(_setToDefault)
+    default.addAction("Save as default").triggered.connect(_saveAsDefault)
+    default.addAction("Load default").triggered.connect(_loadDefault)
     default.addAction("Initialize").triggered.connect(_initializeFont)
 
 
@@ -22,7 +22,7 @@ def _setFont():
         glb.mainWindow().setFont(font)
 
 
-def _registerAsDefault():
+def _saveAsDefault():
     os.makedirs(".lys/settings/", exist_ok=True)
     dic = {}
     font = glb.mainWindow().font()
@@ -30,7 +30,7 @@ def _registerAsDefault():
     np.save(_fontPath, dic)
 
 
-def _setToDefault():
+def _loadDefault():
     os.makedirs(".lys/settings/", exist_ok=True)
     if os.path.exists(".lys/settings/font.npy"):
         dic = np.load(_fontPath, allow_pickle=True).item()
@@ -44,4 +44,4 @@ def _initializeFont():
 
 
 _register()
-_setToDefault()
+_loadDefault()
