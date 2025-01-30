@@ -274,30 +274,30 @@ class WaveAxes(list):
             else:
                 self.append(self.__createValidAxis(None, d))
 
-    @ property
+    @property
     def x(self):
         """Shortcut to axes[0]"""
         return self.getAxis(0)
 
-    @ x.setter
+    @x.setter
     def x(self, value):
         self[0] = value
 
-    @ property
+    @property
     def y(self):
         """Shortcut to axes[1]."""
         return self.getAxis(1)
 
-    @ y.setter
+    @y.setter
     def y(self, value):
         self[1] = value
 
-    @ property
+    @property
     def z(self):
         """Shortcut to axes[2]."""
         return self.getAxis(2)
 
-    @ z.setter
+    @z.setter
     def z(self, value):
         self[2] = value
 
@@ -346,7 +346,7 @@ class WaveNote(dict):
     """
     _nameIndex = 0
 
-    @ property
+    @property
     def name(self):
         """
         Shortcut to note["name"], which is frequently used as a name of :class:`Wave` and :class:`DaskWave`.
@@ -368,7 +368,7 @@ class WaveNote(dict):
             WaveNote._nameIndex += 1
         return self.get("name")
 
-    @ name.setter
+    @name.setter
     def name(self, value):
         self["name"] = value
 
@@ -529,7 +529,7 @@ class Wave(QtCore.QObject):
     def __reduce_ex__(self, proto):
         return _produceWave, (self.data, list(self.axes), self.note)
 
-    @ staticmethod
+    @staticmethod
     def SupportedFormats():
         """List of supported file formats to export. see :meth:`export`"""
         return ["Numpy npz (*.npz)", "Comma-Separated Values (*.csv)", "Text file (*.txt)"]
@@ -575,7 +575,7 @@ class Wave(QtCore.QObject):
                     path = path + ".txt"
             np.savetxt(path, self.data)
 
-    @ staticmethod
+    @staticmethod
     def importFrom(path):
         """
         Import *Wave* from file.
@@ -631,6 +631,61 @@ class Wave(QtCore.QObject):
             w.update()                # modified
         """
         self.modified.emit(self)
+
+    def insert(self, index=np.inf, axis=0, value=None, axisValue=None):
+        """
+        Insert a value into the data array and the corresponding axis array.
+
+        Args:
+            index (int, optional): Index of value to be inserted. If index is not specified, the value is appended.
+            axis (int, optional): Axis along which to insert the value. Default is 0.
+            value (float, optional): Value to be inserted. Should be a scalar or a compatible array. Default is None.
+            axisValue (float, optional): Value to be inserted into the axis array. If None, the index is used.
+
+        Notes:
+            If the data array contains integers and value is None, it is converted to floats before insertion.
+
+        Example::
+
+            from lys import Wave
+
+            w = Wave([[1, 2, 3], [4, 5, 6]], [1, 2], [3, 4, 5])
+            w.insert(index=1, axis=1, value=7, axisValue=8)
+            print(w.data)       # [[1, 7, 2, 3], [4, 7, 5, 6]])
+            print(w.axes[0])    # [1, 2]
+            print(w.axes[1])    # [3, 8, 4, 5]
+        """
+        if index is np.inf:
+            index = self.data.shape[axis]
+        if 'int' in str(self.data.dtype) and value is None:
+            self.data = self.data.astype(float)
+        axes = self.axes[axis]
+        self.data = np.insert(self.data, index, value, axis)
+        self.axes[axis] = np.insert(axes, index, axisValue if axisValue is not None else index, 0)
+
+    def delete(self, index=np.inf, axis=0):
+        """
+        Delete a value from the data array and the corresponding axis array.
+
+        Args:
+            index (int, optional): Index of value to be deleted. If index is not specified, the last value is deleted.
+            axis (int, optional): Axis along which to delete the value. Default is 0.
+
+        Example::
+
+            from lys import Wave
+
+            w = Wave([[1, 2, 3], [4, 5, 6]], [1, 2], [3, 4, 5])
+            w.delete(index=1, axis=1)
+            print(w.data)       # [[1, 3], [4, 6]]
+            print(w.axes[0])    # [1, 2]
+            print(w.axes[1])    # [3, 5]
+        """
+        if index is np.inf:
+            index = self.data.shape[axis] - 1
+        axes = self.axes[axis]
+        self.data = np.delete(self.data, index, axis)
+        self.axes[axis] = np.delete(axes, index, 0)
 
     def __str__(self):
         return "Wave object (name = {0}, dtype = {1}, shape = {2})".format(self.name, self.dtype, self.shape)
