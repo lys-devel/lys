@@ -116,7 +116,7 @@ class FiltersGUI(QtWidgets.QTreeWidget):
         if type == "up":
             self.__addItem(wid._filClass, index - 1, wid.getParameters())
         else:
-            self.__addItem(wid._filClass, index - 1, wid.getParameters())
+            self.__addItem(wid._filClass, index + 1, wid.getParameters())
 
     def clear(self):
         """

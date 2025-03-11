@@ -13,7 +13,7 @@ setup(
     name="lys-python",
     packages=find_packages(exclude=("test*",)),
     package_data={"lys.resources": ["*.dic", "images/*.png"]},
-    version="0.3.2",
+    version="0.3.3",
     description="Interactive multi-dimensional data analysis and visualization",
     long_description=long_description,
     long_description_content_type="text/markdown",

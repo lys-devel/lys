@@ -46,11 +46,11 @@ class MainWindow(QtWidgets.QMainWindow):
         glb.mainWindow().closed.connect(lambda: print("Main window closed."))
     """
 
-    def __init__(self, show=True, restore=False, askClose=False):
+    def __init__(self, show=True, restore=False, selfClose=False):
         super().__init__()
         self._workspace = []
         self._settingDict = SettingDict(home() + "/.lys/workspace/works.dic")
-        self._askClose = askClose
+        self._selfClose = selfClose
         self.__initUI()
         self.__initMenu()
         if restore:
@@ -62,7 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Reimplementation of closeEvent in QMainWindow.closeEvent for realization of beforeClosed and closed signals.
         """
-        if self._askClose:
+        if not self._selfClose:
             msg = QtWidgets.QMessageBox(parent=self)
             msg.setIcon(QtWidgets.QMessageBox.Warning)
             msg.setWindowTitle("Caution")

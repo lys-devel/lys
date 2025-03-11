@@ -635,6 +635,61 @@ class Wave(QtCore.QObject):
         """
         self.modified.emit(self)
 
+    def insert(self, index=np.inf, axis=0, value=None, axisValue=None):
+        """
+        Insert a value into the data array and the corresponding axis array.
+
+        Args:
+            index (int, optional): Index of value to be inserted. If index is not specified, the value is appended.
+            axis (int, optional): Axis along which to insert the value. Default is 0.
+            value (float, optional): Value to be inserted. Should be a scalar or a compatible array. Default is None.
+            axisValue (float, optional): Value to be inserted into the axis array. If None, the index is used.
+
+        Notes:
+            If the data array contains integers and value is None, it is converted to floats before insertion.
+
+        Example::
+
+            from lys import Wave
+
+            w = Wave([[1, 2, 3], [4, 5, 6]], [1, 2], [3, 4, 5])
+            w.insert(index=1, axis=1, value=7, axisValue=8)
+            print(w.data)       # [[1, 7, 2, 3], [4, 7, 5, 6]])
+            print(w.axes[0])    # [1, 2]
+            print(w.axes[1])    # [3, 8, 4, 5]
+        """
+        if index is np.inf:
+            index = self.data.shape[axis]
+        if 'int' in str(self.data.dtype) and value is None:
+            self.data = self.data.astype(float)
+        axes = self.axes[axis]
+        self.data = np.insert(self.data, index, value, axis)
+        self.axes[axis] = np.insert(axes, index, axisValue if axisValue is not None else index, 0)
+
+    def delete(self, index=np.inf, axis=0):
+        """
+        Delete a value from the data array and the corresponding axis array.
+
+        Args:
+            index (int, optional): Index of value to be deleted. If index is not specified, the last value is deleted.
+            axis (int, optional): Axis along which to delete the value. Default is 0.
+
+        Example::
+
+            from lys import Wave
+
+            w = Wave([[1, 2, 3], [4, 5, 6]], [1, 2], [3, 4, 5])
+            w.delete(index=1, axis=1)
+            print(w.data)       # [[1, 3], [4, 6]]
+            print(w.axes[0])    # [1, 2]
+            print(w.axes[1])    # [3, 5]
+        """
+        if index is np.inf:
+            index = self.data.shape[axis] - 1
+        axes = self.axes[axis]
+        self.data = np.delete(self.data, index, axis)
+        self.axes[axis] = np.delete(axes, index, 0)
+
     def __str__(self):
         return "Wave object (name = {0}, dtype = {1}, shape = {2})".format(self.name, self.dtype, self.shape)
 

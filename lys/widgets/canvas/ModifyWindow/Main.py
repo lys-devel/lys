@@ -5,7 +5,7 @@ from lys.Qt import QtCore, QtWidgets
 from lys.errors import suppressLysWarnings
 from lys.widgets import LysSubWindow, InfoView
 
-from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox
+from .CanvasBaseGUI import DataSelectionBox, OffsetAdjustBox, FilterEditWidget
 from .LineSettingsGUI import AppearanceBox, ErrorBox, LegendBox
 from .ImageSettingsGUI import ImageColorAdjustBox, ColorbarAdjustBox, RGBColorAdjustBox, RGBMapAdjustBox, VectorAdjustBox, ContourAdjustBox
 
@@ -190,17 +190,21 @@ class _LineTab(QtWidgets.QWidget):
         leg = LegendBox(canvas)
         sel = DataSelectionBox(canvas, 1, "line")
         info = InfoView(title="Data Info")
+        filt = FilterEditWidget()
+
         sel.selected.connect(app.setLines)
         sel.selected.connect(err.setData)
         sel.selected.connect(off.setData)
         sel.selected.connect(leg.setData)
         sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
+        sel.selected.connect(filt.setData)
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(app, 'Appearance')
         tab.addTab(err, 'Errorbar')
         tab.addTab(off, 'Offset')
         tab.addTab(leg, 'Legend')
+        tab.addTab(filt, 'Filter')
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
@@ -222,15 +226,18 @@ class _ImageTab(QtWidgets.QWidget):
         col = ColorbarAdjustBox(canvas)
         sel = DataSelectionBox(canvas, 2, "image")
         info = InfoView(title="Data Info")
+        filt = FilterEditWidget()
         sel.selected.connect(im.setImages)
         sel.selected.connect(off.setData)
         sel.selected.connect(col.setData)
         sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
+        sel.selected.connect(filt.setData)
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(im, 'Color')
         tab.addTab(off, 'Offset')
         tab.addTab(col, 'Colorbar')
+        tab.addTab(filt, 'Filter')
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
@@ -251,13 +258,16 @@ class _ContourTab(QtWidgets.QWidget):
         off = OffsetAdjustBox()
         sel = DataSelectionBox(canvas, 2, "contour")
         info = InfoView(title="Data Info")
+        filt = FilterEditWidget()
         sel.selected.connect(cn.setContours)
         sel.selected.connect(off.setData)
         sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
+        sel.selected.connect(filt.setData)
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(cn, 'Appearance')
         tab.addTab(off, 'Offset')
+        tab.addTab(filt, 'Filter')
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
@@ -279,15 +289,18 @@ class _RGBTab(QtWidgets.QWidget):
         map = RGBMapAdjustBox(canvas)
         sel = DataSelectionBox(canvas, 3, "rgb")
         info = InfoView(title="Data Info")
+        filt = FilterEditWidget()
         sel.selected.connect(rgb.setRGBs)
         sel.selected.connect(off.setData)
         sel.selected.connect(map.setRGBs)
         sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
+        sel.selected.connect(filt.setData)
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(rgb, 'Color')
         tab.addTab(off, 'Offset')
         tab.addTab(map, 'Colormap')
+        tab.addTab(filt, 'Filter')
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
@@ -308,13 +321,16 @@ class _VectorTab(QtWidgets.QWidget):
         off = OffsetAdjustBox()
         sel = DataSelectionBox(canvas, 2, "vector")
         info = InfoView(title="Data Info")
+        filt = FilterEditWidget()
         sel.selected.connect(vec.setVectors)
         sel.selected.connect(off.setData)
         sel.selected.connect(lambda data: info.setWavesNotes([d.getWave() for d in data]))
+        sel.selected.connect(filt.setData)
 
         tab = QtWidgets.QTabWidget()
         tab.addTab(vec, 'Vector')
         tab.addTab(off, 'Offset')
+        tab.addTab(filt, 'Filter')
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(sel)
