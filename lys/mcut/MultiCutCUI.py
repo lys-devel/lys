@@ -1,4 +1,5 @@
 import logging
+import warnings
 import weakref
 
 from lys import DaskWave, Wave, filters
@@ -317,8 +318,10 @@ class ChildWaves(QtCore.QObject):
         if not child.isEnabled():
             return
         try:
-            wav = self._makeWave(child.getAxes())
-            child.update(wav)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                wav = self._makeWave(child.getAxes())
+                child.update(wav)
         except Exception:
             import traceback
             traceback.print_exc()
