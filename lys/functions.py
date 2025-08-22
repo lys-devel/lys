@@ -128,7 +128,7 @@ def edit(data):
     return Table(data)
 
 
-def multicut(data, returnInstance=False):
+def multicut(data, returnInstance=False, subWindow=True):
     """
     Analyze the data by MultiCut.
 
@@ -136,7 +136,7 @@ def multicut(data, returnInstance=False):
         data(Wave or DaskWave or arraylike): The data to be analyzed.
     """
     from .mcut import MultiCut
-    m = MultiCut(data)
+    m = MultiCut(data, subWindow=subWindow)
     if returnInstance:
         return m
 

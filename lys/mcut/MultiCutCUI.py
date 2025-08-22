@@ -78,6 +78,10 @@ class MultiCutWave(QtCore.QObject):
         wave(Wave or DaskWave): The wave to be analyzed.
 
     """
+    rawDataChanged = QtCore.pyqtSignal(object)
+    """
+    Emitted when the raw data is changed.
+    """
     dimensionChanged = QtCore.pyqtSignal(object)
     """
     Emitted when the dimension of the filtered wave is changed.
@@ -107,6 +111,8 @@ class MultiCutWave(QtCore.QObject):
         Args:
             filt(Filter): The filter to be applied.
         """
+        if filt is None:
+            filt = filters.EmptyFilter()
         self._filter = filt
         dim_old = self._filtered.ndim
         wave = filt.execute(self._wave)
@@ -121,6 +127,24 @@ class MultiCutWave(QtCore.QObject):
             self.dimensionChanged.emit(self._filtered)
         else:
             self.filterApplied.emit(self._filtered)
+
+    def setRawWave(self, wave):
+        """
+        Set the raw wave.
+
+        Args:
+            wave(Wave or DaskWave): The raw wave.
+        """
+        shape_old = self._wave.shape
+        self._wave = self._load(wave)
+        self._wave.persist()
+        self.rawDataChanged.emit(self._wave)
+        if self._wave.shape != shape_old:
+            self._filter = None
+            self._filtered = self._wave
+            self.dimensionChanged.emit(self._filtered)
+        else:
+            self.applyFilter(self._filter)
 
     def getRawWave(self):
         """

@@ -6,8 +6,23 @@ from .MultiCutCUI import MultiCutCUI
 from .CanvasManager import CanvasManager
 
 
-class _MultipleGrid(LysSubWindow):
+class _MultiCutWindow(LysSubWindow):
+    """
+    This is the main GUI window of MultiCut.
+
+    It contains a grid for displaying canvases and a side bar for managing filters, axes ranges, free lines, and child waves.
+    """
+    def __init__(self, grid):
+        super().__init__()
+        self.resized.connect(lambda: grid._overlay.resize(self.size()))
+        self.setWidget(grid)
+        self.resize(400, 400)
+
+
+class _MultipleGrid(QtWidgets.QWidget):
     showMulti = QtCore.pyqtSignal()
+    closed = QtCore.pyqtSignal(object)
+    focused = QtCore.pyqtSignal()
 
     def __init__(self, size=4):
         super().__init__()
@@ -15,8 +30,11 @@ class _MultipleGrid(LysSubWindow):
         self.setSize(size)
         self.__widget = None
         self.__supressCancel = False
-        self.resize(400, 400)
         self.closed.connect(self.__finalize)
+
+    def closeEvent(self, event):
+        self.closed.emit(self)
+        return super().closeEvent(event)
 
     def __finalize(self):
         for w in self.widgets():
@@ -24,13 +42,10 @@ class _MultipleGrid(LysSubWindow):
 
     def __initlayout(self):
         self.layout = QtWidgets.QGridLayout()
-        w = QtWidgets.QWidget()
-        w.setLayout(self.layout)
-        self._overlay = _GridOverlay(w)
+        self.setLayout(self.layout)
+        self._overlay = _GridOverlay(self)
         self._overlay.selected.connect(self._selected)
         self._overlay.canceled.connect(self._canceled)
-        self.resized.connect(lambda: self._overlay.resize(w.size()))
-        self.setWidget(w)
         self.installEventFilter(self)
 
     def eventFilter(self, object, event):
@@ -39,6 +54,8 @@ class _MultipleGrid(LysSubWindow):
                 self.__supressCancel = False
             else:
                 self._canceled()
+        if event.type() == QtCore.QEvent.FocusIn:
+            self.focused.emit()
         return super().eventFilter(object, event)
 
     def __startSelection(self):
@@ -223,15 +240,17 @@ class MultiCut(QtCore.QObject):
     _colors = ["darkgreen", "darkred", "blue", "brown", "darkolivegreen", "dodgerblue", "indigo", "forestgreen", "mediumvioletred"]
     _colorIndex = 0
 
-    def __init__(self, wave):
+    def __init__(self, wave, subWindow=True):
         super().__init__()
         self._grid = _MultipleGrid()
-        self._grid.setWindowTitle("Multicut: Multi-dimensional data analysis")
+        self._color = QtGui.QColor(self._colors[MultiCut._colorIndex % len(self._colors)])
+        if subWindow:
+            self._window = _MultiCutWindow(self._grid)
+            self._window.setWindowTitle("Multicut: Multi-dimensional data analysis")
+            self._window.setTitleColor(self._color)
         self._grid.focused.connect(self.openMultiCutSetting)
         self._grid.closed.connect(self.__onClose)
         self._cui = MultiCutCUI(wave)
-        self._color = QtGui.QColor(self._colors[MultiCut._colorIndex % len(self._colors)])
-        self._grid.setTitleColor(self._color)
         self._can = CanvasManager(self._cui, self._color)
         MultiCut._colorIndex += 1
         self._cui.dimensionChanged.connect(self._can.clear)
@@ -291,6 +310,13 @@ class MultiCut(QtCore.QObject):
         MultiCutCUI class that manages filters, axes ranges, free lines, child waves.
         """
         return self._cui
+
+    @property
+    def widget(self):
+        """
+        Get the widget associated with the MultiCut instance.
+        """
+        return self._grid
 
     def __saveCanvas(self, useGrid=False, useGraph=False, useAnnot=False, **kwargs):
         d = {}
