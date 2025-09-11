@@ -131,13 +131,20 @@ class MultiCutWave(QtCore.QObject):
 
     def setRawWave(self, wave):
         """
-        Set the raw wave.
+        Set the raw wave. Under testing.
 
         Args:
             wave(Wave or DaskWave): The raw wave.
         """
         shape_old = self._wave.shape
-        self._wave = self._load(wave)
+        if not isinstance(wave, Wave) or isinstance(wave, DaskWave):
+            wave = Wave(wave)
+        if self._wave.data.shape == wave.shape:
+            self._wave.data[:] = wave.data
+            self._wave.axes = wave.axes
+            self._wave.note = wave.note
+        else:
+            self._wave = self._load(wave)
         self._wave.persist()
         self.rawDataChanged.emit(self._wave)
         if self._wave.shape != shape_old:
@@ -155,6 +162,24 @@ class MultiCutWave(QtCore.QObject):
             DaskWave: The instance of the raw wave.
         """
         return self._wave
+
+    def updateRawWave(self, data=None, axes=None, update=True):
+        """
+        Update raw wave. Under testing for fast update of the data.
+
+        Args:
+            data(dict): The dictionary that contains change of the data. The key of the dictionary should be index of the array. RawWave[key] will be replaced by data[key]
+            axes(list): The new axes. If None, the axes will not be changed.
+            update(bool): If True, the MultiCut result will be replaced by new data. Set False only when you want to continuously update the data before updating.
+        """
+        if data is not None:
+            for idx, frame in data.items():
+                self._wave.data[idx] = frame
+            self._wave.data.persist()
+        if axes is not None:
+            self._wave.axes = axes
+        if update:
+            self.applyFilter(self._filter)
 
     def getFilteredWave(self):
         """
