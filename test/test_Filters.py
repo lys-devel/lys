@@ -111,8 +111,49 @@ class Filters_test(unittest.TestCase):
         w = Wave([ar + i for i in range(3)], ar, ar)
         f = filters.NablaFilter()
         self._check(f, w, data=np.ones([2, 3, 3]), y=ar)
+        
+        ar = np.array([1, 2, 3])
+        w = Wave([ar for _ in range(3)], ar, ar)
+        f = filters.NablaFilter()
+        self._check(f, w, data=np.array([np.ones([3, 3]), np.zeros([3, 3])]), y=ar)
 
-        # NablaFilter
+        # CurlFilter
+        Fx = np.array([[np.array([0,3,6]) for _ in range(3)] for _ in range(3)])
+        Fy = np.array([[np.array([0,0,0])+2*i for _ in range(3)] for i in range(3)])
+        Fz = np.array([[np.array([0,0,0])+i for i in range(3)] for _ in range(3)])
+        w = Wave([Fx, Fy, Fz])
+        f = filters.CurlFilter()
+        Rx, Ry, Rz = np.ones((3,3,3)), 3*np.ones((3,3,3)), 2*np.ones((3,3,3))
+        self._check(f, w, data=np.array([Rx, Ry, Rz]))
+
+        # missing axes
+        f = filters.CurlFilter(axes_xyz=[1,None,3])
+        self._check(f, w, data=np.array([Rx*0, Ry, Rz]))
+
+        # missing vector
+        w = Wave([Fx, Fy])
+        f = filters.CurlFilter()
+        self._check(f, w, data=np.array([Rx*0, Ry, Rz]))
+
+        # DivergenceFilter
+        Fx = np.array([[np.array([0,0,0])+i for _ in range(3)] for i in range(3)])
+        Fy = np.array([[np.array([0,0,0])+2*i for i in range(3)] for _ in range(3)])
+        Fz = np.array([[np.array([0,3,6]) for _ in range(3)] for _ in range(3)])
+        w = Wave([Fx, Fy, Fz])
+        f = filters.DivergenceFilter()
+        R = np.ones((3,3,3)) * 6
+        self._check(f, w, data=R)
+
+        f = filters.DivergenceFilter(axes_xyz = [1,None,3])
+        R = np.ones((3,3,3)) * 4
+        self._check(f, w, data=R)
+
+        w = Wave([Fx, Fy])
+        f = filters.DivergenceFilter()
+        R = np.ones((3,3,3)) * 3
+        self._check(f, w, data=R)
+
+        # LaplacianFilter
         x = np.linspace(0, 100, 100)
         w = Wave(x**2, x)
         f = filters.LaplacianFilter()

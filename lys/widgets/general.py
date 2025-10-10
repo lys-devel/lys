@@ -497,9 +497,10 @@ class AxisSelectionLayout(QtWidgets.QHBoxLayout):
     axisChanged = QtCore.pyqtSignal()
     """Emitted when the selected axis is changed."""
 
-    def __init__(self, label, dim=2, init=0):
+    def __init__(self, label, dim=2, init=0, acceptNone=False):
         super().__init__()
         self.dimension = 0
+        self._acceptNone = acceptNone
         self.group = QtWidgets.QButtonGroup()
         self.childs = []
         self.addWidget(QtWidgets.QLabel(label))
@@ -514,6 +515,8 @@ class AxisSelectionLayout(QtWidgets.QHBoxLayout):
             self.group.removeButton(c)
             c.deleteLater()
         self.childs = [QtWidgets.QRadioButton(str(i + 1)) for i in range(self.dimension)]
+        if self._acceptNone:
+            self.childs.append(QtWidgets.QRadioButton("None"))
         for c in self.childs:
             self.addWidget(c)
             self.group.addButton(c)
@@ -540,6 +543,8 @@ class AxisSelectionLayout(QtWidgets.QHBoxLayout):
         """
         for i, b in enumerate(self.childs):
             if b.isChecked():
+                if self._acceptNone and i == len(self.childs) - 1:
+                    return -1
                 return i
 
     def setAxis(self, axis):
