@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lys.mcut.MultiCutGUI &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,14 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">lys.mcut.MultiCutGUI</li>
       <li class="wy-breadcrumbs-aside">
@@ -73,56 +73,74 @@
              
   <h1>Source code for lys.mcut.MultiCutGUI</h1><div class="highlight"><pre>
 <span></span>
-<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
-<span class="kn">from</span> <span class="nn">lys.widgets</span> <span class="kn">import</span> <span class="n">LysSubWindow</span><span class="p">,</span> <span class="n">CanvasBase</span><span class="p">,</span> <span class="n">canvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">lysPath</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.Qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">LysSubWindow</span><span class="p">,</span> <span class="n">CanvasBase</span><span class="p">,</span> <span class="n">canvas</span>
 
-<span class="kn">from</span> <span class="nn">.MultiCutCUI</span> <span class="kn">import</span> <span class="n">MultiCutCUI</span>
-<span class="kn">from</span> <span class="nn">.CanvasManager</span> <span class="kn">import</span> <span class="n">CanvasManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.MultiCutCUI</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiCutCUI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.CanvasManager</span><span class="w"> </span><span class="kn">import</span> <span class="n">CanvasManager</span>
 
 
-<span class="k">class</span> <span class="nc">_MultipleGrid</span><span class="p">(</span><span class="n">LysSubWindow</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_MultiCutWindow</span><span class="p">(</span><span class="n">LysSubWindow</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the main GUI window of MultiCut.</span>
+
+<span class="sd">    It contains a grid for displaying canvases and a side bar for managing filters, axes ranges, free lines, and child waves.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resized</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">grid</span><span class="o">.</span><span class="n">_overlay</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_MultipleGrid</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
     <span class="n">showMulti</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+    <span class="n">closed</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+    <span class="n">focused</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__initlayout</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setSize</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__widget</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__supressCancel</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__finalize</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">():</span>
             <span class="n">w</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__initlayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__initlayout</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QGridLayout</span><span class="p">()</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
-        <span class="n">w</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span> <span class="o">=</span> <span class="n">_GridOverlay</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span> <span class="o">=</span> <span class="n">_GridOverlay</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span><span class="o">.</span><span class="n">canceled</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_canceled</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">resized</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">size</span><span class="p">()))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">installEventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">eventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eventFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">FocusOut</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__supressCancel</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__supressCancel</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_canceled</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QEvent</span><span class="o">.</span><span class="n">FocusIn</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">eventFilter</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__startSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__startSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">():</span>
             <span class="n">w</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoFocus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span><span class="o">.</span><span class="n">startSelection</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocus</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">pos</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">wid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__widget</span> <span class="o">=</span> <span class="n">widget</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__startSelection</span><span class="p">()</span>
@@ -134,7 +152,7 @@
         <span class="n">widget</span><span class="o">.</span><span class="n">keyPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__keyPress</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__widget</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">):</span>
         <span class="n">w</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemAtPosition</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">w</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">removeWidget</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
@@ -142,7 +160,7 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">CanvasBase</span><span class="p">):</span>
                 <span class="n">w</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="n">pos</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">obj</span>
         <span class="n">wid</span> <span class="o">=</span> <span class="n">end</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">widgets</span><span class="p">():</span>
@@ -162,38 +180,38 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__widget</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">wid</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__checkItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">wid</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__checkItem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">wid</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">wid</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">wid</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemAtPosition</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">_canceled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_canceled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__widget</span><span class="o">.</span><span class="n">finalize</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__widget</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span><span class="o">.</span><span class="n">stopSelection</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_overlay</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__keyPress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__keyPress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_M</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">showMulti</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">setSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__size</span> <span class="o">=</span> <span class="n">size</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setColumnStretch</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">setRowStretch</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">itemAtPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">itemAtPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
         <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">itemAtPosition</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">widgets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__size</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__size</span><span class="p">):</span>
@@ -202,16 +220,16 @@
                     <span class="n">wids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wids</span>
 
-    <span class="k">def</span> <span class="nf">getCanvasPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getCanvasPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">indexOf</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">getItemPosition</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">_GridOverlay</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_GridOverlay</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
     <span class="n">selected</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
     <span class="n">canceled</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoFocus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
@@ -221,7 +239,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__paint</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">startSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">startSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">raise_</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__started</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__paint</span> <span class="o">=</span> <span class="kc">True</span>
@@ -230,12 +248,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parentWidget</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repaint</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">stopSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stopSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__started</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__paint</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">repaint</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">painter</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QPainter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__paint</span><span class="p">:</span>
             <span class="n">c1</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QBrush</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
@@ -248,11 +266,11 @@
                     <span class="n">painter</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">c1</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">and</span> <span class="n">y</span> <span class="k">else</span> <span class="n">c2</span><span class="p">)</span>
                     <span class="n">painter</span><span class="o">.</span><span class="n">drawRect</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">/</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">i</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">/</span> <span class="mf">4.0</span> <span class="o">*</span> <span class="n">j</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__calcPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__calcPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">(),</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">()</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">y</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="p">()</span> <span class="o">/</span> <span class="mi">4</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mouseReleaseEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__started</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__started</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">p1</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__p1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__p2</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__p1</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__p2</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -263,20 +281,22 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">repaint</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mousePressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__started</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__p1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calcPosition</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__p2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calcPosition</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mouseMoveEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__started</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__p2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calcPosition</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">repaint</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">mouseReleaseEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="MultiCut"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut">[docs]</a><span class="k">class</span> <span class="nc">MultiCut</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCut">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiCut</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This is central class of MultiCut.</span>
 
@@ -297,37 +317,44 @@
     <span class="n">_colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;darkgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;darkred&quot;</span><span class="p">,</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;brown&quot;</span><span class="p">,</span> <span class="s2">&quot;darkolivegreen&quot;</span><span class="p">,</span> <span class="s2">&quot;dodgerblue&quot;</span><span class="p">,</span> <span class="s2">&quot;indigo&quot;</span><span class="p">,</span> <span class="s2">&quot;forestgreen&quot;</span><span class="p">,</span> <span class="s2">&quot;mediumvioletred&quot;</span><span class="p">]</span>
     <span class="n">_colorIndex</span> <span class="o">=</span> <span class="mi">0</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">subWindow</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="n">_MultipleGrid</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Multicut: Multi-dimensional data analysis&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">MultiCut</span><span class="o">.</span><span class="n">_colorIndex</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">subWindow</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_window</span> <span class="o">=</span> <span class="n">_MultiCutWindow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Multicut: Multi-dimensional data analysis&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_window</span><span class="o">.</span><span class="n">setTitleColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">focused</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">openMultiCutSetting</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__onClose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span> <span class="o">=</span> <span class="n">MultiCutCUI</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_color</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">[</span><span class="n">MultiCut</span><span class="o">.</span><span class="n">_colorIndex</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_colors</span><span class="p">)])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">setTitleColor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_color</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_can</span> <span class="o">=</span> <span class="n">CanvasManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_color</span><span class="p">)</span>
         <span class="n">MultiCut</span><span class="o">.</span><span class="n">_colorIndex</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">dimensionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_can</span><span class="o">.</span><span class="n">clear</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">openMultiCutSetting</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__onClose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__onClose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">closed</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MultiCut.openMultiCutSetting"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.openMultiCutSetting">[docs]</a>    <span class="k">def</span> <span class="nf">openMultiCutSetting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCut.openMultiCutSetting">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.openMultiCutSetting">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">openMultiCutSetting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Open multicut setting window in side bar.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">glb</span>
         <span class="n">glb</span><span class="o">.</span><span class="n">editMulticut</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;_can&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_can</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                 <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_can</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MultiCut.display"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCut.display">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.display">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Display wave data created by addWave method of cui.</span>
 
@@ -346,27 +373,59 @@
         <span class="n">c</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">getFilteredWave</span><span class="p">(),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">c</span></div>
 
-<div class="viewcode-block" id="MultiCut.saveAsDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.saveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MultiCut.saveAsDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.saveAsDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the present state as dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;cui&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cui</span><span class="o">.</span><span class="n">saveAsDictionary</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="s2">&quot;gui&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__saveCanvas</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)}</span></div>
 
-<div class="viewcode-block" id="MultiCut.loadFromDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.loadFromDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MultiCut.loadFromDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.loadFromDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the present state from dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cui</span><span class="o">.</span><span class="n">loadFromDictionary</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;cui&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__loadCanvas</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gui&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="MultiCut.loadDefaultTemplate">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutGUI.MultiCut.loadDefaultTemplate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loadDefaultTemplate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load default template for the current filtered wave.</span>
+<span class="sd">        Call this method soon after the GUI is initialized when you want to initialize the multicut widget with default template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: the dictionary that contains the default template parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">lysPath</span><span class="p">(</span><span class="s2">&quot;.lys/templates/&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">getFilteredWave</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;D/&quot;</span> <span class="o">+</span> <span class="s2">&quot;Default&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loadFromDictionary</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">useGrid</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">useAnnot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        MultiCutCUI class that manages filters, axes ranges, free lines, child waves.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span>
 
-    <span class="k">def</span> <span class="nf">__saveCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">useGrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useGraph</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useAnnot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">widget</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the widget associated with the MultiCut instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__saveCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">useGrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useGraph</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useAnnot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">useGraph</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;Graphs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__canvasDict</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">useAnnot</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_can</span> <span class="k">if</span> <span class="n">c</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">widgets</span><span class="p">()]</span>
@@ -374,7 +433,7 @@
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;Grids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__canvasDict</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">useAnnot</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="o">.</span><span class="n">widgets</span><span class="p">()]</span>
         <span class="k">return</span> <span class="n">d</span>
 
-    <span class="k">def</span> <span class="nf">__canvasDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">useAnnot</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__canvasDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">useAnnot</span><span class="p">):</span>
         <span class="n">waves</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="o">.</span><span class="n">getChildWaves</span><span class="p">()</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;axes&quot;</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">_maxes</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">grid</span><span class="p">:</span>
@@ -389,7 +448,7 @@
         <span class="n">d</span><span class="p">[</span><span class="s2">&quot;waves&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
         <span class="k">return</span> <span class="n">d</span>
 
-    <span class="k">def</span> <span class="nf">__loadCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">useGrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useGraph</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useAnnot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useLine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useRange</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axesMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__loadCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dic</span><span class="p">,</span> <span class="n">useGrid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useGraph</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useAnnot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useLine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">useRange</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axesMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_can</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">useGraph</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Graphs&quot;</span><span class="p">,</span> <span class="p">[]):</span>
@@ -398,7 +457,7 @@
             <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Grids&quot;</span><span class="p">,</span> <span class="p">[]):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__canvasFromDict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">useAnnot</span><span class="p">,</span> <span class="n">useLine</span><span class="p">,</span> <span class="n">useRange</span><span class="p">,</span> <span class="n">axesMap</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__canvasFromDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">useAnnot</span><span class="p">,</span> <span class="n">useLine</span><span class="p">,</span> <span class="n">useRange</span><span class="p">,</span> <span class="n">axesMap</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__canvasFromDict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">useAnnot</span><span class="p">,</span> <span class="n">useLine</span><span class="p">,</span> <span class="n">useRange</span><span class="p">,</span> <span class="n">axesMap</span><span class="p">):</span>
         <span class="n">isGrid</span> <span class="o">=</span> <span class="s2">&quot;position&quot;</span> <span class="ow">in</span> <span class="n">d</span>
         <span class="k">if</span> <span class="n">axesMap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">d</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">axesMap</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="k">if</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axesMap</span> <span class="k">else</span> <span class="n">ax</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">]]</span>
@@ -415,6 +474,7 @@
             <span class="n">c</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">getFilteredWave</span><span class="p">(),</span> <span class="n">vector</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;vector&quot;</span><span class="p">],</span> <span class="n">contour</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;contour&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">useAnnot</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_can</span><span class="o">.</span><span class="n">addAnnotations</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;annotations&quot;</span><span class="p">,</span> <span class="p">[]),</span> <span class="n">useLine</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="ow">not</span> <span class="n">useRange</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

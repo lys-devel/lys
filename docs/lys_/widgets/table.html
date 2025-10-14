@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lysTable &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -29,14 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -82,7 +82,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../api.html">Python API</a></li>
           <li class="breadcrumb-item"><a href="../widgets.html">widgets module</a></li>
       <li class="breadcrumb-item active">lysTable</li>
@@ -96,18 +96,18 @@
            <div itemprop="articleBody">
              
   <section id="module-lys.widgets.table.lysTable">
-<span id="lystable"></span><h1>lysTable<a class="headerlink" href="#module-lys.widgets.table.lysTable" title="Permalink to this heading"></a></h1>
+<span id="lystable"></span><h1>lysTable<a class="headerlink" href="#module-lys.widgets.table.lysTable" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.table.lysTable.</span></span><span class="sig-name descname"><span class="pre">lysTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.table.lysTable.</span></span><span class="sig-name descname"><span class="pre">lysTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
 <p>lysTable is a widget that shows data and axes of <a class="reference internal" href="../core.html#lys.core.Wave" title="lys.core.Wave"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.core.Wave</span></code></a>.</p>
 <p>The functionarity of data handling is implemented in <a class="reference internal" href="#lys.widgets.table.Data.TableData" title="lys.widgets.table.Data.TableData"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.table.Data.TableData</span></code></a> class.</p>
 <p>All public methods in <a class="reference internal" href="#lys.widgets.table.Data.TableData" title="lys.widgets.table.Data.TableData"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.table.Data.TableData</span></code></a> class can be accessed from lysTable.</p>
 <p>To generate lysTable, it is recommended to use <a class="reference internal" href="../functions.html#lys.functions.edit" title="lys.functions.edit"><code class="xref py py-func docutils literal notranslate"><span class="pre">lys.functions.edit()</span></code></a> function.</p>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">edit</span><span class="p">,</span> <span class="n">Wave</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">edit</span><span class="p">,</span> <span class="n">Wave</span>
 
 <span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 <span class="n">edit</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
@@ -115,33 +115,33 @@
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable.closeEvent">
-<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">QCloseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.closeEvent" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QCloseEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.closeEvent" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable.finalized">
-<span class="sig-name descname"><span class="pre">finalized</span></span><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.finalized" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">finalized</span></span><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.finalized" title="Link to this definition"></a></dt>
 <dd><p>Emitted when the table is finalized.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable.keyPressEvent">
-<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.keyPressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.keyPressEvent" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">e</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.keyPressEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.keyPressEvent" title="Link to this definition"></a></dt>
 <dd><p>Reimplementation of keyPressEvent</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable.keyPressed">
-<span class="sig-name descname"><span class="pre">keyPressed</span></span><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.keyPressed" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">keyPressed</span></span><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.keyPressed" title="Link to this definition"></a></dt>
 <dd><p>Emitted when keyPressEvent is raised.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable.loadFromDictionary">
-<span class="sig-name descname"><span class="pre">loadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.loadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.loadFromDictionary" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">loadFromDictionary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.loadFromDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.loadFromDictionary" title="Link to this definition"></a></dt>
 <dd><p>Load the contents of the table from dictionary.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>d</strong> (<em>dict</em>) – The dictionary.</p>
 </dd>
 </dl>
@@ -149,25 +149,25 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable.loadTable">
-<span class="sig-name descname"><span class="pre">loadTable</span></span><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.loadTable" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">loadTable</span></span><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.loadTable" title="Link to this definition"></a></dt>
 <dd><p>Emitted when the table is loaded by loadFromDictionary method.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable.openModifyWindow">
-<span class="sig-name descname"><span class="pre">openModifyWindow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.openModifyWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.openModifyWindow" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">openModifyWindow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.openModifyWindow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.openModifyWindow" title="Link to this definition"></a></dt>
 <dd><p>Open modify window for this table window.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable.saveAsDictionary">
-<span class="sig-name descname"><span class="pre">saveAsDictionary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.saveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.saveAsDictionary" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">saveAsDictionary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/lysTable.html#lysTable.saveAsDictionary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.saveAsDictionary" title="Link to this definition"></a></dt>
 <dd><p>Save the contetnts of the table as dictionary.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The dictionary.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>dict</p>
 </dd>
 </dl>
@@ -175,43 +175,43 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.table.lysTable.lysTable.saveTable">
-<span class="sig-name descname"><span class="pre">saveTable</span></span><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.saveTable" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">saveTable</span></span><a class="headerlink" href="#lys.widgets.table.lysTable.lysTable.saveTable" title="Link to this definition"></a></dt>
 <dd><p>Emitted when the table is saved by saveAsDictionary method.</p>
 </dd></dl>
 
 </dd></dl>
 
-<span class="target" id="module-lys.widgets.table.Data"></span><dl class="py class">
+<dl class="py class" id="module-lys.widgets.table.Data">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.table.Data.</span></span><span class="sig-name descname"><span class="pre">TableData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.table.Data.</span></span><span class="sig-name descname"><span class="pre">TableData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
 <p>TableData class handles data in <a class="reference internal" href="#lys.widgets.table.lysTable.lysTable" title="lys.widgets.table.lysTable.lysTable"><code class="xref py py-class docutils literal notranslate"><span class="pre">lys.widgets.table.lysTable.lysTable</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>table</strong> (<a class="reference internal" href="#lys.widgets.table.lysTable.lysTable" title="lys.widgets.table.lysTable.lysTable"><em>lysTable</em></a>) – The table widget.</p>
 </dd>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData.dataChanged">
-<span class="sig-name descname"><span class="pre">dataChanged</span></span><a class="headerlink" href="#lys.widgets.table.Data.TableData.dataChanged" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dataChanged</span></span><a class="headerlink" href="#lys.widgets.table.Data.TableData.dataChanged" title="Link to this definition"></a></dt>
 <dd><p>Emitted when the data is changed.</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData.dataSaved">
-<span class="sig-name descname"><span class="pre">dataSaved</span></span><a class="headerlink" href="#lys.widgets.table.Data.TableData.dataSaved" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dataSaved</span></span><a class="headerlink" href="#lys.widgets.table.Data.TableData.dataSaved" title="Link to this definition"></a></dt>
 <dd><p>Emitted after the data is saved.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData.getData">
-<span class="sig-name descname"><span class="pre">getData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.getData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.getData" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">getData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.getData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.getData" title="Link to this definition"></a></dt>
 <dd><p>Returns the edited Wave.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The edited Wave.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="../core.html#lys.core.Wave" title="lys.core.Wave">Wave</a></p>
 </dd>
 </dl>
@@ -219,13 +219,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData.getSlice">
-<span class="sig-name descname"><span class="pre">getSlice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.getSlice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.getSlice" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">getSlice</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.getSlice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.getSlice" title="Link to this definition"></a></dt>
 <dd><p>Get slice. See <a class="reference internal" href="#lys.widgets.table.Data.TableData.setSlice" title="lys.widgets.table.Data.TableData.setSlice"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setSlice()</span></code></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The slice.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>tuple of slices or int</p>
 </dd>
 </dl>
@@ -233,13 +233,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData.getSlicedData">
-<span class="sig-name descname"><span class="pre">getSlicedData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.getSlicedData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.getSlicedData" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">getSlicedData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.getSlicedData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.getSlicedData" title="Link to this definition"></a></dt>
 <dd><p>Returns the sliced data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The sliced Wave.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="../core.html#lys.core.Wave" title="lys.core.Wave">Wave</a></p>
 </dd>
 </dl>
@@ -247,16 +247,16 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData.save">
-<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.save" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.save" title="Link to this definition"></a></dt>
 <dd><p>Save the contents of the table to file or Wave depending on the argument of <a class="reference internal" href="#lys.widgets.table.Data.TableData.setData" title="lys.widgets.table.Data.TableData.setData"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setData()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData.setData">
-<span class="sig-name descname"><span class="pre">setData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.setData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.setData" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.setData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.setData" title="Link to this definition"></a></dt>
 <dd><p>Set data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>str</em><em> or </em><a class="reference internal" href="../core.html#lys.core.Wave" title="lys.core.Wave"><em>Wave</em></a>) – The path to a npz file, or an instance of Wave.</p>
 </dd>
 </dl>
@@ -264,13 +264,13 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData.setSlice">
-<span class="sig-name descname"><span class="pre">setSlice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.setSlice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.setSlice" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setSlice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/table/Data.html#TableData.setSlice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.table.Data.TableData.setSlice" title="Link to this definition"></a></dt>
 <dd><p>Set a slice.</p>
 <p>If <em>slc</em> is None, the default slice is set.</p>
 <p>If <em>slc</em> is integer, <a class="reference internal" href="#lys.widgets.table.Data.TableData.getSlicedData" title="lys.widgets.table.Data.TableData.getSlicedData"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getSlicedData()</span></code></a> returns wave.axes[slc].</p>
 <p>Otherwise, <a class="reference internal" href="#lys.widgets.table.Data.TableData.getSlicedData" title="lys.widgets.table.Data.TableData.getSlicedData"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getSlicedData()</span></code></a> returns wave.data[slc].</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>slc</strong> (<em>tuple</em><em> of </em><em>slices</em><em> or </em><em>int</em>) – The slice to be set.</p>
 </dd>
 </dl>
@@ -278,7 +278,7 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.table.Data.TableData.updated">
-<span class="sig-name descname"><span class="pre">updated</span></span><a class="headerlink" href="#lys.widgets.table.Data.TableData.updated" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">updated</span></span><a class="headerlink" href="#lys.widgets.table.Data.TableData.updated" title="Link to this definition"></a></dt>
 <dd><p>Emitted when data data is updated.</p>
 </dd></dl>
 

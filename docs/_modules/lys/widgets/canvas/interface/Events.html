@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lys.widgets.canvas.interface.Events &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/jquery.js"></script>
-        <script src="../../../../../_static/underscore.js"></script>
-        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -26,14 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">lys.widgets.canvas.interface.Events</li>
       <li class="wy-breadcrumbs-aside">
@@ -72,16 +72,18 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.widgets.canvas.interface.Events</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">weakref</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">weakref</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.Qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtGui</span><span class="p">,</span> <span class="n">QtCore</span>
 
-<span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.CanvasBase</span><span class="w"> </span><span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span>
 
 
-<div class="viewcode-block" id="CanvasKeyboardEvent"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasKeyboardEvent">[docs]</a><span class="k">class</span> <span class="nc">CanvasKeyboardEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasKeyboardEvent">
+<a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasKeyboardEvent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CanvasKeyboardEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic keyborad event class of Canvas.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -90,12 +92,12 @@
 <span class="sd">    Emitted when a key is pressed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">keyPressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_keyPressed</span><span class="p">)</span>
 
     <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">_keyPressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_keyPressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_A</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">modifiers</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ControlModifier</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">getRGBs</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">getImages</span><span class="p">():</span>
                 <span class="n">i</span><span class="o">.</span><span class="n">setColorRange</span><span class="p">()</span>
@@ -109,10 +111,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()</span><span class="o">.</span><span class="n">duplicate</span><span class="p">()</span></div>
 
 
+
 <span class="n">_front</span> <span class="o">=</span> <span class="p">[]</span>
 
 
-<div class="viewcode-block" id="getFrontCanvas"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.getFrontCanvas">[docs]</a><span class="k">def</span> <span class="nf">getFrontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="getFrontCanvas">
+<a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.getFrontCanvas">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">getFrontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">exclude</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
         <span class="n">exclude</span> <span class="o">=</span> <span class="p">[</span><span class="n">exclude</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">canvas</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">_front</span><span class="p">):</span>
@@ -121,24 +126,30 @@
             <span class="k">return</span> <span class="n">c</span></div>
 
 
-<div class="viewcode-block" id="CanvasFocusEvent"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasFocusEvent">[docs]</a><span class="k">class</span> <span class="nc">CanvasFocusEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanvasFocusEvent">
+<a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasFocusEvent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CanvasFocusEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
     <span class="n">focused</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when the canvas is focused</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">focused</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_setFrontCanvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_setFrontCanvas</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_setFrontCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setFrontCanvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">_front</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">()))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_front</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>
             <span class="n">_front</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="CanvasMouseEvent"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasMouseEvent">[docs]</a><span class="k">class</span> <span class="nc">CanvasMouseEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanvasMouseEvent">
+<a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasMouseEvent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CanvasMouseEvent</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Basic keyborad event class of Canvas.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -163,7 +174,7 @@
 <span class="sd">    Emitted when a mouse is double-clicked.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doubleClicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">canvas</span><span class="o">.</span><span class="n">openModifyWindow</span><span class="p">)</span>
@@ -177,13 +188,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fregion</span> <span class="o">=</span> <span class="n">_FreeRegionDrawer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cross</span> <span class="o">=</span> <span class="n">_CrosshairDrawer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clicktime</span> <span class="o">&lt;</span> <span class="mf">0.3</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">doubleClicked</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_clicktime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
 
-<div class="viewcode-block" id="CanvasMouseEvent.mapPosition"><a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasMouseEvent.mapPosition">[docs]</a>    <span class="k">def</span> <span class="nf">mapPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasMouseEvent.mapPosition">
+<a class="viewcode-back" href="../../../../../lys_/graph/Events.html#lys.widgets.canvas.interface.Events.CanvasMouseEvent.mapPosition">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mapPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Translate the clicked position to the data-coordinates.</span>
 
@@ -191,59 +204,61 @@
 <span class="sd">            event(QEvent): The event that is given as an argument of mouse events such as mousePressed.</span>
 <span class="sd">            axis(&#39;Left&#39; or &#39;Right&#39; or &#39;Top&#39; or &#39;Bottom&#39;): The axis by which the position is translated.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement mapPosition(event, axis) method.&quot;</span><span class="p">)</span></div></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement mapPosition(event, axis) method.&quot;</span><span class="p">)</span></div>
+</div>
 
 
-<span class="k">class</span> <span class="nc">_MouseEventBase</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_MouseEventBase</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">canvas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_canvas</span><span class="p">()</span>
 
 
-<span class="k">class</span> <span class="nc">_RegionSelector</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_RegionSelector</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__select_rect</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseMoved</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">clearSelectedRange</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Select&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__select_rect</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__select_rect</span><span class="p">:</span>
             <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setSelectedRange</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">__start</span><span class="p">,</span> <span class="n">end</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__select_rect</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__select_rect</span> <span class="o">=</span> <span class="kc">False</span>
 
 
-<span class="k">class</span> <span class="nc">_RangeMove</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_RangeMove</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__flg</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseMoved</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Move&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__flg</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__saveState</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flg</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Move&quot;</span><span class="p">:</span>
                 <span class="n">end_bottom</span><span class="p">,</span> <span class="n">end_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
@@ -260,12 +275,12 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setAxisRange</span><span class="p">(</span><span class="s2">&quot;Top&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__top</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__top</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">dt</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__saveState</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__flg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Move&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__flg</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="k">def</span> <span class="nf">__saveState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__saveState</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__start_bottom</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__start_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__bottom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s2">&quot;Bottom&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s2">&quot;Left&quot;</span><span class="p">)</span>
@@ -277,8 +292,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__top</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="s2">&quot;Top&quot;</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">_LineDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_LineDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
@@ -286,13 +301,13 @@
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseMoved</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Line&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span><span class="p">:</span>
             <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -300,14 +315,14 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_line</span><span class="o">.</span><span class="n">setPosition</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">__start</span><span class="p">,</span> <span class="n">end</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_InfiniteLineDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_InfiniteLineDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="mi">0</span>
@@ -315,7 +330,7 @@
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseMoved</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;VLine&quot;</span><span class="p">:</span>
@@ -325,18 +340,18 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">addInfiniteLineAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__start</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">orientation</span><span class="o">=</span><span class="s1">&#39;horizontal&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_line</span><span class="o">.</span><span class="n">setPosition</span><span class="p">(</span><span class="n">end</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_RectDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_RectDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rect</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
@@ -344,13 +359,13 @@
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseMoved</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Rect&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span><span class="p">:</span>
             <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rect</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -360,14 +375,14 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_rect</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">__start</span><span class="p">,</span> <span class="n">end</span><span class="p">])</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rect</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_RegionDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_RegionDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_region</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
@@ -375,7 +390,7 @@
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseMoved</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;VRegion&quot;</span><span class="p">:</span>
@@ -385,7 +400,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">=</span> <span class="s1">&#39;horizontal&#39;</span>
 
-    <span class="k">def</span> <span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span><span class="p">:</span>
             <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">==</span> <span class="s1">&#39;vertical&#39;</span><span class="p">:</span>
@@ -397,14 +412,14 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_region</span><span class="o">.</span><span class="n">setRegion</span><span class="p">(</span><span class="n">region</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_region</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_FreeRegionDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_FreeRegionDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
@@ -412,13 +427,13 @@
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseMoved</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;FreeRegion&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span><span class="p">:</span>
             <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -426,32 +441,32 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_line</span><span class="o">.</span><span class="n">setRegion</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">__start</span><span class="p">,</span> <span class="n">end</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_busy</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
 
 
-<span class="k">class</span> <span class="nc">_CrosshairDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_CrosshairDrawer</span><span class="p">(</span><span class="n">_MouseEventBase</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mousePressed</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mousePressed</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseReleased</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseReleased</span><span class="p">)</span>
         <span class="n">parent</span><span class="o">.</span><span class="n">mouseMoved</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mouseMoved</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mousePressed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">toolState</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Cross&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">addCrossAnnotation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__start</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseMoved</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">mapPosition</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;BottomLeft&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_line</span><span class="o">.</span><span class="n">setPosition</span><span class="p">(</span><span class="n">end</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mouseReleased</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">e</span><span class="o">.</span><span class="n">button</span><span class="p">()</span> <span class="o">==</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">LeftButton</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>

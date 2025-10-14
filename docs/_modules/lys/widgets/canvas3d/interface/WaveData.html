@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lys.widgets.canvas3d.interface.WaveData &mdash; lys 0.3.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../../_static/documentation_options.js?v=4621528c"></script>
+        <script src="../../../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            lys
+          </a>
+              <div class="version">
+                0.3.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../tutorials/tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../api.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../contributing.html">Contributing</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">lys</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">lys.widgets.canvas3d.interface.WaveData</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for lys.widgets.canvas3d.interface.WaveData</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
+<span class="kn">from</span> <span class="nn">lys.errors</span> <span class="kn">import</span> <span class="n">NotImplementedWarning</span>
+
+<span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart3D</span><span class="p">,</span> <span class="n">saveCanvas</span>
+
+
+<div class="viewcode-block" id="WaveData3D">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D">[docs]</a>
+<span class="k">class</span> <span class="nc">WaveData3D</span><span class="p">(</span><span class="n">CanvasPart3D</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface to access wave data in the canvas.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">modified</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This pyqtSignal is emimtted when the data is changed.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span> <span class="o">=</span> <span class="n">wave</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filteredWave</span> <span class="o">=</span> <span class="n">wave</span>
+
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filteredWave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calcFilteredWave</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateData</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_calcFilteredWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="nb">filter</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">filter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">w</span>
+
+<div class="viewcode-block" id="WaveData3D.getWave">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.getWave">[docs]</a>
+    <span class="k">def</span> <span class="nf">getWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the wave.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            Wave: The wave.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span></div>
+
+
+<div class="viewcode-block" id="WaveData3D.getFilteredWave">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.getFilteredWave">[docs]</a>
+    <span class="k">def</span> <span class="nf">getFilteredWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the wave to which offset and filter have been applied.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            Wave: The filtered wave.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filteredWave</span></div>
+
+
+<div class="viewcode-block" id="WaveData3D.getName">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.getName">[docs]</a>
+    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the name of the wave data.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            str: The name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DataName&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWave</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WaveData3D.setName">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.setName">[docs]</a>
+    <span class="k">def</span> <span class="nf">setName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the name of the data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name(str): The name of the data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;DataName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="WaveData3D.setVisible">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.setVisible">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">visible</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the visibility of the data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            visible(bool): The visibility of the data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setVisible</span><span class="p">(</span><span class="n">visible</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;Visible&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">visible</span></div>
+
+
+<div class="viewcode-block" id="WaveData3D.getVisible">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.getVisible">[docs]</a>
+    <span class="k">def</span> <span class="nf">getVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the visibility of the data.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            bool: The visibility of the data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Visible&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WaveData3D.setFilter">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.setFilter">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply filter to the data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filter(filter): The filter. See :class:`lys.filters.filter.FilterInterface.FilterInterface`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="o">=</span> <span class="nb">filter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="WaveData3D.getFilter">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.getFilter">[docs]</a>
+    <span class="k">def</span> <span class="nf">getFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get filter applied to the data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            filter: The filter. See :class:`lys.filters.filter.FilterInterface.FilterInterface`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span></div>
+
+
+<div class="viewcode-block" id="WaveData3D.saveAppearance">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.saveAppearance">[docs]</a>
+    <span class="k">def</span> <span class="nf">saveAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save appearance from dictionary.</span>
+
+<span class="sd">        Users can save/load appearance of data by save/loadAppearance methods.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            dict: dictionary that include all appearance information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WaveData3D.loadAppearance">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.WaveData3D.loadAppearance">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">loadAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">appearance</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load appearance from dictionary.</span>
+
+<span class="sd">        Users can save/load appearance of data by save/loadAppearance methods.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            appearance(dict): dictionary that include all appearance information, which is usually generated by :meth:`saveAppearance` method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setVisible</span><span class="p">(</span><span class="n">appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Visible&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setName</span><span class="p">(</span><span class="n">appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DataName&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">getWave</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loadAppearance</span><span class="p">(</span><span class="n">appearance</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_setVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">visible</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setVisible(visible) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_updateData</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _updateData() method.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_loadAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">appearance</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _loadAppearance(appearance) method.&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="MeshData3D">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.MeshData3D">[docs]</a>
+<span class="k">class</span> <span class="nc">MeshData3D</span><span class="p">(</span><span class="n">WaveData3D</span><span class="p">):</span>
+<div class="viewcode-block" id="MeshData3D.setColor">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.MeshData3D.setColor">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">setColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;scalars&quot;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the color of the mesh data.</span>
+
+<span class="sd">        If type == &quot;scalars&quot;, the surface of the mesh is drawn using scalar data.</span>
+<span class="sd">        In this case, *color* should be a name of colormap to be used.</span>
+
+<span class="sd">        If type == &quot;color&quot;, the surface of the mesh is colored by a single color.</span>
+<span class="sd">        In this case, *color* should be a color string, length 3 RGB sequence.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            color: See above.</span>
+<span class="sd">            type: See above.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s2">&quot;colorType&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setColor</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MeshData3D.getColor">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.MeshData3D.getColor">[docs]</a>
+    <span class="k">def</span> <span class="nf">getColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the color or colormap of the mesh. See :meth:`setColor`.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            colorlike or colormap: The color or colormap</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="s2">&quot;viridis&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MeshData3D.getColorType">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.MeshData3D.getColorType">[docs]</a>
+    <span class="k">def</span> <span class="nf">getColorType</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the present color type of the mesh. See :meth:`setColor`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: &#39;scalars&#39; or &#39;color&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s2">&quot;colorType&quot;</span><span class="p">,</span> <span class="s2">&quot;scalars&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MeshData3D.showEdges">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.MeshData3D.showEdges">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">showEdges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show edges of the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            b(bool): Whether the edges of the object are shown.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s2">&quot;showEdges&quot;</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_showEdges</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MeshData3D.edgesVisible">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.MeshData3D.edgesVisible">[docs]</a>
+    <span class="k">def</span> <span class="nf">edgesVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return if the edges are visible.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: The visibility</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s2">&quot;showEdges&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MeshData3D.showMeshes">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.MeshData3D.showMeshes">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span> <span class="nf">showMeshes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Show edges of the mesh.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            b(bool): Whether the edges of the mesh are shown.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__setAppearance</span><span class="p">(</span><span class="s2">&quot;showMeshes&quot;</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_showMeshes</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MeshData3D.meshesVisible">
+<a class="viewcode-back" href="../../../../../lys_/graph3d/WaveData.html#lys.widgets.canvas3d.interface.WaveData.MeshData3D.meshesVisible">[docs]</a>
+    <span class="k">def</span> <span class="nf">meshesVisible</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return if the meshes are visible.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: The visibility</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getAppearance</span><span class="p">(</span><span class="s2">&quot;showMeshes&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__setAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">__getAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_loadAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">appearance</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;colorType&quot;</span> <span class="ow">in</span> <span class="n">appearance</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">appearance</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">],</span> <span class="n">appearance</span><span class="p">[</span><span class="s2">&quot;colorType&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;showMeshes&quot;</span> <span class="ow">in</span> <span class="n">appearance</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setMeshes</span><span class="p">(</span><span class="n">appearance</span><span class="p">[</span><span class="s2">&quot;showMeshes&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;showEdges&quot;</span> <span class="ow">in</span> <span class="n">appearance</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setEdges</span><span class="p">(</span><span class="n">appearance</span><span class="p">[</span><span class="s2">&quot;showEdges&quot;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_setColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setColor(color, type) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_showEdges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _showEdges(b) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_showMeshes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _showMeshes(b) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Asuka Nakamura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

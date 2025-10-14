@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Area module &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -29,14 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -82,7 +82,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../api.html">Python API</a></li>
           <li class="breadcrumb-item"><a href="../widgets.html">widgets module</a></li>
           <li class="breadcrumb-item"><a href="../canvas.html">lysCanvas</a></li>
@@ -97,16 +97,16 @@
            <div itemprop="articleBody">
              
   <section id="module-lys.widgets.canvas.interface.Area">
-<span id="area-module"></span><h1>Area module<a class="headerlink" href="#module-lys.widgets.canvas.interface.Area" title="Permalink to this heading"></a></h1>
+<span id="area-module"></span><h1>Area module<a class="headerlink" href="#module-lys.widgets.canvas.interface.Area" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasMargin">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Area.</span></span><span class="sig-name descname"><span class="pre">CanvasMargin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasMargin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Area.</span></span><span class="sig-name descname"><span class="pre">CanvasMargin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasMargin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart" title="lys.widgets.canvas.interface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a></p>
 <p>Abstract base class for Margin.
 All methods in this interface can be accessed from <code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasBase</span></code> instance.
 Developers should implement a abstract method _setMargin(left, right, bottom, top).</p>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setMargin</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>  <span class="c1"># 0 means auto</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">getMargin</span><span class="p">())</span>           <span class="c1"># (0, 0.7, 0.2, 0.9)</span>
@@ -114,13 +114,13 @@ Developers should implement a abstract method _setMargin(left, right, bottom, to
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasMargin.getMargin">
-<span class="sig-name descname"><span class="pre">getMargin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasMargin.getMargin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin.getMargin" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">getMargin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasMargin.getMargin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin.getMargin" title="Link to this definition"></a></dt>
 <dd><p>Get margin of canvas.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The value of margin. If <em>raw</em> is False, actual margin used for display is returned.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>float of length 4</p>
 </dd>
 </dl>
@@ -128,22 +128,22 @@ Developers should implement a abstract method _setMargin(left, right, bottom, to
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasMargin.marginChanged">
-<span class="sig-name descname"><span class="pre">marginChanged</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin.marginChanged" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">marginChanged</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin.marginChanged" title="Link to this definition"></a></dt>
 <dd><p>Emitted when margin is changed.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasMargin.refreshMargin">
-<span class="sig-name descname"><span class="pre">refreshMargin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasMargin.refreshMargin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin.refreshMargin" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">refreshMargin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasMargin.refreshMargin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin.refreshMargin" title="Link to this definition"></a></dt>
 <dd><p>Refresh margin based on the present setting.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasMargin.setMargin">
-<span class="sig-name descname"><span class="pre">setMargin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasMargin.setMargin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin.setMargin" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setMargin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasMargin.setMargin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasMargin.setMargin" title="Link to this definition"></a></dt>
 <dd><p>Set margin of canvas. Zero means auto.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>left</strong> (<em>float</em>) – The position of the left edge of the subplots, as a fraction of the figure width.</p></li>
 <li><p><strong>right</strong> (<em>float</em>) – The position of the right edge of the subplots, as a fraction of the figure width.</p></li>
@@ -158,13 +158,13 @@ Developers should implement a abstract method _setMargin(left, right, bottom, to
 
 <dl class="py class">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasSize">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Area.</span></span><span class="sig-name descname"><span class="pre">CanvasSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lys.widgets.canvas.interface.Area.</span></span><span class="sig-name descname"><span class="pre">CanvasSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">canvas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="CanvasBase.html#lys.widgets.canvas.interface.CanvasBase.CanvasPart" title="lys.widgets.canvas.interface.CanvasBase.CanvasPart"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasPart</span></code></a></p>
 <p>Abstract base class of CanvasSize.
 All methods in this interface can be accessed from <code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasBase</span></code> instance.
 Developers should implement abstract methods _setAuto, _setAbsolute, _setAspect, and _getSize.</p>
 <p>Examples:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">display</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span>
 <span class="n">g</span> <span class="o">=</span> <span class="n">display</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s2">&quot;Width&quot;</span><span class="p">,</span> <span class="s2">&quot;Absolute&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
 <span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s2">&quot;Height&quot;</span><span class="p">,</span> <span class="s2">&quot;Absolute&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
@@ -173,19 +173,19 @@ Developers should implement abstract methods _setAuto, _setAbsolute, _setAspect,
 </div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasSize.canvasResized">
-<span class="sig-name descname"><span class="pre">canvasResized</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.canvasResized" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">canvasResized</span></span><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.canvasResized" title="Link to this definition"></a></dt>
 <dd><p>Emitted when canvas size is changed.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasSize.getCanvasSize">
-<span class="sig-name descname"><span class="pre">getCanvasSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.getCanvasSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.getCanvasSize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">getCanvasSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.getCanvasSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.getCanvasSize" title="Link to this definition"></a></dt>
 <dd><p>Get canvas size.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Canvas size.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>float of length 2</p>
 </dd>
 </dl>
@@ -193,14 +193,14 @@ Developers should implement abstract methods _setAuto, _setAbsolute, _setAspect,
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasSize.getSizeParams">
-<span class="sig-name descname"><span class="pre">getSizeParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.getSizeParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.getSizeParams" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">getSizeParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.getSizeParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.getSizeParams" title="Link to this definition"></a></dt>
 <dd><p>Get size parameters (mode, value, axis1, axis2) as dictionary.</p>
 <p>See <a class="reference internal" href="#lys.widgets.canvas.interface.Area.CanvasSize.setCanvasSize" title="lys.widgets.canvas.interface.Area.CanvasSize.setCanvasSize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setCanvasSize()</span></code></a> for the description of each parameters</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>size parameters.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>dictionary</p>
 </dd>
 </dl>
@@ -208,17 +208,17 @@ Developers should implement abstract methods _setAuto, _setAbsolute, _setAspect,
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasSize.parentResized">
-<span class="sig-name descname"><span class="pre">parentResized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.parentResized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.parentResized" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">parentResized</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.parentResized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.parentResized" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasSize.refreshCanvasSize">
-<span class="sig-name descname"><span class="pre">refreshCanvasSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.refreshCanvasSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.refreshCanvasSize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">refreshCanvasSize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.refreshCanvasSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.refreshCanvasSize" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lys.widgets.canvas.interface.Area.CanvasSize.setCanvasSize">
-<span class="sig-name descname"><span class="pre">setCanvasSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.setCanvasSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.setCanvasSize" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">setCanvasSize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/lys/widgets/canvas/interface/Area.html#CanvasSize.setCanvasSize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lys.widgets.canvas.interface.Area.CanvasSize.setCanvasSize" title="Link to this definition"></a></dt>
 <dd><p>Set the size of the canvas.</p>
 <p>When <em>mode</em> is ‘Auto’, the canvas size is set to <em>value</em>, and is changed freely.
 If <em>value</em> is zero, it remains present canvas size.</p>
@@ -227,7 +227,7 @@ If <em>value</em> is zero, it remains present canvas size.</p>
 <p>When <em>mode</em> is ‘Aspect’, the aspect ratio is set to <em>value</em>.</p>
 <p>When <em>mode</em> is ‘Plan’, the canvas size is set to <em>value</em> * (range of <em>axis1</em>) / (range of <em>axis2</em>).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>type</strong> (<em>'Width'</em><em> or </em><em>'Height'</em>) – specify which size is set.</p></li>
 <li><p><strong>mode</strong> (<em>'Auto'</em><em> or </em><em>'Absolute'</em><em> or </em><em>'Per Unit'</em><em> or </em><em>'Aspect'</em><em> or </em><em>'Plan'</em>) – see description.</p></li>

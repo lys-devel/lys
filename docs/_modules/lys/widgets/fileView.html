@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lys.widgets.fileView &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,14 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">lys.widgets.fileView</li>
       <li class="wy-breadcrumbs-aside">
@@ -72,18 +72,20 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.widgets.fileView</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 
-<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">load</span>
-<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">load</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.Qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtWidgets</span><span class="p">,</span> <span class="n">QtCore</span><span class="p">,</span> <span class="n">QtGui</span>
 
 
-<div class="viewcode-block" id="FileSystemView"><a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView">[docs]</a><span class="k">class</span> <span class="nc">FileSystemView</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
+<div class="viewcode-block" id="FileSystemView">
+<a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileSystemView</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    *FileSystemView* is a custom widget to see files, which is mainly used in main window.</span>
 
@@ -103,7 +105,7 @@
     <span class="n">selectionChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span>
     <span class="s2">&quot;Emitted when the selected file is changed.&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileSystemModel</span><span class="p">(),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">menu</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QFileSystemModel</span><span class="p">(),</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">menu</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__initUI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">drop</span><span class="p">,</span> <span class="nb">filter</span><span class="p">)</span>
@@ -112,13 +114,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_builder</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">rootIndex</span><span class="p">()</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">setRootPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
             <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">mapFromSource</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setRootIndex</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Model</span> <span class="o">=</span> <span class="n">_FileSystemModel</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">drop</span><span class="p">)</span>
         <span class="n">model</span><span class="o">.</span><span class="n">directoryLoaded</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__loaded</span><span class="p">)</span>
 
@@ -151,15 +153,17 @@
             <span class="n">layout</span><span class="o">.</span><span class="n">addLayout</span><span class="p">(</span><span class="n">h1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">filter</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">setFilterRegularExpression</span><span class="p">(</span><span class="nb">filter</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setRootIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">indexFromPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_buildContextMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qPoint</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_buildContextMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qPoint</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_builder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_builder</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectedPaths</span><span class="p">())</span>
 
-<div class="viewcode-block" id="FileSystemView.selectedPath"><a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView.selectedPath">[docs]</a>    <span class="k">def</span> <span class="nf">selectedPath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FileSystemView.selectedPath">
+<a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView.selectedPath">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">selectedPath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns first selected path.</span>
 
@@ -169,7 +173,10 @@
         <span class="n">paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectedPaths</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="FileSystemView.selectedPaths"><a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView.selectedPaths">[docs]</a>    <span class="k">def</span> <span class="nf">selectedPaths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FileSystemView.selectedPaths">
+<a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView.selectedPaths">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">selectedPaths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns selected paths.</span>
 
@@ -190,7 +197,10 @@
             <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
 
-<div class="viewcode-block" id="FileSystemView.registerFileMenu"><a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView.registerFileMenu">[docs]</a>    <span class="k">def</span> <span class="nf">registerFileMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">add_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FileSystemView.registerFileMenu">
+<a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView.registerFileMenu">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">registerFileMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">add_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;register new context menu to filetype specified by *ext*</span>
 
 <span class="sd">        Args:</span>
@@ -212,7 +222,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_builder</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">add_default</span><span class="o">=</span><span class="n">add_default</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="FileSystemView.setPath"><a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView.setPath">[docs]</a>    <span class="k">def</span> <span class="nf">setPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FileSystemView.setPath">
+<a class="viewcode-back" href="../../../lys_/widgets/fileview.html#lys.widgets.fileView.FileSystemView.setPath">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set root directory of file system.</span>
 <span class="sd">        Args:</span>
@@ -220,14 +233,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">setPath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setRootIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">indexFromPath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tree</span><span class="o">.</span><span class="n">setRootIndex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">indexFromPath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span></div>
+</div>
 
 
-<span class="k">class</span> <span class="nc">_FileSystemModel</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSortFilterProxyModel</span><span class="p">):</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_FileSystemModel</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QSortFilterProxyModel</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Model class for FileSystemView&quot;&quot;&quot;</span>
     <span class="n">_exclude</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__pycache__&quot;</span><span class="p">,</span> <span class="s2">&quot;dask-worker-space&quot;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_drop</span> <span class="o">=</span> <span class="n">drop</span>
@@ -237,14 +252,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setSourceModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setRecursiveFilteringEnabled</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">setPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">setRootPath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">indexFromPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">indexFromPath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapFromSource</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">filterAcceptsRow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filterAcceptsRow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
         <span class="n">path</span><span class="p">,</span> <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">filePath</span><span class="p">(</span><span class="n">index</span><span class="p">)),</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
@@ -255,7 +270,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">setFilterRegularExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setFilterRegularExpression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
         <span class="n">exp</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QRegularExpression</span><span class="p">(</span><span class="n">filters</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">isValid</span><span class="p">():</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setFilterRegularExpression</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
@@ -263,25 +278,25 @@
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">setFilterRegularExpression</span><span class="p">(</span><span class="s2">&quot;5314548674534687654867&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">setRootPath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">filePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filePath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">filePath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapToSource</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">isDir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isDir</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">isDir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapToSource</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_drop</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">flags</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsDropEnabled</span> <span class="o">|</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">ItemIsDragEnabled</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">flags</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">supportedDropActions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">supportedDropActions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">Qt</span><span class="o">.</span><span class="n">MoveAction</span>
 
-    <span class="k">def</span> <span class="nf">canDropMimeData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">canDropMimeData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="k">return</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">dropMimeData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dropMimeData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="n">targetDir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">filePath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapToSource</span><span class="p">(</span><span class="n">parent</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">targetDir</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="n">targetDir</span> <span class="o">=</span> <span class="n">targetDir</span><span class="o">.</span><span class="n">parent</span>
@@ -291,14 +306,14 @@
         <span class="k">return</span> <span class="kc">True</span>
 
 
-<span class="k">class</span> <span class="nc">_contextMenuBuilder</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_contextMenuBuilder</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Builder of context menu in FileSystemView&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_SetDefaultMenu</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_SetDefaultMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_SetDefaultMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_new</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;New Directory&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__newdir</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Load&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__load</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_prt</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QAction</span><span class="p">(</span><span class="s1">&#39;Print&#39;</span><span class="p">,</span> <span class="n">triggered</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">__print</span><span class="p">)</span>
@@ -319,7 +334,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">__actions</span> <span class="o">=</span> <span class="n">menu</span>
 
-    <span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">add_default</span><span class="p">,</span> <span class="n">hide_load</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hide_print</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">add_default</span><span class="p">,</span> <span class="n">hide_load</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hide_print</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">menu_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_duplicateMenu</span><span class="p">(</span><span class="n">menu</span><span class="p">)</span>
         <span class="n">menu_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_duplicateMenu</span><span class="p">(</span><span class="n">menu</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">add_default</span><span class="p">:</span>
@@ -351,7 +366,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__actions</span><span class="p">[</span><span class="n">ext</span> <span class="o">+</span> <span class="s2">&quot;_single&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">menu_s</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__actions</span><span class="p">[</span><span class="n">ext</span> <span class="o">+</span> <span class="s2">&quot;_multi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">menu_m</span>
 
-    <span class="k">def</span> <span class="nf">_duplicateMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_duplicateMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenu</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">origin</span><span class="o">.</span><span class="n">actions</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenu</span><span class="p">):</span>
@@ -360,7 +375,7 @@
                 <span class="n">result</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">_makeMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_makeMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMenu</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s2">&quot;sep&quot;</span><span class="p">:</span>
@@ -369,15 +384,15 @@
                 <span class="n">result</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 
-    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span> <span class="o">=</span> <span class="n">paths</span>
         <span class="n">tp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_judgeFileType</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__actions</span><span class="p">[</span><span class="n">tp</span><span class="p">]</span><span class="o">.</span><span class="n">exec_</span><span class="p">(</span><span class="n">QtGui</span><span class="o">.</span><span class="n">QCursor</span><span class="o">.</span><span class="n">pos</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tp</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tp</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__actions</span><span class="p">[</span><span class="n">tp</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_judgeFileType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_judgeFileType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">isDir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">_Model</span><span class="o">.</span><span class="n">indexFromPath</span><span class="p">(</span><span class="n">p</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">]):</span>
             <span class="n">res</span> <span class="o">=</span> <span class="s2">&quot;dir&quot;</span>
         <span class="k">else</span><span class="p">:</span>
@@ -396,8 +411,8 @@
             <span class="n">res</span> <span class="o">+=</span> <span class="s2">&quot;_multi&quot;</span>
         <span class="k">return</span> <span class="n">res</span>
 
-    <span class="k">def</span> <span class="nf">__load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">glb</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">:</span>
             <span class="n">nam</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
             <span class="n">obj</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
@@ -407,13 +422,13 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Failed to load &quot;</span> <span class="o">+</span> <span class="n">p</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__newdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__newdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">text</span><span class="p">,</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QInputDialog</span><span class="o">.</span><span class="n">getText</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;Create directory&#39;</span><span class="p">,</span> <span class="s1">&#39;Directory name:&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ok</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">:</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">p</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">text</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__del</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__del</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">paths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span>
         <span class="n">msg</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">)</span>
         <span class="n">msg</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Warning</span><span class="p">)</span>
@@ -428,34 +443,34 @@
                 <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
                     <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_copyType</span> <span class="o">=</span> <span class="s2">&quot;copy&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_copyPaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__cut</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__cut</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_copyType</span> <span class="o">=</span> <span class="s2">&quot;cut&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_copyPaths</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__paste</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__paste</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_copyType&quot;</span><span class="p">):</span>
             <span class="n">targetDir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">targetDir</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_copyPaths</span><span class="p">]</span>
             <span class="n">_moveFiles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_copyPaths</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_copyType</span> <span class="o">==</span> <span class="s2">&quot;copy&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__rename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__rename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">target</span><span class="p">,</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QInputDialog</span><span class="o">.</span><span class="n">getText</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Rename&quot;</span><span class="p">,</span> <span class="s2">&quot;Enter new name&quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">target</span><span class="p">)</span>
             <span class="n">_moveFiles</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__print</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths</span><span class="p">:</span>
             <span class="n">w</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_moveFiles</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_moveFiles</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_moveFiles</span><span class="p">([</span><span class="n">files</span><span class="p">],</span> <span class="p">[</span><span class="n">targets</span><span class="p">],</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
     <span class="n">state</span> <span class="o">=</span> <span class="kc">None</span>
@@ -469,7 +484,7 @@
             <span class="k">elif</span> <span class="n">state</span> <span class="o">==</span> <span class="s2">&quot;noall&quot;</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">glb</span>
+                <span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">glb</span>
                 <span class="n">msgBox</span> <span class="o">=</span> <span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="p">(</span><span class="n">glb</span><span class="o">.</span><span class="n">mainWindow</span><span class="p">())</span>
                 <span class="n">msgBox</span><span class="o">.</span><span class="n">setIcon</span><span class="p">(</span><span class="n">QtWidgets</span><span class="o">.</span><span class="n">QMessageBox</span><span class="o">.</span><span class="n">Warning</span><span class="p">)</span>
                 <span class="n">msgBox</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Caution&quot;</span><span class="p">)</span>

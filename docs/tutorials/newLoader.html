@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Loading your file &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -82,7 +82,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tutorial.html">Tutorial</a></li>
       <li class="breadcrumb-item active">Loading your file</li>
       <li class="wy-breadcrumbs-aside">
@@ -95,11 +95,11 @@
            <div itemprop="articleBody">
              
   <section id="loading-your-file">
-<h1>Loading your file<a class="headerlink" href="#loading-your-file" title="Permalink to this heading"></a></h1>
+<h1>Loading your file<a class="headerlink" href="#loading-your-file" title="Link to this heading"></a></h1>
 <p>Although <em>lys</em> enables you to easily analyze and visualize multi-dimensional data, usually you should load your experimental/calculated data from file.</p>
 <p>Here I show how your data should be imported into <em>lys</em> although it is strongly dependent on your file type. Several examples of loading file is found in <a class="reference internal" href="load_examples.html"><span class="doc">Loading various data</span></a></p>
 <section id="loading-csv-file">
-<h2>Loading csv file<a class="headerlink" href="#loading-csv-file" title="Permalink to this heading"></a></h2>
+<h2>Loading csv file<a class="headerlink" href="#loading-csv-file" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><p>The easiest file type to load is .csv file, which is a sequence of float divided by conmmas.</p></li>
 <li><p>Create csv file for test by entering the code in the command line in <em>lys</em>:</p>
@@ -109,25 +109,29 @@
 </li>
 <li><p>Confirm that “csvfile.csv” is created in fileview.</p></li>
 </ol>
-<a class="reference internal image-reference" href="../_images/image12.png"><img alt="../_images/image12.png" src="../_images/image12.png" style="width: 212.5px; height: 231.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/image12.png"><img alt="../_images/image12.png" src="../_images/image12.png" style="width: 212.5px; height: 231.5px;" />
+</a>
 <ol class="arabic simple" start="4">
 <li><p>Click “Python” in main menu, select “create new.py file”.</p></li>
 </ol>
-<a class="reference internal image-reference" href="../_images/image22.png"><img alt="../_images/image22.png" src="../_images/image22.png" style="width: 595.0px; height: 333.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/image22.png"><img alt="../_images/image22.png" src="../_images/image22.png" style="width: 595.0px; height: 333.5px;" />
+</a>
 <ol class="arabic simple" start="5">
 <li><p>Enter “load_csv” in the file name.</p></li>
 </ol>
-<a class="reference internal image-reference" href="../_images/image31.png"><img alt="../_images/image31.png" src="../_images/image31.png" style="width: 291.5px; height: 211.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/image31.png"><img alt="../_images/image31.png" src="../_images/image31.png" style="width: 291.5px; height: 211.5px;" />
+</a>
 <ol class="arabic simple" start="6">
 <li><p>New .py file is created in “module/load_csv.py”.</p></li>
 </ol>
-<a class="reference internal image-reference" href="../_images/image41.png"><img alt="../_images/image41.png" src="../_images/image41.png" style="width: 931.5px; height: 414.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/image41.png"><img alt="../_images/image41.png" src="../_images/image41.png" style="width: 931.5px; height: 414.5px;" />
+</a>
 <ol class="arabic" start="7">
 <li><p>Type the code below in “load_csv.py”. The “load_csv” function simply load csv file and return Wave object:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="k">def</span> <span class="nf">load_csv</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_csv</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
@@ -136,7 +140,8 @@
 </div>
 </li>
 </ol>
-<a class="reference internal image-reference" href="../_images/image51.png"><img alt="../_images/image51.png" src="../_images/image51.png" style="width: 632.5px; height: 382.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/image51.png"><img alt="../_images/image51.png" src="../_images/image51.png" style="width: 632.5px; height: 382.5px;" />
+</a>
 <ol class="arabic" start="8">
 <li><p>Once the function is registerd by “registerFileLoader” function, you can load the file by “load” function. Type the code below in the command line in <em>lys</em>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s2">&quot;csvfile.csv&quot;</span><span class="p">)</span>
@@ -146,22 +151,23 @@
 </li>
 <li><p>You see the csv file is successfully loaded and displayed. You can also load .csv file by right clicking “csvfile.csv” in the fileview and select “Load”.</p></li>
 </ol>
-<a class="reference internal image-reference" href="../_images/image61.png"><img alt="../_images/image61.png" src="../_images/image61.png" style="width: 546.0px; height: 381.5px;" /></a>
+<a class="reference internal image-reference" href="../_images/image61.png"><img alt="../_images/image61.png" src="../_images/image61.png" style="width: 546.0px; height: 381.5px;" />
+</a>
 </section>
 <section id="loading-data-by-dask">
-<h2>Loading data by dask<a class="headerlink" href="#loading-data-by-dask" title="Permalink to this heading"></a></h2>
+<h2>Loading data by dask<a class="headerlink" href="#loading-data-by-dask" title="Link to this heading"></a></h2>
 <p>Sometimes you have many files to load. If the shape of data in each file is identical, you can load these file by parallel using dask.delayed.</p>
 <p>The code below is simple example that generate data using dask.delayed. You can copy and paste to new .py file in <em>lys</em>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">dask</span> <span class="kn">import</span> <span class="n">delayed</span>
-<span class="kn">import</span> <span class="nn">dask.array</span> <span class="k">as</span> <span class="nn">da</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dask</span><span class="w"> </span><span class="kn">import</span> <span class="n">delayed</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">dask.array</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">da</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
-<span class="k">def</span> <span class="nf">load_file_dummy</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_file_dummy</span><span class="p">():</span>
     <span class="c1"># load file here, in this exapmle, we return random value.</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">load_parallel</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_parallel</span><span class="p">():</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="n">delayed</span><span class="p">(</span><span class="n">load_file_dummy</span><span class="p">)()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
     <span class="n">array</span> <span class="o">=</span> <span class="p">[</span><span class="n">da</span><span class="o">.</span><span class="n">from_delayed</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
     <span class="n">array</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>

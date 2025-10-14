@@ -131,7 +131,7 @@ class MultiCutWave(QtCore.QObject):
 
     def setRawWave(self, wave):
         """
-        Set the raw wave. Under testing.
+        Set the raw wave. The existing raw wave will be replaced if it exists. Use :meth:`updateRawWave` method for fast update of the data.
 
         Args:
             wave(Wave or DaskWave): The raw wave.
@@ -165,12 +165,12 @@ class MultiCutWave(QtCore.QObject):
 
     def updateRawWave(self, data=None, axes=None, update=True):
         """
-        Update raw wave. Under testing for fast update of the data.
+        Update raw wavefor fast update of the data.
 
         Args:
             data(dict): The dictionary that contains change of the data. The key of the dictionary should be index of the array. RawWave[key] will be replaced by data[key]
             axes(list): The new axes. If None, the axes will not be changed.
-            update(bool): If True, the MultiCut result will be replaced by new data. Set False only when you want to continuously update the data before updating.
+            update(bool): If True, the MultiCut result will be replaced by new data. Set False only when you want to continuously update the data before updating GUIs.
         """
         if data is not None:
             for idx, frame in data.items():

@@ -306,6 +306,13 @@ class MultiCut(QtCore.QObject):
         self.__loadCanvas(d.get("gui", {}), **kwargs)
 
     def loadDefaultTemplate(self):
+        """
+        Load default template for the current filtered wave.
+        Call this method soon after the GUI is initialized when you want to initialize the multicut widget with default template.
+
+        Returns:
+            dict: the dictionary that contains the default template parameters.
+        """
         path = lysPath(".lys/templates/" + str(len(self._cui.getFilteredWave().shape)) + "D/" + "Default")
         with open(path, "r") as f:
             d = eval(f.read())
