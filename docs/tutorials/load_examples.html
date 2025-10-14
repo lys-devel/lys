@@ -1,22 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Loading various data &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,14 +28,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -78,7 +78,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="tutorial.html">Tutorial</a></li>
       <li class="breadcrumb-item active">Loading various data</li>
       <li class="wy-breadcrumbs-aside">
@@ -91,35 +91,35 @@
            <div itemprop="articleBody">
              
   <section id="loading-various-data">
-<h1>Loading various data<a class="headerlink" href="#loading-various-data" title="Permalink to this heading"></a></h1>
+<h1>Loading various data<a class="headerlink" href="#loading-various-data" title="Link to this heading"></a></h1>
 <p>These are examples Python codes to load several types of data format.
 To try these examples, simply download the .py files and put it in <em>module</em> folder of your working directory.
 Then you can load corresponding files by <em>load</em> function as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="o">*</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s2">&quot;Replace this string with your filename to be loaded&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>It is noted that the Python codes in this page is not fully tested. So there may be bugs.
 If you want to make your own file loader, see <a class="reference internal" href="newLoader.html"><span class="doc">Loading your file</span></a></p>
-<div class="contents local topic" id="list-of-examples">
+<nav class="contents local" id="list-of-examples">
 <p class="topic-title">List of examples</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#gatan-digital-micrograph-dm3-files" id="id1">Gatan Digital Micrograph .dm3 files</a></p></li>
 <li><p><a class="reference internal" href="#wavemetrics-igor-pxt-files" id="id2">WaveMetrics Igor .pxt files</a></p></li>
 <li><p><a class="reference internal" href="#dicom-dicom-files" id="id3">DICOM .dicom files</a></p></li>
 </ul>
-</div>
+</nav>
 <section id="gatan-digital-micrograph-dm3-files">
-<h2><a class="toc-backref" href="#id1">Gatan Digital Micrograph .dm3 files</a><a class="headerlink" href="#gatan-digital-micrograph-dm3-files" title="Permalink to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id1" role="doc-backlink">Gatan Digital Micrograph .dm3 files</a><a class="headerlink" href="#gatan-digital-micrograph-dm3-files" title="Link to this heading"></a></h2>
 <p>Install dm3_lib(<a class="reference external" href="https://bitbucket.org/piraynal/pydm3reader/src/master/">https://bitbucket.org/piraynal/pydm3reader/src/master/</a>) and put <a class="reference download internal" download="" href="../_downloads/881d57da406fa3bce199097fe6b5050e/load_dm3.py"><code class="xref download docutils literal notranslate"><span class="pre">examples/load_dm3.py</span></code></a> into <em>module</em> folder.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">sys</span>
-<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos"> 3</span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">registerFileLoader</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">registerFileLoader</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="k">try</span><span class="p">:</span>
-<span class="linenos"> 6</span>    <span class="kn">import</span> <span class="nn">dm3_lib</span> <span class="k">as</span> <span class="nn">dm3</span>
+<span class="linenos"> 6</span>    <span class="kn">import</span><span class="w"> </span><span class="nn">dm3_lib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dm3</span>
 <span class="linenos"> 7</span>
-<span class="linenos"> 8</span>    <span class="k">def</span> <span class="nf">__loadDm3</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="linenos"> 8</span>    <span class="k">def</span><span class="w"> </span><span class="nf">__loadDm3</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
 <span class="linenos"> 9</span>        <span class="n">data</span> <span class="o">=</span> <span class="n">dm3</span><span class="o">.</span><span class="n">DM3</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 <span class="linenos">10</span>        <span class="n">w</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">()</span>
 <span class="linenos">11</span>        <span class="n">w</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">imagedata</span>
@@ -152,7 +152,7 @@ If you want to make your own file loader, see <a class="reference internal" href
 <span class="linenos">38</span>            <span class="k">pass</span>
 <span class="linenos">39</span>        <span class="k">return</span> <span class="n">w</span>
 <span class="linenos">40</span><span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-<span class="linenos">41</span>    <span class="k">def</span> <span class="nf">__loadDm3</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="linenos">41</span>    <span class="k">def</span><span class="w"> </span><span class="nf">__loadDm3</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
 <span class="linenos">42</span>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;To use .dm3 files, install dm3_lib (https://bitbucket.org/piraynal/pydm3reader/src/master/)&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
 <span class="linenos">43</span>
 <span class="linenos">44</span>
@@ -161,20 +161,20 @@ If you want to make your own file loader, see <a class="reference internal" href
 </div>
 </section>
 <section id="wavemetrics-igor-pxt-files">
-<h2><a class="toc-backref" href="#id2">WaveMetrics Igor .pxt files</a><a class="headerlink" href="#wavemetrics-igor-pxt-files" title="Permalink to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id2" role="doc-backlink">WaveMetrics Igor .pxt files</a><a class="headerlink" href="#wavemetrics-igor-pxt-files" title="Link to this heading"></a></h2>
 <p>Install igor package(<a class="reference external" href="https://pypi.org/project/igor/">https://pypi.org/project/igor/</a>) by excuting:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">igor</span>
 </pre></div>
 </div>
 <p>Then put <a class="reference download internal" download="" href="../_downloads/97948fe8469328110e37d121971b87c4/load_PXT.py"><code class="xref download docutils literal notranslate"><span class="pre">examples/load_PXT.py</span></code></a> into <em>module folder</em>.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">igor.packed</span>
-<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">igor.igorpy</span>
-<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">igor.packed</span>
+<span class="linenos"> 2</span><span class="kn">import</span><span class="w"> </span><span class="nn">igor.igorpy</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">registerFileLoader</span>
+<span class="linenos"> 5</span><span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">registerFileLoader</span>
 <span class="linenos"> 6</span>
 <span class="linenos"> 7</span>
-<span class="linenos"> 8</span><span class="k">def</span> <span class="nf">__loadPxt</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="linenos"> 8</span><span class="k">def</span><span class="w"> </span><span class="nf">__loadPxt</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
 <span class="linenos"> 9</span>    <span class="n">nam</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 <span class="linenos">10</span>    <span class="p">(</span><span class="n">rec</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="o">=</span> <span class="n">igor</span><span class="o">.</span><span class="n">packed</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 <span class="linenos">11</span>    <span class="n">wav</span> <span class="o">=</span> <span class="n">igor</span><span class="o">.</span><span class="n">igorpy</span><span class="o">.</span><span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;root&#39;</span><span class="p">][</span><span class="n">nam</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)])</span>
@@ -203,18 +203,18 @@ If you want to make your own file loader, see <a class="reference internal" href
 </div>
 </section>
 <section id="dicom-dicom-files">
-<h2><a class="toc-backref" href="#id3">DICOM .dicom files</a><a class="headerlink" href="#dicom-dicom-files" title="Permalink to this heading"></a></h2>
+<h2><a class="toc-backref" href="#id3" role="doc-backlink">DICOM .dicom files</a><a class="headerlink" href="#dicom-dicom-files" title="Link to this heading"></a></h2>
 <p>Install pydicom package(<a class="reference external" href="https://github.com/pydicom/pydicom">https://github.com/pydicom/pydicom</a>) by executin:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pydicom</span>
 </pre></div>
 </div>
 <p>Then put <a class="reference download internal" download="" href="../_downloads/3a0dbf9796bd186cd198e10d10b4a735/load_DICOM.py"><code class="xref download docutils literal notranslate"><span class="pre">examples/load_DICOM.py</span></code></a> into <em>module folder</em>.</p>
-<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">pydicom</span>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">pydicom</span>
 <span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">registerFileLoader</span>
+<span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">registerFileLoader</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span>
-<span class="linenos"> 6</span><span class="k">def</span> <span class="nf">__loadDcm</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+<span class="linenos"> 6</span><span class="k">def</span><span class="w"> </span><span class="nf">__loadDcm</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
 <span class="linenos"> 7</span>    <span class="n">data</span> <span class="o">=</span> <span class="n">pydicom</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 <span class="linenos"> 8</span>    <span class="k">return</span> <span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">pixel_array</span><span class="p">)</span>
 <span class="linenos"> 9</span>

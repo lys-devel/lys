@@ -1,4 +1,5 @@
 import logging
+import warnings
 import weakref
 
 from lys import DaskWave, Wave, filters
@@ -78,6 +79,10 @@ class MultiCutWave(QtCore.QObject):
         wave(Wave or DaskWave): The wave to be analyzed.
 
     """
+    rawDataChanged = QtCore.pyqtSignal(object)
+    """
+    Emitted when the raw data is changed.
+    """
     dimensionChanged = QtCore.pyqtSignal(object)
     """
     Emitted when the dimension of the filtered wave is changed.
@@ -107,6 +112,8 @@ class MultiCutWave(QtCore.QObject):
         Args:
             filt(Filter): The filter to be applied.
         """
+        if filt is None:
+            filt = filters.EmptyFilter()
         self._filter = filt
         dim_old = self._filtered.ndim
         wave = filt.execute(self._wave)
@@ -122,6 +129,31 @@ class MultiCutWave(QtCore.QObject):
         else:
             self.filterApplied.emit(self._filtered)
 
+    def setRawWave(self, wave):
+        """
+        Set the raw wave. The existing raw wave will be replaced if it exists. Use :meth:`updateRawWave` method for fast update of the data.
+
+        Args:
+            wave(Wave or DaskWave): The raw wave.
+        """
+        shape_old = self._wave.shape
+        if not isinstance(wave, Wave) or isinstance(wave, DaskWave):
+            wave = Wave(wave)
+        if self._wave.data.shape == wave.shape:
+            self._wave.data[:] = wave.data
+            self._wave.axes = wave.axes
+            self._wave.note = wave.note
+        else:
+            self._wave = self._load(wave)
+        self._wave.persist()
+        self.rawDataChanged.emit(self._wave)
+        if self._wave.shape != shape_old:
+            self._filter = None
+            self._filtered = self._wave
+            self.dimensionChanged.emit(self._filtered)
+        else:
+            self.applyFilter(self._filter)
+
     def getRawWave(self):
         """
         Get raw wave instance.
@@ -130,6 +162,24 @@ class MultiCutWave(QtCore.QObject):
             DaskWave: The instance of the raw wave.
         """
         return self._wave
+
+    def updateRawWave(self, data=None, axes=None, update=True):
+        """
+        Update raw wavefor fast update of the data.
+
+        Args:
+            data(dict): The dictionary that contains change of the data. The key of the dictionary should be index of the array. RawWave[key] will be replaced by data[key]
+            axes(list): The new axes. If None, the axes will not be changed.
+            update(bool): If True, the MultiCut result will be replaced by new data. Set False only when you want to continuously update the data before updating GUIs.
+        """
+        if data is not None:
+            for idx, frame in data.items():
+                self._wave.data[idx] = frame
+            self._wave.data.persist()
+        if axes is not None:
+            self._wave.axes = axes
+        if update:
+            self.applyFilter(self._filter)
 
     def getFilteredWave(self):
         """
@@ -293,8 +343,10 @@ class ChildWaves(QtCore.QObject):
         if not child.isEnabled():
             return
         try:
-            wav = self._makeWave(child.getAxes())
-            child.update(wav)
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                wav = self._makeWave(child.getAxes())
+                child.update(wav)
         except Exception:
             import traceback
             traceback.print_exc()

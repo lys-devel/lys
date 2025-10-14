@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lys.widgets.canvas.interface.Area &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/jquery.js"></script>
-        <script src="../../../../../_static/underscore.js"></script>
-        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -26,14 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">lys.widgets.canvas.interface.Area</li>
       <li class="wy-breadcrumbs-aside">
@@ -72,15 +72,17 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.widgets.canvas.interface.Area</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
-<span class="kn">from</span> <span class="nn">lys.errors</span> <span class="kn">import</span> <span class="n">NotImplementedWarning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.Qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotImplementedWarning</span>
 
-<span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span><span class="p">,</span> <span class="n">disableSaveCanvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.CanvasBase</span><span class="w"> </span><span class="kn">import</span> <span class="n">CanvasPart</span><span class="p">,</span> <span class="n">saveCanvas</span><span class="p">,</span> <span class="n">disableSaveCanvas</span>
 
 
-<div class="viewcode-block" id="CanvasMargin"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin">[docs]</a><span class="k">class</span> <span class="nc">CanvasMargin</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasMargin">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CanvasMargin</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract base class for Margin. </span>
 <span class="sd">    All methods in this interface can be accessed from :class:`CanvasBase` instance.</span>
@@ -97,14 +99,16 @@
     <span class="n">marginChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when margin is changed.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMargin</span><span class="p">()</span>
         <span class="n">canvas</span><span class="o">.</span><span class="n">saveCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_save</span><span class="p">)</span>
         <span class="n">canvas</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CanvasMargin.setMargin"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.setMargin">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasMargin.setMargin">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.setMargin">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set margin of canvas. Zero means auto.</span>
 
 <span class="sd">        Args:</span>
@@ -119,7 +123,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_margins_act</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">marginChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_calculateActualMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">le</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_calculateActualMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">le</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">le</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">le</span> <span class="o">=</span> <span class="mf">0.2</span>
         <span class="k">if</span> <span class="n">r</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -142,7 +147,9 @@
             <span class="n">t</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="mf">0.05</span>
         <span class="k">return</span> <span class="n">le</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span>
 
-<div class="viewcode-block" id="CanvasMargin.getMargin"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.getMargin">[docs]</a>    <span class="k">def</span> <span class="nf">getMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasMargin.getMargin">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.getMargin">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get margin of canvas.</span>
 
 <span class="sd">        Return:</span>
@@ -153,25 +160,32 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margins_act</span></div>
 
-<div class="viewcode-block" id="CanvasMargin.refreshMargin"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.refreshMargin">[docs]</a>    <span class="k">def</span> <span class="nf">refreshMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanvasMargin.refreshMargin">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasMargin.refreshMargin">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refreshMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Refresh margin based on the present setting.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setMargin</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">getMargin</span><span class="p">(</span><span class="n">raw</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
         <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;Margin&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_margins</span>
 
-    <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;Margin&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
             <span class="n">m</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;Margin&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">setMargin</span><span class="p">(</span><span class="o">*</span><span class="n">m</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">bottom</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setMargin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">bottom</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setMargin(left, right, top, bottom) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="CanvasSize"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize">[docs]</a><span class="k">class</span> <span class="nc">CanvasSize</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanvasSize">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CanvasSize</span><span class="p">(</span><span class="n">CanvasPart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Abstract base class of CanvasSize.</span>
 <span class="sd">    All methods in this interface can be accessed from :class:`CanvasBase` instance.</span>
@@ -189,7 +203,7 @@
     <span class="n">canvasResized</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when canvas size is changed.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="s1">&#39;Auto&#39;</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;axis1&#39;</span><span class="p">:</span> <span class="s1">&#39;Left&#39;</span><span class="p">,</span> <span class="s1">&#39;axis2&#39;</span><span class="p">:</span> <span class="s1">&#39;Bottom&#39;</span><span class="p">}</span>
@@ -201,12 +215,14 @@
         <span class="n">canvas</span><span class="o">.</span><span class="n">loadCanvas</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">)</span>
 
     <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">_onAdjusted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_onAdjusted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Width&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Height&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">])</span>
 
-<div class="viewcode-block" id="CanvasSize.setCanvasSize"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.setCanvasSize">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="CanvasSize.setCanvasSize">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.setCanvasSize">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the size of the canvas.</span>
 
@@ -259,7 +275,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setAspect</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">value</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ran1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ran1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ran2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ran2</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvasResized</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="CanvasSize.getCanvasSize"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.getCanvasSize">[docs]</a>    <span class="k">def</span> <span class="nf">getCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanvasSize.getCanvasSize">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.getCanvasSize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get canvas size.</span>
 
 <span class="sd">         Return:</span>
@@ -267,7 +286,10 @@
 <span class="sd">         &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getSize</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="CanvasSize.getSizeParams"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.getSizeParams">[docs]</a>    <span class="k">def</span> <span class="nf">getSizeParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanvasSize.getSizeParams">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.getSizeParams">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getSizeParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get size parameters (mode, value, axis1, axis2) as dictionary.</span>
 
@@ -278,8 +300,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="CanvasSize.parentResized"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.parentResized">[docs]</a>    <span class="nd">@disableSaveCanvas</span>
-    <span class="k">def</span> <span class="nf">parentResized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanvasSize.parentResized">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.parentResized">[docs]</a>
+    <span class="nd">@disableSaveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parentResized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">wp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span>
         <span class="n">hp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">wp</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Aspect&#39;</span><span class="p">,</span> <span class="s1">&#39;Plan&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">hp</span> <span class="o">==</span> <span class="s1">&#39;Auto&#39;</span><span class="p">:</span>
@@ -288,12 +313,16 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Height&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvasResized</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="CanvasSize.refreshCanvasSize"><a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.refreshCanvasSize">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">refreshCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="CanvasSize.refreshCanvasSize">
+<a class="viewcode-back" href="../../../../../lys_/graph/Area.html#lys.widgets.canvas.interface.Area.CanvasSize.refreshCanvasSize">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">refreshCanvasSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Width&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Height&#39;</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">])</span></div>
 
-    <span class="k">def</span> <span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
         <span class="n">dic</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getCanvasSize</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Auto&#39;</span><span class="p">:</span>
@@ -304,7 +333,7 @@
         <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">][</span><span class="s1">&#39;mode&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">][</span><span class="s1">&#39;value&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">][</span><span class="s1">&#39;axis1&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">][</span><span class="s1">&#39;axis2&#39;</span><span class="p">]]</span>
         <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;Size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dic</span>
 
-    <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">):</span>
         <span class="k">if</span> <span class="s1">&#39;Size&#39;</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
             <span class="n">dic</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s1">&#39;Size&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Aspect&#39;</span><span class="p">,</span> <span class="s1">&#39;Plan&#39;</span><span class="p">]:</span>
@@ -314,17 +343,18 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Width&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;Width&#39;</span><span class="p">])</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">setCanvasSize</span><span class="p">(</span><span class="s1">&#39;Height&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;Height&#39;</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_setAuto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setAuto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setAuto(axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setAbsolute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setAbsolute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setAbsolute(type, value) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setAspect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">aspect</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setAspect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">aspect</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setAspect(type, aspect) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_getSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_getSize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _getSize() method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

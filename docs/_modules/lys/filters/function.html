@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lys.filters.function &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,14 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">lys.filters.function</li>
       <li class="wy-breadcrumbs-aside">
@@ -72,7 +72,7 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.filters.function</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">Wave</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wave</span>
 
 <span class="c1"># all filter classes</span>
 <span class="n">_filterClasses</span> <span class="o">=</span> <span class="p">{}</span>
@@ -81,7 +81,9 @@
 <span class="n">_filterGroups</span> <span class="o">=</span> <span class="p">{}</span>
 
 
-<div class="viewcode-block" id="addFilter"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.addFilter">[docs]</a><span class="k">def</span> <span class="nf">addFilter</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">filterName</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gui</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guiName</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guiGroup</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="addFilter">
+<a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.addFilter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">addFilter</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">filterName</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gui</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guiName</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guiGroup</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Add new filter to lys.</span>
 
@@ -110,7 +112,10 @@
             <span class="n">_filterGroups</span><span class="p">[</span><span class="n">guiGroup</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">guiName</span><span class="p">:</span> <span class="n">gui</span><span class="p">}</span></div>
 
 
-<div class="viewcode-block" id="getFilter"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.getFilter">[docs]</a><span class="k">def</span> <span class="nf">getFilter</span><span class="p">(</span><span class="n">filterName</span><span class="p">):</span>
+
+<div class="viewcode-block" id="getFilter">
+<a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.getFilter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">getFilter</span><span class="p">(</span><span class="n">filterName</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get a filter class from name.</span>
 
@@ -126,17 +131,18 @@
         <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<span class="k">def</span> <span class="nf">_getFilterName</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_getFilterName</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">_filterClasses</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="nb">filter</span><span class="p">)</span> <span class="ow">or</span> <span class="n">item</span> <span class="o">==</span> <span class="nb">filter</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">key</span>
 
 
-<span class="k">def</span> <span class="nf">_getFilterGui</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_getFilterGui</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">_filterGuis</span><span class="p">[</span><span class="n">_getFilterName</span><span class="p">(</span><span class="nb">filter</span><span class="p">)]</span>
 
 
-<span class="k">def</span> <span class="nf">_getFilterGuiName</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_getFilterGuiName</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">_filterGroups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="k">continue</span>
@@ -149,7 +155,9 @@
                 <span class="k">return</span> <span class="n">key</span>
 
 
-<div class="viewcode-block" id="fromFile"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromFile">[docs]</a><span class="k">def</span> <span class="nf">fromFile</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
+<div class="viewcode-block" id="fromFile">
+<a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromFile">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fromFile</span><span class="p">(</span><span class="n">file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load filter from .fil file.</span>
 
@@ -169,14 +177,17 @@
 <span class="sd">        filt = filters.fromFile(&quot;test.fil&quot;)                    # Load filter from file</span>
 <span class="sd">        filt.execute(np.ones([3,3]))                           # [3. 3. 3.]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">lys.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Filters</span>
     <span class="k">if</span> <span class="n">file</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.npz&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">fromWave</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">file</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="toFile"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.toFile">[docs]</a><span class="k">def</span> <span class="nf">toFile</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
+
+<div class="viewcode-block" id="toFile">
+<a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.toFile">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">toFile</span><span class="p">(</span><span class="nb">filter</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save filter to .fil file.</span>
 
@@ -187,7 +198,10 @@
     <span class="nb">filter</span><span class="o">.</span><span class="n">saveAsFile</span><span class="p">(</span><span class="n">file</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="fromWave"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromWave">[docs]</a><span class="k">def</span> <span class="nf">fromWave</span><span class="p">(</span><span class="n">wave</span><span class="p">):</span>
+
+<div class="viewcode-block" id="fromWave">
+<a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromWave">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fromWave</span><span class="p">(</span><span class="n">wave</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load filter from wave that is automatically saved when filter is applied.</span>
 
@@ -206,11 +220,14 @@
 
 <span class="sd">        filt = filters.fromWave(result)                         # Load filter from wave</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">lys.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Filters</span>
     <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromWave</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="fromString"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromString">[docs]</a><span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+
+<div class="viewcode-block" id="fromString">
+<a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.fromString">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fromString</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load filter from string that is generated by :func:`toString` function.</span>
 
@@ -230,11 +247,14 @@
 <span class="sd">        filt = filters.fromString(filter_string)               # Load filter from string</span>
 <span class="sd">        filt.execute(np.ones([3,3]))                           # [3. 3. 3.]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">lys.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Filters</span>
     <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="toString"><a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.toString">[docs]</a><span class="k">def</span> <span class="nf">toString</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
+
+<div class="viewcode-block" id="toString">
+<a class="viewcode-back" href="../../../lys_/filters.html#lys.filters.function.toString">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">toString</span><span class="p">(</span><span class="nb">filter</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Save filter as file. The filter can be loaded by :func:`fromString` function.</span>
 
@@ -246,8 +266,9 @@
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">lys.filters</span> <span class="kn">import</span> <span class="n">Filters</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">lys.filters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Filters</span>
     <span class="k">return</span> <span class="n">Filters</span><span class="o">.</span><span class="n">toString</span><span class="p">(</span><span class="nb">filter</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

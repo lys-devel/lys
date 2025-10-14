@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lys.widgets.canvas.interface.RegionAnnotation &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/jquery.js"></script>
-        <script src="../../../../../_static/underscore.js"></script>
-        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -26,14 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">lys.widgets.canvas.interface.RegionAnnotation</li>
       <li class="wy-breadcrumbs-aside">
@@ -72,16 +72,18 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.widgets.canvas.interface.RegionAnnotation</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
-<span class="kn">from</span> <span class="nn">lys.errors</span> <span class="kn">import</span> <span class="n">NotImplementedWarning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.Qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotImplementedWarning</span>
 
-<span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">saveCanvas</span>
-<span class="kn">from</span> <span class="nn">.AnnotationData</span> <span class="kn">import</span> <span class="n">AnnotationWithLine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.CanvasBase</span><span class="w"> </span><span class="kn">import</span> <span class="n">saveCanvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.AnnotationData</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnnotationWithLine</span>
 
 
-<div class="viewcode-block" id="RegionAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation">[docs]</a><span class="k">class</span> <span class="nc">RegionAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
+<div class="viewcode-block" id="RegionAnnotation">
+<a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RegionAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access region annotations in canvas.</span>
 
@@ -104,14 +106,16 @@
     <span class="n">regionChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;PyqtSignal that is emitted when the region is changed.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="s2">&quot;region&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_region</span> <span class="o">=</span> <span class="n">region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span> <span class="o">=</span> <span class="n">orientation</span>
 
-<div class="viewcode-block" id="RegionAnnotation.setRegion"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.setRegion">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+<div class="viewcode-block" id="RegionAnnotation.setRegion">
+<a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.setRegion">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set region of the annotation.</span>
 
@@ -124,7 +128,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setRegion</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">regionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getRegion</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="RegionAnnotation.getRegion"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.getRegion">[docs]</a>    <span class="k">def</span> <span class="nf">getRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RegionAnnotation.getRegion">
+<a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.getRegion">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the region of the annotation.</span>
 
@@ -133,7 +140,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_region</span></div>
 
-<div class="viewcode-block" id="RegionAnnotation.getOrientation"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.getOrientation">[docs]</a>    <span class="k">def</span> <span class="nf">getOrientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="RegionAnnotation.getOrientation">
+<a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.RegionAnnotation.getOrientation">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getOrientation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the orientation of the annotation.</span>
 
@@ -142,14 +152,18 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orientation</span></div>
 
-    <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">orientation</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _initialize(region, orientation, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setRegion(region) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="FreeRegionAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation">[docs]</a><span class="k">class</span> <span class="nc">FreeRegionAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeRegionAnnotation">
+<a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FreeRegionAnnotation</span><span class="p">(</span><span class="n">AnnotationWithLine</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access free region annotations in canvas.</span>
 
@@ -175,14 +189,16 @@
     <span class="n">widthChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;PyqtSignal that is emitted when the region width is changed.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="s2">&quot;fregion&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span><span class="n">region</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_region</span> <span class="o">=</span> <span class="n">region</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">width</span>
 
-<div class="viewcode-block" id="FreeRegionAnnotation.setRegion"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.setRegion">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+<div class="viewcode-block" id="FreeRegionAnnotation.setRegion">
+<a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.setRegion">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set region of the annotation.</span>
 
@@ -195,7 +211,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setRegion</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">regionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getRegion</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="FreeRegionAnnotation.getRegion"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.getRegion">[docs]</a>    <span class="k">def</span> <span class="nf">getRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeRegionAnnotation.getRegion">
+<a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.getRegion">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the region of the annotation.</span>
 
@@ -204,8 +223,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_region</span></div>
 
-<div class="viewcode-block" id="FreeRegionAnnotation.setWidth"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.setWidth">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeRegionAnnotation.setWidth">
+<a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.setWidth">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set width of the annotation.</span>
 
@@ -217,7 +239,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">widthChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getWidth</span><span class="p">())</span></div>
 
-<div class="viewcode-block" id="FreeRegionAnnotation.getWidth"><a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.getWidth">[docs]</a>    <span class="k">def</span> <span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeRegionAnnotation.getWidth">
+<a class="viewcode-back" href="../../../../../lys_/graph/RegionAnnot.html#lys.widgets.canvas.interface.RegionAnnotation.FreeRegionAnnotation.getWidth">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the width of the annotation.</span>
 
@@ -226,14 +251,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span></div>
 
-    <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _initialize(region, width, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setRegion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">region</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setRegion(region) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setWidth(width) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

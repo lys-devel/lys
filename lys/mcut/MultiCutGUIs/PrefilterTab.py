@@ -12,12 +12,12 @@ class PrefilterTab(QtWidgets.QWidget):
         self._filt.setDimension(cui.getRawWave().ndim)
         self._dim = 0
         self.filterApplied.connect(self._cui.applyFilter)
-
+        self._cui.rawDataChanged.connect(self.__label)
 
     def __initlayout__(self):
         self._label = QtWidgets.QLabel()
-        self.__label()
         self._filt = filters.FiltersGUI()
+        self.__label()
         apply = QtWidgets.QPushButton("Apply filters", clicked=self._update)
 
         self.__useDask = QtWidgets.QCheckBox("Use dask for postprocess (recommended)", toggled=self._cui.useDask)
@@ -35,6 +35,7 @@ class PrefilterTab(QtWidgets.QWidget):
         w = self._cui.getRawWave()
         txt = "shape: {0}, dtype: {1}, chunk: {2}".format(w.shape, w.dtype, w.chunksize)
         self._label.setText(txt)
+        self._filt.setDimension(w.ndim)
 
     def _update(self):
         dim = self._filt.getFilters().getRelativeDimension()

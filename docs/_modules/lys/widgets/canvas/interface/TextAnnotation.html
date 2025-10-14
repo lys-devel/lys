@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lys.widgets.canvas.interface.TextAnnotation &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
-        <script src="../../../../../_static/jquery.js"></script>
-        <script src="../../../../../_static/underscore.js"></script>
-        <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../../../_static/doctools.js"></script>
-        <script src="../../../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../../search.html" /> 
@@ -26,14 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../../../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">lys.widgets.canvas.interface.TextAnnotation</li>
       <li class="wy-breadcrumbs-aside">
@@ -72,17 +72,19 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.widgets.canvas.interface.TextAnnotation</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
-<span class="kn">from</span> <span class="nn">lys.errors</span> <span class="kn">import</span> <span class="n">NotImplementedWarning</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.Qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.errors</span><span class="w"> </span><span class="kn">import</span> <span class="n">NotImplementedWarning</span>
 
-<span class="kn">from</span> <span class="nn">.CanvasBase</span> <span class="kn">import</span> <span class="n">saveCanvas</span>
-<span class="kn">from</span> <span class="nn">.AnnotationData</span> <span class="kn">import</span> <span class="n">AnnotationData</span>
-<span class="kn">from</span> <span class="nn">.Font</span> <span class="kn">import</span> <span class="n">FontInfo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.CanvasBase</span><span class="w"> </span><span class="kn">import</span> <span class="n">saveCanvas</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.AnnotationData</span><span class="w"> </span><span class="kn">import</span> <span class="n">AnnotationData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.Font</span><span class="w"> </span><span class="kn">import</span> <span class="n">FontInfo</span>
 
 
-<div class="viewcode-block" id="TextAnnotation"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation">[docs]</a><span class="k">class</span> <span class="nc">TextAnnotation</span><span class="p">(</span><span class="n">AnnotationData</span><span class="p">):</span>
+<div class="viewcode-block" id="TextAnnotation">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TextAnnotation</span><span class="p">(</span><span class="n">AnnotationData</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interface to access text annotations in canvas.</span>
 
@@ -104,15 +106,17 @@
     <span class="n">edited</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pyqtsignal that is emitted when the text is edited.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">canvas</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setPosition</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TextAnnotation.setText"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setText">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<div class="viewcode-block" id="TextAnnotation.setText">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setText">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the text of the annotation.</span>
 
@@ -124,7 +128,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="n">text</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">edited</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.getText"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getText">[docs]</a>    <span class="k">def</span> <span class="nf">getText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.getText">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getText">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getText</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the text of the annotation.</span>
 
@@ -133,8 +140,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.setPosition"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setPosition">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.setPosition">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setPosition">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the position of the annotation.</span>
 
@@ -144,7 +154,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setPosition</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.getPosition"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getPosition">[docs]</a>    <span class="k">def</span> <span class="nf">getPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.getPosition">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getPosition">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the position of the annotation.</span>
 
@@ -153,8 +166,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.setTransform"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setTransform">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.setTransform">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setTransform">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the transformation of the annotation.</span>
 
@@ -168,7 +184,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setTransform</span><span class="p">(</span><span class="n">transformation</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">transformation</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.getTransform"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getTransform">[docs]</a>    <span class="k">def</span> <span class="nf">getTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.getTransform">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getTransform">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the transformation of the annotation.</span>
 
@@ -177,8 +196,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;transform&#39;</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.setFont"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setFont">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setFont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.setFont">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setFont">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setFont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the font of the annotation.</span>
 
@@ -194,7 +216,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setFont</span><span class="p">(</span><span class="n">font</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;font&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">font</span><span class="o">.</span><span class="n">toDict</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.getFont"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getFont">[docs]</a>    <span class="k">def</span> <span class="nf">getFont</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.getFont">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getFont">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getFont</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the font of the label.</span>
 
@@ -206,8 +231,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;font&#39;</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.setBoxStyle"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setBoxStyle">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setBoxStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.setBoxStyle">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setBoxStyle">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setBoxStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the style of the bounding box.</span>
 
@@ -217,7 +245,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_setBoxStyle</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;boxStyle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">style</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.getBoxStyle"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getBoxStyle">[docs]</a>    <span class="k">def</span> <span class="nf">getBoxStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.getBoxStyle">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getBoxStyle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getBoxStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the style of the bounding box.</span>
 
@@ -226,8 +257,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;boxStyle&#39;</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.setBoxColor"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setBoxColor">[docs]</a>    <span class="nd">@saveCanvas</span>
-    <span class="k">def</span> <span class="nf">setBoxColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faceColor</span><span class="p">,</span> <span class="n">edgeColor</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.setBoxColor">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.setBoxColor">[docs]</a>
+    <span class="nd">@saveCanvas</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setBoxColor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">faceColor</span><span class="p">,</span> <span class="n">edgeColor</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the color of the bounding box.</span>
 
@@ -239,10 +273,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;boxFaceColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">faceColor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="p">[</span><span class="s1">&#39;boxEdgeColor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">edgeColor</span></div>
 
-<div class="viewcode-block" id="TextAnnotation.getBoxColor"><a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getBoxColor">[docs]</a>    <span class="k">def</span> <span class="nf">getBoxColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TextAnnotation.getBoxColor">
+<a class="viewcode-back" href="../../../../../lys_/graph/TextAnnot.html#lys.widgets.canvas.interface.TextAnnotation.TextAnnotation.getBoxColor">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getBoxColor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boxFaceColor&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boxEdgeColor&#39;</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_loadAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">appearance</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_loadAppearance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">appearance</span><span class="p">):</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getPosition</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setTransform</span><span class="p">(</span><span class="n">appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transform&#39;</span><span class="p">,</span> <span class="s1">&#39;axes&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setPosition</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
@@ -251,23 +289,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">setBoxStyle</span><span class="p">(</span><span class="n">appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boxStyle&#39;</span><span class="p">,</span> <span class="s1">&#39;none&#39;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setBoxColor</span><span class="p">(</span><span class="n">appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boxFaceColor&#39;</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">),</span> <span class="n">appearance</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;boxEdgeColor&#39;</span><span class="p">,</span> <span class="s1">&#39;black&#39;</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _initialize(text, axis) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setText(text) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setPosition(pos) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setTransform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transformation</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setTransformation(transformation) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setFont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setFont</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">font</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setFont(font) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_setBoxStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setBoxStyle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">style</span><span class="p">):</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot; does not implement _setBoxStyle(style) method.&quot;</span><span class="p">,</span> <span class="n">NotImplementedWarning</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

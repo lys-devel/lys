@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lys.mcut.MultiCutCUI &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,14 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
       <li class="breadcrumb-item active">lys.mcut.MultiCutCUI</li>
       <li class="wy-breadcrumbs-aside">
@@ -72,15 +72,18 @@
            <div itemprop="articleBody">
              
   <h1>Source code for lys.mcut.MultiCutCUI</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">weakref</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">weakref</span>
 
-<span class="kn">from</span> <span class="nn">lys</span> <span class="kn">import</span> <span class="n">DaskWave</span><span class="p">,</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
-<span class="kn">from</span> <span class="nn">lys.Qt</span> <span class="kn">import</span> <span class="n">QtCore</span>
-<span class="kn">from</span> <span class="nn">lys.decorators</span> <span class="kn">import</span> <span class="n">avoidCircularReference</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys</span><span class="w"> </span><span class="kn">import</span> <span class="n">DaskWave</span><span class="p">,</span> <span class="n">Wave</span><span class="p">,</span> <span class="n">filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.Qt</span><span class="w"> </span><span class="kn">import</span> <span class="n">QtCore</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">lys.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="n">avoidCircularReference</span>
 
 
-<div class="viewcode-block" id="MultiCutCUI"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutCUI">[docs]</a><span class="k">class</span> <span class="nc">MultiCutCUI</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCutCUI">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutCUI">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiCutCUI</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    MultiCutCUI is a class that manage contents of :class:`lys.multicut.MultiCutGUI.MultiCut`.</span>
 
@@ -95,7 +98,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span> <span class="o">=</span> <span class="n">MultiCutWave</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axesRange</span> <span class="o">=</span> <span class="n">AxesRangeManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getRawWave</span><span class="p">())</span>
@@ -103,12 +106,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_children</span> <span class="o">=</span> <span class="n">ChildWaves</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">dimensionChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__reset</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axesRange</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_freeLine</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="s2">&quot;_axesRange&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axesRange</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
                 <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axesRange</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
@@ -123,7 +126,9 @@
                 <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
-<div class="viewcode-block" id="MultiCutCUI.saveAsDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutCUI.saveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCutCUI.saveAsDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutCUI.saveAsDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save present state as dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -133,16 +138,23 @@
             <span class="s2">&quot;fline&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freeLine</span><span class="o">.</span><span class="n">saveAsDictionary</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="p">}</span></div>
 
-<div class="viewcode-block" id="MultiCutCUI.loadFromDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutCUI.loadFromDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MultiCutCUI.loadFromDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutCUI.loadFromDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the state stored in the dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axesRange</span><span class="o">.</span><span class="n">loadFromDictionary</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;range&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_freeLine</span><span class="o">.</span><span class="n">loadFromDictionary</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;fline&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">loadFromDictionary</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;children&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_children</span><span class="o">.</span><span class="n">loadFromDictionary</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;children&quot;</span><span class="p">,</span> <span class="p">{}),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</div>
 
 
-<div class="viewcode-block" id="MultiCutWave"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave">[docs]</a><span class="k">class</span> <span class="nc">MultiCutWave</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MultiCutWave">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">MultiCutWave</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class manage wave and filter for analysis.</span>
 
@@ -151,6 +163,10 @@
 <span class="sd">    Args:</span>
 <span class="sd">        wave(Wave or DaskWave): The wave to be analyzed.</span>
 
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rawDataChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Emitted when the raw data is changed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">dimensionChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -161,26 +177,30 @@
 <span class="sd">    Emitted when filter is applied.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filtered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">persist</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_useDask</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Wave</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">DaskWave</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">DaskWave</span><span class="p">(</span><span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
 
-<div class="viewcode-block" id="MultiCutWave.applyFilter"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.applyFilter">[docs]</a>    <span class="k">def</span> <span class="nf">applyFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiCutWave.applyFilter">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.applyFilter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">applyFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filt</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply filter to the wave.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filt(Filter): The filter to be applied.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filt</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filt</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">EmptyFilter</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="o">=</span> <span class="n">filt</span>
         <span class="n">dim_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filtered</span><span class="o">.</span><span class="n">ndim</span>
         <span class="n">wave</span> <span class="o">=</span> <span class="n">filt</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="p">)</span>
@@ -196,7 +216,38 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filterApplied</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filtered</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MultiCutWave.getRawWave"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.getRawWave">[docs]</a>    <span class="k">def</span> <span class="nf">getRawWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MultiCutWave.setRawWave">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.setRawWave">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setRawWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the raw wave. The existing raw wave will be replaced if it exists. Use :meth:`updateRawWave` method for fast update of the data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            wave(Wave or DaskWave): The raw wave.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">shape_old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">Wave</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">wave</span><span class="p">,</span> <span class="n">DaskWave</span><span class="p">):</span>
+            <span class="n">wave</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">wave</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">data</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">axes</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">note</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">note</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">persist</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rawDataChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape_old</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filter</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filtered</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dimensionChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filtered</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">applyFilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MultiCutWave.getRawWave">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.getRawWave">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getRawWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get raw wave instance.</span>
 
@@ -205,7 +256,31 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span></div>
 
-<div class="viewcode-block" id="MultiCutWave.getFilteredWave"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.getFilteredWave">[docs]</a>    <span class="k">def</span> <span class="nf">getFilteredWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MultiCutWave.updateRawWave">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.updateRawWave">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">updateRawWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">update</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update raw wavefor fast update of the data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data(dict): The dictionary that contains change of the data. The key of the dictionary should be index of the array. RawWave[key] will be replaced by data[key]</span>
+<span class="sd">            axes(list): The new axes. If None, the axes will not be changed.</span>
+<span class="sd">            update(bool): If True, the MultiCut result will be replaced by new data. Set False only when you want to continuously update the data before updating GUIs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">frame</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">persist</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wave</span><span class="o">.</span><span class="n">axes</span> <span class="o">=</span> <span class="n">axes</span>
+        <span class="k">if</span> <span class="n">update</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">applyFilter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MultiCutWave.getFilteredWave">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.getFilteredWave">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getFilteredWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get filtered wave instance.</span>
 
@@ -214,17 +289,24 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filtered</span></div>
 
-<div class="viewcode-block" id="MultiCutWave.useDask"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.useDask">[docs]</a>    <span class="k">def</span> <span class="nf">useDask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MultiCutWave.useDask">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.MultiCutWave.useDask">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">useDask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Specify whether the DaskWave is used for processing.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            b(bool): If True, DaskWave is used for processing.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_useDask</span> <span class="o">=</span> <span class="n">b</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_useDask</span> <span class="o">=</span> <span class="n">b</span></div>
+</div>
 
 
-<div class="viewcode-block" id="ChildWaves"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves">[docs]</a><span class="k">class</span> <span class="nc">ChildWaves</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChildWaves">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ChildWaves</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class manages child waves in MultiCut.</span>
 
@@ -234,7 +316,7 @@
 <span class="sd">    Emitted when the child waves are added or removed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cui</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span> <span class="o">=</span> <span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">cui</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cui</span><span class="o">.</span><span class="n">axesRangeChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__update</span><span class="p">)</span>
@@ -243,18 +325,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_sumType</span> <span class="o">=</span> <span class="s2">&quot;Mean&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_waves</span> <span class="o">=</span> <span class="p">[]</span>
 
-<div class="viewcode-block" id="ChildWaves.clear"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ChildWaves.clear">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.clear">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_waves</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">childWavesChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">cui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the cui of MultiCut.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cui</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ChildWaves.setSumType"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.setSumType">[docs]</a>    <span class="k">def</span> <span class="nf">setSumType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sumType</span><span class="p">):</span>
+<div class="viewcode-block" id="ChildWaves.setSumType">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.setSumType">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setSumType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sumType</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the sum type.</span>
 
@@ -263,7 +350,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sumType</span> <span class="o">=</span> <span class="n">sumType</span></div>
 
-<div class="viewcode-block" id="ChildWaves.addWave"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.addWave">[docs]</a>    <span class="k">def</span> <span class="nf">addWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChildWaves.addWave">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.addWave">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add new wave to MultiCut.</span>
 <span class="sd">        The child waves that is generated by this method is automatically updated when axes range of free lines are changed. </span>
@@ -284,7 +374,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">childWavesChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">item</span></div>
 
-<div class="viewcode-block" id="ChildWaves.remove"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChildWaves.remove">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.remove">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a child wave.</span>
 
@@ -294,7 +387,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_waves</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">childWavesChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_makeWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_makeWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
         <span class="n">wave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cui</span><span class="o">.</span><span class="n">getFilteredWave</span><span class="p">()</span>
         <span class="n">ignored</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">ax</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="nb">str</span><span class="p">)]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_freeLineAxes</span><span class="p">(</span><span class="n">axes</span><span class="p">))</span>
         <span class="n">ranges</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cui</span><span class="o">.</span><span class="n">getAxisRange</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">ndim</span><span class="p">)]</span>
@@ -303,14 +397,14 @@
         <span class="n">f</span> <span class="o">=</span> <span class="p">[</span><span class="n">filters</span><span class="o">.</span><span class="n">IntegralFilter</span><span class="p">(</span><span class="n">ranges</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sumType</span><span class="p">)]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getFreeLineTransposeFilter</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">ignored</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">filters</span><span class="o">.</span><span class="n">Filters</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_freeLineAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_freeLineAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">res</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cui</span><span class="o">.</span><span class="n">getFreeLine</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span><span class="o">.</span><span class="n">getAxes</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">res</span>
 
-    <span class="k">def</span> <span class="nf">__getFreeLineTransposeFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes_orig</span><span class="p">,</span> <span class="n">ignored</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getFreeLineTransposeFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes_orig</span><span class="p">,</span> <span class="n">ignored</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get freeline and transpose filter for multicut.</span>
 <span class="sd">        Since several axes are integrated, axes for free line should be modified.</span>
@@ -334,7 +428,9 @@
             <span class="n">filts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filters</span><span class="o">.</span><span class="n">TransposeFilter</span><span class="p">([</span><span class="n">axes_final</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">axes_orig</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">filts</span>
 
-<div class="viewcode-block" id="ChildWaves.getChildWaves"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.getChildWaves">[docs]</a>    <span class="k">def</span> <span class="nf">getChildWaves</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ChildWaves.getChildWaves">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.getChildWaves">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getChildWaves</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the list of child waves:</span>
 
@@ -343,7 +439,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_waves</span></div>
 
-    <span class="k">def</span> <span class="nf">__update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_waves</span><span class="p">:</span>
             <span class="c1"># update all</span>
             <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -363,17 +460,21 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">axes</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">ax</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">__updateSingleWave</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__updateSingleWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__updateSingleWave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">child</span><span class="o">.</span><span class="n">isEnabled</span><span class="p">():</span>
             <span class="k">return</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">wav</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_makeWave</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">getAxes</span><span class="p">())</span>
-            <span class="n">child</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">wav</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+                <span class="n">wav</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_makeWave</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">getAxes</span><span class="p">())</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">wav</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="kn">import</span> <span class="nn">traceback</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
             <span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
 
-<div class="viewcode-block" id="ChildWaves.saveAsDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.saveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="ChildWaves.saveAsDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.saveAsDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the present state as dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -386,7 +487,10 @@
             <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;Items&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="ChildWaves.loadFromDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.loadFromDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">axesMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ChildWaves.loadFromDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.ChildWaves.loadFromDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">axesMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the state stored in the dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -396,11 +500,13 @@
                 <span class="n">item</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filters</span><span class="o">.</span><span class="n">fromString</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;filter&quot;</span><span class="p">])</span>
             <span class="k">if</span> <span class="n">axesMap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">item</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">axesMap</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="k">if</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axesMap</span> <span class="k">else</span> <span class="n">ax</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">]]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addWave</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addWave</span><span class="p">(</span><span class="o">**</span><span class="n">item</span><span class="p">)</span></div>
+</div>
 
 
-<span class="k">class</span> <span class="nc">_ChildWave</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_ChildWave</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_orig</span> <span class="o">=</span> <span class="n">wave</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_post</span> <span class="o">=</span> <span class="nb">filter</span>
@@ -408,29 +514,29 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_filt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="k">def</span> <span class="nf">getAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_axes</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getRawWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getRawWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_orig</span>
 
-    <span class="k">def</span> <span class="nf">getFilteredWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getFilteredWave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filt</span>
 
-    <span class="k">def</span> <span class="nf">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="n">b</span>
 
-    <span class="k">def</span> <span class="nf">isEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">isEnabled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span>
 
-    <span class="k">def</span> <span class="nf">setPostProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setPostProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">post</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_post</span> <span class="o">=</span> <span class="n">post</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orig</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">postProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">postProcess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post</span>
 
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_orig</span> <span class="o">=</span> <span class="n">wave</span>
         <span class="n">name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filt</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">wave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__apply</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
@@ -439,7 +545,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_filt</span><span class="o">.</span><span class="n">note</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">note</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filt</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
-    <span class="k">def</span> <span class="nf">__apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
         <span class="n">post</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">postProcess</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">post</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">wave</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
@@ -447,11 +553,13 @@
             <span class="n">wave</span> <span class="o">=</span> <span class="n">wave</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">wave</span>
 
-    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filt</span><span class="o">.</span><span class="n">name</span>
 
 
-<div class="viewcode-block" id="AxesRangeManager"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager">[docs]</a><span class="k">class</span> <span class="nc">AxesRangeManager</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<div class="viewcode-block" id="AxesRangeManager">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AxesRangeManager</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    AxesRangeManager manage axes range that determines the result of MultiCut.</span>
 
@@ -464,19 +572,22 @@
 <span class="sd">    Emitted after :meth:`setAxisRange` is called.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">wave</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AxesRangeManager.reset"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
+<div class="viewcode-block" id="AxesRangeManager.reset">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.reset">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wave</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset all axes ranges to default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axesRangeChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">axes</span><span class="p">))))</span></div>
 
+
     <span class="nd">@avoidCircularReference</span>
-    <span class="k">def</span> <span class="nf">setAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the integrated range for MultiCut.</span>
 
@@ -492,7 +603,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">range</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">axesRangeChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">((</span><span class="n">axis</span><span class="p">,))</span>
 
-<div class="viewcode-block" id="AxesRangeManager.getAxisRange"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.getAxisRange">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="AxesRangeManager.getAxisRange">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.getAxisRange">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getAxisRange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the integrated range for MultiCut.</span>
 
@@ -504,7 +617,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="AxesRangeManager.getAxisRangeType"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.getAxisRangeType">[docs]</a>    <span class="k">def</span> <span class="nf">getAxisRangeType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AxesRangeManager.getAxisRangeType">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.getAxisRangeType">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getAxisRangeType</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the axis range type for the specified axis.</span>
 
@@ -517,7 +633,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s1">&#39;point&#39;</span></div>
 
-<div class="viewcode-block" id="AxesRangeManager.saveAsDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.saveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">useRange</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AxesRangeManager.saveAsDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.saveAsDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">useRange</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save the present state as dictionary.</span>
 
@@ -529,7 +648,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">{}</span></div>
 
-<div class="viewcode-block" id="AxesRangeManager.loadFromDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.loadFromDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">useRange</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axesMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="AxesRangeManager.loadFromDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.AxesRangeManager.loadFromDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">useRange</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axesMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load the state from the dictionary.</span>
 
@@ -542,10 +664,14 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;range&quot;</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">axesMap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">[</span><span class="n">axesMap</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">))]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">axesRangeChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">))))</span></div></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">axesRangeChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ranges</span><span class="p">))))</span></div>
+</div>
 
 
-<div class="viewcode-block" id="FreeLineManager"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager">[docs]</a><span class="k">class</span> <span class="nc">FreeLineManager</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeLineManager">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FreeLineManager</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    FreeLineManager manages free lines in MultiCut.</span>
 
@@ -558,18 +684,23 @@
     <span class="n">freeLineMoved</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Emitted when one of the free line is moved.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-<div class="viewcode-block" id="FreeLineManager.clear"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FreeLineManager.clear">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.clear">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Clear all free lines.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fregs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">freeLineChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="FreeLineManager.addFreeLine"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.addFreeLine">[docs]</a>    <span class="k">def</span> <span class="nf">addFreeLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeLineManager.addFreeLine">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.addFreeLine">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addFreeLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add free line to MultiCut.</span>
 
@@ -590,14 +721,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">freeLineChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">obj</span></div>
 
-    <span class="k">def</span> <span class="nf">__getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">__getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fregs</span><span class="p">]</span>
         <span class="k">while</span> <span class="s2">&quot;Line&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
             <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="s2">&quot;Line&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FreeLineManager.removeFreeLine"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.removeFreeLine">[docs]</a>    <span class="k">def</span> <span class="nf">removeFreeLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="FreeLineManager.removeFreeLine">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.removeFreeLine">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">removeFreeLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove free line.</span>
 
@@ -607,7 +741,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fregs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">freeLineChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="FreeLineManager.getFreeLines"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.getFreeLines">[docs]</a>    <span class="k">def</span> <span class="nf">getFreeLines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeLineManager.getFreeLines">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.getFreeLines">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getFreeLines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return list of free lines.</span>
 
@@ -616,7 +753,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fregs</span></div>
 
-<div class="viewcode-block" id="FreeLineManager.getFreeLine"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.getFreeLine">[docs]</a>    <span class="k">def</span> <span class="nf">getFreeLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeLineManager.getFreeLine">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.getFreeLine">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getFreeLine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get free line from name.</span>
 
@@ -630,7 +770,10 @@
             <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">getName</span><span class="p">()</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">line</span></div>
 
-<div class="viewcode-block" id="FreeLineManager.saveAsDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.saveAsDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">useLine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeLineManager.saveAsDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.saveAsDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">saveAsDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">useLine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save information of free lines as dictionary.</span>
 
@@ -649,7 +792,10 @@
             <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;freeLines&quot;</span><span class="p">:</span> <span class="n">res</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="FreeLineManager.loadFromDictionary"><a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.loadFromDictionary">[docs]</a>    <span class="k">def</span> <span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">useLine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axesMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="FreeLineManager.loadFromDictionary">
+<a class="viewcode-back" href="../../../lys_/multicut.html#lys.mcut.MultiCutCUI.FreeLineManager.loadFromDictionary">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loadFromDictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">useLine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">axesMap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load information of free lines from dictionary.</span>
 
@@ -666,35 +812,37 @@
                     <span class="k">del</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">axesMap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">f</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">axesMap</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">f</span><span class="p">[</span><span class="s2">&quot;axes&quot;</span><span class="p">]]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">addFreeLine</span><span class="p">(</span><span class="o">**</span><span class="n">f</span><span class="p">)</span></div></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addFreeLine</span><span class="p">(</span><span class="o">**</span><span class="n">f</span><span class="p">)</span></div>
+</div>
 
 
-<span class="k">class</span> <span class="nc">_FreeLine</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_FreeLine</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
     <span class="n">lineChanged</span> <span class="o">=</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">pyqtSignal</span><span class="p">()</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Emitted when the line position or width is changed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">width</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span> <span class="o">=</span> <span class="n">axes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">position</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">width</span>
 
-    <span class="k">def</span> <span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getName</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the name of the free line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
 
-    <span class="k">def</span> <span class="nf">getAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getAxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return the axes of the free line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axes</span>
 
-    <span class="k">def</span> <span class="nf">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the position of the free line.</span>
 <span class="sd">        pos(2*2 array): The position of the free line in the form of [(x1,y1), (x2,y2)]</span>
@@ -702,13 +850,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span> <span class="o">=</span> <span class="n">pos</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lineChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">getPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getPosition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the position of the free line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span>
 
-    <span class="k">def</span> <span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set the width of the free line.</span>
 
@@ -718,13 +866,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lineChanged</span><span class="o">.</span><span class="n">emit</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the width of the free line.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span>
 
-    <span class="k">def</span> <span class="nf">getFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getFilter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axes</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return FreeLineFilter.</span>
 

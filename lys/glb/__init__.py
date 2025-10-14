@@ -19,6 +19,7 @@ from .shell import ExtendShell
 from .MainWindow import MainWindow
 
 _main = None
+_side = []
 
 
 def mainWindow():
@@ -43,6 +44,21 @@ def shell():
     return ExtendShell._instance
 
 
+def addSidebarWidget(widget):
+    """
+    Add sidebar widget in main window.
+
+    Args:
+        widget(lys.widgets.SidebarWidget): The sidebar widget
+        title(string): The title of the tab.
+    """
+    _side.append(widget)
+    if _main is not None:
+        tab = mainWindow().tabWidget("right")
+        tab.addTab(widget, widget.title)
+        tab.setTabVisible(tab.count()-1, widget.visible)
+
+
 def editCanvas(canvas):
     """
     Edit canvas by GUI.
@@ -50,7 +66,9 @@ def editCanvas(canvas):
     Args:
         canvas: The canvas to be edited.
     """
-    mainWindow().tabWidget("right").widget(1).setCanvas(canvas)
+    tab = mainWindow().tabWidget("right")
+    index = [tab.tabText(i) for i in range(tab.count())].index("Graph")
+    tab.widget(index).setCanvas(canvas)
 
 
 def editTable(table):
@@ -60,7 +78,9 @@ def editTable(table):
     Args:
         table: The table to be edited.
     """
-    mainWindow().tabWidget("right").widget(2).setTable(table)
+    tab = mainWindow().tabWidget("right")
+    index = [tab.tabText(i) for i in range(tab.count())].index("Table")
+    tab.widget(index).setTable(table)
 
 
 def editMulticut(mcut):
@@ -70,7 +90,9 @@ def editMulticut(mcut):
     Args:
         mcut: The MuletiCut object.
     """
-    mainWindow().tabWidget("right").widget(3).setObject(mcut)
+    tab = mainWindow().tabWidget("right")
+    index = [tab.tabText(i) for i in range(tab.count())].index("MultiCut")
+    tab.widget(index).setObject(mcut)
 
 
 def startFitting(canvas):
@@ -80,7 +102,9 @@ def startFitting(canvas):
     Args:
         canvas: The canvas to be fitted.
     """
-    mainWindow().tabWidget("right").widget(4).setCanvas(canvas)
+    tab = mainWindow().tabWidget("right")
+    index = [tab.tabText(i) for i in range(tab.count())].index("Fitting")
+    tab.widget(index).setCanvas(canvas)
 
 
 def createMainWindow(*args, **kwargs):

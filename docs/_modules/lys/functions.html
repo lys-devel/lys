@@ -1,21 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>lys.functions &mdash; lys 0.3.1 documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=4621528c"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -26,14 +25,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> lys
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            lys
           </a>
-              <div class="version">
-                0.3.1
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -60,7 +60,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
       <li class="breadcrumb-item active">lys.functions</li>
       <li class="wy-breadcrumbs-aside">
@@ -82,9 +82,9 @@
 <span class="sd">    from lys import home</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
 
 <span class="n">__home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
@@ -93,7 +93,9 @@
 <span class="sd">&quot;&quot;&quot;loader dictionary&quot;&quot;&quot;</span>
 
 
-<div class="viewcode-block" id="home"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.home">[docs]</a><span class="k">def</span> <span class="nf">home</span><span class="p">():</span>
+<div class="viewcode-block" id="home">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.home">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return home directory of lys.</span>
 
@@ -105,7 +107,10 @@
     <span class="k">return</span> <span class="n">__home</span></div>
 
 
-<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="load">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.load">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Load various files.</span>
 
@@ -148,7 +153,10 @@
             <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="loadableFiles"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.loadableFiles">[docs]</a><span class="k">def</span> <span class="nf">loadableFiles</span><span class="p">():</span>
+
+<div class="viewcode-block" id="loadableFiles">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.loadableFiles">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">loadableFiles</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns list of extensions loadable by :func:`load`.</span>
 
@@ -159,7 +167,10 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
-<div class="viewcode-block" id="registerFileLoader"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.registerFileLoader">[docs]</a><span class="k">def</span> <span class="nf">registerFileLoader</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+
+<div class="viewcode-block" id="registerFileLoader">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.registerFileLoader">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">registerFileLoader</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Register file loader.</span>
 
@@ -174,7 +185,10 @@
     <span class="n">_dic</span><span class="p">[</span><span class="nb">type</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span></div>
 
 
-<div class="viewcode-block" id="registerFittingFunction"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.registerFittingFunction">[docs]</a><span class="k">def</span> <span class="nf">registerFittingFunction</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<div class="viewcode-block" id="registerFittingFunction">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.registerFittingFunction">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">registerFittingFunction</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Register fitting function for lys fitting module.</span>
 
@@ -184,38 +198,47 @@
 <span class="sd">        func(callable): The function.</span>
 <span class="sd">        name(str): The name of the function. If it is None, then func.__name__ is used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.fitting</span> <span class="kn">import</span> <span class="n">addFittingFunction</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.fitting</span><span class="w"> </span><span class="kn">import</span> <span class="n">addFittingFunction</span>
     <span class="n">addFittingFunction</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="edit"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.edit">[docs]</a><span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+
+<div class="viewcode-block" id="edit">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.edit">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">edit</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Edit the data in Table.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        data(str or Wave or arraylike): The data to be edited. If data is str, it is interpreted as file path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.widgets</span> <span class="kn">import</span> <span class="n">Table</span>
-    <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">Wave</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wave</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Wave</span><span class="p">)):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">Wave</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="multicut"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.multicut">[docs]</a><span class="k">def</span> <span class="nf">multicut</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">returnInstance</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+<div class="viewcode-block" id="multicut">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.multicut">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">multicut</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">returnInstance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">subWindow</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Analyze the data by MultiCut.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        data(Wave or DaskWave or arraylike): The data to be analyzed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.mcut</span> <span class="kn">import</span> <span class="n">MultiCut</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">MultiCut</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.mcut</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiCut</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">MultiCut</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">subWindow</span><span class="o">=</span><span class="n">subWindow</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">returnInstance</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">m</span></div>
 
 
-<div class="viewcode-block" id="frontCanvas"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.frontCanvas">[docs]</a><span class="k">def</span> <span class="nf">frontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
+
+<div class="viewcode-block" id="frontCanvas">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.frontCanvas">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">frontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the front canvas.</span>
 
@@ -225,11 +248,14 @@
 <span class="sd">    Return:</span>
 <span class="sd">        canvas: The front canvas</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.widgets</span> <span class="kn">import</span> <span class="n">getFrontCanvas</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">getFrontCanvas</span>
     <span class="k">return</span> <span class="n">getFrontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="display"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.display">[docs]</a><span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="display">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.display">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">lib</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Display Waves as graph.</span>
 
@@ -241,13 +267,16 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        Graph: The graph that contains the waves.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.widgets</span> <span class="kn">import</span> <span class="n">Graph</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.widgets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Graph</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">lib</span><span class="o">=</span><span class="n">lib</span><span class="p">)</span>
     <span class="n">append</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">g</span></div>
 
 
-<div class="viewcode-block" id="append"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.append">[docs]</a><span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+<div class="viewcode-block" id="append">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.append">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">canvas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">[],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Append waves to the front canvas. </span>
 
@@ -258,7 +287,7 @@
 <span class="sd">        kwargs: The keywords arguments that is passed to Append method of canvas.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">Wave</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Wave</span>
     <span class="k">if</span> <span class="n">canvas</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">frontCanvas</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -271,7 +300,10 @@
     <span class="k">return</span> <span class="n">c</span></div>
 
 
-<div class="viewcode-block" id="lysPath"><a class="viewcode-back" href="../../lys_/functions.html#lys.functions.lysPath">[docs]</a><span class="k">def</span> <span class="nf">lysPath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+
+<div class="viewcode-block" id="lysPath">
+<a class="viewcode-back" href="../../lys_/functions.html#lys.functions.lysPath">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">lysPath</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return relative path to the home directory.</span>
 
@@ -289,6 +321,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">file</span></div>
+
 </pre></div>
 
            </div>
