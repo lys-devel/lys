@@ -1,13 +1,13 @@
 
 from lys.fitting import FittingWidget
 from lys.Qt import QtWidgets
+from lys.widgets import SidebarWidget
 
-
-class FittingTab(QtWidgets.QWidget):
+class FittingTab(SidebarWidget):
     """Widget to show graph settings. Do not instanciate this class except in MainWindow."""
 
     def __init__(self):
-        super().__init__()
+        super().__init__("Fitting")
         self._canvas = None
         self._widget = None
         self.__inilayout()
@@ -24,22 +24,12 @@ class FittingTab(QtWidgets.QWidget):
         self._canvas = canvas
         self._canvas.finalized.connect(self.__closed)
         self.__setWidget(FittingWidget(canvas))
-        self.__setGlobalState(True)
-
-    def __setGlobalState(self, b):
-        from lys import glb
-        tab = glb.mainWindow().tabWidget("right")
-        list = [tab.tabText(i) for i in range(tab.count())]
-        if "Fitting" in list:
-            tab.setTabVisible(list.index("Fitting"), b)
-            if b:
-                tab.setCurrentIndex(list.index("Fitting"))
-                glb.mainWindow()._side.setVisible(True)
+        self.show(True)
 
     def __closed(self):
         self._canvas = None
         self.__setWidget()
-        self.__setGlobalState(False)
+        self.show(False)
 
     def __setWidget(self, wid=None):
         if wid is None:

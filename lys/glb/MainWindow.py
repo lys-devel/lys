@@ -126,22 +126,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self._bottom.hide()
 
     def __sideBar(self):
+        from . import addSidebarWidget, _side
+
         self._fileView = FileSystemView(home(), drop=True)
-        self._graph = GraphTab()
-        self._table = TableTab()
-        self._mcut = MulticutTab()
-        self._fit = FittingTab()
+        addSidebarWidget(GraphTab())
+        addSidebarWidget(TableTab())
+        addSidebarWidget(MulticutTab())
+        addSidebarWidget(FittingTab())
 
         self._tab = QtWidgets.QTabWidget()
         self._tab.addTab(self._fileView, "File")
-        self._tab.addTab(self._graph, "Graph")
-        self._tab.addTab(self._table, "Table")
-        self._tab.addTab(self._mcut, "MultiCut")
-        self._tab.addTab(self._fit, "Fitting")
-        self._tab.setTabVisible(1, False)
-        self._tab.setTabVisible(2, False)
-        self._tab.setTabVisible(3, False)
-        self._tab.setTabVisible(4, False)
+
+        for i, widget in enumerate(_side):
+            self._tab.addTab(widget, widget.title)
+            self._tab.setTabVisible(self._tab.count()-1, widget.visible)
         return self._tab
 
     def __bottomBar(self):

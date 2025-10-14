@@ -1,13 +1,13 @@
 
-from lys.widgets import ModifyWidget
+from lys.widgets import ModifyWidget, SidebarWidget
 from lys.Qt import QtWidgets
 
 
-class GraphTab(QtWidgets.QWidget):
+class GraphTab(SidebarWidget):
     """Widget to show graph settings. Do not instanciate this class except in MainWindow."""
 
     def __init__(self):
-        super().__init__()
+        super().__init__("Graph")
         self._canvas = None
         self._widget = None
         self.__inilayout()
@@ -24,22 +24,12 @@ class GraphTab(QtWidgets.QWidget):
         self._canvas = canvas
         self._canvas.finalized.connect(self.__closed)
         self.__setWidget(ModifyWidget(canvas))
-        self.__setGlobalState(True)
-
-    def __setGlobalState(self, b):
-        from lys import glb
-        tab = glb.mainWindow().tabWidget("right")
-        list = [tab.tabText(i) for i in range(tab.count())]
-        if "Graph" in list:
-            tab.setTabVisible(list.index("Graph"), b)
-            if b:
-                tab.setCurrentIndex(list.index("Graph"))
-                glb.mainWindow()._side.setVisible(True)
+        self.show()
 
     def __closed(self):
         self._canvas = None
         self.__setWidget()
-        self.__setGlobalState(False)
+        self.show(False)
 
     def __setWidget(self, wid=None):
         if wid is None:

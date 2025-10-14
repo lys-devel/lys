@@ -1,13 +1,12 @@
 
-from lys.widgets import TableModifyWidget
+from lys.widgets import TableModifyWidget, SidebarWidget
 from lys.Qt import QtWidgets
 
-
-class TableTab(QtWidgets.QWidget):
+class TableTab(SidebarWidget):
     """Widget to show table settings. Do not instanciate this class except in MainWindow."""
 
     def __init__(self):
-        super().__init__()
+        super().__init__("Table")
         self._table = None
         self._widget = None
         self.__inilayout()
@@ -24,22 +23,12 @@ class TableTab(QtWidgets.QWidget):
         self._table = table
         self._table.finalized.connect(self.__closed)
         self.__setWidget(TableModifyWidget(table))
-        self.__setGlobalState(True)
-
-    def __setGlobalState(self, b):
-        from lys import glb
-        tab = glb.mainWindow().tabWidget("right")
-        list = [tab.tabText(i) for i in range(tab.count())]
-        if "Table" in list:
-            tab.setTabVisible(list.index("Table"), b)
-            if b:
-                tab.setCurrentIndex(list.index("Table"))
-                glb.mainWindow()._side.setVisible(True)
+        self.show(True)
 
     def __closed(self):
         self._table = None
         self.__setWidget()
-        self.__setGlobalState(False)
+        self.show(False)
 
     def __setWidget(self, wid=None):
         if wid is None:

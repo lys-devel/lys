@@ -1,11 +1,11 @@
 
 from lys.mcut import MultiCutWidget
 from lys.Qt import QtWidgets
+from lys.widgets import SidebarWidget
 
-
-class MulticutTab(QtWidgets.QWidget):
+class MulticutTab(SidebarWidget):
     def __init__(self):
-        super().__init__()
+        super().__init__("MultiCut")
         self._objs = {}
         self._widget = None
         self.__inilayout()
@@ -23,17 +23,7 @@ class MulticutTab(QtWidgets.QWidget):
         elif self._widget == self._objs[obj]:
             return
         self.__setWidget(obj)
-        self.__setGlobalState(True)
-
-    def __setGlobalState(self, b):
-        from lys import glb
-        tab = glb.mainWindow().tabWidget("right")
-        list = [tab.tabText(i) for i in range(tab.count())]
-        if "MultiCut" in list:
-            tab.setTabVisible(list.index("MultiCut"), b)
-            if b:
-                tab.setCurrentIndex(list.index("MultiCut"))
-                glb.mainWindow()._side.setVisible(True)
+        self.show(True)
 
     def __setWidget(self, obj=None):
         if self._widget is not None:
@@ -48,5 +38,5 @@ class MulticutTab(QtWidgets.QWidget):
         self._layout.removeWidget(wid)
         wid.deleteLater()
         if wid == self._widget:
-            self.__setGlobalState(False)
+            self.show(False)
             self._widget = None
