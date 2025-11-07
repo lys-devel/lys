@@ -1,5 +1,5 @@
 
-from lys import lysPath
+from lys import resources
 from lys.Qt import QtWidgets, QtCore, QtGui
 from lys.widgets import LysSubWindow, CanvasBase, canvas
 
@@ -313,9 +313,7 @@ class MultiCut(QtCore.QObject):
         Returns:
             dict: the dictionary that contains the default template parameters.
         """
-        path = lysPath(".lys/templates/" + str(len(self._cui.getFilteredWave().shape)) + "D/" + "Default")
-        with open(path, "r") as f:
-            d = eval(f.read())
+        d = resources.loadDefaultTemplate(len(self._cui.getFilteredWave().shape))
         if d is not None:
             self.loadFromDictionary(d, useGrid=True, useAnnot=True)
 
