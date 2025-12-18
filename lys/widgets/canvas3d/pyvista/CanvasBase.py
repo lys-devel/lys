@@ -83,7 +83,7 @@ class ObjectPicker(CanvasPart3D):
 
     def __init__(self, parent):
         super().__init__(parent)
-        self.canvas().plotter.track_click_position(self.__pick)
+        self.canvas().plotter.track_click_position(self.__pick, viewport=True)
         self.canvas().dataCleared.connect(self.endPicker)
         self.__type = None
 
@@ -94,11 +94,27 @@ class ObjectPicker(CanvasPart3D):
         self.__type = None
         self.pickingFinished.emit()
 
-    def __pick(self, *args):
+    def __pick(self, pos):
         if self.__type is None:
             return
-        picked_pt = np.array(self.canvas().plotter.pick_mouse_position())
-        direction = picked_pt - self.canvas().plotter.camera_position[0]
-        direction = direction / np.linalg.norm(direction)
-        res = self.canvas().rayTrace(picked_pt, picked_pt + 10000 * direction, type=self.__type)
+        start, end = display_to_world_ray(self.canvas().plotter, pos[0], pos[1])
+        direction = end - start
+        start = self.canvas().plotter.camera_position[0]
+        length = np.max(np.abs(self.canvas().plotter.bounds))*100
+        res = self.canvas().rayTrace(start, start + length * direction, type=self.__type)
         self.objectPicked.emit(res)
+
+def display_to_world_ray(plotter, x, y):
+    ren = plotter.renderer  # vtkRenderer
+
+    def d2w(z):
+        ren.SetDisplayPoint(float(x), float(y), float(z))
+        ren.DisplayToWorld()                 # display -> world :contentReference[oaicite:2]{index=2}
+        wx, wy, wz, w = ren.GetWorldPoint()
+        if w == 0:
+            return np.array([wx, wy, wz], float)
+        return np.array([wx/w, wy/w, wz/w], float)
+
+    start = d2w(0.0)   # near plane
+    end   = d2w(1.0)   # far plane
+    return start, end

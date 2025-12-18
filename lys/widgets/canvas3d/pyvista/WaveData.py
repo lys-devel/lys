@@ -224,7 +224,7 @@ class _pyvistaLine(LineData):
             pos, d = self._findNearest(x0, x1, y0, y1)
             if d is None:
                 continue
-            if np.arctan(d / np.linalg.norm(pos - x0)) * 180 / 3.1415 > 2:
+            if np.arctan(d / np.linalg.norm(pos - x0)) * 180 / 3.1415 > 0.7:
                 continue
             elif d_min is None:
                 res, d_min = pos, d
