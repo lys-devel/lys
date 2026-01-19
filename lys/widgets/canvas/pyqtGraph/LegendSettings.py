@@ -37,7 +37,7 @@ class _PyqtgraphLegend(CanvasLegend):
         h = self.canvas().fig.getAxis('left').height()
         w = self.canvas().fig.getAxis('bottom').width()
         offset = self._legend.pos()
-        offset = offset[0] / w - 0.02, offset[1] / h - 0.02
+        offset = offset.x() / w - 0.02, offset.y() / h - 0.02
         self.setLegendPosition(offset)
 
     def _setLegendFrameVisible(self, visible):
