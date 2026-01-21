@@ -3,7 +3,7 @@ import dask.array as da
 from scipy import signal
 from dask.array import apply_along_axis
 
-from lys import DaskWave, Version
+from lys import DaskWave
 from lys.Qt import QtWidgets
 from lys.filters import FilterInterface, FilterSettingBase, filterGUI, addFilter
 from lys.widgets import AxisCheckLayout
