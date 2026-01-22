@@ -58,16 +58,22 @@ class core_test(unittest.TestCase):
         assert_array_equal(w.getAxis(0), [3, 4, 5])
 
         # posToPoint method
-        w = Wave(np.ones([3, 2]), [1, 2, 3], [3, 4, 5])
+        w = Wave(np.ones([3, 3]), [1, 2, 3], [3, 4, 5])
         self.assertTrue(w.posToPoint((2, 4)) == (1, 1))
         self.assertTrue(w.posToPoint((1, 2, 3), axis=0) == (0, 1, 2))
         self.assertTrue(w.posToPoint(2, axis=0) == 1)
 
         # pointToPos method
-        w = Wave(np.ones([3, 2]), [1, 2, 3], [3, 4, 5])
+        w = Wave(np.ones([3, 3]), [1, 2, 3], [3, 4, 5])
         self.assertTrue(w.pointToPos((1, 1)) == (2, 4))
         self.assertTrue(w.pointToPos((0, 1, 2), axis=0) == (1, 2, 3))
         self.assertTrue(w.pointToPos(1, axis=0) == 2)
+
+#        # insert method
+#        w = Wave(np.ones([3, 3]), [1, 2, 3], [3, 4, 5])
+#        w.axes.insert(index=2, axis=1, value=6)
+#        assert_array_equal(w.axes, [[1, 2, 3], [3, 4, 6, 5]])
+#        self.assertTrue(w.shape() == (3, 4))
 
     def test_WaveNote(self):
         w = Wave([1, 2, 3], name="wave1", key1="item1")
@@ -177,6 +183,30 @@ class core_test(unittest.TestCase):
         w2.axes[0][1] = 2
         assert_array_equal(w2.x, [0, 2])
         assert_array_equal(w.x, [0, 2])
+
+        # insert
+        w = Wave([[1, 2, 3], [4, 5, 6]], [1, 2], [3, 4, 5])
+        w.insert(index=1, axis=1, value=7, axisValue=8)
+        assert_array_equal(w.data, [[1, 7, 2, 3], [4, 7, 5, 6]])
+        assert_array_equal(w.axes[0], [1, 2])
+        assert_array_equal(w.axes[1], [3, 8, 4, 5])
+        w = Wave([[1, 2, 3], [4, 5, 6]], [1, 2], [3, 4, 5])
+        w.insert()
+        assert_array_equal(w.data, [[1, 2, 3], [4, 5, 6], [np.nan, np.nan, np.nan]])
+        assert_array_equal(w.axes[0], [1, 2, 2])
+        assert_array_equal(w.axes[1], [3, 4, 5])
+
+        # delete
+        w = Wave([[1, 2, 3], [4, 5, 6]], [1, 2], [3, 4, 5])
+        w.delete(index=1, axis=1)
+        assert_array_equal(w.data, [[1, 3], [4, 6]])
+        assert_array_equal(w.axes[0], [1, 2])
+        assert_array_equal(w.axes[1], [3, 5])
+        w = Wave([[1, 2, 3], [4, 5, 6]], [1, 2], [3, 4, 5])
+        w.delete()
+        assert_array_equal(w.data, [[1, 2, 3]])
+        assert_array_equal(w.axes[0], [1])
+        assert_array_equal(w.axes[1], [3, 4, 5])
 
     def test_DaskWave(self):
         w = Wave([1, 2, 3], [4, 5, 6], name="wave1")
