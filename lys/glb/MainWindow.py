@@ -85,8 +85,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self._mainTab.setTabsClosable(True)
         self.__addWorkspace("default")
         self._mainTab.addTab(QtWidgets.QWidget(), "+")
-        self._mainTab.tabBar().tabButton(0, QtWidgets.QTabBar.RightSide).resize(0, 0)
-        self._mainTab.tabBar().tabButton(1, QtWidgets.QTabBar.RightSide).resize(0, 0)
+        for i in (0, 1):
+            button = self._mainTab.tabBar().tabButton(i, QtWidgets.QTabBar.RightSide)
+            if button:
+                button.resize(0, 0)
         self.__loadWorkspace()
         self._mainTab.setCurrentIndex(0)
         self._mainTab.currentChanged.connect(self._changeTab)
