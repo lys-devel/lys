@@ -139,20 +139,26 @@ class _ZOrderDialog(QtWidgets.QDialog):
 
 class LineColorAdjustBox(ColorSelection):
     def __init__(self, canvas, type="line"):
-        super().__init__()
+        super().__init__(opac=True)
         self.type = type
         self.canvas = canvas
-        self.colorChanged.connect(self.__changed)
+        self.colorChanged.connect(self.__colorChanged)
+        self.opacChanged.connect(self.__opacChanged)
         self.setEnabled(False)
 
-    def __changed(self):
+    def __colorChanged(self):
         for d in self.data:
             d.setLineColor(self.getColor())
+
+    def __opacChanged(self):
+        for d in self.data:
+            d.setLineOpacity(self.getOpacity())
 
     def _loadstate(self):
         if len(self.data) != 0:
             self.setEnabled(True)
             self.setColor(self.data[0].getLineColor())
+            self.setOpacity(self.data[0].getLineOpacity())
         else:
             self.setEnabled(False)
 

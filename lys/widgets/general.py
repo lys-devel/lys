@@ -70,23 +70,49 @@ class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
         self.setValue(v + steps * n)
 
 
-class ColorSelection(QtWidgets.QPushButton):
+class ColorSelection(QtWidgets.QWidget):
     """
     A widget to select color.
     """
     colorChanged = QtCore.pyqtSignal(object)
+    opacChanged = QtCore.pyqtSignal(float)
     """Emitted when the selected color is changed"""
 
-    def __init__(self):
+    def __init__(self, opac=False):
         super().__init__()
-        self.clicked.connect(self._onClicked)
+        self._colorButton = QtWidgets.QPushButton()
+        self._colorButton.clicked.connect(self._onClicked)
+        if opac:
+            self._opacBox = QtWidgets.QDoubleSpinBox()
+            self._opacBox.setRange(0, 1)
+            self._opacBox.setSingleStep(0.1)
+            self._opacBox.setValue(1)
+            self._opacBox.valueChanged.connect(self._onOpacChanged)
+        else:
+            self._opacBox = None
         self.__color = "black"
+        self.__opac = 1
+        self.__initLayout()
+    
+    def __initLayout(self):
+        layout = QtWidgets.QGridLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self._colorButton, 0, 0, 1, 2)
+        if self._opacBox is not None:
+            layout.addWidget(QtWidgets.QLabel("Opacity:"), 1, 0)
+            layout.addWidget(self._opacBox, 1, 1)
+        self.setLayout(layout)
+        # self.setSizePolicy(self._colorButton.sizePolicy())
 
     def _onClicked(self):
         res = QtWidgets.QColorDialog.getColor(QtGui.QColor(self.getColor()))
         if res.isValid():
             self.setColor(res.name())
             self.colorChanged.emit(self.getColor())
+    
+    def _onOpacChanged(self):
+        self.__opac = self._opacBox.value()
+        self.opacChanged.emit(self.getOpacity())
 
     def setColor(self, color):
         """
@@ -102,7 +128,7 @@ class ColorSelection(QtWidgets.QPushButton):
                 self.__color = "rgba" + str((color[0] * 255, color[1] * 255, color[2] * 255, 1))
         else:
             self.__color = color
-        self.setStyleSheet("background-color:" + self.__color)
+        self._colorButton.setStyleSheet("background-color:" + self.__color)
 
     def getColor(self):
         """
@@ -121,6 +147,25 @@ class ColorSelection(QtWidgets.QPushButton):
             QColor: The color selected by user.
         """
         return QtGui.QColor(self.getColor())
+    
+    def setOpacity(self, opacity):
+        """
+        Set the opacity.
+
+        Args:
+            opacity(float): The opacity value.
+        """
+        self.__opac = opacity
+        self._opacBox.setValue(opacity)
+
+    def getOpacity(self):
+        """
+        Get the opacity.
+
+        Returns:
+            float: The opacity value.
+        """
+        return self.__opac
 
 
 _cmaps = [('Perceptually Uniform Sequential', [

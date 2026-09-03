@@ -25,6 +25,9 @@ class Graph_test(unittest.TestCase):
         obj.setLineColor('#ff0000')
         self.assertEqual(obj.getLineColor(), '#ff0000')
 
+        obj.setLineOpacity(0.5)
+        self.assertAlmostEqual(obj.getLineOpacity(), 0.5)
+
         obj.setLineStyle('dashed')
         self.assertEqual(obj.getLineStyle(), 'dashed')
 

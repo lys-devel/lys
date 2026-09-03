@@ -132,6 +132,26 @@ class AnnotationWithLine(AnnotationData):
             str: The color string such as '#ff0000'
         """
         return self._appearance['LineColor']
+    
+    @saveCanvas
+    def setLineOpacity(self, opacity):
+        """
+        Set the opacity of the line.
+
+        Args:
+            opacity(float): The opacity value.
+        """
+        self._setLineOpacity(opacity)
+        self._appearance['LineOpacity'] = opacity
+    
+    def getLineOpacity(self):
+        """
+        Get the opacity of the line.
+
+        Return:
+            float: The opacity value.
+        """
+        return self._appearance['LineOpacity']  
 
     @ saveCanvas
     def setLineStyle(self, style):
@@ -177,6 +197,7 @@ class AnnotationWithLine(AnnotationData):
         self.setLineColor(appearance.get('LineColor', '#000000'))
         self.setLineWidth(appearance.get('LineWidth', 1))
         self.setLineStyle(appearance.get('LineStyle', 'solid'))
+        self.setLineOpacity(appearance.get('LineOpacity', 1))
 
     def _setLineColor(self, color):
         warnings.warn(str(type(self)) + " does not implement _setColor(color) method.", NotImplementedWarning)
@@ -184,5 +205,8 @@ class AnnotationWithLine(AnnotationData):
     def _setLineWidth(self, width):
         warnings.warn(str(type(self)) + " does not implement _setWidth(width) method.", NotImplementedWarning)
 
-    def _setLineStyle(self, color):
+    def _setLineStyle(self, style):
         warnings.warn(str(type(self)) + " does not implement _setStyle(style) method.", NotImplementedWarning)
+    
+    def _setLineOpacity(self, opacity):
+        warnings.warn(str(type(self)) + " does not implement _setOpacity(opacity) method.", NotImplementedWarning)
