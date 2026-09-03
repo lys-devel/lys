@@ -73,6 +73,9 @@ class ScientificSpinBox(QtWidgets.QDoubleSpinBox):
 class ColorSelection(QtWidgets.QWidget):
     """
     A widget to select color.
+    
+    Args:
+        opac (bool): If True, show opacity slider. Default is False.
     """
     colorChanged = QtCore.pyqtSignal(object)
     opacChanged = QtCore.pyqtSignal(float)
