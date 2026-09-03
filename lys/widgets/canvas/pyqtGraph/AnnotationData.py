@@ -30,13 +30,24 @@ class _PyqtgraphLineAnnotation(LineAnnotation):
         self._obj.movePoint(self._obj.getHandles()[1], pos[1])
 
     def _setLineColor(self, color):
-        self._obj.pen.setColor(QtGui.QColor(color))
+        col = QtGui.QColor(color)
+        col.setAlphaF(self._obj.pen.color().alphaF())
+        self._obj.pen.setColor(col)
+        self._obj.setPen(self._obj.pen)
 
     def _setLineStyle(self, style):
         self._obj.pen.setStyle(_styles[style])
+        self._obj.setPen(self._obj.pen)
 
     def _setLineWidth(self, width):
-        self._obj.pen.setWidth(width)
+        self._obj.pen.setWidth(int(width))
+        self._obj.setPen(self._obj.pen)
+    
+    def _setLineOpacity(self, opacity):
+        color = self._obj.pen.color()
+        color.setAlphaF(opacity)
+        self._obj.pen.setColor(color)
+        self._obj.setPen(self._obj.pen)
 
     def _setZOrder(self, z):
         _setZ(self._obj, z)
@@ -69,13 +80,24 @@ class _PyqtgraphInfiniteLineAnnotation(InfiniteLineAnnotation):
         self._obj.setValue(pos)
 
     def _setLineColor(self, color):
-        self._obj.pen.setColor(QtGui.QColor(color))
+        col = QtGui.QColor(color)
+        col.setAlphaF(self._obj.pen.color().alphaF())
+        self._obj.pen.setColor(col)
+        self._obj.setPen(self._obj.pen)
 
     def _setLineStyle(self, style):
         self._obj.pen.setStyle(_styles[style])
+        self._obj.setPen(self._obj.pen)
 
     def _setLineWidth(self, width):
-        self._obj.pen.setWidth(width)
+        self._obj.pen.setWidth(int(width))
+        self._obj.setPen(self._obj.pen)
+
+    def _setLineOpacity(self, opacity):
+        color = self._obj.pen.color()
+        color.setAlphaF(opacity)
+        self._obj.pen.setColor(color)
+        self._obj.setPen(self._obj.pen)
 
     def _setZOrder(self, z):
         _setZ(self._obj, z)
@@ -102,17 +124,28 @@ class _PyqtgraphRectAnnotation(RectAnnotation):
         self._obj.setSize((region[0][1] - region[0][0], region[1][1] - region[1][0]))
 
     def _setLineColor(self, color):
-        self._obj.pen.setColor(QtGui.QColor(color))
+        col = QtGui.QColor(color)
+        col.setAlphaF(self._obj.pen.color().alphaF())
+        self._obj.pen.setColor(col)
+        self._obj.setPen(self._obj.pen)
 
     def _setLineStyle(self, style):
         self._obj.pen.setStyle(_styles[style])
+        self._obj.setPen(self._obj.pen)
 
     def _setLineWidth(self, width):
-        self._obj.pen.setWidth(width)
+        self._obj.pen.setWidth(int(width))
+        self._obj.setPen(self._obj.pen)
+
+    def _setLineOpacity(self, opacity):
+        color = self._obj.pen.color()
+        color.setAlphaF(opacity)
+        self._obj.pen.setColor(color)
+        self._obj.setPen(self._obj.pen)
 
     def _setZOrder(self, z):
         _setZ(self._obj, z)
-
+    
     def _setVisible(self, visible):
         self._obj.setVisible(visible)
 
@@ -134,16 +167,28 @@ class _PyqtgraphRegionAnnotation(RegionAnnotation):
         self._obj.setRegion(region)
 
     def _setLineColor(self, color):
-        self._obj.lines[0].pen.setColor(QtGui.QColor(color))
-        self._obj.lines[1].pen.setColor(QtGui.QColor(color))
+        col = QtGui.QColor(color)
+        col.setAlphaF(self._obj.lines[0].pen.color().alphaF())
+        for i in range(2):
+            self._obj.lines[i].pen.setColor(col)
+            self._obj.lines[i].setPen(self._obj.lines[i].pen)
 
     def _setLineStyle(self, style):
-        self._obj.lines[0].pen.setStyle(_styles[style])
-        self._obj.lines[1].pen.setStyle(_styles[style])
+        for i in range(2):
+            self._obj.lines[i].pen.setStyle(_styles[style])
+            self._obj.lines[i].setPen(self._obj.lines[i].pen)
 
     def _setLineWidth(self, width):
-        self._obj.lines[0].pen.setWidth(width)
-        self._obj.lines[1].pen.setWidth(width)
+        for i in range(2):
+            self._obj.lines[i].pen.setWidth(int(width))
+            self._obj.lines[i].setPen(self._obj.lines[i].pen)
+
+    def _setLineOpacity(self, opacity):
+        color = self._obj.lines[0].pen.color()
+        color.setAlphaF(opacity)
+        for i in range(2):
+            self._obj.lines[i].pen.setColor(color)
+            self._obj.lines[i].setPen(self._obj.lines[i].pen)
 
     def _setZOrder(self, z):
         _setZ(self._obj, z)
@@ -196,13 +241,24 @@ class _PyqtgraphFreeRegionAnnotation(FreeRegionAnnotation):
         self._obj.setAngle(np.angle(d[0] + 1j * d[1], deg=True))
 
     def _setLineColor(self, color):
-        self._obj.pen.setColor(QtGui.QColor(color))
+        col = QtGui.QColor(color)
+        col.setAlphaF(self._obj.pen.color().alphaF())
+        self._obj.pen.setColor(col)
+        self._obj.setPen(self._obj.pen)
 
     def _setLineStyle(self, style):
         self._obj.pen.setStyle(_styles[style])
+        self._obj.setPen(self._obj.pen)
 
     def _setLineWidth(self, width):
-        self._obj.pen.setWidth(width)
+        self._obj.pen.setWidth(int(width))
+        self._obj.setPen(self._obj.pen)
+
+    def _setLineOpacity(self, opacity):
+        color = self._obj.pen.color()
+        color.setAlphaF(opacity)
+        self._obj.pen.setColor(color)
+        self._obj.setPen(self._obj.pen)
 
     def _setZOrder(self, z):
         _setZ(self._obj, z)
@@ -227,16 +283,28 @@ class _PyqtgraphCrossAnnotation(CrossAnnotation):
         self._obj.lines[1].setValue(pos[0])
 
     def _setLineColor(self, color):
-        self._obj.lines[0].pen.setColor(QtGui.QColor(color))
-        self._obj.lines[1].pen.setColor(QtGui.QColor(color))
+        col = QtGui.QColor(color)
+        col.setAlphaF(self._obj.lines[0].pen.color().alphaF())
+        for i in range(2):
+            self._obj.lines[i].pen.setColor(col)
+            self._obj.lines[i].setPen(self._obj.lines[i].pen)
 
     def _setLineStyle(self, style):
-        self._obj.lines[0].pen.setStyle(_styles[style])
-        self._obj.lines[1].pen.setStyle(_styles[style])
+        for i in range(2):
+            self._obj.lines[i].pen.setStyle(_styles[style])
+            self._obj.lines[i].setPen(self._obj.lines[i].pen)
 
     def _setLineWidth(self, width):
-        self._obj.lines[0].pen.setWidth(width)
-        self._obj.lines[1].pen.setWidth(width)
+        for i in range(2):
+            self._obj.lines[i].pen.setWidth(int(width))
+            self._obj.lines[i].setPen(self._obj.lines[i].pen)
+
+    def _setLineOpacity(self, opacity):
+        color = self._obj.lines[0].pen.color()
+        color.setAlphaF(opacity)
+        for i in range(2):
+            self._obj.lines[i].pen.setColor(color)
+            self._obj.lines[i].setPen(self._obj.lines[i].pen)
 
     def _setZOrder(self, z):
         _setZ(self._obj, z)

@@ -26,6 +26,9 @@ class _MatplotlibLineAnnotation(LineAnnotation):
     def _setLineWidth(self, width):
         self._obj.set_linewidth(width)
 
+    def _setLineOpacity(self, opacity):
+        self._obj.set_alpha(opacity)
+
     def _setZOrder(self, z):
         _setZ(self._obj, z)
 
@@ -70,6 +73,9 @@ class _MatplotlibInfiniteLineAnnotation(InfiniteLineAnnotation):
     def _setLineWidth(self, width):
         self._obj.set_linewidth(width)
 
+    def _setLineOpacity(self, opacity):
+        self._obj.set_alpha(opacity)
+
     def _setZOrder(self, z):
         _setZ(self._obj, z)
 
@@ -101,6 +107,9 @@ class _MatplotlibRectAnnotation(RectAnnotation):
 
     def _setLineWidth(self, width):
         self._obj.set_linewidth(width)
+
+    def _setLineOpacity(self, opacity):
+        self._obj.set_alpha(opacity)
 
     def _setZOrder(self, z):
         _setZ(self._obj, z)
@@ -146,6 +155,9 @@ class _MatplotlibRegionAnnotation(RegionAnnotation):
 
     def _setLineWidth(self, width):
         self._obj.set_linewidth(width)
+    
+    def _setLineOpacity(self, opacity):
+        self._obj.set_alpha(opacity)
 
     def _setZOrder(self, z):
         _setZ(self._obj, z)
@@ -191,6 +203,9 @@ class _MatplotlibFreeRegionAnnotation(FreeRegionAnnotation):
 
     def _setLineWidth(self, width):
         self._obj.set_linewidth(width)
+    
+    def _setLineOpacity(self, opacity):
+        self._obj.set_alpha(opacity)
 
     def _setZOrder(self, z):
         _setZ(self._obj, z)
@@ -231,6 +246,10 @@ class _MatplotlibCrossAnnotation(CrossAnnotation):
     def _setLineWidth(self, width):
         self._obj.lines[0].set_linewidth(width)
         self._obj.lines[1].set_linewidth(width)
+    
+    def _setLineOpacity(self, opacity):
+        self._obj.lines[0].set_alpha(opacity)
+        self._obj.lines[1].set_alpha(opacity)
 
     def _setZOrder(self, z):
         _setZ(self._obj.lines[0], z)
