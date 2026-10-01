@@ -49,6 +49,8 @@ parser.add_argument("-np", "--noplugin", help="Do not import local plugins", act
 parser.add_argument("--clean", help="Delete all settings. Try it when lys is broken", action="store_true")
 # Self-closing
 parser.add_argument("-sc", help="lys is self-closing (without asking when closing). ", action="store_true")
+# Remote
+parser.add_argument("--remote", help="Accept commands from other processes (e.g. Claude Code via lys_mcp). LABEL is used to select lys when several lys are running (default: process id)", nargs="?", const="", metavar="LABEL")
 
 # parse args
 args = parser.parse_args()
@@ -77,6 +79,10 @@ if not args.noplugin:
             import_module(plugin)
 else:
     print("lys is launched wih -np option. No plugin is loaded.")
+
+if args.remote is not None:
+    from .localPlugins import Remote
+    Remote.start(args.remote or None)
 
 loadWindow.setPixmap(splash["workspace"])
 lys.glb.restoreWorkspaces()
