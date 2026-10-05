@@ -51,6 +51,9 @@ parser.add_argument("--clean", help="Delete all settings. Try it when lys is bro
 parser.add_argument("-sc", help="lys is self-closing (without asking when closing). ", action="store_true")
 # Remote
 parser.add_argument("--remote", help="Accept commands from other processes (e.g. Claude Code via lys_mcp). LABEL is used to select lys when several lys are running (default: process id)", nargs="?", const="", metavar="LABEL")
+parser.add_argument("--port", help="Accept commands from other computers on TCP PORT (implies --remote)", type=int, required=False)
+parser.add_argument("--host", help="Address on which TCP server listens (default: 0.0.0.0, all network interfaces)", default="0.0.0.0")
+parser.add_argument("--token", help="Token required for TCP connections", required=False)
 
 # parse args
 args = parser.parse_args()
@@ -80,9 +83,9 @@ if not args.noplugin:
 else:
     print("lys is launched wih -np option. No plugin is loaded.")
 
-if args.remote is not None:
+if args.remote is not None or args.port is not None:
     from .localPlugins import Remote
-    Remote.start(args.remote or None)
+    Remote.start(args.remote or None, port=args.port, host=args.host, token=args.token)
 
 loadWindow.setPixmap(splash["workspace"])
 lys.glb.restoreWorkspaces()
